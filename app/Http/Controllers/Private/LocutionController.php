@@ -39,12 +39,7 @@ class LocutionController extends Controller
         }
 
         return ProgramResource::collection(
-            Program::active()
-                ->where(function ($q) {
-                    $q->where('user_id', request()->user()->id)
-                        ->orWhere('access_type', 'free');
-                })
-                ->get()
+            Program::availableForLocution(request()->user())->get()
         );
     }
 

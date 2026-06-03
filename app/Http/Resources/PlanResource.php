@@ -36,6 +36,6 @@ class PlanResource extends JsonResource
 
     private function formatScheduledAt(): ?string
     {
-        return $this->scheduled_at?->setTimezone('America/Sao_Paulo')->format('d/m/Y - H:i');
+        return $this->scheduled_at?->setTimezone('America/Sao_Paulo')->format('d/m/Y - H:i:s');
     }
 }

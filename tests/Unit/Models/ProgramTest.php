@@ -80,6 +80,51 @@ class ProgramTest extends TestCase
         $this->assertFalse($activePrograms->contains($inactiveProgram));
     }
 
+    public function testAvailableForLocutionScope(): void
+    {
+        $user = User::factory()->create();
+        $otherUser = User::factory()->create();
+
+        $ownPrivateLive = Program::factory()
+            ->for($user, 'host')
+            ->withPrivate()
+            ->create();
+
+        $freeLive = Program::factory()
+            ->for($otherUser, 'host')
+            ->withFree()
+            ->create();
+
+        $otherPrivateLive = Program::factory()
+            ->for($otherUser, 'host')
+            ->withPrivate()
+            ->create();
+
+        $ownPrivatePlaylist = Program::factory()
+            ->for($user, 'host')
+            ->withPrivate()
+            ->create(['execution_mode' => 'playlist']);
+
+        $freeScheduled = Program::factory()
+            ->for($otherUser, 'host')
+            ->withFree()
+            ->create(['execution_mode' => 'scheduled']);
+
+        $inactiveOwnPrivateLive = Program::factory()
+            ->for($user, 'host')
+            ->withPrivate()
+            ->create(['is_active' => false]);
+
+        $programs = Program::availableForLocution($user)->get();
+
+        $this->assertTrue($programs->contains($ownPrivateLive));
+        $this->assertTrue($programs->contains($freeLive));
+        $this->assertFalse($programs->contains($otherPrivateLive));
+        $this->assertFalse($programs->contains($ownPrivatePlaylist));
+        $this->assertFalse($programs->contains($freeScheduled));
+        $this->assertFalse($programs->contains($inactiveOwnPrivateLive));
+    }
+
     public function testFactoryExecutionModeStates(): void
     {
         $user = User::factory()->create();

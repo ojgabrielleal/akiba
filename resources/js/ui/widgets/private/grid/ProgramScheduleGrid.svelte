@@ -3,18 +3,9 @@
 
     import { page } from "@inertiajs/svelte";
     import { Section } from "@/ui/components/private/";
+    import { resolveDay, resolveHour } from "@/utils";
 
     $: ({ programs } = $page.props);
-
-    let days = {
-        0: "Domingo",
-        1: "Segunda",
-        2: "Terça",
-        3: "Quarta",
-        4: "Quinta",
-        5: "Sexta",
-        6: "Sábado",
-    };
 </script>
 
 {#if programs}
@@ -47,10 +38,10 @@
                             {#each program.schedules as schedule}
                                 <dl class="w-full rounded-md py-2 px-4 bg-suspense-aurora flex justify-between mb-2">
                                     <dt class="block text-black text-md font-noto-sans italic uppercase font-extrabold">
-                                        {days[schedule.day]}
+                                        {resolveDay(schedule.day, "short")}
                                     </dt>
                                     <dd class="block text-black font-noto-sans uppercase">
-                                        {schedule.hour}
+                                        {resolveHour(schedule.hour)}
                                     </dd>
                                 </dl>
                             {/each}

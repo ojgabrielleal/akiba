@@ -5,7 +5,7 @@
     import { page } from "@inertiajs/svelte";
     import { Offcanvas, Section } from "@/ui/components/private/";
     import { CalendarForm } from "@/ui/widgets/private";
-    import { calendarPermissions } from "@/utils";
+    import { calendarPermissions, resolveHour } from "@/utils";
     import { calendarTags } from "@/data";
 
     $: ({ calendar } = $page.props);
@@ -56,7 +56,7 @@
                                 { "text-blue-night": item.activity },
                                 { "text-suspense-aurora": !item.activity },
                             ]}>
-                                {item.formated_hour}
+                                {resolveHour(item.hour)}
                             </div>
                         </div>
                         <div class={["w-full font-noto-sans font-extrabold text-xl text-center italic mt-4 mb-4",

@@ -4,18 +4,25 @@
     import { router, page } from "@inertiajs/svelte";
     import { Offcanvas, Section, Tooltip } from "@/ui/components/private/";
     import { ProgramForm } from "@/ui/widgets/private";
-    import { programPermissions } from "@/utils";
+    import { programPermissions, resolveDateTime, resolveDay, resolveHour } from "@/utils";
 
     $: ({ programs } = $page.props);
-
+    
     let can = programPermissions();
+    let selectedExecutionMode = "live";
+    let programSelected = null;
+
+    let offcanvasRef;
 
     let actions = [
         {
             title: "Cadastrar",
             icon: "/svg/plus.svg",
             permission: can.create,
-            onClick: () => null
+            onClick: () => {
+                programSelected = null;
+                offcanvasRef.open();
+            }
         },
     ];
 
@@ -37,11 +44,6 @@
         },
     ];
 
-    let selectedExecutionMode = "live";
-
-    let programUuid;
-    let offcanvasRef;
-
     const requestDeactivateProgram = (program) => {
         router.delete(`/panel/radio/program/${program}`, {}, {
             preserveScroll: true,
@@ -50,9 +52,9 @@
     };
 </script>
 
-<Offcanvas bind:this={offcanvasRef} title="Gerênciar programas">
+<Offcanvas bind:this={offcanvasRef} title={programSelected?.name ?? "Cadastrar Programa"} >
     <div slot="content" let:close>
-        <ProgramForm {programUuid} {close} />
+        <ProgramForm {programSelected} {close} />
     </div>
 </Offcanvas>
 
@@ -132,7 +134,7 @@
                                         aria-label="Atualizar"
                                         class="w-7 h-7 bg-blue-marinho rounded-md flex justify-center items-center font-noto-sans italic font-extrabold cursor-pointer"
                                         on:click={() => {
-                                            programUuid = item.uuid;
+                                            programSelected = item;
                                             offcanvasRef.open();
                                         }}
                                     >
@@ -156,14 +158,14 @@
                                 loading="lazy"
                             />
                         </div>
-                        {#if item.schedules.length > 0}
-                            {#each item.schedules as schedule}
+                        {#if item.airtimes.length > 0}
+                            {#each item.airtimes as schedule}
                                 <dl class="w-full rounded-md py-2 px-4 bg-suspense-aurora flex justify-between mb-2">
                                     <dt class="block text-blue-marinho text-sm font-noto-sans italic uppercase font-extrabold">
-                                        {schedule.day}
+                                        {resolveDay(schedule.day)}
                                     </dt>
                                     <dd class="block text-blue-marinho text-sm font-noto-sans italic uppercase font-extrabold">
-                                        {schedule.hour}
+                                        {resolveHour(schedule.hour)}
                                     </dd>
                                 </dl>
                             {/each}
@@ -174,7 +176,7 @@
                                         Agendado para:
                                     </dt>
                                     <dd class="block text-blue-marinho text-sm font-noto-sans italic uppercase font-extrabold">
-                                        {plan.scheduled_at}
+                                        {resolveDateTime(plan.scheduled_at)}
                                     </dd>
                                 </dl>
                             {/each}

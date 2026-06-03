@@ -12,9 +12,7 @@ class CalendarResource extends JsonResource
         return [
             'uuid' => $this->uuid,
             'title' => $this->title,
-            'formated_hour' => $this->hour->format('H\hi'),
-            'formated_date' => $this->date->format('d/m/Y'),
-            'hour' => $this->hour->format('H:i'),
+            'hour' => $this->hour->format('H:i:s'),
             'date' => $this->date->format('Y-m-d'),
             'content' => $this->content,
             'type' => $this->type,

@@ -55,6 +55,17 @@ class Program extends Model
         return $query->where('is_active', true);
     }
 
+    public function scopeAvailableForLocution($query, User $user)
+    {
+        return $query
+            ->active()
+            ->where('execution_mode', 'live')
+            ->where(function ($q) use ($user) {
+                $q->where('user_id', $user->id)
+                    ->orWhere('access_type', 'free');
+            });
+    }
+
     /**
      * Define the relationships between this model and other models.
      *

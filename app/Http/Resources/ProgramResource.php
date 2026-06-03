@@ -25,7 +25,7 @@ class ProgramResource extends JsonResource
             'access_type' => $this->access_type,
             'execution_mode' => $this->execution_mode,
             'host' => UserResource::make($this->host)->format('summary'),
-            'schedules' => AirtimeResource::collection($this->schedules),
+            'airtimes' => AirtimeResource::collection($this->schedules),
             'plans' => PlanResource::collection($this->plans)->format('summary'),
         ];
     }
