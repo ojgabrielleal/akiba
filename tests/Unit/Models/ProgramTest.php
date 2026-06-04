@@ -207,6 +207,37 @@ class ProgramTest extends TestCase
         $this->assertNull($live->phrases);
     }
 
+    public function testUpdateProgramActionKeepsOnlyOneDefaultProgram(): void
+    {
+        $user = User::factory()->create();
+
+        $currentDefault = Program::factory()
+            ->for($user, 'host')
+            ->withAutoDJ()
+            ->asDefault()
+            ->create();
+
+        $newDefault = Program::factory()
+            ->for($user, 'host')
+            ->withAutoDJ()
+            ->create();
+
+        $action = new UpdateProgramAction(new ImageProcessService());
+
+        $action->execute($newDefault, $user, [
+            'name' => $newDefault->name,
+            'user' => $user->uuid,
+            'access_type' => 'private',
+            'execution_mode' => 'auto_dj',
+            'is_default_auto_dj' => true,
+            'phrases' => $newDefault->phrases,
+            'plans' => [],
+        ]);
+
+        $this->assertFalse($currentDefault->refresh()->is_default_auto_dj);
+        $this->assertTrue($newDefault->refresh()->is_default_auto_dj);
+    }
+
     public function testProgramSeederCreatesAirtimesForLivePrograms(): void
     {
         User::factory()->create(['id' => 1]);

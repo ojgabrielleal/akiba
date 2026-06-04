@@ -20,11 +20,13 @@ class Program extends Model
         'image',
         'access_type',
         'execution_mode',
+        'is_default_auto_dj',
         'phrases',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
+        'is_default_auto_dj' => 'boolean',
         'phrases' => 'array',
     ];
 

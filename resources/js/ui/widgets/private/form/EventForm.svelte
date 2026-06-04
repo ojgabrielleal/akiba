@@ -7,8 +7,6 @@
 
     $: ({ post } = $page.props);
 
-    $:console.log(post);
-
     let can = postPermissions();
 
     const normalizeTags = (tags = []) => [

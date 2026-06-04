@@ -2,8 +2,7 @@
 <html lang="pt-BR">
 <head>
     @inertiaHead
-    @vite(['public/css/app.css', 'resources/js/app.js'])
-    <link rel="stylesheet" href="{{ asset('css/quill-editor.css') }}">
+    @vite(['resources/js/app.js', 'resources/js/css/quill-editor.css', 'resources/js/css/app.css'])
 </head>
 <body>
     <audio id="audio">
@@ -11,3 +10,4 @@
     </audio>
     @inertia
 </body>
+</html>

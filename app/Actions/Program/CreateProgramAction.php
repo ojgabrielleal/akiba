@@ -29,8 +29,13 @@ class CreateProgramAction
                 'image' => $this->image->store('programs', $image, 'public'),
                 'access_type' => $data['access_type'],
                 'execution_mode' => $data['execution_mode'],
+                'is_default_auto_dj' => filter_var($data['is_default_auto_dj'] ?? false, FILTER_VALIDATE_BOOLEAN),
                 'phrases' => $data['phrases'],
             ]);
+
+            if ($program->is_default_auto_dj) {
+                $this->clearOtherDefaultAutoDjPrograms($program);
+            }
 
             if (!empty($data['airtimes']) && $data['execution_mode'] === 'live') {
                 $program->airtimes()->createMany(collect($data['airtimes']));
@@ -51,6 +56,14 @@ class CreateProgramAction
 
             return $program;
         });
+    }
+
+
+    private function clearOtherDefaultAutoDjPrograms(Program $program): void
+    {
+        Program::where('id', '!=', $program->id)
+            ->where('is_default_auto_dj', true)
+            ->update(['is_default_auto_dj' => false]);
     }
 
     private function ensurePlansCanBeScheduled($plans): void

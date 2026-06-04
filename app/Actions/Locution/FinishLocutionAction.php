@@ -17,6 +17,7 @@ class FinishLocutionAction
             $onair = Onair::live()
                 ->first();
             $auto = Program::where('execution_mode', 'auto_dj')
+                ->where('is_default_auto_dj', true)
                 ->first();
 
             if($onair) {

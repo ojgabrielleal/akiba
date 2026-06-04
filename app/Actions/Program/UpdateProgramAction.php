@@ -28,10 +28,15 @@ class UpdateProgramAction
                 'image' => $this->image->store('programs', $image, 'public', $program->image),
                 'access_type' => $data['access_type'],
                 'execution_mode' => $data['execution_mode'],
+                'is_default_auto_dj' => filter_var($data['is_default_auto_dj'] ?? false, FILTER_VALIDATE_BOOLEAN),
                 'phrases' => $data['phrases'] ?? [],
             ]);
 
             if ($program->isDirty()) $program->save();
+
+            if ($program->is_default_auto_dj) {
+                $this->clearOtherDefaultAutoDjPrograms($program);
+            }
 
             if ($program->execution_mode === 'live') {
                 $program->plans()->where('action', 'start_program')->delete();
@@ -79,6 +84,13 @@ class UpdateProgramAction
 
             return $program;
         });
+    }
+
+    private function clearOtherDefaultAutoDjPrograms(Program $program): void
+    {
+        Program::where('id', '!=', $program->id)
+            ->where('is_default_auto_dj', true)
+            ->update(['is_default_auto_dj' => false]);
     }
 
     private function ensurePlansCanBeScheduled($plans, array $ignoredUuids = []): void

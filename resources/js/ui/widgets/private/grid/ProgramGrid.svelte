@@ -42,6 +42,11 @@
             execution_mode: "playlist",
             icon: "/svg/disc.svg",
         },
+        {
+            title: "Auto DJ",
+            execution_mode: "auto_dj",
+            icon: "/svg/robot.svg",
+        },
     ];
 
     const requestDeactivateProgram = (program) => {

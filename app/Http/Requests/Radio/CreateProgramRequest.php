@@ -27,6 +27,7 @@ class CreateProgramRequest extends FormRequest
             'image' => 'required',
             'access_type' => 'required',
             'execution_mode' => 'required',
+            'is_default_auto_dj' => 'nullable|boolean',
         ];
     }
 }

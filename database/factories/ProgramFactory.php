@@ -25,6 +25,7 @@ class ProgramFactory extends Factory
             'image' => '/img/locution/program.webp',
             'access_type' => 'free',
             'execution_mode' => 'live',
+            'is_default_auto_dj' => false,
             'phrases' => null,
         ];
     }
@@ -43,7 +44,15 @@ class ProgramFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'access_type' => 'private',
             'execution_mode' => 'auto_dj',
+            'is_default_auto_dj' => false,
             'phrases' => $this->phrases(),
+        ]);
+    }
+
+    public function asDefault(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'is_default_auto_dj' => true,
         ]);
     }
 

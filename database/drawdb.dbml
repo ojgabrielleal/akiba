@@ -92,8 +92,9 @@ Table programs {
   user_id bigint [not null, ref: > users.id]
   name varchar [unique, not null]
   image varchar [not null]
-  type varchar [not null, note: "free, private, automatic"]
-  is_default boolean [not null, default: false]
+  access_type varchar [not null, note: "free, private"]
+  execution_mode varchar [not null, note: "playlist, scheduled, live, auto_dj"]
+  is_default_auto_dj boolean [not null, default: false]
   phrases json
   created_at timestamp
   updated_at timestamp

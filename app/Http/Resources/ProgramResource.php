@@ -24,6 +24,7 @@ class ProgramResource extends JsonResource
             'image' => $this->image,
             'access_type' => $this->access_type,
             'execution_mode' => $this->execution_mode,
+            'is_default_auto_dj' => $this->is_default_auto_dj,
             'phrases' => $this->phrases ?? [],
             'host' => UserResource::make($this->host)->format('summary'),
             'airtimes' => AirtimeResource::collection($this->airtimes),
@@ -41,6 +42,7 @@ class ProgramResource extends JsonResource
             'live' => self::resolveExecutionModeCollection($collection, $request, 'live'),
             'scheduled' => self::resolveExecutionModeCollection($collection, $request, 'scheduled'),
             'playlist' => self::resolveExecutionModeCollection($collection, $request, 'playlist'),
+            'auto_dj' => self::resolveExecutionModeCollection($collection, $request, 'auto_dj'),
         ];
     }
 

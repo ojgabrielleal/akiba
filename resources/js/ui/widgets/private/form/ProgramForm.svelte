@@ -21,6 +21,7 @@
         image: null,
         access_type: null,
         execution_mode: null,
+        is_default_auto_dj: false,
         airtimes: [],
         plans: [],
         phrases: [],
@@ -35,6 +36,7 @@
             $form.image = programSelected.image;
             $form.access_type = programSelected.access_type;
             $form.execution_mode = programSelected.execution_mode;
+            $form.is_default_auto_dj = programSelected.is_default_auto_dj;
             $form.airtimes = programSelected.airtimes;
             $form.plans = programSelected.plans;
             $form.phrases = programSelected.phrases ?? [];
@@ -149,6 +151,7 @@
             bind:value={$form.execution_mode}
             on:change={(event) => {
                 $form.access_type = null;
+                $form.is_default_auto_dj = false;
                 if(event.target.value !== "live") $form.access_type = 'private';
             }}
             required
@@ -170,6 +173,20 @@
             </option>
         </select>
     </div>
+    {#if $form.execution_mode === "auto_dj"}
+        <div class="mb-4 flex items-center gap-2">
+            <input
+                id="is_default_auto_dj"
+                type="checkbox"
+                name="is_default_auto_dj"
+                class="cursor-pointer w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                bind:checked={$form.is_default_auto_dj}
+            />
+            <label for="is_default_auto_dj" class="cursor-pointer text-md text-gray-700 font-noto-sans">
+                Usar como Auto DJ padrão
+            </label>
+        </div>
+    {/if}
     {#if $form.execution_mode === "live"}
         <div class="mb-4">
             <div class="text-md text-gray-700 font-noto-sans mb-2">
@@ -289,7 +306,7 @@
                                 id={`phrase-${index}`}
                                 name={`phrases[${index}][phrase]`}
                                 class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
-                                bind:value={phrase.phrase}
+                                bind:value={phrase.text}
                                 required
                             />
                         </div>
