@@ -61,8 +61,10 @@ class Program extends Model
             ->active()
             ->where('execution_mode', 'live')
             ->where(function ($q) use ($user) {
-                $q->where('user_id', $user->id)
-                    ->orWhere('access_type', 'free');
+                $q->where(function ($q) use ($user) {
+                    $q->where('user_id', $user->id)
+                        ->where('access_type', 'private');
+                })->orWhere('access_type', 'free');
             });
     }
 
@@ -82,7 +84,7 @@ class Program extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function schedules()
+    public function airtimes()
     {
         return $this->hasMany(Airtime::class, 'program_id');
     }

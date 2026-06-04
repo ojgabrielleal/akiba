@@ -8,8 +8,11 @@ use Tests\TestCase;
 
 use App\Models\User;
 use App\Models\Onair;
+use App\Models\Plan;
 use App\Models\Program;
 use App\Models\Airtime;
+use App\Actions\Program\UpdateProgramAction;
+use App\Services\Process\ImageProcessService;
 use Database\Seeders\ProgramSeeder;
 
 class ProgramTest extends TestCase
@@ -30,18 +33,18 @@ class ProgramTest extends TestCase
         $this->assertTrue($program->host->is($user));
     }
 
-    public function testSchedulesRelationship(): void
+    public function testAirtimesRelationship(): void
     {
         $user = User::factory()->create();
-        $schedules = Airtime::factory(3);
+        $airtimes = Airtime::factory(3);
 
         $program = Program::factory()
             ->for($user, 'host')
-            ->has($schedules, 'schedules')
+            ->has($airtimes, 'airtimes')
             ->create();
 
-        $this->assertCount(3, $program->schedules);
-        $this->assertContainsOnlyInstancesOf(Airtime::class, $program->schedules);
+        $this->assertCount(3, $program->airtimes);
+        $this->assertContainsOnlyInstancesOf(Airtime::class, $program->airtimes);
     }
 
     public function testOnairRelationship(): void
@@ -144,9 +147,15 @@ class ProgramTest extends TestCase
             ->withLive()
             ->create();
 
+        $autoDJ = Program::factory()
+            ->for($user, 'host')
+            ->withAutoDJ()
+            ->create();
+
         $this->assertSame('playlist', $playlist->execution_mode);
         $this->assertSame('scheduled', $scheduled->execution_mode);
         $this->assertSame('live', $live->execution_mode);
+        $this->assertSame('auto_dj', $autoDJ->execution_mode);
     }
 
     public function testFactoryAccessTypeStates(): void
@@ -167,16 +176,35 @@ class ProgramTest extends TestCase
         $this->assertSame('private', $private->access_type);
     }
 
-    public function testFactoryProvidesPhrases(): void
+    public function testFactoryProvidesPhrasesOnlyForAutoDjPrograms(): void
     {
         $user = User::factory()->create();
 
-        $program = Program::factory()
+        $playlist = Program::factory()
             ->for($user, 'host')
+            ->withPlaylist()
             ->create();
 
-        $this->assertIsArray($program->phrases);
-        $this->assertNotEmpty($program->phrases);
+        $live = Program::factory()
+            ->for($user, 'host')
+            ->withLive()
+            ->create();
+
+        $scheduled = Program::factory()
+            ->for($user, 'host')
+            ->withScheduled()
+            ->create();
+
+        $autoDJ = Program::factory()
+            ->for($user, 'host')
+            ->withAutoDJ()
+            ->create();
+
+        $this->assertIsArray($autoDJ->phrases);
+        $this->assertNotEmpty($autoDJ->phrases);
+        $this->assertNull($playlist->phrases);
+        $this->assertNull($scheduled->phrases);
+        $this->assertNull($live->phrases);
     }
 
     public function testProgramSeederCreatesAirtimesForLivePrograms(): void
@@ -194,11 +222,56 @@ class ProgramTest extends TestCase
         $livePrograms = Program::where('execution_mode', 'live')->get();
         $scheduled = Program::where('execution_mode', 'scheduled')->first();
         $playlist = Program::where('execution_mode', 'playlist')->first();
+        $autoDJ = Program::where('execution_mode', 'auto_dj')->first();
 
         $this->assertNotEmpty($livePrograms);
         $this->assertNotNull($scheduled);
         $this->assertNotNull($playlist);
-        $this->assertTrue($livePrograms->every(fn (Program $program) => $program->schedules()->exists()));
-        $this->assertFalse($playlist->schedules()->exists());
+        $this->assertNotNull($autoDJ);
+        $this->assertTrue($livePrograms->every(fn (Program $program) => $program->airtimes()->exists()));
+        $this->assertFalse($playlist->airtimes()->exists());
+        $this->assertTrue($livePrograms->every(fn (Program $program) => $program->phrases === null));
+        $this->assertNull($scheduled->phrases);
+        $this->assertNull($playlist->phrases);
+        $this->assertNotEmpty($autoDJ->phrases);
+    }
+
+    public function testUpdateProgramActionDeletesOnlyStartProgramPlansWhenSubmittedEmpty(): void
+    {
+        $user = User::factory()->create();
+
+        $program = Program::factory()
+            ->for($user, 'host')
+            ->withPrivate()
+            ->withScheduled()
+            ->create();
+
+        $startProgramPlan = $program->plans()->create([
+            'user_id' => $user->id,
+            'action' => 'start_program',
+            'scheduled_at' => now()->addHour(),
+            'status' => 'pending',
+        ]);
+
+        $finishProgramPlan = $program->plans()->create([
+            'user_id' => $user->id,
+            'action' => 'finish_program',
+            'scheduled_at' => now()->addHours(2),
+            'status' => 'pending',
+        ]);
+
+        $action = new UpdateProgramAction(new ImageProcessService());
+
+        $action->execute($program, $user, [
+            'name' => $program->name,
+            'user' => $user->uuid,
+            'access_type' => 'private',
+            'execution_mode' => 'scheduled',
+            'plans' => [],
+        ]);
+
+        $this->assertFalse($program->plans()->whereKey($startProgramPlan)->exists());
+        $this->assertTrue($program->plans()->whereKey($finishProgramPlan)->exists());
+        $this->assertDatabaseCount((new Plan())->getTable(), 1);
     }
 }

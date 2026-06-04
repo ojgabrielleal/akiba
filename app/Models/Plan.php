@@ -15,7 +15,6 @@ class Plan extends Model
     protected $fillable = [
         'uuid',
         'user_id',
-        'root_id',
         'plannable_type',
         'plannable_id',
         'action',
@@ -29,7 +28,6 @@ class Plan extends Model
 
     protected $hidden = [
         'user_id',
-        'root_id',
         'plannable_type',
         'plannable_id',
     ];
@@ -71,15 +69,5 @@ class Plan extends Model
     public function plannable()
     {
         return $this->morphTo();
-    }
-
-    public function root()
-    {
-        return $this->belongsTo(self::class, 'root_id');
-    }
-
-    public function children()
-    {
-        return $this->hasMany(self::class, 'root_id');
     }
 }

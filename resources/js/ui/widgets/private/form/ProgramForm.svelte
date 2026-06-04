@@ -4,12 +4,15 @@
 
     import { onMount } from "svelte";
     import { useForm, page } from "@inertiajs/svelte";
-    import { Preview } from "@/ui/components/private";
+    import { locutionIcons } from "@/data";
+    import { Modal, Preview } from "@/ui/components/private";
     import { programFormPermissions } from "@/utils";
-
+    
     $: ({ users } = $page.props);
-
+    
     let can = programFormPermissions();
+    let iconModalRef;
+    let phraseIndex;
 
     let form = useForm({
         _method: "POST",
@@ -20,8 +23,10 @@
         execution_mode: null,
         airtimes: [],
         plans: [],
+        phrases: [],
     });
 
+    
     onMount(() => {
         if (programSelected) {
             $form._method = "PATCH";
@@ -32,6 +37,7 @@
             $form.execution_mode = programSelected.execution_mode;
             $form.airtimes = programSelected.airtimes;
             $form.plans = programSelected.plans;
+            $form.phrases = programSelected.phrases ?? [];
         }
     });
 
@@ -39,35 +45,73 @@
         let url = programSelected
             ? `/panel/radio/program/${programSelected.uuid}`
             : "/panel/radio/program";
-
-        $form.post(url, {
-            preserveScroll: true,
-            onFinish: () => close(),
-        });
-    };
-
-    const addAirtime = () => {
-        $form.airtimes = [
+            
+            $form.post(url, {
+                preserveScroll: true,
+                onSuccess: (page) => {
+                    if (page.props.flash?.type !== "error") {
+                        close();
+                    }
+                },
+            });
+        };
+        
+        const addAirtime = () => {
+            $form.airtimes = [
             ...$form.airtimes,
-            { uuid: null, hour: null, day: null },
+            { uuid: null, scheduled_at: null},
         ];
     };
-
+    
     const removeAirtime = (index) => {
         $form.airtimes = $form.airtimes.filter((_, i) => i !== index);
     };
-
+    
     const addPlan = () => {
         $form.plans = [
             ...$form.plans,
             { uuid: null, name: null, price: null, benefits: [] },
         ];
     }
-
+    
     const removePlan = (index) => {
         $form.plans = $form.plans.filter((_, i) => i !== index);
     };
+    
+    const addPhrase = () => {
+        $form.phrases = [
+            ...$form.phrases,
+            { icon: null, text: null, decoration: null, texture: null },
+        ];
+    };
+
+    const removePhrase = (index) => {
+        $form.phrases = $form.phrases.filter((_, i) => i !== index);
+    };
 </script>
+
+<Modal bind:this={iconModalRef} title="Selecionar ícone">
+    <div slot="content" class="grid grid-cols-3 gap-3">
+        {#each locutionIcons as icon, index}
+            <button
+                type="button"
+                class="cursor-pointer aspect-square rounded-md border p-2 bg-white  border-gray-300"
+                aria-label={`Selecionar ${icon.alt}`}
+                on:click={() => {
+                    $form.phrases[phraseIndex].icon = icon.url;
+                    iconModalRef.close();
+                }}
+            >
+                <img
+                    src={icon.url}
+                    alt={icon.alt}
+                    class="w-full h-full object-contain"
+                    loading="lazy"
+                />
+            </button>
+        {/each}
+    </div>
+</Modal>
 
 <form on:submit|preventDefault={submit}>
     <div class="mb-4 px-5">
@@ -105,9 +149,7 @@
             bind:value={$form.execution_mode}
             on:change={(event) => {
                 $form.access_type = null;
-                if(event.target.value !== "live") {
-                    $form.access_type = 'private';
-                }
+                if(event.target.value !== "live") $form.access_type = 'private';
             }}
             required
         >
@@ -122,6 +164,9 @@
             </option>
             <option value="playlist">
                 Playlist
+            </option>
+            <option value="auto_dj">
+                Auto DJ
             </option>
         </select>
     </div>
@@ -181,26 +226,168 @@
             </select>
         </div>
     {/if}
-    {#if $form.execution_mode === "live" && $form.access_type === "private"}
+    {#if $form.execution_mode !== "live"}
         <div class="flex items-center justify-center w-full mt-8 mb-5">
             <div class="relative w-full">
-                <div class="absolute left-0 w-12 h-[0.1rem] bg-blue-skywave rounded-full top-1/2 -translate-y-1/2"></div>
-                <span class="absolute inset-0 flex items-center justify-center text-blue-skywave font-noto-sans font-extrabold uppercase italic">
-                    Grade de programação
+                <div class="absolute left-0 w-30 h-[0.1rem] bg-blue-ocean rounded-full top-1/2 -translate-y-1/2"></div>
+                <span class="absolute inset-0 flex items-center justify-center text-blue-ocean font-noto-sans font-extrabold uppercase italic">
+                    Frases
                 </span>
-                <div class="absolute right-0 w-12 h-[0.1rem] bg-blue-skywave rounded-full top-1/2 -translate-y-1/2"></div>
+                <div class="absolute right-0 w-30 h-[0.1rem] bg-blue-ocean rounded-full top-1/2 -translate-y-1/2"></div>
             </div>
         </div>
         <button
             type="button"
-            class="cursor-pointer mb-2 flex items-center gap-[0.2rem] text-blue-skywave text-md font-noto-sans"
+            class="cursor-pointer mb-2 flex items-center gap-[0.2rem] text-blue-ocean text-md font-noto-sans"
+            on:click={() => addPhrase()}
+        >
+            <img
+                src="/svg/plus.svg"
+                alt=""
+                aria-hidden="true"
+                class="w-5 filter-blue-ocean"
+                loading="lazy"
+            />
+            Adicionar frase
+        </button>
+        {#if $form.phrases}
+            {#each $form.phrases as phrase, index}
+                <div class="mb-4 border border-gray-400 p-4 rounded-md">
+                    <div class="flex items-center gap-3">
+                        <button
+                            type="button"
+                            class="cursor-pointer w-16 h-16 rounded-md border border-gray-400 bg-white flex items-center justify-center overflow-hidden"
+                            aria-label="Selecionar ícone"
+                            on:click={() => { 
+                                phraseIndex = index; 
+                                iconModalRef.open(); 
+                            }}
+                        >
+                            {#if phrase.icon}
+                                <img
+                                    src={phrase.icon}
+                                    alt=""
+                                    aria-hidden="true"
+                                    class="w-full h-full object-contain"
+                                    loading="lazy"
+                                />
+                            {:else}
+                                <img
+                                    src="/svg/plus.svg"
+                                    alt=""
+                                    aria-hidden="true"
+                                    class="w-6 filter-blue-ocean"
+                                    loading="lazy"
+                                />
+                            {/if}
+                        </button>
+                        <div class="mb-2">
+                            <label for={`phrase-${index}`} class="text-md text-gray-700 font-noto-sans block mb-1">
+                                Frase
+                            </label>
+                            <input
+                                id={`phrase-${index}`}
+                                name={`phrases[${index}][phrase]`}
+                                class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
+                                bind:value={phrase.phrase}
+                                required
+                            />
+                        </div>
+                    </div>
+                    <button
+                        type="button"
+                        class="cursor-pointer mt-4 flex items-center gap-[0.2rem] text-blue-ocean text-md font-noto-sans"
+                        on:click={() => removePhrase(index)}
+                    >
+                        <img
+                            src="/svg/close.svg"
+                            alt=""
+                            aria-hidden="true"
+                            class="w-5 filter-blue-ocean"
+                            loading="lazy"
+                        />
+                        Remover
+                    </button>
+                </div>
+            {/each}
+        {/if}
+    {/if}
+    {#if $form.execution_mode !== "live" && $form.execution_mode !== "auto_dj"}
+        <div class="flex items-center justify-center w-full mt-8 mb-5">
+            <div class="relative w-full">
+                <div class="absolute left-0 w-20 h-[0.1rem] bg-blue-ocean rounded-full top-1/2 -translate-y-1/2"></div>
+                <span class="absolute inset-0 flex items-center justify-center text-blue-ocean font-noto-sans font-extrabold uppercase italic">
+                    Agendamentos
+                </span>
+                <div class="absolute right-0 w-20 h-[0.1rem] bg-blue-ocean rounded-full top-1/2 -translate-y-1/2"></div>
+            </div>
+        </div>
+        <button
+            type="button"
+            class="cursor-pointer mb-2 flex items-center gap-[0.2rem] text-blue-ocean text-md font-noto-sans"
+            on:click={() => addPlan()}
+        >
+            <img
+                src="/svg/plus.svg"
+                alt=""
+                aria-hidden="true"
+                class="w-5 filter-blue-ocean"
+                loading="lazy"
+            />
+            Adicionar agendamento
+        </button>
+        {#if $form.plans}
+            {#each $form.plans as plan, index}
+                <div class="mb-4 border border-gray-400 p-4 rounded-md">
+                    <div class="mb-2">
+                        <label for="scheduled_at" class="text-md text-gray-700 font-noto-sans block mb-1">
+                            Agendado para
+                        </label>
+                        <input
+                            id="scheduled_at"
+                            type="datetime-local"
+                            name="scheduled_at"
+                            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
+                            bind:value={plan.scheduled_at}
+                        />
+                    </div>
+                    <button
+                        type="button"
+                        class="cursor-pointer mt-4 flex items-center gap-[0.2rem] text-blue-ocean text-md font-noto-sans"
+                        on:click={() => removePlan(index)}
+                    >
+                        <img
+                            src="/svg/close.svg"
+                            alt=""
+                            aria-hidden="true"
+                            class="w-5 filter-blue-ocean"
+                            loading="lazy"
+                        />
+                        Remover
+                    </button>
+                </div>
+            {/each}
+        {/if}
+    {:else if $form.execution_mode === "live" && $form.access_type === "private"}
+        <div class="flex items-center justify-center w-full mt-8 mb-5">
+            <div class="relative w-full">
+                <div class="absolute left-0 w-12 h-[0.1rem] bg-blue-ocean rounded-full top-1/2 -translate-y-1/2"></div>
+                <span class="absolute inset-0 flex items-center justify-center text-blue-ocean font-noto-sans font-extrabold uppercase italic">
+                    Grade de programação
+                </span>
+                <div class="absolute right-0 w-12 h-[0.1rem] bg-blue-ocean rounded-full top-1/2 -translate-y-1/2"></div>
+            </div>
+        </div>
+        <button
+            type="button"
+            class="cursor-pointer mb-2 flex items-center gap-[0.2rem] text-blue-ocean text-md font-noto-sans"
             on:click={() => addAirtime()}
         >
             <img
                 src="/svg/plus.svg"
                 alt=""
                 aria-hidden="true"
-                class="w-5 filter-blue-skywave"
+                class="w-5 filter-blue-ocean"
                 loading="lazy"
             />
             Adicionar horário
@@ -255,71 +442,14 @@
                     </div>
                     <button
                         type="button"
-                        class="cursor-pointer mt-4 flex items-center gap-[0.2rem] text-blue-skywave text-md font-noto-sans"
+                        class="cursor-pointer mt-4 flex items-center gap-[0.2rem] text-blue-ocean text-md font-noto-sans"
                         on:click={() => removeAirtime(index)}
                     >
                         <img
                             src="/svg/close.svg"
                             alt=""
                             aria-hidden="true"
-                            class="w-5 filter-blue-skywave"
-                            loading="lazy"
-                        />
-                        Remover
-                    </button>
-                </div>
-            {/each}
-        {/if}
-    {/if}
-    {#if $form.execution_mode !== "live" && $form.access_type === "private"}
-        <div class="flex items-center justify-center w-full mt-8 mb-5">
-            <div class="relative w-full">
-                <div class="absolute left-0 w-20 h-[0.1rem] bg-blue-skywave rounded-full top-1/2 -translate-y-1/2"></div>
-                <span class="absolute inset-0 flex items-center justify-center text-blue-skywave font-noto-sans font-extrabold uppercase italic">
-                    Agendamentos
-                </span>
-                <div class="absolute right-0 w-20 h-[0.1rem] bg-blue-skywave rounded-full top-1/2 -translate-y-1/2"></div>
-            </div>
-        </div>
-        <button
-            type="button"
-            class="cursor-pointer mb-2 flex items-center gap-[0.2rem] text-blue-skywave text-md font-noto-sans"
-            on:click={() => addPlan()}
-        >
-            <img
-                src="/svg/plus.svg"
-                alt=""
-                aria-hidden="true"
-                class="w-5 filter-blue-skywave"
-                loading="lazy"
-            />
-            Adicionar agendamento
-        </button>
-        {#if $form.plans}
-            {#each $form.plans as plan, index}
-                <div class="mb-4 border border-gray-400 p-4 rounded-md">
-                    <div class="mb-2">
-                        <label for="hour" class="text-md text-gray-700 font-noto-sans block mb-1">
-                            Agendado para
-                        </label>
-                        <input
-                            id="hour"
-                            type="datetime-local"
-                            name="hour"
-                            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
-                            bind:value={plan.scheduled_at}
-                        />
-                    </div>
-                    <button
-                        type="button"
-                        class="cursor-pointer mt-4 flex items-center gap-[0.2rem] text-blue-skywave text-md font-noto-sans"
-                        on:click={() => removePlan(index)}
-                    >
-                        <img
-                            src="/svg/close.svg"
-                            alt=""
-                            aria-hidden="true"
-                            class="w-5 filter-blue-skywave"
+                            class="w-5 filter-blue-ocean"
                             loading="lazy"
                         />
                         Remover

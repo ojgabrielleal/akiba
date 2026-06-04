@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->uuid('uuid')->unique();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->foreignId('root_id')->nullable()->constrained('plans')->nullOnDelete();
             $table->morphs('plannable');
             $table->string('action');
             $table->dateTime('scheduled_at');

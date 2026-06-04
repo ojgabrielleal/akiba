@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 use App\Services\External\DiscordWebhookService;
 
 use App\Models\Onair;
+use App\Models\Plan;
 use App\Models\Program;
 use App\Models\User;
 
@@ -25,6 +26,15 @@ class StartLocutionAction
                 'in_air' => false,
             ]);
 
+            $plan = Plan::where('action', 'start_program')
+                ->where('status', 'running')
+                ->lockForUpdate()
+                ->first();
+
+            $plan?->update([
+                'status' => 'paused',
+            ]);
+
             if($program->access_type === 'free') {
                 $program->update([
                     'user_id' => $user->id,
@@ -33,6 +43,7 @@ class StartLocutionAction
 
             $program->onair()->create([
                 'execution_mode' => 'live',
+                'paused_plan_id' => $plan?->id,
                 'phrase' => [
                     'text' => $data['phrase']['text'],
                     'icon' => $data['phrase']['icon'],

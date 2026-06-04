@@ -34,7 +34,7 @@ class LocutionController extends Controller
 
     public function indexPrograms()
     {
-        if (request()->user()->cannot('viewAny', Program::class)) {
+        if (request()->user()->cannot('list', Program::class)) {
             return null;
         }
 

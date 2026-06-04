@@ -19,9 +19,10 @@ class ProgramSeeder extends Seeder
         $virtualUser = User::where('is_virtual', true)->inRandomOrder()->first();
 
         $this->seedAdministrator($admin);
-        $this->seedPlaylist($virtualUser);
-        $this->seedScheduled($user);
         $this->seedPrograms($user);
+        $this->seedAutoDJ($user);
+        $this->seedPlaylist($virtualUser);
+        $this->seedScheduled($virtualUser);
     }
 
     private function seedAdministrator($user): void
@@ -52,6 +53,16 @@ class ProgramSeeder extends Seeder
 
         $this->seedAirtimes($free);
         $this->seedAirtimes($private);
+    }
+
+    private function seedAutoDJ(?User $user): void
+    {
+        if(!$user) return;
+
+        Program::factory()
+            ->withAutoDJ()
+            ->for($user, 'host')
+            ->create();
     }
 
     private function seedPlaylist(?User $user): void

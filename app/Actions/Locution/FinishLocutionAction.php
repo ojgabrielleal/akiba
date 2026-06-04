@@ -5,6 +5,7 @@ namespace App\Actions\Locution;
 use Illuminate\Support\Facades\DB;
 
 use App\Models\Onair;
+use App\Models\Plan;
 use App\Models\Program;
 use App\Models\SongRequest;
 
@@ -15,10 +16,18 @@ class FinishLocutionAction
         DB::transaction(function () {
             $onair = Onair::live()
                 ->first();
-            $auto = Program::where('execution_mode', 'playlist')
+            $auto = Program::where('execution_mode', 'auto_dj')
                 ->first();
 
             if($onair) {
+                if($onair->paused_plan_id) {
+                    Plan::whereKey($onair->paused_plan_id)
+                        ->where('status', 'paused')
+                        ->update([
+                            'status' => 'running',
+                        ]);
+                }
+
                 $onair->update([
                     'in_air' => false,
                     'allows_song_requests' => false,

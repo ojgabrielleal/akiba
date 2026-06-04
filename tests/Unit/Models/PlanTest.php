@@ -47,37 +47,6 @@ class PlanTest extends TestCase
         $this->assertTrue($plan->plannable->is($program));
     }
 
-    public function testRootRelationship(): void
-    {
-        $root = Plan::factory()->create([
-            'action' => 'start_program',
-        ]);
-
-        $plan = Plan::factory()
-            ->finishProgram()
-            ->create([
-                'root_id' => $root->id,
-            ]);
-
-        $this->assertTrue($plan->root->is($root));
-    }
-
-    public function testChildrenRelationship(): void
-    {
-        $root = Plan::factory()->create([
-            'action' => 'start_program',
-        ]);
-
-        $child = Plan::factory()
-            ->finishProgram()
-            ->create([
-                'root_id' => $root->id,
-            ]);
-
-        $this->assertTrue($root->children->contains($child));
-        $this->assertContainsOnlyInstancesOf(Plan::class, $root->children);
-    }
-
     public function testPlanSeederCreatesFutureProgramPlans(): void
     {
         $user = User::factory()->create([
@@ -96,6 +65,11 @@ class PlanTest extends TestCase
 
         Program::factory()
             ->withPlaylist()
+            ->for($user, 'host')
+            ->create();
+
+        Program::factory()
+            ->withAutoDJ()
             ->for($user, 'host')
             ->create();
 

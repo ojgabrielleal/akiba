@@ -11,10 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('programs', function (Blueprint $table) {
-            $table->enum('execution_mode', ['playlist', 'scheduled', 'live', 'auto_dj'])
-                ->default('live')
-                ->after('type');
+        Schema::table('onair', function (Blueprint $table) {
+            $table->foreignId('paused_plan_id')
+                ->nullable()
+                ->after('program_id')
+                ->constrained('plans')
+                ->nullOnDelete();
         });
     }
 
@@ -23,8 +25,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('programs', function (Blueprint $table) {
-            $table->dropColumn('execution_mode');
+        Schema::table('onair', function (Blueprint $table) {
+            $table->dropConstrainedForeignId('paused_plan_id');
         });
     }
 };

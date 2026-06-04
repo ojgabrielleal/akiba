@@ -25,16 +25,43 @@ class ProgramFactory extends Factory
             'image' => '/img/locution/program.webp',
             'access_type' => 'free',
             'execution_mode' => 'live',
-            'phrases' => $this->phrases(),
+            'phrases' => null,
         ];
     }
 
     public function withPlaylist(): static
     {
         return $this->state(fn (array $attributes) => [
-            'access_type' => 'free',
+            'access_type' => 'private',
             'execution_mode' => 'playlist',
+            'phrases' => null,
+        ]);
+    }
+
+    public function withAutoDJ(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'access_type' => 'private',
+            'execution_mode' => 'auto_dj',
             'phrases' => $this->phrases(),
+        ]);
+    }
+
+    public function withScheduled(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'access_type' => 'private',
+            'execution_mode' => 'scheduled',
+            'phrases' => null,
+        ]);
+    }
+
+    public function withLive(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'access_type' => 'private',
+            'execution_mode' => 'live',
+            'phrases' => null,
         ]);
     }
 
@@ -43,7 +70,7 @@ class ProgramFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'access_type' => 'free',
             'execution_mode' => 'live',
-            'phrases' => $this->phrases(),
+            'phrases' => null,
         ]);
     }
 
@@ -52,23 +79,10 @@ class ProgramFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'access_type' => 'private',
             'execution_mode' => 'live',
-            'phrases' => $this->phrases(),
+            'phrases' => null,
         ]);
     }
 
-    public function withScheduled(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'execution_mode' => 'scheduled',
-        ]);
-    }
-
-    public function withLive(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'execution_mode' => 'live',
-        ]);
-    }
 
     private function phrases(): array
     {

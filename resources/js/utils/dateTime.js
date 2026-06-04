@@ -50,6 +50,18 @@ export const resolveDateTime = (dateTime) => {
     }
 
     const value = String(dateTime);
+
+    if (value.includes("T")) {
+        const [date, hour] = value.split("T");
+        const [year, month, day] = date.split("-");
+
+        if (!year || !month || !day || !hour) {
+            return value;
+        }
+
+        return `${day}/${month}/${year} - ${resolveHour(hour)}`;
+    }
+
     const [date, hour] = value.split(" - ");
 
     if (!date || !hour) {

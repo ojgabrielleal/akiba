@@ -25,6 +25,7 @@ use App\Actions\Radio\UpdateMusicRankingAction;
 use App\Actions\Program\UpdateProgramAction;
 
 use App\Http\Requests\Radio\CreateProgramRequest;
+use DomainException;
 
 class RadioController extends Controller
 {
@@ -61,7 +62,7 @@ class RadioController extends Controller
         return ProgramResource::collection(
             Program::with([
                     'host', 
-                    'schedules', 
+                    'airtimes', 
                     'plans' => fn ($query) => $query->unexecuted()->orderBy('scheduled_at')
                 ])
                 ->active()
@@ -78,10 +79,9 @@ class RadioController extends Controller
         return new ProgramResource(
             $program->load([
                 'host',
-                'schedules',
+                'airtimes',
                 'plans' => fn ($query) => $query->unexecuted()->orderBy('scheduled_at'),
                 'plans.user',
-                'plans.root',
             ])
         );
     }
@@ -92,13 +92,17 @@ class RadioController extends Controller
             return null;
         }
 
-        $createProgramAction->execute(
-            $request->user(),
-            $request->all(),
-            $request->file('image')
-        );
+        try {
+            $createProgramAction->execute(
+                $request->user(),
+                $request->all(),
+                $request->file('image')
+            );
 
-        return $this->flashMessage('save');
+            return $this->flashMessage('save');
+        } catch (DomainException $exception) {
+            return $this->flashMessage('error', $exception->getMessage());
+        }
     }
 
     public function updateProgram(Request $request, UpdateProgramAction $updateProgramAction, Program $program)
@@ -107,14 +111,18 @@ class RadioController extends Controller
             return null;
         }
 
-        $updateProgramAction->execute(
-            $program,
-            $request->user(),
-            $request->all(),
-            $request->file('image')
-        );
+        try {
+            $updateProgramAction->execute(
+                $program,
+                $request->user(),
+                $request->all(),
+                $request->file('image')
+            );
 
-        return $this->flashMessage('update');
+            return $this->flashMessage('update');
+        } catch (DomainException $exception) {
+            return $this->flashMessage('error', $exception->getMessage());
+        }
     }
 
     public function deactivateProgram(Program $program)

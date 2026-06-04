@@ -26,7 +26,6 @@ class PlanResource extends JsonResource
 
         return [
             'uuid' => $this->uuid,
-            'root_uuid' => $this->root?->uuid,
             'action' => $this->action,
             'scheduled_at' => $this->formatScheduledAt(),
             'status' => $this->status,
@@ -36,6 +35,6 @@ class PlanResource extends JsonResource
 
     private function formatScheduledAt(): ?string
     {
-        return $this->scheduled_at?->setTimezone('America/Sao_Paulo')->format('d/m/Y - H:i:s');
+        return $this->scheduled_at?->setTimezone('America/Sao_Paulo')->format('Y-m-d\TH:i');
     }
 }

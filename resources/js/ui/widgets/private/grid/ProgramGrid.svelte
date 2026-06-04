@@ -109,47 +109,51 @@
                                 {item.host.is_virtual ? "Robô" : 'Humano'}
                             </div>
                             <div class="flex gap-1 absolute bottom-3 right-4 z-10">
-                                <Tooltip>
-                                    <button
-                                        type="button"
-                                        aria-label="Remover"
-                                        class="w-7 h-7 bg-blue-marinho rounded-md flex justify-center items-center font-noto-sans italic font-extrabold cursor-pointer"
-                                        on:click={() => requestDeactivateProgram(item.uuid)}
-                                    >
-                                        <img
-                                            src="/svg/trash.svg"
-                                            alt=""
-                                            aria-hidden="true"
-                                            class="w-4 filter-red-crimson"
-                                            loading="lazy"
-                                        />
-                                    </button>
-                                    <div slot="content">
-                                        Desativar
-                                    </div>
-                                </Tooltip>
-                                <Tooltip>
-                                    <button
-                                        type="button"
-                                        aria-label="Atualizar"
-                                        class="w-7 h-7 bg-blue-marinho rounded-md flex justify-center items-center font-noto-sans italic font-extrabold cursor-pointer"
-                                        on:click={() => {
-                                            programSelected = item;
-                                            offcanvasRef.open();
-                                        }}
-                                    >
-                                        <img
-                                            src="/svg/edit.svg"
-                                            alt=""
-                                            aria-hidden="true"
-                                            class="w-4 filter-orange-citric"
-                                            loading="lazy"
-                                        />
-                                    </button>
-                                    <div slot="content">
-                                        Atualizar
-                                    </div>
-                                </Tooltip>
+                                {#if can.deactivate}
+                                    <Tooltip>
+                                        <button
+                                            type="button"
+                                            aria-label="Desativar"
+                                            class="w-7 h-7 bg-blue-marinho rounded-md flex justify-center items-center font-noto-sans italic font-extrabold cursor-pointer"
+                                            on:click={() => requestDeactivateProgram(item.uuid)}
+                                        >
+                                            <img
+                                                src="/svg/trash.svg"
+                                                alt=""
+                                                aria-hidden="true"
+                                                class="w-4 filter-red-crimson"
+                                                loading="lazy"
+                                            />
+                                        </button>
+                                        <div slot="content">
+                                            Desativar
+                                        </div>
+                                    </Tooltip>
+                                {/if}
+                                {#if can.update}
+                                    <Tooltip>
+                                        <button
+                                            type="button"
+                                            aria-label="Atualizar"
+                                            class="w-7 h-7 bg-blue-marinho rounded-md flex justify-center items-center font-noto-sans italic font-extrabold cursor-pointer"
+                                            on:click={() => {
+                                                programSelected = item;
+                                                offcanvasRef.open();
+                                            }}
+                                        >
+                                            <img
+                                                src="/svg/edit.svg"
+                                                alt=""
+                                                aria-hidden="true"
+                                                class="w-4 filter-orange-citric"
+                                                loading="lazy"
+                                            />
+                                        </button>
+                                        <div slot="content">
+                                            Atualizar
+                                        </div>
+                                    </Tooltip>
+                                {/if}
                             </div>
                             <img
                                 class="w-36 aspect-square absolute right-0 bottom-0 object-cover object-top"

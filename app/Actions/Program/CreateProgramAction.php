@@ -3,10 +3,13 @@
 namespace App\Actions\Program;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\UploadedFile;
 use App\Services\Process\ImageProcessService;
 
+use App\Models\Plan;
 use App\Models\User;
 use App\Models\Program;
+use DomainException;
 
 class CreateProgramAction
 {
@@ -17,23 +20,61 @@ class CreateProgramAction
         $this->image = $image;
     }
 
-    public function execute(User $user, array $data): Program
+    public function execute(User $user, array $data, ?UploadedFile $image = null): Program
     {
-        return DB::transaction(function () use ($user, $data) {
+        return DB::transaction(function () use ($user, $data, $image) {
             $program = Program::create([
-                'user_id' => $user->id,
+                'user_id' => $data['access_type'] === 'free' ? $user->id : User::where('uuid', $data['user'])->first()->id,
                 'name' => $data['name'],
-                'description' => $data['description'],
-                'image' => $this->image->store('programs', $data['image'], 'public'),
+                'image' => $this->image->store('programs', $image, 'public'),
                 'access_type' => $data['access_type'],
                 'execution_mode' => $data['execution_mode'],
+                'phrases' => $data['phrases'],
             ]);
 
-            if (!empty($data['schedules']) && $data['access_type'] === 'private') {
-                $program->schedules()->createMany($data['schedules']);
+            if (!empty($data['airtimes']) && $data['execution_mode'] === 'live') {
+                $program->airtimes()->createMany(collect($data['airtimes']));
+            }
+
+            if (!empty($data['plans']) && $data['execution_mode'] !== 'live') {
+                $plans = collect($data['plans']);
+                $this->ensurePlansCanBeScheduled($plans);
+
+                foreach ($plans as $plan) {
+                    $program->plans()->create([
+                        'user_id' => $user->id,
+                        'action' => 'start_program',
+                        'scheduled_at' => $plan['scheduled_at'],
+                    ]);
+                }
             }
 
             return $program;
         });
+    }
+
+    private function ensurePlansCanBeScheduled($plans): void
+    {
+        $scheduledTimes = $plans
+            ->pluck('scheduled_at')
+            ->filter()
+            ->values();
+
+        if ($scheduledTimes->duplicates()->isNotEmpty()) {
+            throw new DomainException('Existe agendamento duplicados, verifique os horários informados.');
+        }
+
+        if ($scheduledTimes->isEmpty()) {
+            return;
+        }
+
+        $hasConflict = Plan::unexecuted()
+            ->where('action', 'start_program')
+            ->whereIn('scheduled_at', $scheduledTimes->all())
+            ->exists();
+
+        if ($hasConflict) {
+            throw new DomainException('Este horário já está ocupado por outro agendamento');
+        }
     }
 }

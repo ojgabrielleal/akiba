@@ -2,12 +2,13 @@
 
 namespace App\Actions\Program;
 
-use Illuminate\Support\Facades\DB;
 use Illuminate\Http\UploadedFile;
 use App\Services\Process\ImageProcessService;
 
+use App\Models\Plan;
 use App\Models\User;
 use App\Models\Program;
+use DomainException;
 
 class UpdateProgramAction
 {
@@ -20,25 +21,32 @@ class UpdateProgramAction
 
     public function execute(Program $program, User $user, array $data, ?UploadedFile $image = null): Program
     {
-        return DB::transaction(function () use ($program, $user, $data, $image) {
+        return $program->getConnection()->transaction(function () use ($program, $user, $data, $image) {
             $program->fill([
-                'user_id' => $user->id,
+                'user_id' => $data['access_type'] === 'free' ? $user->id : User::where('uuid', $data['user'])->first()->id,
                 'name' => $data['name'],
                 'image' => $this->image->store('programs', $image, 'public', $program->image),
                 'access_type' => $data['access_type'],
                 'execution_mode' => $data['execution_mode'],
+                'phrases' => $data['phrases'] ?? [],
             ]);
 
-            if ($program->isDirty()){
-                $program->save();
+            if ($program->isDirty()) $program->save();
+
+            if ($program->execution_mode === 'live') {
+                $program->plans()->where('action', 'start_program')->delete();
+            } else {
+                $program->airtimes()->delete();
             }
 
-            if (!empty($data['schedules'])){
-                $uuids = collect($data['schedules'])->pluck('uuid')->filter()->toArray();
-                $program->schedules()->whereNotIn('uuid', $uuids)->delete();
+            if ($program->execution_mode === 'live') {
+                $airtimes = collect($data['airtimes'] ?? []);
 
-                foreach ($data['schedules'] as $schedule) {
-                    $program->schedules()->updateOrCreate(
+                $uuids = $airtimes->pluck('uuid')->filter()->toArray();
+                $program->airtimes()->whereNotIn('uuid', $uuids)->delete();
+
+                foreach ($airtimes as $schedule) {
+                    $program->airtimes()->updateOrCreate(
                         ['uuid' => $schedule['uuid']],
                         [
                             'day' => $schedule['day'], 
@@ -46,9 +54,56 @@ class UpdateProgramAction
                         ]
                     );
                 }
+            }else{
+                $plans = collect($data['plans']);
+                $uuids = $plans->pluck('uuid')->filter()->toArray();
+
+                $this->ensurePlansCanBeScheduled($plans, $uuids);
+
+                $program->plans()
+                    ->where('action', 'start_program')
+                    ->whereNotIn('uuid', $uuids)
+                    ->delete();
+
+                foreach ($plans as $plan) {
+                    $program->plans()->updateOrCreate(
+                        ['uuid' => $plan['uuid']],
+                        [
+                            'user_id' => $user->id,
+                            'action' => 'start_program',
+                            'scheduled_at' => $plan['scheduled_at'],
+                        ]
+                    );
+                }
             }
 
             return $program;
         });
+    }
+
+    private function ensurePlansCanBeScheduled($plans, array $ignoredUuids = []): void
+    {
+        $scheduledTimes = $plans
+            ->pluck('scheduled_at')
+            ->filter()
+            ->values();
+
+        if ($scheduledTimes->duplicates()->isNotEmpty()) {
+            throw new DomainException('Este horário foi informado mais de uma vez.');
+        }
+
+        if ($scheduledTimes->isEmpty()) {
+            return;
+        }
+
+        $hasConflict = Plan::unexecuted()
+            ->where('action', 'start_program')
+            ->whereIn('scheduled_at', $scheduledTimes->all())
+            ->when($ignoredUuids, fn ($query) => $query->whereNotIn('uuid', $ignoredUuids))
+            ->exists();
+
+        if ($hasConflict) {
+            throw new DomainException('Este horário já está ocupado por outro agendamento.');
+        }
     }
 }

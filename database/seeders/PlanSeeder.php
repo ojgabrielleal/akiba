@@ -19,14 +19,14 @@ class PlanSeeder extends Seeder
         if (!$user) return;
 
         Program::active()
-            ->where('execution_mode', '!=', 'playlist')
+            ->whereNotIn('execution_mode', ['playlist', 'auto_dj'])
             ->get()
             ->each(function (Program $program, int $index) use ($user) {
                 $startAt = now()
                     ->addDays($index + 1)
                     ->setTime(14, 0);
 
-                $start = Plan::factory()
+                Plan::factory()
                     ->for($user)
                     ->for($program, 'plannable')
                     ->create([
@@ -40,7 +40,6 @@ class PlanSeeder extends Seeder
                     ->for($user)
                     ->for($program, 'plannable')
                     ->create([
-                        'root_id' => $start->id,
                         'scheduled_at' => $startAt->copy()->addHours(2),
                         'status' => 'pending',
                     ]);

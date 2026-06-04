@@ -4,69 +4,70 @@ namespace App\Http\Controllers\Concerns;
 
 trait HasFlashMessages
 {
-    public function flashMessage(string $action)
+    public function flashMessage(string $action, ?string $message = null, ?string $icon = null)
     {
         $messages = [
             'save' => [
-                'icon' => 'ðŸ¥³',
+                'icon' => '🥳',
                 'message' => 'Salvo, querido! Que feito, hein?',
             ],
             'update' => [
-                'icon' => 'ðŸ«¡',
-                'message' => 'Atualizado! Ficou maravi..., impecÃ¡vel.',
+                'icon' => '🫡',
+                'message' => 'Atualizado! Ficou maravi..., impecável.',
             ],
             'delete' => [
-                'icon' => 'â˜ ï¸',
-                'message' => 'Apagado! JÃ¡ tava fazendo hora extra',
+                'icon' => '☠️',
+                'message' => 'Apagado! Já tava fazendo hora extra',
             ],
             'deactivate' => [
-                'icon' => 'ðŸ˜´',
-                'message' => 'Desativado! Bora dormir tambÃ©m.',
+                'icon' => '😴',
+                'message' => 'Desativado! Bora dormir também.',
             ],
             'activate' => [
-                'icon' => 'ðŸ¥±',
+                'icon' => '🥱',
                 'message' => 'Ativado! Saudades, confesso.',
             ],
             'complete' => [
-                'icon' => 'ðŸŽ¯',
-                'message' => 'Completado! Finalmente, nÃ©.',
+                'icon' => '🎯',
+                'message' => 'Completado! Finalmente, né.',
             ],
             'participate' => [
-                'icon' => 'ðŸ™‹',
-                'message' => 'Participando! Corajoso, vocÃª Ã©!',
+                'icon' => '🙋',
+                'message' => 'Participando! Corajoso, você é!',
             ],
             'start' => [
-                'icon' => 'ðŸš€',
-                'message' => 'Iniciado! Se nÃ£o explodir...',
+                'icon' => '🚀',
+                'message' => 'Iniciado! Se não explodir...',
             ],
             'finish' => [
-                'icon' => 'ðŸŽŠ',
+                'icon' => '🎊',
                 'message' => 'Finalizado! Nossa, que demora, hein?',
             ],
             'order_fulfilled' => [
-                'icon' => 'ðŸŽµ',
+                'icon' => '🎵',
                 'message' => 'Vamos atender! Que vibe, hein?',
             ],
             'order_canceled' => [
-                'icon' => 'ðŸš«',
+                'icon' => '🚫',
                 'message' => 'Vamos cancelar! Triste, acontece.',
             ],
             'dependencies' => [
-                'icon' => 'â›“ï¸',
-                'message' => 'Tire os vÃ­nculos antes! Se nÃ£o dÃ¡ ruim...',
+                'icon' => '⛓️',
+                'message' => 'Tire os vínculos antes! Se não dá ruim...',
             ],
             'error' => [
-                'icon' => 'âŒ',
+                'icon' => '❌',
                 'message' => 'Algo deu errado!',
             ],
         ];
 
         $base = $messages[$action] ?? $messages['save'];
-        $final = $base['message'];
+        $final = $message ?? $base['message'];
 
         return redirect()->back()->with('flash', [
             'id' => uniqid('flash_', true),
-            'icon' => $base['icon'],
+            'type' => $action === 'error' ? 'error' : 'success',
+            'icon' => $icon ?? $base['icon'],
             'message' => $final,
         ]);
     }
