@@ -71,7 +71,7 @@
                         />
                     </button>
                     <div class="pointer-events-none absolute bottom-full left-1/2 z-10 flex h-38.25 w-10 -translate-x-1/2 items-start justify-center opacity-0 transition group-hover:pointer-events-auto group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:opacity-100">
-                        <div class="flex h-36 w-10 items-center justify-center rounded-lg bg-slate-700/95 pb-5 pt-3 shadow-lg">
+                        <div class="flex h-36 w-10 items-center justify-center rounded-md bg-slate-700/95 pb-5 pt-3 shadow-lg">
                             <label class="sr-only" for="cast-volume">Volume do player</label>
                             <input
                                 id="cast-volume"

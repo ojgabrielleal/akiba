@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Provisory;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\OnairResource;
-use App\Models\Music;
-use App\Models\Onair;
 use App\Services\External\CastService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+
+use App\Models\Music;
+use App\Models\Onair;
+
+use App\Http\Resources\OnairResource;
 
 class HomeController extends Controller
 {

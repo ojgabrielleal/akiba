@@ -17,7 +17,7 @@
                         alt=""
                         aria-hidden="true"
                         loading="lazy"
-                        class="w-15 h-15 object-contain rounded-lg"
+                        class="w-15 h-15 object-contain rounded-md"
                     />
                 </div>
                 <div class="flex flex-col gap-1">

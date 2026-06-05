@@ -3,14 +3,11 @@
 
     import { router, page, Link } from "@inertiajs/svelte";
     import { Section, ButtonPagination } from "@/ui/components/private/";
-    import { hasPermission } from "@/utils";
+    import { podcastPermissions } from "@/utils";
 
     $: ({ podcasts } = $page.props);
 
-    let can = {
-        update: hasPermission("podcast.update"),
-        deactivate: hasPermission("podcast.deactivate"),
-    };
+    let can = podcastPermissions();
 
     const requestDeactivatePodcast = (podcast) => {
         router.delete(`/panel/podcast/${podcast}`, {},
@@ -26,13 +23,13 @@
                 <article>
                     <div class="aspect-square">
                         <img
-                            class="w-full h-full rounded-lg"
+                            class="w-full h-full rounded-md"
                             src={item.image}
                             alt={`Capa do podcast ${item.title}`}
                         />
                     </div>
                     <dl class="flex justify-between mt-3">
-                        <dt class="text-orange-amber text-2xl font-noto-sans font-bold uppercase italic">
+                        <dt class="text-orange-amber text-2xl font-noto-sans font-extrabold uppercase italic">
                             S{item.season}-EP{item.episode}
                         </dt>
                         <dd class="flex items-center gap-3">

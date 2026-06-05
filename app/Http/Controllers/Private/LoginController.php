@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Private;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\AuthLoginRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+
+use App\Http\Requests\Auth\AuthLoginRequest;
 
 class LoginController extends Controller
 {

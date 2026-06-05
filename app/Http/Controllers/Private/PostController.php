@@ -2,17 +2,21 @@
 
 namespace App\Http\Controllers\Private;
 
-use App\Actions\Post\CreatePostAction;
-use App\Actions\Post\UpdatePostAction;
+use App\Http\Controllers\Controller;
+use Inertia\Inertia;
+
 use App\Http\Controllers\Concerns\HasFlashMessages;
 use App\Http\Controllers\Concerns\ResolvesUserLogged;
-use App\Http\Controllers\Controller;
+
+use App\Models\Post;
+
+use App\Http\Resources\PostResource;
+
+use App\Actions\Post\CreatePostAction;
+use App\Actions\Post\UpdatePostAction;
+
 use App\Http\Requests\Post\CreatePostRequest;
 use App\Http\Requests\Post\UpdatePostRequest;
-use App\Http\Resources\PostResource;
-use App\Http\Resources\PostIndexResource;
-use App\Models\Post;
-use Inertia\Inertia;
 
 class PostController extends Controller
 {
@@ -36,7 +40,7 @@ class PostController extends Controller
             ->orderBy('created_at','desc');
 
         if ($user->hasPermission('post.list')) {
-            return PostIndexResource::collection($query->paginate(10));
+            return PostResource::collection($query->paginate(10))->format('summary');
         }
 
         if ($user->hasPermission('post.list.own')) {
@@ -46,7 +50,7 @@ class PostController extends Controller
             });
         }
 
-        return PostIndexResource::collection($query->paginate(10));
+        return PostResource::collection($query->paginate(10))->format('summary');
     }
 
     public function showPost(Post $post)

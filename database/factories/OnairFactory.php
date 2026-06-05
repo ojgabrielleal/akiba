@@ -19,6 +19,8 @@ class OnairFactory extends Factory
      */
     public function definition(): array
     {
+        $executionMode = fake()->randomElement(['auto_dj', 'live', 'scheduled', 'playlist']);
+
         return [
             'in_air' => true,
             'phrase' => [
@@ -27,35 +29,42 @@ class OnairFactory extends Factory
                 'decoration' => null,
                  'texture' => null,
             ],
-            'type' => fake()->randomElement(['automatic', 'live', 'scheduled']),
+            'execution_mode' => $executionMode,
             'allows_song_requests' => true,
             'song_requests_total' => fake()->randomNumber(),
         ];
     }
 
-    public function withAutomatic(): static
+    public function withAutoDj(): static
     {
         return $this->state(fn (array $attributes) => [
-            'type' => 'automatic',
+            'execution_mode' => 'auto_dj',
         ]);
     }
 
-    public function automatic(): static
+    public function autoDj(): static
     {
-        return $this->withAutomatic();
+        return $this->withAutoDj();
+    }
+
+    public function playlist(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'execution_mode' => 'playlist',
+        ]);
     }
 
     public function live(): static
     {
         return $this->state(fn (array $attributes) => [
-            'type' => 'live',
+            'execution_mode' => 'live',
         ]);
     }
 
     public function scheduled(): static
     {
         return $this->state(fn (array $attributes) => [
-            'type' => 'scheduled',
+            'execution_mode' => 'scheduled',
         ]);
     }
 }

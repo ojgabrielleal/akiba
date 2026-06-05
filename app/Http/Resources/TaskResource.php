@@ -16,7 +16,7 @@ class TaskResource extends JsonResource
             'status' => $this->status,
             'title' => $this->title,
             'description' => $this->description,
-            'responsible' => UserResource::make($this->responsible),
+            'responsible' => UserResource::make($this->responsible)->format('compact'),
         ];
     }
 }

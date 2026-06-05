@@ -5,14 +5,11 @@
     import { page, router } from "@inertiajs/svelte";
     import { Carrousel, Offcanvas, Section, Tooltip } from "@/ui/components/private/";
     import { ActivityForm } from "@/ui/widgets/private";
-    import { hasPermission } from "@/utils";
+    import { activityPermissions } from "@/utils";
 
     $: ({ user, activities } = $page.props);
 
-    let can = {
-        participate: hasPermission("activity.participate"),
-        update: hasPermission("activity.update"),
-    };
+    let can = activityPermissions();
 
     let offcanvasRef;
     let identifier;
@@ -36,7 +33,7 @@
         <Carrousel>
             {#each activities.data as item}
                 {@const canParticipate = can.participate && !item.confirmations.some((conf) => conf.uuid === user.uuid)}
-                <article class={["w-100 h-50 lg:w-116 shrink-0 rounded-lg p-4 relative",
+                <article class={["w-100 h-45 lg:w-116 shrink-0 rounded-md p-4 relative",
                     { "bg-gradient-orange-morning-aurora": item.allows_confirmations },
                     { "bg-gradient-blue-cerulean-glow": !item.allows_confirmations },
                 ]}>
@@ -53,10 +50,10 @@
                         {item.content}
                     </div>
                     {#if item.allows_confirmations}
-                        <div class="flex gap-2 absolute bottom-3 left-4">
+                        <div class="flex gap-1 absolute bottom-3 left-4">
                             {#each item.confirmations.slice(0, 5) as conf}
                                 <Tooltip>
-                                    <div class="w-9 h-9 rounded-full overflow-hidden bg-suspense-aurora">
+                                    <div class="w-8 h-8 rounded-full overflow-hidden bg-suspense-aurora">
                                         <img
                                             src={conf.avatar}
                                             alt={conf.nickname}
@@ -71,7 +68,7 @@
                             {/each}
                             {#if item.confirmations.length > 5}
                                 <Tooltip>
-                                    <span class="w-9 h-9 rounded-full bg-suspense-aurora flex items-center justify-center font-noto-sans text-xs font-black text-blue-night">
+                                    <span class="w-8 h-8 rounded-full bg-suspense-aurora flex items-center justify-center font-noto-sans text-xs font-black text-blue-night">
                                         +{item.confirmations.length - 5}
                                     </span>
                                     <div slot="content" class="px-1 py-1">
@@ -93,7 +90,7 @@
                                 <button
                                     type="button"
                                     aria-label="Atualizar"
-                                    class="w-9 h-9 bg-blue-marinho rounded-md flex justify-center items-center font-noto-sans italic font-bold cursor-pointer"
+                                    class="w-8 h-8 bg-blue-marinho rounded-md flex justify-center items-center font-noto-sans italic font-extrabold cursor-pointer"
                                     on:click={() => { identifier = item.uuid; offcanvasRef.open(); }}
                                 >
                                     <img
@@ -114,7 +111,7 @@
                                 <button
                                     type="button"
                                     aria-label="Confirmar"
-                                    class="w-9 h-9 bg-blue-marinho rounded-md flex justify-center items-center font-noto-sans italic font-bold cursor-pointer"
+                                    class="w-8 h-8 bg-blue-marinho rounded-md flex justify-center items-center font-noto-sans italic font-extrabold cursor-pointer"
                                     on:click={()=>requestConfirmActivityParticipant(item.uuid)}
                                 >
                                     <img

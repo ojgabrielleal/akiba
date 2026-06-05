@@ -4,14 +4,11 @@
 
     import axios from "axios";
     import { useForm, page } from "@inertiajs/svelte";
-    import { hasPermission } from "@/utils";
+    import { calendarPermissions } from "@/utils";
 
     let { users } = $page.props;
 
-    let can = {
-        create: hasPermission("calendar.create"),
-        update: hasPermission("calendar.update"),
-    };
+    let can = calendarPermissions();
 
     let form = useForm({
         user: null,
@@ -59,7 +56,7 @@
         <select
             id="user"
             name="user"
-            class="w-full h-10 bg-white font-noto-sans text-md rounded-lg outline-none pl-4 border border-gray-400"
+            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
             bind:value={$form.user}
             required
         >
@@ -77,7 +74,7 @@
         <select
             id="type"
             name="type"
-            class="w-full h-10 bg-white font-noto-sans text-md rounded-lg outline-none pl-4 border border-gray-400"
+            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
             bind:value={$form.type}
             required
         >
@@ -104,7 +101,7 @@
                 type="time"
                 id="hour"
                 name="hour"
-                class="w-full h-10 bg-white font-noto-sans text-md rounded-lg outline-none pl-4 border border-gray-400"
+                class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
                 bind:value={$form.hour}
                 required
             />
@@ -120,7 +117,7 @@
                 type="date"
                 id="date"
                 name="date"
-                class="w-full h-10 bg-white font-noto-sans text-md rounded-lg outline-none pl-4 border border-gray-400"
+                class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
                 bind:value={$form.date}
                 required
             />
@@ -137,7 +134,7 @@
             id="content"
             name="content"
             rows="3"
-            class="w-full bg-white font-noto-sans text-md rounded-lg outline-none py-2 px-4 border border-gray-400"
+            class="w-full bg-white font-noto-sans text-md rounded-md outline-none py-2 px-4 border border-gray-400"
             bind:value={$form.content}
             required
         ></textarea>
@@ -146,7 +143,7 @@
         <button
             aria-label=""
             type="submit"
-            class="cursor-pointer bg-blue-skywave px-8 py-2 rounded-md text-suspense-aurora font-noto-sans font-bold italic uppercase"
+            class="cursor-pointer bg-blue-skywave px-8 py-2 rounded-md text-suspense-aurora font-noto-sans font-extrabold italic uppercase"
         >
             {identifier ? "Atualizar" : "Cadastrar"}
         </button>

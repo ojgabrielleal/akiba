@@ -2,11 +2,14 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Resources\Concerns\HasFormats;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class UserResource extends JsonResource
 {
+    use HasFormats;
+
     /**
      * Transform the resource into an array.
      *
@@ -14,6 +17,17 @@ class UserResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        if ($this->format === 'summary') {
+            return [
+                'uuid' => $this->uuid,
+                'is_virtual' => $this->is_virtual,
+                'name' => $this->name,
+                'nickname' => $this->nickname,
+                'avatar' => $this->avatar,
+                'roles' => RoleResource::collection($this->roles),
+            ];
+        }
+
         return [
             'uuid' => $this->uuid,
             'is_virtual' => $this->is_virtual,

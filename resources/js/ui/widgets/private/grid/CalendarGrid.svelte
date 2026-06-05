@@ -5,15 +5,12 @@
     import { page } from "@inertiajs/svelte";
     import { Offcanvas, Section } from "@/ui/components/private/";
     import { CalendarForm } from "@/ui/widgets/private";
-    import { hasPermission } from "@/utils";
+    import { calendarPermissions, resolveHour } from "@/utils";
     import { calendarTags } from "@/data";
 
     $: ({ calendar } = $page.props);
 
-    let can = {
-        create: hasPermission("calendar.create"),
-        update: hasPermission("calendar.update"),
-    };
+    let can = calendarPermissions();
 
     let offcanvasRef;
     let identifier;
@@ -28,14 +25,14 @@
 <Section {title}>
     {#if can.create && variant === "administration"}
         <div class="flex justify-center gap-5 mb-8">
-            <button type="button" class="cursor-pointer bg-blue-skywave px-4 py-2 rounded-lg font-noto-sans font-bold italic uppercase text-suspense-aurora" on:click={() => { identifier = null; offcanvasRef.open(); }}>
+            <button type="button" class="cursor-pointer bg-blue-skywave px-4 py-2 rounded-md font-noto-sans font-extrabold italic uppercase text-suspense-aurora" on:click={() => { identifier = null; offcanvasRef.open(); }}>
                 Cadastrar evento
             </button>
         </div>
     {/if}
     <div class="w-full mb-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-2">
         {#each calendarTags as item}
-            <span class={`h-10 text-lg font-noto-sans font-bold uppercase italic rounded-lg flex justify-center items-center ${item.color} ${item.textcolor}`}>
+            <span class={`py-1 text-md font-noto-sans font-extrabold uppercase italic rounded-md flex justify-center items-center ${item.color} ${item.textcolor}`}>
                 {item.label}
             </span>
         {/each}
@@ -43,11 +40,11 @@
     <div class="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-2">
         {#each Object.entries(calendar?.data ?? {}) as [day, events]}
             <div class="flex flex-col gap-2 w-full">
-                <div class="text-suspense-aurora text-lg font-noto-sans text-center font-bold uppercase italic">
+                <div class="text-suspense-aurora text-lg font-noto-sans text-center font-extrabold uppercase italic">
                     {day}
                 </div>
                 {#each events as item}
-                    <div class={["w-full rounded-lg pt-4 pl-4 pr-4 pb-3 mt-5",
+                    <div class={["w-full rounded-md pt-4 pl-4 pr-4 pb-3 mt-5",
                         { "bg-blue-skywave": item.type === "show" },
                         { "bg-purple-mystic": item.type === "live" },
                         { "bg-red-crimson": item.type === "video" },
@@ -59,10 +56,10 @@
                                 { "text-blue-night": item.activity },
                                 { "text-suspense-aurora": !item.activity },
                             ]}>
-                                {item.formated_hour}
+                                {resolveHour(item.hour)}
                             </div>
                         </div>
-                        <div class={["w-full font-noto-sans font-bold text-2xl text-center italic mt-4 mb-4",
+                        <div class={["w-full font-noto-sans font-extrabold text-xl text-center italic mt-4 mb-4",
                             { "text-blue-night": item.activity },
                             { "text-suspense-aurora": !item.activity },
                         ]}>
@@ -89,7 +86,7 @@
                             <button
                                 type="button"
                                 aria-label="Atualizar evento"
-                                class={["w-full font-noto-sans text-md text-end", 
+                                class={["w-full font-noto-sans text-sm text-end", 
                                     { "text-blue-night": item.activity }, 
                                     { "text-suspense-aurora": !item.activity }
                                 ]}

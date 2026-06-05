@@ -43,7 +43,7 @@
 <form on:submit|preventDefault={submit}>
     <div class="mb-4">
         <Preview
-            standard="w-full h-[10rem] rounded-lg"
+            size="compact"
             name="avatar"
             oninput={(event) => ($form.avatar = event.target.files[0])}
             required
@@ -57,7 +57,7 @@
             id="listener"
             type="text"
             name="listener"
-            class="w-full h-10 bg-white font-noto-sans text-md rounded-lg outline-none pl-4 border border-gray-400 disabled:bg-gray-200 disabled:cursor-not-allowed"
+            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400 disabled:bg-gray-200 disabled:cursor-not-allowed"
             bind:value={$form.name}
             disabled
         />
@@ -70,7 +70,7 @@
             id="address"
             type="text"
             name="address"
-            class="w-full h-10 bg-white font-noto-sans text-md rounded-lg outline-none pl-4 border border-gray-400 disabled:bg-gray-200 disabled:cursor-not-allowed"
+            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400 disabled:bg-gray-200 disabled:cursor-not-allowed"
             bind:value={$form.address}
             disabled
         />
@@ -83,7 +83,7 @@
             id="favorite_show"
             type="text"
             name="favorite_show"
-            class="w-full h-10 bg-white font-noto-sans text-md rounded-lg outline-none pl-4 border border-gray-400 disabled:bg-gray-200 disabled:cursor-not-allowed"
+            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400 disabled:bg-gray-200 disabled:cursor-not-allowed"
             bind:value={$form.favorite_program}
             disabled
         />
@@ -97,7 +97,7 @@
             id="favorite_anime"
             type="text"
             name="favorite_anime"
-            class="w-full h-10 bg-white font-noto-sans text-md rounded-lg outline-none pl-4 border border-gray-400 disabled:bg-gray-200 disabled:cursor-not-allowed"
+            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400 disabled:bg-gray-200 disabled:cursor-not-allowed"
             bind:value={$form.favorite_anime}
             disabled
         />
@@ -110,13 +110,13 @@
             id="requests_total"
             type="text"
             name="requests_total"
-            class="w-full h-10 bg-white font-noto-sans text-md rounded-lg outline-none pl-4 border border-gray-400 disabled:bg-gray-200 disabled:cursor-not-allowed"
+            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400 disabled:bg-gray-200 disabled:cursor-not-allowed"
             bind:value={$form.requests_total}
             disabled
         />
     </div>
 
-    <button type="submit" class="cursor-pointer bg-blue-skywave px-8 py-2 rounded-md text-suspense-aurora font-noto-sans font-bold italic uppercase">
+    <button type="submit" class="cursor-pointer bg-blue-skywave px-8 py-2 rounded-md text-suspense-aurora font-noto-sans font-extrabold italic uppercase">
         Atualizar
     </button>
 </form>

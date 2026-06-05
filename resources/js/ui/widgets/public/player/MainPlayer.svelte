@@ -31,7 +31,7 @@
         </div>
         <!-- svelte-ignore a11y_distracting_elements -->
         <marquee class="w-[95%] xl:w-5xl flex overflow-x-hidden relative marquee-cont">
-            <div class="whitespace-nowrap w-full md:w-auto text-suspense-aurora text-3xl font-noto-sans font-bold uppercase italic">
+            <div class="whitespace-nowrap w-full md:w-auto text-suspense-aurora text-3xl font-noto-sans font-extrabold uppercase italic">
                 <span class="mx-4">
                     {air.phrase?.text ?? air.phrase?.phrase ?? air.phrase}
                 </span>
@@ -84,15 +84,15 @@
                 <div class="text-orange-amber font-noto-sans uppercase">
                     COM DJ
                 </div>
-                <div class="w-full text-suspense-aurora text-2xl font-noto-sans font-bold uppercase italic line-clamp-1">
+                <div class="w-full text-suspense-aurora text-2xl font-noto-sans font-extrabold uppercase italic line-clamp-1">
                     {air.program.host.nickname}
                 </div>
-                <div class={["mt-[0.4rem] w-24 rounded-xl float-end text-center text-sm text-suspense-aurora font-noto-sans font-bold italic uppercase",
-                    { "bg-neutral-gray": air.type === "automatic" },
+                <div class={["mt-[0.4rem] w-24 rounded-xl float-end text-center text-sm text-suspense-aurora font-noto-sans font-extrabold italic uppercase",
+                    { "bg-neutral-gray": air.type === "auto_dj" || air.type === "playlist" },
                     { "bg-green-mint": air.type === "live" },
                     { "bg-orange-citric": air.type === "scheduled" },
                 ]}>
-                    {#if air.type === "automatic"}
+                    {#if air.type === "auto_dj" || air.type === "playlist"}
                         Robô
                     {:else if air.type === "live"}
                         Human{air.program.host.gender === "male" ? "o" : "a"}
@@ -118,7 +118,7 @@
                     src={air.current_song?.cover || "https://cdn.vectorstock.com/i/500p/57/71/music-note-icon-set-vector-2855771.jpg"}
                     alt=""
                     aria-hidden="true"
-                    class="rounded-lg"
+                    class="rounded-md"
                     loading="lazy"
                     on:error={(e) => { e.target.src = "https://cdn.vectorstock.com/i/500p/57/71/music-note-icon-set-vector-2855771.jpg"; }}
                 />
@@ -128,7 +128,7 @@
                     Tocando agora:
                 </div>
                 <!-- svelte-ignore a11y_distracting_elements -->
-                <marquee class="w-full text-suspense-aurora text-xl font-noto-sans font-bold uppercase italic line-clamp-1">
+                <marquee class="w-full text-suspense-aurora text-xl font-noto-sans font-extrabold uppercase italic line-clamp-1">
                     {decodeURIComponent(
                         escape(air.current_song?.music || "Estamos offline"),
                     )}
@@ -154,12 +154,12 @@
     <div class="block">
         <!-- Player Type Information-->
         <div class={["mx-4 mb-10 py-2 px-6 gap-2 flex justify-center items-center rounded-md",
-            { "bg-neutral-gray": air.type === "automatic" },
+            { "bg-neutral-gray": air.type === "auto_dj" || air.type === "playlist" },
             { "bg-green-mint": air.type === "live" },
             { "bg-orange-citric": air.type === "scheduled" },
         ]}>
             <div class="block">
-                {#if air.type === "automatic"}
+                {#if air.type === "auto_dj" || air.type === "playlist"}
                     <img
                         src="/svg/playlist.svg"
                         alt=""
@@ -185,8 +185,8 @@
                     />
                 {/if}
             </div>
-            <div class="shrink-0 font-noto-sans font-bold italic uppercase text-center text-md text-blue-night leading-4">
-                {#if air.type === "automatic"}
+            <div class="shrink-0 font-noto-sans font-extrabold italic uppercase text-center text-md text-blue-night leading-4">
+                {#if air.type === "auto_dj" || air.type === "playlist"}
                     Playlist <br />automática
                 {:else if air.type === "live"}
                     Locut{air.program.host.gender === "male" ? "or" : "ora"}
@@ -199,7 +199,7 @@
         <!-- Player Controls-->
         <div class="w-55 h-20 flex items-center justify-center gap-1">
             <div>
-                <div class="ml-2 text-suspense-aurora text-lg font-noto-sans font-bold uppercase italic">
+                <div class="ml-2 text-suspense-aurora text-lg font-noto-sans font-extrabold uppercase italic">
                     Dê o
                 </div>
                 <div class={["-mt-4 font-noto-sans font-extrabold uppercase italic",
@@ -228,10 +228,10 @@
         </div>
         <div class="mx-3 mb-5 flex flex-col gap-2">
             <div class="flex justify-between items-center px-1">
-                <span class="text-[10px] text-suspense-aurora/40 font-bold uppercase">
+                <span class="text-[10px] text-suspense-aurora/40 font-extrabold uppercase">
                     Volume
                 </span>
-                <span class="text-[10px] text-orange-amber font-bold">
+                <span class="text-[10px] text-orange-amber font-extrabold">
                     {Math.round($player.volume * 100)}%
                 </span>
             </div>
@@ -250,7 +250,7 @@
         <!-- Song Request Button-->
         <button type="button"
             aria-label="Faça seu pedido"
-            class="cursor-pointer w-full py-2 px-1 border border-suspense-aurora rounded-full text-blue-skywave text-xl text-center font-noto-sans font-bold italic uppercase disabled:cursor-not-allowed"
+            class="cursor-pointer w-full py-2 px-1 border border-suspense-aurora rounded-full text-blue-skywave text-xl text-center font-noto-sans font-extrabold italic uppercase disabled:cursor-not-allowed"
             on:click={() => { modalRef.open(); }}
         >
             & Faça seu <strong class="text-orange-amber">Pedido</strong>
@@ -260,10 +260,10 @@
 
 <section class="container-player">
     <div class="mb-10 grid grid-cols-2 gap-5">
-        <div class="bg-suspense-aurora/10 h-30 rounded-lg flex justify-center items-center text-suspense-aurora/40 text-lg font-bold uppercase italic">
+        <div class="bg-suspense-aurora/10 h-30 rounded-md flex justify-center items-center text-suspense-aurora/40 text-lg font-extrabold uppercase italic">
             Anúncio
         </div>
-        <div class="bg-suspense-aurora/10 h-30 rounded-lg flex justify-center items-center text-suspense-aurora/40 text-lg font-bold uppercase italic">
+        <div class="bg-suspense-aurora/10 h-30 rounded-md flex justify-center items-center text-suspense-aurora/40 text-lg font-extrabold uppercase italic">
             Anúncio
         </div>
     </div>

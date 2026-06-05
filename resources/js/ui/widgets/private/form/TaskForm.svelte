@@ -4,14 +4,11 @@
 
     import axios from "axios";
     import { useForm, page } from "@inertiajs/svelte";
-    import { hasPermission } from "@/utils";
+    import { taskPermissions } from "@/utils";
 
     $: ({ users } = $page.props);
 
-    let can = {
-        create: hasPermission("task.create"),
-        update: hasPermission("task.update"),
-    };
+    let can = taskPermissions();
 
     let form = useForm({
         user: null,
@@ -57,7 +54,7 @@
         <select
             id="user"
             name="user"
-            class="w-full h-10 bg-white font-noto-sans text-md rounded-lg outline-none pl-4 border border-gray-400"
+            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
             bind:value={$form.user}
             required
         >
@@ -79,7 +76,7 @@
             id="title"
             type="text"
             name="title"
-            class="w-full h-10 bg-white font-noto-sans text-md rounded-lg outline-none pl-4 border border-gray-400"
+            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
             bind:value={$form.title}
             required
         />
@@ -92,7 +89,7 @@
             id="dead_line"
             type="date"
             name="dead_line"
-            class="w-full h-10 bg-white font-noto-sans text-md rounded-lg outline-none pl-4 border border-gray-400"
+            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
             bind:value={$form.dead_line}
             required
         />
@@ -105,7 +102,7 @@
             id="description"
             type="text"
             name="description"
-            class="w-full h-10 bg-white font-noto-sans text-md rounded-lg outline-none pl-4 border border-gray-400"
+            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
             bind:value={$form.description}
             required
         />
@@ -114,7 +111,7 @@
         <button
             aria-label=""
             type="submit"
-            class="cursor-pointer bg-blue-skywave px-8 py-2 rounded-md text-suspense-aurora font-noto-sans font-bold italic uppercase"
+            class="cursor-pointer bg-blue-skywave px-8 py-2 rounded-md text-suspense-aurora font-noto-sans font-extrabold italic uppercase"
         >
             {identifier ? "Atualizar" : "Cadastrar"}
         </button>

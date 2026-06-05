@@ -25,16 +25,19 @@
         {
             title: "Matéria",
             icon: "/svg/materials.svg",
+            permission: true,
             onClick: () => operation('post')
         },
         {
             title: "Review",
             icon: "/svg/reviews.svg",
+            permission: true,
             onClick: () => operation('review')
         },
         {
             title: "Evento",
             icon: "/svg/events.svg",
+            permission: true,
             onClick: () => operation('event')
         }
     ];

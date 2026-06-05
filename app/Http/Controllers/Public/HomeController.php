@@ -3,18 +3,20 @@
 namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\OnairResource;
-use App\Http\Resources\PostResource;
-use App\Http\Resources\PostIndexResource;
-use App\Http\Resources\ReviewResource;
+use App\Services\External\CastService;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+
 use App\Models\Event;
 use App\Models\Music;
 use App\Models\Onair;
 use App\Models\Post;
 use App\Models\Review;
-use App\Services\External\CastService;
-use Illuminate\Http\Request;
-use Inertia\Inertia;
+
+use App\Http\Resources\OnairResource;
+use App\Http\Resources\PostIndexResource;
+use App\Http\Resources\PostResource;
+use App\Http\Resources\ReviewResource;
 
 class HomeController extends Controller
 {
@@ -59,7 +61,7 @@ class HomeController extends Controller
                 ->latest()
                 ->limit(6)
                 ->get()
-        );
+        )->format('summary');
     }
 
     public function showOnair()

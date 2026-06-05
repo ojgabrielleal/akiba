@@ -25,7 +25,7 @@ class EventResource extends JsonResource
             'dates' => $this->dates,
             'address' => $this->address,
             'views' => $this->views_count,
-            'author' => UserResource::make($this->author)
+            'author' => UserResource::make($this->author)->format('compact')
         ];
     }
 }

@@ -21,60 +21,99 @@ class ProgramFactory extends Factory
     {
         return [
             'is_active' => true,
-            'is_default' => false,
             'name' => fake()->name(),
             'image' => '/img/locution/program.webp',
-            'type' => 'free',
+            'access_type' => 'free',
+            'execution_mode' => 'live',
+            'is_default_auto_dj' => false,
             'phrases' => null,
         ];
     }
 
-    public function isDefault(): static
+    public function withPlaylist(): static
     {
         return $this->state(fn (array $attributes) => [
-            'is_default' => true,
+            'access_type' => 'private',
+            'execution_mode' => 'playlist',
+            'phrases' => null,
         ]);
     }
 
-    public function withAutomatic(): static
+    public function withAutoDJ(): static
     {
         return $this->state(fn (array $attributes) => [
-            'type' => 'automatic',
-            'phrases' => [
-                [
-                    'text' => fake()->sentence(),
-                    'icon' => $this->fakeImageUrl(),
-                    'decoration' => 'default',
-                ],
-                [
-                    'text' => fake()->sentence(),
-                    'icon' => $this->fakeImageUrl(),
-                    'decoration' => 'default',
-                ],
-                [
-                    'text' => fake()->sentence(),
-                    'icon' => $this->fakeImageUrl(),
-                    'decoration' => 'default',
-                ],
-            ],
+            'access_type' => 'private',
+            'execution_mode' => 'auto_dj',
+            'is_default_auto_dj' => false,
+            'phrases' => $this->phrases(),
+        ]);
+    }
+
+    public function asDefault(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'is_default_auto_dj' => true,
+        ]);
+    }
+
+    public function withScheduled(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'access_type' => 'private',
+            'execution_mode' => 'scheduled',
+            'phrases' => null,
+        ]);
+    }
+
+    public function withLive(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'access_type' => 'private',
+            'execution_mode' => 'live',
+            'phrases' => null,
         ]);
     }
 
     public function withFree(): static
     {
         return $this->state(fn (array $attributes) => [
-            'type' => 'free',
+            'access_type' => 'free',
+            'execution_mode' => 'live',
             'phrases' => null,
-            'is_default' => false,
         ]);
     }
 
     public function withPrivate(): static
     {
         return $this->state(fn (array $attributes) => [
-            'type' => 'private',
+            'access_type' => 'private',
+            'execution_mode' => 'live',
             'phrases' => null,
-            'is_default' => false,
         ]);
+    }
+
+
+    private function phrases(): array
+    {
+        return [
+            [
+                'text' => fake()->sentence(),
+                'icon' => $this->fakeImageUrl(),
+                'decoration' => 'default',
+                'texture' => null,
+            ],
+            [
+                'text' => fake()->sentence(),
+                'icon' => $this->fakeImageUrl(),
+                'decoration' => 'default',
+                'texture' => null,
+            ],
+            [
+                'text' => fake()->sentence(),
+                'icon' => $this->fakeImageUrl(),
+                'decoration' => 'default',
+                'texture' => null,
+            ],
+        ];
     }
 }

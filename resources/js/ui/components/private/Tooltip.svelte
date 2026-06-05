@@ -25,7 +25,7 @@
 
 <div class="relative group/tooltip inline-flex">
     <slot />
-    <div class={["absolute px-2 py-1 bg-neutral-900/90 backdrop-blur-sm text-white text-[10px] font-medium rounded-lg invisible group-hover/tooltip:visible opacity-0 group-hover/tooltip:opacity-100 transition-all duration-200 whitespace-nowrap z-50 pointer-events-none border border-white/10 shadow-xl",
+    <div class={["absolute px-2 py-1 bg-neutral-900/90 backdrop-blur-sm text-white text-[10px] font-medium rounded-md invisible group-hover/tooltip:visible opacity-0 group-hover/tooltip:opacity-100 transition-all duration-200 whitespace-nowrap z-50 pointer-events-none border border-white/10 shadow-xl",
         tooltipPosition.content,
     ]}>
         <slot name="content" />

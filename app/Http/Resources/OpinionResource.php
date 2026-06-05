@@ -18,7 +18,7 @@ class OpinionResource extends JsonResource
             'uuid' => $this->uuid,
             'status' => $this->status,
             'content' => $this->content,
-            'author' => UserResource::make($this->author),
+            'author' => UserResource::make($this->author)->format('compact'),
         ];
     }
 }

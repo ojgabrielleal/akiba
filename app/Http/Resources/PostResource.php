@@ -2,11 +2,14 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Resources\Concerns\HasFormats;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class PostResource extends JsonResource
 {
+    use HasFormats;
+
     public function toArray(Request $request): array
     {
         $postData = [
@@ -16,27 +19,49 @@ class PostResource extends JsonResource
             'title' => $this->title,
             'image' => $this->image,
             'cover' => $this->cover,
-            'author' => UserResource::make($this->author),
+            'author' => UserResource::make($this->author)->format('summary'),
             'references' => ReferenceResource::collection($this->references),
             'tags' => TagResource::collection($this->tags),
+            'module' => $this->module(),
             'views' => $this->views_count,
         ];
 
-        $postData = array_merge(
+        if ($this->format === 'summary') {
+            return [
+                'uuid' => $this->uuid,
+                'slug' => $this->slug,
+                'status' => $this->status,
+                'title' => $this->title,
+                'module' => $this->module(),
+                'author' => UserResource::make($this->author)->format('summary'),
+            ];
+        }
+
+        return array_merge(
             $postData,
             $this->post(),
             $this->event(),
             $this->review($request),
         );
+    }
 
-        return $postData;
+    private function module(): string
+    {
+        if ($this->review) {
+            return 'review';
+        }
+
+        if ($this->event) {
+            return 'event';
+        }
+
+        return 'post';
     }
 
     public function post(): array 
     {
         if(!$this->review && !$this->event){
             return [
-                'module' => 'post',
                 'content' => $this->content,
                 'reactions' => ReactionResource::collection($this->reactions)
             ];
@@ -49,7 +74,6 @@ class PostResource extends JsonResource
     {
         if($this->event){
             return [
-                'module' => 'event',
                 'content'=> $this->content,
                 'dates' => $this->event->dates,
                 'address' => $this->event->address,
@@ -63,7 +87,6 @@ class PostResource extends JsonResource
     {
         if($this->review){
             return [
-                'module' => 'review',
                 'year_of_release' => $this->review->year_of_release,
                 'sinopse' => $this->review->sinopse,
                 'opinions' => $this->reviewListOpinions($request),
@@ -123,7 +146,7 @@ class PostResource extends JsonResource
             'uuid' => null,
             'status' => 'not_created',
             'content' => null,
-            'author' => UserResource::make($user),
+            'author' => UserResource::make($user)->format('summary'),
         ];
     }
 }

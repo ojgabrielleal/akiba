@@ -11,7 +11,7 @@ class ProgramPolicy
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(User $user): bool
+    public function list(User $user): bool
     {
         return $user->hasPermission('program.list');
     }

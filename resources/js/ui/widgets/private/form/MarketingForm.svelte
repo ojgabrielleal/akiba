@@ -4,12 +4,9 @@
 
     import { useForm } from "@inertiajs/svelte";
     import { Preview } from "@/ui/components/private";
-    import { hasPermission } from "@/utils";
+    import { repositoryPermissions } from "@/utils";
 
-    let can = {
-        create: hasPermission("repository.create"),
-        update: hasPermission("repository.update"),
-    };
+    let can = repositoryPermissions();
 
     let form = useForm({
         _method: null,
@@ -52,7 +49,7 @@
     <div class="mb-4">
         <Preview
             name="image"
-            standard="w-full h-[10rem] rounded-lg"
+            size="compact"
             src={$form.image}
             oninput={(event) => ($form.image = event.target.files[0])}
             required={!identifier}
@@ -66,7 +63,7 @@
             id="name"
             type="text"
             name="name"
-            class="w-full h-10 bg-white font-noto-sans text-md rounded-lg outline-none pl-4 border border-gray-400"
+            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
             bind:value={$form.name}
             required
         />
@@ -78,7 +75,7 @@
         <select
             id="type"
             name="type"
-            class="w-full h-10 bg-white font-noto-sans text-md rounded-lg outline-none pl-4 border border-gray-400"
+            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
             bind:value={$form.type}
             required
         >
@@ -101,7 +98,7 @@
             id="url"
             type="url"
             name="url"
-            class="w-full h-10 bg-white font-noto-sans text-md rounded-lg outline-none pl-4 border border-gray-400"
+            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
             bind:value={$form.url}
             required
         />
@@ -110,7 +107,7 @@
         <button
             aria-label=""
             type="submit"
-            class="cursor-pointer bg-blue-skywave px-8 py-2 rounded-md text-suspense-aurora font-noto-sans font-bold italic uppercase"
+            class="cursor-pointer bg-blue-skywave px-8 py-2 rounded-md text-suspense-aurora font-noto-sans font-extrabold italic uppercase"
         >
             {identifier ? "Atualizar" : "Cadastrar"}
         </button>

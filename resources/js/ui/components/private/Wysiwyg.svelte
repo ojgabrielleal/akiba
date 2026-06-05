@@ -3,11 +3,10 @@
     import Quill from "quill";
     import "quill/dist/quill.snow.css";
 
-    export let value;
     export let height = "50rem";
     export let name = "content";
+    export let value = null;
     export let required = false;
-    export let disable = false;
     export let disabled = false;
 
     let quill;
@@ -43,7 +42,7 @@
         });
     });
 
-    $: isDisabled = disable || disabled;
+    $: isDisabled = disabled;
 
     $: if (quill) {
         quill.enable(!isDisabled);
@@ -55,18 +54,16 @@
     }
 </script>
 
-<div
-    class="rounded-xl overflow-hidden bg-blue-ocean"
-    class:opacity-70={isDisabled}
-    class:cursor-not-allowed={isDisabled}
->
+<div class={["rounded-xl overflow-hidden bg-blue-ocean", 
+    {'opacity-70 cursor-not-allowed': isDisabled}
+]}>
     <div bind:this={editor} class="p-3" style="min-height: {height};"></div>
 </div>
 <textarea
-    bind:this={textarea}
     {name}
     {required}
-    disabled={isDisabled}
     class="sr-only"
+    disabled={isDisabled}
+    bind:this={textarea}
 >
 </textarea>

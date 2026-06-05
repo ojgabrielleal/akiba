@@ -8,20 +8,11 @@
         UserAccessForm,
         ActivityForm,
     } from "@/ui/widgets/private";
-    import { hasPermission } from "@/utils";
+    import { userGridPermissions } from "@/utils";
 
     $: ({ users } = $page.props);
 
-    let can = {
-        create: hasPermission("user.create"),
-        deactivate: hasPermission("user.deactivate"),
-        authority: {
-            update: hasPermission("user.update.authority"),
-        },
-        activity: {
-            create: hasPermission("activity.create"),
-        },
-    };
+    let can = userGridPermissions();
 
     let offCanvasUserRef;
     let offCanvasUserAccessRef;
@@ -54,13 +45,13 @@
 {#if users}
     <div class="flex justify-center gap-5 mb-5">
         {#if can.create}
-            <button type="button" class="text-blue-skywave text-xl font-noto-sans font-bold italic uppercase cursor-pointer" on:click={() => { offCanvasUserRef.open(); }}>
+            <button type="button" class="text-blue-skywave text-xl font-noto-sans font-extrabold italic uppercase cursor-pointer" on:click={() => { offCanvasUserRef.open(); }}>
                 Cadastrar membro
             </button>
             <span class="border-l border-suspense-aurora/30"></span>
         {/if}
         {#if can.activity.create}
-            <button type="button" class="text-blue-skywave text-xl font-noto-sans font-bold italic uppercase cursor-pointer" on:click={() => { offCanvasActivityRef.open(); }}>
+            <button type="button" class="text-blue-skywave text-xl font-noto-sans font-extrabold italic uppercase cursor-pointer" on:click={() => { offCanvasActivityRef.open(); }}>
                 Criar Atividade e Avisos
             </button>
         {/if}
@@ -73,7 +64,7 @@
                 })}
                 <article class="h-35 px-3 py-1 bg-blue-skywave rounded-sm relative">
                     <dl>
-                        <dt class="text-suspense-aurora text-xl lg:text-2xl font-noto-sans font-bold italic uppercase">
+                        <dt class="text-suspense-aurora text-xl lg:text-2xl font-noto-sans font-extrabold italic uppercase">
                             {item.nickname}
                         </dt>
                         <dd class="text-suspense-aurora text-xs font-noto-sans font-semibold italic uppercase">
@@ -87,14 +78,14 @@
                         aria-hidden="true"
                     />
                     <dl class="w-full flex justify-between items-end px-3 absolute left-0 bottom-2">
-                        <dt class="rounded-full p-2 bg-suspense-aurora text-xs text-blue-marinho font-noto-sans font-bold uppercase italic">
+                        <dt class="rounded-full p-2 bg-suspense-aurora text-xs text-blue-marinho font-noto-sans font-extrabold uppercase italic">
                             {highestRole.label}
                         </dt>
                         <dd class="flex flex-wrap lg:flex-nowrap gap-2">
                             {#if !item.is_virtual && can.authority.update}
                                 <button type="button"
                                     aria-label="Definir permissões"
-                                    class="w-8 h-8 bg-suspense-aurora rounded-md flex justify-center items-center font-noto-sans italic font-bold cursor-pointer"
+                                    class="w-8 h-8 bg-suspense-aurora rounded-md flex justify-center items-center font-noto-sans italic font-extrabold cursor-pointer"
                                     on:click={() => { identifier = item.uuid; offCanvasUserAccessRef.open(); }}
                                 >
                                     <img
@@ -110,7 +101,7 @@
                                 title=""
                                 href={`/panel/profile/${item.uuid}`}
                                 aria-label="Editar perfil"
-                                class="w-8 h-8 bg-suspense-aurora rounded-md flex justify-center items-center font-noto-sans italic font-bold cursor-pointer"
+                                class="w-8 h-8 bg-suspense-aurora rounded-md flex justify-center items-center font-noto-sans italic font-extrabold cursor-pointer"
                             >
                                 <img
                                     src="/svg/edit.svg"
@@ -123,7 +114,7 @@
                             {#if can.deactivate}
                                 <button type="button"
                                     aria-label="Desativar perfil"
-                                    class="w-8 h-8 bg-suspense-aurora rounded-md flex justify-center items-center font-noto-sans italic font-bold cursor-pointer"
+                                    class="w-8 h-8 bg-suspense-aurora rounded-md flex justify-center items-center font-noto-sans italic font-extrabold cursor-pointer"
                                     on:click={()=> requestDeactivateUser(item.uuid)}
                                 >
                                     <img

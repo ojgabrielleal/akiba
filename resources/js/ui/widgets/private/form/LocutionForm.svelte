@@ -1,14 +1,12 @@
 <script>
     import { useForm, page } from "@inertiajs/svelte";
     import { Section } from "@/ui/components/private/";
-    import { hasPermission } from "@/utils";
+    import { locutionPermissions } from "@/utils";
     import { locutionIcons, locutionTextures, locutionDecorations } from "@/data";
 
     $: ({ programs } = $page.props);
 
-    let can = {
-        start: hasPermission("locution.start"),
-    };
+    let can = locutionPermissions();
 
     let form = useForm({
         program: null,
@@ -72,7 +70,7 @@
                 />
                 <input 
                     type="text"
-                    class="w-9/13 h-15 ml-23 bg-blue-ocean/50 border border-blue-skywave font-noto-sans font-bold italic uppercase text-xl text-orange-citric rounded-lg outline-none pl-4"
+                    class="w-9/13 h-15 ml-23 bg-blue-ocean/50 border border-blue-skywave font-noto-sans font-extrabold italic uppercase text-xl text-orange-citric rounded-md outline-none pl-4"
                     placeholder="Digite a frase de locução"
                     bind:value={$form.phrase.text}
                 >
@@ -92,7 +90,7 @@
         </div>
         <input 
             type="text"
-            class="w-full block lg:hidden h-15 bg-blue-ocean/50 border border-blue-skywave font-noto-sans font-bold italic uppercase text-xl text-orange-citric rounded-lg outline-none pl-4"
+            class="w-full block lg:hidden h-15 bg-blue-ocean/50 border border-blue-skywave font-noto-sans font-extrabold italic uppercase text-xl text-orange-citric rounded-md outline-none pl-4"
             placeholder="Digite a frase de locução"
             bind:value={$form.phrase.text}
         >
@@ -101,7 +99,7 @@
                 {#each locutionDecorations as item}
                     <button
                         type="button"
-                        class={["cursor-pointer h-15 border-2 border-blue-ocean rounded-lg disabled:cursor-not-allowed disabled:opacity-50", 
+                        class={["cursor-pointer h-15 border-2 border-blue-ocean rounded-md disabled:cursor-not-allowed disabled:opacity-50", 
                             { "border-blue-skywave drop-shadow-[0_0_20px_rgba(0,255,200,0.3)]": $form.phrase.decoration?.left === item.left && $form.phrase.decoration?.right === item.right },
                             { "border-blue-ocean": !($form.phrase.decoration?.left === item.left && $form.phrase.decoration?.right === item.right) }
                         ]}
@@ -124,7 +122,7 @@
                 {#each locutionTextures as item}
                     <button
                         type="button"
-                        class={["cursor-pointer h-15 border-2 border-blue-ocean rounded-lg disabled:cursor-not-allowed disabled:opacity-50", 
+                        class={["cursor-pointer h-15 border-2 border-blue-ocean rounded-md disabled:cursor-not-allowed disabled:opacity-50", 
                             { "border-blue-skywave drop-shadow-[0_0_20px_rgba(0,255,200,0.3)]": $form.phrase.texture === item.url },
                             { "border-blue-ocean": $form.phrase.texture !== item.url }
                         ]}

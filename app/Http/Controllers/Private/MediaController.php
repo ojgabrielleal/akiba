@@ -2,16 +2,20 @@
 
 namespace App\Http\Controllers\Private;
 
-use App\Http\Controllers\Concerns\HasFlashMessages;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Media\CreatePollRequest;
-use App\Http\Requests\Media\UpdatePollRequest;
-use App\Http\Resources\EventResource;
-use App\Http\Resources\PollResource;
+use Inertia\Inertia;
+
+use App\Http\Controllers\Concerns\HasFlashMessages;
+
 use App\Models\Event;
 use App\Models\Option;
 use App\Models\Poll;
-use Inertia\Inertia;
+
+use App\Http\Resources\EventResource;
+use App\Http\Resources\PollResource;
+
+use App\Http\Requests\Media\CreatePollRequest;
+use App\Http\Requests\Media\UpdatePollRequest;
 
 class MediaController extends Controller
 {

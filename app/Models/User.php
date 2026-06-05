@@ -133,6 +133,11 @@ class User extends Authenticatable
         return $this->hasMany(Program::class, 'user_id');
     }
 
+    public function plans()
+    {
+        return $this->hasMany(Plan::class, 'user_id');
+    }
+
     public function podcasts()
     {
         return $this->hasMany(Podcast::class, 'user_id');

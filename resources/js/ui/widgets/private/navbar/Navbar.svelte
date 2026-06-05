@@ -78,7 +78,7 @@
                     />
                 </button>
                 <div class="absolute right-0 top-full pt-3 invisible opacity-0 translate-y-1 group-hover/avatar:visible group-hover/avatar:opacity-100 group-hover/avatar:translate-y-0 group-focus-within/avatar:visible group-focus-within/avatar:opacity-100 group-focus-within/avatar:translate-y-0 transition-all duration-200 z-50">
-                    <div class="w-40 rounded-lg bg-suspense-aurora shadow-xl border border-neutral-gray/20 py-2">
+                    <div class="w-40 rounded-md bg-suspense-aurora shadow-xl border border-neutral-gray/20 py-2">
                         <Link
                             href={`/panel/profile/${user.uuid}`}
                             class="block px-4 py-2 text-sm font-noto-sans font-medium text-neutral-gray hover:text-orange-citric hover:bg-neutral-gray/10"
@@ -123,7 +123,7 @@
                                     title=""
                                     aria-label={item.name}
                                     href={item.address}
-                                    class="group/item flex items-center gap-3 text-neutral-gray font-noto-sans font-bold italic uppercase hover:text-orange-citric"
+                                    class="group/item flex items-center gap-3 text-neutral-gray font-noto-sans font-extrabold italic uppercase hover:text-orange-citric"
                                     on:click={() => (mobilenavbar = false)}
                                 >
                                     <img
@@ -152,7 +152,7 @@
                             />
                         </div>
                         <div class="min-w-0">
-                            <span class="block truncate text-sm font-noto-sans font-bold text-neutral-gray group-hover/profile:text-orange-citric">
+                            <span class="block truncate text-sm font-noto-sans font-extrabold text-neutral-gray group-hover/profile:text-orange-citric">
                                 {user.nickname}
                             </span>
                             <span class="flex items-center gap-1 text-xs font-noto-sans text-green-500">

@@ -23,7 +23,7 @@ class PodcastResource extends JsonResource
             'summary' => $this->summary,
             'description' => $this->description,
             'audio' => $this->audio,
-            'author' => UserResource::make($this->author),
+            'author' => UserResource::make($this->author)->format('compact'),
         ];
     }
 }

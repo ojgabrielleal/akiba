@@ -2,6 +2,27 @@
 
 namespace App\Http\Controllers\Private;
 
+use App\Exceptions\RoleHasMembersException;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+
+use App\Http\Controllers\Concerns\HasFlashMessages;
+
+use App\Models\Activity;
+use App\Models\Calendar;
+use App\Models\Permission;
+use App\Models\Role;
+use App\Models\Task;
+use App\Models\User;
+
+use App\Http\Resources\ActivityResource;
+use App\Http\Resources\CalendarResource;
+use App\Http\Resources\PermissionResource;
+use App\Http\Resources\RoleResource;
+use App\Http\Resources\TaskResource;
+use App\Http\Resources\UserResource;
+
 use App\Actions\Administration\Activity\CreateActivityAction;
 use App\Actions\Administration\Activity\UpdateActivityAction;
 use App\Actions\Administration\Calendar\CreateCalendarAction;
@@ -12,29 +33,13 @@ use App\Actions\Administration\Task\CreateTaskAction;
 use App\Actions\Administration\Task\UpdateTaskAction;
 use App\Actions\Administration\User\CreateUserAction;
 use App\Actions\Administration\User\UpdateUserAccessAction;
-use App\Exceptions\RoleHasMembersException;
-use App\Http\Controllers\Concerns\HasFlashMessages;
-use App\Http\Controllers\Controller;
+
 use App\Http\Requests\Administration\CreateActivityRequest;
 use App\Http\Requests\Administration\UpdateActivityRequest;
 use App\Http\Requests\Administration\UpdateCalendarRequest;
 use App\Http\Requests\Administration\UpdateRoleRequest;
 use App\Http\Requests\Administration\UpdateTaskRequest;
 use App\Http\Requests\Administration\UpdateUserAccessRequest;
-use App\Http\Resources\ActivityResource;
-use App\Http\Resources\CalendarResource;
-use App\Http\Resources\PermissionResource;
-use App\Http\Resources\RoleResource;
-use App\Http\Resources\TaskResource;
-use App\Http\Resources\UserResource;
-use App\Models\Activity;
-use App\Models\Calendar;
-use App\Models\Permission;
-use App\Models\Role;
-use App\Models\Task;
-use App\Models\User;
-use Illuminate\Http\Request;
-use Inertia\Inertia;
 
 class AdministrationController extends Controller
 {
@@ -196,7 +201,7 @@ class AdministrationController extends Controller
             return null;
         }
 
-        return UserResource::collection(User::active()->with(['roles'])->get());
+        return UserResource::collection(User::active()->with(['roles'])->get())->format('summary');
     }
 
     public function showUser(User $user)

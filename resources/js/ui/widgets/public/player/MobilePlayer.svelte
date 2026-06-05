@@ -28,19 +28,19 @@
                 />
             </div>
             <div class="flex flex-col min-w-0">
-                <span class="text-orange-amber text-[10px] md:text-xs uppercase font-noto-sans font-bold italic">
+                <span class="text-orange-amber text-[10px] md:text-xs uppercase font-noto-sans font-extrabold italic">
                     PROGRAMA
                 </span>
-                <h3 class="text-suspense-aurora text-xl md:text-2xl font-noto-sans font-bold uppercase italic truncate">
+                <h3 class="text-suspense-aurora text-xl md:text-2xl font-noto-sans font-extrabold uppercase italic truncate">
                     {air.program.name}
                 </h3>
                 <div class="flex flex-wrap items-center gap-2 mt-2">
-                    <span class={["text-[10px] px-2.5 py-1 rounded-lg text-suspense-aurora font-noto-sans font-bold uppercase italic",
-                        { "bg-neutral-gray": air.type === "automatic" },
+                    <span class={["text-[10px] px-2.5 py-1 rounded-md text-suspense-aurora font-noto-sans font-extrabold uppercase italic",
+                        { "bg-neutral-gray": air.type === "auto_dj" || air.type === "playlist" },
                         { "bg-green-mint": air.type === "live" },
                         { "bg-orange-citric": air.type === "scheduled" },
                     ]}>
-                        {#if air.type === "automatic"}
+                        {#if air.type === "auto_dj" || air.type === "playlist"}
                             Robô
                         {:else if air.type === "live"}
                             Human{air.program.host.gender === "male" ? "o" : "a"}
@@ -59,10 +59,10 @@
         <div class="block md:hidden w-full h-px bg-suspense-aurora/10"></div>
 
         <div class="flex flex-col gap-1.5 md:flex-1">
-            <span class="text-orange-amber text-[10px] md:text-xs italic uppercase font-noto-sans font-bold">
+            <span class="text-orange-amber text-[10px] md:text-xs italic uppercase font-noto-sans font-extrabold">
                 TOCANDO AGORA
             </span>
-            <p class="text-suspense-aurora text-lg md:text-xl font-noto-sans font-bold italic line-clamp-2 leading-snug">
+            <p class="text-suspense-aurora text-lg md:text-xl font-noto-sans font-extrabold italic line-clamp-2 leading-snug">
                 {air?.current_song?.music}
             </p>
         </div>
@@ -89,11 +89,11 @@
             <div class="flex flex-col gap-2">
                 <div class="flex justify-between items-center px-1">
                     <div class="flex items-center gap-2">
-                        <span class="text-[10px] md:text-xs text-suspense-aurora/40 font-noto-sans font-bold italic uppercase">
+                        <span class="text-[10px] md:text-xs text-suspense-aurora/40 font-noto-sans font-extrabold italic uppercase">
                             Volume
                         </span>
                     </div>
-                    <span class="text-[10px] md:text-xs text-orange-amber font-noto-sans font-bold italic">
+                    <span class="text-[10px] md:text-xs text-orange-amber font-noto-sans font-extrabold italic">
                         {Math.round($player.volume * 100)}%
                     </span>
                 </div>
@@ -108,7 +108,7 @@
                 />
             </div>
 
-            <button type="button" class="group cursor-pointer w-full py-3 px-6 border-2 border-suspense-aurora/20 hover:border-orange-amber/50 rounded-full text-blue-skywave text-lg md:text-xl text-center font-noto-sans font-bold italic uppercase transition-all" on:click={() => modalRef.open()}>
+            <button type="button" class="group cursor-pointer w-full py-3 px-6 border-2 border-suspense-aurora/20 hover:border-orange-amber/50 rounded-full text-blue-skywave text-lg md:text-xl text-center font-noto-sans font-extrabold italic uppercase transition-all" on:click={() => modalRef.open()}>
                 & Faça seu <strong
                     class="text-orange-amber group-hover:underline"
                     >Pedido</strong

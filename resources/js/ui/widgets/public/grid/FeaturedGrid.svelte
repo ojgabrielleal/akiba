@@ -25,7 +25,7 @@
                     />
                     <div class="absolute inset-0 bg-linear-to-t from-black to-transparent sm:hidden"></div>
                     <div class="relative z-10 p-3 mt-auto sm:mt-0 sm:p-0">
-                        <h1 class="w-full sm:w-[50%] font-noto-sans font-bold text-white sm:text-suspense-aurora text-md sm:text-lg uppercase italic line-clamp-4 sm:line-clamp-5">
+                        <h1 class="w-full sm:w-[50%] font-noto-sans font-extrabold text-white sm:text-suspense-aurora text-md sm:text-lg uppercase italic line-clamp-4 sm:line-clamp-5">
                             {item.title}
                         </h1>
                     </div>

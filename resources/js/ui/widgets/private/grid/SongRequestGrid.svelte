@@ -3,18 +3,11 @@
 
     import { page, router } from "@inertiajs/svelte";
     import { Section } from "@/ui/components/private/";
-    import { hasPermission } from "@/utils";
+    import { songRequestPermissions } from "@/utils";
 
     $: ({ onair, songRequests } = $page.props);
 
-    let can = {
-        toggle: hasPermission("songrequest.toggle"),
-        reproduce: hasPermission("songrequest.reproduce"),
-        cancel: hasPermission("songrequest.cancel"),
-        locution: {
-            finish: hasPermission("locution.finish"),
-        },
-    };
+    let can = songRequestPermissions();
 
     const requestToggleSongRequest = () => {
         router.patch("/panel/locution/songrequest/toggle", {}, {
@@ -39,7 +32,7 @@
     };
 </script>
 
-{#if hasPermission("songrequest.list")}
+{#if can.list}
     <Section {title}>
         <div id="requests" class="flex flex-col gap-5 lg:relative">
             {#if can.locution.finish}
@@ -64,7 +57,7 @@
                     {:else}
                         <button 
                             type="button" 
-                            class="cursor-pointer w-full lg:w-auto py-2 px-6 bg-green-mint rounded-full text-blue-marinho font-bold font-noto-sans italic uppercase" 
+                            class="cursor-pointer w-full lg:w-auto py-2 px-6 bg-green-mint rounded-full text-blue-marinho font-extrabold font-noto-sans italic uppercase" 
                             on:click={() => requestToggleSongRequest()}
                         >
                             Começar a receber
@@ -75,12 +68,12 @@
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 mt-10">
             {#each songRequests.data as item}
-                <article class={["w-full rounded-lg p-3",
+                <article class={["w-full rounded-md p-3",
                     { "bg-green-mint": item.was_reproduced },
                     { "bg-red-crimson": item.was_canceled },
                     { "bg-blue-skywave": !item.was_reproduced && !item.was_canceled },
                 ]}>
-                    <div class="w-70 flex items-center gap-1.5 text-suspense-aurora text-[1.2rem] font-noto-sans font-bold italic">
+                    <div class="w-70 flex items-center gap-1.5 text-suspense-aurora text-[1.2rem] font-noto-sans font-extrabold italic">
                         <img
                             src="/svg/profile.svg"
                             alt=""
@@ -134,7 +127,7 @@
                             <img
                                 src={item.music.image}
                                 alt={`Capa do anime ${item.music.production}`}
-                                class="w-15 h-15 rounded-lg object-cover object-top shrink-0"
+                                class="w-15 h-15 rounded-md object-cover object-top shrink-0"
                                 loading="lazy"
                             />
                             <div>
@@ -182,7 +175,7 @@
                         {item.message}
                     </div>
                     <div class="flex justify-between">
-                        <div class="flex items-center gap-1 text-suspense-aurora text-sm font-noto-sans font-bold italic">
+                        <div class="flex items-center gap-1 text-suspense-aurora text-sm font-noto-sans font-extrabold italic">
                             <img
                                 src="/svg/clock.svg"
                                 alt=""
@@ -197,7 +190,7 @@
                                 {#if can.cancel}
                                     <button type="button"
                                         aria-label="Marcar como cancelado"
-                                        class="w-7 h-7 bg-suspense-aurora rounded-md flex justify-center items-center font-noto-sans italic font-bold cursor-pointer"
+                                        class="w-7 h-7 bg-suspense-aurora rounded-md flex justify-center items-center font-noto-sans italic font-extrabold cursor-pointer"
                                         on:click={() => markToCanceled(item.uuid)}
                                     >
                                         <img
@@ -212,7 +205,7 @@
                                 {#if can.reproduce}
                                     <button type="button"
                                         aria-label="Marcar como atendido"
-                                        class="w-7 h-7 bg-suspense-aurora rounded-md flex justify-center items-center font-noto-sans italic font-bold cursor-pointer"
+                                        class="w-7 h-7 bg-suspense-aurora rounded-md flex justify-center items-center font-noto-sans italic font-extrabold cursor-pointer"
                                         on:click={() => markToReproduced(item.uuid)}
                                     >
                                         <img

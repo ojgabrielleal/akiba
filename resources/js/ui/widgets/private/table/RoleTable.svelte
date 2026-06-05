@@ -4,15 +4,11 @@
     import { router, page } from "@inertiajs/svelte";
     import { Section, Offcanvas } from "@/ui/components/private";
     import { RoleForm } from "@/ui/widgets/private";
-    import { hasPermission } from "@/utils";
+    import { rolePermissions } from "@/utils";
 
     $: ({ roles } = $page.props);
 
-    let can = {
-        create: hasPermission("role.create"),
-        update: hasPermission("role.update"),
-        remove: hasPermission("role.remove"),
-    };
+    let can = rolePermissions();
 
     let offCanvasRef;
     let identifier;
@@ -34,7 +30,7 @@
 <Section {title}>
     {#if can.create}
         <div class="flex justify-center gap-5 mb-5">
-            <button type="button" class="cursor-pointer bg-blue-ocean px-4 py-2 rounded-sm font-noto-sans font-bold italic uppercase text-suspense-aurora" on:click={() => { identifier = null; offCanvasRef.open(); }}>
+            <button type="button" class="cursor-pointer bg-blue-ocean px-4 py-2 rounded-sm font-noto-sans font-extrabold italic uppercase text-suspense-aurora" on:click={() => { identifier = null; offCanvasRef.open(); }}>
                 Cadastrar cargo
             </button>
         </div>
@@ -43,7 +39,7 @@
         <div class="overflow-x-auto w-full">
             <table class="min-w-[900px] w-full border-collapse table-auto">
                 <thead>
-                    <tr class="text-orange-amber uppercase text-lg font-bold font-noto-sans italic whitespace-nowrap">
+                    <tr class="text-orange-amber uppercase text-lg font-extrabold font-noto-sans italic whitespace-nowrap">
                         <th class="p-4 text-start min-w-[180px]">
                             Cargo
                         </th>

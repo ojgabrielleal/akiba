@@ -8,6 +8,14 @@ use App\Models\User;
 class PostPolicy
 {
     /**
+     * Determine whether the user can list results of the model.
+     */
+    public function list(User $user): bool
+    {
+        return $user->hasPermission('post.list');
+    }
+
+    /**
      * Determine whether the user can view the model.
      */
     public function view(User $user, Post $post): bool

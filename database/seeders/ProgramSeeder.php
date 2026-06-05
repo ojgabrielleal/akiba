@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Airtime;
 use App\Models\Program;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -18,33 +19,40 @@ class ProgramSeeder extends Seeder
         $virtualUser = User::where('is_virtual', true)->inRandomOrder()->first();
 
         $this->seedAdministrator($admin);
-        $this->seedAutoDJ($virtualUser);
         $this->seedPrograms($user);
+        $this->seedAutoDJ($user);
+        $this->seedPlaylist($virtualUser);
+        $this->seedScheduled($virtualUser);
     }
 
     private function seedAdministrator($user): void
     {
         if(!$user) return;
 
-        Program::factory()
+        $program = Program::factory()
             ->withPrivate()
             ->for($user, 'host')
             ->create();
+
+        $this->seedAirtimes($program);
     }
 
     private function seedPrograms(?User $user): void
     {
        if(!$user) return;
 
-        Program::factory()
+        $free = Program::factory()
             ->withFree()
             ->for($user, 'host')
             ->create();
 
-        Program::factory()
+        $private = Program::factory()
             ->withPrivate()
             ->for($user, 'host')
             ->create();
+
+        $this->seedAirtimes($free);
+        $this->seedAirtimes($private);
     }
 
     private function seedAutoDJ(?User $user): void
@@ -52,9 +60,37 @@ class ProgramSeeder extends Seeder
         if(!$user) return;
 
         Program::factory()
-            ->withAutomatic()
-            ->isDefault()
+            ->withAutoDJ()
             ->for($user, 'host')
+            ->create();
+    }
+
+    private function seedPlaylist(?User $user): void
+    {
+        if(!$user) return;
+
+        Program::factory()
+            ->withPlaylist()
+            ->for($user, 'host')
+            ->create();
+    }
+
+    private function seedScheduled(?User $user): void
+    {
+        if(!$user) return;
+
+        Program::factory()
+            ->withScheduled()
+            ->for($user, 'host')
+            ->create();
+    }
+
+    private function seedAirtimes(Program $program): void
+    {
+        if($program->execution_mode !== 'live') return;
+
+        Airtime::factory(3)
+            ->for($program, 'program')
             ->create();
     }
 }

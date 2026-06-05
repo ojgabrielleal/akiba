@@ -116,7 +116,7 @@
                 id="name"
                 type="text"
                 name="name"
-                class="w-full h-10 bg-white font-noto-sans text-black text-md rounded-lg outline-none pl-4 border border-gray-400"
+                class="w-full h-10 bg-white font-noto-sans text-black text-md rounded-md outline-none pl-4 border border-gray-400"
                 placeholder="Ex: Ayasumi"
                 bind:value={$form.name}
                 required
@@ -133,7 +133,7 @@
                 id="address"
                 type="text"
                 name="address"
-                class="w-full h-10 bg-white font-noto-sans text-md text-black rounded-lg outline-none pl-4 border border-gray-400"
+                class="w-full h-10 bg-white font-noto-sans text-md text-black rounded-md outline-none pl-4 border border-gray-400"
                 placeholder="Ex: Salto - SP"
                 bind:value={$form.address}
                 required
@@ -150,7 +150,7 @@
                 id="anime"
                 type="text"
                 name="anime"
-                class="w-full h-10 bg-white font-noto-sans text-md text-black rounded-lg outline-none pl-4 border border-gray-400"
+                class="w-full h-10 bg-white font-noto-sans text-md text-black rounded-md outline-none pl-4 border border-gray-400"
                 placeholder="Ex: Naruto"
                 on:input={(e) => debouncedGetAnimeJikanApi(e.target.value)}
                 on:focus={() => (activeAnimeDropdown = true)}
@@ -170,7 +170,7 @@
                             <img
                                 src={item.image}
                                 alt={item.title}
-                                class="w-14 h-14 object-cover object-top rounded-lg border border-gray-100 shadow-sm shrink-0"
+                                class="w-14 h-14 object-cover object-top rounded-md border border-gray-100 shadow-sm shrink-0"
                                 loading="lazy"
                             />
                             <div class="flex flex-col items-start text-left">
@@ -193,7 +193,7 @@
                 </div>
                 <button
                     type="button"
-                    class="w-full h-11 flex items-center justify-between bg-white font-noto-sans text-md text-black rounded-lg outline-none px-4 border border-gray-400"
+                    class="w-full h-11 flex items-center justify-between bg-white font-noto-sans text-md text-black rounded-md outline-none px-4 border border-gray-400"
                     on:click={() => (activeMusicDropdown = true)}
                     on:blur={() => (activeMusicDropdown = false)}
                 >
@@ -220,7 +220,7 @@
                 {#if activeMusicDropdown && animeThemesList.length > 0}
                     <div class="absolute w-full mt-2 bg-white border border-gray-100 rounded-2xl shadow-2xl z-30 max-h-56 overflow-y-auto">
                         {#each ["OP", "ED"] as type}
-                            <div class="px-3 py-2 text-[0.6rem] font-bold text-gray-400 uppercase tracking-[0.2em]">
+                            <div class="px-3 py-2 text-[0.6rem] font-extrabold text-gray-400 uppercase tracking-[0.2em]">
                                 {type === "OP" ? "Aberturas" : "Encerramentos"}
                             </div>
                             {#each animeThemesList.filter((item) => item.type === type) as item}
@@ -229,7 +229,7 @@
                                     class="w-full flex flex-col items-start gap-0.5 p-3 rounded-xl hover:bg-gray-50 active:bg-pink-50 transition-colors border-b last:border-0 border-gray-50 mb-1"
                                     on:mousedown={() => { $form.music = item; activeMusicDropdown = false; }}
                                 >
-                                    <div class="font-noto-sans font-bold text-gray-900 text-sm line-clamp-1 w-full text-left leading-tight">
+                                    <div class="font-noto-sans font-extrabold text-gray-900 text-sm line-clamp-1 w-full text-left leading-tight">
                                         {item.name}
                                     </div>
                                     <div class="font-noto-sans text-gray-500 text-xs truncate w-full text-left">
@@ -250,7 +250,7 @@
                 id="message"
                 name="message"
                 rows="4"
-                class="w-full bg-white font-noto-sans text-md text-black rounded-lg outline-none p-4 border border-gray-400 resize-none"
+                class="w-full bg-white font-noto-sans text-md text-black rounded-md outline-none p-4 border border-gray-400 resize-none"
                 placeholder="Deixe uma mensagem amigavel"
                 bind:value={$form.message}
                 required
@@ -259,7 +259,7 @@
                 Vamos evitar ofensas! Se pedido pode não tocar por isso.
             </span>
         </div>
-        <button type="submit" class="cursor-pointer w-full bg-blue-skywave px-8 py-2 rounded-md text-suspense-aurora font-noto-sans font-bold italic uppercase">
+        <button type="submit" class="cursor-pointer w-full bg-blue-skywave px-8 py-2 rounded-md text-suspense-aurora font-noto-sans font-extrabold italic uppercase">
             Enviar
         </button>
     </form>

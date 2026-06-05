@@ -2,16 +2,11 @@
     import { page, useForm } from "@inertiajs/svelte";
     import { onMount } from "svelte";
     import { PostActions, Preview, Wysiwyg, Tooltip } from "@/ui/components/private";
-    import { hasPermission } from "@/utils";
+    import { postPermissions } from "@/utils";
 
     $: ({ post } = $page.props);
     
-    let can = {
-        create: hasPermission("post.create"),    
-        update: hasPermission("post.update"),
-        publish: hasPermission("post.publish"),
-        approve: hasPermission("post.approve"),
-    };
+    let can = postPermissions();
 
     const normalizeTags = (tags = []) => [
         { uuid: null, name: "reviews", ...tags[0] },
@@ -68,34 +63,34 @@
         <div class="mb-8">
             <div class="grid grid-cols-1 lg:grid-cols-[1fr_13rem] lg:gap-5">
                 <div class="mb-8 lg:mb-0">
-                    <label for="title" class="text-orange-amber font-bold italic text-lg uppercase font-noto-sans block mb-1">
+                    <label for="title" class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block mb-1">
                         Nome do anime
                     </label>
                     <input
                         id="title"
                         type="text"
                         name="title"
-                        class="w-full h-12 bg-blue-ocean border border-blue-skywave font-noto-sans text-suspense-aurora rounded-lg outline-none pl-4 disabled:opacity-50 disabled:cursor-not-allowed"
+                        class="w-full h-12 bg-blue-ocean border border-blue-skywave font-noto-sans text-suspense-aurora rounded-md outline-none pl-4 disabled:opacity-50 disabled:cursor-not-allowed"
                         required={!post}
                         bind:value={$form.title}
                     />
                 </div>
                 <div class="mb-8">
-                    <label for="year_of_release" class="text-orange-amber font-bold italic text-lg uppercase font-noto-sans block mb-1">
+                    <label for="year_of_release" class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block mb-1">
                         Ano de lançamento
                     </label>
                     <input
                         id="year_of_release"
                         type="number"
                         name="year_of_release"
-                        class="w-full h-12 bg-blue-ocean border border-blue-skywave font-noto-sans text-suspense-aurora rounded-lg outline-none pl-4 disabled:opacity-50 disabled:cursor-not-allowed"
+                        class="w-full h-12 bg-blue-ocean border border-blue-skywave font-noto-sans text-suspense-aurora rounded-md outline-none pl-4 disabled:opacity-50 disabled:cursor-not-allowed"
                         required={!post}
                         bind:value={$form.year_of_release}
                     />
                 </div>
             </div>
             <div class="mb-8">
-                <label for="sinopse" class="text-orange-amber font-bold italic text-lg uppercase font-noto-sans block mb-1">
+                <label for="sinopse" class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block mb-1">
                     Sinopse do anime
                 </label>
                 <Wysiwyg
@@ -106,7 +101,7 @@
                 />
             </div>
             <div class="mb-8">
-                <label for="cover" class="text-orange-amber font-bold italic text-lg uppercase font-noto-sans block mb-1">
+                <label for="cover" class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block mb-1">
                     Capa do anime
                 </label>
                 <Preview
@@ -117,7 +112,7 @@
                 />
             </div>
             <div>
-                <label for="content" class="text-orange-amber font-bold italic text-lg uppercase font-noto-sans block mb-1">
+                <label for="content" class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block mb-1">
                     Escreva sobre o anime
                 </label>
                 {#if post?.data.opinions?.length}
@@ -127,7 +122,7 @@
                                 <button 
                                     type="button"
                                     aria-label={`Review de ${opinion.author.nickname}`}
-                                    class={["py-1 px-4 rounded-md font-noto-sans font-bold italic uppercase cursor-pointer",
+                                    class={["py-1 px-4 rounded-md font-noto-sans font-extrabold italic uppercase cursor-pointer",
                                         {"bg-neutral-gray text-blue-marinho": opinion.status === 'not_created'},
                                         {"bg-blue-ocean text-suspense-aurora": opinion.status === 'published'},
                                         {"bg-green-forest text-blue-marinho": opinion.status === 'draft'},
@@ -155,7 +150,7 @@
     </div>
     <div class="grid grid-cols-1 lg:grid-cols-[18rem_1fr] gap-5">
         <div class="mb-3">
-            <div class="text-orange-amber font-bold italic text-lg uppercase font-noto-sans mb-2">
+            <div class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans mb-2">
                 Imagem em destaque
             </div>
             <Preview
@@ -176,11 +171,11 @@
         <div class="block">
             <div class="grid grid-cols-1 lg:grid-cols-[0.4fr_1fr] gap-5 mb-15">
                 <div>
-                    <div class="text-center text-orange-amber font-bold italic text-lg uppercase font-noto-sans mb-5">
+                    <div class="text-center text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans mb-5">
                         Tags
                     </div>
                     <div class="mb-6">
-                        <label for="tags" class="text-blue-skywave font-bold italic text-md uppercase font-noto-sans block mb-1 ml-3">
+                        <label for="tags" class="text-blue-skywave font-extrabold italic text-md uppercase font-noto-sans block mb-1 ml-3">
                             Primeira Tag
                         </label>
                         <select
@@ -196,7 +191,7 @@
                         </select>
                     </div>
                     <div>
-                        <label for="tags" class="text-blue-skywave font-bold italic text-md uppercase font-noto-sans block mb-1 ml-3">
+                        <label for="tags" class="text-blue-skywave font-extrabold italic text-md uppercase font-noto-sans block mb-1 ml-3">
                             Segunda Tag
                         </label>
                         <select
@@ -216,12 +211,12 @@
                     </div>
                 </div>
                 <div>
-                    <div class="text-center text-orange-amber font-bold italic text-lg uppercase font-noto-sans mb-5">
+                    <div class="text-center text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans mb-5">
                         Fontes
                     </div>
                     <div class="w-full flex mb-6">
                         <div class="flex-1">
-                            <label for="references" class="text-blue-skywave font-bold italic text-md uppercase font-noto-sans block mb-1 ml-3">
+                            <label for="references" class="text-blue-skywave font-extrabold italic text-md uppercase font-noto-sans block mb-1 ml-3">
                                 Nome:
                             </label>
                             <input
@@ -234,7 +229,7 @@
                             />
                         </div>
                         <div class="flex-1">
-                            <label for="references" class="text-blue-skywave font-bold italic text-md uppercase font-noto-sans block mb-1">
+                            <label for="references" class="text-blue-skywave font-extrabold italic text-md uppercase font-noto-sans block mb-1">
                                 Link:
                             </label>
                             <input
@@ -249,7 +244,7 @@
                     </div>
                     <div class="w-full flex">
                         <div class="flex-1">
-                            <label for="references" class="text-blue-skywave font-bold italic text-md uppercase font-noto-sans block mb-1 ml-3">
+                            <label for="references" class="text-blue-skywave font-extrabold italic text-md uppercase font-noto-sans block mb-1 ml-3">
                                 Nome:
                             </label>
                             <input
@@ -262,7 +257,7 @@
                             />
                         </div>
                         <div class="flex-1">
-                            <label for="references" class="text-blue-skywave font-bold italic text-md uppercase font-noto-sans block mb-1">
+                            <label for="references" class="text-blue-skywave font-extrabold italic text-md uppercase font-noto-sans block mb-1">
                                 Link:
                             </label>
                             <input

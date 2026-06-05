@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\CastResource;
-use App\Models\Onair;
 use App\Services\External\CastService;
+
+use App\Models\Onair;
+
+use App\Http\Resources\CastResource;
 
 class CastController extends Controller
 {

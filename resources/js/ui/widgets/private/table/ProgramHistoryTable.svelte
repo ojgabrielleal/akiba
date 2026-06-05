@@ -12,7 +12,7 @@
         <div class="overflow-x-auto w-full">
             <table class="min-w-[900px] w-full border-collapse table-auto">
                 <thead>
-                    <tr class="text-orange-amber uppercase text-lg font-bold font-noto-sans italic whitespace-nowrap">
+                    <tr class="text-orange-amber uppercase text-lg font-extrabold font-noto-sans italic whitespace-nowrap">
                         <th class="py-4 px-4 text-start min-w-[180px]">
                             Locutor
                         </th>

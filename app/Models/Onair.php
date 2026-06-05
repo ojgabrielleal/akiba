@@ -16,8 +16,9 @@ class Onair extends Model
         'uuid',
         'in_air',
         'program_id',
+        'paused_plan_id',
         'phrase',
-        'type',
+        'execution_mode',
         'icon',
         'allows_song_requests',
         'song_requests_total'
@@ -66,6 +67,11 @@ class Onair extends Model
     public function program()
     {
         return $this->belongsTo(Program::class, 'program_id');
+    }
+
+    public function pausedPlan()
+    {
+        return $this->belongsTo(Plan::class, 'paused_plan_id');
     }
 
     public function songRequests()

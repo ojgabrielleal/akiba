@@ -3,28 +3,28 @@
     "file": "assets/vendor-CHPFJqtd.css",
     "src": "_vendor-CHPFJqtd.css"
   },
-  "_vendor-iYD6-DAc.js": {
-    "file": "assets/vendor-iYD6-DAc.js",
+  "_vendor-C_4q6ZUj.js": {
+    "file": "assets/vendor-C_4q6ZUj.js",
     "name": "vendor",
     "css": [
       "assets/vendor-CHPFJqtd.css"
     ]
   },
-  "resources/css/app.css": {
-    "file": "assets/app-B5PGj0q3.css",
-    "src": "resources/css/app.css",
-    "isEntry": true
-  },
   "resources/js/app.js": {
-    "file": "assets/app-Co89l6-W.js",
+    "file": "assets/app-7MVqf8W8.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
     "imports": [
-      "_vendor-iYD6-DAc.js"
+      "_vendor-C_4q6ZUj.js"
     ],
     "css": [
       "assets/app-DR4D5KxC.css"
     ]
+  },
+  "resources/js/css/quill-editor.css": {
+    "file": "assets/quill-editor-Bnx8Dnrg.css",
+    "src": "resources/js/css/quill-editor.css",
+    "isEntry": true
   }
 }

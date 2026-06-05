@@ -162,7 +162,7 @@
             </nav>
 
             <div class="absolute bottom-0 left-0 w-full p-6 border-t border-blue-night/10 bg-suspense-aurora z-10">
-                <span class="w-full block text-[0.6rem] font-bold uppercase tracking-widest text-blue-night text-center opacity-40 mb-3">
+                <span class="w-full block text-[0.6rem] font-extrabold uppercase tracking-widest text-blue-night text-center opacity-40 mb-3">
                     Temas da Akiba
                 </span>
                 <div class="w-25 h-8 mx-auto flex justify-center items-center gap-1 bg-blue-skywave p-1 rounded-full">

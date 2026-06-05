@@ -1,7 +1,6 @@
 // Carrousels
 export { default as ActivityCarrousel } from "./carrousel/ActivityCarrousel.svelte"
 export { default as TaskCarrousel } from "./carrousel/TaskCarrousel.svelte"
-export { default as ProgramCarrousel } from "./carrousel/ProgramCarrousel.svelte"
 export { default as AudienceCarrousel } from "./carrousel/AudienceCarrousel.svelte";
 
 // Forms
@@ -27,6 +26,7 @@ export { default as TaskForm } from "./form/TaskForm.svelte"
 export { default as PostGrid } from "./grid/PostGrid.svelte"
 export { default as CalendarGrid } from "./grid/CalendarGrid.svelte"
 export { default as SongRequestGrid } from "./grid/SongRequestGrid.svelte"
+export { default as ProgramGrid } from "./grid/ProgramGrid.svelte"
 export { default as ProgramScheduleGrid } from "./grid/ProgramScheduleGrid.svelte"
 export { default as MusicRankingGrid } from "./grid/MusicRankingGrid.svelte"
 export { default as ListenerMonthGrid } from "./grid/ListenerMonthGrid.svelte"

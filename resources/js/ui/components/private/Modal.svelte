@@ -37,9 +37,9 @@
         class="w-screen h-screen fixed inset-0 flex justify-center items-center bg-black/40 backdrop-blur-xs z-100 p-4"
         on:click={close}
     >
-        <div class="w-full min-w-sm max-w-sm bg-suspense-aurora rounded-lg overflow-hidden" on:click={block}>
+        <div class="w-full min-w-sm max-w-sm bg-suspense-aurora rounded-md overflow-hidden" on:click={block}>
             {#if title}
-                <div class="bg-blue-skywave p-4 text-suspense-aurora font-bold italic uppercase flex justify-between items-center">
+                <div class="bg-blue-skywave p-4 text-suspense-aurora font-extrabold italic uppercase flex justify-between items-center">
                     <span>
                         {title}
                     </span>

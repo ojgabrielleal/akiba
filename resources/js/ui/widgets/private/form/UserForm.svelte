@@ -2,13 +2,11 @@
     export let close = () => {};
 
     import { useForm, page } from "@inertiajs/svelte";
-    import { hasPermission } from "@/utils";
+    import { userPermissions } from "@/utils";
 
     $: ({ roles } = $page.props);
 
-    let can = {
-        create: hasPermission("user.create"),
-    };
+    let can = userPermissions();
 
     let form = useForm({
         is_virtual: false,
@@ -70,7 +68,7 @@
                     id="username"
                     type="text"
                     name="username"
-                    class="font-noto-sans text-md h-10 w-full rounded-lg border border-gray-400 bg-white pl-4 outline-none"
+                    class="font-noto-sans text-md h-10 w-full rounded-md border border-gray-400 bg-white pl-4 outline-none"
                     bind:value={$form.username}
                     required
                 />
@@ -83,7 +81,7 @@
                     id="password"
                     type="password"
                     name="password"
-                    class="font-noto-sans text-md h-10 w-full rounded-lg border border-gray-400 bg-white pl-4 outline-none"
+                    class="font-noto-sans text-md h-10 w-full rounded-md border border-gray-400 bg-white pl-4 outline-none"
                     bind:value={$form.password}
                     required
                 />
@@ -97,7 +95,7 @@
         <div class="mb-5 flex w-full items-center justify-center">
             <div class="relative w-full">
                 <div class="bg-blue-skywave absolute top-1/2 left-0 h-[0.1rem] w-1/5 -translate-y-1/2 rounded-full"></div>
-                <span class="text-blue-skywave font-noto-sans absolute inset-0 flex items-center justify-center font-bold uppercase italic">
+                <span class="text-blue-skywave font-noto-sans absolute inset-0 flex items-center justify-center font-extrabold uppercase italic">
                     Informações básicas
                 </span>
                 <div class="bg-blue-skywave absolute top-1/2 right-0 h-[0.1rem] w-1/5 -translate-y-1/2 rounded-full"></div>
@@ -111,7 +109,7 @@
                 id="name"
                 type="text"
                 name="name"
-                class="font-noto-sans text-md h-10 w-full rounded-lg border border-gray-400 bg-white pl-4 outline-none"
+                class="font-noto-sans text-md h-10 w-full rounded-md border border-gray-400 bg-white pl-4 outline-none"
                 bind:value={$form.name}
                 required
             />
@@ -124,7 +122,7 @@
                 id="nickname"
                 type="text"
                 name="nickname"
-                class="font-noto-sans text-md h-10 w-full rounded-lg border border-gray-400 bg-white pl-4 outline-none"
+                class="font-noto-sans text-md h-10 w-full rounded-md border border-gray-400 bg-white pl-4 outline-none"
                 bind:value={$form.nickname}
                 required
             />
@@ -136,7 +134,7 @@
             <select
                 id="gender"
                 name="gender"
-                class="font-noto-sans text-md h-10 w-full rounded-lg border border-gray-400 bg-white pl-4 outline-none"
+                class="font-noto-sans text-md h-10 w-full rounded-md border border-gray-400 bg-white pl-4 outline-none"
                 bind:value={$form.gender}
                 required
             >
@@ -153,7 +151,7 @@
         <div class="mb-5 flex w-full items-center justify-center">
             <div class="relative w-full">
                 <div class="bg-blue-skywave absolute top-1/2 left-0 h-[0.1rem] w-1/3 -translate-y-1/2 rounded-full"></div>
-                <span class="text-blue-skywave font-noto-sans absolute inset-0 flex items-center justify-center font-bold uppercase italic">
+                <span class="text-blue-skywave font-noto-sans absolute inset-0 flex items-center justify-center font-extrabold uppercase italic">
                     Cargos
                 </span>
                 <div class="bg-blue-skywave absolute top-1/2 right-0 h-[0.1rem] w-1/3 -translate-y-1/2 rounded-full"></div>
@@ -184,7 +182,7 @@
         </div>
     </div>
     {#if can.create}
-        <button type="submit" class="bg-blue-skywave text-suspense-aurora font-noto-sans cursor-pointer rounded-md px-8 py-2 font-bold uppercase italic">
+        <button type="submit" class="bg-blue-skywave text-suspense-aurora font-noto-sans cursor-pointer rounded-md px-8 py-2 font-extrabold uppercase italic">
             Cadastrar
         </button>
     {/if}
