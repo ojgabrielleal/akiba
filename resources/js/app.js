@@ -8,6 +8,13 @@ createInertiaApp({
         return pages[`./pages/${name}.svelte`];
     },
     setup({ el, App, props, plugin }) {
+        if ("serviceWorker" in navigator) {
+            window.addEventListener("load", () => {
+                navigator.serviceWorker.register("/sw.js")
+                    .catch(error => console.log("Erro ao registrar service worker", error));
+            });
+        }
+
         mount(App, { target: el, props });
     },
 });
