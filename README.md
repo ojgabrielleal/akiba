@@ -12,7 +12,7 @@ Rede Akiba ( Akiba V2 ) é uma aplicação Laravel para gerenciar uma plataforma
 ## Stack
 
 - **Backend:** PHP 8.2, Laravel 12
-- **Frontend:** JavaScript, Inertia, Svelte, Tailwind
+- **Frontend:** Javascriot, Inertia, Svelte, Tailwind
 - **Banco de dados:** MySQL
 
 ## Principais Recursos
@@ -28,72 +28,21 @@ Rede Akiba ( Akiba V2 ) é uma aplicação Laravel para gerenciar uma plataforma
 - Endpoints de cast para redirecionamento de stream e metadados
 - Integração com webhook do Discord para eventos da stream
 
-## Configuração obrigatória
+## Requisitos
 
-Antes de rodar, copie o arquivo `.env.example` e renomeie a cópia para `.env`.
+- Docker
 
-Depois, preencha as variáveis de conexão com o banco de dados no `.env`:
+## Instalação
 
-```env
-DB_DATABASE=akiba
-DB_USERNAME=seu_usuario
-DB_PASSWORD=sua_senha
-```
-
-- `DB_DATABASE`: nome do banco de dados usado pela aplicação.
-- `DB_USERNAME`: usuário usado para conectar no banco de dados.
-- `DB_PASSWORD`: senha do usuário usado para conectar no banco de dados.
-
-Após isso, preencha as variáveis com as informações da sua stream:
-
-```env
-STREAM_URL=null
-STREAM_METADATA=null
-```
-
-- `STREAM_URL`: URL usada para redirecionar ou conectar o player ao stream da rádio.
-- `STREAM_METADATA`: URL usada para buscar os metadados da stream, como música atual e informações da transmissão.
-
-## Instalação com Docker
-
-Clone o repositório e rode a instalação usando Docker. O `install.sh` irá montar todo o ambiente pronto para execução.
+Clone o repositório e rode a instalação usando Docker
 
 ```bash
 ./scripts/install.sh
 ```
 
-## Instalação sem Docker
+## Variáveis de ambiente
 
-Para rodar o projeto sem Docker, instale previamente:
-
-- PHP 8
-- Composer
-- Node.js
-- MySQL
-
-Caso deseje acessar o MySQL por uma interface gráfica, você pode usar o `DBeaver` ou outra ferramenta de sua preferência.
-
-Depois clone o repositório e crie um banco de dados MySQL chamado `akiba`.
-
-Em seguida, rode os comandos:
-
-```bash
-composer install
-npm install
-php artisan key:generate
-php artisan migrate
-php artisan db:seed
-```
-
-Para levantar o ambiente de desenvolvimento, use o comando:
-
-```bash
-php artisan dev
-```
-
-## Integrações externas
-
-O projeto inclui variáveis de ambiente extras para integrações com Discord:
+O projeto inclui variáveis de ambiente extras para integrações com stream e Discord:
 
 ```env
 DISCORD_STREAM_WEBHOOK=null
