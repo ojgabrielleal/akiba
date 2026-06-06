@@ -4,23 +4,19 @@ namespace App\Services\External;
 
 use Illuminate\Support\Facades\Http;
 
-class DiscordWebhookService
+class DiscordService
 {
-    public function sendHookMessage($user, $program)
+    public function sendStreamNotificationHook($user, $program)
     {
         if (!app()->environment('production')) {
             return false;
         }
 
         $webhookUrl = config('services.discord.webhook');
-
-        if (!$webhookUrl) {
-            return false; 
-        }
-
+        
+        if (!$webhookUrl) return false; 
+            
         $genderTitle = $user->gender === 'male' ? 'O DJ' : 'A DJ';
-        // A imagem do banco já vem com o prefixo '/storage/' pelo ImageProcessService
-        $avatarUrl = $user->avatar ? asset($user->avatar) : asset('assets/default-avatar.png');
 
         $payload = [
             'content' => "@everyone Olá otakus queridos!\n\n🔴 **PROGRAMA AO VIVO rolando agora!**",

@@ -3,7 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Http\Controllers\Concerns\ResolvesUserLogged;
-use App\Services\External\CastService;
+use App\Services\External\StreamService;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -33,7 +33,7 @@ class HandleInertiaRequestsMiddleware extends Middleware
     {
         return array_merge(parent::share($request), [
             'user' => $this->getUserLogged(),
-            'streaming' => (new CastService)->data(),
+            'stream' => (new StreamService)->data(),
             'csrf_token' => csrf_token(),
             'flash' => session('flash'),
         ]);

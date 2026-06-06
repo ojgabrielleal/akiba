@@ -54,6 +54,6 @@ class StartLocutionAction
             ]);
         });
 
-        $this->discord->sendHookMessage($user, $program);
+        $this->discord->sendStreamNotificationHook($user, $program);
     }
 }

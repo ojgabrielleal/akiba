@@ -3,12 +3,46 @@
     import { Modal } from "@/ui/components/public";
     import { SongRequestForm } from "@/ui/widgets/public";
     import { player, toggleAudio, setVolume } from "@/store";
+    import { locutionIcons, locutionTextures, locutionDecorations } from "@/data";
 
-    $: ({ onair } = $page.props);
-
-    $: air = onair.data[0];
+    $: ({ onair: { data: [air] }, stream } = $page.props);
 
     let modalRef;
+
+    $: playerData = {
+        program: {
+            image: air.program?.image,
+        },
+        host: {
+            nickname: air.program?.host?.nickname,
+            avatar: air.program?.host?.avatar,
+            gender: air.program?.host?.gender,
+        },
+        execution_mode: air.execution_mode,
+        current_song: {
+            cover: stream.current_song.cover,
+            music: stream.current_song.music,
+        },
+        phrase: {
+            text: air.phrase.text,
+            icon: air.phrase.icon ?? locutionIcons[17].url,
+            texture: air.phrase.texture ?? locutionTextures[0].url,
+            decoration: {
+                left: air.phrase.decoration?.left ?? locutionDecorations[0].left,
+                right: air.phrase.decoration?.right ?? locutionDecorations[0].right,
+            },
+        },
+    };
+
+    function splitHighlightedText(text) {
+        return String(text).split(/(\[[^\]]+\])/g).filter(Boolean).map((part) => ({
+            text: part.startsWith("[") && part.endsWith("]")
+                ? part.slice(1, -1)
+                : part,
+            highlighted: part.startsWith("[") && part.endsWith("]"),
+        }));
+    }
+
 </script>
 
 <Modal bind:this={modalRef}>
@@ -18,40 +52,41 @@
 </Modal>
 
 <!-- Phrase Section -->
-<section class="w-full bg-blue-ocean mb-5">
-    <div class="container-player py-4 relative">
-        <div class="block absolute -top-7 left-0 xl:-left-10 z-10">
+<section class="w-full bg-contain bg-right bg-no-repeat mt-5 mb-7"  style={`background-image: url('${playerData.phrase.texture}'), var(--gradient-blue-ocean-cerulean);`}>
+    <div class="container-player h-28  relative">
+        <div class="absolute -top-7 left-0 xl:-left-25 z-10">
             <img
-                src="/img/player/rains.webp"
+                src={playerData.phrase.decoration.left}
                 alt=""
                 aria-hidden="true"
-                class="w-20 transform -scale-x-100 -scale-y-100"
+                class="w-25"
                 loading="lazy"
             />
         </div>
-        <!-- svelte-ignore a11y_distracting_elements -->
-        <marquee class="w-[95%] xl:w-5xl flex overflow-x-hidden relative marquee-cont">
-            <div class="whitespace-nowrap w-full md:w-auto text-suspense-aurora text-3xl font-noto-sans font-extrabold uppercase italic">
-                <span class="mx-4">
-                    {air.phrase?.text ?? air.phrase?.phrase ?? air.phrase}
-                </span>
-            </div>
-        </marquee>
-        <div class="block absolute bottom-0 right-5 xl:-right-4 z-10">
+        <div class="w-full h-28 flex items-center text-suspense-aurora text-3xl font-noto-sans font-extrabold uppercase italic">
+            <span>
+                {#each splitHighlightedText(playerData.phrase.text) as phrasePart}
+                    <span class:text-orange-amber={phrasePart.highlighted}>
+                        {phrasePart.text}
+                    </span>
+                {/each}
+            </span>
+        </div>
+        <div class="absolute bottom-0 right-5 xl:-right-15 z-10">
             <img
-                src={air.icon}
+                src={playerData.phrase.icon}
                 alt=""
                 aria-hidden="true"
-                class="w-32"
+                class="w-35"
                 loading="lazy"
             />
         </div>
-        <div class="block absolute -top-8 right-0 xl:-right-10 z-10">
+        <div class="absolute -top-6 right-0 xl:-right-25 z-10">
             <img
-                src="/img/player/rains.webp"
+                src={playerData.phrase.decoration.right}
                 alt=""
                 aria-hidden="true"
-                class="w-20"
+                class="w-25"
                 loading="lazy"
             />
         </div>
@@ -59,14 +94,14 @@
 </section>
 
 <!-- Main Player Section -->
-<section class="container-player grid grid-cols-[2fr_1fr_0.8fr] items-center gap-5">
+<section class="container-player grid grid-cols-[3fr_1fr_1.2fr] items-center gap-5">
     <!-- First Column-->
     <div class="block">
         <!--Program and Host Information-->
-        <div class="flex items-center gap-5 mb-15">
-            <div class="w-52">
+        <div class="flex items-center gap-5 mb-5">
+            <div class="w-60">
                 <img
-                    src={air.program.image}
+                    src={playerData.program.image}
                     alt="Programa"
                     loading="lazy"
                 />
@@ -81,23 +116,23 @@
                 />
             </div>
             <div>
-                <div class="text-orange-amber font-noto-sans uppercase">
+                <div class="text-neutral-gray text-sm font-noto-sans uppercase">
                     COM DJ
                 </div>
-                <div class="w-full text-suspense-aurora text-2xl font-noto-sans font-extrabold uppercase italic line-clamp-1">
-                    {air.program.host.nickname}
+                <div class="w-full text-suspense-aurora text-3xl font-noto-sans font-extrabold uppercase italic">
+                    {playerData.host.nickname}
                 </div>
                 <div class={["mt-[0.4rem] w-24 rounded-xl float-end text-center text-sm text-suspense-aurora font-noto-sans font-extrabold italic uppercase",
-                    { "bg-neutral-gray": air.type === "auto_dj" || air.type === "playlist" },
-                    { "bg-green-mint": air.type === "live" },
-                    { "bg-orange-citric": air.type === "scheduled" },
+                    { "bg-neutral-gray": playerData.execution_mode === "auto_dj" || playerData.execution_mode === "playlist" },
+                    { "bg-green-mint": playerData.execution_mode === "live" },
+                    { "bg-orange-amber": playerData.execution_mode === "scheduled" },
                 ]}>
-                    {#if air.type === "auto_dj" || air.type === "playlist"}
+                    {#if playerData.execution_mode === "auto_dj" || playerData.execution_mode === "playlist"}
                         Robô
-                    {:else if air.type === "live"}
-                        Human{air.program.host.gender === "male" ? "o" : "a"}
+                    {:else if playerData.execution_mode === "live"}
+                        Human{playerData.host.gender === "male" ? "o" : "a"}
                     {:else}
-                        Gravado
+                        Agendado
                     {/if}
                 </div>
             </div>
@@ -115,33 +150,31 @@
         <div class="flex gap-3 items-end">
             <div class="w-20 shrink-0">
                 <img
-                    src={air.current_song?.cover || "https://cdn.vectorstock.com/i/500p/57/71/music-note-icon-set-vector-2855771.jpg"}
+                    src={playerData.current_song.cover}
                     alt=""
                     aria-hidden="true"
                     class="rounded-md"
                     loading="lazy"
-                    on:error={(e) => { e.target.src = "https://cdn.vectorstock.com/i/500p/57/71/music-note-icon-set-vector-2855771.jpg"; }}
                 />
             </div>
             <div class="w-full srink-0">
                 <div class="text-orange-amber font-noto-sans uppercase italic">
                     Tocando agora:
                 </div>
-                <!-- svelte-ignore a11y_distracting_elements -->
-                <marquee class="w-full text-suspense-aurora text-xl font-noto-sans font-extrabold uppercase italic line-clamp-1">
+                <div class="w-full text-suspense-aurora text-lg font-noto-sans font-extrabold uppercase italic line-clamp-2 leading-6">
                     {decodeURIComponent(
-                        escape(air.current_song?.music || "Estamos offline"),
+                        escape(playerData.current_song.music || "Estamos offline"),
                     )}
-                </marquee>
+                </div>
             </div>
         </div>
     </div>
     <!--Second Column-->
     <div class="block">
         <!--Host Image-->
-        <div class="w-70">
+        <div class="w-65">
             <img
-                src={air.program.host.avatar}
+                src={playerData.host.avatar}
                 alt=""
                 aria-hidden="true"
                 aria-label="hidden"
@@ -153,26 +186,34 @@
     <!--Third Column-->
     <div class="block">
         <!-- Player Type Information-->
-        <div class={["mx-4 mb-10 py-2 px-6 gap-2 flex justify-center items-center rounded-md",
-            { "bg-neutral-gray": air.type === "auto_dj" || air.type === "playlist" },
-            { "bg-green-mint": air.type === "live" },
-            { "bg-orange-citric": air.type === "scheduled" },
+        <div class={["h-10 mb-5 flex justify-center gap-2 items-center rounded-md",
+            { "bg-neutral-gray": playerData.execution_mode === "auto_dj" || playerData.execution_mode === "playlist" },
+            { "bg-green-mint": playerData.execution_mode === "live" },
+            { "bg-orange-amber": playerData.execution_mode === "scheduled" },
         ]}>
-            <div class="block">
-                {#if air.type === "auto_dj" || air.type === "playlist"}
+            <div class="flex size-6 shrink-0">
+                {#if playerData.execution_mode === "auto_dj"}
                     <img
-                        src="/svg/playlist.svg"
+                        src="/svg/robot.svg"
                         alt=""
                         aria-hidden="true"
-                        class="w-10 filter-blue-night"
+                        class="size-6 object-contain brightness-0 -mt-[0.1rem]"
                         loading="lazy"
                     />
-                {:else if air.type === "live"}
+                {:else if playerData.execution_mode === "playlist"}
+                    <img
+                        src="/svg/disc.svg"
+                        alt=""
+                        aria-hidden="true"
+                        class="size-6 object-contain brightness-0"
+                        loading="lazy"
+                    />
+                {:else if playerData.execution_mode === "live"}
                     <img
                         src="/svg/onair.svg"
                         alt=""
                         aria-hidden="true"
-                        class="w-10 filter-blue-night"
+                        class="size-6 object-contain brightness-0"
                         loading="lazy"
                     />
                 {:else}
@@ -180,31 +221,35 @@
                         src="/svg/disc.svg"
                         alt=""
                         aria-hidden="true"
-                        class="w-9 filter-blue-night"
+                        class="size-6 object-contain brightness-0"
                         loading="lazy"
                     />
                 {/if}
             </div>
-            <div class="shrink-0 font-noto-sans font-extrabold italic uppercase text-center text-md text-blue-night leading-4">
-                {#if air.type === "auto_dj" || air.type === "playlist"}
-                    Playlist <br />automática
-                {:else if air.type === "live"}
-                    Locut{air.program.host.gender === "male" ? "or" : "ora"}
-                    <br />ao vivo
+            <div class="shrink-0 font-noto-sans font-bold italic uppercase text-center text-[0.9rem] text-blue-night leading-4">
+                {#if playerData.execution_mode === "auto_dj"}
+                    Playlist automática
+                {:else if playerData.execution_mode === "playlist"}
+                    Playlist personalizada
+                {:else if playerData.execution_mode === "live"}
+                    Locut{playerData.host.gender === "male" ? "or" : "ora"} ao vivo
                 {:else}
-                    Programa<br />gravado
+                    Programa agendado
                 {/if}
             </div>
         </div>
         <!-- Player Controls-->
-        <div class="w-55 h-20 flex items-center justify-center gap-1">
+        <div class="h-25 flex items-center justify-center">
             <div>
-                <div class="ml-2 text-suspense-aurora text-lg font-noto-sans font-extrabold uppercase italic">
+                <div class={["text-suspense-aurora text-lg font-noto-sans font-extrabold uppercase italic",
+                    {"ml-3": !$player.playing},
+                    {"ml-2": $player.playing},
+                ]}>
                     Dê o
                 </div>
-                <div class={["-mt-4 font-noto-sans font-extrabold uppercase italic",
-                    { "text-blue-skywave text-[3.5rem]": !$player.playing },
-                    { "text-orange-amber text-[3rem]": $player.playing },
+                <div class={["font-noto-sans font-extrabold uppercase italic",
+                    { "text-orange-citric text-[3.9rem] -mt-6": !$player.playing },
+                    { "text-blue-skywave text-[3.1rem] -mt-5": $player.playing },
                 ]}>
                     {$player.playing ? "Pause" : "Play"}
                 </div>
@@ -212,8 +257,8 @@
             <button type="button"
                 aria-label=""
                 class={["cursor-pointer shrink-0 w-14 h-14 rounded-full flex justify-center items-center",
-                    { "bg-blue-skywave": !$player.playing },
-                    { "bg-orange-amber": $player.playing },
+                    { "bg-orange-citric": !$player.playing },
+                    { "bg-blue-skywave": $player.playing },
                 ]}
                 on:click={toggleAudio}
             >
@@ -231,7 +276,7 @@
                 <span class="text-[10px] text-suspense-aurora/40 font-extrabold uppercase">
                     Volume
                 </span>
-                <span class="text-[10px] text-orange-amber font-extrabold">
+                <span class="text-[10px] text-orange-citric font-extrabold">
                     {Math.round($player.volume * 100)}%
                 </span>
             </div>
@@ -243,7 +288,7 @@
                 max="1"
                 step="0.01"
                 value={$player.volume}
-                class="w-full accent-orange-amber h-1.5 rounded-full bg-white/10 cursor-pointer transition-all hover:bg-white/20"
+                class="w-full accent-orange-citric h-1.5 rounded-full cursor-pointer"
                 on:input={(e) => setVolume(e.target.value)}
             />
         </div>
@@ -253,7 +298,7 @@
             class="cursor-pointer w-full py-2 px-1 border border-suspense-aurora rounded-full text-blue-skywave text-xl text-center font-noto-sans font-extrabold italic uppercase disabled:cursor-not-allowed"
             on:click={() => { modalRef.open(); }}
         >
-            & Faça seu <strong class="text-orange-amber">Pedido</strong>
+            & Faça seu <strong class="text-orange-citric">Pedido</strong>
         </button>
     </div>
 </section>

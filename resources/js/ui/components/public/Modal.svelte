@@ -38,7 +38,7 @@
     >
         <div class="w-full lg:w-104 bg-suspense-aurora rounded-t-xl rounded-b-xl relative" on:click={block}>
             <div class="w-full h-20 pt-8 px-5 lg:mb-2 bg-cover bg-center rounded-t-xl" style="background-image: url('/img/player/song-requests-bg.webp');">
-                <div class="w-36">
+                <div class="w-60 mt-4">
                     <img
                         src="/img/brand/logo.webp"
                         alt="logo"
@@ -60,7 +60,7 @@
                     />
                 </button>
             </div>
-            <div class="w-full max-h-[70vh] lg:max-h-[90vh] p-5 overflow-y-auto">
+            <div class="w-full max-h-[70vh] lg:max-h-[90vh] mt-5 p-5 overflow-y-auto">
                 <slot name="content" {close} />
             </div>
         </div>

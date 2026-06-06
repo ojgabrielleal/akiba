@@ -11,7 +11,7 @@ let audio = document.getElementById('audio');
 
 const updateMetadata = async () => {
     try {
-        const { data: response } = await axios.get('/api/cast/metadata');
+        const { data: response } = await axios.get('/api/stream/metadata');
         const info = response.data[0];
 
         if (info) {

@@ -2,7 +2,7 @@
     import { onMount } from "svelte";
     import { page, usePoll } from "@inertiajs/svelte";
     import toast, { Toaster } from "svelte-hot-french-toast";
-    import { Navbar, CastMetricsGrid } from "@/ui/widgets/private";
+    import { Navbar, StreamMetricsGrid } from "@/ui/widgets/private";
 
     $: ({ flash } = $page.props);
 
@@ -18,9 +18,9 @@
         });
     }
 
-    // Polling for updates in audience, song requests and streaming status every 60 seconds
+    // Polling for updates in audience, song requests and stream status every 60 seconds
     usePoll(60 * 1000, {
-        only: ["songRequests", "audience", "streaming"],
+        only: ["songRequests", "audience", "stream"],
     });
 
     // Set background color on mount
@@ -39,6 +39,6 @@
 <footer>
     <div class="h-20"></div>
     <div class="w-full fixed bottom-0 z-50">
-        <CastMetricsGrid />
+        <StreamMetricsGrid />
     </div>
 </footer>

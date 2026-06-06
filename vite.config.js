@@ -1,4 +1,4 @@
-import { svelte, vitePreprocess } from "@sveltejs/vite-plugin-svelte";
+import { svelte } from "@sveltejs/vite-plugin-svelte";
 import { defineConfig, loadEnv } from "vite";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -37,9 +37,7 @@ export default defineConfig(({ mode }) => {
                 refresh: true,
             }),
             tailwindcss(),
-            svelte({
-                preprocess: vitePreprocess(),
-            }),
+            svelte(),
         ],
         build: {
             rollupOptions: {

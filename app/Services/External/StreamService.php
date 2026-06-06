@@ -5,22 +5,22 @@ namespace App\Services\External;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
-class CastService
+class StreamService
 {
     protected $url;
 
     public function stream()
     {
-        return redirect()->to(config('services.cast.url'));
+        return redirect()->to(config('services.stream.url'));
     }
 
     public function data()
     {
         try {
-            $url = config('services.cast.metadata');
+            $url = config('services.stream.metadata');
 
             if (!$url) {
-                Log::warning('Radio API error: CAST_METADATA is not configured in .env');
+                Log::warning('Radio API error: STREAM_METADATA is not configured in .env');
                 return null;
             }
 

@@ -6,7 +6,7 @@
 </head>
 <body>
     <audio id="audio">
-        <source src="/api/cast" type="audio/mpeg">
+        <source src="/api/stream" type="audio/mpeg">
     </audio>
     @inertia
 </body>

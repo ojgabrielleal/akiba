@@ -36,7 +36,7 @@ export { default as PollGrid } from "./grid/PollGrid.svelte"
 export { default as EventGrid } from "./grid/EventGrid.svelte"
 export { default as UserGrid } from "./grid/UserGrid.svelte"
 export { default as RapidAccessGrid } from "./grid/RapidAccessGrid.svelte"
-export { default as CastMetricsGrid } from './grid/CastMetricsGrid.svelte';
+export { default as StreamMetricsGrid } from './grid/StreamMetricsGrid.svelte';
 export { default as TaskGrid } from "./grid/TaskGrid.svelte";
 
 // Hero

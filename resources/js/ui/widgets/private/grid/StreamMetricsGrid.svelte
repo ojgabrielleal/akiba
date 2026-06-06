@@ -2,8 +2,8 @@
     import { page } from "@inertiajs/svelte";
     import { player, setVolume, toggleAudio } from "@/store";
 
-    $: ({ streaming } = $page.props);
-    $: cast = streaming ?? {};
+    $: ({ stream } = $page.props);
+    $: streamData = stream ?? {};
 </script>
 
 <section class="container-page bg-blue-marinho">
@@ -18,7 +18,7 @@
                         class="w-8 filter-blue-skywave"
                         loading="lazy"
                     />
-                    {cast.bitrate ?? "N/A"}
+                    {streamData.bitrate ?? "N/A"}
                 </div>
                 <div class="hidden gap-2 items-end font-noto-sans text-orange-amber text-xl uppercase px-6 border-r border-r-[rgba(229,231,235,0.3)] lg:flex">
                     <img
@@ -28,7 +28,7 @@
                         class="w-8 filter-blue-skywave"
                         loading="lazy"
                     />
-                    {cast.status ?? "N/A"}
+                    {streamData.status ?? "N/A"}
                 </div>
                 <div class="flex gap-2 items-end font-noto-sans text-orange-amber text-xl uppercase lg:px-6">
                     <img
@@ -38,7 +38,7 @@
                         class="w-8 filter-blue-skywave"
                         loading="lazy"
                     />
-                    {cast.listeners ?? "N/A"} Ouvintes
+                    {streamData.listeners ?? "N/A"} Ouvintes
                 </div>
             </div>
             <div class="flex shrink-0 items-center gap-3">
@@ -72,9 +72,9 @@
                     </button>
                     <div class="pointer-events-none absolute bottom-full left-1/2 z-10 flex h-38.25 w-10 -translate-x-1/2 items-start justify-center opacity-0 transition group-hover:pointer-events-auto group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:opacity-100">
                         <div class="flex h-36 w-10 items-center justify-center rounded-md bg-slate-700/95 pb-5 pt-3 shadow-lg">
-                            <label class="sr-only" for="cast-volume">Volume do player</label>
+                            <label class="sr-only" for="stream-volume">Volume do player</label>
                             <input
-                                id="cast-volume"
+                                id="stream-volume"
                                 class="h-4 w-24 -rotate-90 cursor-pointer appearance-none bg-transparent accent-orange-amber [&::-moz-range-thumb]:h-3 [&::-moz-range-thumb]:w-3 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:bg-orange-amber [&::-moz-range-track]:h-[3px] [&::-moz-range-track]:rounded-full [&::-moz-range-track]:bg-orange-amber [&::-webkit-slider-runnable-track]:h-[3px] [&::-webkit-slider-runnable-track]:rounded-full [&::-webkit-slider-runnable-track]:bg-orange-amber [&::-webkit-slider-thumb]:mt-[-4.5px] [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border-0 [&::-webkit-slider-thumb]:bg-orange-amber"
                                 type="range"
                                 min="0"

@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers\Public;
 
+use App\Actions\SongRequest\CreateSongRequestAction;
 use App\Http\Controllers\Controller;
-use App\Services\External\CastService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 use App\Models\Event;
-use App\Models\Music;
 use App\Models\Onair;
 use App\Models\Post;
 use App\Models\Review;
@@ -21,13 +20,6 @@ use App\Http\Resources\ReviewResource;
 class HomeController extends Controller
 {
     private $render = 'public/Home';
-
-    protected $cast;
-
-    public function __construct(CastService $cast)
-    {
-        $this->cast = $cast;
-    }
 
     public function indexFeatured()
     {
@@ -66,19 +58,14 @@ class HomeController extends Controller
 
     public function showOnair()
     {
-        $cast = $this->cast->data();
-        $onair = Onair::live()->with('program.host')->get();
-
-        $onair->each(function ($item) use ($cast) {
-            $item->current_song = $cast['current_song'] ?? null;
-        });
-
-        return OnairResource::collection($onair);
+        return OnairResource::collection(
+            Onair::live()->with('program.host')->get()
+        );
     }
 
-    public function createSongRequest(Request $request)
+    public function createSongRequest(Request $request, CreateSongRequestAction $createSongRequestAction)
     {
-        $request->validate([
+        $data = $request->validate([
             'name' => 'required',
             'address' => 'required',
             'anime' => 'required',
@@ -86,28 +73,7 @@ class HomeController extends Controller
             'message' => 'required',
         ]);
 
-        $onair = Onair::live()->first();
-
-        $music = Music::where('name', $request->input('music.name'))->first();
-        if (! $music) {
-            $music = Music::create([
-                'production' => $request->input('anime.title'),
-                'type' => $request->input('music.type'),
-                'artist' => $request->input('music.artist'),
-                'name' => $request->input('music.name'),
-                'image' => $request->input('anime.image'),
-            ]);
-        } else {
-            $music->increment('song_requests_total');
-        }
-
-        $onair->songRequests()->create([
-            'ip_address' => $request->ip(),
-            'name' => $request->input('name'),
-            'address' => $request->input('address'),
-            'message' => $request->input('message'),
-            'music_id' => $music->id,
-        ]);
+        $createSongRequestAction->execute($data, $request->ip());
 
         return back(303);
     }

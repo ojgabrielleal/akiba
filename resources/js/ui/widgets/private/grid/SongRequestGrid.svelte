@@ -123,31 +123,22 @@
                         </div>
                     </div>
                     {#if item.music}
-                        <div class="flex flex-wrap xl:flex-nowrap gap-3">
+                        <div class="flex items-center gap-3 min-w-0">
                             <img
                                 src={item.music.image}
                                 alt={`Capa do anime ${item.music.production}`}
                                 class="w-15 h-15 rounded-md object-cover object-top shrink-0"
                                 loading="lazy"
                             />
-                            <div>
-                                <div class="w-full lg:w-50 xl:w-full block text-suspense-aurora text-sm font-noto-sans">
-                                    Anime:
-                                    <span class="truncate">
-                                        {item.music.production}
-                                    </span>
+                            <div class="min-w-0 flex-1">
+                                <div class="w-full block text-suspense-aurora text-sm font-noto-sans truncate">
+                                    Anime: {item.music.production}
                                 </div>
-                                <div class="w-full lg:w-50 xl:w-full block text-suspense-aurora text-sm font-noto-sans">
-                                    Artista:
-                                    <span class="truncate">
-                                        {item.music.artist}
-                                    </span>
+                                <div class="w-full block text-suspense-aurora text-sm font-noto-sans truncate">
+                                    Artista: {item.music.artist}
                                 </div>
-                                <div class="w-full lg:w-50 xl:w-full block text-suspense-aurora text-sm font-noto-sans">
-                                    Música:
-                                    <span class="truncate">
-                                        {item.music.name}
-                                    </span>
+                                <div class="w-full block text-suspense-aurora text-sm font-noto-sans truncate">
+                                    Música: {item.music.name}
                                 </div>
                             </div>
                         </div>

@@ -47,12 +47,12 @@ DB_PASSWORD=sua_senha
 Após isso, preencha as variáveis com as informações da sua stream:
 
 ```env
-CAST_URL=null
-CAST_METADATA=null
+STREAM_URL=null
+STREAM_METADATA=null
 ```
 
-- `CAST_URL`: URL usada para redirecionar ou conectar o player ao stream da rádio.
-- `CAST_METADATA`: URL usada para buscar os metadados da stream, como música atual e informações da transmissão.
+- `STREAM_URL`: URL usada para redirecionar ou conectar o player ao stream da rádio.
+- `STREAM_METADATA`: URL usada para buscar os metadados da stream, como música atual e informações da transmissão.
 
 ## Instalação com Docker
 

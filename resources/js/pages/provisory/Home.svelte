@@ -34,7 +34,7 @@
 </header>
 
 <main class="flex flex-col justify-center items-center gap-5 lg:gap-10 h-screen">
-    <div class="container-page mt-25">
+    <div class="container-page mt-20">
         <div class="w-full flex justify-center">
             <img
                 src="/img/brand/logo.webp"

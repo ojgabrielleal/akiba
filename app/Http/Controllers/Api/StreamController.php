@@ -3,19 +3,19 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Services\External\CastService;
+use App\Services\External\StreamService;
 
 use App\Models\Onair;
 
-use App\Http\Resources\CastResource;
+use App\Http\Resources\StreamResource;
 
-class CastController extends Controller
+class StreamController extends Controller
 {
-    protected $cast;
+    protected $stream;
 
-    public function __construct(CastService $cast)
+    public function __construct(StreamService $stream)
     {
-        $this->cast = $cast;
+        $this->stream = $stream;
     }
 
     /*
@@ -26,7 +26,7 @@ class CastController extends Controller
 
     public function redirectStream()
     {
-        return $this->cast->stream();
+        return $this->stream->stream();
     }
 
     /*
@@ -37,14 +37,14 @@ class CastController extends Controller
 
     public function showMetadata()
     {
-        $cast = $this->cast->data();
+        $stream = $this->stream->data();
 
         $onair = Onair::live()->with('program.host')->get();
 
-        $onair->each(function ($item) use ($cast) {
-            $item->streaming_data = $cast ?? [];
+        $onair->each(function ($item) use ($stream) {
+            $item->streaming_data = $stream ?? [];
         });
 
-        return CastResource::collection($onair);
+        return StreamResource::collection($onair);
     }
 }
