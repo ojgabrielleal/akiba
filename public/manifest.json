@@ -21,7 +21,7 @@
     {
       "src": "/img/pwa/icon.jpg",
       "sizes": "512x512",
-      "type": "image/png",
+      "type": "image/jpeg",
       "purpose": "any maskable"
     }
   ]

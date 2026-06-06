@@ -58,18 +58,6 @@ class StartLocutionAction
         });
 
         $this->discord->sendStreamNotificationHook($user, $program);
-        $this->oneSignal->sendToAll(
-            "{$program->name} no ar!",
-            "DJ {$user->nickname} acabou de entrar ao vivo na Akiba. Clique ou toque para ouvir agora!",
-            url('/'),
-            [
-                'type' => 'locution_started',
-                'program_uuid' => $program->uuid,
-                'user_uuid' => $user->uuid,
-            ],
-            [
-                'icon' => $user->avatar ? url($user->avatar) : url('/img/pwa/icon.jpg'),
-            ]
-        );
+        $this->oneSignal->startLocution($user, $program);
     }
 }
