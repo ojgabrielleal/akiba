@@ -14,7 +14,6 @@ class OneSignalService
     {
         if (blank(config('onesignal.app_id')) || blank(config('onesignal.rest_api_key'))) {
             Log::warning('OneSignal notification skipped: missing configuration');
-
             return;
         }
 
