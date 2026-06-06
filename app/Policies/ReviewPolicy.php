@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\Review;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class ReviewPolicy
 {
@@ -13,7 +12,7 @@ class ReviewPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasPermission('review.list');
+        return $user->hasAnyPermission(['post.list', 'post.list.own']);
     }
 
     /**
@@ -21,7 +20,7 @@ class ReviewPolicy
      */
     public function view(User $user, Review $review): bool
     {
-        return $user->hasPermission('review.view');
+        return $user->hasPermission('post.view');
     }
 
     /**
@@ -29,7 +28,7 @@ class ReviewPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasPermission('review.create');
+        return $user->hasPermission('post.create');
     }
 
     /**
@@ -37,7 +36,12 @@ class ReviewPolicy
      */
     public function update(User $user, Review $review): bool
     {
-        return $user->hasPermission('review.update');
+        if ($user->hasPermission('post.update')) {
+            return true;
+        }
+
+        return $user->hasPermission('post.update.own')
+            && $review->opinions()->where('user_id', $user->id)->exists();
     }
 
     /**
@@ -45,6 +49,14 @@ class ReviewPolicy
      */
     public function delete(User $user, Review $review): bool
     {
-        return $user->hasPermission('review.deactivate');
+        return $user->hasPermission('post.deactivate');
+    }
+
+    /**
+     * Determine whether the user can approve a review post in revision.
+     */
+    public function approve(User $user, Review $review): bool
+    {
+        return $user->hasPermission('post.approve');
     }
 }

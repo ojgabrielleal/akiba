@@ -16,16 +16,12 @@ class RoleResource extends JsonResource
     {
         return [
             'uuid' => $this->uuid,
-            'label' => $this->label, 
-            'name' => $this->name, 
+            'label' => $this->label,
+            'name' => $this->name,
             'description' => $this->description,
             'weight' => $this->weight,
             'members_total' => $this->members()->count(),
-            'permissions' => $this->permissions->map(fn($item) => [
-                'uuid' => $item->uuid,
-                'label' => $item->label,
-                'name' => $item->name,
-            ])
+            'permissions' => PermissionResource::collection($this->permissions),
         ];
     }
 }

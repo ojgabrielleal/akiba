@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\Event;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class EventPolicy
 {
@@ -13,7 +12,7 @@ class EventPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasPermission('event.list');
+        return $user->hasAnyPermission(['post.list', 'post.list.own']);
     }
 
     /**
@@ -21,7 +20,7 @@ class EventPolicy
      */
     public function view(User $user, Event $event): bool
     {
-        return $user->hasPermission('event.view');
+        return $user->hasPermission('post.view');
     }
 
     /**
@@ -29,7 +28,7 @@ class EventPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasPermission('event.create');
+        return $user->hasPermission('post.create');
     }
 
     /**
@@ -37,7 +36,11 @@ class EventPolicy
      */
     public function update(User $user, Event $event): bool
     {
-        return $user->hasPermission('event.update');
+        if ($user->hasPermission('post.update')) {
+            return true;
+        }
+
+        return $user->hasPermission('post.update.own') && $user->id === $event->user_id;
     }
 
     /**
@@ -45,6 +48,6 @@ class EventPolicy
      */
     public function delete(User $user, Event $event): bool
     {
-        return $user->hasPermission('event.deactivate');
+        return $user->hasPermission('post.deactivate');
     }
 }

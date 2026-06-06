@@ -32,12 +32,12 @@ return [
         ],
     ],
 
-    'cast' => [
-        'url' => env('CAST_URL', 'https://stm3.painelcast.com:7770/stream'),
-        'metadata' => env('CAST_METADATA', 'http://cast.radioamc.com.br/api-json/Vkc1d2FrMHdNVUpRVkRBOStS'),
+    'stream' => [
+        'url' => env('STREAM_URL', 'https://stm3.painelcast.com:7770/stream'),
+        'metadata' => env('STREAM_METADATA', 'http://cast.radioamc.com.br/api-json/Vkc1d2FrMHdNVUpRVkRBOStS'),
     ],
 
     'discord' => [
-        'webhook' => env('DISCORD_STREAM_WEBHOOK'),
+        'webhook' => env('DISCORD_WEBHOOK_STREAM_NOTIFICATION'),
     ],
 ];

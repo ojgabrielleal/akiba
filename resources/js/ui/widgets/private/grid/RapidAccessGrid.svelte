@@ -1,30 +1,17 @@
 <script>
     import { Link } from "@inertiajs/svelte";
-    import { hasPermission } from "@/utils";
+    import { quickAccessPermissions } from "@/utils";
 
-    let can = {
-        activity: {
-            create: hasPermission("activity.create"),
-        },
-        post: {
-            create: hasPermission("post.create"),
-        },
-        repository: {
-            create: hasPermission("repository.create"),
-        },
-        locution: {
-            start: hasPermission("locution.start"),
-        },
-        event: {
-            create: hasPermission("event.create"),
-        },
-    };
+    let can = quickAccessPermissions();
 </script>
 
 <div class="flex justify-center mb-10">
     <div class="flex flex-wrap justify-center gap-5">
         {#if can.post.create}
-            <Link href="/post" class="flex items-center gap-2 font-noto-sans font-bold italic uppercase text-blue-skywave text-lg pr-5 lg:first:pl-0 lg:border-r-2 lg:border-suspense-aurora/10 lg:last:border-0">
+<Link
+    href="/post"
+    class="flex items-center gap-2 font-noto-sans font-extrabold italic uppercase text-blue-skywave text-lg pr-5 lg:first:pl-0 lg:border-r-2 lg:border-suspense-aurora/10 lg:last:border-0"
+>
                 <img
                     src="/svg/materials.svg"
                     alt=""
@@ -35,7 +22,10 @@
             </Link>
         {/if}
         {#if can.activity.create}
-            <Link href="/administration" class="flex items-center gap-2 font-noto-sans font-bold italic uppercase text-blue-skywave text-lg pr-5 lg:first:pl-0 lg:border-r-2 lg:border-suspense-aurora/10 lg:last:border-0">
+<Link
+    href="/administration"
+    class="flex items-center gap-2 font-noto-sans font-extrabold italic uppercase text-blue-skywave text-lg pr-5 lg:first:pl-0 lg:border-r-2 lg:border-suspense-aurora/10 lg:last:border-0"
+>
                 <img
                     src="/svg/alerts.svg"
                     alt=""
@@ -46,7 +36,10 @@
             </Link>
         {/if}
         {#if can.repository.create}
-            <Link href="/marketing" class="flex items-center gap-2 font-noto-sans font-bold italic uppercase text-blue-skywave text-lg pr-5 lg:first:pl-0 lg:border-r-2 lg:border-suspense-aurora/10 lg:last:border-0">
+<Link
+    href="/marketing"
+    class="flex items-center gap-2 font-noto-sans font-extrabold italic uppercase text-blue-skywave text-lg pr-5 lg:first:pl-0 lg:border-r-2 lg:border-suspense-aurora/10 lg:last:border-0"
+>
                 <img
                     src="/svg/download.svg"
                     alt=""
@@ -57,7 +50,10 @@
             </Link>
         {/if}
         {#if can.locution.start}
-            <Link href="/locution" class="flex items-center gap-2 font-noto-sans font-bold italic uppercase text-blue-skywave text-lg pr-5 lg:first:pl-0 lg:border-r-2 lg:border-suspense-aurora/10 lg:last:border-0">
+<Link
+    href="/locution"
+    class="flex items-center gap-2 font-noto-sans font-extrabold italic uppercase text-blue-skywave text-lg pr-5 lg:first:pl-0 lg:border-r-2 lg:border-suspense-aurora/10 lg:last:border-0"
+>
                 <img
                     src="/svg/locution.svg"
                     alt=""
@@ -68,7 +64,10 @@
             </Link>
         {/if}
         {#if can.event.create}
-            <Link href="/event" class="flex items-center gap-2 font-noto-sans font-bold italic uppercase text-blue-skywave text-lg pr-5 lg:first:pl-0 lg:border-r-2 lg:border-suspense-aurora/10 lg:last:border-0">
+<Link
+    href="/event"
+    class="flex items-center gap-2 font-noto-sans font-extrabold italic uppercase text-blue-skywave text-lg pr-5 lg:first:pl-0 lg:border-r-2 lg:border-suspense-aurora/10 lg:last:border-0"
+>
                 <img
                     src="/svg/events.svg"
                     alt=""

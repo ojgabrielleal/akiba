@@ -27,7 +27,7 @@ class UpdateTaskRequest extends FormRequest
             'name' => 'required',
             'nickname' => 'required',
             'gender' => 'required',
-            'roles' => 'required'
+            'roles' => 'required',
         ];
     }
 }

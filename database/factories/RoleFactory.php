@@ -18,7 +18,6 @@ class RoleFactory extends Factory
     {
         return [
             'label' => fake()->word(),
-            'name' => fake()->slug(),
             'description' => fake()->sentence(),
             'weight' => fake()->randomDigit(),
         ];

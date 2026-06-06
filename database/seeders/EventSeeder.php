@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-use App\Models\User;
 use App\Models\Event;
+use App\Models\Post;
+use App\Models\User;
 
 class EventSeeder extends Seeder
 {
@@ -17,13 +17,24 @@ class EventSeeder extends Seeder
     {
         $admin = User::find(1);
         $user = User::inRandomOrder()->first();
-        
-        Event::factory(5)
-            ->for($admin, 'author')
-            ->create();
 
-        Event::factory(5)
+        $this->seedAdministration($admin);
+        $this->seedNonAdministrationContent($user);
+    }
+
+    private function seedAdministration(User $admin): void
+    {
+        Post::factory(5)
+            ->for($admin, 'author')
+            ->has(Event::factory(), 'event')
+            ->create();
+    }
+
+    private function seedNonAdministrationContent(User $user): void
+    {
+        Post::factory(5)
             ->for($user, 'author')
+            ->has(Event::factory(), 'event')
             ->create();
     }
 }

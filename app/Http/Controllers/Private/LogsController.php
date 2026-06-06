@@ -3,23 +3,21 @@
 namespace App\Http\Controllers\Private;
 
 use App\Http\Controllers\Controller;
-
-use Illuminate\Http\Request;
+use App\Services\External\AudienceService;
 use Inertia\Inertia;
+
+use App\Http\Controllers\Concerns\HasFlashMessages;
 
 use App\Models\Onair;
 
 use App\Http\Resources\OnairResource;
-
-use App\Services\External\AudienceService;
-
-use App\Traits\HasFlashMessages;
 
 class LogsController extends Controller
 {
     use HasFlashMessages;
 
     private $audience;
+
     private $render = 'private/Logs';
 
     public function __construct(AudienceService $audience)
@@ -30,14 +28,14 @@ class LogsController extends Controller
     /*
      * ======================
      * ONAIR LOGS
-     * ====================== 
+     * ======================
      */
 
     public function indexOnair()
     {
         return OnairResource::collection(
-            Onair::where('type', 'live')
-                ->orWhere('type', 'schedule')
+            Onair::where('execution_mode', 'live')
+                ->orWhere('execution_mode', 'scheduled')
                 ->with(['program.host'])
                 ->latest()
                 ->paginate(10)
@@ -47,14 +45,14 @@ class LogsController extends Controller
     /*
      * ======================
      * RENDER
-     * ====================== 
+     * ======================
      */
 
     public function render()
     {
         return Inertia::render($this->render, [
             'audience' => $this->audience->getAudience(),
-            'onair' => $this->indexOnair()
+            'onair' => $this->indexOnair(),
         ]);
     }
 }

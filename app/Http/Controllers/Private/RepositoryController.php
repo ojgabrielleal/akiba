@@ -3,25 +3,24 @@
 namespace App\Http\Controllers\Private;
 
 use App\Http\Controllers\Controller;
-
+use App\Services\Process\ImageProcessService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
-use App\Models\Repository;
+use App\Http\Controllers\Concerns\HasFlashMessages;
 
-use App\Http\Requests\Repository\StoreRepositoryRequest;
+use App\Models\Repository;
 
 use App\Http\Resources\RepositoryResource;
 
-use App\Services\Process\ImageProcessService;
-
-use App\Traits\HasFlashMessages;
+use App\Http\Requests\Repository\CreateRepositoryRequest;
 
 class RepositoryController extends Controller
 {
     use HasFlashMessages;
 
     private ImageProcessService $image;
+
     private $render = 'private/Marketing';
 
     public function __construct(ImageProcessService $image)
@@ -32,12 +31,14 @@ class RepositoryController extends Controller
     /*
      * ======================
      * REPOSITORIES
-     * ====================== 
+     * ======================
      */
 
     public function indexRepositories()
     {
-        if (request()->user()->cannot('viewAny', Repository::class)) return null;
+        if (request()->user()->cannot('viewAny', Repository::class)) {
+            return null;
+        }
 
         return RepositoryResource::collection(
             Repository::active()->get()
@@ -46,14 +47,18 @@ class RepositoryController extends Controller
 
     public function showRepository(Repository $repository)
     {
-        if (request()->user()->cannot('view', $repository)) return null;
+        if (request()->user()->cannot('view', $repository)) {
+            return null;
+        }
 
         return new RepositoryResource($repository);
     }
 
-    public function createRepository(StoreRepositoryRequest $request)
+    public function createRepository(CreateRepositoryRequest $request)
     {
-        if ($request->user()->cannot('create', Repository::class)) return null;
+        if ($request->user()->cannot('create', Repository::class)) {
+            return null;
+        }
 
         Repository::create([
             'name' => $request->input('name'),
@@ -67,7 +72,9 @@ class RepositoryController extends Controller
 
     public function updateRepository(Request $request, Repository $repository)
     {
-        if ($request->user()->cannot('update', $repository)) return null;
+        if ($request->user()->cannot('update', $repository)) {
+            return null;
+        }
 
         $repository->fill([
             'name' => $request->input('name', $repository->name),
@@ -76,14 +83,18 @@ class RepositoryController extends Controller
             'type' => $request->input('type', $repository->type),
         ]);
 
-        if ($repository->isDirty()) $repository->save();
+        if ($repository->isDirty()) {
+            $repository->save();
+        }
 
         return $this->flashMessage('update');
     }
 
     public function deactivateRepository(Repository $repository)
     {
-        if (request()->user()->cannot('delete', $repository)) return null;
+        if (request()->user()->cannot('delete', $repository)) {
+            return null;
+        }
 
         $repository->update([
             'is_active' => false,
@@ -95,7 +106,7 @@ class RepositoryController extends Controller
     /*
      * ======================
      * RENDER
-     * ====================== 
+     * ======================
      */
 
     public function render()

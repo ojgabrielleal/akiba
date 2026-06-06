@@ -17,10 +17,6 @@ class EventFactory extends Factory
     public function definition(): array
     {
         return [
-            'cover' => 'https://placehold.co/500x500?text=Rede%20Akiba%20Placeholder',
-            'image' => 'https://placehold.co/500x500?text=Rede%20Akiba%20Placeholder',
-            'title' => fake()->word(),
-            'content' => fake()->paragraph(),
             'dates' => fake()->date(),
             'address' => fake()->address(),
         ];

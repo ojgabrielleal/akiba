@@ -13,7 +13,12 @@
     <Section {title}>
         <div class="grid grid-cols-1 xl:grid-cols-2 gap-5">
             {#each posts.data as item}
-                <Link href={`review/${item.slug}`} class="flex flex-col sm:flex-row gap-4">
+                <Link
+                    title=""
+                    aria-label=""
+                    href={`review/${item.slug}`}
+                    class="flex flex-col sm:flex-row gap-4"
+                >
                     <img
                         src={item.cover}
                         alt={item.title}
@@ -24,11 +29,11 @@
                             {item.title}
                         </h1>
                         <div class="flex gap-3 mt-2 sm:mt-0 sm:absolute sm:bottom-0">
-                            {#each item.categories as category}
+                            {#each item.tags as tag}
                                 <img
-                                    src={postTags[category.name]?.icon}
-                                    alt={category.name}
-                                    class="w-5 h-5 sm:w-6 sm:h-6 filter invert"
+                                    src={postTags[tag.name]?.icon}
+                                    alt={tag.name}
+                                    class="w-5 h-5 sm:w-6 sm:h-6 filter-suspense-aurora"
                                 />
                             {/each}
                         </div>

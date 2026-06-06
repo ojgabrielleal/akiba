@@ -11,26 +11,14 @@ class CalendarResource extends JsonResource
     {
         return [
             'uuid' => $this->uuid,
-            'has_activity' => $this->has_activity,
             'title' => $this->title,
-            'formated_hour' => $this->hour->format('H\hi'),
-            'formated_date' => $this->date->format('d/m/Y'),
-            'hour' => $this->hour->format('H:i'),
+            'hour' => $this->hour->format('H:i:s'),
             'date' => $this->date->format('Y-m-d'),
             'content' => $this->content,
             'type' => $this->type,
             'day_of_week' => $this->day_of_week,
-            'responsible' => [
-                'uuid' => $this->responsible->uuid,
-                'name' => $this->responsible->name,
-                'nickname' => $this->responsible->nickname,
-                'avatar' => $this->responsible->avatar,
-                'gender' => $this->responsible->gender
-            ],
-            'activity' => $this->has_activity ? [
-                'uuid' => $this->activity->uuid,
-                'title' => $this->activity->title,
-            ] : null,
+            'responsible' => UserResource::make($this->responsible)->format('compact'),
+            'activity' => ActivityResource::make($this->whenLoaded('activity')),
         ];
     }
 }

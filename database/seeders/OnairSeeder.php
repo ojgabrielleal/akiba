@@ -2,13 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
-
-use App\Models\User;
-use App\Models\Automatic;
-use App\Models\Program;
 use App\Models\Onair;
+use App\Models\Program;
+use Illuminate\Database\Seeder;
 
 class OnairSeeder extends Seeder
 {
@@ -17,34 +13,36 @@ class OnairSeeder extends Seeder
      */
     public function run(): void
     {
-        $admin = User::find(1);
-        $user = User::inRandomOrder()->first();
+        $auto = Program::where('execution_mode', 'playlist')
+            ->first();
 
-        $auto = Automatic::where('is_default', true)->first();
-
-        if (!$auto) {
-            $auto = Automatic::factory()
-                ->for($admin ?? $user, 'host')
-                ->create([
-                    'is_default' => true,
-                ]);
-        }
+        if (!$auto) return;
 
         Onair::factory()
             ->for($auto, 'program')
-            ->create([
-                'type' => 'automatic'
-            ]);
+            ->withAutoDj()
+            ->create(['in_air' => true]);
 
-        $program = Program::factory()
-            ->for($user, 'host')
-            ->create();
+        $programs = Program::where('execution_mode', '!=', 'playlist')
+            ->take(2)
+            ->get();
 
-        Onair::factory(5)
-            ->for($program, 'program')
-            ->create([
-                'in_air' => false,
-                'type' => 'live'
-            ]);
+        $scheduled = $programs->first();
+
+        if ($scheduled) {
+            Onair::factory()
+                ->for($scheduled, 'program')
+                ->scheduled()
+                ->create(['in_air' => false]);
+        }
+
+        $playlist = $programs->skip(1)->first() ?? $scheduled;
+
+        if ($playlist) {
+            Onair::factory()
+                ->for($playlist, 'program')
+                ->playlist()
+                ->create(['in_air' => false]);
+        }
     }
 }

@@ -33,11 +33,23 @@ class RoleTest extends TestCase
     {
         $role = Role::factory()->create();
 
-        $user = User::factory()
+        User::factory()
             ->hasAttached($role, [], 'roles')
             ->create();
 
         $this->assertCount(1, $role->members);
         $this->assertContainsOnlyInstancesOf(User::class, $role->members);
+    }
+
+    /**
+     * Tests from Role model attributes.
+     */
+    public function testNameAttribute(): void
+    {
+        $role = Role::factory()->create([
+            'label' => 'Editor Chefe',
+        ]);
+
+        $this->assertEquals('editor-chefe', $role->name);
     }
 }

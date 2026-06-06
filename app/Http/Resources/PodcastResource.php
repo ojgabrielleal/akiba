@@ -23,13 +23,7 @@ class PodcastResource extends JsonResource
             'summary' => $this->summary,
             'description' => $this->description,
             'audio' => $this->audio,
-            'author' => [
-                'uuid' => $this->author->uuid,
-                'name' => $this->author->name,
-                'nickname' => $this->author->nickname,
-                'avatar' => $this->author->avatar,
-                'gender' => $this->author->gender,
-            ],
+            'author' => UserResource::make($this->author)->format('compact'),
         ];
     }
 }

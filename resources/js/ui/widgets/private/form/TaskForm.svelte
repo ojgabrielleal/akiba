@@ -4,32 +4,28 @@
 
     import axios from "axios";
     import { useForm, page } from "@inertiajs/svelte";
-    import { hasPermission } from "@/utils";
+    import { taskPermissions } from "@/utils";
 
     $: ({ users } = $page.props);
 
-    let can = {
-        create: hasPermission("task.create"),
-        update: hasPermission("task.update"),
-    };
+    let can = taskPermissions();
 
     let form = useForm({
         user: null,
         title: null,
         dead_line: null,
-        content: null,
+        description: null,
     });
 
     if (identifier) {
-        axios
-            .get(`/panel/administration/task/${identifier}`)
+        axios.get(`/panel/administration/task/${identifier}`)
             .then((response) => {
                 const data = response.data.data;
 
                 $form.user = data.responsible.uuid;
                 $form.title = data.title;
                 $form.dead_line = data.dead_line;
-                $form.content = data.content;
+                $form.description = data.description;
             })
             .catch((err) => {
                 console.error("Error when find task selected", err);
@@ -58,7 +54,7 @@
         <select
             id="user"
             name="user"
-            class="w-full h-10 bg-white font-noto-sans text-md rounded-lg outline-none pl-4 border border-gray-400"
+            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
             bind:value={$form.user}
             required
         >
@@ -80,7 +76,7 @@
             id="title"
             type="text"
             name="title"
-            class="w-full h-10 bg-white font-noto-sans text-md rounded-lg outline-none pl-4 border border-gray-400"
+            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
             bind:value={$form.title}
             required
         />
@@ -93,29 +89,29 @@
             id="dead_line"
             type="date"
             name="dead_line"
-            class="w-full h-10 bg-white font-noto-sans text-md rounded-lg outline-none pl-4 border border-gray-400"
+            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
             bind:value={$form.dead_line}
             required
         />
     </div>
     <div class="mb-4">
-        <label for="content" class="text-md text-gray-700 font-noto-sans block mb-1">
+        <label for="description" class="text-md text-gray-700 font-noto-sans block mb-1">
             Descrição
         </label>
-        <textarea
-            id="content"
-            name="content"
-            rows="5"
-            class="w-full bg-white font-noto-sans text-md rounded-lg outline-none py-2 px-4 border border-gray-400"
-            bind:value={$form.content}
+        <input
+            id="description"
+            type="text"
+            name="description"
+            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
+            bind:value={$form.description}
             required
-        ></textarea>
+        />
     </div>
     {#if can.create || can.update}
         <button
             aria-label=""
             type="submit"
-            class="cursor-pointer bg-blue-skywave px-8 py-2 rounded-md text-suspense-aurora font-noto-sans font-bold italic uppercase"
+            class="cursor-pointer bg-blue-skywave px-8 py-2 rounded-md text-suspense-aurora font-noto-sans font-extrabold italic uppercase"
         >
             {identifier ? "Atualizar" : "Cadastrar"}
         </button>

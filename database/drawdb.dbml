@@ -1,0 +1,357 @@
+// DrawDB/DBML schema generated from Laravel migrations.
+// Application/domain tables only.
+
+Table users {
+  id bigint [pk, increment]
+  uuid uuid [unique, not null]
+  is_active boolean [not null, default: true]
+  is_auto boolean [not null, default: false]
+  is_bot boolean [not null, default: false]
+  slug varchar [not null]
+  username varchar [unique]
+  password varchar
+  name varchar [not null]
+  nickname varchar [not null]
+  gender varchar [not null]
+  avatar varchar
+  birthday date
+  city varchar
+  state varchar
+  country varchar
+  bibliography text
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table permissions {
+  id bigint [pk, increment]
+  uuid uuid [unique, not null]
+  label varchar [not null]
+  name varchar [not null]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table roles {
+  id bigint [pk, increment]
+  uuid uuid [unique, not null]
+  label varchar [not null]
+  name varchar [not null]
+  description varchar [not null]
+  weight int [not null, default: 0]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table roles_pivot {
+  id bigint [pk, increment]
+  user_id bigint [not null, ref: > users.id]
+  role_id bigint [not null, ref: > roles.id]
+}
+
+Table permissions_pivot {
+  id bigint [pk, increment]
+  permission_id bigint [not null, ref: > permissions.id]
+  role_id bigint [not null, ref: > roles.id]
+}
+
+Table socials {
+  id bigint [pk, increment]
+  uuid uuid [unique, not null]
+  user_id bigint [not null, ref: > users.id]
+  name varchar [not null]
+  url varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table preferences {
+  id bigint [pk, increment]
+  uuid uuid [unique, not null]
+  user_id bigint [not null, ref: > users.id]
+  is_like boolean [not null]
+  content varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table favorities {
+  id bigint [pk, increment]
+  uuid uuid [unique, not null]
+  user_id bigint [not null, ref: > users.id]
+  name varchar
+  image varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table programs {
+  id bigint [pk, increment]
+  uuid uuid [unique, not null]
+  is_active boolean [not null, default: true]
+  user_id bigint [not null, ref: > users.id]
+  name varchar [unique, not null]
+  image varchar [not null]
+  access_type varchar [not null, note: "free, private"]
+  execution_mode varchar [not null, note: "playlist, scheduled, live, auto_dj"]
+  is_default_auto_dj boolean [not null, default: false]
+  phrases json
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table programs_schedules {
+  id bigint [pk, increment]
+  uuid uuid [unique, not null]
+  program_id bigint [not null, ref: > programs.id]
+  day int [not null]
+  hour time [not null]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table onair {
+  id bigint [pk, increment]
+  uuid uuid [unique, not null]
+  in_air boolean [not null, default: true]
+  program_id bigint [not null, ref: > programs.id]
+  icon varchar
+  phrase json [not null]
+  type varchar [not null, note: "automatic, live, scheduled"]
+  allows_song_requests boolean [not null, default: false]
+  song_requests_total int [not null, default: 0]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table musics {
+  id bigint [pk, increment]
+  uuid uuid [unique, not null]
+  type varchar [not null, note: "OP, ED"]
+  production varchar [not null]
+  image varchar
+  artist varchar [not null]
+  name varchar [not null]
+  in_ranking boolean [not null, default: false]
+  image_ranking varchar
+  song_requests_total int [not null, default: 0]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table songs_requests {
+  id bigint [pk, increment]
+  uuid uuid [unique, not null]
+  was_reproduced boolean [not null, default: false]
+  was_canceled boolean [not null, default: false]
+  onair_id bigint [not null, ref: > onair.id]
+  music_id bigint [not null, ref: > musics.id]
+  ip_address varchar [not null]
+  name varchar [not null]
+  address varchar [not null]
+  message varchar [not null]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table podcasts {
+  id bigint [pk, increment]
+  uuid uuid [unique, not null]
+  is_active boolean [not null, default: true]
+  slug varchar [not null]
+  user_id bigint [not null, ref: > users.id]
+  title varchar [not null]
+  image varchar
+  season varchar [not null]
+  episode varchar [not null]
+  summary longtext [not null]
+  description longtext [not null]
+  audio varchar [not null]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table posts {
+  id bigint [pk, increment]
+  uuid uuid [unique, not null]
+  is_active boolean [not null, default: true]
+  user_id bigint [not null, ref: > users.id]
+  image varchar
+  slug varchar [not null]
+  title varchar [not null]
+  content longtext
+  cover varchar
+  status varchar [not null, note: "published, revision, draft"]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table references {
+  id bigint [pk, increment]
+  uuid uuid [unique, not null]
+  post_id bigint [not null, ref: > posts.id]
+  name varchar [not null]
+  url varchar [not null]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table reactions {
+  id bigint [pk, increment]
+  uuid uuid [unique, not null]
+  post_id bigint [not null, ref: > posts.id]
+  name varchar [not null]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table tags {
+  id bigint [pk, increment]
+  uuid uuid [unique, not null]
+  post_id bigint [not null, ref: > posts.id]
+  name varchar [not null]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table events {
+  id bigint [pk, increment]
+  uuid uuid [unique, not null]
+  post_id bigint [ref: > posts.id]
+  dates varchar [not null]
+  address varchar [not null]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table reviews {
+  id bigint [pk, increment]
+  uuid uuid [unique, not null]
+  post_id bigint [ref: > posts.id]
+  year_of_release int
+  sinopse longtext [not null]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table opinions {
+  id bigint [pk, increment]
+  uuid uuid [unique, not null]
+  user_id bigint [not null, ref: > users.id]
+  review_id bigint [not null, ref: > reviews.id]
+  status varchar [not null, note: "published, revision, draft"]
+  content longtext [not null]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table tasks {
+  id bigint [pk, increment]
+  uuid uuid [unique, not null]
+  is_active boolean [not null, default: true]
+  user_id bigint [not null, ref: > users.id]
+  status varchar [not null, note: "pending, in_review, completed"]
+  title varchar [not null]
+  dead_line date [not null]
+  description varchar [not null]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table repositories {
+  id bigint [pk, increment]
+  uuid uuid [unique, not null]
+  is_active boolean [not null, default: true]
+  image varchar
+  url varchar [not null]
+  type varchar [not null, note: "tutorial, package, software"]
+  name varchar [not null]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table activities {
+  id bigint [pk, increment]
+  uuid uuid [unique, not null]
+  user_id bigint [not null, ref: > users.id]
+  allows_confirmations boolean [not null, default: false]
+  limit date
+  title varchar
+  content longtext [not null]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table activity_pivot {
+  id bigint [pk, increment]
+  user_id bigint [not null, ref: > users.id]
+  activity_id bigint [not null, ref: > activities.id]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table calendar {
+  id bigint [pk, increment]
+  uuid uuid [unique, not null]
+  user_id bigint [not null, ref: > users.id]
+  activity_id bigint [ref: > activities.id]
+  hour time [not null]
+  date date [not null]
+  day_of_week int [not null]
+  type varchar [note: "show, live, video, podcast"]
+  content varchar [not null]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table playlist_battle {
+  id bigint [pk, increment]
+  uuid uuid [unique, not null]
+  day int [not null]
+  image varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table listener_month {
+  id bigint [pk, increment]
+  uuid uuid [unique, not null]
+  name varchar [not null]
+  avatar varchar [not null]
+  address varchar [not null]
+  favorite_program json [not null]
+  favorite_anime json
+  requests_total varchar [not null]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table polls {
+  id bigint [pk, increment]
+  uuid uuid [unique, not null]
+  is_active boolean [not null, default: true]
+  question varchar [not null]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table options {
+  id bigint [pk, increment]
+  uuid uuid [unique, not null]
+  poll_id bigint [not null, ref: > polls.id]
+  option varchar [not null]
+  votes int [not null, default: 0]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table page_views {
+  id bigint [pk, increment]
+  viewable_type varchar
+  viewable_id bigint
+  ip_address varchar
+  page_name varchar
+  page_url varchar
+  created_at timestamp
+  updated_at timestamp
+}

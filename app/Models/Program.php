@@ -18,11 +18,16 @@ class Program extends Model
         'user_id',
         'name',
         'image',
-        'type'
+        'access_type',
+        'execution_mode',
+        'is_default_auto_dj',
+        'phrases',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
+        'is_default_auto_dj' => 'boolean',
+        'phrases' => 'array',
     ];
 
     protected $hidden = [
@@ -52,6 +57,19 @@ class Program extends Model
         return $query->where('is_active', true);
     }
 
+    public function scopeAvailableForLocution($query, User $user)
+    {
+        return $query
+            ->active()
+            ->where('execution_mode', 'live')
+            ->where(function ($q) use ($user) {
+                $q->where(function ($q) use ($user) {
+                    $q->where('user_id', $user->id)
+                        ->where('access_type', 'private');
+                })->orWhere('access_type', 'free');
+            });
+    }
+
     /**
      * Define the relationships between this model and other models.
      *
@@ -60,7 +78,7 @@ class Program extends Model
      */
     public function onair()
     {
-        return $this->morphMany(Onair::class, 'program');
+        return $this->hasMany(Onair::class, 'program_id');
     }
 
     public function host()
@@ -68,8 +86,13 @@ class Program extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function schedules()
+    public function airtimes()
     {
-        return $this->hasMany(ProgramSchedule::class, 'program_id');
+        return $this->hasMany(Airtime::class, 'program_id');
+    }
+
+    public function plans()
+    {
+        return $this->morphMany(Plan::class, 'plannable');
     }
 }

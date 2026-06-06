@@ -20,6 +20,7 @@ class ListenerMonthResource extends JsonResource
             'name' => $this->name,
             'address' => $this->address,
             'favorite_program' => $this->favorite_program,
+            'favorite_anime' => $this->favorite_anime,
             'requests_total' => $this->requests_total,
         ];
     }

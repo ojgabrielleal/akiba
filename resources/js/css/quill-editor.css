@@ -1,0 +1,30 @@
+.ql-snow {
+    background: var(--color-blue-ocean);
+    border-color: var(--color-blue-skywave) !important;
+}
+
+.ql-toolbar.ql-snow,
+.ql-container.ql-snow {
+    border-color: var(--color-blue-skywave) !important;
+    border-radius: 0 !important;
+}
+
+.ql-editor {
+    color: var(--color-neutral-white);
+    font-family: var(--font-noto-sans);
+}
+
+.ql-toolbar.ql-snow .ql-stroke {
+    stroke: var(--color-neutral-white) !important;
+}
+
+.ql-toolbar.ql-snow .ql-fill,
+.ql-toolbar.ql-snow .ql-stroke.ql-fill {
+    fill: var(--color-neutral-white) !important;
+}
+
+.ql-toolbar.ql-snow .ql-picker,
+.ql-toolbar.ql-snow .ql-picker-label,
+.ql-toolbar.ql-snow button {
+    color: var(--color-neutral-white);
+}

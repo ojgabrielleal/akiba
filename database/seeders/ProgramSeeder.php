@@ -2,12 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
-
-use App\Models\User;
+use App\Models\Airtime;
 use App\Models\Program;
-use App\Models\ProgramSchedule;
+use App\Models\User;
+use Illuminate\Database\Seeder;
 
 class ProgramSeeder extends Seeder
 {
@@ -17,23 +15,82 @@ class ProgramSeeder extends Seeder
     public function run(): void
     {
         $admin = User::find(1);
-        $user = User::inRandomOrder()->first();
-        
-        Program::factory(2)
-            ->state(['type' => 'private'])
-            ->for($admin, 'host')
-            ->has(ProgramSchedule::factory(5), 'schedules')
+        $user = User::where('id', '!=', 1)->where('is_virtual', false)->inRandomOrder()->first();
+        $virtualUser = User::where('is_virtual', true)->inRandomOrder()->first();
+
+        $this->seedAdministrator($admin);
+        $this->seedPrograms($user);
+        $this->seedAutoDJ($user);
+        $this->seedPlaylist($virtualUser);
+        $this->seedScheduled($virtualUser);
+    }
+
+    private function seedAdministrator($user): void
+    {
+        if(!$user) return;
+
+        $program = Program::factory()
+            ->withPrivate()
+            ->for($user, 'host')
             ->create();
 
-        Program::factory(2)
-            ->state(['type' => 'private'])
+        $this->seedAirtimes($program);
+    }
+
+    private function seedPrograms(?User $user): void
+    {
+       if(!$user) return;
+
+        $free = Program::factory()
+            ->withFree()
             ->for($user, 'host')
-            ->has(ProgramSchedule::factory(5), 'schedules')
             ->create();
 
-        Program::factory(2)
-            ->state(['type' => 'free'])
+        $private = Program::factory()
+            ->withPrivate()
             ->for($user, 'host')
+            ->create();
+
+        $this->seedAirtimes($free);
+        $this->seedAirtimes($private);
+    }
+
+    private function seedAutoDJ(?User $user): void
+    {
+        if(!$user) return;
+
+        Program::factory()
+            ->withAutoDJ()
+            ->for($user, 'host')
+            ->create();
+    }
+
+    private function seedPlaylist(?User $user): void
+    {
+        if(!$user) return;
+
+        Program::factory()
+            ->withPlaylist()
+            ->for($user, 'host')
+            ->create();
+    }
+
+    private function seedScheduled(?User $user): void
+    {
+        if(!$user) return;
+
+        Program::factory()
+            ->withScheduled()
+            ->for($user, 'host')
+            ->create();
+    }
+
+    private function seedAirtimes(Program $program): void
+    {
+        if($program->execution_mode !== 'live') return;
+
+        Airtime::factory(3)
+            ->for($program, 'program')
             ->create();
     }
 }

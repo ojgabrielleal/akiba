@@ -2,18 +2,11 @@
     import { router, page } from "@inertiajs/svelte";
     import { Section, Offcanvas } from "@/ui/components/private";
     import { PollForm } from "@/ui/widgets/private";
-    import { hasPermission } from "@/utils";
+    import { pollPermissions } from "@/utils";
 
     $: ({ polls } = $page.props);
 
-    let can = {
-        create: hasPermission("poll.create"),
-        update: hasPermission("poll.update"),
-        deactivate: hasPermission("poll.deactivate"),
-        vote: {
-            create: hasPermission("poll.create.vote"),
-        },
-    };
+    let can = pollPermissions();
 
     let offcanvasRef;
     let identifier;
@@ -25,10 +18,7 @@
         const formData = new FormData(form);
         const option = formData.get("option");
 
-        router.post(
-            `/panel/media/poll/vote/${option}`,
-            {},
-            {
+        router.post(`/panel/media/poll/vote/${option}`, {}, {
                 preserveScroll: true,
                 onSuccess: () => {
                     localStorage.setItem(
@@ -38,18 +28,13 @@
                     storageVotedPolls.push(item.uuid);
                     storageVotedPolls = storageVotedPolls;
                 },
-            },
-        );
+            });
     };
 
     const requestDeactivatePoll = (poll) => {
-        router.delete(
-            `/panel/media/poll/${poll}`,
-            {},
-            {
+        router.delete(`/panel/media/poll/${poll}`, {}, {
                 preserveScroll: true,
-            },
-        );
+            });
     };
 </script>
 
@@ -63,7 +48,7 @@
     <Section title="Enquetes">
         {#if can.create || can.update}
             <div class="flex justify-center">
-                <button class="cursor-pointer text-suspense-aurora text-xl font-noto-sans font-bold uppercase italic rounded-sm py-1 px-3 bg-orange-amber" on:click={() => { offcanvasRef.open(); identifier = null; }}>
+                <button type="button" class="cursor-pointer text-suspense-aurora text-xl font-noto-sans font-extrabold uppercase italic rounded-sm py-1 px-3 bg-orange-amber" on:click={() => { offcanvasRef.open(); identifier = null; }}>
                     Criar enquete
                 </button>
             </div>
@@ -75,7 +60,7 @@
                         submitVote(event, item)}
                     class="flex flex-col justify-between gap-5 bg-blue-skywave p-5 rounded-md"
                 >
-                    <div class="text-suspense-aurora text-xl text-start font-noto-sans font-bold">
+                    <div class="text-suspense-aurora text-xl text-start font-noto-sans font-extrabold">
                         {item.question}
                     </div>
                     <div class="flex flex-col gap-3">
@@ -108,7 +93,7 @@
                         {#if can.vote.create}
                             <button
                                 type="submit"
-                                class="cursor-pointer text-suspense-aurora text-md font-noto-sans font-bold uppercase italic rounded-sm py-1 px-3 bg-orange-amber disabled:opacity-50"
+                                class="cursor-pointer text-suspense-aurora text-md font-noto-sans font-extrabold uppercase italic rounded-sm py-1 px-3 bg-orange-amber disabled:opacity-50 disabled:cursor-not-allowed"
                                 disabled={alreadyVoted}
                             >
                                 Votar
@@ -126,7 +111,7 @@
                                         src="/svg/edit.svg"
                                         alt=""
                                         aria-hidden="true"
-                                        class="w-5 filter invert"
+                                        class="w-5 filter-suspense-aurora"
                                         loading="lazy"
                                     />
                                 </button>
@@ -136,15 +121,13 @@
                                     type="button"
                                     class="cursor-pointer"
                                     aria-label="Desativar"
-                                    on:click={()
-                                >
-                                        requestDeactivatePoll(item.uuid)}
+                                    on:click={requestDeactivatePoll(item.uuid)}
                                 >
                                     <img
                                         src="/svg/trash.svg"
                                         alt=""
                                         aria-hidden="true"
-                                        class="w-5 filter invert"
+                                        class="w-5 filter-suspense-aurora"
                                         loading="lazy"
                                     />
                                 </button>

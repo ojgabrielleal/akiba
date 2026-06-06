@@ -24,6 +24,11 @@ class Music extends Model
         'song_requests_total',
     ];
 
+    protected $casts = [
+        'in_ranking' => 'boolean',
+        'song_requests_total' => 'integer',
+    ];
+
     /**
      * Determine the columns that should receive a unique identifier.
      *

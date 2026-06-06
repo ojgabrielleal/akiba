@@ -9,7 +9,7 @@
   const defaultKeywords = 'animes, mangás, otaku, cultura japonesa, doramas, rede akiba';
   const defaultRobots = 'index, follow';
   const defaultThemeColor = '#0091ff';
-  const defaultAppleIcon = '/img/pwa/192.png';
+  const defaultAppleIcon = '/img/pwa/icon.jpg';
   const defaultFavicon = '/favicon.ico';
   const defaultOgType = 'website';
   const defaultTwitterCreator = '@RedeAkiba';

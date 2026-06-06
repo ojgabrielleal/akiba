@@ -19,17 +19,16 @@ class CalendarFactory extends Factory
         return [
             'hour' => fake()->time(),
             'day_of_week' => fake()->numberBetween(0, 6),
-            'date' => fake()->dateTimeBetween(
-                now()->startOfWeek(), now()->endOfWeek()
-            )->format('Y-m-d'),
-            'type' => fake()->randomElement([
-                'show',
-                'live',
-                'video',
-                'podcast',
-                'activity'
-            ]),
-            'content' => fake()->word()
+            'date' => fake()->dateTimeBetween(now()->startOfWeek(), now()->endOfWeek())->format('Y-m-d'),
+            'type' => fake()->randomElement(['show', 'live', 'video', 'podcast']),
+            'content' => fake()->word(),
         ];
+    }
+
+    public function withActivity(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'type' => null,
+        ]);
     }
 }

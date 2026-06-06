@@ -4,12 +4,9 @@
 
     import axios from "axios";
     import { useForm } from "@inertiajs/svelte";
-    import { hasPermission } from "@/utils";
+    import { pollPermissions } from "@/utils";
 
-    let can = {
-        create: hasPermission("poll.create"),
-        update: hasPermission("poll.update"),
-    };
+    let can = pollPermissions();
 
     let form = useForm({
         question: null,
@@ -20,8 +17,7 @@
     });
 
     if (identifier) {
-        axios
-            .get(`/panel/media/poll/${identifier}`)
+        axios.get(`/panel/media/poll/${identifier}`)
             .then((response) => {
                 const data = response.data.data;
 
@@ -59,11 +55,11 @@
             id="question"
             type="text"
             name="question"
-            class="w-full h-10 bg-white font-noto-sans text-md rounded-lg outline-none pl-4 border border-gray-400"
+            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
             bind:value={$form.question}
         />
     </div>
-    <div class="px-4 mb-4 rounded-lg border border-gray-400">
+    <div class="px-4 mb-4 rounded-md border border-gray-400">
         <div class="mt-5 mb-4">
             <label for="option_one" class="text-md text-gray-700 font-noto-sans block mb-1">
                 1º Opção
@@ -73,7 +69,7 @@
                 name="option_one"
                 type="text"
                 placeholder="Digite a primeira opção"
-                class="w-full h-10 bg-white font-noto-sans text-md rounded-lg outline-none pl-4 border border-gray-400"
+                class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
                 bind:value={$form.option_one}
                 required
             />
@@ -87,7 +83,7 @@
                 name="option_two"
                 type="text"
                 placeholder="Digite a segunda opção"
-                class="w-full h-10 bg-white font-noto-sans text-md rounded-lg outline-none pl-4 border border-gray-400"
+                class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
                 bind:value={$form.option_two}
                 required
             />
@@ -101,7 +97,7 @@
                 name="option_three"
                 type="text"
                 placeholder="Digite a terceira opção"
-                class="w-full h-10 bg-white font-noto-sans text-md rounded-lg outline-none pl-4 border border-gray-400"
+                class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
                 bind:value={$form.option_three}
                 required
             />
@@ -115,7 +111,7 @@
                 name="option_four"
                 type="text"
                 placeholder="Digite a quarta opção"
-                class="w-full h-10 bg-white font-noto-sans text-md rounded-lg outline-none pl-4 border border-gray-400"
+                class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
                 bind:value={$form.option_four}
                 required
             />
@@ -125,7 +121,7 @@
         <button
             aria-label=""
             type="submit"
-            class="cursor-pointer bg-blue-skywave px-8 py-2 rounded-md text-suspense-aurora font-noto-sans font-bold italic uppercase"
+            class="cursor-pointer bg-blue-skywave px-8 py-2 rounded-md text-suspense-aurora font-noto-sans font-extrabold italic uppercase"
         >
             {identifier ? "Atualizar" : "Cadastrar"}
         </button>

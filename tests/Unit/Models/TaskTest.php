@@ -57,21 +57,36 @@ class TaskTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $incompletedTask = Task::factory()
+        $inProgressTask = Task::factory()
             ->for($user, 'responsible')
             ->create([
-                'is_completed' => false
+                'status' => 'pending'
+            ]);
+
+        $inReviewTask = Task::factory()
+            ->for($user, 'responsible')
+            ->create([
+                'status' => 'in_review'
+            ]);
+
+        $overdueTask = Task::factory()
+            ->for($user, 'responsible')
+            ->create([
+                'status' => 'pending',
+                'dead_line' => now()->subDay()->toDateString()
             ]);
 
         $completedTask = Task::factory()
             ->for($user, 'responsible')
             ->create([
-                'is_completed' => true
+                'status' => 'completed'
             ]);
 
         $incompletedTasks = Task::incompleted()->get();
 
-        $this->assertTrue($incompletedTasks->contains($incompletedTask));
+        $this->assertTrue($incompletedTasks->contains($inProgressTask));
+        $this->assertTrue($incompletedTasks->contains($inReviewTask));
+        $this->assertTrue($incompletedTasks->contains($overdueTask));
         $this->assertFalse($incompletedTasks->contains($completedTask));
     }
 
@@ -100,7 +115,7 @@ class TaskTest extends TestCase
     /**
      * Tests from Task model attributes.
      */
-    public function testIsOverAttribute(): void
+    public function testDaysRemainingAttribute(): void
     {
         $today = Carbon::parse('2026-01-20');
 
@@ -108,27 +123,35 @@ class TaskTest extends TestCase
 
         $user = User::factory()->create();
 
-        $overTask = Task::factory()
+        $overdueTask = Task::factory()
             ->for($user, 'responsible')
             ->create([
                 'dead_line' => '2026-01-15',
-                'is_completed' => false
+                'status' => 'pending'
             ]);
 
-        $farTask = Task::factory()
+        $futureTask = Task::factory()
             ->for($user, 'responsible')
             ->create([
                 'dead_line' => '2026-01-30',
-                'is_completed' => false
+                'status' => 'pending'
             ]);
 
-        $this->assertTrue($overTask->is_over);
-        $this->assertFalse($farTask->is_over);
+        $completedTask = Task::factory()
+            ->for($user, 'responsible')
+            ->create([
+                'dead_line' => '2026-01-15',
+                'status' => 'completed'
+            ]);
+
+        $this->assertSame(0, $overdueTask->days_remaining);
+        $this->assertSame(10, $futureTask->days_remaining);
+        $this->assertSame(0, $completedTask->days_remaining);
 
         Carbon::setTestNow();
     }
 
-    public function testIsDueAttribute(): void
+    public function testIsOverdueAttribute(): void
     {
         $today = Carbon::parse('2026-01-20');
 
@@ -136,14 +159,39 @@ class TaskTest extends TestCase
 
         $user = User::factory()->create();
 
-        $dueTask = Task::factory()
+        $overdueTask = Task::factory()
+            ->for($user, 'responsible')
+            ->create([
+                'dead_line' => '2026-01-15',
+                'status' => 'pending'
+            ]);
+
+        $todayTask = Task::factory()
+            ->for($user, 'responsible')
+            ->create([
+                'dead_line' => '2026-01-20',
+                'status' => 'pending'
+            ]);
+
+        $futureTask = Task::factory()
             ->for($user, 'responsible')
             ->create([
                 'dead_line' => '2026-01-25',
-                'is_completed' => false
+                'status' => 'pending'
             ]);
 
-        $this->assertTrue($dueTask->is_due);
+        $completedOverdueTask = Task::factory()
+            ->for($user, 'responsible')
+            ->create([
+                'dead_line' => '2026-01-15',
+                'status' => 'completed'
+            ]);
+
+        $this->assertTrue($overdueTask->is_overdue);
+        $this->assertFalse($todayTask->is_overdue);
+        $this->assertFalse($futureTask->is_overdue);
+        $this->assertFalse($completedOverdueTask->is_overdue);
+
         Carbon::setTestNow();
     }
 }

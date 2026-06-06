@@ -8,8 +8,6 @@ use App\Http\Controllers\Private\AdministrationController;
 use App\Http\Controllers\Private\LocutionController;
 use App\Http\Controllers\Private\DashboardController;
 use App\Http\Controllers\Private\PostController;
-use App\Http\Controllers\Private\ReviewController;
-use App\Http\Controllers\Private\EventController;
 use App\Http\Controllers\Private\RadioController;
 use App\Http\Controllers\Private\PodcastController;
 use App\Http\Controllers\Private\RepositoryController;
@@ -29,37 +27,30 @@ Route::prefix('panel')->middleware(['inertia'])->group(function () {
     });
 
     Route::middleware(['auth'])->group(function () {
+        Route::post('logout', [LoginController::class, 'logout'])->name('logout');
+
         Route::prefix('dashboard')->controller(DashboardController::class)->group(function () {
             Route::get('', 'render')->name('panel.dashboard');
             Route::prefix('activity')->group(function () {
                 Route::post('{activity:uuid}/confirm', 'confirmActivityParticipant');
             });
             Route::prefix('task')->group(function () {
-                Route::post('{task:uuid}/complete', 'markTaskCompleted');
+                Route::post('{task:uuid}/complete', 'markTaskToReview');
+            });
+            Route::prefix('post')->group(function () {
+                Route::delete('{post:uuid}', 'deactivatePost');
             });
         });
 
         Route::prefix('post')->controller(PostController::class)->group(function () {
             Route::get('', 'render')->name('panel.post');
             Route::post('', 'createPost');
+            Route::post('review', 'createReview');
             Route::patch('{post:uuid}', 'updatePost');
             Route::get('{post:uuid}', 'showPost');
+            Route::delete('{post:uuid}', 'deactivatePost');
         });
-
-        Route::prefix('review')->controller(ReviewController::class)->group(function () {
-            Route::get('', 'render')->name('panel.review');
-            Route::post('', 'createReview');
-            Route::patch('{review:uuid}', 'updateReview');
-            Route::get('{review:uuid}', 'showReview');
-        });
-
-        Route::prefix('event')->controller(EventController::class)->group(function () {
-            Route::get('', 'render')->name('panel.event');
-            Route::post('', 'createEvent');
-            Route::patch('{event:uuid}', 'updateEvent');
-            Route::get('{event:uuid}', 'showEvent');
-        });
-
+        
         Route::prefix('locution')->controller(LocutionController::class)->group(function () {
             Route::prefix('locution')->group(function () {
                 Route::post('start/{program:uuid}', 'startLocution');
@@ -156,12 +147,6 @@ Route::prefix('panel')->middleware(['inertia'])->group(function () {
                 Route::get('{task:uuid}', 'showTask');
                 Route::post('', 'createTask');
                 Route::patch('{task:uuid}', 'updateTask');
-            });
-            Route::prefix('automatic')->group(function () {
-                Route::post('', 'createAutomatic');
-                Route::get('{automatic:uuid}', 'showAutomatic');
-                Route::patch('{automatic:uuid}', 'updateAutomatic');
-                Route::delete('{automatic:uuid}', 'deactivateAutomatic');
             });
             Route::get('', 'render')->name('panel.adms');
         });

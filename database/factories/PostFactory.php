@@ -2,17 +2,17 @@
 
 namespace Database\Factories;
 
+use Database\Factories\Concerns\HasFakeImages;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-
-use App\Models\Post;
-use App\Models\PostCategory;
-use App\Models\PostReference;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Post>
  */
 class PostFactory extends Factory
 {
+    use HasFakeImages;
+
     /**
      * Define the model's default state.
      *
@@ -22,15 +22,12 @@ class PostFactory extends Factory
     {
         return [
             'is_active' => true,
-            'image' => 'https://placehold.co/500x500?text=Rede%20Akiba%20Placeholder',
+            'user_id' => User::factory(),
+            'image' => $this->fakeImageUrl(),
             'title' => fake()->text(),
             'content' => fake()->paragraph(),
-            'cover' => 'https://placehold.co/500x500?text=Rede%20Akiba%20Placeholder',
-            'type' => fake()->randomElement([
-                'published', 
-                'revision', 
-                'draft'
-            ])
+            'cover' => $this->fakeImageUrl(),
+            'status' => fake()->randomElement(['published', 'revision', 'draft']),
         ];
     }
 }

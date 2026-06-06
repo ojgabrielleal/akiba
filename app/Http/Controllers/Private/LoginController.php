@@ -3,10 +3,8 @@
 namespace App\Http\Controllers\Private;
 
 use App\Http\Controllers\Controller;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 use App\Http\Requests\Auth\AuthLoginRequest;
@@ -18,7 +16,7 @@ class LoginController extends Controller
     /*
      * ======================
      * AUTHENTICATION
-     * ====================== 
+     * ======================
      */
 
     public function login(AuthLoginRequest $request)
@@ -29,19 +27,30 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
+
             return redirect()->intended(route('panel.dashboard'));
         }
 
         return Inertia::render($this->render)->with('flash', [
-            'icon' => "😠",
-            'message' => "Usuário ou senha incorretos",
+            'icon' => '😠',
+            'message' => 'Usuário ou senha incorretos',
         ]);
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('login');
     }
 
     /*
      * ======================
      * RENDER
-     * ====================== 
+     * ======================
      */
 
     public function render()

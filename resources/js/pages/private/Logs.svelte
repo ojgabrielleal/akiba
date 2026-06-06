@@ -9,4 +9,3 @@
     <AudienceCarrousel title="Estatísticas da concorrência" />
     <ProgramHistoryTable title="Histórico de transmissões" />
 </Layout>
-       

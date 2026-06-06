@@ -18,6 +18,7 @@ class MusicResource extends JsonResource
             'uuid' => $this->uuid,
             'name' => $this->name,
             'type' => $this->type,
+            'image' => $this->image,
             'production' => $this->production,
             'artist' => $this->artist,
             'ranking' => [

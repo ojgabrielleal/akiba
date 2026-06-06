@@ -6,8 +6,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
-use App\Models\User;
 use App\Models\Event;
+use App\Models\Post;
 
 class EventTest extends TestCase
 {
@@ -16,51 +16,19 @@ class EventTest extends TestCase
     /**
      * Tests from Event model relationships.
      */
-    public function testAuthorRelationship(): void
+    public function testPostRelationship(): void
     {
-        $user = User::factory()->create();
+        $post = Post::factory()->create();
 
         $event = Event::factory()
-            ->for($user, 'author')
+            ->for($post, 'post')
             ->create();
 
-        $this->assertTrue($event->author->is($user));
+        $this->assertTrue($event->post->is($post));
     }
 
-    /**
-     * Tests from Event model scopes.
-     */
-    public function testActiveScope(): void
+    public function testUsesEventsTable(): void
     {
-        $user = User::factory()->create();
-
-        $activeEvents = Event::factory()
-            ->for($user, 'author')
-            ->create(['is_active' => true]);
-
-        $inactiveEvents = Event::factory()
-            ->for($user, 'author')
-            ->create(['is_active' => false]);
-
-        $events = Event::active()->get();
-
-        $this->assertTrue($events->contains($activeEvents));
-        $this->assertFalse($events->contains($inactiveEvents));
-    }
-
-    /**
-     * Tests from Event model attributes.
-     */
-    public function testSlugAttribute(): void
-    {
-        $user = User::factory()->create();
-
-        $event = Event::factory()
-            ->for($user, 'author')
-            ->create([
-                'title' => 'Sample Event Title'
-            ]);
-
-        $this->assertEquals('sample-event-title', $event->slug);
+        $this->assertSame('events', (new Event())->getTable());
     }
 }

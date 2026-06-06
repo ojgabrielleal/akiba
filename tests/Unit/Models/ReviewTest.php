@@ -7,8 +7,9 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 use App\Models\User;
-use App\Models\ReviewContent;
+use App\Models\Opinion;
 use App\Models\Review;
+use App\Models\Post;
 
 class ReviewTest extends TestCase
 {
@@ -17,36 +18,40 @@ class ReviewTest extends TestCase
     /**
      * Tests from Review model relationships.
      */
-    public function testReviewsRelationship(): void
+    public function testPostRelationship(): void
     {
         $user = User::factory()->create();
-
-        $reviews = ReviewContent::factory()
-            ->for($user, 'author');
-
-        $review = Review::factory()
-            ->has($reviews, 'reviews')
+        $post = Post::factory()
+            ->for($user, 'author')
             ->create();
 
-        $this->assertContainsOnlyInstancesOf(ReviewContent::class, $review->reviews);
+        $review = Review::factory()
+            ->for($post, 'post')
+            ->create();
+
+        $this->assertTrue($review->post->is($post));
     }
 
-    /**
-     * Tests from Review model attributes.
-     */
-    public function testSlugAttribute(): void
+    public function testOpinionsRelationship(): void
     {
         $user = User::factory()->create();
+        $post = Post::factory()
+            ->for($user, 'author')
+            ->create();
 
-        $reviews = ReviewContent::factory()
+        $opinions = Opinion::factory()
             ->for($user, 'author');
 
         $review = Review::factory()
-            ->has($reviews, 'reviews')
-            ->create([
-                'title' => 'Sample Review Title'
-            ]);
+            ->for($post, 'post')
+            ->has($opinions, 'opinions')
+            ->create();
 
-        $this->assertEquals('sample-review-title', $review->slug);
+        $this->assertContainsOnlyInstancesOf(Opinion::class, $review->opinions);
+    }
+
+    public function testUsesReviewsTable(): void
+    {
+        $this->assertSame('reviews', (new Review())->getTable());
     }
 }

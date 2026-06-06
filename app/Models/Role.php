@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Support\Str;
 
 class Role extends Model
 {
@@ -23,6 +25,16 @@ class Role extends Model
     protected $casts = [
         'weight' => 'integer'
     ];
+
+    protected function label(): Attribute
+    {
+        return Attribute::make(
+            set: fn(string $value) => [
+                'label' => $value,
+                'name' => Str::slug($value),
+            ],
+        );
+    }
 
     /**
      * Determine the columns that should receive a unique identifier.

@@ -4,14 +4,11 @@
     import { page } from "@inertiajs/svelte";
     import { Offcanvas, Section } from "@/ui/components/private/";
     import { TaskForm } from "@/ui/widgets/private/";
-    import { hasPermission } from "@/utils";
+    import { taskPermissions } from "@/utils";
 
     $: ({ tasks } = $page.props);
 
-    let can = {
-        create: hasPermission("task.create"),
-        update: hasPermission("task.update"),
-    };
+    let can = taskPermissions();
 
     let offcanvasRef;
     let identifier;
@@ -27,22 +24,23 @@
     <Section {title}>
         {#if can.create}
             <div class="flex justify-center gap-5 mb-8">
-                <button class="cursor-pointer bg-blue-skywave px-4 py-2 rounded-lg font-noto-sans font-bold italic uppercase text-suspense-aurora" on:click={() => { identifier = null; offcanvasRef.open(); }}>
+                <button type="button" class="cursor-pointer bg-blue-skywave px-4 py-2 rounded-md font-noto-sans font-extrabold italic uppercase text-suspense-aurora" on:click={() => { identifier = null; offcanvasRef.open(); }}>
                     Cadastrar tarefa
                 </button>
             </div>
         {/if}
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
             {#each tasks.data as task}
-                <div class={["flex items-center justify-between p-3 rounded-lg",
-                    { "bg-orange-amber": task.is_due },
-                    { "bg-blue-skywave": !task.is_due },
+                <div class={["flex items-center justify-between p-3 rounded-md",
+                    { "bg-red-crimson": task.is_overdue },
+                    { "bg-orange-amber": !task.is_overdue && task.days_remaining <= 7 },
+                    { "bg-blue-skywave": !task.is_overdue && task.days_remaining > 7 },
                 ]}>
                     <div class="text-suspense-aurora font-noto-sans">
                         {task.title}
                     </div>
                     {#if can.update}
-                        <button
+                        <button type="button"
                             aria-label="Atualizar tarefa"
                             class="cursor-pointer"
                             on:click={() => { identifier = task.uuid; offcanvasRef.open(); }}
@@ -52,7 +50,7 @@
                                 alt=""
                                 aria-hidden="true"
                                 loading="lazy"
-                                class="w-5 h-5 filter invert"
+                                class="w-5 h-5 filter-suspense-aurora"
                             />
                         </button>
                     {/if}

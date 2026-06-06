@@ -1,0 +1,61 @@
+services: 
+  laravel: 
+    build: .
+    working_dir: /app
+    volumes: 
+      - .:/app
+    ports: 
+      - "8000:8000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks: 
+      - akiba_network
+    command: tail -f /dev/null
+    container_name: akiba_laravel
+
+  node: 
+    image: node:22
+    working_dir: /app
+    volumes: 
+      - .:/app
+    ports: 
+      - "5173:5173"
+    networks: 
+      - akiba_network 
+    command: tail -f /dev/null
+    container_name: akiba_node 
+
+  mysql: 
+    image: mysql:8
+    ports: 
+      - "3306:3306"
+    environment: 
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: "root"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks:
+      - akiba_network
+    container_name: akiba_mysql 
+
+  phpmyadmin: 
+    image: phpmyadmin/phpmyadmin
+    ports: 
+      - "8080:80"
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+    depends_on: 
+      - mysql
+    networks: 
+      - akiba_network
+    container_name: akiba_phpmyadmin 
+
+networks: 
+  akiba_network:

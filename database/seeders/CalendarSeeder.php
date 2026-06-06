@@ -2,12 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
-
-use App\Models\User;
 use App\Models\Activity;
 use App\Models\Calendar;
+use App\Models\User;
+use Illuminate\Database\Seeder;
 
 class CalendarSeeder extends Seeder
 {
@@ -16,31 +14,34 @@ class CalendarSeeder extends Seeder
      */
     public function run(): void
     {
-        $admin = User::find(1);
         $user = User::inRandomOrder()->first();
-        
-        Activity::factory()
-            ->for($admin, 'author')
-            ->create([
-                'allows_confirmations' => true,
-            ]);
 
-        Calendar::factory(5)
-            ->for($user, 'responsible')
-            ->create();
+        if (!$user || Calendar::exists()) return;
 
-        Calendar::factory(5)
-            ->for($user, 'responsible')
-            ->create();
-        
-        $confirmations = Activity::where('allows_confirmations', true)->get();
-        foreach ($confirmations as $confirmation) {
+        $this->seedHasActivity($user);
+        $this->seedNotHasActivity($user);
+    }
+
+    public function seedHasActivity(User $user): void
+    {
+        $activities = Activity::where('allows_confirmations', true)
+            ->get();
+
+        if ($activities->isEmpty()) return;
+
+        foreach ($activities as $activity) {
             Calendar::factory()
                 ->for($user, 'responsible')
-                ->for($confirmation, 'activity')
-                ->create([
-                    'has_activity' => true,
-                ]);
+                ->for($activity, 'activity')
+                ->withActivity()
+                ->create();
         }
+    }
+
+    public function seedNotHasActivity(User $user): void
+    {
+        Calendar::factory(5)
+            ->for($user, 'responsible')
+            ->create();
     }
 }

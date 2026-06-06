@@ -3,24 +3,24 @@
 namespace Tests\Unit\Models;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 use App\Models\User;
-use App\Models\UserPreference;
-use App\Models\UserSocial;
+use App\Models\Preference;
+use App\Models\Social;
 use App\Models\Role;
 use App\Models\Activity;
-use App\Models\Automatic;
 use App\Models\Calendar;
 use App\Models\Event;
 use App\Models\Program;
 use App\Models\Podcast;
 use App\Models\Post;
 use App\Models\Review;
-use App\Models\ReviewContent;
+use App\Models\Opinion;
 use App\Models\Task;
+use App\Models\Favority;
+use App\Models\Permission;
 
 class UserTest extends TestCase
 {
@@ -31,24 +31,35 @@ class UserTest extends TestCase
      */
     public function testPreferencesRelationship(): void
     {
-        $preference = UserPreference::factory();
+        $preference = Preference::factory();
 
         $user = User::factory()
             ->has($preference, 'preferences')
             ->create();
 
-        $this->assertContainsOnlyInstancesOf(UserPreference::class, $user->preferences);
+        $this->assertContainsOnlyInstancesOf(Preference::class, $user->preferences);
     }
 
     public function testSocialsRelationship(): void
     {
-        $social = UserSocial::factory();
+        $social = Social::factory();
 
         $user = User::factory()
             ->has($social, 'socials')
             ->create();
 
-        $this->assertContainsOnlyInstancesOf(UserSocial::class, $user->socials);
+        $this->assertContainsOnlyInstancesOf(Social::class, $user->socials);
+    }
+
+    public function testFavoritesRelationship(): void
+    {
+        $favority = Favority::factory();
+
+        $user = User::factory()
+            ->has($favority, 'favorites')
+            ->create();
+
+        $this->assertContainsOnlyInstancesOf(Favority::class, $user->favorites);
     }
 
     public function testRolesRelationship(): void
@@ -73,17 +84,6 @@ class UserTest extends TestCase
         $this->assertContainsOnlyInstancesOf(Activity::class, $user->activities);
     }
 
-    public function testAutomaticRelationship(): void
-    {
-        $automatic = Automatic::factory();
-
-        $user = User::factory()
-            ->has($automatic, 'automatic')
-            ->create();
-
-        $this->assertContainsOnlyInstancesOf(Automatic::class, $user->automatic);
-    }
-
     public function testCalendarRelationship(): void
     {
         $user = User::factory()->create();
@@ -97,10 +97,14 @@ class UserTest extends TestCase
 
     public function testEventsRelationship(): void
     {
-        $event = Event::factory();
+        $user = User::factory()->create();
 
-        $user = User::factory()
-            ->has($event, 'events')
+        $post = Post::factory()
+            ->for($user, 'author')
+            ->create();
+
+        Event::factory()
+            ->for($post, 'post')
             ->create();
 
         $this->assertContainsOnlyInstancesOf(Event::class, $user->events);
@@ -139,17 +143,23 @@ class UserTest extends TestCase
         $this->assertContainsOnlyInstancesOf(Post::class, $user->posts);
     }
 
-    public function testReviewsRelationship(): void
+    public function testOpinionsRelationship(): void
     {
-        $review = Review::factory()->create();
         $user = User::factory()->create();
+        $post = Post::factory()
+            ->for($user, 'author')
+            ->create();
 
-        $reviewContent = ReviewContent::factory()
+        $review = Review::factory()
+            ->for($post, 'post')
+            ->create();
+
+        $opinion = Opinion::factory()
             ->for($review, 'review')
             ->for($user, 'author')
             ->create();
 
-        $this->assertContainsOnlyInstancesOf(ReviewContent::class, $user->reviews);
+        $this->assertContainsOnlyInstancesOf(Opinion::class, $user->opinions);
     }
 
     public function testTasksRelationship(): void
@@ -182,6 +192,35 @@ class UserTest extends TestCase
 
         $this->assertTrue($users->contains($activeUser));
         $this->assertFalse($users->contains($inactiveUser));
+    }
+
+    public function testVirtualAttributeCastsToBoolean(): void
+    {
+        $user = User::factory()->create([
+            'is_virtual' => 1,
+        ]);
+
+        $this->assertTrue($user->is_virtual);
+    }
+
+    public function testPermissionHelpers(): void
+    {
+        $permission = Permission::factory()->create(['name' => 'posts.create']);
+        $otherPermission = Permission::factory()->create(['name' => 'posts.delete']);
+        $role = Role::factory()
+            ->hasAttached($permission, [], 'permissions')
+            ->create(['name' => 'editor']);
+
+        $user = User::factory()
+            ->hasAttached($role, [], 'roles')
+            ->create();
+
+        $this->assertTrue($user->hasPermission('posts.create'));
+        $this->assertFalse($user->hasPermission('posts.update'));
+        $this->assertTrue($user->hasRole('editor'));
+        $this->assertFalse($user->hasRole('administrator'));
+        $this->assertTrue($user->hasAnyPermission(['posts.update', 'posts.create']));
+        $this->assertFalse($user->hasAnyPermission([$otherPermission->name]));
     }
 
     /**

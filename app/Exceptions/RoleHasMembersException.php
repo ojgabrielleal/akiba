@@ -2,9 +2,8 @@
 
 namespace App\Exceptions;
 
+use App\Http\Controllers\Concerns\HasFlashMessages;
 use Exception;
-
-use App\Traits\HasFlashMessages;
 
 class RoleHasMembersException extends Exception
 {

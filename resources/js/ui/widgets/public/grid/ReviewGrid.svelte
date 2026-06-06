@@ -12,7 +12,12 @@
     <Section {title}>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
             {#each reviews.data as item}
-                <Link href={`review/${item.slug}`} class="aspect-square sm:aspect-auto sm:h-60 bg-orange-citric rounded-t-xl rounded-b-md relative">
+                <Link
+                    title=""
+                    aria-label=""
+                    href={`review/${item.slug}`}
+                    class="aspect-square sm:aspect-auto sm:h-60 bg-orange-citric rounded-t-xl rounded-b-md relative"
+                >
                     <img
                         src={item.cover}
                         alt={item.title}

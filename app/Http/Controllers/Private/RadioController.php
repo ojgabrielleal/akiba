@@ -3,17 +3,15 @@
 namespace App\Http\Controllers\Private;
 
 use App\Http\Controllers\Controller;
-
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Illuminate\Support\Facades\Log;
+
+use App\Http\Controllers\Concerns\HasFlashMessages;
 
 use App\Models\ListenerMonth;
 use App\Models\Music;
 use App\Models\Program;
 use App\Models\User;
-
-use App\Http\Requests\Radio\StoreProgramRequest;
 
 use App\Http\Resources\ListenerMonthResource;
 use App\Http\Resources\MusicResource;
@@ -21,12 +19,13 @@ use App\Http\Resources\ProgramResource;
 use App\Http\Resources\UserResource;
 
 use App\Actions\Radio\CreateListenerMonthAction;
-use App\Actions\Radio\CreateProgramAction;
+use App\Actions\Program\CreateProgramAction;
 use App\Actions\Radio\GenerateMusicRankingAction;
 use App\Actions\Radio\UpdateMusicRankingAction;
-use App\Actions\Radio\UpdateProgramAction;
+use App\Actions\Program\UpdateProgramAction;
 
-use App\Traits\HasFlashMessages;
+use App\Http\Requests\Radio\CreateProgramRequest;
+use DomainException;
 
 class RadioController extends Controller
 {
@@ -37,73 +36,100 @@ class RadioController extends Controller
     /*
      * ======================
      * USERS
-     * ====================== 
+     * ======================
      */
 
     public function indexUsers()
     {
-        if (request()->user()->cannot('viewAny', User::class)) return null;
+        if (request()->user()->cannot('viewAny', User::class)) {
+            return null;
+        }
 
-        return UserResource::collection(User::get());
+        return UserResource::collection(User::get())->format('compact');
     }
 
     /*
      * ======================
      * PROGRAMS
-     * ====================== 
+     * ======================
      */
-
     public function indexPrograms()
     {
-        if (request()->user()->cannot('viewAny', Program::class)) return null;
+        if (request()->user()->cannot('list', Program::class)) {
+            return null;
+        }
 
         return ProgramResource::collection(
-            Program::with(['host', 'schedules'])
+            Program::with([
+                    'host', 
+                    'airtimes', 
+                    'plans' => fn ($query) => $query->unexecuted()->orderBy('scheduled_at')
+                ])
                 ->active()
                 ->get()
-        );
+        )->format('grouped_by_execution_mode');
     }
 
     public function showProgram(Program $program)
     {
-        if (request()->user()->cannot('view', $program)) return null;
+        if (request()->user()->cannot('view', $program)) {
+            return null;
+        }
 
-        return new ProgramResource($program->load('host', 'schedules'));
+        return new ProgramResource(
+            $program->load([
+                'host',
+                'airtimes',
+                'plans' => fn ($query) => $query->unexecuted()->orderBy('scheduled_at'),
+                'plans.user',
+            ])
+        );
     }
 
-    public function createProgram(StoreProgramRequest $request, CreateProgramAction $createProgramAction)
+    public function createProgram(CreateProgramRequest $request, CreateProgramAction $createProgramAction)
     {
         if ($request->user()->cannot('create', Program::class)) {
             return null;
         }
-        
-        Log::info($request->all());
 
-        $createProgramAction->execute(
-            $request->user(),
-            $request->all(),
-            $request->file('image')
-        );
+        try {
+            $createProgramAction->execute(
+                $request->user(),
+                $request->all(),
+                $request->file('image')
+            );
 
-        return $this->flashMessage('save');
+            return $this->flashMessage('save');
+        } catch (DomainException $exception) {
+            return $this->flashMessage('error', $exception->getMessage());
+        }
     }
 
-    public function updateProgram(Request $request, Program $program, UpdateProgramAction $updateProgramAction)
+    public function updateProgram(Request $request, UpdateProgramAction $updateProgramAction, Program $program)
     {
-        if ($request->user()->cannot('update', $program)) return null;
+        if ($request->user()->cannot('update', $program)) {
+            return null;
+        }
 
-        $updateProgramAction->execute(
-            $program,
-            $request->all(),
-            $request->file('image')
-        );
+        try {
+            $updateProgramAction->execute(
+                $program,
+                $request->user(),
+                $request->all(),
+                $request->file('image')
+            );
 
-        return $this->flashMessage('update');
+            return $this->flashMessage('update');
+        } catch (DomainException $exception) {
+            return $this->flashMessage('error', $exception->getMessage());
+        }
     }
 
     public function deactivateProgram(Program $program)
     {
-        if (request()->user()->cannot('delete', $program)) return null;
+        if (request()->user()->cannot('delete', $program)) {
+            return null;
+        }
 
         $program->update(['is_active' => false]);
 
@@ -113,12 +139,14 @@ class RadioController extends Controller
     /*
      * ======================
      * MUSIC
-     * ====================== 
+     * ======================
      */
 
     public function indexMusicRanking()
     {
-        if (request()->user()->cannot('viewAny', Music::class)) return null;
+        if (request()->user()->cannot('viewAny', Music::class)) {
+            return null;
+        }
 
         return MusicResource::collection(
             Music::orderBy('song_requests_total', 'desc')
@@ -129,7 +157,9 @@ class RadioController extends Controller
 
     public function updateMusicRanking(Request $request, Music $music, UpdateMusicRankingAction $updateMusicRankingAction)
     {
-        if ($request->user()->cannot('update', $music)) return null;
+        if ($request->user()->cannot('update', $music)) {
+            return null;
+        }
 
         $updateMusicRankingAction->execute(
             $music,
@@ -141,7 +171,9 @@ class RadioController extends Controller
 
     public function generateMusicRanking(GenerateMusicRankingAction $generateMusicRankingAction)
     {
-        if (request()->user()->cannot('setRanking', Music::class)) return null;
+        if (request()->user()->cannot('setRanking', Music::class)) {
+            return null;
+        }
 
         $generateMusicRankingAction->execute();
 
@@ -151,12 +183,14 @@ class RadioController extends Controller
     /*
      * ======================
      * LISTENER MONTH
-     * ====================== 
+     * ======================
      */
 
     public function showListenerMonth()
     {
-        if (request()->user()->cannot('listener.month.view')) return null;
+        if (request()->user()->cannot('listener.month.view')) {
+            return null;
+        }
 
         $listener = ListenerMonth::first();
 
@@ -165,7 +199,9 @@ class RadioController extends Controller
 
     public function showListenerMonthFound()
     {
-        if (request()->user()->cannot('listener.month.view')) return null;
+        if (request()->user()->cannot('listener.month.view')) {
+            return null;
+        }
 
         $listener = ListenerMonth::mostActiveListenerOfCurrentMonth();
 
@@ -174,7 +210,9 @@ class RadioController extends Controller
 
     public function createListenerMonth(Request $request, CreateListenerMonthAction $createListenerMonthAction)
     {
-        if ($request->user()->cannot('listener.month.set')) return null;
+        if ($request->user()->cannot('listener.month.set')) {
+            return null;
+        }
 
         $createListenerMonthAction->execute(
             $request->file('avatar')
@@ -186,7 +224,7 @@ class RadioController extends Controller
     /*
      * ======================
      *  RENDER
-     * ====================== 
+     * ======================
      */
 
     public function render()

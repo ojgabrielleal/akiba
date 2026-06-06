@@ -11,9 +11,9 @@ class SongRequestFactory extends Factory
 {
     /**
      * Define the model's default state.
-    *
-    * @return array<string, mixed>
-    */
+     *
+     * @return array<string, mixed>
+     */
     public function definition(): array
     {
         return [
@@ -22,7 +22,7 @@ class SongRequestFactory extends Factory
             'ip_address' => fake()->ipv4(),
             'name' => fake()->userName(),
             'address' => fake()->address(),
-            'message' => fake()->sentence()
+            'message' => fake()->sentence(),
         ];
     }
 }

@@ -11,18 +11,12 @@ class TaskResource extends JsonResource
     {
         return [
             'uuid' => $this->uuid,
-            'is_due' => $this->is_due || $this->is_over,
-            'dead_line' => $this->dead_line->format('Y-m-d'),
-            'dead_line_formatted' => $this->dead_line?->format('d/m'),
+            'is_overdue' => $this->is_overdue,
+            'days_remaining' => $this->days_remaining,
+            'status' => $this->status,
             'title' => $this->title,
-            'content' => $this->content,
-            'responsible' => [
-                'uuid' => $this->responsible->uuid,
-                'name' => $this->responsible->name,
-                'nickname' => $this->responsible->nickname,
-                'avatar' => $this->responsible->avatar,
-                'gender' => $this->responsible->gender
-            ],
+            'description' => $this->description,
+            'responsible' => UserResource::make($this->responsible)->format('compact'),
         ];
     }
 }

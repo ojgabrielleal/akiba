@@ -2,18 +2,13 @@
     export let title;
 
     import { page } from "@inertiajs/svelte";
-    import { Section } from "@/ui/components/private/";
-    import { scrollx } from "@/utils";
+    import { Carrousel, Section } from "@/ui/components/private/";
 
     $: ({ audience } = $page.props);
 </script>
 
 <Section {title}>
-    <div
-        class="scroll-x overflow-x-auto flex gap-5 flex-nowrap mt-5"
-        role="group"
-        on:wheel|nonpassive={scrollx}
-    >
+    <Carrousel styles="mt-5">
         {#each audience as item}
             <article class="shrink-0 flex flex-col items-center justify-center gap-4 px-5 lg:first:pl-0 lg:border-r-2 lg:border-suspense-aurora/10 lg:last:border-0">
                 <div class="">
@@ -22,7 +17,7 @@
                         alt=""
                         aria-hidden="true"
                         loading="lazy"
-                        class="w-15 h-15 object-contain rounded-lg"
+                        class="w-15 h-15 object-contain rounded-md"
                     />
                 </div>
                 <div class="flex flex-col gap-1">
@@ -33,7 +28,7 @@
                         <img
                             src="/svg/listeners.svg"
                             alt="Ouvintes"
-                            class="w-5 h-5 shrink-0 filter invert"
+                            class="w-5 h-5 shrink-0 filter-suspense-aurora"
                         />
                         <span>
                             {#if item.listeners === "offline"}
@@ -50,5 +45,5 @@
                 </div>
             </article>
         {/each}
-    </div>
+    </Carrousel>
 </Section>

@@ -3,14 +3,11 @@
 
     import { page, router } from "@inertiajs/svelte";
     import { Section, Preview } from "@/ui/components/private";
-    import { hasPermission } from "@/utils";
+    import { musicPermissions } from "@/utils";
 
     $: ({ musicRanking } = $page.props);
 
-    let can = {
-        update: hasPermission("music.update"),
-        set: hasPermission("music.set.ranking"),
-    };
+    let can = musicPermissions();
 
     const submit = (event, uuid) => {
         const formData = new FormData();
@@ -25,13 +22,9 @@
     };
 
     const setRanking = () => {
-        router.post(
-            "/panel/radio/music-ranking",
-            {},
-            {
+        router.post("/panel/radio/music-ranking", {}, {
                 preserveScroll: true,
-            },
-        );
+            });
     };
 </script>
 
@@ -44,21 +37,19 @@
                         <div class="flex items-center gap-5">
                             {#if can.update}
                                 <Preview
-                                    standard="w-24 h-24 rounded-lg"
-                                    view="w-24 h-24 rounded-lg"
+                                    name="image_ranking"
+                                    size="thumb"
                                     src={item.ranking.image || "https://placehold.co/500x500?text=Rede+Akiba"}
-                                    oninput={(event)
-                                >
-                                        submit(event, item.uuid)}
+                                    oninput={(event) => submit(event, item.uuid)}
                                 />
                             {:else}
                                 <img
-                                    class="w-24 h-24 rounded-lg"
+                                    class="w-24 h-24 rounded-md"
                                     src={item.ranking.image || "https://placehold.co/500x500?text=Rede+Akiba"}
                                     alt={item.name}
                                 />
                             {/if}
-                            <strong class="text-suspense-aurora text-6xl font-noto-sans font-bold uppercase italic">
+                            <strong class="text-suspense-aurora text-6xl font-noto-sans font-extrabold uppercase italic">
                                 #{index + 1}
                             </strong>
                         </div>
@@ -71,7 +62,7 @@
         </div>
         {#if musicRanking.data.length >= 3 && can.set}
             <div class="flex justify-end mt-5">
-                <button class="cursor-pointer bg-blue-skywave px-4 py-2 rounded-md text-suspense-aurora font-noto-sans font-bold uppercase italic disabled:opacity-50 disabled:pointer-events-none" on:click={() => setRanking()}>
+                <button type="button" class="cursor-pointer bg-blue-skywave px-4 py-2 rounded-md text-suspense-aurora font-noto-sans font-extrabold uppercase italic disabled:opacity-50 disabled:pointer-events-none" on:click={() => setRanking()}>
                     Atualizar ranking
                 </button>
             </div>

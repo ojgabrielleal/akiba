@@ -4,9 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Review extends Model
 {
@@ -16,27 +15,18 @@ class Review extends Model
 
     protected $fillable = [
         'uuid',
-        'is_active',
-        'slug',
-        'cover',
-        'image',
-        'title',
+        'post_id',
+        'year_of_release',
         'sinopse',
     ];
 
-    protected $casts = [
-        'is_active' => 'boolean'
+    protected $hidden = [
+        'post_id',
     ];
 
-    protected function title(): Attribute
-    {
-        return Attribute::make(
-            set: fn(string $value) => [
-                'title' => $value,
-                'slug' => Str::slug($value),
-            ],
-        );
-    }
+    protected $casts = [
+        'year_of_release' => 'integer',
+    ];
 
     /**
      * Determine the columns that should receive a unique identifier.
@@ -51,35 +41,19 @@ class Review extends Model
     }
 
     /**
-     * Query scopes for this model.
-     *
-     * These methods define reusable query filters that can be
-     * applied to Eloquent queries (e.g., active()).
-     */
-    public function scopeActive($query)
-    {
-        return $query->where('is_active', true);
-    }
-
-    public function scopeFeatured($query)
-    {
-        return $query->withCount('views')
-        ->orderByDesc('views_count');
-    }
-
-    /**
      * Define the relationships between this model and other models.
      *
      * Use these methods to access related data via Eloquent relationships
      * (hasOne, hasMany, belongsTo, belongsToMany, etc.).
      */
-    public function views()
+    public function post()
     {
-        return $this->morphMany(PageView::class, 'viewable');
+        return $this->belongsTo(Post::class, 'post_id');
     }
 
-    public function reviews()
+    public function opinions()
     {
-        return $this->hasMany(ReviewContent::class, 'review_id');
+        return $this->hasMany(Opinion::class, 'review_id');
     }
+
 }

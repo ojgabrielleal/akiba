@@ -2,7 +2,7 @@
     export let title;
 
     import { page } from "@inertiajs/svelte";
-    import { Section, Pagination } from "@/ui/components/private/";
+    import { Section, ButtonPagination } from "@/ui/components/private/";
 
     $: ({ onair } = $page.props);
 </script>
@@ -12,7 +12,7 @@
         <div class="overflow-x-auto w-full">
             <table class="min-w-[900px] w-full border-collapse table-auto">
                 <thead>
-                    <tr class="text-orange-amber uppercase text-lg font-bold font-noto-sans italic whitespace-nowrap">
+                    <tr class="text-orange-amber uppercase text-lg font-extrabold font-noto-sans italic whitespace-nowrap">
                         <th class="py-4 px-4 text-start min-w-[180px]">
                             Locutor
                         </th>
@@ -40,9 +40,7 @@
                                 {item.program.name}
                             </td>
                             <td class="py-6 px-4 align-middle">
-                                {item.type === "live"
-                                    ? "Ao Vivo"
-                                    : "Pré-gravado"}
+                                {item.type === "live" ? "Ao Vivo" : "Pré-gravado"}
                             </td>
                             <td class="py-6 px-4 align-middle">
                                 {item.created_at}
@@ -54,7 +52,7 @@
                     {/each}
                 </tbody>
             </table>
-            <Pagination pages={onair} />
+            <ButtonPagination pages={onair} only={["onair"]} />
         </div>
     {/if}
 </Section>

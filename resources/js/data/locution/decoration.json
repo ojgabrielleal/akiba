@@ -1,0 +1,58 @@
+[
+    {
+        "alt": "rains",
+        "icon": "/img/player/decorations/rains-icon.webp",
+        "left": "/img/player/decorations/rains-left.webp",
+        "right": "/img/player/decorations/rains-right.webp",
+        "disabled": false
+    },
+    {
+        "alt": "#",
+        "icon": "#",
+        "left": "#",
+        "right": "#",
+        "disabled": true
+    },
+    {
+        "alt": "#",
+        "icon": "#",
+        "left": "#",
+        "right": "#",
+        "disabled": true
+    },
+    {
+        "alt": "#",
+        "icon": "#",
+        "left": "#",
+        "right": "#",
+        "disabled": true
+    },
+    {
+        "alt": "#",
+        "icon": "#",
+        "left": "#",
+        "right": "#",
+        "disabled": true
+    },
+    {
+        "alt": "#",
+        "icon": "#",
+        "left": "#",
+        "right": "#",
+        "disabled": true
+    },
+    {
+        "alt": "#",
+        "icon": "#",
+        "left": "#",
+        "right": "#",
+        "disabled": true
+    },
+    {
+        "alt": "#",
+        "icon": "#",
+        "left": "#",
+        "right": "#",
+        "disabled": true
+    }
+]

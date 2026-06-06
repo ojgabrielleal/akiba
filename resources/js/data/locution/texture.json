@@ -1,0 +1,12 @@
+[
+  {
+    "alt": "texture 1",
+    "url": "/img/textures/texture01.webp",
+    "disabled": false
+  },
+  {
+    "alt": "#",
+    "url": "#",
+    "disabled": true
+  }
+]

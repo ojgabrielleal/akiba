@@ -2,10 +2,13 @@
 
 namespace App\Actions\Locution;
 
-use App\Models\Program;
-use App\Models\Onair;
-use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use App\Services\External\DiscordWebhookService;
+
+use App\Models\Onair;
+use App\Models\Plan;
+use App\Models\Program;
+use App\Models\User;
 
 class StartLocutionAction
 {
@@ -18,24 +21,39 @@ class StartLocutionAction
 
     public function execute(User $user, Program $program, array $data): void
     {
-        Onair::live()->first()->update([
-            'in_air' => false,
-            'song_requests_total' => false,
-        ]);
-
-        if ($program->type === 'free') {
-            $program->update([
-                'user_id' => $user->id
+        DB::transaction(function () use ($user, $program, $data) {
+            Onair::live()->first()->update([
+                'in_air' => false,
             ]);
-        }
 
-        $program->onair()->create([
-            'type' => 'live',
-            'phrase' => $data['phrase'] ?? null,
-            'icon' => $data['icon'] ?? null,
-            'allows_song_requests' => true,
-        ]);
+            $plan = Plan::where('action', 'start_program')
+                ->where('status', 'running')
+                ->lockForUpdate()
+                ->first();
 
-        $this->discord->sendHookMessage($user, $program);
+            $plan?->update([
+                'status' => 'paused',
+            ]);
+
+            if($program->access_type === 'free') {
+                $program->update([
+                    'user_id' => $user->id,
+                ]);
+            }
+
+            $program->onair()->create([
+                'execution_mode' => 'live',
+                'paused_plan_id' => $plan?->id,
+                'phrase' => [
+                    'text' => $data['phrase']['text'],
+                    'icon' => $data['phrase']['icon'],
+                    'decoration' => $data['phrase']['decoration'],
+                    'texture' => $data['phrase']['texture'],
+                ],
+                'allows_song_requests' => true,
+            ]);
+        });
+
+        $this->discord->sendStreamNotificationHook($user, $program);
     }
 }

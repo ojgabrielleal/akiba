@@ -1,0 +1,195 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap");
+@import "tailwindcss";
+
+:root {
+    /* Neutral */
+    --color-neutral-white: #ffffff;
+    --color-neutral-gray: #808080;
+
+    /* Suspense */
+    --color-suspense-aurora: #fffaf3;
+    --color-suspense-sandstone: #e6ded1;
+    --color-suspense-honeycream: #ffe8bf;
+
+    /* Reds */
+    --color-red-crimson: #ed3237;
+    --color-red-blood: #570300;
+
+    /* Oranges */
+    --color-orange-morning: #ffc171;
+    --color-orange-citric: #ffaa35;
+    --color-orange-amber: #ff8000;
+    --color-orange-copper: #f65600;
+
+    /* Blues */
+    --color-blue-ocean: #002080;
+    --color-blue-marinho: #000036;
+    --color-blue-skywave: #0091ff;
+    --color-blue-cerulean: #0059c0;
+    --color-blue-night: #000014;
+
+    /* Purples */
+    --color-purple-mystic: #b82bff;
+    --color-purple-lilac: #BD87FF;
+
+    /* Greens */
+    --color-green-mint: #00a859;
+    --color-green-forest: #009933;
+    --color-green-pine: #004100;
+
+    /* Gradients */
+    --gradient-blue-ocean-cerulean: linear-gradient(
+        50deg,
+        var(--color-blue-ocean) 10%, 
+        color-mix(in srgb, var(--color-blue-cerulean) 30%, transparent) 28%,
+        var(--color-blue-cerulean) 100%
+    );
+
+    --gradient-blue-cerulean-glow: linear-gradient(
+        50deg,
+        color-mix(in srgb, var(--color-blue-cerulean) 40%, transparent) 2%,
+        var(--color-blue-cerulean) 100%
+    );
+
+    --gradient-orange-morning-aurora: linear-gradient(
+        50deg,
+        var(--color-orange-morning) 10%, 
+        var(--color-neutral-white) 100%
+    );
+
+    --gradient-green-forest-pine: linear-gradient(
+        270deg, 
+        var(--color-green-forest) 0%, 
+        var(--color-green-pine) 100%
+    );
+
+    --gradient-red-crimson-blood: linear-gradient(
+        270deg, 
+        var(--color-red-crimson) 0%, 
+        var(--color-red-blood) 100%
+    );
+}
+
+@theme {
+    --color-neutral-white: var(--color-neutral-white);
+    --color-neutral-gray: var(--color-neutral-gray);
+
+    --color-suspense-aurora: var(--color-suspense-aurora);
+    --color-suspense-sandstone: var(--color-suspense-sandstone);
+    --color-suspense-honeycream: var(--color-suspense-honeycream);
+
+    --color-red-crimson: var(--color-red-crimson);
+    --color-red-blood: var(--color-red-blood);
+
+    --color-orange-morning: var(--color-orange-morning);
+    --color-orange-citric: var(--color-orange-citric);
+    --color-orange-amber: var(--color-orange-amber);
+    --color-orange-copper: var(--color-orange-copper);
+
+    --color-blue-ocean: var(--color-blue-ocean);
+    --color-blue-marinho: var(--color-blue-marinho);
+    --color-blue-skywave: var(--color-blue-skywave);
+    --color-blue-cerulean: var(--color-blue-cerulean);
+    --color-blue-night: var(--color-blue-night);
+
+    --color-purple-mystic: var(--color-purple-mystic);
+    --color-purple-lilac: var(--color-purple-lilac);
+
+    --color-green-mint: var(--color-green-mint);
+    --color-green-forest: var(--color-green-forest);
+    --color-green-pine: var(--color-green-pine);
+}
+
+@theme {
+    --font-noto-sans: "Noto Sans", sans-serif;
+}
+
+@layer components {
+    .container-page {
+        width: min(100% - clamp(4rem, 5vw, 5rem), 81.25rem);
+        margin-inline: auto;
+    }
+
+    .container-player {
+        width: min(100% - clamp(1rem, 5vw, 4rem), 68.75rem);
+        margin-inline: auto;
+    }
+}
+
+@layer utilities {
+    .carrousel-scroll {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .carrousel-scroll::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+/*
+    Gradient utilities based on the project color palette.
+*/
+@utility bg-gradient-blue-cerulean-glow {
+    background: var(--gradient-blue-cerulean-glow);
+}
+
+@utility bg-gradient-orange-morning-aurora {
+    background: var(--gradient-orange-morning-aurora);
+}
+
+@utility bg-gradient-green-forest-pine {
+    background: var(--gradient-green-forest-pine);
+}
+
+@utility bg-gradient-red-crimson-blood {
+    background: var(--gradient-red-crimson-blood);
+}
+
+/*
+    Filters generated to match the color palette of the project, based on the original image of the logo.
+    Filter Generator: https://codepen.io/sosuke/pen/Pjoqqp
+*/
+@utility filter-neutral-gray {
+    filter: invert(54%) sepia(12%) saturate(23%) hue-rotate(46deg) brightness(92%) contrast(88%);
+}
+
+@utility filter-suspense-aurora {
+    filter: invert(93%) sepia(32%) saturate(268%) hue-rotate(331deg) brightness(115%) contrast(104%);
+}
+
+@utility filter-suspense-honeycream {
+    filter: invert(92%) sepia(5%) saturate(2300%) hue-rotate(327deg) brightness(104%) contrast(101%);
+}
+
+@utility filter-blue-skywave {
+    filter: invert(53%) sepia(84%) saturate(4530%) hue-rotate(185deg) brightness(99%) contrast(112%);
+}
+
+@utility filter-blue-ocean {
+    filter: invert(10%) sepia(55%) saturate(5448%) hue-rotate(224deg) brightness(90%) contrast(109%);
+}
+
+@utility filter-blue-marinho {
+    filter: invert(8%) sepia(27%) saturate(5191%) hue-rotate(227deg) brightness(96%) contrast(124%);
+}
+
+@utility filter-blue-midnight {
+    filter: invert(5%) sepia(9%) saturate(7430%) hue-rotate(191deg) brightness(102%) contrast(108%);
+}
+
+@utility filter-red-crimson {
+    filter: invert(44%) sepia(59%) saturate(4904%) hue-rotate(335deg) brightness(88%) contrast(113%);
+}
+
+@utility filter-orange-amber {
+    filter: invert(64%) sepia(30%) saturate(6101%) hue-rotate(8deg) brightness(106%) contrast(102%);
+}
+
+@utility filter-orange-morning {
+    filter: invert(84%) sepia(12%) saturate(1050%) hue-rotate(333deg) brightness(111%) contrast(105%);
+}
+
+@utility filter-orange-citric {
+    filter: invert(67%) sepia(64%) saturate(1600%) hue-rotate(357deg) brightness(103%) contrast(104%);
+}

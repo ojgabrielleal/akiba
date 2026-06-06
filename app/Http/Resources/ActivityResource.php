@@ -17,20 +17,8 @@ class ActivityResource extends JsonResource
             'limit' => $this->limit->format('Y-m-d'),
             'hour' => $this->calendar?->hour->format('H:i'),
             'date' => $this->calendar?->date->format('Y-m-d'),
-            'author' => [
-                'uuid' => $this->author->uuid,
-                'name' => $this->author->name,
-                'nickname' => $this->author->nickname,
-                'avatar' => $this->author->avatar,
-                'gender' => $this->author->gender
-
-            ],
-            'confirmations' => $this->confirmations->map(fn($item) => [
-                'uuid' => $item->uuid,
-                'name' => $item->name,
-                'nickname' => $item->nickname,
-                'avatar' => $item->avatar,
-            ]),
+            'author' => UserResource::make($this->author)->format('compact'),
+            'confirmations' => UserResource::collection($this->confirmations),
         ];
     }
 }

@@ -2,8 +2,12 @@
 <html lang="pt-BR">
 <head>
     @inertiaHead
-    @vite(['resources/css/app.css', 'resources/js/app.js'])  
+    @vite(['resources/js/app.js', 'resources/js/css/quill-editor.css', 'resources/js/css/app.css'])
 </head>
 <body>
+    <audio id="audio">
+        <source src="/api/stream" type="audio/mpeg">
+    </audio>
     @inertia
 </body>
+</html>

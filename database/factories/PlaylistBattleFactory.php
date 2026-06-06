@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use Database\Factories\Concerns\HasFakeImages;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -9,6 +10,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class PlaylistBattleFactory extends Factory
 {
+    use HasFakeImages;
+
     /**
      * Define the model's default state.
      *
@@ -18,7 +21,7 @@ class PlaylistBattleFactory extends Factory
     {
         return [
             'day' => fake()->randomElement([0, 1, 2, 3, 4, 5, 6]),
-            'image' => 'https://placehold.co/500x500?text=Rede%20Akiba%20Placeholder'
+            'image' => $this->fakeImageUrl(),
         ];
     }
 }

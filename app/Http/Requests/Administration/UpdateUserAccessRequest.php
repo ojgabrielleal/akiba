@@ -25,7 +25,7 @@ class UpdateUserAccessRequest extends FormRequest
             'label' => 'required|unique:roles,label',
             'weight' => 'required',
             'description' => 'required',
-            'permissions' => 'required'
+            'permissions' => 'required',
         ];
     }
 }

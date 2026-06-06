@@ -1,27 +1,30 @@
 {
-  "_vendor-BUkdYX19.js": {
-    "file": "assets/vendor-BUkdYX19.js",
+  "_vendor-CHPFJqtd.css": {
+    "file": "assets/vendor-CHPFJqtd.css",
+    "src": "_vendor-CHPFJqtd.css"
+  },
+  "_vendor-Cyf_rS7-.js": {
+    "file": "assets/vendor-Cyf_rS7-.js",
     "name": "vendor",
     "css": [
       "assets/vendor-CHPFJqtd.css"
     ]
   },
-  "_vendor-CHPFJqtd.css": {
-    "file": "assets/vendor-CHPFJqtd.css",
-    "src": "_vendor-CHPFJqtd.css"
-  },
-  "resources/css/app.css": {
-    "file": "assets/app-DIpd9lR3.css",
-    "src": "resources/css/app.css",
-    "isEntry": true
-  },
   "resources/js/app.js": {
-    "file": "assets/app-BdjwBdsv.js",
+    "file": "assets/app-DrAYv0dF.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
     "imports": [
-      "_vendor-BUkdYX19.js"
+      "_vendor-Cyf_rS7-.js"
+    ],
+    "css": [
+      "assets/app-DR4D5KxC.css"
     ]
+  },
+  "resources/js/css/quill-editor.css": {
+    "file": "assets/quill-editor-Bnx8Dnrg.css",
+    "src": "resources/js/css/quill-editor.css",
+    "isEntry": true
   }
 }

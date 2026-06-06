@@ -4,16 +4,15 @@ namespace App\Policies;
 
 use App\Models\Post;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class PostPolicy
 {
     /**
-     * Determine whether the user can view any models.
+     * Determine whether the user can list results of the model.
      */
-    public function viewAny(User $user): bool
+    public function list(User $user): bool
     {
-        return $user->hasAnyPermission(['post.list', 'post.list.own']);
+        return $user->hasPermission('post.list');
     }
 
     /**
@@ -37,11 +36,7 @@ class PostPolicy
      */
     public function update(User $user, Post $post): bool
     {
-        if ($user->hasPermission('post.update')) {
-            return true;
-        }
-
-        return $user->hasPermission('post.update.own') && $user->id === $post->user_id;
+        return $user->hasPermission('post.update');
     }
 
     /**
@@ -50,5 +45,13 @@ class PostPolicy
     public function delete(User $user, Post $post): bool
     {
         return $user->hasPermission('post.deactivate');
+    }
+
+    /**
+     * Determine whether the user can approve a post in revision.
+     */
+    public function approve(User $user, Post $post): bool
+    {
+        return $user->hasPermission('post.approve');
     }
 }

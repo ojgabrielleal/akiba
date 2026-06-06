@@ -26,7 +26,7 @@ class UpdatePollRequest extends FormRequest
             'option_one' => 'required',
             'option_two' => 'required',
             'option_three' => 'required',
-            'option_four' => 'required'
+            'option_four' => 'required',
         ];
     }
 }

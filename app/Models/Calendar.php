@@ -14,7 +14,6 @@ class Calendar extends Model
 
     protected $fillable = [
         'uuid',
-        'has_activity',
         'user_id',
         'activity_id',
         'day_of_week',
@@ -25,7 +24,6 @@ class Calendar extends Model
     ];
 
     protected $casts = [
-        'has_activity' => 'boolean',
         'date' => 'date:Y-m-d',
         'hour' => 'date:h:i',
         'day_of_week' => 'integer',

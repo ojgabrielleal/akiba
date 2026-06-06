@@ -18,48 +18,45 @@ class Task extends Model
         'uuid',
         'is_active',
         'user_id',
-        'is_completed',
+        'status',
         'title',
         'dead_line',
-        'content',
+        'description',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
         'dead_line' => 'date:Y-m-d',
-        'is_completed' => 'boolean',
     ];
 
     protected $hidden = [
         'user_id',
     ];
 
-    protected $appends = ['is_over', 'is_due'];
+    protected $appends = ['days_remaining', 'is_overdue'];
 
-    protected function isOver(): Attribute
+    protected function daysRemaining(): Attribute
     {
         return Attribute::make(
             get: function () {
-                if ($this->is_complete) {
-                    return false;
+                if ($this->status === 'completed') {
+                    return 0;
                 }
 
-                $dead_line = $this->dead_line;
-                return $dead_line->isPast();
+                return (int) max(0, today()->diffInDays($this->dead_line, false));
             }
         );
     }
 
-    protected function isDue(): Attribute
+    protected function isOverdue(): Attribute
     {
         return Attribute::make(
             get: function () {
-                if ($this->is_complete) {
+                if ($this->status === 'completed') {
                     return false;
                 }
 
-                $dead_line = $this->dead_line;
-                return $dead_line->between(today(), today()->addDays(7));
+                return $this->days_remaining === 0 && $this->dead_line->isPast();
             }
         );
     }
@@ -89,7 +86,7 @@ class Task extends Model
 
     public function scopeIncompleted($query)
     {
-        return $query->where('is_completed', false);
+        return $query->where('status', '!=', 'completed');
     }
 
     public function scopeMine($query)

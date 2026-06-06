@@ -15,13 +15,9 @@ class PollResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'uuid' => $this->uuid, 
+            'uuid' => $this->uuid,
             'question' => $this->question,
-            'options' => $this->options->map(fn($item)=>[
-                'uuid' => $item->uuid,
-                'option' => $item->option, 
-                'votes' => $item->votes,
-            ])
+            'options' => OptionResource::collection($this->options),
         ];
     }
 }

@@ -1,0 +1,1898 @@
+{
+  "author": "Codex",
+  "project": "akiba",
+  "title": "Akiba Domain Schema",
+  "date": "2026-05-23",
+  "database": "mysql",
+  "tables": [
+    {
+      "id": "users",
+      "name": "users",
+      "x": 80,
+      "y": 120,
+      "color": "#2563eb",
+      "fields": [
+        {
+          "id": "users_id",
+          "name": "id",
+          "type": "BIGINT",
+          "primary": true,
+          "notNull": true,
+          "unique": false,
+          "increment": true,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "users_uuid",
+          "name": "uuid",
+          "type": "CHAR",
+          "size": "36",
+          "primary": false,
+          "notNull": true,
+          "unique": true,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "users_slug",
+          "name": "slug",
+          "type": "VARCHAR",
+          "size": "255",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "users_username",
+          "name": "username",
+          "type": "VARCHAR",
+          "size": "255",
+          "primary": false,
+          "notNull": false,
+          "unique": true,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "users_name",
+          "name": "name",
+          "type": "VARCHAR",
+          "size": "255",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        }
+      ],
+      "indices": [],
+      "comment": ""
+    },
+    {
+      "id": "roles",
+      "name": "roles",
+      "x": 80,
+      "y": 520,
+      "color": "#2563eb",
+      "fields": [
+        {
+          "id": "roles_id",
+          "name": "id",
+          "type": "BIGINT",
+          "primary": true,
+          "notNull": true,
+          "unique": false,
+          "increment": true,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "roles_uuid",
+          "name": "uuid",
+          "type": "CHAR",
+          "size": "36",
+          "primary": false,
+          "notNull": true,
+          "unique": true,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "roles_label",
+          "name": "label",
+          "type": "VARCHAR",
+          "size": "255",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "roles_name",
+          "name": "name",
+          "type": "VARCHAR",
+          "size": "255",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        }
+      ],
+      "indices": [],
+      "comment": ""
+    },
+    {
+      "id": "permissions",
+      "name": "permissions",
+      "x": 80,
+      "y": 820,
+      "color": "#2563eb",
+      "fields": [
+        {
+          "id": "permissions_id",
+          "name": "id",
+          "type": "BIGINT",
+          "primary": true,
+          "notNull": true,
+          "unique": false,
+          "increment": true,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "permissions_uuid",
+          "name": "uuid",
+          "type": "CHAR",
+          "size": "36",
+          "primary": false,
+          "notNull": true,
+          "unique": true,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "permissions_label",
+          "name": "label",
+          "type": "VARCHAR",
+          "size": "255",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "permissions_name",
+          "name": "name",
+          "type": "VARCHAR",
+          "size": "255",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        }
+      ],
+      "indices": [],
+      "comment": ""
+    },
+    {
+      "id": "roles_pivot",
+      "name": "roles_pivot",
+      "x": 360,
+      "y": 520,
+      "color": "#60a5fa",
+      "fields": [
+        {
+          "id": "roles_pivot_id",
+          "name": "id",
+          "type": "BIGINT",
+          "primary": true,
+          "notNull": true,
+          "unique": false,
+          "increment": true,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "roles_pivot_user_id",
+          "name": "user_id",
+          "type": "BIGINT",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "roles_pivot_role_id",
+          "name": "role_id",
+          "type": "BIGINT",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        }
+      ],
+      "indices": [],
+      "comment": ""
+    },
+    {
+      "id": "permissions_pivot",
+      "name": "permissions_pivot",
+      "x": 360,
+      "y": 800,
+      "color": "#60a5fa",
+      "fields": [
+        {
+          "id": "permissions_pivot_id",
+          "name": "id",
+          "type": "BIGINT",
+          "primary": true,
+          "notNull": true,
+          "unique": false,
+          "increment": true,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "permissions_pivot_permission_id",
+          "name": "permission_id",
+          "type": "BIGINT",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "permissions_pivot_role_id",
+          "name": "role_id",
+          "type": "BIGINT",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        }
+      ],
+      "indices": [],
+      "comment": ""
+    },
+    {
+      "id": "socials",
+      "name": "socials",
+      "x": 360,
+      "y": 80,
+      "color": "#60a5fa",
+      "fields": [
+        {
+          "id": "socials_id",
+          "name": "id",
+          "type": "BIGINT",
+          "primary": true,
+          "notNull": true,
+          "unique": false,
+          "increment": true,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "socials_user_id",
+          "name": "user_id",
+          "type": "BIGINT",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "socials_name",
+          "name": "name",
+          "type": "VARCHAR",
+          "size": "255",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        }
+      ],
+      "indices": [],
+      "comment": ""
+    },
+    {
+      "id": "preferences",
+      "name": "preferences",
+      "x": 360,
+      "y": 260,
+      "color": "#60a5fa",
+      "fields": [
+        {
+          "id": "preferences_id",
+          "name": "id",
+          "type": "BIGINT",
+          "primary": true,
+          "notNull": true,
+          "unique": false,
+          "increment": true,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "preferences_user_id",
+          "name": "user_id",
+          "type": "BIGINT",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "preferences_is_like",
+          "name": "is_like",
+          "type": "BOOLEAN",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        }
+      ],
+      "indices": [],
+      "comment": ""
+    },
+    {
+      "id": "favorities",
+      "name": "favorities",
+      "x": 360,
+      "y": 400,
+      "color": "#60a5fa",
+      "fields": [
+        {
+          "id": "favorities_id",
+          "name": "id",
+          "type": "BIGINT",
+          "primary": true,
+          "notNull": true,
+          "unique": false,
+          "increment": true,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "favorities_user_id",
+          "name": "user_id",
+          "type": "BIGINT",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "favorities_name",
+          "name": "name",
+          "type": "VARCHAR",
+          "size": "255",
+          "primary": false,
+          "notNull": false,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        }
+      ],
+      "indices": [],
+      "comment": ""
+    },
+    {
+      "id": "posts",
+      "name": "posts",
+      "x": 760,
+      "y": 120,
+      "color": "#16a34a",
+      "fields": [
+        {
+          "id": "posts_id",
+          "name": "id",
+          "type": "BIGINT",
+          "primary": true,
+          "notNull": true,
+          "unique": false,
+          "increment": true,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "posts_uuid",
+          "name": "uuid",
+          "type": "CHAR",
+          "size": "36",
+          "primary": false,
+          "notNull": true,
+          "unique": true,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "posts_user_id",
+          "name": "user_id",
+          "type": "BIGINT",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "posts_title",
+          "name": "title",
+          "type": "VARCHAR",
+          "size": "255",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "posts_status",
+          "name": "status",
+          "type": "VARCHAR",
+          "size": "255",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": "published, revision, draft"
+        }
+      ],
+      "indices": [],
+      "comment": ""
+    },
+    {
+      "id": "references",
+      "name": "references",
+      "x": 1080,
+      "y": 40,
+      "color": "#86efac",
+      "fields": [
+        {
+          "id": "references_id",
+          "name": "id",
+          "type": "BIGINT",
+          "primary": true,
+          "notNull": true,
+          "unique": false,
+          "increment": true,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "references_post_id",
+          "name": "post_id",
+          "type": "BIGINT",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "references_name",
+          "name": "name",
+          "type": "VARCHAR",
+          "size": "255",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        }
+      ],
+      "indices": [],
+      "comment": ""
+    },
+    {
+      "id": "reactions",
+      "name": "reactions",
+      "x": 1080,
+      "y": 220,
+      "color": "#86efac",
+      "fields": [
+        {
+          "id": "reactions_id",
+          "name": "id",
+          "type": "BIGINT",
+          "primary": true,
+          "notNull": true,
+          "unique": false,
+          "increment": true,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "reactions_post_id",
+          "name": "post_id",
+          "type": "BIGINT",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "reactions_name",
+          "name": "name",
+          "type": "VARCHAR",
+          "size": "255",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        }
+      ],
+      "indices": [],
+      "comment": ""
+    },
+    {
+      "id": "tags",
+      "name": "tags",
+      "x": 1080,
+      "y": 400,
+      "color": "#86efac",
+      "fields": [
+        {
+          "id": "tags_id",
+          "name": "id",
+          "type": "BIGINT",
+          "primary": true,
+          "notNull": true,
+          "unique": false,
+          "increment": true,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "tags_post_id",
+          "name": "post_id",
+          "type": "BIGINT",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "tags_name",
+          "name": "name",
+          "type": "VARCHAR",
+          "size": "255",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        }
+      ],
+      "indices": [],
+      "comment": ""
+    },
+    {
+      "id": "events",
+      "name": "events",
+      "x": 760,
+      "y": 520,
+      "color": "#22c55e",
+      "fields": [
+        {
+          "id": "events_id",
+          "name": "id",
+          "type": "BIGINT",
+          "primary": true,
+          "notNull": true,
+          "unique": false,
+          "increment": true,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "events_post_id",
+          "name": "post_id",
+          "type": "BIGINT",
+          "primary": false,
+          "notNull": false,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "events_dates",
+          "name": "dates",
+          "type": "VARCHAR",
+          "size": "255",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "events_address",
+          "name": "address",
+          "type": "VARCHAR",
+          "size": "255",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        }
+      ],
+      "indices": [],
+      "comment": ""
+    },
+    {
+      "id": "reviews",
+      "name": "reviews",
+      "x": 1080,
+      "y": 620,
+      "color": "#22c55e",
+      "fields": [
+        {
+          "id": "reviews_id",
+          "name": "id",
+          "type": "BIGINT",
+          "primary": true,
+          "notNull": true,
+          "unique": false,
+          "increment": true,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "reviews_post_id",
+          "name": "post_id",
+          "type": "BIGINT",
+          "primary": false,
+          "notNull": false,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "reviews_year_of_release",
+          "name": "year_of_release",
+          "type": "INT",
+          "primary": false,
+          "notNull": false,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        }
+      ],
+      "indices": [],
+      "comment": ""
+    },
+    {
+      "id": "opinions",
+      "name": "opinions",
+      "x": 1400,
+      "y": 620,
+      "color": "#86efac",
+      "fields": [
+        {
+          "id": "opinions_id",
+          "name": "id",
+          "type": "BIGINT",
+          "primary": true,
+          "notNull": true,
+          "unique": false,
+          "increment": true,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "opinions_user_id",
+          "name": "user_id",
+          "type": "BIGINT",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "opinions_review_id",
+          "name": "review_id",
+          "type": "BIGINT",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "opinions_status",
+          "name": "status",
+          "type": "VARCHAR",
+          "size": "255",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        }
+      ],
+      "indices": [],
+      "comment": ""
+    },
+    {
+      "id": "page_views",
+      "name": "page_views",
+      "x": 1400,
+      "y": 120,
+      "color": "#86efac",
+      "fields": [
+        {
+          "id": "page_views_id",
+          "name": "id",
+          "type": "BIGINT",
+          "primary": true,
+          "notNull": true,
+          "unique": false,
+          "increment": true,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "page_views_viewable_type",
+          "name": "viewable_type",
+          "type": "VARCHAR",
+          "size": "255",
+          "primary": false,
+          "notNull": false,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "page_views_viewable_id",
+          "name": "viewable_id",
+          "type": "BIGINT",
+          "primary": false,
+          "notNull": false,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        }
+      ],
+      "indices": [],
+      "comment": "Polymorphic: viewable_type + viewable_id"
+    },
+    {
+      "id": "podcasts",
+      "name": "podcasts",
+      "x": 760,
+      "y": 820,
+      "color": "#16a34a",
+      "fields": [
+        {
+          "id": "podcasts_id",
+          "name": "id",
+          "type": "BIGINT",
+          "primary": true,
+          "notNull": true,
+          "unique": false,
+          "increment": true,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "podcasts_user_id",
+          "name": "user_id",
+          "type": "BIGINT",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "podcasts_title",
+          "name": "title",
+          "type": "VARCHAR",
+          "size": "255",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        }
+      ],
+      "indices": [],
+      "comment": ""
+    },
+    {
+      "id": "programs",
+      "name": "programs",
+      "x": 80,
+      "y": 1220,
+      "color": "#d97706",
+      "fields": [
+        {
+          "id": "programs_id",
+          "name": "id",
+          "type": "BIGINT",
+          "primary": true,
+          "notNull": true,
+          "unique": false,
+          "increment": true,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "programs_user_id",
+          "name": "user_id",
+          "type": "BIGINT",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "programs_name",
+          "name": "name",
+          "type": "VARCHAR",
+          "size": "255",
+          "primary": false,
+          "notNull": true,
+          "unique": true,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        }
+      ],
+      "indices": [],
+      "comment": ""
+    },
+    {
+      "id": "programs_schedules",
+      "name": "programs_schedules",
+      "x": 400,
+      "y": 1120,
+      "color": "#fbbf24",
+      "fields": [
+        {
+          "id": "programs_schedules_id",
+          "name": "id",
+          "type": "BIGINT",
+          "primary": true,
+          "notNull": true,
+          "unique": false,
+          "increment": true,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "programs_schedules_program_id",
+          "name": "program_id",
+          "type": "BIGINT",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "programs_schedules_day",
+          "name": "day",
+          "type": "INT",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        }
+      ],
+      "indices": [],
+      "comment": ""
+    },
+    {
+      "id": "onair",
+      "name": "onair",
+      "x": 400,
+      "y": 1340,
+      "color": "#fbbf24",
+      "fields": [
+        {
+          "id": "onair_id",
+          "name": "id",
+          "type": "BIGINT",
+          "primary": true,
+          "notNull": true,
+          "unique": false,
+          "increment": true,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "onair_program_id",
+          "name": "program_id",
+          "type": "BIGINT",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "onair_type",
+          "name": "type",
+          "type": "VARCHAR",
+          "size": "255",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        }
+      ],
+      "indices": [],
+      "comment": ""
+    },
+    {
+      "id": "musics",
+      "name": "musics",
+      "x": 760,
+      "y": 1340,
+      "color": "#d97706",
+      "fields": [
+        {
+          "id": "musics_id",
+          "name": "id",
+          "type": "BIGINT",
+          "primary": true,
+          "notNull": true,
+          "unique": false,
+          "increment": true,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "musics_type",
+          "name": "type",
+          "type": "VARCHAR",
+          "size": "255",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "musics_name",
+          "name": "name",
+          "type": "VARCHAR",
+          "size": "255",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        }
+      ],
+      "indices": [],
+      "comment": ""
+    },
+    {
+      "id": "songs_requests",
+      "name": "songs_requests",
+      "x": 1080,
+      "y": 1340,
+      "color": "#fbbf24",
+      "fields": [
+        {
+          "id": "songs_requests_id",
+          "name": "id",
+          "type": "BIGINT",
+          "primary": true,
+          "notNull": true,
+          "unique": false,
+          "increment": true,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "songs_requests_onair_id",
+          "name": "onair_id",
+          "type": "BIGINT",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "songs_requests_music_id",
+          "name": "music_id",
+          "type": "BIGINT",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        }
+      ],
+      "indices": [],
+      "comment": ""
+    },
+    {
+      "id": "listener_month",
+      "name": "listener_month",
+      "x": 1400,
+      "y": 1340,
+      "color": "#d97706",
+      "fields": [
+        {
+          "id": "listener_month_id",
+          "name": "id",
+          "type": "BIGINT",
+          "primary": true,
+          "notNull": true,
+          "unique": false,
+          "increment": true,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "listener_month_name",
+          "name": "name",
+          "type": "VARCHAR",
+          "size": "255",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        }
+      ],
+      "indices": [],
+      "comment": ""
+    },
+    {
+      "id": "activities",
+      "name": "activities",
+      "x": 760,
+      "y": 1720,
+      "color": "#9333ea",
+      "fields": [
+        {
+          "id": "activities_id",
+          "name": "id",
+          "type": "BIGINT",
+          "primary": true,
+          "notNull": true,
+          "unique": false,
+          "increment": true,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "activities_user_id",
+          "name": "user_id",
+          "type": "BIGINT",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "activities_title",
+          "name": "title",
+          "type": "VARCHAR",
+          "size": "255",
+          "primary": false,
+          "notNull": false,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        }
+      ],
+      "indices": [],
+      "comment": ""
+    },
+    {
+      "id": "activity_pivot",
+      "name": "activity_pivot",
+      "x": 1080,
+      "y": 1720,
+      "color": "#c084fc",
+      "fields": [
+        {
+          "id": "activity_pivot_id",
+          "name": "id",
+          "type": "BIGINT",
+          "primary": true,
+          "notNull": true,
+          "unique": false,
+          "increment": true,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "activity_pivot_user_id",
+          "name": "user_id",
+          "type": "BIGINT",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "activity_pivot_activity_id",
+          "name": "activity_id",
+          "type": "BIGINT",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        }
+      ],
+      "indices": [],
+      "comment": ""
+    },
+    {
+      "id": "calendar",
+      "name": "calendar",
+      "x": 1080,
+      "y": 1940,
+      "color": "#c084fc",
+      "fields": [
+        {
+          "id": "calendar_id",
+          "name": "id",
+          "type": "BIGINT",
+          "primary": true,
+          "notNull": true,
+          "unique": false,
+          "increment": true,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "calendar_user_id",
+          "name": "user_id",
+          "type": "BIGINT",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "calendar_activity_id",
+          "name": "activity_id",
+          "type": "BIGINT",
+          "primary": false,
+          "notNull": false,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        }
+      ],
+      "indices": [],
+      "comment": ""
+    },
+    {
+      "id": "tasks",
+      "name": "tasks",
+      "x": 400,
+      "y": 1720,
+      "color": "#9333ea",
+      "fields": [
+        {
+          "id": "tasks_id",
+          "name": "id",
+          "type": "BIGINT",
+          "primary": true,
+          "notNull": true,
+          "unique": false,
+          "increment": true,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "tasks_user_id",
+          "name": "user_id",
+          "type": "BIGINT",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "tasks_status",
+          "name": "status",
+          "type": "VARCHAR",
+          "size": "255",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        }
+      ],
+      "indices": [],
+      "comment": ""
+    },
+    {
+      "id": "polls",
+      "name": "polls",
+      "x": 1400,
+      "y": 1720,
+      "color": "#9333ea",
+      "fields": [
+        {
+          "id": "polls_id",
+          "name": "id",
+          "type": "BIGINT",
+          "primary": true,
+          "notNull": true,
+          "unique": false,
+          "increment": true,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "polls_question",
+          "name": "question",
+          "type": "VARCHAR",
+          "size": "255",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        }
+      ],
+      "indices": [],
+      "comment": ""
+    },
+    {
+      "id": "options",
+      "name": "options",
+      "x": 1720,
+      "y": 1720,
+      "color": "#c084fc",
+      "fields": [
+        {
+          "id": "options_id",
+          "name": "id",
+          "type": "BIGINT",
+          "primary": true,
+          "notNull": true,
+          "unique": false,
+          "increment": true,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "options_poll_id",
+          "name": "poll_id",
+          "type": "BIGINT",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "options_option",
+          "name": "option",
+          "type": "VARCHAR",
+          "size": "255",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        }
+      ],
+      "indices": [],
+      "comment": ""
+    },
+    {
+      "id": "repositories",
+      "name": "repositories",
+      "x": 80,
+      "y": 1720,
+      "color": "#9333ea",
+      "fields": [
+        {
+          "id": "repositories_id",
+          "name": "id",
+          "type": "BIGINT",
+          "primary": true,
+          "notNull": true,
+          "unique": false,
+          "increment": true,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "repositories_url",
+          "name": "url",
+          "type": "VARCHAR",
+          "size": "255",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        }
+      ],
+      "indices": [],
+      "comment": ""
+    },
+    {
+      "id": "playlist_battle",
+      "name": "playlist_battle",
+      "x": 1720,
+      "y": 1340,
+      "color": "#d97706",
+      "fields": [
+        {
+          "id": "playlist_battle_id",
+          "name": "id",
+          "type": "BIGINT",
+          "primary": true,
+          "notNull": true,
+          "unique": false,
+          "increment": true,
+          "default": "",
+          "check": "",
+          "comment": ""
+        },
+        {
+          "id": "playlist_battle_day",
+          "name": "day",
+          "type": "INT",
+          "primary": false,
+          "notNull": true,
+          "unique": false,
+          "increment": false,
+          "default": "",
+          "check": "",
+          "comment": ""
+        }
+      ],
+      "indices": [],
+      "comment": ""
+    }
+  ],
+  "relationships": [
+    {
+      "id": "rel_socials_users",
+      "name": "socials_user_id_fk",
+      "startTableId": "socials",
+      "startFieldId": "socials_user_id",
+      "endTableId": "users",
+      "endFieldId": "users_id",
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "Cascade"
+    },
+    {
+      "id": "rel_preferences_users",
+      "name": "preferences_user_id_fk",
+      "startTableId": "preferences",
+      "startFieldId": "preferences_user_id",
+      "endTableId": "users",
+      "endFieldId": "users_id",
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "Cascade"
+    },
+    {
+      "id": "rel_favorities_users",
+      "name": "favorities_user_id_fk",
+      "startTableId": "favorities",
+      "startFieldId": "favorities_user_id",
+      "endTableId": "users",
+      "endFieldId": "users_id",
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "Cascade"
+    },
+    {
+      "id": "rel_roles_pivot_users",
+      "name": "roles_pivot_user_id_fk",
+      "startTableId": "roles_pivot",
+      "startFieldId": "roles_pivot_user_id",
+      "endTableId": "users",
+      "endFieldId": "users_id",
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "Cascade"
+    },
+    {
+      "id": "rel_roles_pivot_roles",
+      "name": "roles_pivot_role_id_fk",
+      "startTableId": "roles_pivot",
+      "startFieldId": "roles_pivot_role_id",
+      "endTableId": "roles",
+      "endFieldId": "roles_id",
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "Cascade"
+    },
+    {
+      "id": "rel_permissions_pivot_permissions",
+      "name": "permissions_pivot_permission_id_fk",
+      "startTableId": "permissions_pivot",
+      "startFieldId": "permissions_pivot_permission_id",
+      "endTableId": "permissions",
+      "endFieldId": "permissions_id",
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "Cascade"
+    },
+    {
+      "id": "rel_permissions_pivot_roles",
+      "name": "permissions_pivot_role_id_fk",
+      "startTableId": "permissions_pivot",
+      "startFieldId": "permissions_pivot_role_id",
+      "endTableId": "roles",
+      "endFieldId": "roles_id",
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "Cascade"
+    },
+    {
+      "id": "rel_posts_users",
+      "name": "posts_user_id_fk",
+      "startTableId": "posts",
+      "startFieldId": "posts_user_id",
+      "endTableId": "users",
+      "endFieldId": "users_id",
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "Cascade"
+    },
+    {
+      "id": "rel_references_posts",
+      "name": "references_post_id_fk",
+      "startTableId": "references",
+      "startFieldId": "references_post_id",
+      "endTableId": "posts",
+      "endFieldId": "posts_id",
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "Cascade"
+    },
+    {
+      "id": "rel_reactions_posts",
+      "name": "reactions_post_id_fk",
+      "startTableId": "reactions",
+      "startFieldId": "reactions_post_id",
+      "endTableId": "posts",
+      "endFieldId": "posts_id",
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "Cascade"
+    },
+    {
+      "id": "rel_tags_posts",
+      "name": "tags_post_id_fk",
+      "startTableId": "tags",
+      "startFieldId": "tags_post_id",
+      "endTableId": "posts",
+      "endFieldId": "posts_id",
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "Cascade"
+    },
+    {
+      "id": "rel_events_posts",
+      "name": "events_post_id_fk",
+      "startTableId": "events",
+      "startFieldId": "events_post_id",
+      "endTableId": "posts",
+      "endFieldId": "posts_id",
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "Cascade"
+    },
+    {
+      "id": "rel_reviews_posts",
+      "name": "reviews_post_id_fk",
+      "startTableId": "reviews",
+      "startFieldId": "reviews_post_id",
+      "endTableId": "posts",
+      "endFieldId": "posts_id",
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "Cascade"
+    },
+    {
+      "id": "rel_opinions_users",
+      "name": "opinions_user_id_fk",
+      "startTableId": "opinions",
+      "startFieldId": "opinions_user_id",
+      "endTableId": "users",
+      "endFieldId": "users_id",
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "Cascade"
+    },
+    {
+      "id": "rel_opinions_reviews",
+      "name": "opinions_review_id_fk",
+      "startTableId": "opinions",
+      "startFieldId": "opinions_review_id",
+      "endTableId": "reviews",
+      "endFieldId": "reviews_id",
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "Cascade"
+    },
+    {
+      "id": "rel_podcasts_users",
+      "name": "podcasts_user_id_fk",
+      "startTableId": "podcasts",
+      "startFieldId": "podcasts_user_id",
+      "endTableId": "users",
+      "endFieldId": "users_id",
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "Cascade"
+    },
+    {
+      "id": "rel_programs_users",
+      "name": "programs_user_id_fk",
+      "startTableId": "programs",
+      "startFieldId": "programs_user_id",
+      "endTableId": "users",
+      "endFieldId": "users_id",
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "Cascade"
+    },
+    {
+      "id": "rel_programs_schedules_programs",
+      "name": "programs_schedules_program_id_fk",
+      "startTableId": "programs_schedules",
+      "startFieldId": "programs_schedules_program_id",
+      "endTableId": "programs",
+      "endFieldId": "programs_id",
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "Cascade"
+    },
+    {
+      "id": "rel_onair_programs",
+      "name": "onair_program_id_fk",
+      "startTableId": "onair",
+      "startFieldId": "onair_program_id",
+      "endTableId": "programs",
+      "endFieldId": "programs_id",
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "Cascade"
+    },
+    {
+      "id": "rel_songs_requests_onair",
+      "name": "songs_requests_onair_id_fk",
+      "startTableId": "songs_requests",
+      "startFieldId": "songs_requests_onair_id",
+      "endTableId": "onair",
+      "endFieldId": "onair_id",
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "Cascade"
+    },
+    {
+      "id": "rel_songs_requests_musics",
+      "name": "songs_requests_music_id_fk",
+      "startTableId": "songs_requests",
+      "startFieldId": "songs_requests_music_id",
+      "endTableId": "musics",
+      "endFieldId": "musics_id",
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "Cascade"
+    },
+    {
+      "id": "rel_activities_users",
+      "name": "activities_user_id_fk",
+      "startTableId": "activities",
+      "startFieldId": "activities_user_id",
+      "endTableId": "users",
+      "endFieldId": "users_id",
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "Cascade"
+    },
+    {
+      "id": "rel_activity_pivot_users",
+      "name": "activity_pivot_user_id_fk",
+      "startTableId": "activity_pivot",
+      "startFieldId": "activity_pivot_user_id",
+      "endTableId": "users",
+      "endFieldId": "users_id",
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "Cascade"
+    },
+    {
+      "id": "rel_activity_pivot_activities",
+      "name": "activity_pivot_activity_id_fk",
+      "startTableId": "activity_pivot",
+      "startFieldId": "activity_pivot_activity_id",
+      "endTableId": "activities",
+      "endFieldId": "activities_id",
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "Cascade"
+    },
+    {
+      "id": "rel_calendar_users",
+      "name": "calendar_user_id_fk",
+      "startTableId": "calendar",
+      "startFieldId": "calendar_user_id",
+      "endTableId": "users",
+      "endFieldId": "users_id",
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "Cascade"
+    },
+    {
+      "id": "rel_calendar_activities",
+      "name": "calendar_activity_id_fk",
+      "startTableId": "calendar",
+      "startFieldId": "calendar_activity_id",
+      "endTableId": "activities",
+      "endFieldId": "activities_id",
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "Cascade"
+    },
+    {
+      "id": "rel_tasks_users",
+      "name": "tasks_user_id_fk",
+      "startTableId": "tasks",
+      "startFieldId": "tasks_user_id",
+      "endTableId": "users",
+      "endFieldId": "users_id",
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "Cascade"
+    },
+    {
+      "id": "rel_options_polls",
+      "name": "options_poll_id_fk",
+      "startTableId": "options",
+      "startFieldId": "options_poll_id",
+      "endTableId": "polls",
+      "endFieldId": "polls_id",
+      "cardinality": "many_to_one",
+      "updateConstraint": "No action",
+      "deleteConstraint": "Cascade"
+    }
+  ],
+  "notes": [],
+  "subjectAreas": [
+    {
+      "id": 1,
+      "name": "Identity & Access",
+      "x": 40,
+      "y": 40,
+      "width": 620,
+      "height": 980,
+      "color": "#dbeafe"
+    },
+    {
+      "id": 2,
+      "name": "Content",
+      "x": 720,
+      "y": 40,
+      "width": 940,
+      "height": 980,
+      "color": "#dcfce7"
+    },
+    {
+      "id": 3,
+      "name": "Radio & Music",
+      "x": 40,
+      "y": 1080,
+      "width": 1880,
+      "height": 560,
+      "color": "#fef3c7"
+    },
+    {
+      "id": 4,
+      "name": "Engagement & Operations",
+      "x": 40,
+      "y": 1680,
+      "width": 1940,
+      "height": 520,
+      "color": "#f3e8ff"
+    }
+  ],
+  "types": [],
+  "enums": []
+}

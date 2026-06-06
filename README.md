@@ -45,12 +45,9 @@ Clone o repositório e rode a instalação usando Docker
 O projeto inclui variáveis de ambiente extras para integrações com stream e Discord:
 
 ```env
-CAST_URL=null
-CAST_METADATA=null
 DISCORD_STREAM_WEBHOOK=null
 ```
-
-Defina esses valores quando quiser conectar o app local a metadados reais da stream ou notificações por webhook.
+- `DISCORD_STREAM_WEBHOOK`: Defina esse valor quando quiser enviar notificações da stream por webhook.
 
 ## Estrutura do Projeto
 

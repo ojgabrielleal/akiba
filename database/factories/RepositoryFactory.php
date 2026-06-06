@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use Database\Factories\Concerns\HasFakeImages;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -9,6 +10,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class RepositoryFactory extends Factory
 {
+    use HasFakeImages;
+
     /**
      * Define the model's default state.
      *
@@ -18,13 +21,9 @@ class RepositoryFactory extends Factory
     {
         return [
             'is_active' => true,
-            'image' => 'https://placehold.co/500x500?text=Rede%20Akiba%20Placeholder',
+            'image' => $this->fakeImageUrl(),
             'url' => fake()->url(),
-            'type' => fake()->randomElement([
-                'tutorial', 
-                'package', 
-                'software'
-            ]),
+            'type' => fake()->randomElement(['tutorial', 'package', 'software']),
             'name' => fake()->userName(),
         ];
     }

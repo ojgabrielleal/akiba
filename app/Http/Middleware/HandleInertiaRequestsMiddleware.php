@@ -2,13 +2,10 @@
 
 namespace App\Http\Middleware;
 
+use App\Http\Controllers\Concerns\ResolvesUserLogged;
+use App\Services\External\StreamService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Inertia\Middleware;
-
-use App\Services\External\CastService;
-
-use App\Traits\ResolvesUserLogged;
 
 class HandleInertiaRequestsMiddleware extends Middleware
 {
@@ -32,18 +29,13 @@ class HandleInertiaRequestsMiddleware extends Middleware
     /**
      * Define the props that are shared by default.
      */
-
     public function share(Request $request): array
     {
         return array_merge(parent::share($request), [
             'user' => $this->getUserLogged(),
-            'streaming' => (new CastService())->data(),
+            'stream' => (new StreamService)->data(),
             'csrf_token' => csrf_token(),
-            'flash' => [
-                'icon' => session('flash.icon'),
-                'message' => session('flash.message'),
-            ],
+            'flash' => session('flash'),
         ]);
     }
-
 }

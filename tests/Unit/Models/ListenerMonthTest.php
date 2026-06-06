@@ -47,6 +47,9 @@ class ListenerMonthTest extends TestCase
         $this->assertNotNull($mostActiveListener);
         $this->assertEquals('John Doe', $mostActiveListener->name);
         $this->assertEquals('123 Main St', $mostActiveListener->address ?? '');
+        $this->assertEquals($program->uuid, $mostActiveListener->program_uuid);
+        $this->assertEquals($program->name, $mostActiveListener->program_name);
+        $this->assertEquals($program->image, $mostActiveListener->program_image);
         $this->assertEquals($program->name, $mostActiveListener->favorite_program);
         $this->assertEquals(5, $mostActiveListener->requests_total);
     }

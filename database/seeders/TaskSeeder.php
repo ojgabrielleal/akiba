@@ -15,23 +15,29 @@ class TaskSeeder extends Seeder
      */
     public function run(): void
     {
-        $user = User::inRandomOrder()->first();
         $admin = User::find(1);
+        $user = User::where('id', '!=', 1)->inRandomOrder()->first();
 
+        $this->seedAdministration($admin);
+        $this->seedNonAdministrationContent($user);
+    }
+
+    private function seedAdministration(User $admin): void
+    {
+        Task::factory(5)
+            ->for($admin, 'responsible')
+            ->create();
+
+        Task::factory(5)
+            ->for($admin, 'responsible')
+            ->withDeadline()
+            ->create();
+    }
+
+    private function seedNonAdministrationContent(User $user): void
+    {
         Task::factory(5)
             ->for($user, 'responsible')
             ->create();
-
-        Task::factory(5)
-            ->for($admin, 'responsible')
-            ->create();
-
-        Task::factory(5)
-            ->for($admin, 'responsible')
-            ->create([
-                'dead_line' => fn() => fake()->dateTimeBetween(
-                    now()->startOfWeek(), now()->endOfWeek()
-                )->format('Y-m-d')
-            ]);
     }
 }

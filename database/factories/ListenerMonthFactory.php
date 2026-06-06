@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use Database\Factories\Concerns\HasFakeImages;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -9,6 +10,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class ListenerMonthFactory extends Factory
 {
+    use HasFakeImages;
+
     /**
      * Define the model's default state.
      *
@@ -18,9 +21,14 @@ class ListenerMonthFactory extends Factory
     {
         return [
             'name' => fake()->name(),
-            'avatar' => '/img/default/avatar.webp',
+            'avatar' => $this->fakeImageUrl(),
             'address' => fake()->address(),
-            'favorite_program' => fake()->name(),
+            'favorite_program' => [
+                'name' => fake()->name(),
+            ],
+            'favorite_anime' => [
+                'name' => fake()->name(),
+            ],
             'requests_total' => fake()->randomNumber(),
         ];
     }

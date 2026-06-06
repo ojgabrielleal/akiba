@@ -23,7 +23,7 @@ class StartLocutionRequest extends FormRequest
     {
         return [
             'phrase' => 'required',
-            'icon' => 'required'
+            'program' => 'required',
         ];
     }
 }

@@ -1,14 +1,11 @@
 <script>
     import { useForm, page } from "@inertiajs/svelte";
     import { Section, Preview, Wysiwyg } from "@/ui/components/private";
-    import { hasPermission } from "@/utils";
+    import { podcastPermissions } from "@/utils";
 
     $: ({ podcast } = $page.props);
 
-    let can = {
-        create: hasPermission("podcast.create"),
-        update: hasPermission("podcast.update"),
-    };
+    let can = podcastPermissions();
 
     let form = useForm({
         _method: null,
@@ -51,7 +48,7 @@
     <form class="mt-10" on:submit|preventDefault={submit}>
         <div class="grid grid-cols-1 xl:grid-cols-[20rem_1fr] items-center gap-8 mb-8">
             <div>
-                <div class="text-orange-amber font-bold italic text-lg uppercase font-noto-sans block mb-1">
+                <div class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block mb-1">
                     Capa do podcast
                 </div>
                 <Preview
@@ -63,47 +60,47 @@
             <div class="flex flex-col gap-8">
                 <div class="grid grid-cols-1 xl:grid-cols-[9rem_9rem_1fr] gap-8 lg:gap-5">
                     <div>
-                        <label for="season" class="text-orange-amber font-bold italic text-lg uppercase font-noto-sans block mb-1">
+                        <label for="season" class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block mb-1">
                             Season
                         </label>
                         <input
                             id="season"
                             type="number"
                             name="season"
-                            class="w-full h-12 bg-suspense-aurora font-noto-sans rounded-lg outline-none pl-4"
+                            class="w-full h-12 bg-suspense-aurora font-noto-sans rounded-md outline-none pl-4"
                             bind:value={$form.season}
                             required
                         />
                     </div>
                     <div>
-                        <label for="episode" class="text-orange-amber font-bold italic text-lg uppercase font-noto-sans block mb-1">
+                        <label for="episode" class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block mb-1">
                             Episode
                         </label>
                         <input
                             id="episode"
                             type="number"
                             name="episode"
-                            class="w-full h-12 bg-suspense-aurora font-noto-sans rounded-lg outline-none pl-4"
+                            class="w-full h-12 bg-suspense-aurora font-noto-sans rounded-md outline-none pl-4"
                             bind:value={$form.episode}
                             required
                         />
                     </div>
                     <div>
-                        <label for="title" class="text-orange-amber font-bold italic text-lg uppercase font-noto-sans block mb-1">
+                        <label for="title" class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block mb-1">
                             Título do episódio
                         </label>
                         <input
                             id="title"
                             type="text"
                             name="title"
-                            class="w-full h-12 bg-suspense-aurora font-noto-sans rounded-lg outline-none pl-4"
+                            class="w-full h-12 bg-suspense-aurora font-noto-sans rounded-md outline-none pl-4"
                             bind:value={$form.title}
                             required
                         />
                     </div>
                 </div>
                 <div>
-                    <label for="summary" class="text-orange-amber font-bold italic text-lg uppercase font-noto-sans block mb-1">
+                    <label for="summary" class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block mb-1">
                         Resumo do episódio
                     </label>
                     <Wysiwyg
@@ -117,7 +114,7 @@
         </div>
         <div class="flex flex-col">
             <div class="mb-8">
-                <label for="description" class="text-orange-amber font-bold italic text-lg uppercase font-noto-sans block mb-1">
+                <label for="description" class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block mb-1">
                     Escreva sobre o episódio
                 </label>
                 <Wysiwyg
@@ -128,14 +125,14 @@
                 />
             </div>
             <div>
-                <label for="audio" class="text-orange-amber font-bold italic text-lg uppercase font-noto-sans block mb-1">
+                <label for="audio" class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block mb-1">
                     URL Embeded do Spotify do episódio
                 </label>
                 <input
                     id="audio"
                     type="url"
                     name="audio"
-                    class="w-full h-12 bg-suspense-aurora font-noto-sans rounded-lg outline-none pl-4"
+                    class="w-full h-12 bg-suspense-aurora font-noto-sans rounded-md outline-none pl-4"
                     bind:value={$form.audio}
                     required
                 />
@@ -146,7 +143,7 @@
                 <button
                     aria-label=""
                     type="submit"
-                    class="cursor-pointer w-full lg:w-auto py-2 px-6 border-4 border-solid border-blue-skywave rounded-xl text-blue-skywave text-xl font-bold font-noto-sans italic uppercase"
+                    class="cursor-pointer w-full lg:w-auto py-2 px-6 border-4 border-solid border-blue-skywave rounded-xl text-blue-skywave text-xl font-extrabold font-noto-sans italic uppercase"
                 >
                     {podcast ? "Atualizar podcast" : "Publicar podcast"}
                 </button>

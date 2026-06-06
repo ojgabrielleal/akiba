@@ -5,8 +5,13 @@
     import { LoginForm } from "@/ui/widgets/private";
 
     $: ({ flash } = $page.props);
+    let lastFlashId = null;
 
-    $: if (flash?.message) {
+    $: flashId = flash?.id ?? flash?.message;
+
+    $: if (flash?.message && flashId !== lastFlashId) {
+        lastFlashId = flashId;
+
         toast(flash.message, {
             icon: flash.icon,
         });

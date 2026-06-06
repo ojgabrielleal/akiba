@@ -1,7 +1,6 @@
 // Carrousels
 export { default as ActivityCarrousel } from "./carrousel/ActivityCarrousel.svelte"
 export { default as TaskCarrousel } from "./carrousel/TaskCarrousel.svelte"
-export { default as ProgramCarrousel } from "./carrousel/ProgramCarrousel.svelte"
 export { default as AudienceCarrousel } from "./carrousel/AudienceCarrousel.svelte";
 
 // Forms
@@ -22,13 +21,12 @@ export { default as RoleForm } from "./form/RoleForm.svelte"
 export { default as ActivityForm } from "./form/ActivityForm.svelte"
 export { default as CalendarForm } from "./form/CalendarForm.svelte"
 export { default as TaskForm } from "./form/TaskForm.svelte"
-export { default as AutomaticForm } from "./form/AutomaticForm.svelte";
 
 // Grids
 export { default as PostGrid } from "./grid/PostGrid.svelte"
-export { default as ReviewGrid } from "./grid/ReviewGrid.svelte"
 export { default as CalendarGrid } from "./grid/CalendarGrid.svelte"
 export { default as SongRequestGrid } from "./grid/SongRequestGrid.svelte"
+export { default as ProgramGrid } from "./grid/ProgramGrid.svelte"
 export { default as ProgramScheduleGrid } from "./grid/ProgramScheduleGrid.svelte"
 export { default as MusicRankingGrid } from "./grid/MusicRankingGrid.svelte"
 export { default as ListenerMonthGrid } from "./grid/ListenerMonthGrid.svelte"
@@ -38,12 +36,11 @@ export { default as PollGrid } from "./grid/PollGrid.svelte"
 export { default as EventGrid } from "./grid/EventGrid.svelte"
 export { default as UserGrid } from "./grid/UserGrid.svelte"
 export { default as RapidAccessGrid } from "./grid/RapidAccessGrid.svelte"
-export { default as CastMetricsGrid } from './grid/CastMetricsGrid.svelte';
+export { default as StreamMetricsGrid } from './grid/StreamMetricsGrid.svelte';
 export { default as TaskGrid } from "./grid/TaskGrid.svelte";
-export { default as AutomaticGrid } from "./grid/AutomaticGrid.svelte";
 
 // Hero
-export { default as GreatingHero } from './hero/GreatingHero.svelte';	
+export { default as WellcomeHero } from './hero/WellcomeHero.svelte';	
 
 // Navbar 
 export { default as Navbar } from './navbar/Navbar.svelte';

@@ -18,18 +18,11 @@ class SongRequestResource extends JsonResource
             'uuid' => $this->uuid,
             'was_reproduced' => $this->was_reproduced,
             'was_canceled' => $this->was_canceled,
-            'ip' => $this->ip,
+            'ip_address' => $this->ip_address,
             'name' => $this->name,
             'address' => $this->address,
             'message' => $this->message,
-            'music' => [
-                'uuid' => $this->music->uuid,
-                'type' => $this->music->type,
-                'image' => $this->music->image,
-                'name' => $this->music->name,
-                'artist' => $this->music->artist,
-                'production' => $this->music->production,
-            ],
+            'music' => MusicResource::make($this->music),
             'created_at' => $this->created_at->setTimezone('America/Sao_Paulo')->format('H:i'),
         ];
     }

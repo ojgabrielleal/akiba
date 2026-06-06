@@ -3,6 +3,8 @@
 namespace App\Http\Requests\Post;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Support\Facades\Log;
 
 class UpdatePostRequest extends FormRequest
 {
@@ -11,7 +13,7 @@ class UpdatePostRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +24,16 @@ class UpdatePostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'status' => 'required_if:module,post,event',
+            'title' => 'required',
+            'references' => 'required',
+            'tags' => 'required',
+            'content' => 'required_if:module,post,event',
+            'sinopse' => 'required_if:module,review',
+            'year_of_release' => 'required_if:module,review',
+            'review' => 'required_if:module,review',
+            'dates' => 'required_if:module,event',
+            'address' => 'required_if:module,event',
         ];
     }
 }

@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 use App\Models\Permission;
 
@@ -13,6 +14,11 @@ class PermissionSeeder extends Seeder
      * Run the database seeds.
      */
     public function run(): void
+    {
+        $this->seedAdministration();
+    }
+
+    private function seedAdministration(): void
     {
         $permissions = [
             /*
@@ -71,36 +77,15 @@ class PermissionSeeder extends Seeder
             | Posts
             |--------------------------------------------------------------------------
             */
-            ['name' => 'post.list', 'label' => '[Matérias] Listar'],
-            ['name' => 'post.view', 'label' => '[Matérias] Visualizar'],
-            ['name' => 'post.create', 'label' => '[Matérias] Criar'],
-            ['name' => 'post.update', 'label' => '[Matérias] Atualizar'],
-            ['name' => 'post.deactivate', 'label' => '[Matérias] Desativar'],
-            ['name' => 'post.list.own', 'label' => '[Matérias] Listar matérias próprias'],
-            ['name' => 'post.update.own', 'label' => '[Matérias] Atualizar matérias próprias'],
-
-            /*
-            |--------------------------------------------------------------------------
-            | Reviews
-            |--------------------------------------------------------------------------
-            */
-            ['name' => 'review.list', 'label' => '[Reviews] Listar'],
-            ['name' => 'review.view', 'label' => '[Reviews] Visualizar'],
-            ['name' => 'review.create', 'label' => '[Reviews] Criar'],
-            ['name' => 'review.update', 'label' => '[Reviews] Atualizar'],
-            ['name' => 'review.deactivate', 'label' => '[Reviews] Desativar'],
-
-            /*
-            |--------------------------------------------------------------------------
-            | Eventos
-            |--------------------------------------------------------------------------
-            */
-            ['name' => 'event.list', 'label' => '[Eventos] Listar'],
-            ['name' => 'event.view', 'label' => '[Eventos] Visualizar'],
-            ['name' => 'event.create', 'label' => '[Eventos] Criar'],
-            ['name' => 'event.update', 'label' => '[Eventos] Atualizar'],
-            ['name' => 'event.deactivate', 'label' => '[Eventos] Desativar'],
-
+            ['name' => 'post.list', 'label' => '[Posts] Listar'],
+            ['name' => 'post.view', 'label' => '[Posts] Visualizar'],
+            ['name' => 'post.create', 'label' => '[Posts] Criar'],
+            ['name' => 'post.update', 'label' => '[Posts] Atualizar'],
+            ['name' => 'post.deactivate', 'label' => '[Posts] Desativar'],
+            ['name' => 'post.list.own', 'label' => '[Posts] Listar posts próprios'],
+            ['name' => 'post.review.opinion.list', 'label' => '[Posts] Listar opiniões de reviews'],
+            ['name' => 'post.publish', 'label' => '[Posts] Publicar post (imediatamente)'],
+            ['name' => 'post.approve', 'label' => '[Posts] Aprovar post'],
 
             /*
             |--------------------------------------------------------------------------
@@ -213,12 +198,9 @@ class PermissionSeeder extends Seeder
             | Automáticos
             |--------------------------------------------------------------------------
             */
-            ['name' => 'automatic.list', 'label' => '[Auto DJ] Listar'],
-            ['name' => 'automatic.view', 'label' => '[Auto DJ] Visualizar'],
-            ['name' => 'automatic.create', 'label' => '[Auto DJ] Criar'],
-            ['name' => 'automatic.update', 'label' => '[Auto DJ] Atualizar'],
-            ['name' => 'automatic.deactivate', 'label' => '[Auto DJ] Desativar'],
         ];
+
+        $this->renamePublicationPermissionsToPost($permissions);
 
         foreach ($permissions as $item) {
             Permission::updateOrCreate(
@@ -227,5 +209,44 @@ class PermissionSeeder extends Seeder
             );
         }
 
+    }
+
+    private function renamePublicationPermissionsToPost(array $permissions): void
+    {
+        $labels = collect($permissions)->pluck('label', 'name');
+
+        $renamedPermissions = [
+            'publication.list' => 'post.list',
+            'publication.view' => 'post.view',
+            'publication.update' => 'post.update',
+            'publication.deactivate' => 'post.deactivate',
+            'publication.list.own' => 'post.list.own',
+            'publication.update.own' => 'post.update.own',
+            'publication.approve' => 'post.approve',
+        ];
+
+        foreach ($renamedPermissions as $oldName => $newName) {
+            $oldPermission = Permission::where('name', $oldName)->first();
+            $newPermission = Permission::where('name', $newName)->first();
+
+            if (! $oldPermission) {
+                continue;
+            }
+
+            if (! $newPermission) {
+                $oldPermission->update([
+                    'name' => $newName,
+                    'label' => $labels->get($newName, $oldPermission->label),
+                ]);
+
+                continue;
+            }
+
+            DB::table('permissions_pivot')
+                ->where('permission_id', $oldPermission->id)
+                ->update(['permission_id' => $newPermission->id]);
+
+            $oldPermission->delete();
+        }
     }
 }

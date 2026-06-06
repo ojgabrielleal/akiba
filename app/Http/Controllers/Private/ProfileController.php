@@ -3,17 +3,16 @@
 namespace App\Http\Controllers\Private;
 
 use App\Http\Controllers\Controller;
-
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+
+use App\Http\Controllers\Concerns\HasFlashMessages;
 
 use App\Models\User;
 
 use App\Http\Resources\UserResource;
 
 use App\Actions\Profile\UpdateProfileAction;
-
-use App\Traits\HasFlashMessages;
 
 class ProfileController extends Controller
 {
@@ -24,7 +23,7 @@ class ProfileController extends Controller
     /*
      * ======================
      * PROFILE
-     * ====================== 
+     * ======================
      */
 
     public function updateProfile(Request $request, User $user, UpdateProfileAction $updateProfileAction)
@@ -45,7 +44,7 @@ class ProfileController extends Controller
     /*
      * ======================
      * RENDER
-     * ====================== 
+     * ======================
      */
 
     public function render(User $user)
@@ -55,7 +54,7 @@ class ProfileController extends Controller
         }
 
         return Inertia::render($this->render, [
-            'profile' => new UserResource($user)
+            'profile' => new UserResource($user->load(['favorites', 'socials', 'preferences'])),
         ]);
     }
 }

@@ -19,7 +19,7 @@ class Post extends Model
         'uuid',
         'user_id',
         'is_active',
-        'type',
+        'status',
         'image',
         'slug',
         'title',
@@ -71,7 +71,7 @@ class Post extends Model
 
     public function scopePublished($query)
     {
-        return $query->where('type', 'published');
+        return $query->where('status', 'published');
     }
 
     public function scopeMine($query)
@@ -81,8 +81,7 @@ class Post extends Model
 
     public function scopeFeatured($query)
     {
-        return $query->withCount('views')
-        ->orderByDesc('views_count');
+        return $query->withCount('views');
     }
     
     /**
@@ -98,17 +97,27 @@ class Post extends Model
 
     public function references()
     {
-        return $this->hasMany(PostReference::class, 'post_id');
+        return $this->hasMany(Reference::class, 'post_id');
     }
 
     public function reactions()
     {
-        return $this->hasMany(PostReaction::class, 'post_id');
+        return $this->hasMany(Reaction::class, 'post_id');
     }
 
-    public function categories()
+    public function tags()
     {
-        return $this->hasMany(PostCategory::class, 'post_id');
+        return $this->hasMany(Tag::class, 'post_id');
+    }
+
+    public function event()
+    {
+        return $this->hasOne(Event::class, 'post_id');
+    }
+
+    public function review()
+    {
+        return $this->hasOne(Review::class, 'post_id');
     }
 
     public function author()
