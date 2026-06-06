@@ -40,4 +40,8 @@ return [
     'discord' => [
         'webhook' => env('DISCORD_WEBHOOK_STREAM_NOTIFICATION'),
     ],
+
+    'onesignal' => [
+        'app_id' => env('ONESIGNAL_APP_ID'),
+    ],
 ];

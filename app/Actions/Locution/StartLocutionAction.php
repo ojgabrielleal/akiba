@@ -4,7 +4,6 @@ namespace App\Actions\Locution;
 
 use Illuminate\Support\Facades\DB;
 use App\Services\External\DiscordService;
-use App\Services\External\OneSignalService;
 
 use App\Models\Onair;
 use App\Models\Plan;
@@ -14,12 +13,10 @@ use App\Models\User;
 class StartLocutionAction
 {
     private DiscordService $discord;
-    private OneSignalService $oneSignal;
 
-    public function __construct(DiscordService $discord, OneSignalService $oneSignal)
+    public function __construct(DiscordService $discord)
     {
         $this->discord = $discord;
-        $this->oneSignal = $oneSignal;
     }
 
     public function execute(User $user, Program $program, array $data): void
@@ -58,6 +55,5 @@ class StartLocutionAction
         });
 
         $this->discord->sendStreamNotificationHook($user, $program);
-        $this->oneSignal->startLocution($user, $program);
     }
 }
