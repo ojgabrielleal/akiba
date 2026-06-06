@@ -5,7 +5,7 @@
     import { MainPlayer, MobilePlayer } from "@/ui/widgets/public";
 
     usePoll(30 * 1000, {
-        only: ["onair"],
+        only: ["onair", "stream"],
     });
 
     onMount(() => {

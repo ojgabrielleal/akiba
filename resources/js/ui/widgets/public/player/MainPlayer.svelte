@@ -9,6 +9,10 @@
 
     
     let modalRef;
+
+    $: phrase = Array.isArray(air.phrase)
+        ? air.phrase[0] ?? {}
+        : air.phrase ?? {};
     
     $: playerData = {
         program: {
@@ -25,18 +29,15 @@
             music: stream.current_song.music,
         },
         phrase: {
-            text: air[0].phrase.text,
-            icon: air[0].phrase.icon ?? locutionIcons[17].url,
-            texture: air[0].phrase.texture ?? locutionTextures[0].url,
+            text: phrase.text,
+            icon: phrase.icon ?? locutionIcons[17].url,
+            texture: phrase.texture ?? locutionTextures[0].url,
             decoration: {
-                left: air[0].phrase.decoration?.left ?? locutionDecorations[0].left,
-                right: air[0].phrase.decoration?.right ?? locutionDecorations[0].right,
+                left: phrase.decoration?.left ?? locutionDecorations[0].left,
+                right: phrase.decoration?.right ?? locutionDecorations[0].right,
             },
         },
     };
-
-    $:console.log(air)
-    $:console.log(playerData)
     
     function splitHighlightedText(text) {
         return String(text).split(/(\[[^\]]+\])/g).filter(Boolean).map((part) => ({
