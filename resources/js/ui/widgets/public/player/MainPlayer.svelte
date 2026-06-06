@@ -7,6 +7,8 @@
 
     $: ({ onair: { data: [air] }, stream } = $page.props);
 
+    $:console.log(air)
+
     let modalRef;
 
     $: playerData = {
