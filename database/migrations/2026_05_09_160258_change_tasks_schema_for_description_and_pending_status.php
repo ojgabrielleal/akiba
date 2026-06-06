@@ -12,7 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('tasks', function (Blueprint $table) {
-            $table->renameColumn('content', 'description');
+            if (Schema::hasColumn('tasks', 'content') && !Schema::hasColumn('tasks', 'description')) {
+                $table->renameColumn('content', 'description');
+            }
+            
             $table->string('description')->change();
             $table->enum('status', ['pending', 'in_review', 'completed'])->change();
         });
