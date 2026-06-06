@@ -35,6 +35,7 @@
         },
     };
 
+    $:console.log(air)
     $:console.log(playerData)
     
     function splitHighlightedText(text) {
