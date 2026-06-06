@@ -3,15 +3,10 @@
     import { Modal } from "@/ui/components/public";
     import { SongRequestForm } from "@/ui/widgets/public";
     import { player, toggleAudio, setVolume } from "@/store";
-    import { locutionIcons, locutionTextures, locutionDecorations } from "@/data";
 
     $: ({ onair: { data: [air] }, stream } = $page.props);
 
     let modalRef;
-
-    $: phrase = Array.isArray(air.phrase)
-        ? air.phrase[0] ?? {}
-        : air.phrase ?? {};
 
     $: playerData = {
         program: {
@@ -27,15 +22,6 @@
         currentSong: {
             cover: stream.current_song.cover,
             music: stream.current_song.music,
-        },
-        phrase: {
-            text: phrase.text,
-            icon: phrase.icon ?? locutionIcons[17].url,
-            texture: phrase.texture ?? locutionTextures[0].url,
-            decoration: {
-                left: phrase.decoration?.left ?? locutionDecorations[0].left,
-                right: phrase.decoration?.right ?? locutionDecorations[0].right,
-            },
         },
     };
 
@@ -58,15 +44,6 @@
         }
 
         return { label: "Programa agendado", icon: "/svg/disc.svg" };
-    }
-
-    function splitHighlightedText(text) {
-        return String(text).split(/(\[[^\]]+\])/g).filter(Boolean).map((part) => ({
-            text: part.startsWith("[") && part.endsWith("]")
-                ? part.slice(1, -1)
-                : part,
-            highlighted: part.startsWith("[") && part.endsWith("]"),
-        }));
     }
 </script>
 
@@ -104,30 +81,6 @@
                 <span class="shrink-0 text-orange-amber text-[10px] font-noto-sans font-extrabold uppercase tracking-wider">
                     No ar
                 </span>
-            </div>
-
-            <div class="relative mb-5 min-h-16 overflow-hidden rounded-2xl bg-contain bg-right bg-no-repeat px-4 py-3" style={`background-image: url('${playerData.phrase.texture}'), var(--gradient-blue-ocean-cerulean);`}>
-                <img
-                    src={playerData.phrase.decoration.left}
-                    alt=""
-                    aria-hidden="true"
-                    class="absolute -left-5 -top-5 w-16 opacity-80"
-                    loading="lazy"
-                />
-                <p class="relative z-10 pr-12 text-suspense-aurora text-sm leading-5 font-noto-sans font-extrabold uppercase italic">
-                    {#each splitHighlightedText(playerData.phrase.text) as phrasePart}
-                        <span class:text-orange-amber={phrasePart.highlighted}>
-                            {phrasePart.text}
-                        </span>
-                    {/each}
-                </p>
-                <img
-                    src={playerData.phrase.icon}
-                    alt=""
-                    aria-hidden="true"
-                    class="absolute bottom-0 right-2 w-14"
-                    loading="lazy"
-                />
             </div>
 
             <div class="relative min-h-56 mb-5 grid grid-cols-[minmax(0,1fr)_10rem] items-end border-b border-suspense-aurora/10">
@@ -267,30 +220,6 @@
                     <span class="shrink-0 text-orange-amber text-[10px] font-noto-sans font-extrabold uppercase tracking-wider">
                         No ar
                     </span>
-                </div>
-
-                <div class="relative mb-6 min-h-18 overflow-hidden rounded-2xl bg-contain bg-right bg-no-repeat px-5 py-4" style={`background-image: url('${playerData.phrase.texture}'), var(--gradient-blue-ocean-cerulean);`}>
-                    <img
-                        src={playerData.phrase.decoration.left}
-                        alt=""
-                        aria-hidden="true"
-                        class="absolute -left-5 -top-6 w-18 opacity-80"
-                        loading="lazy"
-                    />
-                    <p class="relative z-10 pr-16 text-suspense-aurora text-base leading-6 font-noto-sans font-extrabold uppercase italic">
-                        {#each splitHighlightedText(playerData.phrase.text) as phrasePart}
-                            <span class:text-orange-amber={phrasePart.highlighted}>
-                                {phrasePart.text}
-                            </span>
-                        {/each}
-                    </p>
-                    <img
-                        src={playerData.phrase.icon}
-                        alt=""
-                        aria-hidden="true"
-                        class="absolute bottom-0 right-3 w-16"
-                        loading="lazy"
-                    />
                 </div>
 
                 <div class="grid grid-cols-[minmax(0,1fr)_13rem] min-h-60 items-end border-b border-suspense-aurora/10">
