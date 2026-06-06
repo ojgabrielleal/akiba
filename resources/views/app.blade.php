@@ -10,9 +10,9 @@
         OneSignalDeferred.push(async function (OneSignal) {
             await OneSignal.init({
                 appId: "{{ config('onesignal.app_id') }}",
-                serviceWorkerPath: "/OneSignalSDKWorker.js",
+                serviceWorkerPath: "/onesignal/OneSignalSDKWorker.js",
                 serviceWorkerParam: {
-                    scope: "/"
+                    scope: "/onesignal"
                 }
             });
         });
