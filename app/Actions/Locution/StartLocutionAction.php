@@ -3,7 +3,7 @@
 namespace App\Actions\Locution;
 
 use Illuminate\Support\Facades\DB;
-use App\Services\External\DiscordWebhookService;
+use App\Services\External\DiscordService;
 
 use App\Models\Onair;
 use App\Models\Plan;
@@ -12,9 +12,9 @@ use App\Models\User;
 
 class StartLocutionAction
 {
-    private DiscordWebhookService $discord;
+    private DiscordService $discord;
 
-    public function __construct(DiscordWebhookService $discord)
+    public function __construct(DiscordService $discord)
     {
         $this->discord = $discord;
     }

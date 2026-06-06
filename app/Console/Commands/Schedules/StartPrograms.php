@@ -26,49 +26,55 @@ class StartPrograms extends Command
             return self::SUCCESS;
         }
 
-        Plan::query()
-            ->where('action', 'start_program')
+        $plans = Plan::query()
+            ->whereIn('action', ['start_program', 'finish_program'])
             ->where('status', 'pending')
             ->where('scheduled_at', '<=', now())
             ->orderBy('scheduled_at')
             ->orderBy('id')
-            ->get()
-            ->each(function (Plan $plan) use (&$processed, &$failed) {
-                try {
-                    DB::transaction(function () use ($plan, &$processed) {
-                        $program = $plan->plannable;
+            ->get();
 
-                        if (! $program instanceof Program) {
-                            $plan->update(['status' => 'failed']);
+        if ($plans->isEmpty()) {
+            $this->startDefaultAutoDjWhenIdle();
 
-                            return;
-                        }
+            return self::SUCCESS;
+        }
 
-                        Onair::live()->update([
-                            'in_air' => false,
-                            'allows_song_requests' => false,
-                        ]);
+        $plans->each(function (Plan $plan) use (&$processed, &$failed) {
+            try {
+                DB::transaction(function () use ($plan, &$processed) {
+                    $program = $plan->plannable;
 
-                        $program->onair()->create([
-                            'execution_mode' => $program->execution_mode,
-                            'phrase' => $this->selectPhrase($program),
-                            'allows_song_requests' => false,
-                        ]);
+                    if (! $program instanceof Program) {
+                        $plan->update(['status' => 'failed']);
 
+                        return;
+                    }
+
+                    if ($plan->action === 'start_program') {
+                        $this->startProgram($program);
                         $plan->update(['status' => 'running']);
+                    }
 
-                        $processed++;
-                    });
-                } catch (Throwable $exception) {
-                    Plan::query()
-                        ->whereKey($plan->id)
-                        ->where('status', 'pending')
-                        ->update(['status' => 'failed']);
+                    if ($plan->action === 'finish_program') {
+                        $this->finishProgram($program);
+                        $plan->update(['status' => 'completed']);
+                    }
 
-                    $failed++;
-                    report($exception);
-                }
-            });
+                    $processed++;
+                });
+            } catch (Throwable $exception) {
+                Plan::query()
+                    ->whereKey($plan->id)
+                    ->where('status', 'pending')
+                    ->update(['status' => 'failed']);
+
+                $failed++;
+                report($exception);
+            }
+        });
+
+        $this->startDefaultAutoDjWhenIdle();
 
         if ($failed > 0) {
             $this->warn("Scheduled programs failed: {$failed}.");
@@ -92,5 +98,57 @@ class StartPrograms extends Command
             ->where('action', 'start_program')
             ->where('status', 'paused')
             ->exists();
+    }
+
+    private function startProgram(Program $program): void
+    {
+        Onair::live()->update([
+            'in_air' => false,
+            'allows_song_requests' => false,
+        ]);
+
+        $program->onair()->create([
+            'execution_mode' => $program->execution_mode,
+            'phrase' => $this->selectPhrase($program),
+            'allows_song_requests' => false,
+        ]);
+    }
+
+    private function finishProgram(Program $program): void
+    {
+        Onair::live()
+            ->where('program_id', $program->id)
+            ->update([
+                'in_air' => false,
+                'allows_song_requests' => false,
+            ]);
+
+        Plan::query()
+            ->where('action', 'start_program')
+            ->where('status', 'running')
+            ->whereMorphedTo('plannable', $program)
+            ->update(['status' => 'completed']);
+    }
+
+    private function startDefaultAutoDjWhenIdle(): void
+    {
+        if (Onair::live()->exists()) {
+            return;
+        }
+
+        $autoDj = Program::query()
+            ->where('execution_mode', 'auto_dj')
+            ->where('is_default_auto_dj', true)
+            ->first();
+
+        if (! $autoDj) {
+            return;
+        }
+
+        $autoDj->onair()->create([
+            'execution_mode' => 'auto_dj',
+            'phrase' => $this->selectPhrase($autoDj),
+            'allows_song_requests' => false,
+        ]);
     }
 }
