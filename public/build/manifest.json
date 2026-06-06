@@ -22,6 +22,11 @@
       "assets/app-DR4D5KxC.css"
     ]
   },
+  "resources/js/css/app.css": {
+    "file": "assets/app-CBQpWOKI.css",
+    "src": "resources/js/css/app.css",
+    "isEntry": true
+  },
   "resources/js/css/quill-editor.css": {
     "file": "assets/quill-editor-Bnx8Dnrg.css",
     "src": "resources/js/css/quill-editor.css",

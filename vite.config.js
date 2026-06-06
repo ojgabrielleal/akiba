@@ -33,7 +33,11 @@ export default defineConfig(({ mode }) => {
         },
         plugins: [
             laravel({
-                input: ["resources/js/app.js", "resources/js/css/quill-editor.css"],
+                input: [
+                    "resources/js/app.js",
+                    "resources/js/css/app.css",
+                    "resources/js/css/quill-editor.css",
+                ],
                 refresh: true,
             }),
             tailwindcss(),
