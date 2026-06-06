@@ -7,10 +7,9 @@
 
     $: ({ onair: { data: [air] }, stream } = $page.props);
 
-    $:console.log(air)
-
+    
     let modalRef;
-
+    
     $: playerData = {
         program: {
             image: air.program?.image,
@@ -36,6 +35,8 @@
         },
     };
 
+    $:console.log(playerData)
+    
     function splitHighlightedText(text) {
         return String(text).split(/(\[[^\]]+\])/g).filter(Boolean).map((part) => ({
             text: part.startsWith("[") && part.endsWith("]")
