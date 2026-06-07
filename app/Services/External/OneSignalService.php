@@ -9,7 +9,7 @@ class OneSignalService
 {
     private $baseUrl = 'https://api.onesignal.com';
 
-    public function sendPush(string $title, string $message, string $url, string $icon)
+    public function sendPush(string $title, string $message, string $url)
     {
         $response = Http::withHeaders([
             'Authorization' => 'Key ' . config('services.onesignal.api_key'),
@@ -20,8 +20,8 @@ class OneSignalService
             'app_id' => config('services.onesignal.app_id'),
             'included_segments' => ['All'],
             'url' => $url,
-            'chrome_web_icon' => $icon,
-            'firefox_icon' => $icon,
+            //'chrome_web_icon' => $icon,
+            //'firefox_icon' => $icon,
             'headings' => [
                 'en' => $title,
             ],

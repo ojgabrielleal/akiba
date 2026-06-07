@@ -38,7 +38,7 @@ class StartLocutionAction
                 'status' => 'paused',
             ]);
 
-            if($program->access_type === 'free') {
+            if ($program->access_type === 'free') {
                 $program->update([
                     'user_id' => $user->id,
                 ]);
@@ -57,12 +57,14 @@ class StartLocutionAction
             ]);
         });
 
+        $genderArticle = $user->gender === 'male' ? 'O' : 'A';
+        
         $this->discord->sendStreamNotificationHook($user, $program);
+
         $this->oneSignal->sendPush(
-            "{$user->nickname} está ao vivo!",
-            "DJ {$user->nickname} acabou de começar o programa {$program->name}. Clique/Toque para ouvir!",
+            "{$genderArticle} DJ {$user->nickname} esta ao vivo na Akiba!",
+            "O programa {$program->name} acabou de comecar! Cola com a gente!",
             "https://akiba.com.br",
-            url($user->avatar)
         );
     }
 }
