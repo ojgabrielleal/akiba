@@ -61,6 +61,7 @@ class ProgramSeeder extends Seeder
 
         Program::factory()
             ->withAutoDJ()
+            ->asDefault()
             ->for($user, 'host')
             ->create();
     }

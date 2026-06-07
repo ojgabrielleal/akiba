@@ -11,6 +11,8 @@ class OneSignalService
 
     public function sendPush(string $title, string $message, string $url)
     {
+        if (!app()->environment('production')) return false;
+
         $payload = [
             'app_id' => config('services.onesignal.app_id'),
             'included_segments' => ['All'],

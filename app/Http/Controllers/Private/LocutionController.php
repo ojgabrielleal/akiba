@@ -95,7 +95,6 @@ class LocutionController extends Controller
         }
 
         $onair = Onair::live()->first();
-
         return SongRequestResource::collection(
             SongRequest::where('onair_id', $onair->id)
                 ->orderBy('created_at', 'asc')
@@ -140,6 +139,10 @@ class LocutionController extends Controller
         }
 
         $onair = Onair::live()->first();
+
+        if (! $onair) {
+            return $this->flashMessage('error');
+        }
 
         $onair->update([
             'allows_song_requests' => !$onair->allows_song_requests,

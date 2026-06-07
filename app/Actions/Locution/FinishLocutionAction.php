@@ -40,7 +40,7 @@ class FinishLocutionAction
                     ->update(['was_canceled' => true]);
             }
                     
-            if ($auto && !empty($auto->phrases)) {
+            if ($auto) {
                 $selected = collect($auto->phrases)->random();
 
                 $phrase = [

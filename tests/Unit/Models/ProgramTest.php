@@ -265,6 +265,7 @@ class ProgramTest extends TestCase
         $this->assertNull($scheduled->phrases);
         $this->assertNull($playlist->phrases);
         $this->assertNotEmpty($autoDJ->phrases);
+        $this->assertTrue($autoDJ->is_default_auto_dj);
     }
 
     public function testUpdateProgramActionDeletesOnlyStartProgramPlansWhenSubmittedEmpty(): void

@@ -52,21 +52,14 @@ trait HasFlashMessages
         $base = $messages[$action] ?? $messages['save'];
         $final = $message ?? $base['message'];
 
-        session()->flash('flash', [
+        $flash = [
             'id' => uniqid('flash_', true),
             'type' => $action === 'error' ? 'error' : 'success',
             'icon' => $icon ?? $base['icon'],
             'message' => $final,
-        ]);
+        ];
 
-        if (method_exists($this, 'render')) {
-            return app()->call([$this, 'render'], request()->route()?->parameters() ?? []);
-        }
-
-        if (method_exists($this, 'show')) {
-            return app()->call([$this, 'show'], request()->route()?->parameters() ?? []);
-        }
-
-        return response()->noContent();
+        return back(request()->isMethod('GET') ? 302 : 303)
+            ->with('flash', $flash);
     }
 }

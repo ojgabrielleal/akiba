@@ -32,10 +32,10 @@ class HandleInertiaRequestsMiddleware extends Middleware
     public function share(Request $request): array
     {
         return array_merge(parent::share($request), [
-            'user' => $this->getUserLogged(),
-            'stream' => (new StreamService)->data(),
-            'csrf_token' => csrf_token(),
-            'flash' => session('flash'),
+            'user' => fn () => $this->getUserLogged(),
+            'stream' => fn () => (new StreamService)->data(),
+            'csrf_token' => fn () => csrf_token(),
+            'flash' => fn () => session('flash'),
         ]);
     }
 }
