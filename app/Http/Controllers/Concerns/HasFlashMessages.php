@@ -63,6 +63,10 @@ trait HasFlashMessages
             return app()->call([$this, 'render'], request()->route()?->parameters() ?? []);
         }
 
+        if (method_exists($this, 'show')) {
+            return app()->call([$this, 'show'], request()->route()?->parameters() ?? []);
+        }
+
         return response()->noContent();
     }
 }
