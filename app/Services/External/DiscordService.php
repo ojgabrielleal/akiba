@@ -24,7 +24,7 @@ class DiscordService
                 [
                     'title' => "{$program->name} NO AR!",
                     'description' => "🎧 {$genderTitle} **{$user->nickname}** sentou no estúdio e já está no ar!\n\nOuça agora na Akiba.\n👉 **[Clique aqui para sintonizar na Akiba!](https://akiba.com.br)**",
-                    'color' => hexdec("FF6B00"), // Laranja vibrante estilo Akiba
+                    'color' => hexdec("FF6B00"),
                     'author' => [
                         'name' => "DJ {$user->nickname}",
                     ],
