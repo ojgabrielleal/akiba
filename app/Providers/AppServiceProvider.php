@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Inertia\Inertia;
 
 use Illuminate\Support\Facades\Gate;
 use App\Models\User;
@@ -23,11 +22,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Inertia::share('flash', function () {
-            return session('flash');
-        });
-
-        // Register General Permissions as Gates
         $this->registerPermissions();
     }
 

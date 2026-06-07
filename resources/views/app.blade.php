@@ -3,7 +3,11 @@
 
 <head>
     @inertiaHead
-    @vite(['resources/js/app.js', 'resources/js/css/quill-editor.css', 'resources/js/css/app.css'])
+    @vite([
+        'resources/js/app.js', 
+        'resources/js/css/app.css',
+        'resources/js/css/quill-editor.css', 
+    ])
 </head>
 
 <body>
