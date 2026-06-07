@@ -8,12 +8,15 @@ createInertiaApp({
         return pages[`./pages/${name}.svelte`];
     },
     setup({ el, App, props, plugin }) {
-        if('serviceWorker' in navigator) {
-            // PWA 
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('PwaWorker.js')
-            });
-        }
         mount(App, { target: el, props });
     },
+});
+
+//One Signal Push
+window.OneSignalDeferred = window.OneSignalDeferred || [];
+
+OneSignalDeferred.push(async function (OneSignal) {
+    await OneSignal.init({
+        appId: "097a886d-f9b7-46b1-9827-03fea8d9897b",
+    });
 });
