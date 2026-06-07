@@ -51,7 +51,7 @@ class DashboardController extends Controller
 
         $activity->confirmations()->attach(request()->user()->id);
 
-        return $this->flashMessage('participate');
+        return $this->flashMessage('save');
     }
 
     /*

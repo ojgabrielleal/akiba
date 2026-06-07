@@ -9,124 +9,60 @@ trait HasFlashMessages
         $messages = [
             'save' => [
                 'icon' => '🥳',
-                'message' => 'Salvo, querido! Que feito, hein?',
+                'message' => 'Salvo! Que feito, hein?',
             ],
             'update' => [
                 'icon' => '🫡',
-                'message' => 'Atualizado! Ficou maravi..., impecável.',
+                'message' => 'Atualizado! Ficou impecável.',
             ],
             'delete' => [
                 'icon' => '☠️',
-                'message' => 'Apagado! Já tava fazendo hora extra',
+                'message' => 'Removido! Já tava fazendo hora extra.',
             ],
             'deactivate' => [
                 'icon' => '😴',
-                'message' => 'Desativado! Bora dormir também.',
+                'message' => 'Desativado! Bora descansar também.',
             ],
             'activate' => [
-                'icon' => '🥱',
-                'message' => 'Ativado! Saudades, confesso.',
+                'icon' => '⚡',
+                'message' => 'Ativado! Voltou com energia.',
             ],
             'complete' => [
                 'icon' => '🎯',
-                'message' => 'Completado! Finalmente, né.',
-            ],
-            'participate' => [
-                'icon' => '🙋',
-                'message' => 'Participando! Corajoso, você é!',
+                'message' => 'Concluído! Finalmente, né.',
             ],
             'start' => [
                 'icon' => '🚀',
-                'message' => 'Iniciado! Se não explodir...',
+                'message' => 'Iniciado! Agora vai.',
             ],
             'finish' => [
                 'icon' => '🎊',
-                'message' => 'Finalizado! Nossa, que demora, hein?',
-            ],
-            'order_fulfilled' => [
-                'icon' => '🎵',
-                'message' => 'Vamos atender! Que vibe, hein?',
-            ],
-            'order_canceled' => [
-                'icon' => '🚫',
-                'message' => 'Vamos cancelar! Triste, acontece.',
+                'message' => 'Finalizado! Missão cumprida.',
             ],
             'dependencies' => [
                 'icon' => '⛓️',
-                'message' => 'Tire os vínculos antes! Se não dá ruim...',
+                'message' => 'Tire os vínculos antes! Senão dá ruim.',
             ],
             'error' => [
                 'icon' => '❌',
-                'message' => 'Algo deu errado!',
+                'message' => 'Algo deu errado! Acontece nas melhores famílias.',
             ],
         ];
 
         $base = $messages[$action] ?? $messages['save'];
         $final = $message ?? $base['message'];
 
-        return redirect()->to($this->flashRedirectUrl(), $this->flashRedirectStatus())->with('flash', [
+        session()->flash('flash', [
             'id' => uniqid('flash_', true),
             'type' => $action === 'error' ? 'error' : 'success',
             'icon' => $icon ?? $base['icon'],
             'message' => $final,
         ]);
-    }
 
-    private function flashRedirectUrl(): string
-    {
-        $request = request();
-        $previous = url()->previous();
-        $fallback = $this->panelPageUrlFor($request->path());
-
-        if ($fallback && $this->isDashboardUrl($previous) && ! $request->is('panel/dashboard*')) {
-            return $fallback;
+        if (method_exists($this, 'render')) {
+            return app()->call([$this, 'render'], request()->route()?->parameters() ?? []);
         }
 
-        if ($previous && $previous !== $request->fullUrl()) {
-            return $previous;
-        }
-
-        return $fallback ?? url()->previous();
-    }
-
-    private function flashRedirectStatus(): int
-    {
-        return request()->isMethod('GET') ? 302 : 303;
-    }
-
-    private function panelPageUrlFor(string $path): ?string
-    {
-        $routes = [
-            'panel/dashboard' => 'panel.dashboard',
-            'panel/post' => 'panel.post',
-            'panel/locution' => 'panel.locucao',
-            'panel/radio' => 'panel.radio',
-            'panel/podcast' => 'panel.podcast',
-            'panel/marketing' => 'panel.marketing',
-            'panel/media' => 'panel.medias',
-            'panel/administration' => 'panel.adms',
-            'panel/logs' => 'panel.logs',
-        ];
-
-        foreach ($routes as $prefix => $route) {
-            if (str_starts_with($path, $prefix)) {
-                return route($route);
-            }
-        }
-
-        if (str_starts_with($path, 'panel/profile/')) {
-            return url($path);
-        }
-
-        return null;
-    }
-
-    private function isDashboardUrl(?string $url): bool
-    {
-        if (! $url) {
-            return false;
-        }
-
-        return str_starts_with(parse_url($url, PHP_URL_PATH) ?? '', '/panel/dashboard');
+        return response()->noContent();
     }
 }

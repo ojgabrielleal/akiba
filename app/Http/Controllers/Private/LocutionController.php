@@ -115,7 +115,7 @@ class LocutionController extends Controller
 
         $songRequest->onair()->increment('song_requests_total');
 
-        return $this->flashMessage('order_fulfilled');
+        return $this->flashMessage('complete');
     }
 
     public function markSongRequestAsCanceled(SongRequest $songRequest)
@@ -130,7 +130,7 @@ class LocutionController extends Controller
 
         $songRequest->onair()->decrement('song_requests_total');
 
-        return $this->flashMessage('order_canceled');
+        return $this->flashMessage('update');
     }
 
     public function toggleSongRequestBoxStatus()
