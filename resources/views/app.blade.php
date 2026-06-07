@@ -1,29 +1,23 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     @inertiaHead
     @vite(['resources/js/app.js', 'resources/js/css/quill-editor.css', 'resources/js/css/app.css'])
-    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-    <script>
-        window.OneSignalDeferred = window.OneSignalDeferred || [];
-        OneSignalDeferred.push(async function (OneSignal) {
-            await OneSignal.init({
-                appId: "{{ config('services.onesignal.app_id') }}",
-                serviceWorkerPath: "/workers/oneSignal/OneSignalSDKWorker.js",
-                serviceWorkerParam: {
-                    scope: "/workers/oneSignal/"
-                }
-            });
-        });
-    </script>
 </head>
-
 <body>
     @inertia
     <audio id="audio">
         <source src="/api/stream" type="audio/mpeg">
     </audio>
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+    <script>
+        window.OneSignalDeferred = window.OneSignalDeferred || [];
+        OneSignalDeferred.push(async function (OneSignal) {
+            await OneSignal.init({
+                appId: "097a886d-f9b7-46b1-9827-03fea8d9897b",
+                serviceWorkerPath: "/worker/onesignal/OneSignalSDKWorker.js",
+            });
+        });
+    </script>
 </body>
-
 </html>
