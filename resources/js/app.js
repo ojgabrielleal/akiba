@@ -12,13 +12,8 @@ createInertiaApp({
             // PWA 
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('workers/pwa/PwaWorker.js')
-                    .then(reg => console.log('Service Worker registrado'))
-                    .catch(err => console.log('Erro ao registrar service worker'));
             });
-
-            // One Signal Push
         }
-
         mount(App, { target: el, props });
     },
 });
