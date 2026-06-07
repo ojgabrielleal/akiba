@@ -11,7 +11,7 @@ createInertiaApp({
         if('serviceWorker' in navigator) {
             // PWA 
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('workers/pwa/PwaWorker.js')
+                navigator.serviceWorker.register('PwaWorker.js')
             });
         }
         mount(App, { target: el, props });
