@@ -11,12 +11,7 @@ class OneSignalService
 
     public function sendPush(string $title, string $message, string $url)
     {
-        $response = Http::withHeaders([
-            'Authorization' => 'Key ' . config('services.onesignal.api_key'),
-            'Content-Type' => 'application/json',
-        ])->withOptions([
-            'verify' => false,
-        ])->post("{$this->baseUrl}/notifications?c=push", [
+        $payload = [
             'app_id' => config('services.onesignal.app_id'),
             'included_segments' => ['All'],
             'url' => $url,
@@ -28,7 +23,14 @@ class OneSignalService
             'contents' => [
                 'en' => $message,
             ],
-        ]);
+        ];
+
+        $response = Http::withHeaders([
+            'Authorization' => 'Key ' . config('services.onesignal.api_key'),
+            'Content-Type' => 'application/json',
+        ])->withOptions([
+            'verify' => false,
+        ])->post("{$this->baseUrl}/notifications?c=push", $payload);
 
         if ($response->failed()) {
             Log::error('OneSignal push failed', [
@@ -37,6 +39,6 @@ class OneSignalService
             ]);
         }
 
-        return $response->json() ?? [];
+        return $response->json();
     }
 }

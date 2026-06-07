@@ -104,29 +104,6 @@
     --font-noto-sans: "Noto Sans", sans-serif;
 }
 
-@layer components {
-    .container-page {
-        width: min(100% - clamp(4rem, 5vw, 5rem), 81.25rem);
-        margin-inline: auto;
-    }
-
-    .container-player {
-        width: min(100% - clamp(1rem, 5vw, 4rem), 68.75rem);
-        margin-inline: auto;
-    }
-}
-
-@layer utilities {
-    .carrousel-scroll {
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-    }
-
-    .carrousel-scroll::-webkit-scrollbar {
-        display: none;
-    }
-}
-
 /*
     Gradient utilities based on the project color palette.
 */
