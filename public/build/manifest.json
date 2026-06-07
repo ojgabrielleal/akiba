@@ -23,13 +23,18 @@
     ]
   },
   "resources/js/css/app.css": {
-    "file": "assets/app-DCMJDFkn.css",
+    "file": "assets/app-CrCxPUPg.css",
     "src": "resources/js/css/app.css",
     "isEntry": true
   },
-  "resources/js/css/quill-editor.css": {
-    "file": "assets/quill-editor-Bnx8Dnrg.css",
-    "src": "resources/js/css/quill-editor.css",
+  "resources/js/css/custom.css": {
+    "file": "assets/custom-ByraGT3k.css",
+    "src": "resources/js/css/custom.css",
+    "isEntry": true
+  },
+  "resources/js/css/quill.css": {
+    "file": "assets/quill-Bnx8Dnrg.css",
+    "src": "resources/js/css/quill.css",
     "isEntry": true
   }
 }

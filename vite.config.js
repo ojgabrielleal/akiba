@@ -36,7 +36,8 @@ export default defineConfig(({ mode }) => {
                 input: [
                     "resources/js/app.js",
                     "resources/js/css/app.css",
-                    "resources/js/css/quill-editor.css",
+                    "resources/js/css/custom.css",
+                    "resources/js/css/quill.css",
                 ],
                 refresh: true,
             }),
