@@ -42,7 +42,6 @@
 
         animesList = [];
         animeThemesList = [];
-        animeSearch = value;
 
         $form.anime = null;
         $form.music = null;

@@ -7,13 +7,8 @@
 
     $: ({ onair: { data: [air] }, stream } = $page.props);
 
-    
     let modalRef;
 
-    $: phrase = Array.isArray(air.phrase)
-        ? air.phrase[0] ?? {}
-        : air.phrase ?? {};
-    
     $: playerData = {
         program: {
             image: air.program?.image,
@@ -29,12 +24,12 @@
             music: stream.current_song.music,
         },
         phrase: {
-            text: phrase.text,
-            icon: phrase.icon ?? locutionIcons[17].url,
-            texture: phrase.texture ?? locutionTextures[0].url,
+            text: air.phrase.text,
+            icon: air.phrase.icon ?? locutionIcons[17].url,
+            texture: air.phrase.texture ?? locutionTextures[0].url,
             decoration: {
-                left: phrase.decoration?.left ?? locutionDecorations[0].left,
-                right: phrase.decoration?.right ?? locutionDecorations[0].right,
+                left: air.phrase.decoration?.left ?? locutionDecorations[0].left,
+                right: air.phrase.decoration?.right ?? locutionDecorations[0].right,
             },
         },
     };
@@ -301,7 +296,7 @@
         <button type="button"
             aria-label="Faça seu pedido"
             class="cursor-pointer w-full py-2 px-1 border border-suspense-aurora rounded-full text-blue-skywave text-xl text-center font-noto-sans font-extrabold italic uppercase disabled:cursor-not-allowed"
-            on:click={() => { modalRef.open(); }}
+            on:click={() => modalRef.open()}
         >
             & Faça seu <strong class="text-orange-citric">Pedido</strong>
         </button>
