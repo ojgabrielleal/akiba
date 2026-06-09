@@ -51,6 +51,7 @@
 
 <Meta meta={{ title: pageName[form]}} />
 <Layout>
+    <h1 class="sr-only">{pageName[form] ?? "Conteudo"}</h1>
     <Section title="Criar" {actions} />
         {#if show}
             {#if form === 'post'}
@@ -62,5 +63,4 @@
             {/if}
         {/if}
         <PostGrid title="Todas as matérias, reviews e eventos"/>
-    <Section/>
 </Layout>

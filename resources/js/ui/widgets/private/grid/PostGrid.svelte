@@ -24,13 +24,14 @@
 
 {#if posts}
     <Section {title}>
-        <div class="gap-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+        <ul class="gap-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
             {#each posts.data as item}
-                <article class="w-full h-53 bg-blue-ocean rounded-md overflow-hidden relative ">
+                <li class="w-full h-53 bg-blue-ocean rounded-md overflow-hidden relative">
+                    <article>
                     <div class="p-4">
-                          <div class="font-noto-sans text-lg text-suspense-aurora line-clamp-4 uppercase">
+                        <h3 class="font-noto-sans text-lg text-suspense-aurora line-clamp-4 uppercase">
                             {item.title}
-                        </div>
+                        </h3>
                     </div>
                     <div class={["grid grid-cols-[0.4fr_1fr_0.6fr] items-center absolute bottom-0 w-full py-1 px-4",
                         { "bg-orange-amber": item.status === "draft" },
@@ -55,7 +56,7 @@
                                 <Tooltip>
                                     <button
                                         type="button"
-                                        aria-label="Remover"
+                                        aria-label={`Remover ${item.title}`}
                                         class="w-7 h-7 bg-blue-night rounded-md flex items-center justify-center cursor-pointer"
                                         on:click={() => requestDeactivate(item)}
                                     >
@@ -76,7 +77,7 @@
                                 <Tooltip>
                                     <Link
                                         href={`/panel/post/${item.uuid}`}
-                                        aria-label="Editar"
+                                        aria-label={`Editar ${item.title}`}
                                         class="w-7 h-7 bg-blue-night rounded-md flex items-center justify-center cursor-pointer"
                                         on:click={() => operation(item.module)}
                                     >
@@ -95,9 +96,10 @@
                             {/if}
                         </div>
                     </div>
-                </article>
+                    </article>
+                </li>
             {/each}
-        </div>
+        </ul>
         <ButtonPagination pages={posts} only={["posts"]} />
     </Section>
 {/if}

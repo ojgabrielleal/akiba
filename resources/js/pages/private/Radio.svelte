@@ -6,6 +6,7 @@
 
 <Meta meta={{ title: "Rádio" } } />
 <Layout>
+    <h1 class="sr-only">Radio</h1>
     <ProgramGrid title="Programas & Programação" />
     <!--
     <ProgramScheduleGrid title="Grade de programação" />

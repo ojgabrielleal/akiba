@@ -19,9 +19,10 @@
 
 {#if events && variant === "default"}
     <Section {title}>
-        <div class="gap-6 grid grid-cols-1 lg:grid-cols-4 xl:grid-cols-5">
+        <ul class="gap-6 grid grid-cols-1 lg:grid-cols-4 xl:grid-cols-5">
             {#each events.data as item}
-                <article class="w-full h-56 rounded-md p-4 relative bg-blue-skywave">
+                <li>
+                    <article class="w-full h-56 rounded-md p-4 relative bg-blue-skywave">
                     <div class="font-noto-sans text-lg text-suspense-aurora line-clamp-5 uppercase">
                         {item.title}
                     </div>
@@ -41,10 +42,10 @@
                         </div>
                         <div class="flex gap-3 justify-end mt-1">
                             <a
-                                title=""
                                 href={`/materia/${item.slug}`}
                                 target="_blank"
-                                aria-label="Visualizar"
+                                rel="noopener noreferrer"
+                                aria-label={`Visualizar ${item.title}`}
                                 class="cursor-pointer"
                             >
                                 <img
@@ -56,9 +57,8 @@
                                 />
                             </a>
                             <Link
-                                title=""
                                 href={`/panel/post/${item.uuid}`}
-                                aria-label="Editar"
+                                aria-label={`Editar ${item.title}`}
                                 class="cursor-pointer"
                             >
                                 <img
@@ -71,18 +71,20 @@
                             </Link>
                         </div>
                     </div>
-                </article>
+                    </article>
+                </li>
             {/each}
-        </div>
+        </ul>
     </Section>
     <ButtonPagination pages={events} only={["events"]} />
 {/if}
 
 {#if events && variant === "detailed"}
     <Section title="Eventos">
-        <div class="grid grid-cols-1 lg:grid-cols-5 gap-5">
+        <ul class="grid grid-cols-1 lg:grid-cols-5 gap-5">
             {#each events.data as item}
-                <article class="flex flex-col gap-2">
+                <li>
+                    <article class="flex flex-col gap-2">
                     <div class="h-65 bg-blue-skywave rounded-sm relative overflow-hidden">
                         <img
                             class="w-full h-65 object-cover aspect-square brightness-50"
@@ -91,11 +93,10 @@
                         />
                         <div class="flex gap-4 absolute bottom-3 right-3">
                             <Link
-                                title=""
                                 href={`/event/${item.uuid}`}
                                 type="button"
                                 class="cursor-pointer"
-                                aria-label="Editar"
+                                aria-label={`Editar ${item.title}`}
                             >
                                 <img
                                     src="/svg/edit.svg"
@@ -109,7 +110,7 @@
                                 <button
                                     type="button"
                                     class="cursor-pointer"
-                                    aria-label="Desativar"
+                                    aria-label={`Desativar ${item.title}`}
                                     on:click={requestDeactivateEvent(item.uuid)}
                                 >
                                     <img
@@ -129,9 +130,10 @@
                     <div class="rounded-sm bg-orange-amber py-1 px-5 text-suspense-aurora text-center font-noto-sans font-semibold">
                         {item.dates}
                     </div>
-                </article>
+                    </article>
+                </li>
             {/each}
-        </div>
+        </ul>
     </Section>
     <ButtonPagination pages={events} only={["events"]} />
 {/if}

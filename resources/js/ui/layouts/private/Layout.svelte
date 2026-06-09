@@ -1,22 +1,8 @@
 <script>
     import { onMount } from "svelte";
-    import { page, usePoll } from "@inertiajs/svelte";
-    import toast, { Toaster } from "svelte-hot-french-toast";
+    import { usePoll } from "@inertiajs/svelte";
+    import { FlashToaster } from "@/ui/components/private";
     import { Navbar, StreamMetricsGrid } from "@/ui/widgets/private";
-
-    $: ({ flash } = $page.props);
-
-    // Toasts configurations ( Flash Message )
-    let lastToast = null;
-    $: toastId = flash?.id ?? flash?.message;
-
-    $: if (flash?.message && toastId !== lastToast) {
-        lastToast = toastId;
-
-        toast(flash.message, {
-            icon: flash.icon,
-        });
-    }
 
     // Polling for updates in audience, song requests and stream status every 60 seconds
     usePoll(60 * 1000, {
@@ -29,11 +15,11 @@
     });
 </script>
 
-<Toaster />
+<FlashToaster />
 <header class="mb-8 lg:mb-20 mt-5 lg:mt-10">
     <Navbar />
 </header>
-<main>
+<main id="conteudo-principal">
     <slot />
 </main>
 <footer>

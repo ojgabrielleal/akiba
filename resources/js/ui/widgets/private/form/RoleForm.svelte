@@ -112,7 +112,6 @@
     </div>
     {#if can.create || can.update}
         <button
-            aria-label=""
             type="submit"
             class="cursor-pointer bg-blue-skywave px-8 py-2 rounded-md text-suspense-aurora font-noto-sans font-extrabold italic uppercase"
         >

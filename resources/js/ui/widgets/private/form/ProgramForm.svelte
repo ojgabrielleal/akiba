@@ -477,7 +477,6 @@
     {/if}
     {#if can.create || can.update}
         <button
-            aria-label=""
             type="submit"
             class="cursor-pointer font-noto-sans font-extrabold italic uppercase text-suspense-aurora py-2 px-6 rounded-full bg-blue-ocean"
         >

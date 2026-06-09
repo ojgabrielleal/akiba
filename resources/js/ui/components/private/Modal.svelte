@@ -27,6 +27,8 @@
     const block = (event) => {
         event.stopPropagation();
     };
+
+    const titleId = `modal-title-${Math.random().toString(36).slice(2)}`;
 </script>
 
 {#if visible}
@@ -35,14 +37,23 @@
     <div
         transition:fade={{ duration: 200 }}
         class="w-screen h-screen fixed inset-0 flex justify-center items-center bg-black/40 backdrop-blur-xs z-100 p-4"
+        role="presentation"
         on:click={close}
     >
-        <div class="w-full min-w-sm max-w-sm bg-suspense-aurora rounded-md overflow-hidden" on:click={block}>
+        <div
+            class="w-full min-w-sm max-w-sm bg-suspense-aurora rounded-md overflow-hidden"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={title ? titleId : undefined}
+            aria-label={title ? undefined : "Janela modal"}
+            tabindex="-1"
+            on:click={block}
+        >
             {#if title}
                 <div class="bg-blue-skywave p-4 text-suspense-aurora font-extrabold italic uppercase flex justify-between items-center">
-                    <span>
+                    <h2 id={titleId}>
                         {title}
-                    </span>
+                    </h2>
                     <button
                         type="button"
                         class="cursor-pointer hover:opacity-80 transition-opacity"

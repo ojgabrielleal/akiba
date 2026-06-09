@@ -20,7 +20,7 @@ Route::prefix('anime')->group(function () {
 
 Route::prefix('stream')->group(function () {
     Route::controller(StreamController::class)->group(function () {
-        Route::get('', 'redirectStream');
+        Route::redirect('', config('services.stream.url'));
         Route::get('metadata', 'showMetadata');
     });
 });

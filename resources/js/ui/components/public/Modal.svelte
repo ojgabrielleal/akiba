@@ -34,14 +34,22 @@
     <div
         transition:fade={{ x: "100%", duration: 500, easing: quintOut }}
         class="modal-active w-screen h-screen fixed inset-0 flex justify-center items-center p-9 bg-[#00000086] z-50"
+        role="presentation"
         on:click={close}
     >
-        <div class="w-full lg:w-104 bg-suspense-aurora rounded-t-xl rounded-b-xl relative" on:click={block}>
-            <div class="w-full h-20 pt-8 px-5 lg:mb-2 bg-cover bg-center rounded-t-xl" style="background-image: url('/img/player/song-requests-bg.webp');">
+        <div
+            class="w-full lg:w-104 bg-suspense-aurora rounded-t-xl rounded-b-xl relative"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Pedido musical"
+            tabindex="-1"
+            on:click={block}
+        >
+            <header class="w-full h-20 pt-8 px-5 lg:mb-2 bg-cover bg-center rounded-t-xl" style="background-image: url('/img/player/song-requests-bg.webp');">
                 <div class="w-60 mt-4">
                     <img
                         src="/img/brand/logo.webp"
-                        alt="logo"
+                        alt="Akiba Station"
                         loading="lazy"
                     />
                 </div>
@@ -59,7 +67,7 @@
                         loading="lazy"
                     />
                 </button>
-            </div>
+            </header>
             <div class="w-full max-h-[70vh] lg:max-h-[90vh] mt-5 p-5 overflow-y-auto">
                 <slot name="content" {close} />
             </div>

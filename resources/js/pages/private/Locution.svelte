@@ -16,6 +16,7 @@
 
 <Meta meta={{ title: "Locução" }} />
 <Layout>
+    <h1 class="sr-only">Locucao</h1>
     <div 
         class:opacity-50={isLocutionFormBlocked} 
         class:pointer-events-none={isLocutionFormBlocked} 

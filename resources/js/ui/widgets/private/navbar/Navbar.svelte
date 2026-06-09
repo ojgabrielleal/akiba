@@ -9,7 +9,7 @@
     let mobilenavbar = false;
 </script>
 
-<nav class="container-page flex items-center justify-between">
+<nav class="container-page flex items-center justify-between" aria-label="Navegacao principal">
     <div class="w-8 lg:w-60">
         <img
             src="/img/brand/logo.webp"
@@ -24,15 +24,16 @@
     </div>
     <button
         type="button"
-        aria-label=""
+        aria-label="Abrir menu de navegacao"
         class="w-6 lg:hidden"
         on:click={() => (mobilenavbar = !mobilenavbar)}
     >
         <img
             src="/svg/menu.svg"
-            alt="Menu"
-            class="filter-orange-citric"
-        />
+                alt=""
+                aria-hidden="true"
+                class="filter-orange-citric"
+            />
     </button>
     <ul class="hidden lg:flex flex-1 justify-center">
         {#each navbar.private as item}
@@ -40,7 +41,6 @@
                 <li class="px-5 first:pl-0 border-l first:border-none border-neutral-gray/50 group/item">
                     <Tooltip position="bottom">
                         <Link
-                            title=""
                             aria-label={item.name}
                             href={item.address}
                         >
@@ -120,7 +120,6 @@
                         {#if hasPermission(item.permission)}
                             <li>
                                 <Link
-                                    title=""
                                     aria-label={item.name}
                                     href={item.address}
                                     class="group/item flex items-center gap-3 text-neutral-gray font-noto-sans font-extrabold italic uppercase hover:text-orange-citric"
@@ -162,7 +161,6 @@
                         </div>
                     </Link>
                     <Link
-                        title=""
                         href="/panel/logout"
                         method="post"
                         as="button"

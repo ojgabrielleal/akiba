@@ -6,6 +6,7 @@
 
 <Meta meta={{ title: "Log's" } } />
 <Layout>
+    <h1 class="sr-only">Logs</h1>
     <AudienceCarrousel title="Estatísticas da concorrência" />
     <ProgramHistoryTable title="Histórico de transmissões" />
 </Layout>

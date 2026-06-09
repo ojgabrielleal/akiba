@@ -13,6 +13,7 @@
     let programSelected = null;
 
     let offcanvasRef;
+    $: offcanvasTitle = programSelected?.name ?? "Cadastrar Programa";
 
     let actions = [
         {
@@ -57,7 +58,7 @@
     };
 </script>
 
-<Offcanvas bind:this={offcanvasRef} title={programSelected?.name ?? "Cadastrar Programa"} >
+<Offcanvas bind:this={offcanvasRef} title={offcanvasTitle}>
     <div slot="content" let:close>
         <ProgramForm {programSelected} {close} />
     </div>
@@ -65,10 +66,11 @@
 
 {#if programs}
     <Section {title} {actions}>
-        <div class="flex justify-center gap-8 mt-5">
+        <div class="flex justify-center gap-8 mt-5" role="group" aria-label="Filtrar programas por formato">
             {#each filters as item}
                 <button
                     type="button"
+                    aria-pressed={selectedExecutionMode === item.execution_mode}
                     class={["cursor-pointer flex items-center gap-1 text-lg font-noto-sans font-extrabold italic uppercase hover:text-blue-skywave group/item", 
                         {"text-blue-skywave": selectedExecutionMode === item.execution_mode},
                         {"text-neutral-gray": selectedExecutionMode !== item.execution_mode}
@@ -78,6 +80,7 @@
                     <img
                         src={item.icon}
                         alt=""
+                        aria-hidden="true"
                         class={["w-5 group-hover/item:filter-blue-skywave", 
                             {"filter-blue-skywave": selectedExecutionMode === item.execution_mode},
                             {"filter-neutral-gray": selectedExecutionMode !== item.execution_mode}
@@ -88,9 +91,10 @@
                 </button>
             {/each}
         </div>
-        <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-5 mt-10">
+        <ul class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-5 mt-10">
             {#each programs.data[selectedExecutionMode] as item}
-                <article class="w-full">
+                <li>
+                    <article class="w-full">
                     <div>
                         <img
                             class="w-40 mb-3"
@@ -118,7 +122,7 @@
                                     <Tooltip>
                                         <button
                                             type="button"
-                                            aria-label="Desativar"
+                                            aria-label={`Desativar ${item.name}`}
                                             class="w-7 h-7 bg-blue-marinho rounded-md flex justify-center items-center font-noto-sans italic font-extrabold cursor-pointer"
                                             on:click={() => requestDeactivateProgram(item.uuid)}
                                         >
@@ -139,7 +143,7 @@
                                     <Tooltip>
                                         <button
                                             type="button"
-                                            aria-label="Atualizar"
+                                            aria-label={`Atualizar ${item.name}`}
                                             class="w-7 h-7 bg-blue-marinho rounded-md flex justify-center items-center font-noto-sans italic font-extrabold cursor-pointer"
                                             on:click={() => {
                                                 programSelected = item;
@@ -191,8 +195,9 @@
                             {/each}
                         {/if}
                     </div>
-                </article>
+                    </article>
+                </li>
             {/each}
-        </div>
+        </ul>
     </Section>
 {/if}

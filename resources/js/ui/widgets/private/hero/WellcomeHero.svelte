@@ -35,9 +35,9 @@
             alt="Avatar"
             class="w-40 h-40 absolute bottom-0"
         />
-        <div class="font-noto-sans font-extrabold uppercase italic text-3xl text-suspense-aurora ml-50">
+        <h2 class="font-noto-sans font-extrabold uppercase italic text-3xl text-suspense-aurora ml-50">
             {chosenPhrase}
-        </div>
+        </h2>
         <div class="flex gap-2 absolute right-0">
             {#if can.event.create}
                 <Link

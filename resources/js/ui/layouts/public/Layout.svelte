@@ -11,7 +11,7 @@
     <Navbar />
 </header>
 
-<main>
+<main id="conteudo-principal">
     <slot />
 </main>
 

@@ -9,12 +9,12 @@
 <section class={styles}>
     {#if title}
         <div class="flex flex-wrap items-center gap-4 mb-3">
-            <h1 class={["uppercase font-black italic text-[1.3rem] font-noto-sans",
+            <h2 class={["uppercase font-black italic text-[1.3rem] font-noto-sans",
                 {"text-orange-citric": actions.length > 0}, 
                 {"text-orange-amber": actions.length === 0}
             ]}>
                 {title}
-            </h1>
+            </h2>
             <div class={["h-px flex-1",
                 {"bg-orange-citric": actions.length > 0},
                 {"bg-orange-amber": actions.length === 0}

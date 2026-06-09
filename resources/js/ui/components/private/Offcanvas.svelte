@@ -27,6 +27,8 @@
     const block = (event) => {
         event.stopPropagation();
     };
+
+    const titleId = `offcanvas-title-${Math.random().toString(36).slice(2)}`;
 </script>
 
 {#if visible}
@@ -35,12 +37,20 @@
     <div
         transition:fly={{ x: 400, duration: 300 }}
         class="w-screen h-screen fixed inset-0 bg-black/1 backdrop-blur-xs z-100"
+        role="presentation"
         on:click={close}
     >
-        <div class="max-w-sm min-w-sm h-screen float-right bg-suspense-aurora" on:click={block}>
-            <div class="bg-blue-ocean py-5 px-4 text-suspense-aurora text-center font-bold italic uppercase">
+        <div
+            class="max-w-sm min-w-sm h-screen float-right bg-suspense-aurora"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={titleId}
+            tabindex="-1"
+            on:click={block}
+        >
+            <h2 id={titleId} class="bg-blue-ocean py-5 px-4 text-suspense-aurora text-center font-bold italic uppercase">
                 {title}
-            </div>
+            </h2>
             <div class="pl-5 pr-8 pt-8 h-[calc(100vh-6rem)] overflow-y-auto">
                 <slot name="content" {close} />
             </div>

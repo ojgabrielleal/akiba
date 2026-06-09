@@ -59,7 +59,6 @@ trait HasFlashMessages
             'message' => $final,
         ];
 
-        return back(request()->isMethod('GET') ? 302 : 303)
-            ->with('flash', $flash);
+        return back()->with('flash', $flash);
     }
 }

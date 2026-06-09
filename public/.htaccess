@@ -11,7 +11,7 @@
 	RewriteRule ^(.*)$ https\:\/\/www\.akiba\.com\.br\/panel [R=301,L]
     
     RewriteCond %{HTTP_HOST} ^(www\.)?stream\.akiba\.com\.br$ [NC]
-	RewriteRule ^(.*)$ https\:\/\/www\.akiba\.com\.br\/api\/cast [R=301,L]
+	RewriteRule ^(.*)$ https\:\/\/www\.akiba\.com\.br\/api\/stream [R=301,L]
     
     RewriteCond %{HTTP_HOST} ^(www\.)?discord\.akiba\.com\.br$ [NC]
 	RewriteRule ^(.*)$ https\:\/\/www\.discord\.com\/invite\/akGhEMb [R=301,L]

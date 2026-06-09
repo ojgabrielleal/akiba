@@ -20,17 +20,6 @@ class StreamController extends Controller
 
     /*
     * ======================
-    * STREAM
-    * ======================
-    */
-
-    public function redirectStream()
-    {
-        return $this->stream->stream();
-    }
-
-    /*
-    * ======================
     * METADATA
     * ======================
     */

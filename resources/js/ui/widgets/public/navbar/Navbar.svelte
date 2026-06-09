@@ -6,7 +6,7 @@
     let mobilenavbar = false;
 </script>
 
-<nav class="w-full relative">
+<nav class="w-full relative" aria-label="Navegacao principal">
     <div class="container-page h-24 xl:h-[2.57rem] relative xl:top-15 flex xl:justify-between items-center">
         <button type="button"
             aria-label="Abrir menu"
@@ -32,8 +32,7 @@
         <ul class="hidden xl:flex">
             {#each navbar.public as item}
                 <li class="pr-5 pl-5 first:pl-0 border-l first:border-none border-neutral-gray/50 h-6 flex items-center">
-                    <Link
-                        title=""
+                            <Link
                         href={item.address}
                         aria-label={item.name}
                         class="relative flex items-center gap-1 text-lg font-noto-sans font-extrabold text-neutral-gray hover:text-orange-amber italic uppercase group/item"
@@ -83,7 +82,7 @@
                     />
                 </button>
                 <button type="button"
-                    aria-label="Modo Ecuro"
+                    aria-label="Modo Escuro"
                     class={["cursor-pointer shrink-0 p-1",
                         { "bg-blue-night rounded-full": theme === "night" },
                     ]}
@@ -105,9 +104,8 @@
         { "opacity-100 pointer-events-auto": mobilenavbar },
         { "opacity-0 pointer-events-none": !mobilenavbar },
     ]}>
-        <button aria-label=""
+        <button aria-label="Fechar menu"
             type="button"
-            aria-hidden="true"
             class="absolute inset-0 bg-blue-night/40 backdrop-blur-sm"
             on:click={mobilenavbar = false}>
         </button>
@@ -137,13 +135,12 @@
                 </button>
             </div>
 
-            <nav class="p-6 overflow-y-auto h-[calc(100%-12rem)]">
+            <nav class="p-6 overflow-y-auto h-[calc(100%-12rem)]" aria-label="Navegacao mobile">
                 <ul class="space-y-5">
                     {#each navbar.public as item}
                         <li>
                             <Link
-                                title=""
-                                aria-label=""
+                                aria-label={item.name}
                                 href={item.address}
                                 class="flex items-center gap-2 text-md font-noto-sans font-extrabold italic uppercase text-blue-night"
                                 on:click={() => (mobilenavbar = false)}
@@ -166,30 +163,33 @@
                     Temas da Akiba
                 </span>
                 <div class="w-25 h-8 mx-auto flex justify-center items-center gap-1 bg-blue-skywave p-1 rounded-full">
-                    <button aria-label="" type="button" class={["flex-1 flex justify-center items-center transition-all h-full",
+                    <button aria-label="Selecionar tema claro" type="button" class={["flex-1 flex justify-center items-center transition-all h-full",
                         { "bg-orange-morning rounded-full": theme === "light" },
                     ]} on:click={() => (theme = "light")}>
                         <img
                             src="/svg/dawn.svg"
-                            alt="Claro"
+                            alt=""
+                            aria-hidden="true"
                             class={["w-4 h-4", { "filter-orange-amber": theme === "light" }, { "filter-suspense-aurora": theme !== "light" }, ]}
                         />
                     </button>
-                    <button aria-label="" type="button" class={["flex-1 flex justify-center items-center transition-all h-full",
+                    <button aria-label="Selecionar tema Akiba" type="button" class={["flex-1 flex justify-center items-center transition-all h-full",
                         { "bg-blue-night rounded-full": theme === "akiba" },
                     ]} on:click={() => (theme = "akiba")}>
                         <img
                             src="/svg/akiba.svg"
-                            alt="Akiba"
+                            alt=""
+                            aria-hidden="true"
                             class={["w-4 h-4", { "filter-orange-amber": theme === "akiba" }, { "filter-suspense-aurora": theme !== "akiba" }, ]}
                         />
                     </button>
-                    <button aria-label="" type="button" class={["flex-1 flex justify-center items-center transition-all h-full",
+                    <button aria-label="Selecionar tema escuro" type="button" class={["flex-1 flex justify-center items-center transition-all h-full",
                         { "bg-blue-night rounded-full": theme === "night" },
                     ]} on:click={() => (theme = "night")}>
                         <img
                             src="/svg/night.svg"
-                            alt="Escuro"
+                            alt=""
+                            aria-hidden="true"
                             class={["w-4 h-4", { "filter-orange-morning": theme === "night" }, { "filter-suspense-aurora": theme !== "night" }, ]}
                         />
                     </button>

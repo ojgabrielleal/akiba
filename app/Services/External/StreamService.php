@@ -9,11 +9,6 @@ class StreamService
 {
     protected $url;
 
-    public function stream()
-    {
-        return redirect()->to(config('services.stream.url'));
-    }
-
     public function data()
     {
         try {

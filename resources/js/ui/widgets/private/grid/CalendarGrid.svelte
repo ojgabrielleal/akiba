@@ -30,21 +30,21 @@
             </button>
         </div>
     {/if}
-    <div class="w-full mb-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-2">
+    <ul class="w-full mb-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-2" aria-label="Legenda do calendario">
         {#each calendarTags as item}
-            <span class={`py-1 text-md font-noto-sans font-extrabold uppercase italic rounded-md flex justify-center items-center ${item.color} ${item.textcolor}`}>
+            <li class={`py-1 text-md font-noto-sans font-extrabold uppercase italic rounded-md flex justify-center items-center ${item.color} ${item.textcolor}`}>
                 {item.label}
-            </span>
+            </li>
         {/each}
-    </div>
-    <div class="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-2">
-        {#each Object.entries(calendar?.data ?? {}) as [day, events]}
-            <div class="flex flex-col gap-2 w-full">
-                <div class="text-suspense-aurora text-lg font-noto-sans text-center font-extrabold uppercase italic">
+    </ul>
+    <div class="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-2" aria-label="Eventos por dia">
+        {#each Object.entries(calendar?.data ?? {}) as [day, events], dayIndex}
+            <section class="flex flex-col gap-2 w-full" aria-labelledby={`calendar-day-${dayIndex}`}>
+                <h3 id={`calendar-day-${dayIndex}`} class="text-suspense-aurora text-lg font-noto-sans text-center font-extrabold uppercase italic">
                     {day}
-                </div>
+                </h3>
                 {#each events as item}
-                    <div class={["w-full rounded-md pt-4 pl-4 pr-4 pb-3 mt-5",
+                    <article class={["w-full rounded-md pt-4 pl-4 pr-4 pb-3 mt-5",
                         { "bg-blue-skywave": item.type === "show" },
                         { "bg-purple-mystic": item.type === "live" },
                         { "bg-red-crimson": item.type === "video" },
@@ -52,19 +52,19 @@
                         { "bg-suspense-honeycream": item.activity },
                     ]}>
                         <div class="flex events-center">
-                            <div class={["w-full font-noto-sans text-2xl text-center uppercase",
+                            <time class={["w-full font-noto-sans text-2xl text-center uppercase",
                                 { "text-blue-night": item.activity },
                                 { "text-suspense-aurora": !item.activity },
                             ]}>
                                 {resolveHour(item.hour)}
-                            </div>
+                            </time>
                         </div>
-                        <div class={["w-full font-noto-sans font-extrabold text-xl text-center italic mt-4 mb-4",
+                        <h4 class={["w-full font-noto-sans font-extrabold text-xl text-center italic mt-4 mb-4",
                             { "text-blue-night": item.activity },
                             { "text-suspense-aurora": !item.activity },
                         ]}>
                             {item.activity ? item.activity.title : item.content}
-                        </div>
+                        </h4>
                         <div class="flex justify-between items-center">
                             {#if can.update && variant === "administration"}
                                 <button
@@ -99,9 +99,9 @@
                                 {item.responsible.nickname}
                             </button>
                         </div>
-                    </div>
+                    </article>
                 {/each}
-            </div>
+            </section>
         {/each}
     </div>
 </Section>

@@ -11,5 +11,6 @@
 
 <Meta meta={{ title: titleAdapted } } />
 <Layout>
+    <h1 class="sr-only">{titleAdapted}</h1>
     <ProfileForm />
 </Layout>

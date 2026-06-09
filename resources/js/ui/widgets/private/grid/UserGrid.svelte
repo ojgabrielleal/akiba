@@ -57,31 +57,32 @@
         {/if}
     </div>
     <Section {title}>
-        <div class="mt-18 grid grid-cols-1 lg:grid-cols-4 gap-15 lg:gap-x-5 lg:gap-y-18">
+        <ul class="mt-18 grid grid-cols-1 lg:grid-cols-4 gap-15 lg:gap-x-5 lg:gap-y-18">
             {#each users.data as item}
                 {@const highestRole = item.roles.reduce((prev, current) => {
                     return prev.weight > current.weight ? prev : current;
                 })}
-                <article class="h-35 px-3 py-1 bg-blue-skywave rounded-sm relative">
-                    <dl>
-                        <dt class="text-suspense-aurora text-xl lg:text-2xl font-noto-sans font-extrabold italic uppercase">
+                <li>
+                    <article class="h-35 px-3 py-1 bg-blue-skywave rounded-sm relative">
+                    <header>
+                        <h3 class="text-suspense-aurora text-xl lg:text-2xl font-noto-sans font-extrabold italic uppercase">
                             {item.nickname}
-                        </dt>
-                        <dd class="text-suspense-aurora text-xs font-noto-sans font-semibold italic uppercase">
+                        </h3>
+                        <p class="text-suspense-aurora text-xs font-noto-sans font-semibold italic uppercase">
                             {item.name}
-                        </dd>
-                    </dl>
+                        </p>
+                    </header>
                     <img
                         class="w-35 absolute right-0 bottom-0"
                         src={item.avatar}
                         alt=""
                         aria-hidden="true"
                     />
-                    <dl class="w-full flex justify-between items-end px-3 absolute left-0 bottom-2">
-                        <dt class="rounded-full p-2 bg-suspense-aurora text-xs text-blue-marinho font-noto-sans font-extrabold uppercase italic">
+                    <footer class="w-full flex justify-between items-end px-3 absolute left-0 bottom-2">
+                        <span class="rounded-full p-2 bg-suspense-aurora text-xs text-blue-marinho font-noto-sans font-extrabold uppercase italic">
                             {highestRole.label}
-                        </dt>
-                        <dd class="flex flex-wrap lg:flex-nowrap gap-2">
+                        </span>
+                        <div class="flex flex-wrap lg:flex-nowrap gap-2" aria-label={`Acoes de ${item.nickname}`}>
                             {#if !item.is_virtual && can.authority.update}
                                 <button type="button"
                                     aria-label="Definir permissões"
@@ -98,9 +99,8 @@
                                 </button>
                             {/if}
                             <Link
-                                title=""
                                 href={`/panel/profile/${item.uuid}`}
-                                aria-label="Editar perfil"
+                                aria-label={`Editar perfil de ${item.nickname}`}
                                 class="w-8 h-8 bg-suspense-aurora rounded-md flex justify-center items-center font-noto-sans italic font-extrabold cursor-pointer"
                             >
                                 <img
@@ -113,7 +113,7 @@
                             </Link>
                             {#if can.deactivate}
                                 <button type="button"
-                                    aria-label="Desativar perfil"
+                                    aria-label={`Desativar perfil de ${item.nickname}`}
                                     class="w-8 h-8 bg-suspense-aurora rounded-md flex justify-center items-center font-noto-sans italic font-extrabold cursor-pointer"
                                     on:click={()=> requestDeactivateUser(item.uuid)}
                                 >
@@ -126,10 +126,11 @@
                                     />
                                 </button>
                             {/if}
-                        </dd>
-                    </dl>
-                </article>
+                        </div>
+                    </footer>
+                    </article>
+                </li>
             {/each}
-        </div>
+        </ul>
     </Section>
 {/if}

@@ -42,14 +42,14 @@
 
 {#if repositories}
     <Section title="Tutoriais">
-        <div class="mb-10 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-4">
+        <ul class="mb-10 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-4">
             {#each tutorials as item}
-                <article class="w-full bg-blue-skywave relative">
+                <li class="w-full bg-blue-skywave relative">
                     <a
-                        title=""
-                        aria-label=""
+                        aria-label={`Abrir ${item.name}`}
                         href={item.url}
                         target="_blank"
+                        rel="noopener noreferrer"
                     >
                         <img
                             src={item.image}
@@ -61,20 +61,20 @@
                             {item.name}
                         </div>
                     </a>
-                </article>
+                </li>
             {/each}
-        </div>
+        </ul>
     </Section>
 
     <Section title="Instaladores">
-        <div class="mb-10 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-4">
+        <ul class="mb-10 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-4">
             {#each softwares as item}
-                <article class="w-full bg-blue-skywave relative">
+                <li class="w-full bg-blue-skywave relative">
                     <a
-                        title=""
-                        aria-label=""
+                        aria-label={`Abrir ${item.name}`}
                         href={item.url}
                         target="_blank"
+                        rel="noopener noreferrer"
                     >
                         <img
                             src={item.image}
@@ -86,20 +86,20 @@
                             {item.name}
                         </div>
                     </a>
-                </article>
+                </li>
             {/each}
-        </div>
+        </ul>
     </Section>
 
     <Section title="Pacotes e Modelos">
-        <div class="mb-10 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-4">
+        <ul class="mb-10 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-4">
             {#each packages as item}
-                <article class="w-full bg-blue-skywave relative">
+                <li class="w-full bg-blue-skywave relative">
                     <a
-                        title=""
-                        aria-label=""
+                        aria-label={`Abrir ${item.name}`}
                         href={item.url}
                         target="_blank"
+                        rel="noopener noreferrer"
                     >
                         <img
                             src={item.image}
@@ -111,9 +111,9 @@
                             {item.name}
                         </div>
                     </a>
-                </article>
+                </li>
             {/each}
-        </div>
+        </ul>
     </Section>
 {/if}
 
@@ -126,14 +126,14 @@
         </div>
     {/if}
     {#if repositories}
-        <div class="mb-20 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-x-4 gap-y-20">
+        <ul class="mb-20 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-x-4 gap-y-20">
             {#each repositories.data as item}
-                <article class="w-full bg-blue-skywave relative">
+                <li class="w-full bg-blue-skywave relative">
                     <a
-                        title=""
-                        aria-label=""
+                        aria-label={`Abrir ${item.name}`}
                         href={item.url}
                         target="_blank"
+                        rel="noopener noreferrer"
                     >
                         <img
                             src={item.image}
@@ -149,7 +149,7 @@
                         {#if can.show_button_create}
                             <button type="button"
                                 class="cursor-pointer"
-                                aria-label="editar"
+                                aria-label={`Editar ${item.name}`}
                                 onclick={() => { offCanvasRef.open(); identifier = item.uuid; }}
                             >
                                 <img
@@ -163,7 +163,7 @@
                         {/if}
                         {#if can.deactivate}
                             <button type="button"
-                                aria-label="remover"
+                                aria-label={`Remover ${item.name}`}
                                 class="cursor-pointer"
                                 onclick={() => requestDeactivateRepository(item.uuid)}
                             >
@@ -177,8 +177,8 @@
                             </button>
                         {/if}
                     </div>
-                </article>
+                </li>
             {/each}
-        </div>
+        </ul>
     {/if}
 </Section>

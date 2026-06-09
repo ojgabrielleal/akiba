@@ -1,26 +1,13 @@
 <script>
-    import { page } from "@inertiajs/svelte";
     import { Meta } from "@/config";
-    import toast, { Toaster } from "svelte-hot-french-toast";
+    import { FlashToaster } from "@/ui/components/private";
     import { LoginForm } from "@/ui/widgets/private";
-
-    $: ({ flash } = $page.props);
-    let lastFlashId = null;
-
-    $: flashId = flash?.id ?? flash?.message;
-
-    $: if (flash?.message && flashId !== lastFlashId) {
-        lastFlashId = flashId;
-
-        toast(flash.message, {
-            icon: flash.icon,
-        });
-    }
 </script>
 
-<Toaster />
+<FlashToaster />
 <Meta meta={{ title: "Realize o Login" } } />
-<div class="w-screen h-screen flex justify-center items-center bg-blue-marinho p-5">
+<main class="w-screen h-screen flex justify-center items-center bg-blue-marinho p-5">
+    <h1 class="sr-only">Login</h1>
     <section class="bg-suspense-aurora rounded-l-lg rounded-xl shadow-xl/30 xl:w-240 xl:h-120 xl:grid xl:grid-cols-[2fr_3fr]">
         <div class="flex items-center p-8">
             <LoginForm />
@@ -40,4 +27,4 @@
             </video>
         </div>
     </section>
-</div>
+</main>

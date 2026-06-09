@@ -101,8 +101,8 @@
         <div class="flex items-center gap-5 mb-5">
             <div class="w-60">
                 <img
-                    src={playerData.program.image}
-                    alt="Programa"
+                src={playerData.program.image}
+                    alt="Programa no ar"
                     loading="lazy"
                 />
             </div>
@@ -175,9 +175,7 @@
         <div class="w-65">
             <img
                 src={playerData.host.avatar}
-                alt=""
-                aria-hidden="true"
-                aria-label="hidden"
+                alt={playerData.host.nickname || "Locutor atual"}
                 class="w-full h-full"
                 loading="lazy"
             />
@@ -255,7 +253,7 @@
                 </div>
             </div>
             <button type="button"
-                aria-label=""
+                aria-label={$player.playing ? "Pausar radio" : "Tocar radio"}
                 class={["cursor-pointer shrink-0 w-14 h-14 rounded-full flex justify-center items-center",
                     { "bg-orange-citric": !$player.playing },
                     { "bg-blue-skywave": $player.playing },
