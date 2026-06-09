@@ -1,12 +1,42 @@
 [
   {
-    "alt": "texture 1",
-    "url": "/img/textures/texture01.webp",
+    "alt": "Screentone",
+    "url": "/img/textures/screentone.webp",
     "disabled": false
   },
   {
-    "alt": "#",
-    "url": "#",
-    "disabled": true
+    "alt": "Music bars",
+    "url": "/img/textures/music-bars.webp",
+    "disabled": false
+  },
+  {
+    "alt": "Stars",
+    "url": "/img/textures/stars.webp",
+    "disabled": false
+  },
+  {
+    "alt": "Grunge",
+    "url": "/img/textures/grunge.webp",
+    "disabled": false
+  },
+  {
+    "alt": "Fan",
+    "url": "/img/textures/fan.webp",
+    "disabled": false
+  },
+  {
+    "alt": "Lines",
+    "url": "/img/textures/lines.webp",
+    "disabled": false
+  },
+  {
+    "alt": "Squares",
+    "url": "/img/textures/squares.webp",
+    "disabled": false
+  },
+  {
+    "alt": "Horror",
+    "url": "/img/textures/horror.webp",
+    "disabled": false
   }
 ]

@@ -7,52 +7,59 @@
         "disabled": false
     },
     {
-        "alt": "#",
-        "icon": "#",
-        "left": "#",
-        "right": "#",
-        "disabled": true
+        "alt": "aesthetic",
+        "icon": "/img/player/decorations/aesthetic-icon.webp",
+        "left": "/img/player/decorations/aesthetic-left.webp",
+        "right": "/img/player/decorations/aesthetic-right.webp",
+        "disabled": false
     },
     {
-        "alt": "#",
-        "icon": "#",
-        "left": "#",
-        "right": "#",
-        "disabled": true
+        "alt": "anime",
+        "icon": "/img/player/decorations/anime-icon.webp",
+        "left": "/img/player/decorations/anime-left.webp",
+        "right": "/img/player/decorations/anime-right.webp",
+        "disabled": false
     },
     {
-        "alt": "#",
-        "icon": "#",
-        "left": "#",
-        "right": "#",
-        "disabled": true
+        "alt": "circles",
+        "icon": "/img/player/decorations/circles-icon.webp",
+        "left": "/img/player/decorations/circles-left.webp",
+        "right": "/img/player/decorations/circles-right.webp",
+        "disabled": false
     },
     {
-        "alt": "#",
-        "icon": "#",
-        "left": "#",
-        "right": "#",
-        "disabled": true
+        "alt": "clouds",
+        "icon": "/img/player/decorations/clouds-icon.webp",
+        "left": "/img/player/decorations/clouds-left.webp",
+        "right": "/img/player/decorations/clouds-right.webp",
+        "disabled": false
     },
     {
-        "alt": "#",
-        "icon": "#",
-        "left": "#",
-        "right": "#",
-        "disabled": true
+        "alt": "music",
+        "icon": "/img/player/decorations/music-icon.webp",
+        "left": "/img/player/decorations/music-left.webp",
+        "right": "/img/player/decorations/music-right.webp",
+        "disabled": false
     },
     {
-        "alt": "#",
-        "icon": "#",
-        "left": "#",
-        "right": "#",
-        "disabled": true
+        "alt": "ninja",
+        "icon": "/img/player/decorations/ninja-icon.webp",
+        "left": "/img/player/decorations/ninja-left.webp",
+        "right": "/img/player/decorations/ninja-right.webp",
+        "disabled": false
     },
     {
-        "alt": "#",
-        "icon": "#",
-        "left": "#",
-        "right": "#",
-        "disabled": true
+        "alt": "radio",
+        "icon": "/img/player/decorations/radio-icon.webp",
+        "left": "/img/player/decorations/radio-left.webp",
+        "right": "/img/player/decorations/radio-right.webp",
+        "disabled": false
+    },
+    {
+        "alt": "seasons",
+        "icon": "/img/player/decorations/seasons-icon.webp",
+        "left": "/img/player/decorations/seasons-left.webp",
+        "right": "/img/player/decorations/seasons-right.webp",
+        "disabled": false
     }
 ]

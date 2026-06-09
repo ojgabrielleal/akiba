@@ -95,11 +95,11 @@
             bind:value={$form.phrase.text}
         >
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 lg:gap-10 mt-5 lg:mt-12">
-            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-2">
+            <div class="flex flex-wrap gap-2">
                 {#each locutionDecorations as item}
                     <button
                         type="button"
-                        class={["cursor-pointer h-15 border-2 border-blue-ocean rounded-md disabled:cursor-not-allowed disabled:opacity-50", 
+                        class={["cursor-pointer w-15 h-15 border-2 border-blue-ocean rounded-md disabled:cursor-not-allowed disabled:opacity-50", 
                             { "border-blue-skywave drop-shadow-[0_0_20px_rgba(0,255,200,0.3)]": $form.phrase.decoration?.left === item.left && $form.phrase.decoration?.right === item.right },
                             { "border-blue-ocean": !($form.phrase.decoration?.left === item.left && $form.phrase.decoration?.right === item.right) }
                         ]}
@@ -118,11 +118,11 @@
                     </button>
                 {/each}
             </div>
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-2">
+            <div class="flex flex-wrap justify-end gap-2">
                 {#each locutionTextures as item}
                     <button
                         type="button"
-                        class={["cursor-pointer h-15 border-2 border-blue-ocean rounded-md disabled:cursor-not-allowed disabled:opacity-50", 
+                        class={["cursor-pointer w-full lg:w-50 h-15 border-2 border-blue-ocean rounded-md disabled:cursor-not-allowed disabled:opacity-50", 
                             { "border-blue-skywave drop-shadow-[0_0_20px_rgba(0,255,200,0.3)]": $form.phrase.texture === item.url },
                             { "border-blue-ocean": $form.phrase.texture !== item.url }
                         ]}
