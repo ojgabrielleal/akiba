@@ -1,9 +1,10 @@
 import { defineConfig, loadEnv } from "vite";
-import { svelte, vitePreprocess } from "@sveltejs/vite-plugin-svelte";
+import { svelte } from "@sveltejs/vite-plugin-svelte";
 import laravel from "laravel-vite-plugin";
 import tailwindcss from "@tailwindcss/vite";
 import path from "path";
 import { fileURLToPath } from "url";
+import svelteConfig from "./svelte.config.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -42,9 +43,7 @@ export default defineConfig(({ mode }) => {
                 refresh: true,
             }),
             tailwindcss(),
-            svelte({
-                preprocess: vitePreprocess(),
-            }),
+            svelte(svelteConfig),
         ],
         build: {
             rollupOptions: {

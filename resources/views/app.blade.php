@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     @inertiaHead
     @vite([
@@ -10,14 +9,11 @@
         'resources/js/css/quill.css', 
     ])
 </head>
-
 <body>
     @inertia
-    
     <audio id="audio">
         <source src="/api/stream" type="audio/mpeg">
     </audio>
-
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
     <script>
         window.OneSignalDeferred = window.OneSignalDeferred || [];
@@ -28,5 +24,4 @@
         });
     </script>
 </body>
-
 </html>
