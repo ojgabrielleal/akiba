@@ -1,6 +1,7 @@
 <script>
     export let title;
 
+    import { onMount } from "svelte";
     import { page, router } from "@inertiajs/svelte";
     import { Section } from "@/ui/components/private/";
     import { songRequestPermissions } from "@/utils";
@@ -8,6 +9,45 @@
     $: ({ onair, songRequests } = $page.props);
 
     let can = songRequestPermissions();
+
+    // Notificações para PEDIDOS pros locutores -------
+    
+    let mounted = false;
+    let songRequestLength = 0;
+
+    const notifyNewSongRequest = (songRequest) => {
+        if (!("Notification" in window) || Notification.permission !== "granted") {
+            return;
+        }
+
+        new Notification(`Novo Pedido DJ ${songRequest.name}`, {
+            body: `O ouvinte ${songRequest.name} pediu a música ${songRequest.music.name}`,
+            icon: "/favicon.ico",
+        });
+    };
+
+    const watchNewSongRequests = () => {
+        const currentLength = songRequests.data.length;
+
+        if (mounted && currentLength > songRequestLength) {
+            notifyNewSongRequest(songRequests.data[0]);
+        }
+
+        songRequestLength = currentLength;
+    };
+
+    onMount(async () => {
+        mounted = true;
+        songRequestLength = songRequests.data.length;
+
+        if ("Notification" in window && Notification.permission === "default") {
+            await Notification.requestPermission();
+        }
+    });
+
+    $: songRequests, watchNewSongRequests();
+
+    // Notificações para PEDIDOS pros locutores -------
 
     const requestToggleSongRequest = () => {
         router.patch("/panel/locution/songrequest/toggle", {}, {
@@ -216,3 +256,4 @@
         </div>
     </Section>
 {/if}
+
