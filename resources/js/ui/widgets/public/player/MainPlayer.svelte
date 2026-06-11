@@ -25,7 +25,7 @@
         },
         phrase: {
             text: air.phrase.text,
-            icon: air.phrase.icon ?? locutionIcons[17].url,
+            icon: air.phrase.icon ?? locutionIcons[10].url,
             texture: air.phrase.texture ?? locutionTextures[0].url,
             decoration: {
                 left: air.phrase.decoration?.left ?? locutionDecorations[0].left,
