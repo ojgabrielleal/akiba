@@ -8,9 +8,9 @@
 <Layout>
     <h1 class="sr-only">Radio</h1>
     <ProgramGrid title="Programas & Programação" />
+    <MusicRankingGrid title="Ranking de música" />
     <!--
     <ProgramScheduleGrid title="Grade de programação" />
-    <MusicRankingGrid title="Ranking de música" />
     <ListenerMonthGrid title="Ouvinte do mês" />
     -->
 </Layout>

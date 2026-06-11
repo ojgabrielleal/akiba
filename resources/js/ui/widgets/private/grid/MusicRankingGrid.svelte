@@ -30,42 +30,49 @@
 
 {#if musicRanking}
     <Section {title}>
-        <div class="flex flex-col gap-5">
-            {#if musicRanking.data.length >= 3}
-                {#each musicRanking.data as item, index}
-                    <article class="flex flex-wrap lg:flex-nowrap items-center gap-5">
-                        <div class="flex items-center gap-5">
-                            {#if can.update}
-                                <Preview
-                                    name="image_ranking"
-                                    size="thumb"
-                                    src={item.ranking.image || "https://placehold.co/500x500?text=Rede+Akiba"}
-                                    oninput={(event) => submit(event, item.uuid)}
-                                />
-                            {:else}
-                                <img
-                                    class="w-24 h-24 rounded-md"
-                                    src={item.ranking.image || "https://placehold.co/500x500?text=Rede+Akiba"}
-                                    alt={item.name}
-                                />
-                            {/if}
-                            <strong class="text-suspense-aurora text-6xl font-noto-sans font-extrabold uppercase italic">
-                                #{index + 1}
-                            </strong>
-                        </div>
-                        <div class="text-suspense-aurora font-noto-sans uppercase">
-                            {item.name} - {item.type} - {item.production} - {item.artist}
-                        </div>
-                    </article>
-                {/each}
-            {/if}
-        </div>
-        {#if musicRanking.data.length >= 3 && can.set}
-            <div class="flex justify-end mt-5">
-                <button type="button" class="cursor-pointer bg-blue-skywave px-4 py-2 rounded-md text-suspense-aurora font-noto-sans font-extrabold uppercase italic disabled:opacity-50 disabled:pointer-events-none" on:click={() => setRanking()}>
-                    Atualizar ranking
-                </button>
+        <div class="grid grid-cols-2 gap-20">
+            <div class="col-span-2 flex justify-center">
+                <div class="relative w-130 h-30 rounded-md bg-gradient-orange-morning-aurora">
+                    <div class="absolute -left-12 top-1/2 -translate-y-1/2 pl-3 w-23 h-23 font-noto-sans font-extrabold text-[2.6rem] text-suspense-aurora italic uppercase flex items-center justify-center bg-no-repeat bg-cover" style="background-image: url('/svg/star.svg')">
+                        1º
+                    </div>
+                    <img 
+                        src="/img/locution/characters/yui.webp"
+                        alt=""
+                        aria-hidden="true"
+                        class="w-40 h-40 absolute right-0 bottom-0"
+                    />
+                    <h2 class="font-noto-sans font-extrabold">
+                        Título de música foda que todo mundo conhece
+                    </h2>
+                </div>
             </div>
-        {/if}
+            <div class="flex justify-end">
+                <div class="relative w-130 h-30 rounded-md bg-gradient-orange-morning-aurora">
+                    <div class="absolute -left-12 top-1/2 -translate-y-1/2 pl-3 w-23 h-23 font-noto-sans font-extrabold text-[2.6rem] text-suspense-aurora italic uppercase flex items-center justify-center bg-no-repeat bg-cover" style="background-image: url('/svg/star.svg')">
+                        2º
+                    </div>
+                    <img 
+                        src="/img/locution/characters/yui.webp"
+                        alt=""
+                        aria-hidden="true"
+                        class="w-40 h-40 absolute right-0 bottom-0"
+                    />
+                </div>
+            </div>
+            <div class="flex justify-start">
+                <div class="relative w-130 h-30 rounded-md bg-gradient-orange-morning-aurora">
+                    <div class="absolute -left-12 top-1/2 -translate-y-1/2 pl-3 w-23 h-23 font-noto-sans font-extrabold text-[2.6rem] text-suspense-aurora italic uppercase flex items-center justify-center bg-no-repeat bg-cover" style="background-image: url('/svg/star.svg')">
+                        3º
+                    </div>
+                    <img 
+                        src="/img/locution/characters/yui.webp"
+                        alt=""
+                        aria-hidden="true"
+                        class="w-40 h-40 absolute right-0 bottom-0"
+                    />
+                </div>
+            </div> 
+        </div>
     </Section>
 {/if}
