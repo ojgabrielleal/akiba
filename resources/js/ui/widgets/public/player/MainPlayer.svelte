@@ -8,15 +8,15 @@
     $: ({ onair: { data: [air] }, stream } = $page.props);
 
     let modalRef;
-
+    
     $: playerData = {
         program: {
-            image: air.program?.image,
+            image: air.program.image,
         },
         host: {
-            nickname: air.program?.host?.nickname,
-            avatar: air.program?.host?.avatar,
-            gender: air.program?.host?.gender,
+            nickname: air.program.host.nickname,
+            avatar: air.program.host.avatar,
+            gender: air.program.host.gender,
         },
         execution_mode: air.execution_mode,
         current_song: {
@@ -33,6 +33,7 @@
             },
         },
     };
+
     
     function splitHighlightedText(text) {
         return String(text).split(/(\[[^\]]+\])/g).filter(Boolean).map((part) => ({
