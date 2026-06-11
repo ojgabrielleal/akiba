@@ -18,15 +18,19 @@
         <source src="/api/stream" type="audio/mpeg">
     </audio>
 
-    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-    <script>
-        window.OneSignalDeferred = window.OneSignalDeferred || [];
-        OneSignalDeferred.push(async function (OneSignal) {
-            await OneSignal.init({
-                appId: @js(config('services.onesignal.app_id')),
-            });
-        });
-    </script>
+    @production
+        <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+        <script>
+            if (window.location.hostname === 'www.akiba.com.br') {
+                window.OneSignalDeferred = window.OneSignalDeferred || [];
+                OneSignalDeferred.push(async function (OneSignal) {
+                    await OneSignal.init({
+                        appId: @js(config('services.onesignal.app_id')),
+                    });
+                });
+            }
+        </script>
+    @endproduction
 </body>
 
 </html>
