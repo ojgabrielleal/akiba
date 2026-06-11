@@ -9,7 +9,6 @@
 
     let modalRef;
     
-    $:console.log(air);
     $: playerData = {
         program: {
             image: air.program.image,
