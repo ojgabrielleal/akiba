@@ -1,16 +1,15 @@
 <script>
     import { Meta } from "@/config";
     import { Layout } from "@/ui/layouts/private";
-    import { ProgramScheduleGrid, MusicRankingGrid, ListenerMonthGrid, ProgramGrid } from "@/ui/widgets/private";
+    import { MusicRankingGrid, ListenerMonthGrid, ProgramGrid } from "@/ui/widgets/private";
 </script>
 
 <Meta meta={{ title: "Rádio" } } />
 <Layout>
     <h1 class="sr-only">Radio</h1>
     <ProgramGrid title="Programas & Programação" />
-    <MusicRankingGrid title="Ranking de música" />
+    <MusicRankingGrid title="Akiba Ranking" />
     <!--
-    <ProgramScheduleGrid title="Grade de programação" />
     <ListenerMonthGrid title="Ouvinte do mês" />
     -->
 </Layout>

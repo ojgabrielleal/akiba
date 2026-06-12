@@ -51,4 +51,18 @@ class Music extends Model
     {
         return $query->where('in_ranking', true);
     }
+
+    /**
+     * Static query methods for this model.
+     *
+     * These methods encapsulate complete query logic and business
+     * rules that return finalized results, such as reports,
+     * aggregations, or ranked lookups.
+     */
+    public static function mostRequested(int $limit = 3)
+    {
+        return self::orderBy('song_requests_total', 'desc')
+            ->limit($limit)
+            ->get();
+    }
 }

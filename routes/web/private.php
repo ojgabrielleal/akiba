@@ -75,6 +75,9 @@ Route::prefix('panel')->middleware(['inertia'])->group(function () {
                 Route::post('', 'generateMusicRanking');
                 Route::patch('{music:uuid}', 'updateMusicRanking');
             });
+            Route::prefix('music')->group(function () {
+                Route::patch('{music:uuid}', 'updateMusic');
+            });
             Route::prefix('listener-month')->group(function () {
                 Route::post('', 'createListenerMonth');
                 Route::get('found', 'showListenerMonthFound');
