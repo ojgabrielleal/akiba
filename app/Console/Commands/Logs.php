@@ -9,7 +9,8 @@ class Logs extends Command
 {
     protected $signature = 'logs:watch
         {--type=all : all, requests, validation, unauthorized, warning or error}
-        {--tail=100 : Number of recent lines to show before watching}
+        {--recent : Show the last 100 lines before watching}
+        {--tail= : Number of recent lines to show before watching}
         {--search= : Extra text filter}
         {--file= : Log file path. Defaults to storage/logs/laravel.log}
         {--clear : Clear the log file before watching}
@@ -21,7 +22,7 @@ class Logs extends Command
     {
         $path = $this->option('file') ?: storage_path('logs/laravel.log');
         $type = strtolower((string) $this->option('type'));
-        $tail = max(0, (int) $this->option('tail'));
+        $tail = $this->tailLines();
         $search = $this->option('search');
         $clear = (bool) $this->option('clear');
         $showStack = (bool) $this->option('stack');
@@ -92,6 +93,15 @@ class Logs extends Command
     /**
      * @return array<int, string>
      */
+    private function tailLines(): int
+    {
+        if ($this->option('tail') !== null) {
+            return max(0, (int) $this->option('tail'));
+        }
+
+        return $this->option('recent') ? 100 : 0;
+    }
+
     private function tail(string $path, int $lines): array
     {
         if ($lines === 0) {
