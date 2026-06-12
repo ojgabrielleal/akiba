@@ -51,6 +51,7 @@
         $form.review.status = event.submitter.value;
         $form.post(url, {
             preserveState: false,
+            forceFormData: true,
             onSuccess: () => {
                 post ? null : $form.reset();
             },

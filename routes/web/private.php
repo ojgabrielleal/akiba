@@ -71,11 +71,8 @@ Route::prefix('panel')->middleware(['inertia'])->group(function () {
                 Route::get('{program:uuid}', 'showProgram');
                 Route::delete('{program:uuid}', 'deactivateProgram');
             });
-            Route::prefix('music-ranking')->group(function () {
-                Route::post('', 'generateMusicRanking');
-                Route::patch('{music:uuid}', 'updateMusicRanking');
-            });
             Route::prefix('music')->group(function () {
+                Route::post('ranking', 'generateMusicRanking');
                 Route::patch('{music:uuid}', 'updateMusic');
             });
             Route::prefix('listener-month')->group(function () {

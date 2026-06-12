@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Private;
 
 use App\Exceptions\RoleHasMembersException;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 use App\Http\Controllers\Concerns\HasFlashMessages;
@@ -34,12 +33,16 @@ use App\Actions\Administration\Task\UpdateTaskAction;
 use App\Actions\Administration\User\CreateUserAction;
 use App\Actions\Administration\User\UpdateUserAccessAction;
 
-use App\Http\Requests\Administration\CreateActivityRequest;
-use App\Http\Requests\Administration\UpdateActivityRequest;
-use App\Http\Requests\Administration\UpdateCalendarRequest;
-use App\Http\Requests\Administration\UpdateRoleRequest;
-use App\Http\Requests\Administration\UpdateTaskRequest;
-use App\Http\Requests\Administration\UpdateUserAccessRequest;
+use App\Http\Requests\Web\Administration\CreateActivityRequest;
+use App\Http\Requests\Web\Administration\CreateCalendarRequest;
+use App\Http\Requests\Web\Administration\CreateRoleRequest;
+use App\Http\Requests\Web\Administration\CreateTaskRequest;
+use App\Http\Requests\Web\Administration\CreateUserRequest;
+use App\Http\Requests\Web\Administration\UpdateActivityRequest;
+use App\Http\Requests\Web\Administration\UpdateCalendarRequest;
+use App\Http\Requests\Web\Administration\UpdateRoleRequest;
+use App\Http\Requests\Web\Administration\UpdateTaskRequest;
+use App\Http\Requests\Web\Administration\UpdateUserAccessRequest;
 
 class AdministrationController extends Controller
 {
@@ -77,22 +80,14 @@ class AdministrationController extends Controller
 
     public function createActivity(CreateActivityRequest $request, CreateActivityAction $createActivityAction)
     {
-        if ($request->user()->cannot('create', Activity::class)) {
-            return null;
-        }
-
-        $createActivityAction->execute($request->user()->id, $request->all());
+        $createActivityAction->execute($request->user(), $request->validated());
 
         return $this->flashMessage('save');
     }
 
     public function updateActivity(UpdateActivityRequest $request, Activity $activity, UpdateActivityAction $updateActivityAction)
     {
-        if ($request->user()->cannot('update', $activity)) {
-            return null;
-        }
-
-        $updateActivityAction->execute($request->user()->id, $activity, $request->all());
+        $updateActivityAction->execute($activity, $request->user(), $request->validated());
 
         return $this->flashMessage('update');
     }
@@ -121,24 +116,23 @@ class AdministrationController extends Controller
         return new CalendarResource($calendar->load(['activity', 'responsible']));
     }
 
-    public function createCalendar(Request $request, CreateCalendarAction $createCalendarAction)
+    public function createCalendar(CreateCalendarRequest $request, CreateCalendarAction $createCalendarAction)
     {
-        if (request()->user()->cannot('create', Calendar::class)) {
-            return null;
-        }
-
-        $createCalendarAction->execute($request->all());
+        $createCalendarAction->execute(
+            User::where('uuid', $request->input('user'))->firstOrFail(),
+            $request->validated()
+        );
 
         return $this->flashMessage('save');
     }
 
     public function updateCalendar(UpdateCalendarRequest $request, Calendar $calendar, UpdateCalendarAction $updateCalendarAction)
     {
-        if ($request->user()->cannot('update', $calendar)) {
-            return null;
-        }
-
-        $updateCalendarAction->execute($calendar, $request->all());
+        $updateCalendarAction->execute(
+            $calendar,
+            User::where('uuid', $request->input('user'))->firstOrFail(),
+            $request->validated()
+        );
 
         return $this->flashMessage('update');
     }
@@ -167,24 +161,23 @@ class AdministrationController extends Controller
         return new TaskResource($task->load(['responsible']));
     }
 
-    public function createTask(Request $request, CreateTaskAction $createTaskAction)
+    public function createTask(CreateTaskRequest $request, CreateTaskAction $createTaskAction)
     {
-        if (request()->user()->cannot('create', Task::class)) {
-            return null;
-        }
-
-        $createTaskAction->execute($request->all());
+        $createTaskAction->execute(
+            User::where('uuid', $request->input('user'))->firstOrFail(),
+            $request->validated()
+        );
 
         return $this->flashMessage('save');
     }
 
     public function updateTask(UpdateTaskRequest $request, Task $task, UpdateTaskAction $updateTaskAction)
     {
-        if (request()->user()->cannot('update', $task)) {
-            return null;
-        }
-
-        $updateTaskAction->execute($task, $request->all());
+        $updateTaskAction->execute(
+            $task,
+            User::where('uuid', $request->input('user'))->firstOrFail(),
+            $request->validated()
+        );
 
         return $this->flashMessage('update');
     }
@@ -213,24 +206,16 @@ class AdministrationController extends Controller
         return new UserResource($user->load(['roles']));
     }
 
-    public function createUser(Request $request, CreateUserAction $createUserAction)
+    public function createUser(CreateUserRequest $request, CreateUserAction $createUserAction)
     {
-        if ($request->user()->cannot('create', User::class)) {
-            return null;
-        }
-
-        $createUserAction->execute($request->all());
+        $createUserAction->execute($request->validated());
 
         return $this->flashMessage('save');
     }
 
     public function updateUserAccess(UpdateUserAccessRequest $request, User $user, UpdateUserAccessAction $updateUserAccessAction)
     {
-        if ($request->user()->cannot('updateAuthority', $user)) {
-            return null;
-        }
-
-        $updateUserAccessAction->execute($user, $request->all());
+        $updateUserAccessAction->execute($user, $request->validated());
 
         return $this->flashMessage('save');
     }
@@ -279,24 +264,16 @@ class AdministrationController extends Controller
         return PermissionResource::collection(Permission::all());
     }
 
-    public function createRole(Request $request, CreateRoleAction $createRoleAction)
+    public function createRole(CreateRoleRequest $request, CreateRoleAction $createRoleAction)
     {
-        if ($request->user()->cannot('create', Role::class)) {
-            return null;
-        }
-
-        $createRoleAction->execute($request->all());
+        $createRoleAction->execute($request->validated());
 
         return $this->flashMessage('save');
     }
 
     public function updateRole(UpdateRoleRequest $request, Role $role, UpdateRoleAction $updateRoleAction)
     {
-        if ($request->user()->cannot('update', $role)) {
-            return null;
-        }
-
-        $updateRoleAction->execute($role, $request->all());
+        $updateRoleAction->execute($role, $request->validated());
 
         return $this->flashMessage('update');
     }

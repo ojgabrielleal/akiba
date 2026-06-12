@@ -16,6 +16,8 @@ use App\Http\Resources\ActivityResource;
 use App\Http\Resources\CalendarWeekResource;
 use App\Http\Resources\PostResource;
 use App\Http\Resources\TaskResource;
+use App\Http\Requests\Web\Dashboard\ConfirmActivityParticipantRequest;
+use App\Http\Requests\Web\Dashboard\MarkTaskToReviewRequest;
 
 class DashboardController extends Controller
 {
@@ -43,13 +45,9 @@ class DashboardController extends Controller
         );
     }
 
-    public function confirmActivityParticipant(Activity $activity)
+    public function confirmActivityParticipant(ConfirmActivityParticipantRequest $request, Activity $activity)
     {
-        if (request()->user()->cannot('update', $activity)) {
-            return null;
-        }
-
-        $activity->confirmations()->attach(request()->user()->id);
+        $activity->confirmations()->attach($request->user()->id);
 
         return $this->flashMessage('save');
     }
@@ -78,12 +76,8 @@ class DashboardController extends Controller
         );
     }
 
-    public function markTaskToReview(Task $task)
+    public function markTaskToReview(MarkTaskToReviewRequest $request, Task $task)
     {
-        if (request()->user()->cannot('update', $task)) {
-            return null;
-        }
-
         $task->update([
             'status' => 'in_review',
         ]);

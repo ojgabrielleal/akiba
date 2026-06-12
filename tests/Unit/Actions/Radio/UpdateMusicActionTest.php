@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\Actions\Radio;
 
-use App\Actions\Radio\UpdateMusicAction;
+use App\Actions\Radio\Music\UpdateMusicAction;
 use App\Models\Music;
 use App\Services\Process\ImageProcessService;
 use Illuminate\Foundation\Testing\RefreshDatabase;

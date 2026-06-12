@@ -2,6 +2,7 @@
     export let close = () => {};
     export let musicSelected;
 
+    import { onMount } from "svelte";
     import { useForm } from "@inertiajs/svelte";
     import { Preview } from "@/ui/components/private";
     import { musicPermissions } from "@/utils";
@@ -11,19 +12,23 @@
     let form = useForm({
         _method: "PATCH",
         image: null,
+        image_ranking: null,
         type: null,
         production: null,
         artist: null,
         name: null,
     });
 
-    if (musicSelected) {
-        $form.image = null;
-        $form.type = musicSelected.type;
-        $form.production = musicSelected.production;
-        $form.artist = musicSelected.artist;
-        $form.name = musicSelected.name;
-    }
+    onMount(()=>{
+        if (musicSelected) {
+            $form.image = null;
+            $form.image_ranking = null;
+            $form.type = musicSelected.type;
+            $form.production = musicSelected.production;
+            $form.artist = musicSelected.artist;
+            $form.name = musicSelected.name;
+        }
+    });
 
     const submit = () => {
         $form.post(`/panel/radio/music/${musicSelected.uuid}`, {
@@ -39,7 +44,7 @@
 </script>
 
 <form on:submit|preventDefault={submit}>
-    <div class="mb-4 px-5">
+    <div class="mb-4 grid grid-cols-1 gap-4 px-5 sm:grid-cols-2">
         <Preview
             size="compact"
             tone="muted"
@@ -47,6 +52,14 @@
             name="image"
             src={$form.image ?? musicSelected?.image}
             oninput={(event) => ($form.image = event.target.files[0])}
+        />
+        <Preview
+            size="compact"
+            tone="muted"
+            color="muted"
+            name="image_ranking"
+            src={$form.image_ranking ?? musicSelected?.ranking?.image}
+            oninput={(event) => ($form.image_ranking = event.target.files[0])}
         />
     </div>
     <div class="mb-4">

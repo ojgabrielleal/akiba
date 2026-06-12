@@ -50,6 +50,7 @@
             
             $form.post(url, {
                 preserveScroll: true,
+                forceFormData: true,
                 onSuccess: (page) => {
                     if (page.props.flash?.type !== "error") {
                         close();

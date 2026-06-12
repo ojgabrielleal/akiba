@@ -18,7 +18,11 @@ use App\Http\Resources\SongRequestResource;
 use App\Actions\Locution\FinishLocutionAction;
 use App\Actions\Locution\StartLocutionAction;
 
-use App\Http\Requests\Locution\StartLocutionRequest;
+use App\Http\Requests\Web\Locution\FinishLocutionRequest;
+use App\Http\Requests\Web\Locution\MarkSongRequestAsCanceledRequest;
+use App\Http\Requests\Web\Locution\MarkSongRequestAsPlayedRequest;
+use App\Http\Requests\Web\Locution\StartLocutionRequest;
+use App\Http\Requests\Web\Locution\ToggleSongRequestBoxStatusRequest;
 
 class LocutionController extends Controller
 {
@@ -58,10 +62,6 @@ class LocutionController extends Controller
 
     public function startLocution(StartLocutionRequest $request, StartLocutionAction $startLocutionAction, Program $program)
     {
-        if ($request->user()->cannot('locution.start')) {
-            return null;
-        }
-
         $startLocutionAction->execute(
             $request->user(),
             $program,
@@ -71,12 +71,8 @@ class LocutionController extends Controller
         return $this->flashMessage('start');
     }
 
-    public function finishLocution(FinishLocutionAction $finishLocutionAction)
+    public function finishLocution(FinishLocutionRequest $request, FinishLocutionAction $finishLocutionAction)
     {
-        if (request()->user()->cannot('locution.finish')) {
-            return null;
-        }
-
         $finishLocutionAction->execute();
 
         return $this->flashMessage('finish');
@@ -102,12 +98,8 @@ class LocutionController extends Controller
         );
     }
 
-    public function markSongRequestAsPlayed(SongRequest $songRequest)
+    public function markSongRequestAsPlayed(MarkSongRequestAsPlayedRequest $request, SongRequest $songRequest)
     {
-        if (request()->user()->cannot('reproduce', $songRequest)) {
-            return null;
-        }
-
         $songRequest->update([
             'was_reproduced' => true,
         ]);
@@ -117,12 +109,8 @@ class LocutionController extends Controller
         return $this->flashMessage('complete');
     }
 
-    public function markSongRequestAsCanceled(SongRequest $songRequest)
+    public function markSongRequestAsCanceled(MarkSongRequestAsCanceledRequest $request, SongRequest $songRequest)
     {
-        if (request()->user()->cannot('cancel', $songRequest)) {
-            return null;
-        }
-
         $songRequest->update([
             'was_canceled' => true,
         ]);
@@ -132,12 +120,8 @@ class LocutionController extends Controller
         return $this->flashMessage('update');
     }
 
-    public function toggleSongRequestBoxStatus()
+    public function toggleSongRequestBoxStatus(ToggleSongRequestBoxStatusRequest $request)
     {
-        if (request()->user()->cannot('toggle', SongRequest::class)) {
-            return null;
-        }
-
         $onair = Onair::live()->first();
 
         if (! $onair) {

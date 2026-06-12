@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Private;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 use App\Http\Controllers\Concerns\HasFlashMessages;
@@ -15,7 +14,8 @@ use App\Http\Resources\PodcastResource;
 use App\Actions\Podcast\CreatePodcastAction;
 use App\Actions\Podcast\UpdatePodcastAction;
 
-use App\Http\Requests\Podcast\CreatePodcastRequest;
+use App\Http\Requests\Web\Podcast\CreatePodcastRequest;
+use App\Http\Requests\Web\Podcast\UpdatePodcastRequest;
 
 class PodcastController extends Controller
 {
@@ -56,28 +56,19 @@ class PodcastController extends Controller
 
     public function createPodcast(CreatePodcastRequest $request, CreatePodcastAction $createPodcastAction)
     {
-        if ($request->user()->cannot('create', Podcast::class)) {
-            return null;
-        }
-
         $createPodcastAction->execute(
-            $request->user()->id,
-            $request->all(),
-            $request->file('image')
+            $request->user(),
+            $request->validated()
         );
 
         return $this->flashMessage('save');
     }
 
-    public function updatePodcast(Request $request, Podcast $podcast, UpdatePodcastAction $updatePodcastAction)
+    public function updatePodcast(UpdatePodcastRequest $request, Podcast $podcast, UpdatePodcastAction $updatePodcastAction)
     {
-        if ($request->user()->cannot('update', $podcast)) {
-            return null;
-        }
-
         $updatePodcastAction->execute(
             $podcast,
-            $request->all(),
+            $request->validated(),
             $request->file('image')
         );
 

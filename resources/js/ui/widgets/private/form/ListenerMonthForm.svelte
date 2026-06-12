@@ -35,6 +35,7 @@
     const submit = () => {
         $form.post("/panel/radio/listener-month", {
             preserveScroll: true,
+            forceFormData: true,
             onSuccess: () => close(),
         });
     };
