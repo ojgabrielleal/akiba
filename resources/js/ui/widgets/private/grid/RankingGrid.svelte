@@ -24,15 +24,15 @@
     const rankingCards = [
         {
             position: "1º",
-            wrapper: "col-span-2 flex justify-center",
+            wrapper: "flex justify-center lg:col-span-2",
         },
         {
             position: "2º",
-            wrapper: "flex justify-end",
+            wrapper: "flex justify-center lg:justify-end",
         },
         {
             position: "3º",
-            wrapper: "flex justify-start",
+            wrapper: "flex justify-center lg:justify-start",
         },
     ];
 
@@ -51,18 +51,18 @@
 
 {#if ranking}
     <Section {title} {actions}>
-        <div class="grid grid-cols-2 gap-20 mt-18">
+        <div class="mt-7 grid grid-cols-1 gap-y-8 sm:mt-12 sm:gap-y-12 lg:mt-18 lg:grid-cols-2 lg:gap-20">
             {#each rankingCards as card, index}
                 {#if ranking.data[index]}
                     <div class={card.wrapper}>
-                        <div class="relative w-130 h-30 rounded-md bg-gradient-orange-morning-aurora py-3 px-15">
-                            <div class="absolute -left-12 top-1/2 -translate-y-1/2 pl-3 w-23 h-23 font-noto-sans font-extrabold text-[2.6rem] text-suspense-aurora italic uppercase flex items-center justify-center bg-no-repeat bg-cover" style="background-image: url('/svg/star.svg')">
+                        <div class="relative min-h-36 w-full max-w-130 rounded-md bg-gradient-orange-morning-aurora py-4 pl-4 pr-28 sm:h-33 sm:min-h-0 sm:py-3 sm:pl-28 sm:pr-36 lg:px-15">
+                            <div class="absolute top-1/2 hidden -translate-y-1/2 items-center justify-center bg-cover bg-no-repeat font-noto-sans font-extrabold uppercase italic text-suspense-aurora sm:left-4 sm:flex sm:h-18 sm:w-18 sm:pl-2 sm:pt-1 sm:text-[2rem] lg:-left-12 lg:h-23 lg:w-23 lg:pl-3 lg:text-[2.6rem]" style="background-image: url('/svg/star.svg')" aria-label={`${card.position} lugar`}>
                                 {card.position}
                             </div>
                             <img
                                 src={ranking.data[index].ranking.image}
                                 alt={`Imagem do ranking da música ${ranking.data[index].name}`}
-                                class="w-40 h-40 absolute right-0 bottom-0"
+                                class="absolute bottom-0 right-0 h-28 w-28 object-contain sm:h-40 sm:w-40"
                             />
                             {#if can.update}
                                 <div class="absolute right-3 bottom-2 z-10">
@@ -90,16 +90,16 @@
                                     </Tooltip>
                                 </div>
                             {/if}
-                            <h2 class="mb-2 w-[18rem] leading-[1.3rem] font-noto-sans font-extrabold text-blue-marinho text-lg uppercase italic">
+                            <h2 class="mb-2 max-w-full font-noto-sans text-base font-extrabold uppercase italic leading-5 text-blue-marinho sm:w-[18rem] sm:text-xl sm:leading-[1.3rem]">
                                 {ranking.data[index].name}
                             </h2>
-                            <div class="font-noto-sans text-sm text-blue-marinho">
+                            <div class="max-w-full font-noto-sans text-sm text-blue-marinho">
                                 <span class="font-medium">
                                     Cantor/Banda:
                                 </span>
                                 {ranking.data[index].artist}
                             </div>
-                            <div class="-mt-[0.2rem] font-noto-sans text-sm text-blue-marinho">
+                            <div class="-mt-[0.2rem] max-w-full font-noto-sans text-sm text-blue-marinho">
                                 <span class="font-medium">
                                     Anime:
                                 </span>
