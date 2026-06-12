@@ -9,7 +9,6 @@ class Logs extends Command
 {
     protected $signature = 'logs:watch
         {--type=all : all, requests, validation, unauthorized, warning or error}
-        {--recent : Show the last 100 lines before watching}
         {--tail= : Number of recent lines to show before watching}
         {--search= : Extra text filter}
         {--file= : Log file path. Defaults to storage/logs/laravel.log}
@@ -99,7 +98,7 @@ class Logs extends Command
             return max(0, (int) $this->option('tail'));
         }
 
-        return $this->option('recent') ? 100 : 0;
+        return 0;
     }
 
     private function tail(string $path, int $lines): array
