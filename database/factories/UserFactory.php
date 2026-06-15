@@ -24,8 +24,6 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
-        $gender = $this->attributes['gender'] ?? fake()->randomElement(['male', 'female']);
-
         return [
             'is_active' => true,
             'is_virtual' => false,
@@ -34,8 +32,8 @@ class UserFactory extends Factory
             'password' => fake()->password(),
             'name' => fake()->name(),
             'nickname' => fake()->userName(),
-            'gender' => $gender,
-            'avatar' => $this->avatarForGender($gender),
+            'gender' => $this->attributes['gender'] ?? fake()->randomElement(['male', 'female']),
+            'avatar' => '/img/defaults/avatar.webp',
             'birthday' => fake()->date(),
             'city' => fake()->city(),
             'state' => fake()->state(),
@@ -53,7 +51,7 @@ class UserFactory extends Factory
                 'name' => 'Yagami Kou',
                 'nickname' => 'Yagami',
                 'gender' => 'female',
-                'avatar' => $this->avatarForGender('female'),
+                'avatar' => '/img/defaults/avatar.webp',
             ])
             ->afterCreating(function (User $user) {
                 $administrator = Role::where('name', 'administrator')->first();
@@ -143,10 +141,4 @@ class UserFactory extends Factory
         ];
     }
 
-    private function avatarForGender(string $gender): string
-    {
-        return $gender === 'male'
-            ? '/img/defaults/user-male.webp'
-            : '/img/defaults/user-female.webp';
-    }
 }

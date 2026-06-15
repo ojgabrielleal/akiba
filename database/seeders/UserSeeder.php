@@ -29,7 +29,7 @@ class UserSeeder extends Seeder
                 'name' => 'Auto DJ',
                 'nickname' => 'Auto DJ',
                 'gender' => 'female',
-                'avatar' => '/img/defaults/user-female.webp',
+                'avatar' => '/img/defaults/avatar.webp',
             ]);
     }
 }

@@ -15,15 +15,11 @@ class CreateUserAction
                 ->pluck('id')
                 ->toArray();
 
-            $avatar = ($data['gender']) === 'male' 
-                ? '/img/defaults/user-male.webp' 
-                : '/img/defaults/user-female.webp';
-
             $user = User::create([
                 'username' => $data['username'],
                 'password' => $data['password'],
                 'name' => $data['name'],
-                'avatar' => $avatar,
+                'avatar' => '/img/defaults/avatar.webp',
                 'nickname' => $data['nickname'],
                 'gender' => $data['gender'],
                 'is_virtual' => $data['is_virtual'],

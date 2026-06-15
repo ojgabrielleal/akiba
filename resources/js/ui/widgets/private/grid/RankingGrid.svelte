@@ -56,7 +56,7 @@
                 {#if ranking.data[index]}
                     <div class={card.wrapper}>
                         <div class="relative min-h-36 w-full max-w-130 rounded-md bg-gradient-orange-morning-aurora py-4 pl-4 pr-28 sm:h-33 sm:min-h-0 sm:py-3 sm:pl-28 sm:pr-36 lg:px-15">
-                            <div class="absolute top-1/2 hidden -translate-y-1/2 items-center justify-center bg-cover bg-no-repeat font-noto-sans font-extrabold uppercase italic text-suspense-aurora sm:left-4 sm:flex sm:h-18 sm:w-18 sm:pl-2 sm:pt-1 sm:text-[2rem] lg:-left-12 lg:h-23 lg:w-23 lg:pl-3 lg:text-[2.6rem]" style="background-image: url('/svg/star.svg')" aria-label={`${card.position} lugar`}>
+                            <div class="absolute top-1/2 hidden -translate-y-1/2 items-center justify-center bg-contain bg-no-repeat font-noto-sans font-extrabold uppercase italic text-suspense-aurora sm:left-4 sm:flex sm:h-18 sm:w-18 sm:pl-2 sm:pt-1 sm:text-[2rem] lg:-left-12 lg:h-23 lg:w-23 lg:pl-3 lg:text-[2.6rem]" style="background-image: url('/svg/star.svg')" aria-label={`${card.position} lugar`}>
                                 {card.position}
                             </div>
                             <img
