@@ -99,7 +99,7 @@
                                 </span>
                                 {ranking.data[index].artist}
                             </div>
-                            <div class="-mt-[0.2rem] max-w-full font-noto-sans text-sm text-blue-marinho">
+                            <div class="mt-[-0.2rem] max-w-full font-noto-sans text-sm text-blue-marinho">
                                 <span class="font-medium">
                                     Anime:
                                 </span>
