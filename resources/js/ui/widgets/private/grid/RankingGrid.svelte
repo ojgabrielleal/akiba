@@ -51,7 +51,7 @@
 
 {#if ranking}
     <Section {title} {actions}>
-        <div class="mt-7 grid grid-cols-1 gap-y-8 sm:mt-12 sm:gap-y-12 lg:mt-18 lg:grid-cols-2 lg:gap-20">
+        <div class="mt-7 lg:mt-10 grid grid-cols-1 lg:grid-cols-2 gap-5 lg:gap-15">
             {#each rankingCards as card, index}
                 {#if ranking.data[index]}
                     <div class={card.wrapper}>
@@ -90,7 +90,7 @@
                                     </Tooltip>
                                 </div>
                             {/if}
-                            <h2 class="mb-2 max-w-full font-noto-sans text-base font-extrabold uppercase italic leading-5 text-blue-marinho sm:w-[18rem] sm:text-xl sm:leading-[1.3rem]">
+                            <h2 class="mb-2 h-10 max-w-full sm:w-[18rem] font-noto-sans text-base font-extrabold uppercase italic leading-5 text-blue-marinho sm:text-xl sm:leading-[1.3rem]">
                                 {ranking.data[index].name}
                             </h2>
                             <div class="max-w-full font-noto-sans text-sm text-blue-marinho">

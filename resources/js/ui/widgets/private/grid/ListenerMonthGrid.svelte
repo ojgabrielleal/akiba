@@ -10,6 +10,15 @@
 
     let can = listenerMonthPermissions();
 
+    let actions = [
+        {
+            title: "Definir",
+            icon: "/svg/edit.svg",
+            permission: can.set,
+            onClick: () => setRanking(),
+        },
+    ];
+
     let offcanvasRef;
 </script>
 
@@ -20,7 +29,7 @@
 </Offcanvas>
 
 {#if listenerMonth}
-    <Section {title}>
+    <Section {title} {actions}>
         <div class="grid grid-cols-1 lg:grid-cols-[18rem_1fr] gap-5">
             <Preview
                 name="cover"
