@@ -25,13 +25,13 @@ class ListenerMonthResource extends JsonResource
             'birthday' => $this->birthday?->format('Y-m-d'),
             'favorite_program' => [
                 'name' => $favoriteProgram['name'] ?? null,
-                'image' => $favoriteProgram['image'] ?? '/img/locution/program.webp',
+                'image' => $favoriteProgram['image'] ?? null,
             ],
             'favorite_music' => [
                 'name' => $favoriteMusic['name'] ?? null,
                 'artist' => $favoriteMusic['artist'] ?? null,
                 'production' => $favoriteMusic['production'] ?? null,
-                'image' => $favoriteMusic['image'] ?? '/img/defaults/character.webp',
+                'image' => $favoriteMusic['image'] ?? null,
             ],
             'requests_total' => $this->requests_total,
         ];
