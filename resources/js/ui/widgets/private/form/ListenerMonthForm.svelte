@@ -52,7 +52,7 @@
         type="text"
         name="listener"
         class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400 disabled:bg-gray-200 disabled:cursor-not-allowed"
-        bind:value={listenerMonthFound.name}
+        value={listenerMonthFound?.name}
         disabled
         />
     </div>
@@ -65,7 +65,7 @@
             type="text"
             name="address"
             class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400 disabled:bg-gray-200 disabled:cursor-not-allowed"
-            bind:value={listenerMonthFound.address}
+            value={listenerMonthFound?.address}
             disabled
         />
     </div>
@@ -78,7 +78,7 @@
             type="text"
             name="favorite_show"
             class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400 disabled:bg-gray-200 disabled:cursor-not-allowed"
-            bind:value={listenerMonthFound.favorite_program.name}
+            value={listenerMonthFound?.favorite_program?.name}
             disabled
         />
     </div>
@@ -91,7 +91,7 @@
             type="text"
             name="favorite_anime"
             class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400 disabled:bg-gray-200 disabled:cursor-not-allowed"
-            bind:value={listenerMonthFound.favorite_music.production}
+            value={listenerMonthFound?.favorite_music?.production}
             disabled
         />
     </div>
@@ -104,7 +104,7 @@
             type="text"
             name="requests_total"
             class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400 disabled:bg-gray-200 disabled:cursor-not-allowed"
-            bind:value={listenerMonthFound.requests_total}
+            value={listenerMonthFound?.requests_total}
             disabled
         />
     </div>
