@@ -8,18 +8,22 @@
 
     $: ({ listenerMonth } = $page.props);
 
+    $:console.log(listenerMonth)
+
     let can = listenerMonthPermissions();
+    let offcanvasRef;
 
     let actions = [
         {
-            title: "Definir",
+            title: "Atualizar",
             icon: "/svg/edit.svg",
             permission: can.set,
-            onClick: () => setRanking(),
+            onClick: () => {
+                offcanvasRef.open();
+            },
         },
     ];
 
-    let offcanvasRef;
 </script>
 
 <Offcanvas bind:this={offcanvasRef} title="Atualizar ouvinte do mês">
@@ -31,8 +35,10 @@
 {#if listenerMonth}
     <Section {title} {actions}>
         <div class="grid grid-cols-1 lg:grid-cols-[18rem_1fr] gap-5">
-            <Preview
-                name="cover"
+            <img 
+                src="/img/locution/program.webp"
+                class="object-contain"
+                alt=""
             />
             <div class="bg-gradient-blue-cerulean-glow rounded-md p-4">
                 <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-[2fr_1fr_1fr] gap-2 lg:gap-5 mb-3">

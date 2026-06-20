@@ -14,8 +14,8 @@
 
     let actions = [
         {
-            title: "Definir",
-            icon: "/svg/edit.svg",
+            title: "Salvar",
+            icon: "/svg/save.svg",
             permission: can.set,
             onClick: () => setRanking(),
         },
