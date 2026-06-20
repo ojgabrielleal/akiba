@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Provisory;
 
 use App\Actions\SongRequest\CreateSongRequestAction;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\SongRequest\CreateSongRequestRequest;
+use App\Http\Requests\Web\Provisory\CreateSongRequestRequest;
 use Inertia\Inertia;
 
 use App\Models\Onair;

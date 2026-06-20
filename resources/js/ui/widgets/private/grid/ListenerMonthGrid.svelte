@@ -4,77 +4,83 @@
     import { page } from "@inertiajs/svelte";
     import { Section, Offcanvas } from "@/ui/components/private";
     import { ListenerMonthForm } from "@/ui/widgets/private";
-    import { listenerMonthPermissions } from "@/utils";
+    import { listenerMonthPermissions, resolveAge } from "@/utils";
 
     $: ({ listenerMonth } = $page.props);
 
     let can = listenerMonthPermissions();
-
     let offcanvasRef;
+
+    let actions = [
+        {
+            title: "Atualizar",
+            icon: "/svg/edit.svg",
+            permission: can.set,
+            onClick: () => {
+                offcanvasRef.open();
+            },
+        },
+    ];
+
 </script>
 
-<Offcanvas bind:this={offcanvasRef} title="Atualizar ouvinte do mês">
+<Offcanvas bind:this={offcanvasRef} title={listenerMonth.found.name}>
     <div slot="content" let:close>
-        <ListenerMonthForm {close} />
+        <ListenerMonthForm {close} listenerMonthFound={listenerMonth.found} />
     </div>
 </Offcanvas>
 
 {#if listenerMonth}
-    <Section {title}>
-        <article class="grid grid-cols-1 lg:grid-cols-2">
-            <div class="grid grid-cols-2">
-                <dl class="mb-8">
-                    <dt class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans">
-                        Nome:
-                    </dt>
-                    <dd class="block text-suspense-aurora font-noto-sans uppercase">
-                        {listenerMonth.data.name}
-                    </dd>
-                </dl>
-                <dl class="mb-8">
-                    <dt class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block">
-                        Mora em:
-                    </dt>
-                    <dd class="block text-suspense-aurora font-noto-sans uppercase">
-                        {listenerMonth.data.address}
-                    </dd>
-                </dl>
-                <dl class="mb-8">
-                    <dt class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block">
-                        Número de pedidos feitos:
-                    </dt>
-                    <dd class="block text-suspense-aurora font-noto-sans uppercase">
-                        {listenerMonth.data.requests_total}
-                    </dd>
-                </dl>
-                <dl class="mb-8">
-                    <dt class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block">
-                        Programa preferido
-                    </dt>
-                    <dd class="block text-suspense-aurora font-noto-sans uppercase">
-                        {listenerMonth.data.favorite_program.name}
-                    </dd>
-                </dl>
-            </div>
-            <div class="flex gap-5 items-center justify-end">
-                {#if listenerMonth.data.avatar}
-                    <div>
-                        <div class="text-orange-amber font-extrabold italic text-sm uppercase font-noto-sans block">
-                            Imagem do ouvinte
-                        </div>
-                        <img
-                            src={listenerMonth.data.avatar}
-                            alt="Imagem do ouvinte"
-                            class="w-36 h-36 bg-gray-600 rounded-md"
-                        />
+    <Section {title} {actions}>
+        <div class="grid grid-cols-1 lg:grid-cols-[18rem_1fr] gap-5">
+            <img 
+                src={listenerMonth.current.data.avatar}
+                class="object-contain"
+                alt={listenerMonth.current.data.name}
+            />
+            <div class="bg-gradient-blue-cerulean-glow rounded-md p-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-[1fr_1fr_0.3fr] gap-2 lg:gap-5 mb-3">
+                    <div class="font-noto-sans font-extrabold text-blue-marinho text-center italic uppercase line-clamp-1 px-4 bg-suspense-aurora rounded-md">
+                        {listenerMonth.current.data.name}
                     </div>
-                {/if}
-                {#if can.set}
-                    <button type="button" class="cursor-pointer bg-blue-skywave px-4 py-2 rounded-md text-suspense-aurora font-noto-sans font-extrabold uppercase italic" on:click={() => { offcanvasRef.open(); }}>
-                        Atualizar ouvinte
-                    </button>
-                {/if}
+                    <div class="font-noto-sans font-extrabold text-blue-marinho text-center italic uppercase line-clamp-1 px-4 bg-suspense-aurora rounded-md">
+                        {listenerMonth.current.data.address}
+                    </div>
+                    <div class="font-noto-sans font-extrabold text-blue-marinho text-center italic uppercase bg-suspense-aurora px-4 rounded-md">
+                        {resolveAge(listenerMonth.current.data.birthday)} anos
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                    <div class="relative h-55 flex flex-col justify-center bg-blue-marinho rounded-md font-noto-sans font-medium text-orange-amber text-center uppercase">
+                        <div class="text-7xl font-extrabold">
+                            {listenerMonth.current.data.requests_total}
+                        </div>
+                        <div class="absolute w-full bottom-1 left-1/2 -translate-1/2">
+                            {listenerMonth.current.data.requests_total > 1 ? "Pedidos Feitos" : "Pedido Feito"}
+                        </div>
+                    </div>
+                    <div class="relative h-55 flex flex-col justify-center items-center bg-blue-marinho rounded-md font-noto-sans font-medium text-orange-amber text-center uppercase">
+                        <img 
+                            src={listenerMonth.current.data.favorite_program.image}
+                            class="w-44 object-contain"
+                            alt={listenerMonth.current.data.favorite_program.name}
+                        />
+                        <div class="absolute w-full bottom-1 left-1/2 -translate-1/2">
+                            Programa favorito
+                        </div>
+                    </div>
+                    <div class="relative h-55 flex flex-col justify-center items-center bg-blue-marinho rounded-md font-noto-sans font-medium text-orange-amber text-center uppercase">
+                        <img 
+                            src={listenerMonth.current.data.favorite_music.image}
+                            class="w-30 h-30 object-cover rounded-md"
+                            alt={listenerMonth.current.data.favorite_music.production}
+                        />
+                        <div class="absolute w-full bottom-1 left-1/2 -translate-1/2">
+                            Anime favorito
+                        </div>
+                    </div>
+                </div>
             </div>
-        </article>
+        </div>
     </Section>
 {/if}

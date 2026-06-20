@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
-use App\Http\Requests\Auth\AuthLoginRequest;
+use App\Http\Requests\Web\Login\AuthLoginRequest;
 
 class LoginController extends Controller
 {

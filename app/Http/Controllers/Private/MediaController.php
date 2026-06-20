@@ -14,8 +14,9 @@ use App\Models\Poll;
 use App\Http\Resources\EventResource;
 use App\Http\Resources\PollResource;
 
-use App\Http\Requests\Media\CreatePollRequest;
-use App\Http\Requests\Media\UpdatePollRequest;
+use App\Http\Requests\Web\Media\CreatePollRequest;
+use App\Http\Requests\Web\Media\CreateVoteRequest;
+use App\Http\Requests\Web\Media\UpdatePollRequest;
 
 class MediaController extends Controller
 {
@@ -51,10 +52,6 @@ class MediaController extends Controller
 
     public function createPoll(CreatePollRequest $request)
     {
-        if ($request->user()->cannot('create', Poll::class)) {
-            return null;
-        }
-
         $poll = Poll::create([
             'question' => $request->input('question'),
         ]);
@@ -77,10 +74,6 @@ class MediaController extends Controller
 
     public function updatePoll(UpdatePollRequest $request, Poll $poll)
     {
-        if ($request->user()->cannot('update', $poll)) {
-            return null;
-        }
-
         $poll->update([
             'question' => $request->input('question'),
         ]);
@@ -105,12 +98,8 @@ class MediaController extends Controller
         return $this->flashMessage('update');
     }
 
-    public function createVote(Option $option)
+    public function createVote(CreateVoteRequest $request, Option $option)
     {
-        if (request()->user()->cannot('update', $option->poll)) {
-            return null;
-        }
-
         $option->increment('votes');
 
         return $this->flashMessage('save');

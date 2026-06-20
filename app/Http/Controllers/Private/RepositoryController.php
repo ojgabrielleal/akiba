@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Private;
 
 use App\Http\Controllers\Controller;
 use App\Services\Process\ImageProcessService;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 use App\Http\Controllers\Concerns\HasFlashMessages;
@@ -13,7 +12,8 @@ use App\Models\Repository;
 
 use App\Http\Resources\RepositoryResource;
 
-use App\Http\Requests\Repository\CreateRepositoryRequest;
+use App\Http\Requests\Web\Marketing\CreateRepositoryRequest;
+use App\Http\Requests\Web\Marketing\UpdateRepositoryRequest;
 
 class RepositoryController extends Controller
 {
@@ -56,10 +56,6 @@ class RepositoryController extends Controller
 
     public function createRepository(CreateRepositoryRequest $request)
     {
-        if ($request->user()->cannot('create', Repository::class)) {
-            return null;
-        }
-
         Repository::create([
             'name' => $request->input('name'),
             'url' => $request->input('url'),
@@ -70,12 +66,8 @@ class RepositoryController extends Controller
         return $this->flashMessage('save');
     }
 
-    public function updateRepository(Request $request, Repository $repository)
+    public function updateRepository(UpdateRepositoryRequest $request, Repository $repository)
     {
-        if ($request->user()->cannot('update', $repository)) {
-            return null;
-        }
-
         $repository->fill([
             'name' => $request->input('name', $repository->name),
             'url' => $request->input('url', $repository->url),

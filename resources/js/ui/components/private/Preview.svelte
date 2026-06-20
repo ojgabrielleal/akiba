@@ -50,7 +50,7 @@
     $: selectedTone = tones[tone] ?? tones.default;
     $: selectedColor = colors[color] ?? colors.default;
     $: placeholderCSS = `${selectedSize.frame} ${selectedTone} ${selectedColor} w-full flex items-center justify-center overflow-hidden font-noto-sans text-7xl font-extrabold italic uppercase`;
-    $: previewCSS = `${selectedSize.image} ${selectedTone} w-full object-top object-cover`;
+    $: previewCSS = `${selectedSize.image} ${selectedTone} w-full object-top object-contain`;
 
     const previewImage = (event) => {
         if (disabled) {

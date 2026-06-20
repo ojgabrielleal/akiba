@@ -25,7 +25,7 @@
         },
         phrase: {
             text: air.phrase.text,
-            icon: air.phrase.icon ?? locutionIcons[17].url,
+            icon: air.phrase.icon ?? locutionIcons[10].url,
             texture: air.phrase.texture ?? locutionTextures[0].url,
             decoration: {
                 left: air.phrase.decoration?.left ?? locutionDecorations[0].left,
@@ -65,7 +65,7 @@
             />
         </div>
         <div class="w-full min-w-0 h-28 pr-32 xl:pr-40 flex items-center text-suspense-aurora text-3xl font-noto-sans font-extrabold uppercase italic">
-            <span class="block max-w-full overflow-hidden text-ellipsis whitespace-nowrap leading-9">
+            <span class="block max-w-2xl ml-30 xl:max-w-full xl:ml-auto overflow-hidden text-ellipsis whitespace-nowrap leading-9">
                 {#each splitHighlightedText(playerData.phrase.text) as phrasePart}
                     <span class:text-orange-amber={phrasePart.highlighted}>
                         {phrasePart.text}

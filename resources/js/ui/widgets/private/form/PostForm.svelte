@@ -1,11 +1,11 @@
 <script>
     import { useForm, page } from "@inertiajs/svelte";
-    import { onMount } from "svelte";
     import { PostActions, Preview, Wysiwyg } from "@/ui/components/private";
     import { postPermissions } from "@/utils";
     import { postTags } from "@/data";
 
-    $: ({ post } = $page.props);
+    let post = $page.props.post;
+    $: post = $page.props.post;
 
     let can = postPermissions();
 
@@ -20,28 +20,15 @@
     ];
 
     let form = useForm({
-        _method: "POST",
+        _method: post ? "PATCH" : "POST",
         module: "post",
-        status: null,
-        image: null,
-        title: null,
-        cover: null,
-        content: null,
-        tags: normalizeTags(),
-        references: normalizeReferences(),
-    });
-
-    onMount(() => {
-        if(post){
-            $form._method = "PATCH";
-            $form.status = post.data.status;
-            $form.image = post.data.image;
-            $form.title = post.data.title;
-            $form.cover = post.data.cover;
-            $form.content = post.data.content;
-            $form.tags = normalizeTags(post.data.tags);
-            $form.references = normalizeReferences(post.data.references);
-        }
+        status: post?.data.status ?? null,
+        image: post?.data.image ?? null,
+        title: post?.data.title ?? null,
+        cover: post?.data.cover ?? null,
+        content: post?.data.content ?? null,
+        tags: normalizeTags(post?.data.tags),
+        references: normalizeReferences(post?.data.references),
     });
 
     const submit = (event) => {
@@ -50,6 +37,7 @@
         $form.status = event.submitter.value;
         $form.post(url, {
             preserveState: false,
+            forceFormData: true,
             onSuccess: () => {
                 post ? null : $form.reset();
             },

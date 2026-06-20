@@ -31,7 +31,7 @@
 <section class="w-full hidden lg:block mb-15 bg-[url('https://i.ibb.co/Tdhkkyg/3.png'),var(--gradient-blue-ocean-cerulean)] bg-contain bg-right bg-no-repeat">
     <div class="h-30 container-page flex items-center gap-5 relative">
         <img
-            src="/img/defaults/avatar.webp"
+            src="/img/defaults/character.webp"
             alt="Avatar"
             class="w-40 h-40 absolute bottom-0"
         />

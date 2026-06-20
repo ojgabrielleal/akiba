@@ -3,6 +3,7 @@
 namespace App\Actions\Podcast;
 
 use App\Services\Process\ImageProcessService;
+use Illuminate\Http\UploadedFile;
 use App\Models\Podcast;
 
 class UpdatePodcastAction
@@ -14,10 +15,10 @@ class UpdatePodcastAction
         $this->image = $image;
     }
 
-    public function execute(Podcast $podcast, array $data): Podcast
+    public function execute(Podcast $podcast, array $data, ?UploadedFile $image = null): Podcast
     {
         $podcast->fill([
-            'image' => $this->image->store('podcasts', $data['image'], 'public', $podcast->image),
+            'image' => $this->image->store('podcasts', $image, 'public', $podcast->image),
             'season' => $data['season'],
             'episode' => $data['episode'],
             'title' => $data['title'],

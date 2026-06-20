@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     @inertiaHead
     @vite([
@@ -10,10 +9,8 @@
         'resources/js/css/quill.css', 
     ])
 </head>
-
 <body>
     @inertia
-    
     <audio id="audio">
         <source src="/api/stream" type="audio/mpeg">
     </audio>
@@ -32,5 +29,4 @@
         </script>
     @endproduction
 </body>
-
 </html>

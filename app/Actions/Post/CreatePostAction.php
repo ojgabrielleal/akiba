@@ -6,10 +6,10 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use App\Services\Process\ImageProcessService;
 
-use InvalidArgumentException;
-
 use App\Models\User;
 use App\Models\Post;
+
+use InvalidArgumentException;
 
 class CreatePostAction
 {

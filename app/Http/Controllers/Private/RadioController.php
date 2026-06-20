@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Private;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 use App\Http\Controllers\Concerns\HasFlashMessages;
@@ -18,13 +17,17 @@ use App\Http\Resources\MusicResource;
 use App\Http\Resources\ProgramResource;
 use App\Http\Resources\UserResource;
 
-use App\Actions\Radio\CreateListenerMonthAction;
-use App\Actions\Program\CreateProgramAction;
-use App\Actions\Radio\GenerateMusicRankingAction;
-use App\Actions\Radio\UpdateMusicRankingAction;
-use App\Actions\Program\UpdateProgramAction;
+use App\Actions\Radio\ListenerMonth\CreateListenerMonthAction;
+use App\Actions\Radio\Program\CreateProgramAction;
+use App\Actions\Radio\Music\GenerateMusicRankingAction;
+use App\Actions\Radio\Music\UpdateMusicAction;
+use App\Actions\Radio\Program\UpdateProgramAction;
 
-use App\Http\Requests\Radio\CreateProgramRequest;
+use App\Http\Requests\Web\Radio\CreateListenerMonthRequest;
+use App\Http\Requests\Web\Radio\CreateProgramRequest;
+use App\Http\Requests\Web\Radio\GenerateMusicRankingRequest;
+use App\Http\Requests\Web\Radio\UpdateMusicRequest;
+use App\Http\Requests\Web\Radio\UpdateProgramRequest;
 use DomainException;
 
 class RadioController extends Controller
@@ -88,14 +91,10 @@ class RadioController extends Controller
 
     public function createProgram(CreateProgramRequest $request, CreateProgramAction $createProgramAction)
     {
-        if ($request->user()->cannot('create', Program::class)) {
-            return null;
-        }
-
         try {
             $createProgramAction->execute(
                 $request->user(),
-                $request->all(),
+                $request->validated(),
                 $request->file('image')
             );
 
@@ -105,17 +104,13 @@ class RadioController extends Controller
         }
     }
 
-    public function updateProgram(Request $request, UpdateProgramAction $updateProgramAction, Program $program)
+    public function updateProgram(UpdateProgramRequest $request, UpdateProgramAction $updateProgramAction, Program $program)
     {
-        if ($request->user()->cannot('update', $program)) {
-            return null;
-        }
-
         try {
             $updateProgramAction->execute(
                 $program,
                 $request->user(),
-                $request->all(),
+                $request->validated(),
                 $request->file('image')
             );
 
@@ -142,39 +137,29 @@ class RadioController extends Controller
      * ======================
      */
 
-    public function indexMusicRanking()
+    public function indexRanking()
     {
-        if (request()->user()->cannot('viewAny', Music::class)) {
+        if (request()->user()->cannot('list', Music::class)) {
             return null;
         }
 
-        return MusicResource::collection(
-            Music::orderBy('song_requests_total', 'desc')
-                ->limit(3)
-                ->get()
-        );
+        return MusicResource::collection(Music::mostRequested());
     }
 
-    public function updateMusicRanking(Request $request, Music $music, UpdateMusicRankingAction $updateMusicRankingAction)
+    public function updateMusic(UpdateMusicRequest $request, UpdateMusicAction $updateMusicAction, Music $music)
     {
-        if ($request->user()->cannot('update', $music)) {
-            return null;
-        }
-
-        $updateMusicRankingAction->execute(
+        $updateMusicAction->execute(
             $music,
+            $request->validated(),
+            $request->file('image'),
             $request->file('image_ranking')
         );
 
         return $this->flashMessage('update');
     }
 
-    public function generateMusicRanking(GenerateMusicRankingAction $generateMusicRankingAction)
+    public function generateMusicRanking(GenerateMusicRankingRequest $request, GenerateMusicRankingAction $generateMusicRankingAction)
     {
-        if (request()->user()->cannot('setRanking', Music::class)) {
-            return null;
-        }
-
         $generateMusicRankingAction->execute();
 
         return $this->flashMessage('update');
@@ -193,8 +178,7 @@ class RadioController extends Controller
         }
 
         $listener = ListenerMonth::first();
-
-        return $listener ? new ListenerMonthResource($listener) : null;
+        return new ListenerMonthResource($listener);
     }
 
     public function showListenerMonthFound()
@@ -203,18 +187,13 @@ class RadioController extends Controller
             return null;
         }
 
-        $listener = ListenerMonth::mostActiveListenerOfCurrentMonth();
-
-        return $listener ? new ListenerMonthResource($listener) : null;
+        return ListenerMonth::mostActiveListenerOfCurrentMonth();
     }
 
-    public function createListenerMonth(Request $request, CreateListenerMonthAction $createListenerMonthAction)
+    public function createListenerMonth(CreateListenerMonthRequest $request, CreateListenerMonthAction $createListenerMonthAction)
     {
-        if ($request->user()->cannot('listener.month.set')) {
-            return null;
-        }
-
         $createListenerMonthAction->execute(
+            $request->validated(),
             $request->file('avatar')
         );
 
@@ -232,8 +211,11 @@ class RadioController extends Controller
         return Inertia::render($this->render, [
             'users' => $this->indexUsers(),
             'programs' => $this->indexPrograms(),
-            'musicRanking' => $this->indexMusicRanking(),
-            'listenerMonth' => $this->showListenerMonth(),
+            'ranking' => $this->indexRanking(),
+            'listenerMonth' => [
+                'current' => $this->showListenerMonth(),
+                'found' => $this->showListenerMonthFound(),
+            ],
         ]);
     }
 }

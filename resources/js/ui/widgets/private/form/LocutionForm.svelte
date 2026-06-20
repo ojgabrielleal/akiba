@@ -12,7 +12,7 @@
         program: null,
         phrase: {
             text: null,
-            icon: locutionIcons[17].url,
+            icon: locutionIcons[10].url,
             decoration: {
                 left: locutionDecorations[0].left,
                 right: locutionDecorations[0].right,
