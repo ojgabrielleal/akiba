@@ -2,13 +2,11 @@
     export let title;
 
     import { page } from "@inertiajs/svelte";
-    import { Section, Offcanvas, Preview } from "@/ui/components/private";
+    import { Section, Offcanvas } from "@/ui/components/private";
     import { ListenerMonthForm } from "@/ui/widgets/private";
-    import { listenerMonthPermissions } from "@/utils";
+    import { listenerMonthPermissions, resolveAge } from "@/utils";
 
     $: ({ listenerMonth } = $page.props);
-
-    $:console.log(listenerMonth)
 
     let can = listenerMonthPermissions();
     let offcanvasRef;
@@ -26,9 +24,9 @@
 
 </script>
 
-<Offcanvas bind:this={offcanvasRef} title="Atualizar ouvinte do mês">
+<Offcanvas bind:this={offcanvasRef} title={listenerMonth.found.name}>
     <div slot="content" let:close>
-        <ListenerMonthForm {close} />
+        <ListenerMonthForm {close} listenerMonthFound={listenerMonth.found} />
     </div>
 </Offcanvas>
 
@@ -36,36 +34,36 @@
     <Section {title} {actions}>
         <div class="grid grid-cols-1 lg:grid-cols-[18rem_1fr] gap-5">
             <img 
-                src="/img/locution/program.webp"
+                src={listenerMonth.current.data.avatar}
                 class="object-contain"
-                alt=""
+                alt={listenerMonth.current.data.name}
             />
             <div class="bg-gradient-blue-cerulean-glow rounded-md p-4">
-                <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-[2fr_1fr_1fr] gap-2 lg:gap-5 mb-3">
-                    <div class="font-noto-sans font-extrabold text-blue-marinho text-center italic uppercase bg-suspense-aurora rounded-md">
-                        Fernandinho chan
+                <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-[1fr_1fr_0.3fr] gap-2 lg:gap-5 mb-3">
+                    <div class="font-noto-sans font-extrabold text-blue-marinho text-center italic uppercase line-clamp-1 px-4 bg-suspense-aurora rounded-md">
+                        {listenerMonth.current.data.name}
                     </div>
-                    <div class="font-noto-sans font-extrabold text-blue-marinho text-center italic uppercase bg-suspense-aurora rounded-md">
-                        Pelotas - RS
+                    <div class="font-noto-sans font-extrabold text-blue-marinho text-center italic uppercase line-clamp-1 px-4 bg-suspense-aurora rounded-md">
+                        {listenerMonth.current.data.address}
                     </div>
-                    <div class="font-noto-sans font-extrabold text-blue-marinho text-center italic uppercase bg-suspense-aurora rounded-md">
-                        25 ANUS
+                    <div class="font-noto-sans font-extrabold text-blue-marinho text-center italic uppercase bg-suspense-aurora px-4 rounded-md">
+                        {resolveAge(listenerMonth.current.data.birthday)} anos
                     </div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                     <div class="relative h-55 flex flex-col justify-center bg-blue-marinho rounded-md font-noto-sans font-medium text-orange-amber text-center uppercase">
                         <div class="text-7xl font-extrabold">
-                            25
+                            {listenerMonth.current.data.requests_total}
                         </div>
                         <div class="absolute w-full bottom-1 left-1/2 -translate-1/2">
-                            Pedidos Feitos
+                            {listenerMonth.current.data.requests_total > 1 ? "Pedidos Feitos" : "Pedido Feito"}
                         </div>
                     </div>
                     <div class="relative h-55 flex flex-col justify-center items-center bg-blue-marinho rounded-md font-noto-sans font-medium text-orange-amber text-center uppercase">
                         <img 
-                            src="/img/locution/program.webp"
+                            src={listenerMonth.current.data.favorite_program.image}
                             class="w-44 object-contain"
-                            alt=""
+                            alt={listenerMonth.current.data.favorite_program.name}
                         />
                         <div class="absolute w-full bottom-1 left-1/2 -translate-1/2">
                             Programa favorito
@@ -73,9 +71,9 @@
                     </div>
                     <div class="relative h-55 flex flex-col justify-center items-center bg-blue-marinho rounded-md font-noto-sans font-medium text-orange-amber text-center uppercase">
                         <img 
-                            src="https://m.media-amazon.com/images/I/71r8Wf5h0+L._AC_UF1000,1000_QL80_.jpg"
+                            src={listenerMonth.current.data.favorite_music.image}
                             class="w-30 h-30 object-cover rounded-md"
-                            alt=""
+                            alt={listenerMonth.current.data.favorite_music.production}
                         />
                         <div class="absolute w-full bottom-1 left-1/2 -translate-1/2">
                             Anime favorito

@@ -70,3 +70,30 @@ export const resolveDateTime = (dateTime) => {
 
     return `${date} - ${resolveHour(hour)}`;
 };
+
+export const resolveAge = (birthDate) => {
+    if (!birthDate) {
+        return "";
+    }
+
+    const date = new Date(birthDate);
+
+    if (isNaN(date.getTime())) {
+        return "";
+    }
+
+    const today = new Date();
+
+    let age = today.getFullYear() - date.getFullYear();
+
+    const hasBirthdayPassed =
+        today.getMonth() > date.getMonth() ||
+        (today.getMonth() === date.getMonth() &&
+            today.getDate() >= date.getDate());
+
+    if (!hasBirthdayPassed) {
+        age--;
+    }
+
+    return age;
+};

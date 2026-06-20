@@ -178,8 +178,7 @@ class RadioController extends Controller
         }
 
         $listener = ListenerMonth::first();
-
-        return $listener ? new ListenerMonthResource($listener) : null;
+        return new ListenerMonthResource($listener);
     }
 
     public function showListenerMonthFound()
@@ -188,15 +187,14 @@ class RadioController extends Controller
             return null;
         }
 
-        $listener = ListenerMonth::mostActiveListenerOfCurrentMonth();
-
-        return $listener ? new ListenerMonthResource($listener) : null;
+        return ListenerMonth::mostActiveListenerOfCurrentMonth();
     }
 
     public function createListenerMonth(CreateListenerMonthRequest $request, CreateListenerMonthAction $createListenerMonthAction)
     {
         $createListenerMonthAction->execute(
-            $request->validated()
+            $request->validated(),
+            $request->file('avatar')
         );
 
         return $this->flashMessage('save');
@@ -214,7 +212,10 @@ class RadioController extends Controller
             'users' => $this->indexUsers(),
             'programs' => $this->indexPrograms(),
             'ranking' => $this->indexRanking(),
-            'listenerMonth' => $this->showListenerMonth(),
+            'listenerMonth' => [
+                'current' => $this->showListenerMonth(),
+                'found' => $this->showListenerMonthFound(),
+            ],
         ]);
     }
 }

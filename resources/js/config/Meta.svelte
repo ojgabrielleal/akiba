@@ -41,15 +41,12 @@
   <meta name="language" content="pt-BR" />
   <meta http-equiv="content-language" content="pt-br, en-us" />
   <meta name="robots" content={metaRobots} />
+  <link rel="icon" href={favicon} type="image/x-icon"/>
 
-  <!-- Favicons e PWA icons -->
-  <link
-      rel="icon"
-      href={favicon}
-      type="image/x-icon"
-  />
+  <!-- PWA -->
   <link rel="apple-touch-icon" href={appleIcon} />
-  <link rel="manifest" href="/manifest.json" />
+  <!--<link rel="manifest" href="/manifest.json" />-->
+  <!-- Fim PWA -->
 
   <!-- Canonical -->
   {#if meta.canonical}

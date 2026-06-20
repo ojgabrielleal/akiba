@@ -1,35 +1,13 @@
 <script>
     export let close = () => {};
+    export let listenerMonthFound;
 
-    import axios from "axios";
-    import { onMount } from "svelte";
     import { useForm } from "@inertiajs/svelte";
     import { Preview } from "@/ui/components/private";
 
     let form = useForm({
         avatar: null,
-        name: null,
-        address: null,
-        favorite_program: null,
-        favorite_anime: null,
-        requests_total: null,
-    });
-
-    onMount(() => {
-        axios.get("/panel/radio/listener-month/found")
-            .then((response) => {
-                const listenerMonth = response.data.data;
-
-                $form.name = listenerMonth.name;
-                $form.address = listenerMonth.address;
-                $form.favorite_anime = listenerMonth.favorite_anime;
-                $form.favorite_program = listenerMonth.favorite_program;
-                $form.requests_total = listenerMonth.requests_total;
-            })
-            .catch(() => {
-                console.error("Error when find listener month");
-                close();
-            });
+        birthday: listenerMonthFound?.birthday ?? null,
     });
 
     const submit = () => {
@@ -44,9 +22,24 @@
 <form on:submit|preventDefault={submit}>
     <div class="mb-4">
         <Preview
-            size="compact"
+            size="profile"
+            tone="muted"
+            color="muted"
             name="avatar"
             oninput={(event) => ($form.avatar = event.target.files[0])}
+            required
+        />
+    </div>
+    <div class="mb-4">
+        <label for="address" class="text-md text-gray-700 font-noto-sans block mb-1">
+            Aniversário
+        </label>
+        <input
+            id="birthday"
+            type="date"
+            name="birthday"
+            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400 disabled:bg-gray-200 disabled:cursor-not-allowed"
+            bind:value={$form.birthday}
             required
         />
     </div>
@@ -55,12 +48,12 @@
             Ouvinte
         </label>
         <input
-            id="listener"
-            type="text"
-            name="listener"
-            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400 disabled:bg-gray-200 disabled:cursor-not-allowed"
-            bind:value={$form.name}
-            disabled
+        id="listener"
+        type="text"
+        name="listener"
+        class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400 disabled:bg-gray-200 disabled:cursor-not-allowed"
+        bind:value={listenerMonthFound.name}
+        disabled
         />
     </div>
     <div class="mb-4">
@@ -72,7 +65,7 @@
             type="text"
             name="address"
             class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400 disabled:bg-gray-200 disabled:cursor-not-allowed"
-            bind:value={$form.address}
+            bind:value={listenerMonthFound.address}
             disabled
         />
     </div>
@@ -85,11 +78,10 @@
             type="text"
             name="favorite_show"
             class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400 disabled:bg-gray-200 disabled:cursor-not-allowed"
-            bind:value={$form.favorite_program}
+            bind:value={listenerMonthFound.favorite_program.name}
             disabled
         />
     </div>
-    // TODO: Carregar uma busca igual na caixa de pedidos a API da Jikan para que seja escolhido um anime favorito
     <div class="mb-4">
         <label for="favorite_anime" class="text-md text-gray-700 font-noto-sans block mb-1">
             Anime favorito
@@ -99,7 +91,7 @@
             type="text"
             name="favorite_anime"
             class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400 disabled:bg-gray-200 disabled:cursor-not-allowed"
-            bind:value={$form.favorite_anime}
+            bind:value={listenerMonthFound.favorite_music.production}
             disabled
         />
     </div>
@@ -112,12 +104,11 @@
             type="text"
             name="requests_total"
             class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400 disabled:bg-gray-200 disabled:cursor-not-allowed"
-            bind:value={$form.requests_total}
+            bind:value={listenerMonthFound.requests_total}
             disabled
         />
     </div>
-
-    <button type="submit" class="cursor-pointer bg-blue-skywave px-8 py-2 rounded-md text-suspense-aurora font-noto-sans font-extrabold italic uppercase">
+    <button type="submit" class="cursor-pointer bg-blue-marinho px-8 py-2 rounded-md text-suspense-aurora font-noto-sans font-extrabold italic uppercase">
         Atualizar
     </button>
 </form>

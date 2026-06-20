@@ -23,6 +23,7 @@ class CreateListenerMonthRequest extends LoggedWebRequest
     {
         return [
             'avatar' => 'required|image',
+            'birthday' => 'required',
         ];
     }
 }

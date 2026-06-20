@@ -77,7 +77,6 @@ Route::prefix('panel')->middleware(['inertia'])->group(function () {
             });
             Route::prefix('listener-month')->group(function () {
                 Route::post('', 'createListenerMonth');
-                Route::get('found', 'showListenerMonthFound');
             });
             Route::get('', 'render')->name('panel.radio');
         });

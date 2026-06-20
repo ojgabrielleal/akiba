@@ -16,11 +16,12 @@ class ListenerMonthResource extends JsonResource
     {
         return [
             'uuid' => $this->uuid,
-            'avatar' => $this->avatar ?? null,
+            'avatar' => $this->avatar ?? '/img/defaults/avatar.webp',
             'name' => $this->name,
             'address' => $this->address,
+            'birthday' => $this->birthday->format('Y-m-d'),
             'favorite_program' => $this->favorite_program,
-            'favorite_anime' => $this->favorite_anime,
+            'favorite_music' => $this->favorite_music,
             'requests_total' => $this->requests_total,
         ];
     }

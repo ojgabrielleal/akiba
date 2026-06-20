@@ -20,15 +20,17 @@ class ListenerMonth extends Model
         'name',
         'avatar',
         'address',
+        'birthday',
         'favorite_program',
-        'favorite_anime',
+        'favorite_music',
         'requests_total',
     ];
 
     protected $casts = [
+        'birthday' => 'date:Y-m-d',
         'requests_total' => 'integer',
         'favorite_program' => 'array',
-        'favorite_anime' => 'array',
+        'favorite_music' => 'array',
     ];
 
     /**
@@ -58,25 +60,77 @@ class ListenerMonth extends Model
         $startOfMonth = Carbon::now()->startOfMonth();
         $endOfMonth = Carbon::now()->endOfMonth();
 
-        $result = DB::select('
-            SELECT MIN(songs_requests.uuid) AS uuid,
+        $listener = DB::selectOne('
+            SELECT
                 songs_requests.name AS name,
                 songs_requests.address AS address,
-                null AS avatar,
-                COUNT(*) AS requests_total,
-                programs.uuid AS program_uuid,
-                programs.name AS program_name,
-                programs.image AS program_image,
-                programs.name AS favorite_program
+                COUNT(*) AS requests_total
             FROM songs_requests
-            JOIN onair ON songs_requests.onair_id = onair.id
-            JOIN programs ON onair.program_id = programs.id
             WHERE songs_requests.created_at BETWEEN ? AND ?
-            GROUP BY songs_requests.name, songs_requests.address, programs.uuid, programs.name, programs.image
+            GROUP BY 
+                songs_requests.name,
+                songs_requests.address
             ORDER BY requests_total DESC
             LIMIT 1
         ', [$startOfMonth, $endOfMonth]);
 
-        return $result[0] ?? null;
+        if (!$listener) {
+            return null;
+        }
+
+        $program = DB::selectOne('
+            SELECT 
+                programs.name AS name,
+                programs.image AS image,
+                COUNT(*) AS requests_total
+            FROM songs_requests
+            JOIN onair ON songs_requests.onair_id = onair.id
+            JOIN programs ON onair.program_id = programs.id 
+            WHERE songs_requests.created_at BETWEEN ? AND ? 
+                AND songs_requests.name = ? 
+                AND songs_requests.address = ?
+            GROUP BY
+                programs.name,
+                programs.image 
+            ORDER BY requests_total DESC
+            LIMIT 1
+        ', [$startOfMonth, $endOfMonth, $listener->name, $listener->address]);
+
+        $music = DB::selectOne('
+            SELECT 
+                musics.name AS name,
+                musics.artist AS artist,
+                musics.production AS production,
+                musics.image AS image,
+                COUNT(*) AS requests_total
+            FROM songs_requests
+            JOIN musics ON songs_requests.music_id = musics.id 
+            WHERE songs_requests.created_at BETWEEN ? AND ? 
+                AND songs_requests.name = ? 
+                AND songs_requests.address = ?
+            GROUP BY 
+                musics.name, 
+                musics.artist,
+                musics.production,
+                musics.image
+            ORDER BY requests_total DESC
+            LIMIT 1
+        ', [$startOfMonth, $endOfMonth, $listener->name, $listener->address]);
+
+        return (object) [
+            'name' => $listener->name,
+            'address' => $listener->address,
+            'requests_total' => $listener->requests_total,
+            'favorite_program' => [
+                'name' => $program?->name,
+                'image' => $program?->image,
+            ],
+            'favorite_music' => [
+                'name' => $music?->name,
+                'artist' => $music?->artist,
+                'production' => $music?->production,
+                'image' => $music?->image,
+            ],
+        ];
     }
 }

@@ -2,7 +2,6 @@
     export let close = () => {};
     export let musicSelected;
 
-    import { onMount } from "svelte";
     import { useForm } from "@inertiajs/svelte";
     import { Preview } from "@/ui/components/private";
     import { musicPermissions } from "@/utils";
@@ -13,21 +12,10 @@
         _method: "PATCH",
         image: null,
         image_ranking: null,
-        type: null,
-        production: null,
-        artist: null,
-        name: null,
-    });
-
-    onMount(()=>{
-        if (musicSelected) {
-            $form.image = null;
-            $form.image_ranking = null;
-            $form.type = musicSelected.type;
-            $form.production = musicSelected.production;
-            $form.artist = musicSelected.artist;
-            $form.name = musicSelected.name;
-        }
+        type: musicSelected?.type ?? null,
+        production: musicSelected?.production ?? null,
+        artist: musicSelected?.artist ?? null,
+        name: musicSelected?.name ?? null,
     });
 
     const submit = () => {

@@ -2,7 +2,6 @@
     export let close = () => {};
     export let programSelected;
 
-    import { onMount } from "svelte";
     import { useForm, page } from "@inertiajs/svelte";
     import { locutionIcons } from "@/data";
     import { Modal, Preview } from "@/ui/components/private";
@@ -15,32 +14,16 @@
     let phraseIndex;
 
     let form = useForm({
-        _method: "POST",
-        user: null,
-        name: null,
-        image: null,
-        access_type: null,
-        execution_mode: null,
-        is_default_auto_dj: false,
-        airtimes: [],
-        plans: [],
-        phrases: [],
-    });
-
-    
-    onMount(() => {
-        if (programSelected) {
-            $form._method = "PATCH";
-            $form.user = programSelected.host.uuid;
-            $form.name = programSelected.name;
-            $form.image = programSelected.image;
-            $form.access_type = programSelected.access_type;
-            $form.execution_mode = programSelected.execution_mode;
-            $form.is_default_auto_dj = programSelected.is_default_auto_dj;
-            $form.airtimes = programSelected.airtimes;
-            $form.plans = programSelected.plans;
-            $form.phrases = programSelected.phrases ?? [];
-        }
+        _method: programSelected ? "PATCH" : "POST",
+        user: programSelected?.host.uuid ?? null,
+        name: programSelected?.name ?? null,
+        image: programSelected?.image ?? null,
+        access_type: programSelected?.access_type ?? null,
+        execution_mode: programSelected?.execution_mode ?? null,
+        is_default_auto_dj: programSelected?.is_default_auto_dj ?? false,
+        airtimes: programSelected?.airtimes ?? [],
+        plans: programSelected?.plans ?? [],
+        phrases: programSelected?.phrases ?? [],
     });
 
     const submit = () => {
