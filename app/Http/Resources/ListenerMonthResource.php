@@ -19,7 +19,7 @@ class ListenerMonthResource extends JsonResource
             'avatar' => $this->avatar ?? '/img/defaults/avatar.webp',
             'name' => $this->name,
             'address' => $this->address,
-            'birthday' => $this->birthday->format('Y-m-d'),
+            'birthday' => $this->birthday?->format('Y-m-d'),
             'favorite_program' => $this->favorite_program,
             'favorite_music' => $this->favorite_music,
             'requests_total' => $this->requests_total,
