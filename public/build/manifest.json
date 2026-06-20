@@ -1,0 +1,60 @@
+{
+  "_rolldown-runtime-QTnfLwEv.js": {
+    "file": "assets/rolldown-runtime-QTnfLwEv.js",
+    "name": "rolldown-runtime"
+  },
+  "_vendor-CFBDMfBM.css": {
+    "file": "assets/vendor-CFBDMfBM.css",
+    "src": "_vendor-CFBDMfBM.css"
+  },
+  "_vendor-DUu2QGlX.js": {
+    "file": "assets/vendor-DUu2QGlX.js",
+    "name": "vendor",
+    "imports": [
+      "_rolldown-runtime-QTnfLwEv.js"
+    ],
+    "css": [
+      "assets/vendor-CFBDMfBM.css"
+    ]
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-DZ1riimS.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true,
+    "imports": [
+      "_rolldown-runtime-QTnfLwEv.js",
+      "_vendor-DUu2QGlX.js"
+    ],
+    "css": [
+      "assets/app-DfxGeolB.css"
+    ]
+  },
+  "resources/js/css/app.css": {
+    "file": "assets/app-DqP5eQ-L.css",
+    "name": "app",
+    "names": [
+      "app.css"
+    ],
+    "src": "resources/js/css/app.css",
+    "isEntry": true
+  },
+  "resources/js/css/custom.css": {
+    "file": "assets/custom-ByraGT3k.css",
+    "name": "custom",
+    "names": [
+      "custom.css"
+    ],
+    "src": "resources/js/css/custom.css",
+    "isEntry": true
+  },
+  "resources/js/css/quill.css": {
+    "file": "assets/quill-Bnx8Dnrg.css",
+    "name": "quill",
+    "names": [
+      "quill.css"
+    ],
+    "src": "resources/js/css/quill.css",
+    "isEntry": true
+  }
+}
