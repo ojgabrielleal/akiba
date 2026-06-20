@@ -1,10 +1,10 @@
 <script>
     import { page, useForm } from "@inertiajs/svelte";
-    import { onMount } from "svelte";
     import { PostActions, Preview, Wysiwyg, Tooltip } from "@/ui/components/private";
     import { postPermissions } from "@/utils";
 
-    $: ({ post } = $page.props);
+    let post = $page.props.post;
+    $: post = $page.props.post;
     
     let can = postPermissions();
 
@@ -19,30 +19,16 @@
     ];
 
     let form = useForm({
-        _method: "POST",
+        _method: post ? "PATCH" : "POST",
         module: "review",
-        image: null,
-        title: null,
-        sinopse: null,
-        cover: null,
-        year_of_release: null,
-        review: { uuid: null, content: null, status: null, author: null },
-        tags: normalizeTags(),
-        references: normalizeReferences(),
-    });
-
-    onMount(() => {
-        if(post){
-            $form._method = "PATCH";
-            $form.image = post.data.image;
-            $form.title = post.data.title;
-            $form.sinopse = post.data.sinopse;
-            $form.cover = post.data.cover;
-            $form.year_of_release = post.data.year_of_release;
-            $form.review = post.data.review;
-            $form.tags = normalizeTags(post.data.tags);
-            $form.references = normalizeReferences(post.data.references);
-        }
+        image: post?.data.image ?? null,
+        title: post?.data.title ?? null,
+        sinopse: post?.data.sinopse ?? null,
+        cover: post?.data.cover ?? null,
+        year_of_release: post?.data.year_of_release ?? null,
+        review: post?.data.review ?? { uuid: null, content: null, status: null, author: null },
+        tags: normalizeTags(post?.data.tags),
+        references: normalizeReferences(post?.data.references),
     });
 
     const submit = (event) => {
@@ -51,6 +37,7 @@
         $form.review.status = event.submitter.value;
         $form.post(url, {
             preserveState: false,
+            forceFormData: true,
             onSuccess: () => {
                 post ? null : $form.reset();
             },

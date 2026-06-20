@@ -15,8 +15,8 @@ use App\Http\Resources\PostResource;
 use App\Actions\Post\CreatePostAction;
 use App\Actions\Post\UpdatePostAction;
 
-use App\Http\Requests\Post\CreatePostRequest;
-use App\Http\Requests\Post\UpdatePostRequest;
+use App\Http\Requests\Web\Post\CreatePostRequest;
+use App\Http\Requests\Web\Post\UpdatePostRequest;
 
 class PostController extends Controller
 {
@@ -67,10 +67,6 @@ class PostController extends Controller
 
     public function createPost(CreatePostRequest $request, CreatePostAction $createPostAction)
     {
-        if ($request->user()->cannot('create', Post::class)) {
-            return null;
-        }
-
         $createPostAction->execute(
             $request->user(),
             $request->all(),
@@ -84,10 +80,6 @@ class PostController extends Controller
 
     public function updatePost(UpdatePostRequest $request, UpdatePostAction $updatePostAction, Post $post)
     {
-        if ($request->user()->cannot('update', $post)) {
-            return null;
-        }
-
         $updatePostAction->execute(
             $post,
             $request->all(),

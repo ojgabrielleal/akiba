@@ -250,7 +250,7 @@
                 required
             ></textarea>
             <span class="text-[0.8rem] text-gray-500 font-noto-sans mt-1 block">
-                Vamos evitar ofensas! Se pedido pode não tocar por isso.
+                Vamos evitar ofensas! Seu pedido pode não tocar por isso.
             </span>
         </div>
         <button 

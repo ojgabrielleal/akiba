@@ -40,6 +40,7 @@
 
         $form.post(url, {
             preserveScroll: true,
+            forceFormData: true,
             onSuccess: () => close(),
         });
     };

@@ -22,12 +22,17 @@ class ListenerMonthFactory extends Factory
         return [
             'name' => fake()->name(),
             'avatar' => $this->fakeImageUrl(),
+            'birthday' => $this->faker->date(),
             'address' => fake()->address(),
             'favorite_program' => [
                 'name' => fake()->name(),
+                'image' => $this->fakeImageUrl(),
             ],
-            'favorite_anime' => [
+            'favorite_music' => [
                 'name' => fake()->name(),
+                'artist' => fake()->name(),
+                'production' => fake()->name(),
+                'image' => $this->fakeImageUrl(),
             ],
             'requests_total' => fake()->randomNumber(),
         ];

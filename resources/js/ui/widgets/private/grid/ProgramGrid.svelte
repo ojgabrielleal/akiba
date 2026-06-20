@@ -66,7 +66,7 @@
 
 {#if programs}
     <Section {title} {actions}>
-        <div class="flex justify-center gap-8 mt-5" role="group" aria-label="Filtrar programas por formato">
+        <div class="flex flex-wrap justify-center gap-8 mt-5" role="group" aria-label="Filtrar programas por formato">
             {#each filters as item}
                 <button
                     type="button"
