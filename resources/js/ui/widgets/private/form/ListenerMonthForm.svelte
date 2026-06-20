@@ -108,7 +108,7 @@
             disabled
         />
     </div>
-    <button type="submit" class="cursor-pointer bg-blue-marinho px-8 py-2 rounded-md text-suspense-aurora font-noto-sans font-extrabold italic uppercase">
+    <button type="submit" class="cursor-pointer bg-blue-marinho px-8 py-2 rounded-full text-suspense-aurora font-noto-sans font-extrabold italic uppercase">
         Atualizar
     </button>
 </form>
