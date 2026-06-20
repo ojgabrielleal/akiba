@@ -22,7 +22,7 @@ class MusicResource extends JsonResource
             'production' => $this->production,
             'artist' => $this->artist,
             'ranking' => [
-                'image' => $this->image_ranking ?? "/img/defaults/avatar.webp",
+                'image' => $this->image_ranking ?: "/img/defaults/avatar.webp",
             ]
         ];
     }

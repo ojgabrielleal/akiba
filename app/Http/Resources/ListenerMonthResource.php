@@ -19,7 +19,7 @@ class ListenerMonthResource extends JsonResource
 
         return [
             'uuid' => $this->uuid,
-            'avatar' => $this->avatar ?? '/img/defaults/avatar.webp',
+            'avatar' => $this->avatar ?: '/img/defaults/avatar.webp',
             'name' => $this->name,
             'address' => $this->address,
             'birthday' => $this->birthday?->format('Y-m-d'),
@@ -31,7 +31,7 @@ class ListenerMonthResource extends JsonResource
                 'name' => $favoriteMusic['name'] ?? null,
                 'artist' => $favoriteMusic['artist'] ?? null,
                 'production' => $favoriteMusic['production'] ?? null,
-                'image' => $favoriteMusic['image'] ?? null,
+                'image' => ($favoriteMusic['image'] ?? null) ?: '/img/defaults/character.webp',
             ],
             'requests_total' => $this->requests_total,
         ];
