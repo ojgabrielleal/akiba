@@ -64,7 +64,7 @@
                 loading="lazy"
             />
         </div>
-        <div class="w-full min-w-0 h-28 pr-32 xl:pr-40 flex items-center text-suspense-aurora text-3xl font-noto-sans font-extrabold uppercase italic">
+        <div class="w-full min-w-0 h-28 pr-32 xl:pr-40 pl-16 xl:pl-0 flex items-center text-suspense-aurora text-3xl font-noto-sans font-extrabold uppercase italic">
             <span class="block w-full overflow-hidden text-ellipsis text-left whitespace-nowrap leading-9">
                 {#each splitHighlightedText(playerData.phrase.text) as phrasePart}
                     <span class:text-orange-amber={phrasePart.highlighted}>
