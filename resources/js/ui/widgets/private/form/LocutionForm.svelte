@@ -9,6 +9,7 @@
     let can = locutionPermissions();
 
     let form = useForm({
+        send_notification: null,
         program: null,
         phrase: {
             text: null,
@@ -23,6 +24,9 @@
     });
 
     const submit = () => {
+        let confirm = window.confirm("Deseja disparar notificações avisando que você entrará AO VIVO nas plataformas da Rede Akiba?")
+        confirm ? $form.send_notification = true : $form.send_notification = false;
+
         $form.post(`/panel/locution/locution/start/${$form.program}`, {
             preserveScroll: true,
             onSuccess: () => {

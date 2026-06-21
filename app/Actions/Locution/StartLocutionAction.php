@@ -32,10 +32,11 @@ class StartLocutionAction
             $plan = Plan::where('action', 'start_program')
                 ->where('status', 'running')
                 ->lockForUpdate()
-                ->first()
-                ->update([
-                    'status' => 'paused',
-                ]);
+                ->first();
+
+            $plan?->update([
+                'status' => 'paused',
+            ]);
 
             if ($program->access_type === 'free') {
                 $program->update([
@@ -58,12 +59,13 @@ class StartLocutionAction
 
         $genderArticle = $user->gender === 'male' ? 'O' : 'A';
         
-        $this->discord->sendStreamNotificationHook($user, $program);
-
-        $this->oneSignal->sendPush(
-            "{$genderArticle} DJ {$user->nickname} esta ao vivo na Akiba!",
-            "O programa {$program->name} acabou de comecar! Cola com a gente!",
-            "https://akiba.com.br",
-        );
+        if($data['send_notification']){
+            $this->discord->sendStreamNotificationHook($user, $program);
+            $this->oneSignal->sendPush(
+                "{$genderArticle} DJ {$user->nickname} esta ao vivo na Akiba!",
+                "O programa {$program->name} acabou de comecar! Cola com a gente!",
+                "https://akiba.com.br",
+            );
+        }
     }
 }
