@@ -25,18 +25,17 @@ class StartLocutionAction
     public function execute(User $user, Program $program, array $data): void
     {
         DB::transaction(function () use ($user, $program, $data) {
-            Onair::live()->first()->update([
+            Onair::live()->update([
                 'in_air' => false,
             ]);
 
             $plan = Plan::where('action', 'start_program')
                 ->where('status', 'running')
                 ->lockForUpdate()
-                ->first();
-
-            $plan?->update([
-                'status' => 'paused',
-            ]);
+                ->first()
+                ->update([
+                    'status' => 'paused',
+                ]);
 
             if ($program->access_type === 'free') {
                 $program->update([
