@@ -1,3 +1,8 @@
+param(
+    [Parameter(Position = 0)]
+    [string] $Command = 'up'
+)
+
 $ErrorActionPreference = 'Stop'
 
 $RootDir = Resolve-Path (Join-Path $PSScriptRoot '..\..')
@@ -79,8 +84,6 @@ echo $! > storage/logs/vite.pid
 wait $!
 '@
 }
-
-$Command = if ($args.Count -gt 0) { $args[0] } else { 'up' }
 
 switch ($Command) {
     'up' {

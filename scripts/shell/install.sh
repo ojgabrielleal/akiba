@@ -34,7 +34,12 @@ print_success() {
 
 if [ -f .env ]; then
     step "Preparing Akiba environment file"
-    sed -i 's|^VITE_HOST=.*|VITE_HOST=0.0.0.0|' .env
+    sed -i \
+        -e 's|^VITE_HOST=.*|VITE_HOST=0.0.0.0|' \
+        -e 's|^DB_HOST=.*|DB_HOST=mysql|' \
+        -e 's|^DB_USERNAME=.*|DB_USERNAME=root|' \
+        -e 's|^DB_PASSWORD=.*|DB_PASSWORD=root|' \
+        .env
 fi
 
 step "Building and starting Akiba containers"

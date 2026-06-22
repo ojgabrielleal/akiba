@@ -31,29 +31,42 @@ function Print-Success {
     Write-Host '----------------------------------------'
 }
 
+function Invoke-DockerCompose {
+    docker compose @args
+
+    if ($LASTEXITCODE -ne 0) {
+        throw "docker compose $args failed with exit code $LASTEXITCODE"
+    }
+}
+
 if (Test-Path '.env') {
     Step 'Preparing Akiba environment file'
     $EnvContent = Get-Content '.env'
-    $EnvContent -replace '^VITE_HOST=.*', 'VITE_HOST=0.0.0.0' | Set-Content '.env'
+    $EnvContent `
+        -replace '^VITE_HOST=.*', 'VITE_HOST=0.0.0.0' `
+        -replace '^DB_HOST=.*', 'DB_HOST=mysql' `
+        -replace '^DB_USERNAME=.*', 'DB_USERNAME=root' `
+        -replace '^DB_PASSWORD=.*', 'DB_PASSWORD=root' |
+        Set-Content '.env'
 }
 
 Step 'Building and starting Akiba containers'
-docker compose up --build -d
+Invoke-DockerCompose up --build -d
 
 Step 'Waiting for the database to be ready'
 Start-Sleep -Seconds 15
 
 Step 'Installing Laravel dependencies'
-docker compose exec laravel composer install
+Invoke-DockerCompose exec laravel composer install
 
 Step 'Installing frontend dependencies'
-docker compose exec node npm install
+Invoke-DockerCompose exec node npm install
 
 Step 'Generating application key'
-docker compose exec laravel php artisan key:generate
+Invoke-DockerCompose exec laravel php artisan key:generate
 
 Step 'Preparing Akiba database'
-docker compose exec laravel php artisan migrate
-docker compose exec laravel php artisan db:seed
+Invoke-DockerCompose exec laravel php artisan migrate
+Invoke-DockerCompose exec laravel php artisan db:seed
 
 Print-Success

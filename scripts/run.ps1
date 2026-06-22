@@ -1,7 +1,14 @@
+param(
+    [Parameter(Position = 0)]
+    [string] $Command = 'help',
+
+    [Parameter(ValueFromRemainingArguments = $true)]
+    [string[]] $ScriptArgs = @()
+)
+
 $ErrorActionPreference = 'Stop'
 
 $ScriptDir = $PSScriptRoot
-$Command = if ($args.Count -gt 0) { $args[0] } else { 'help' }
 
 function Show-Usage {
     Write-Host 'Usage: .\scripts\run.ps1 <command> [args]'
@@ -22,7 +29,6 @@ switch ($Command) {
         exit 0
     }
     { $_ -in @('install', 'server', 'laravel', 'node', 'composer', 'shell') } {
-        $ScriptArgs = if ($args.Count -gt 1) { $args[1..($args.Count - 1)] } else { @() }
         & (Join-Path $ScriptDir "ps1\$Command.ps1") @ScriptArgs
         exit $LASTEXITCODE
     }
