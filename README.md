@@ -37,7 +37,33 @@ Rede Akiba ( Akiba V2 ) é uma aplicação Laravel para gerenciar uma plataforma
 Clone o repositório e rode a instalação usando Docker
 
 ```bash
-./scripts/install.sh
+./scripts/run.sh install
+```
+
+No Windows:
+
+```powershell
+.\scripts\run.ps1 install
+```
+
+Atalhos principais no Linux/macOS:
+
+```bash
+./scripts/run.sh server up
+./scripts/run.sh server down
+./scripts/run.sh laravel php artisan migrate
+./scripts/run.sh node npm install
+./scripts/run.sh shell node
+```
+
+Atalhos principais no Windows:
+
+```powershell
+.\scripts\run.ps1 server up
+.\scripts\run.ps1 server down
+.\scripts\run.ps1 laravel php artisan migrate
+.\scripts\run.ps1 node npm install
+.\scripts\run.ps1 shell node
 ```
 
 ## Variáveis de ambiente

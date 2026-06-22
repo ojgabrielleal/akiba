@@ -2,6 +2,8 @@
 set -e
 
 DEVELOPER_URL="https://github.com/ojgabrielleal"
+ROOT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)"
+cd "$ROOT_DIR"
 
 step() {
     TITLE="$1"
@@ -23,14 +25,14 @@ print_success() {
     echo "Akiba setup complete"
     echo "----------------------------------------"
     echo "Start the project"
-    echo "./scripts/server.sh up"
+    echo "./scripts/run.sh server up"
     echo ""
     echo "Thank you for installing Akiba."
     echo "Developer  $DEVELOPER_URL"
     echo "----------------------------------------"
 }
 
-if [ ! -f .env ]; then
+if [ -f .env ]; then
     step "Preparing Akiba environment file"
     sed -i 's|^VITE_HOST=.*|VITE_HOST=0.0.0.0|' .env
 fi
