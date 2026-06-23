@@ -1,64 +1,77 @@
-#!/bin/sh
+#!/bin/bash
+
 set -e
 
-DEVELOPER_URL="https://github.com/ojgabrielleal"
-ROOT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)"
-cd "$ROOT_DIR"
-
-step() {
-    TITLE="$1"
-    WIDTH=58
-    INNER_WIDTH=$((WIDTH - 2))
-    TITLE_LENGTH=${#TITLE}
-    TOTAL_PADDING=$((INNER_WIDTH - TITLE_LENGTH))
-    LEFT_PADDING=$((TOTAL_PADDING / 2))
-    RIGHT_PADDING=$((TOTAL_PADDING - LEFT_PADDING))
-
-    echo ""
-    printf '+%*s+\n' "$INNER_WIDTH" '' | tr ' ' '-'
-    printf '|%*s%s%*s|\n' "$LEFT_PADDING" '' "$TITLE" "$RIGHT_PADDING" ''
-    printf '+%*s+\n' "$INNER_WIDTH" '' | tr ' ' '-'
+line() {
+    echo "--------------------------------------"
 }
 
-print_success() {
-    echo ""
-    echo "Akiba setup complete"
-    echo "----------------------------------------"
-    echo "Start the project"
-    echo "./scripts/run.sh server up"
-    echo ""
-    echo "Thank you for installing Akiba."
-    echo "Developer  $DEVELOPER_URL"
-    echo "----------------------------------------"
-}
+line
+echo "Preparing .env file..."
+line
 
-if [ -f .env ]; then
-    step "Preparing Akiba environment file"
-    sed -i \
-        -e 's|^VITE_HOST=.*|VITE_HOST=0.0.0.0|' \
-        -e 's|^DB_HOST=.*|DB_HOST=mysql|' \
-        -e 's|^DB_USERNAME=.*|DB_USERNAME=root|' \
-        -e 's|^DB_PASSWORD=.*|DB_PASSWORD=root|' \
-        .env
+if [ ! -f ".env" ]; then
+    cp .env.example .env
 fi
 
-step "Building and starting Akiba containers"
-docker compose up --build -d
+if [ ! -f ".env.testing" ]; then
+    cp .env.testing.example .env.testing
+fi
 
-step "Waiting for the database to be ready"
-sleep 15
+APP_URL="http://localhost:8000/"
+DB_HOST="mysql"
+DB_USERNAME="root"
+DB_PASSWORD="root"
 
-step "Installing Laravel dependencies"
+sed -i \
+    -e "s|^APP_URL=.*|APP_URL=$APP_URL|" \
+    -e "s|^DB_HOST=.*|DB_HOST=$DB_HOST|" \
+    -e "s|^DB_USERNAME=.*|DB_USERNAME=$DB_USERNAME|" \
+    -e "s|^DB_PASSWORD=.*|DB_PASSWORD=$DB_PASSWORD|" \
+    .env
+
+line
+echo "Building Docker environment..."
+line
+
+docker compose build
+
+line
+echo "Starting containers..."
+line
+
+docker compose up -d
+
+line
+echo "Installing PHP dependencies..."
+line
+
 docker compose exec laravel composer install
 
-step "Installing frontend dependencies"
-docker compose exec node npm install
+line
+echo "Generating Laravel app key..."
+line
 
-step "Generating application key"
 docker compose exec laravel php artisan key:generate
 
-step "Preparing Akiba database"
-docker compose exec laravel php artisan migrate
-docker compose exec laravel php artisan db:seed
+line
+echo "Installing Node dependencies..."
+line
 
-print_success
+docker compose exec node npm install
+
+line
+echo "Running database migrations..."
+line
+
+docker compose exec laravel php artisan migrate:fresh --seed
+docker compose down
+
+line
+echo "Environment configured successfully!"
+line
+echo "Containers were stopped after installation."
+echo "To start the environment, run:"
+echo "  ./scripts/run.sh up"
+echo "Github Repository: https://github.com/ojgabrielleal/akiba"
+line

@@ -1,72 +1,104 @@
-$ErrorActionPreference = 'Stop'
-
-$DeveloperUrl = 'https://github.com/ojgabrielleal'
-$RootDir = Resolve-Path (Join-Path $PSScriptRoot '..\..')
-Set-Location $RootDir
-
-function Step {
-    param([string] $Title)
-
-    $Width = 58
-    $InnerWidth = $Width - 2
-    $TotalPadding = $InnerWidth - $Title.Length
-    $LeftPadding = [Math]::Floor($TotalPadding / 2)
-    $RightPadding = $TotalPadding - $LeftPadding
-
-    Write-Host ''
-    Write-Host ('+' + ('-' * $InnerWidth) + '+')
-    Write-Host ('|' + (' ' * $LeftPadding) + $Title + (' ' * $RightPadding) + '|')
-    Write-Host ('+' + ('-' * $InnerWidth) + '+')
+function Write-Line {
+    Write-Host "--------------------------------------"
 }
 
-function Print-Success {
-    Write-Host ''
-    Write-Host 'Akiba setup complete'
-    Write-Host '----------------------------------------'
-    Write-Host 'Start the project'
-    Write-Host '.\scripts\run.ps1 server up'
-    Write-Host ''
-    Write-Host 'Thank you for installing Akiba.'
-    Write-Host "Developer  $DeveloperUrl"
-    Write-Host '----------------------------------------'
+Write-Line
+Write-Host "Preparing .env file..."
+Write-Line
+
+if (-not (Test-Path ".env" -PathType Leaf)) {
+    Copy-Item ".env.example" ".env"
 }
 
-function Invoke-DockerCompose {
-    docker compose @args
-
-    if ($LASTEXITCODE -ne 0) {
-        throw "docker compose $args failed with exit code $LASTEXITCODE"
-    }
+if (-not (Test-Path ".env.testing" -PathType Leaf)) {
+    Copy-Item ".env.testing.example" ".env.testing"
 }
 
-if (Test-Path '.env') {
-    Step 'Preparing Akiba environment file'
-    $EnvContent = Get-Content '.env'
-    $EnvContent `
-        -replace '^VITE_HOST=.*', 'VITE_HOST=0.0.0.0' `
-        -replace '^DB_HOST=.*', 'DB_HOST=mysql' `
-        -replace '^DB_USERNAME=.*', 'DB_USERNAME=root' `
-        -replace '^DB_PASSWORD=.*', 'DB_PASSWORD=root' |
-        Set-Content '.env'
+$APP_URL = "http://localhost:8000/"
+$DB_HOST = "mysql"
+$DB_USERNAME = "root"
+$DB_PASSWORD = "root"
+
+$content = Get-Content .env
+
+$content = $content -replace '^APP_URL=.*', "APP_URL=$APP_URL"
+$content = $content -replace '^DB_HOST=.*', "DB_HOST=$DB_HOST"
+$content = $content -replace '^DB_USERNAME=.*', "DB_USERNAME=$DB_USERNAME"
+$content = $content -replace '^DB_PASSWORD=.*', "DB_PASSWORD=$DB_PASSWORD"
+
+$content | Set-Content .env -Encoding UTF8
+
+Write-Line
+Write-Host "Building Docker environment..."
+Write-Line
+
+docker compose build
+
+if ($LASTEXITCODE -ne 0) {
+    exit 1
 }
 
-Step 'Building and starting Akiba containers'
-Invoke-DockerCompose up --build -d
+Write-Line
+Write-Host "Starting containers..."
+Write-Line
 
-Step 'Waiting for the database to be ready'
-Start-Sleep -Seconds 15
+docker compose up -d
 
-Step 'Installing Laravel dependencies'
-Invoke-DockerCompose exec laravel composer install
+if ($LASTEXITCODE -ne 0) {
+    exit 1
+}
 
-Step 'Installing frontend dependencies'
-Invoke-DockerCompose exec node npm install
+Write-Line
+Write-Host "Installing PHP dependencies..."
+Write-Line
 
-Step 'Generating application key'
-Invoke-DockerCompose exec laravel php artisan key:generate
+docker compose exec laravel composer install
 
-Step 'Preparing Akiba database'
-Invoke-DockerCompose exec laravel php artisan migrate
-Invoke-DockerCompose exec laravel php artisan db:seed
+if ($LASTEXITCODE -ne 0) {
+    exit 1
+}
 
-Print-Success
+Write-Line
+Write-Host "Generating Laravel app key..."
+Write-Line
+
+docker compose exec laravel php artisan key:generate
+
+if ($LASTEXITCODE -ne 0) {
+    exit 1
+}
+
+Write-Line
+Write-Host "Installing Node dependencies..."
+Write-Line
+
+docker compose exec node npm install
+
+if ($LASTEXITCODE -ne 0) {
+    exit 1
+}
+
+Write-Line
+Write-Host "Running database migrations..."
+Write-Line
+
+docker compose exec laravel php artisan migrate:fresh --seed
+
+if ($LASTEXITCODE -ne 0) {
+    exit 1
+}
+
+docker compose down
+
+if ($LASTEXITCODE -ne 0) {
+    exit 1
+}
+
+Write-Line
+Write-Host "Environment configured successfully!"
+Write-Line
+Write-Host "Containers were stopped after installation."
+Write-Host "To start the environment, run:"
+Write-Host "  ./scripts/run.ps1 up"
+Write-Host "Github Repository: https://github.com/ojgabrielleal/akiba"
+Write-Line

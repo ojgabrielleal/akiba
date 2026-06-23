@@ -1,40 +1,69 @@
-param(
-    [Parameter(Position = 0)]
-    [string] $Command = 'help',
-
+param (
     [Parameter(ValueFromRemainingArguments = $true)]
-    [string[]] $ScriptArgs = @()
+    [string[]]$CommandArgs
 )
 
-$ErrorActionPreference = 'Stop'
+$SCRIPT_DIR = Split-Path -Parent $MyInvocation.MyCommand.Path
 
-$ScriptDir = $PSScriptRoot
+function Show-Help {
+    Write-Host "Usage:"
+    Write-Host "  ./scripts/run.ps1 install"
+    Write-Host "  ./scripts/run.ps1 up"
+    Write-Host "  ./scripts/run.ps1 down"
+    Write-Host "  ./scripts/run.ps1 artisan ..."
+    Write-Host "  ./scripts/run.ps1 node ..."
+    Write-Host "  ./scripts/run.ps1 composer ..."
 
-function Show-Usage {
-    Write-Host 'Usage: .\scripts\run.ps1 <command> [args]'
-    Write-Host ''
-    Write-Host 'Commands: install, server, laravel, node, composer, shell'
-    Write-Host ''
-    Write-Host 'Examples:'
-    Write-Host '.\scripts\run.ps1 install'
-    Write-Host '.\scripts\run.ps1 server up'
-    Write-Host '.\scripts\run.ps1 laravel php artisan migrate'
-    Write-Host '.\scripts\run.ps1 node npm install'
-    Write-Host '.\scripts\run.ps1 shell node'
 }
 
-switch ($Command) {
-    { $_ -in @('help', '--help', '-h') } {
-        Show-Usage
-        exit 0
+if (-not $CommandArgs -or $CommandArgs.Count -eq 0) {
+    Show-Help
+    exit 0
+}
+
+$command = $CommandArgs[0].ToLowerInvariant()
+$rest = @()
+
+if ($CommandArgs.Count -gt 1) {
+    $rest = $CommandArgs[1..($CommandArgs.Count - 1)]
+}
+
+switch ($command) {
+    "install" {
+        & "$SCRIPT_DIR\ps1\install.ps1" @rest
     }
-    { $_ -in @('install', 'server', 'laravel', 'node', 'composer', 'shell') } {
-        & (Join-Path $ScriptDir "ps1\$Command.ps1") @ScriptArgs
-        exit $LASTEXITCODE
+    "up" {
+        & "$SCRIPT_DIR\ps1\up.ps1" @rest
+    }
+    "down" {
+        & "$SCRIPT_DIR\ps1\down.ps1" @rest
+    }
+    "artisan" {
+        docker compose exec laravel php artisan @rest
+    }
+    "composer" {
+        docker compose exec laravel composer @rest
+    }
+    "node" {
+        docker compose exec node npm @rest
+    }
+    "npm" {
+        docker compose exec node npm @rest
+    }
+    "laravel" {
+        docker compose exec laravel @rest
+    }
+    "docker" {
+        docker compose @rest
     }
     default {
-        Write-Error "Unknown Akiba command: $Command"
-        Show-Usage
+        Write-Host "Unknown command: $command"
+        Write-Host ""
+        Show-Help
         exit 1
     }
+}
+
+if ($LASTEXITCODE -ne 0) {
+    exit $LASTEXITCODE
 }

@@ -30,6 +30,8 @@ services:
     image: mysql:8
     ports: 
       - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
     environment: 
       MYSQL_DATABASE: ${DB_DATABASE}
       MYSQL_ROOT_PASSWORD: "root"
@@ -55,5 +57,9 @@ services:
       - akiba_network
     container_name: akiba_phpmyadmin 
 
+volumes:
+  mysql_data:
+  
 networks: 
   akiba_network:
+
