@@ -9,9 +9,11 @@ $VITE_WAIT_ATTEMPTS = 90
 
 # VITE STARTING ---------------------------------
 function Show-Vite-Diagnostics {
-    Write-Host "Vite diagnostics:"
+    Write-Host "--------------------------------------"
+    Write-Host "Vite is not start:"
     docker compose exec -T node sh -lc "ps -ef | grep '[v]ite' || true"
     docker compose exec -T node sh -lc "test -f /tmp/vite.log && tail -n 80 /tmp/vite.log || true"
+    Write-Host "--------------------------------------"
 }
 
 function Start-Vite {
@@ -50,12 +52,7 @@ function Wait-For-Vite {
 
         Start-Sleep -Seconds 1
     }
-
     clear 
-
-    Write-Host "--------------------------------------"
-    Write-Host "Vite did not start at $VITE_URL"
-    Write-Host "--------------------------------------"
 
     Show-Vite-Diagnostics
     exit 1

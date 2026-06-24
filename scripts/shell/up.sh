@@ -17,8 +17,7 @@ VITE_WAIT_ATTEMPTS=90
 # VITE STARTING ---------------------------------
 show_vite_diagnostics() {
     line
-    echo "Vite diagnostics:"
-    line
+    echo "Vite is not start:"
     docker compose exec -T node sh -lc "ps -ef | grep '[v]ite' || true"
     docker compose exec -T node sh -lc "test -f /tmp/vite.log && tail -n 80 /tmp/vite.log || true"
     line
@@ -49,11 +48,8 @@ wait_for_vite() {
 
         sleep 1
     done
-
-    line
-    echo "Vite did not start at $VITE_URL"
-    line
-
+    clear 
+    
     show_vite_diagnostics
     exit 1
 }
