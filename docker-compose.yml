@@ -17,8 +17,6 @@ services:
   node: 
     image: node:22
     working_dir: /app
-    environment:
-      CHOKIDAR_USEPOLLING: "true"
     volumes: 
       - .:/app
     ports: 
