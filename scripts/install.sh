@@ -75,7 +75,7 @@ line
 echo "Environment configured successfully!"
 line
 echo "To start the environment, run:"
-echo " ./scripts/run.sh up"
+echo " ./run.sh up"
 line
 echo "Github Dev: $GITHUB_DEV"
 echo "Github Repository: $GITHUB_REPOSITORY"
