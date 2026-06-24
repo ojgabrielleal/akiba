@@ -48,9 +48,11 @@
             tabindex="-1"
             on:click={block}
         >
+        {#if title}
             <h2 id={titleId} class="bg-blue-ocean py-5 px-4 text-suspense-aurora text-center font-bold italic uppercase">
                 {title}
             </h2>
+        {/if}
             <div class="pl-5 pr-8 pt-8 h-[calc(100vh-6rem)] overflow-y-auto">
                 <slot name="content" {close} />
             </div>

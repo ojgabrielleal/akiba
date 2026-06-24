@@ -1,12 +1,13 @@
 <script>
     import { useForm, page } from "@inertiajs/svelte";
-    import { Section } from "@/ui/components/private/";
+    import { Modal, Section } from "@/ui/components/private/";
     import { locutionPermissions } from "@/utils";
     import { locutionIcons, locutionTextures, locutionDecorations } from "@/data";
 
     $: ({ programs } = $page.props);
 
     let can = locutionPermissions();
+    let notificationModalRef;
 
     let form = useForm({
         send_notification: null,
@@ -24,17 +25,49 @@
     });
 
     const submit = () => {
-        let confirm = window.confirm("Deseja disparar notificações avisando que você entrará AO VIVO nas plataformas da Rede Akiba?")
-        confirm ? $form.send_notification = true : $form.send_notification = false;
+        notificationModalRef.open();
+    };
+
+    const startLocution = (sendNotification) => {
+        $form.send_notification = sendNotification;
 
         $form.post(`/panel/locution/locution/start/${$form.program}`, {
             preserveScroll: true,
             onSuccess: () => {
+                notificationModalRef.close();
                 $form.reset();
             },
         });
     };
 </script>
+
+<Modal bind:this={notificationModalRef}>
+    <div slot="content" class="font-noto-sans">
+        <p class="text-sm text-center leading-relaxed text-blue-marinho">
+            Deseja mandar notificações avisando que você entrará
+            <span class="font-extrabold uppercase italic text-red-crimson">ao vivo</span>
+            nas plataformas da Rede Akiba?
+        </p>
+        <div class="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <button
+                type="button"
+                class="cursor-pointer rounded-full border border-blue-ocean/20 px-1 py-2 text-sm font-extrabold uppercase italic text-blue-marinho transition hover:bg-blue-ocean/10 disabled:cursor-not-allowed disabled:opacity-60"
+                disabled={$form.processing}
+                on:click={() => startLocution(false)}
+            >
+                Avisar
+            </button>
+            <button
+                type="button"
+                class="cursor-pointer rounded-full bg-orange-citric px-1 py-2 text-sm font-extrabold uppercase italic text-blue-marinho transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-60"
+                disabled={$form.processing}
+                on:click={() => startLocution(true)}
+            >
+                Não avisar
+            </button>
+        </div>
+    </div>
+</Modal>
 
 <form on:submit|preventDefault={submit}>
     <Section title="Meus Programas">
@@ -171,14 +204,14 @@
             <div class="flex justify-center mt-10">
                 <button 
                     type="submit"
-                    class="cursor-pointer font-noto-sans font-extrabold italic uppercase text-blue-marinho py-2 px-6 rounded-full bg-orange-citric"
+                    class="cursor-pointer flex gap-1 items-center justify-center font-noto-sans font-extrabold italic uppercase text-blue-marinho py-2 px-6 rounded-full bg-orange-citric"
                 >
-                    Iniciar
+                    Iniciar programa
                     <img 
                         src="/svg/rewindInverted.svg"
                         alt=""
                         aria-hidden="true"
-                        class="w-4"
+                        class="w-6 filter-blue-marinho"
                     />
                 </button>
             </div>
