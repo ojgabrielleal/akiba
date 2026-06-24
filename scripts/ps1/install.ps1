@@ -2,6 +2,14 @@ function Write-Line {
     Write-Host "--------------------------------------"
 }
 
+$GITHUB_DEV="https://github.com/ojgabrielleal"
+$GITHUB_REPOSITORY="https://github.com/ojgabrielleal/akiba"
+
+$APP_URL = "http://localhost:8000/"
+$DB_HOST = "mysql"
+$DB_USERNAME = "root"
+$DB_PASSWORD = "root"
+
 Write-Line
 Write-Host "Preparing .env file..."
 Write-Line
@@ -14,11 +22,6 @@ if (-not (Test-Path ".env.testing" -PathType Leaf)) {
     Copy-Item ".env.testing.example" ".env.testing"
 }
 
-$APP_URL = "http://localhost:8000/"
-$DB_HOST = "mysql"
-$DB_USERNAME = "root"
-$DB_PASSWORD = "root"
-
 $content = Get-Content .env
 
 $content = $content -replace '^APP_URL=.*', "APP_URL=$APP_URL"
@@ -27,6 +30,7 @@ $content = $content -replace '^DB_USERNAME=.*', "DB_USERNAME=$DB_USERNAME"
 $content = $content -replace '^DB_PASSWORD=.*', "DB_PASSWORD=$DB_PASSWORD"
 
 $content | Set-Content .env -Encoding UTF8
+clear 
 
 Write-Line
 Write-Host "Building Docker environment..."
@@ -37,6 +41,7 @@ docker compose build
 if ($LASTEXITCODE -ne 0) {
     exit 1
 }
+clear 
 
 Write-Line
 Write-Host "Starting containers..."
@@ -47,6 +52,7 @@ docker compose up -d
 if ($LASTEXITCODE -ne 0) {
     exit 1
 }
+clear
 
 Write-Line
 Write-Host "Installing PHP dependencies..."
@@ -57,6 +63,7 @@ docker compose exec laravel composer install
 if ($LASTEXITCODE -ne 0) {
     exit 1
 }
+clear
 
 Write-Line
 Write-Host "Generating Laravel app key..."
@@ -67,6 +74,7 @@ docker compose exec laravel php artisan key:generate
 if ($LASTEXITCODE -ne 0) {
     exit 1
 }
+clear
 
 Write-Line
 Write-Host "Installing Node dependencies..."
@@ -77,6 +85,7 @@ docker compose exec node npm install
 if ($LASTEXITCODE -ne 0) {
     exit 1
 }
+clear
 
 Write-Line
 Write-Host "Running database migrations..."
@@ -93,12 +102,14 @@ docker compose down
 if ($LASTEXITCODE -ne 0) {
     exit 1
 }
+clear 
 
 Write-Line
 Write-Host "Environment configured successfully!"
 Write-Line
-Write-Host "Containers were stopped after installation."
 Write-Host "To start the environment, run:"
 Write-Host "  ./scripts/run.ps1 up"
-Write-Host "Github Repository: https://github.com/ojgabrielleal/akiba"
+Write-Line
+Write-Host "Github Dev: $GITHUB_DEV"
+Write-Host "Github Repository: $GITHUB_REPOSITORY"
 Write-Line

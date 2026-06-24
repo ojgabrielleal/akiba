@@ -21,6 +21,9 @@ if (-not $CommandArgs -or $CommandArgs.Count -eq 0) {
     exit 0
 }
 
+# Normalize the main command and keep any extra arguments to pass through.
+# Example: ./scripts/run.ps1 artisan migrate --force
+# $command = "artisan", $rest = @("migrate", "--force")
 $command = $CommandArgs[0].ToLowerInvariant()
 $rest = @()
 

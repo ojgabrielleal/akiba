@@ -1,77 +1,79 @@
-$APP_URL = "http://localhost:8000"
-$PHPMYADMIN_URL = "http://localhost:8080"
+$GITHUB_DEV="https://github.com/ojgabrielleal"
 $GITHUB_REPOSITORY = "https://github.com/ojgabrielleal/akiba"
 
-function Test-UrlAvailable {
-    param (
-        [string]$Url
-    )
+$APP_URL = "http://localhost:8000"
+$PHPMYADMIN_URL = "http://localhost:8080"
+$VITE_URL = "http://localhost:5173/@vite/client"
+$VITE_WAIT_ATTEMPTS = 90
+
+
+# VITE STARTING ---------------------------------
+function Show-Vite-Diagnostics {
+    Write-Host "Vite diagnostics:"
+    docker compose exec -T node sh -lc "ps -ef | grep '[v]ite' || true"
+    docker compose exec -T node sh -lc "test -f /tmp/vite.log && tail -n 80 /tmp/vite.log || true"
+}
+
+function Start-Vite {
+    Write-Host "--------------------------------------"
+    Write-Host "Starting Vite..."
 
     try {
-        Invoke-WebRequest -Uri $Url -UseBasicParsing -TimeoutSec 2 | Out-Null
-        return $true
+        $response = Invoke-WebRequest -Uri $VITE_URL -UseBasicParsing -TimeoutSec 2
+
+        if ($response.StatusCode -eq 200) {
+            Write-Host "Vite is already running."
+            Write-Host "--------------------------------------"
+            return
+        }
+    } catch {
     }
-    catch {
-        return $false
-    }
+
+    docker compose exec -d node sh -lc "npm run dev -- --host 0.0.0.0 > /tmp/vite.log 2>&1"
+    if ($LASTEXITCODE -ne 0) { exit 1 }
 }
 
-function Test-ViteRunning {
-    docker compose exec node sh -lc "ps aux | grep -E '[v]ite|[n]pm run dev' >/dev/null 2>&1"
-    return $LASTEXITCODE -eq 0
-}
+function Wait-For-Vite {
+    Write-Host "Waiting for Vite to be ready..."
 
-function Wait-ForVite {
-    for ($attempt = 1; $attempt -le 30; $attempt++) {
-        if (Test-ViteRunning) {
-            return $true
+    for ($attempt = 1; $attempt -le $VITE_WAIT_ATTEMPTS; $attempt++) {
+        try {
+            $response = Invoke-WebRequest -Uri $VITE_URL -UseBasicParsing -TimeoutSec 2
+
+            if ($response.StatusCode -eq 200) {
+                Write-Host "Vite is running."
+                Write-Host "--------------------------------------"
+                return
+            }
+        } catch {
         }
 
-        Start-Sleep -Seconds 2
+        Start-Sleep -Seconds 1
     }
 
-    return $false
+    clear 
+
+    Write-Host "--------------------------------------"
+    Write-Host "Vite did not start at $VITE_URL"
+    Write-Host "--------------------------------------"
+
+    Show-Vite-Diagnostics
+    exit 1
 }
+# VITE STARTING ---------------------------------
 
 Write-Host "--------------------------------------"
 Write-Host "Starting containers..."
 Write-Host "--------------------------------------"
 
 docker compose up -d
+docker compose exec -d laravel php artisan serve --host=0.0.0.0 --port=8000
+Start-Vite
+Wait-For-Vite
+clear
 
-if ($LASTEXITCODE -ne 0) {
-    exit 1
-}
-
-# Start Laravel only when the app is not already responding.
-if (-not (Test-UrlAvailable $APP_URL)) {
-    docker compose exec -d laravel php artisan serve --host=0.0.0.0 --port=8000
-
-    if ($LASTEXITCODE -ne 0) {
-        exit 1
-    }
-}
-
-# Start Vite only when its dev server process is not already running.
-if (-not (Test-ViteRunning)) {
-    docker compose exec -d node npm run dev -- --host 0.0.0.0
-
-    if ($LASTEXITCODE -ne 0) {
-        exit 1
-    }
-}
-
-# Wait until the Vite process exists before printing the ready links.
-if (-not (Wait-ForVite)) {
-    Write-Host "Vite dev server is not running inside the node container."
-    Write-Host "Run this command to check the logs:"
-    Write-Host "   docker compose logs node"
-    exit 1
-}
-
-# Give Docker services a short warm-up before printing clickable links.
 Write-Host "--------------------------------------"
-Write-Host "Waiting for services to become available..."
+Write-Host "Environments are starting..."
 Write-Host "--------------------------------------"
 Start-Sleep -Seconds 30
 clear
@@ -81,6 +83,8 @@ Write-Host "Environment is running!"
 Write-Host "--------------------------------------"
 Write-Host "Site: $APP_URL"
 Write-Host "PHPMyAdmin: $PHPMYADMIN_URL"
+Write-Host "--------------------------------------"
+Write-Host "Github Dev: $GITHUB_DEV"
 Write-Host "Github Repository: $GITHUB_REPOSITORY"
 Write-Host "--------------------------------------"
 Write-Host "Panel: $APP_URL/panel"
