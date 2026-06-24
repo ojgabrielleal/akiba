@@ -15,6 +15,10 @@ export default defineConfig(() => {
             port: 5173,
             strictPort: true,
             origin: 'http://localhost:5173',
+            watch: {
+                usePolling: true,
+                interval: 100,
+            },
             cors: {
                 origin: [
                     'http://localhost:8000',
@@ -23,6 +27,8 @@ export default defineConfig(() => {
             },
             hmr: {
                 host: 'localhost',
+                protocol: 'ws',
+                clientPort: 5173,
             },
         },
         resolve: {

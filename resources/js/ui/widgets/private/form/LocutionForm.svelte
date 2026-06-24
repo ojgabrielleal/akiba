@@ -168,12 +168,12 @@
             {/each}
         </div>
         {#if can.start}
-            <div class="flex justify-end mt-10">
+            <div class="w-full flex justify-center mt-10">
                 <button 
                     type="submit"
                     class="cursor-pointer font-noto-sans font-extrabold italic uppercase text-blue-marinho py-2 px-6 rounded-full bg-orange-citric"
                 >
-                    Iniciar
+                    Iniciarr
                 </button>
             </div>
         {/if}
