@@ -32,19 +32,13 @@
     let animeThemesList = [];
 
     const getAnimeMusics = (value) => {
-        if (!value) {
-            animesList = [];
-            animeThemesList = [];
-            $form.anime = null;
-            $form.music = null;
-            return;
-        }
-
         animesList = [];
         animeThemesList = [];
-
+        
         $form.anime = null;
         $form.music = null;
+
+        if (!value) return;
 
         axios.get(`/api/anime/music?name=${encodeURIComponent(value)}`)
             .then((response) => {
@@ -63,8 +57,8 @@
 
     const selectAnime = (item) => {
         animeSearch = item.title;
+
         $form.anime = item.title;
-        $form.music = null;
         activeAnimeDropdown = false;
 
         animeThemesList = item.musics.map((music) => ({
@@ -75,6 +69,11 @@
             artist: music.artists,
         }));
     };
+
+    const selectMusic = (item) => {
+        $form.music = item;
+        activeMusicDropdown = false;
+    }
 
     const debouncedGetAnimeMusics = debounce(getAnimeMusics);
 </script>
@@ -156,6 +155,15 @@
                                 Tente Naruto, One Piece, Bleach...
                             </div>
                         </div>
+                    {:else if animesList.length === 0}
+                        <div class="p-3 font-noto-sans text-center flex flex-col items-center gap-2">
+                            <svg class="w-5 h-5 text-gray-300 animate-spin fill-blue-ocean" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2v3a7 7 0 1 0 7 7h3c0 5.523-4.477 10-10 10Z"/>
+                            </svg>
+                            <div class="text-gray-700 text-sm font-semibold">
+                                Buscando anime...
+                            </div>
+                        </div>
                     {:else}
                         {#each animesList as item}
                             <button aria-label={`Selecionar anime ${item.title}`}
@@ -221,7 +229,7 @@
                                 <button aria-label={`Selecionar musica ${item.name}`}
                                     type="button"
                                     class="w-full flex flex-col items-start gap-0.5 p-3 rounded-xl hover:bg-gray-50 active:bg-pink-50 transition-colors border-b last:border-0 border-gray-50 mb-1"
-                                    on:mousedown={() => { $form.music = item; activeMusicDropdown = false; }}
+                                    on:mousedown={() => selectMusic(item)}
                                 >
                                     <div class="font-noto-sans font-extrabold text-gray-900 text-sm line-clamp-1 w-full text-left leading-tight">
                                         {item.name}
@@ -245,9 +253,8 @@
                 name="message"
                 rows="3"
                 class="w-full bg-white font-noto-sans text-md text-black rounded-md outline-none p-4 border border-gray-400 resize-none"
-                placeholder="Deixe uma mensagem amigavel"
+                placeholder="(Opcional) Deixe uma mensagem amigável"
                 bind:value={$form.message}
-                required
             ></textarea>
             <span class="text-[0.8rem] text-gray-500 font-noto-sans mt-1 block">
                 Vamos evitar ofensas! Seu pedido pode não tocar por isso.
