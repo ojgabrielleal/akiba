@@ -62,4 +62,3 @@ volumes:
   
 networks: 
   akiba_network:
-

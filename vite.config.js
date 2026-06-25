@@ -23,6 +23,8 @@ export default defineConfig(() => {
             },
             hmr: {
                 host: 'localhost',
+                protocol: 'ws',
+                clientPort: 5173,
             },
         },
         resolve: {

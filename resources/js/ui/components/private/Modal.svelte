@@ -50,13 +50,14 @@
             on:click={block}
         >
             {#if title}
-                <div class="bg-blue-skywave p-4 text-suspense-aurora font-extrabold italic uppercase flex justify-between items-center">
-                    <h2 id={titleId}>
+                <div class="grid grid-cols-[1.5rem_1fr_1.5rem] items-center bg-blue-skywave p-4">
+                    <span aria-hidden="true"></span>
+                    <h2 id={titleId} class="text-center text-suspense-aurora font-bold italic uppercase">
                         {title}
                     </h2>
                     <button
                         type="button"
-                        class="cursor-pointer hover:opacity-80 transition-opacity"
+                        class="flex cursor-pointer justify-end transition-opacity hover:opacity-80"
                         aria-label="Fechar"
                         on:click={close}
                     >

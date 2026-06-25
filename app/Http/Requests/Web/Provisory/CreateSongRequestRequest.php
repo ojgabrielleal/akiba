@@ -25,7 +25,6 @@ class CreateSongRequestRequest extends LoggedWebRequest
             'name' => 'required|string',
             'address' => 'required|string',
             'anime' => 'required|string',
-            'message' => 'required|string',
             'music' => 'required|array',
             'music.production' => 'required|string',
             'music.type' => 'required|string',

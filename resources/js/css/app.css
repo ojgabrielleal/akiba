@@ -51,6 +51,13 @@
         var(--color-blue-cerulean) 100%
     );
 
+    --gradient-blue-ocean-skywave: linear-gradient(
+        110deg,
+        var(--color-blue-ocean) 0%,
+        var(--color-blue-cerulean) 72%,
+        var(--color-blue-skywave) 100%
+    );
+
     --gradient-orange-morning-aurora: linear-gradient(
         50deg,
         var(--color-orange-morning) 10%, 
@@ -63,10 +70,24 @@
         var(--color-green-pine) 100%
     );
 
+    --gradient-green-pine-mint: linear-gradient(
+        110deg,
+        var(--color-green-pine) 0%,
+        var(--color-green-forest) 72%,
+        var(--color-green-mint) 100%
+    );
+
     --gradient-red-crimson-blood: linear-gradient(
         270deg, 
         var(--color-red-crimson) 0%, 
         var(--color-red-blood) 100%
+    );
+
+    --gradient-red-blood-crimson: linear-gradient(
+        110deg,
+        var(--color-red-blood) 0%,
+        color-mix(in srgb, var(--color-red-blood) 55%, var(--color-red-crimson)) 62%,
+        var(--color-red-crimson) 100%
     );
 }
 
@@ -111,6 +132,10 @@
     background: var(--gradient-blue-cerulean-glow);
 }
 
+@utility bg-gradient-blue-ocean-skywave {
+    background: var(--gradient-blue-ocean-skywave);
+}
+
 @utility bg-gradient-orange-morning-aurora {
     background: var(--gradient-orange-morning-aurora);
 }
@@ -119,8 +144,16 @@
     background: var(--gradient-green-forest-pine);
 }
 
+@utility bg-gradient-green-pine-mint {
+    background: var(--gradient-green-pine-mint);
+}
+
 @utility bg-gradient-red-crimson-blood {
     background: var(--gradient-red-crimson-blood);
+}
+
+@utility bg-gradient-red-blood-crimson {
+    background: var(--gradient-red-blood-crimson);
 }
 
 /*
@@ -157,6 +190,10 @@
 
 @utility filter-red-crimson {
     filter: invert(44%) sepia(59%) saturate(4904%) hue-rotate(335deg) brightness(88%) contrast(113%);
+}
+
+@utility filter-red-blood {
+    filter: invert(14%) sepia(40%) saturate(5082%) hue-rotate(325deg) brightness(35%) contrast(95%);
 }
 
 @utility filter-orange-amber {
