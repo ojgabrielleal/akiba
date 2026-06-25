@@ -53,7 +53,7 @@
                 type="button"
                 class="cursor-pointer rounded-full border border-blue-ocean/20 px-1 py-2 text-sm font-extrabold uppercase italic text-blue-marinho transition hover:bg-blue-ocean/10 disabled:cursor-not-allowed disabled:opacity-60"
                 disabled={$form.processing}
-                on:click={() => startLocution(false)}
+                on:click={() => startLocution(true)}
             >
                 Avisar
             </button>
@@ -61,7 +61,7 @@
                 type="button"
                 class="cursor-pointer rounded-full bg-orange-citric px-1 py-2 text-sm font-extrabold uppercase italic text-blue-marinho transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-60"
                 disabled={$form.processing}
-                on:click={() => startLocution(true)}
+                on:click={() => startLocution(false)}
             >
                 Não avisar
             </button>
