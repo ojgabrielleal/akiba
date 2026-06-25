@@ -21,7 +21,7 @@ class SongRequestResource extends JsonResource
             'ip_address' => $this->ip_address,
             'name' => $this->name,
             'address' => $this->address,
-            'message' => $this->message,
+            'message' => $this->message ?? "Ouvinte não deixou mensagem",
             'music' => MusicResource::make($this->music),
             'created_at' => $this->created_at->setTimezone('America/Sao_Paulo')->format('H:i'),
         ];

@@ -68,7 +68,7 @@
                             {/each}
                             {#if item.confirmations.length > 5}
                                 <Tooltip>
-                                    <span class="w-8 h-8 rounded-full bg-suspense-aurora flex items-center justify-center font-noto-sans text-xs font-black text-blue-night">
+                                    <span class="w-7 h-7 rounded-full bg-suspense-aurora flex items-center justify-center font-noto-sans text-xs font-black text-blue-night">
                                         +{item.confirmations.length - 5}
                                     </span>
                                     <div slot="content" class="px-1 py-1">
@@ -90,14 +90,14 @@
                                 <button
                                     type="button"
                                     aria-label="Atualizar"
-                                    class="w-8 h-8 bg-blue-marinho rounded-md flex justify-center items-center font-noto-sans italic font-extrabold cursor-pointer"
+                                    class="w-7 h-7 bg-blue-marinho rounded-md flex justify-center items-center font-noto-sans italic font-extrabold cursor-pointer"
                                     on:click={() => { identifier = item.uuid; offcanvasRef.open(); }}
                                 >
                                     <img
                                         src="/svg/edit.svg"
                                         alt=""
                                         aria-hidden="true"
-                                        class="w-5 filter-orange-citric"
+                                        class="w-6 filter-orange-citric"
                                         loading="lazy"
                                     />
                                 </button>
@@ -111,14 +111,14 @@
                                 <button
                                     type="button"
                                     aria-label="Confirmar"
-                                    class="w-8 h-8 bg-blue-marinho rounded-md flex justify-center items-center font-noto-sans italic font-extrabold cursor-pointer"
+                                    class="w-7 h-7 bg-blue-marinho rounded-md flex justify-center items-center font-noto-sans italic font-extrabold cursor-pointer"
                                     on:click={()=>requestConfirmActivityParticipant(item.uuid)}
                                 >
                                     <img
                                         src="/svg/verify.svg"
                                         alt=""
                                         aria-hidden="true"
-                                        class="w-5 filter-orange-citric"
+                                        class="w-6 filter-orange-citric"
                                         loading="lazy"
                                     />
                                 </button>
