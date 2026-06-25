@@ -1,7 +1,7 @@
 <script>
     import { useForm, page } from "@inertiajs/svelte";
     import { Modal, Section } from "@/ui/components/private/";
-    import { locutionPermissions } from "@/utils";
+    import { locutionPermissions, resolvePlaceholderImage } from "@/utils";
     import { locutionIcons, locutionTextures, locutionDecorations } from "@/data";
 
     $: ({ programs } = $page.props);
@@ -81,7 +81,7 @@
                         on:click={() => { $form.program = item.uuid; }}
                     >
                         <img
-                            src={item.image}
+                            src={resolvePlaceholderImage(item.image, "program")}
                             alt=""
                             aria-hidden="true"
                             loading="lazy"

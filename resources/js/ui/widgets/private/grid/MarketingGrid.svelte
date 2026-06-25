@@ -2,7 +2,7 @@
     import { page, router } from "@inertiajs/svelte";
     import { Section, Offcanvas } from "@/ui/components/private";
     import { MarketingForm } from "@/ui/widgets/private";
-    import { repositoryPermissions } from "@/utils";
+    import { repositoryPermissions, resolvePlaceholderImage } from "@/utils";
 
     $: ({ repositories } = $page.props);
 
@@ -52,7 +52,7 @@
                         rel="noopener noreferrer"
                     >
                         <img
-                            src={item.image}
+                            src={resolvePlaceholderImage(item.image, "placeholder")}
                             alt={item.name}
                             class="w-full h-48 object-cover aspect-square"
                             loading="lazy"
@@ -77,7 +77,7 @@
                         rel="noopener noreferrer"
                     >
                         <img
-                            src={item.image}
+                            src={resolvePlaceholderImage(item.image, "placeholder")}
                             alt={item.name}
                             class="w-full h-48 object-cover aspect-square"
                             loading="lazy"
@@ -102,7 +102,7 @@
                         rel="noopener noreferrer"
                     >
                         <img
-                            src={item.image}
+                            src={resolvePlaceholderImage(item.image, "placeholder")}
                             alt={item.name}
                             class="w-full h-48 object-cover aspect-square"
                             loading="lazy"
@@ -136,7 +136,7 @@
                         rel="noopener noreferrer"
                     >
                         <img
-                            src={item.image}
+                            src={resolvePlaceholderImage(item.image, "placeholder")}
                             alt={item.name}
                             class="w-full h-48 object-cover aspect-square"
                             loading="lazy"

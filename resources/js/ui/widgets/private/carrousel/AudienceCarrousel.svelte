@@ -3,6 +3,7 @@
 
     import { page } from "@inertiajs/svelte";
     import { Carrousel, Section } from "@/ui/components/private/";
+    import { resolvePlaceholderImage } from "@/utils";
 
     $: ({ audience } = $page.props);
 </script>
@@ -13,7 +14,7 @@
             <article class="shrink-0 flex flex-col items-center justify-center gap-4 px-5 lg:first:pl-0 lg:border-r-2 lg:border-suspense-aurora/10 lg:last:border-0">
                 <div class="">
                     <img
-                        src={item.logo}
+                        src={resolvePlaceholderImage(item.logo, "placeholder")}
                         alt=""
                         aria-hidden="true"
                         loading="lazy"

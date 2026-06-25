@@ -3,6 +3,7 @@
     import { Modal } from "@/ui/components/public";
     import { SongRequestForm } from "@/ui/widgets/public";
     import { player, toggleAudio, setVolume } from "@/store";
+    import { resolvePlaceholderImage } from "@/utils";
 
     $: ({ onair: { data: [air] }, stream } = $page.props);
 
@@ -88,18 +89,12 @@
                     <p class="mb-1 text-orange-amber text-[10px] font-noto-sans font-extrabold uppercase tracking-widest">
                         Agora na Akiba
                     </p>
-                    {#if playerData.program.image}
-                        <img
-                            src={playerData.program.image}
-                            alt={playerData.program.name || "Programa no ar"}
-                            class="mb-4 max-w-full max-h-24 object-contain object-left"
-                            loading="lazy"
-                        />
-                    {:else}
-                        <h2 class="mb-4 text-suspense-aurora text-3xl leading-8 font-noto-sans font-extrabold uppercase italic break-words">
-                            {playerData.program.name || "Programação Akiba"}
-                        </h2>
-                    {/if}
+                    <img
+                        src={resolvePlaceholderImage(playerData.program.image, "program")}
+                        alt={playerData.program.name || "Programa no ar"}
+                        class="mb-4 max-w-full max-h-24 object-contain object-left"
+                        loading="lazy"
+                    />
 
                     <p class="text-suspense-aurora/55 text-[10px] font-noto-sans uppercase tracking-wider">
                         Com DJ
@@ -112,7 +107,7 @@
                 <div class="relative w-40 h-full flex items-end justify-end">
                     <div class="absolute right-0 bottom-3 size-32 rounded-full bg-blue-skywave/15 blur-2xl"></div>
                     <img
-                        src={playerData.host.avatar}
+                        src={resolvePlaceholderImage(playerData.host.avatar, "avatar")}
                         alt={playerData.host.nickname || "Locutor atual"}
                         class="relative z-10 w-40 max-h-56 object-contain object-bottom"
                         loading="lazy"
@@ -121,15 +116,13 @@
             </div>
 
             <div class="mb-6 flex items-center gap-3 rounded-2xl bg-blue-night/35 p-3">
-                {#if playerData.currentSong.cover}
-                    <img
-                        src={playerData.currentSong.cover}
-                        alt=""
-                        aria-hidden="true"
-                        class="size-11 shrink-0 rounded-lg object-cover opacity-80"
-                        loading="lazy"
-                    />
-                {/if}
+                <img
+                    src={resolvePlaceholderImage(playerData.currentSong.cover, "placeholder")}
+                    alt=""
+                    aria-hidden="true"
+                    class="size-11 shrink-0 rounded-lg object-cover opacity-80"
+                    loading="lazy"
+                />
                 <div class="min-w-0">
                     <p class="text-orange-amber text-[9px] font-noto-sans font-extrabold uppercase italic">
                         Tocando agora
@@ -227,18 +220,12 @@
                         <p class="mb-2 text-orange-amber text-xs font-noto-sans font-extrabold uppercase tracking-widest">
                             Agora na Akiba
                         </p>
-                        {#if playerData.program.image}
-                            <img
-                                src={playerData.program.image}
-                                alt={playerData.program.name || "Programa no ar"}
-                                class="mb-5 max-w-72 max-h-28 object-contain object-left"
-                                loading="lazy"
-                            />
-                        {:else}
-                            <h2 class="mb-5 text-suspense-aurora text-4xl leading-10 font-noto-sans font-extrabold uppercase italic">
-                                {playerData.program.name || "Programação Akiba"}
-                            </h2>
-                        {/if}
+                        <img
+                            src={resolvePlaceholderImage(playerData.program.image, "program")}
+                            alt={playerData.program.name || "Programa no ar"}
+                            class="mb-5 max-w-72 max-h-28 object-contain object-left"
+                            loading="lazy"
+                        />
 
                         <p class="text-suspense-aurora/55 text-[10px] font-noto-sans uppercase tracking-wider">
                             Com DJ
@@ -251,7 +238,7 @@
                     <div class="relative w-52 h-full -translate-x-10 flex items-end justify-end">
                         <div class="absolute right-2 bottom-4 size-40 rounded-full bg-blue-skywave/15 blur-3xl"></div>
                         <img
-                            src={playerData.host.avatar}
+                            src={resolvePlaceholderImage(playerData.host.avatar, "avatar")}
                             alt={playerData.host.nickname || "Locutor atual"}
                             class="relative z-10 w-52 max-h-64 object-contain object-bottom"
                             loading="lazy"
@@ -262,15 +249,13 @@
 
             <div class="min-w-0 flex flex-col justify-center">
                 <div class="mb-7 flex items-center gap-3 rounded-2xl bg-blue-night/35 p-3">
-                    {#if playerData.currentSong.cover}
-                        <img
-                            src={playerData.currentSong.cover}
-                            alt=""
-                            aria-hidden="true"
-                            class="size-14 shrink-0 rounded-xl object-cover opacity-80"
-                            loading="lazy"
-                        />
-                    {/if}
+                    <img
+                        src={resolvePlaceholderImage(playerData.currentSong.cover, "placeholder")}
+                        alt=""
+                        aria-hidden="true"
+                        class="size-14 shrink-0 rounded-xl object-cover opacity-80"
+                        loading="lazy"
+                    />
                     <div class="min-w-0">
                         <p class="text-orange-amber text-[9px] font-noto-sans font-extrabold uppercase italic">
                             Tocando agora

@@ -19,19 +19,19 @@ class ListenerMonthResource extends JsonResource
 
         return [
             'uuid' => $this->uuid,
-            'avatar' => $this->avatar ?: '/img/defaults/avatar.webp',
+            'avatar' => $this->avatar,
             'name' => $this->name,
             'address' => $this->address,
             'birthday' => $this->birthday?->format('Y-m-d'),
             'favorite_program' => [
-                'name' => $favoriteProgram['name'] ?? null,
-                'image' => $favoriteProgram['image'] ?? null,
+                'name' => $favoriteProgram['name'],
+                'image' => $favoriteProgram['image'],
             ],
             'favorite_music' => [
-                'name' => $favoriteMusic['name'] ?? null,
-                'artist' => $favoriteMusic['artist'] ?? null,
-                'production' => $favoriteMusic['production'] ?? null,
-                'image' => ($favoriteMusic['image'] ?? null) ?: '/img/defaults/character.webp',
+                'name' => $favoriteMusic['name'],
+                'artist' => $favoriteMusic['artist'],
+                'production' => $favoriteMusic['production'],
+                'image' => $favoriteMusic['image'],
             ],
             'requests_total' => $this->requests_total,
         ];

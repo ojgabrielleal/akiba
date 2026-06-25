@@ -3,7 +3,7 @@
 
     import { router, page, Link } from "@inertiajs/svelte";
     import { Section, ButtonPagination } from "@/ui/components/private/";
-    import { podcastPermissions } from "@/utils";
+    import { podcastPermissions, resolvePlaceholderImage } from "@/utils";
 
     $: ({ podcasts } = $page.props);
 
@@ -25,7 +25,7 @@
                         <div class="aspect-square">
                             <img
                                 class="w-full h-full rounded-md"
-                                src={item.image}
+                                src={resolvePlaceholderImage(item.image, "placeholder")}
                                 alt={`Capa do podcast ${item.title}`}
                             />
                         </div>

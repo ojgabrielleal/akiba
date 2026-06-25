@@ -8,7 +8,7 @@
         UserAccessForm,
         ActivityForm,
     } from "@/ui/widgets/private";
-    import { userGridPermissions } from "@/utils";
+    import { resolvePlaceholderImage, userGridPermissions } from "@/utils";
 
     $: ({ users } = $page.props);
 
@@ -74,7 +74,7 @@
                     </header>
                     <img
                         class="w-35 absolute right-0 bottom-0"
-                        src={item.avatar}
+                        src={resolvePlaceholderImage(item.avatar, "avatar")}
                         alt=""
                         aria-hidden="true"
                     />

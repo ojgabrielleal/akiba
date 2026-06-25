@@ -22,7 +22,7 @@ class ProgramFactory extends Factory
         return [
             'is_active' => true,
             'name' => fake()->name(),
-            'image' => '/img/locution/program.webp',
+            'image' => '/img/placeholders/program.webp',
             'access_type' => 'free',
             'execution_mode' => 'live',
             'is_default_auto_dj' => false,

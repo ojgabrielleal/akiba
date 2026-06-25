@@ -3,6 +3,7 @@
 
     import { page, Link } from "@inertiajs/svelte";
     import { Section } from "@/ui/components/public";
+    import { resolvePlaceholderImage } from "@/utils";
 
     $: ({ featureds } = $page.props);
 </script>
@@ -19,7 +20,7 @@
                     >
                         <article>
                             <img
-                                src={item.cover}
+                                src={resolvePlaceholderImage(item.cover, "placeholder")}
                                 alt={item.title}
                                 class="absolute inset-0 w-full h-full object-cover sm:static sm:w-auto sm:h-auto sm:hidden"
                                 loading="lazy"
@@ -31,7 +32,7 @@
                                 </h2>
                             </div>
                             <img
-                                src={item.image}
+                                src={resolvePlaceholderImage(item.image, "placeholder")}
                                 alt=""
                                 aria-hidden="true"
                                 class="hidden sm:block absolute bottom-0 right-0 sm:w-55"

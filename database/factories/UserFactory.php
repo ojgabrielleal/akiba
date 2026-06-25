@@ -33,7 +33,7 @@ class UserFactory extends Factory
             'name' => fake()->name(),
             'nickname' => fake()->userName(),
             'gender' => $this->attributes['gender'] ?? fake()->randomElement(['male', 'female']),
-            'avatar' => '/img/defaults/avatar.webp',
+            'avatar' => '/img/placeholders/avatar.webp',
             'birthday' => fake()->date(),
             'city' => fake()->city(),
             'state' => fake()->state(),
@@ -51,7 +51,7 @@ class UserFactory extends Factory
                 'name' => 'Yagami Kou',
                 'nickname' => 'Yagami',
                 'gender' => 'female',
-                'avatar' => '/img/defaults/avatar.webp',
+                'avatar' => '/img/placeholders/avatar.webp',
             ])
             ->afterCreating(function (User $user) {
                 $administrator = Role::where('name', 'administrator')->first();
