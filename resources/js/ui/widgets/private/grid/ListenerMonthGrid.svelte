@@ -4,7 +4,7 @@
     import { page } from "@inertiajs/svelte";
     import { Section, Offcanvas } from "@/ui/components/private";
     import { ListenerMonthForm } from "@/ui/widgets/private";
-    import { listenerMonthPermissions, resolveAge } from "@/utils";
+    import { listenerMonthPermissions, resolveAge, resolvePlaceholderImage } from "@/utils";
 
     $: ({ listenerMonth } = $page.props);
 
@@ -21,7 +21,6 @@
             },
         },
     ];
-
 </script>
 
 <Offcanvas bind:this={offcanvasRef} title={listenerMonth.found.name}>
@@ -34,7 +33,7 @@
     <Section {title} {actions}>
         <div class="grid grid-cols-1 lg:grid-cols-[18rem_1fr] gap-5">
             <img 
-                src={listenerMonth.current.data.avatar}
+                src={resolvePlaceholderImage(listenerMonth.current.data.avatar, "avatar")}
                 class="object-contain"
                 alt={listenerMonth.current.data.name}
             />
@@ -61,8 +60,8 @@
                     </div>
                     <div class="relative h-55 flex flex-col justify-center items-center bg-blue-marinho rounded-md font-noto-sans font-medium text-orange-amber text-center uppercase">
                         <img 
-                            src={listenerMonth.current.data.favorite_program.image}
-                            class="w-44 object-contain"
+                            src={resolvePlaceholderImage(listenerMonth.current.data.favorite_program.image, "program")}
+                            class="w-44 object-contain rounded-md"
                             alt={listenerMonth.current.data.favorite_program.name}
                         />
                         <div class="absolute w-full bottom-1 left-1/2 -translate-1/2">
@@ -71,7 +70,7 @@
                     </div>
                     <div class="relative h-55 flex flex-col justify-center items-center bg-blue-marinho rounded-md font-noto-sans font-medium text-orange-amber text-center uppercase">
                         <img 
-                            src={listenerMonth.current.data.favorite_music.image}
+                            src={resolvePlaceholderImage(listenerMonth.current.data.favorite_music.image, "placeholder")}
                             class="w-30 h-30 object-cover rounded-md"
                             alt={listenerMonth.current.data.favorite_music.production}
                         />

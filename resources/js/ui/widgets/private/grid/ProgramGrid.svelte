@@ -4,7 +4,7 @@
     import { router, page } from "@inertiajs/svelte";
     import { Offcanvas, Section, Tooltip } from "@/ui/components/private/";
     import { ProgramForm } from "@/ui/widgets/private";
-    import { programPermissions, resolveDateTime, resolveDay, resolveHour } from "@/utils";
+    import { programPermissions, resolveDateTime, resolveDay, resolveHour, resolvePlaceholderImage } from "@/utils";
 
     $: ({ programs } = $page.props);
     
@@ -98,7 +98,7 @@
                     <div>
                         <img
                             class="w-40 mb-3"
-                            src={item.image}
+                            src={resolvePlaceholderImage(item.image, "program")}
                             alt={item.name}
                             loading="lazy"
                         />
@@ -166,7 +166,7 @@
                             </div>
                             <img
                                 class="w-36 aspect-square absolute right-0 bottom-0 object-cover object-top"
-                                src={item.host.avatar}
+                                src={resolvePlaceholderImage(item.host.avatar, "avatar")}
                                 alt={item.host.nickname}
                                 loading="lazy"
                             />

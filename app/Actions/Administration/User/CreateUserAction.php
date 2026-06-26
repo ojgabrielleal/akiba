@@ -19,7 +19,7 @@ class CreateUserAction
                 'username' => $data['username'],
                 'password' => $data['password'],
                 'name' => $data['name'],
-                'avatar' => '/img/defaults/avatar.webp',
+                'avatar' => '/img/placeholders/avatar.webp',
                 'nickname' => $data['nickname'],
                 'gender' => $data['gender'],
                 'is_virtual' => $data['is_virtual'],

@@ -4,6 +4,7 @@
 
     import { page, Link } from "@inertiajs/svelte";
     import { Section } from "@/ui/components/public";
+    import { resolvePlaceholderImage } from "@/utils";
 
     $: ({ reviews } = $page.props);
 </script>
@@ -20,7 +21,7 @@
                     >
                         <article>
                             <img
-                                src={item.cover}
+                                src={resolvePlaceholderImage(item.cover, "placeholder")}
                                 alt={item.title}
                                 class="w-full h-[90%] sm:h-50 object-cover rounded-t-md"
                             />

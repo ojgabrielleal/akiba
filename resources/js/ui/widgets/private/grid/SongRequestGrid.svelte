@@ -4,7 +4,7 @@
     import { onMount } from "svelte";
     import { page, router } from "@inertiajs/svelte";
     import { Section } from "@/ui/components/private/";
-    import { songRequestPermissions } from "@/utils";
+    import { resolvePlaceholderImage, songRequestPermissions } from "@/utils";
 
     $: ({ onair, songRequests } = $page.props);
 
@@ -83,7 +83,7 @@
 
         new Notification(`Novo Pedido DJ ${songRequest.name}`, {
             body: `O ouvinte ${songRequest.name} pediu uma música, Vá ver!`,
-            icon: "/img/defaults/songRequestNotification.webp",
+            icon: "/img/notifications/songRequestNotification.webp",
         });
     };
 
@@ -157,7 +157,7 @@
                     {#if item.music}
                         <div class="flex items-center gap-3 min-w-0">
                             <img
-                                src={item.music.image}
+                                src={resolvePlaceholderImage(item.music.image, "placeholder")}
                                 alt={`Capa do anime ${item.music.production}`}
                                 class="w-15 h-15 rounded-md object-cover object-top shrink-0"
                                 loading="lazy"

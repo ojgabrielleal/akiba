@@ -4,6 +4,7 @@
     import { SongRequestForm } from "@/ui/widgets/public";
     import { player, toggleAudio, setVolume } from "@/store";
     import { locutionIcons, locutionTextures, locutionDecorations } from "@/data";
+    import { resolvePlaceholderImage } from "@/utils";
 
     $: ({ onair: { data: [air] }, stream } = $page.props);
 
@@ -102,7 +103,7 @@
         <div class="flex items-center gap-5 mb-5">
             <div class="w-60">
                 <img
-                src={playerData.program.image}
+                    src={resolvePlaceholderImage(playerData.program.image, "program")}
                     alt="Programa no ar"
                     loading="lazy"
                 />
@@ -151,7 +152,7 @@
         <div class="flex gap-3 items-end">
             <div class="w-20 shrink-0">
                 <img
-                    src={playerData.current_song.cover}
+                    src={resolvePlaceholderImage(playerData.current_song.cover, "placeholder")}
                     alt=""
                     aria-hidden="true"
                     class="rounded-md"
@@ -175,7 +176,7 @@
         <!--Host Image-->
         <div class="w-65">
             <img
-                src={playerData.host.avatar}
+                src={resolvePlaceholderImage(playerData.host.avatar, "avatar")}
                 alt={playerData.host.nickname || "Locutor atual"}
                 class="w-full h-full"
                 loading="lazy"

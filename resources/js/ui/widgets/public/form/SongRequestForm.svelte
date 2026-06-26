@@ -1,7 +1,7 @@
 <script>
     import axios from "axios";
     import { useForm, page } from "@inertiajs/svelte";
-    import { debounce } from "@/utils";
+    import { debounce, resolvePlaceholderImage } from "@/utils";
 
     $: ({ onair } = $page.props);
 
@@ -172,7 +172,7 @@
                                 on:mousedown={() => selectAnime(item)}
                             >
                                 <img
-                                    src={item.image}
+                                    src={resolvePlaceholderImage(item.image, "placeholder")}
                                     alt={item.title}
                                     class="w-14 h-14 object-cover rounded-md border border-gray-100 shadow-sm shrink-0"
                                     loading="lazy"

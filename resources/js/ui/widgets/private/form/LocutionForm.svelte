@@ -1,7 +1,7 @@
 <script>
     import { useForm, page } from "@inertiajs/svelte";
     import { Modal, Section } from "@/ui/components/private/";
-    import { locutionPermissions } from "@/utils";
+    import { locutionPermissions, resolvePlaceholderImage } from "@/utils";
     import { locutionIcons, locutionTextures, locutionDecorations } from "@/data";
 
     $: ({ programs } = $page.props);
@@ -53,7 +53,7 @@
                 type="button"
                 class="cursor-pointer rounded-full border border-blue-ocean/20 px-1 py-2 text-sm font-extrabold uppercase italic text-blue-marinho transition hover:bg-blue-ocean/10 disabled:cursor-not-allowed disabled:opacity-60"
                 disabled={$form.processing}
-                on:click={() => startLocution(false)}
+                on:click={() => startLocution(true)}
             >
                 Avisar
             </button>
@@ -61,7 +61,7 @@
                 type="button"
                 class="cursor-pointer rounded-full bg-orange-citric px-1 py-2 text-sm font-extrabold uppercase italic text-blue-marinho transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-60"
                 disabled={$form.processing}
-                on:click={() => startLocution(true)}
+                on:click={() => startLocution(false)}
             >
                 Não avisar
             </button>
@@ -81,7 +81,7 @@
                         on:click={() => { $form.program = item.uuid; }}
                     >
                         <img
-                            src={item.image}
+                            src={resolvePlaceholderImage(item.image, "program")}
                             alt=""
                             aria-hidden="true"
                             loading="lazy"

@@ -15,7 +15,11 @@ case "$command" in
         "$SCRIPT_DIR/scripts/up.sh" "$@"
         ;;
     down)
-        docker compose down "$@"
+        "$SCRIPT_DIR/scripts/down.sh" "$@"
+        ;;
+    restart)
+        "$SCRIPT_DIR/scripts/down.sh"
+        "$SCRIPT_DIR/scripts/up.sh" "$@"
         ;;
     artisan)
         docker compose exec laravel php artisan "$@"

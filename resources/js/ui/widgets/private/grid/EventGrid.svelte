@@ -4,7 +4,7 @@
 
     import { router, page, Link } from "@inertiajs/svelte";
     import { Section, ButtonPagination } from "@/ui/components/private";
-    import { eventPermissions } from "@/utils";
+    import { eventPermissions, resolvePlaceholderImage } from "@/utils";
 
     $: ({ events } = $page.props);
 
@@ -88,7 +88,7 @@
                     <div class="h-65 bg-blue-skywave rounded-sm relative overflow-hidden">
                         <img
                             class="w-full h-65 object-cover aspect-square brightness-50"
-                            src={item.cover}
+                            src={resolvePlaceholderImage(item.cover, "placeholder")}
                             alt={`Evento ${item.title}`}
                         />
                         <div class="flex gap-4 absolute bottom-3 right-3">

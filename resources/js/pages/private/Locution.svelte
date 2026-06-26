@@ -4,6 +4,7 @@
     import { Meta } from "@/config";
     import { Layout } from "@/ui/layouts/private";
     import { LocutionForm, SongRequestGrid } from "@/ui/widgets/private";
+    import { resolvePlaceholderImage } from "@/utils";
 
     $: ({ user, onair } = $page.props);
 
@@ -35,7 +36,7 @@
                 <div class="relative shrink-0">
                     <div class="h-20 w-20 overflow-hidden rounded-md bg-blue-marinho">
                         <img
-                            src={onair.data.program.host.avatar}
+                            src={resolvePlaceholderImage(onair.data.program.host.avatar, "avatar")}
                             alt=""
                             class="h-full w-full object-cover object-top"
                         />

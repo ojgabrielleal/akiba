@@ -5,7 +5,7 @@
     import { page, router } from "@inertiajs/svelte";
     import { Carrousel, Offcanvas, Section, Tooltip } from "@/ui/components/private/";
     import { ActivityForm } from "@/ui/widgets/private";
-    import { activityPermissions } from "@/utils";
+    import { activityPermissions, resolvePlaceholderImage } from "@/utils";
 
     $: ({ user, activities } = $page.props);
 
@@ -55,7 +55,7 @@
                                 <Tooltip>
                                     <div class="w-8 h-8 rounded-full overflow-hidden bg-suspense-aurora">
                                         <img
-                                            src={conf.avatar}
+                                            src={resolvePlaceholderImage(conf.avatar, "avatar")}
                                             alt={conf.nickname}
                                             class="w-full h-full object-cover object-top scale-200"
                                             loading="lazy"

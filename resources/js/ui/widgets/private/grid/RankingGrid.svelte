@@ -4,7 +4,7 @@
     import { page, router } from "@inertiajs/svelte";
     import { Offcanvas, Section, Tooltip } from "@/ui/components/private";
     import { MusicForm } from "@/ui/widgets/private";
-    import { musicPermissions } from "@/utils";
+    import { musicPermissions, resolvePlaceholderImage } from "@/utils";
 
     $: ({ ranking } = $page.props);
 
@@ -60,7 +60,7 @@
                                 {card.position}
                             </div>
                             <img
-                                src={ranking.data[index].ranking.image}
+                                src={resolvePlaceholderImage(ranking.data[index].ranking.image, "placeholder")}
                                 alt={`Imagem do ranking da música ${ranking.data[index].name}`}
                                 class="absolute bottom-0 right-0 h-28 w-28 object-contain sm:h-40 sm:w-40"
                             />

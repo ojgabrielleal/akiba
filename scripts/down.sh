@@ -9,26 +9,19 @@ line() {
 GITHUB_DEV="https://github.com/ojgabrielleal"
 GITHUB_REPOSITORY="https://github.com/ojgabrielleal/akiba"
 
-APP_URL="http://localhost:8000"
-PHPMYADMIN_URL="http://localhost:8080"
-
 line
-echo "Starting containers..."
+echo "Stopping containers..."
 line
 
-docker compose up -d
-clear 
+docker compose down
+clear
 
 line
-echo "Environment is running!"
+echo "Environment stopped!"
 line
-echo "Site: $APP_URL"
-echo "PHPMyAdmin: $PHPMYADMIN_URL"
+echo "Containers stopped successfully."
+echo "Database volume was preserved."
 line
 echo "Github Dev: $GITHUB_DEV"
 echo "Github Repository: $GITHUB_REPOSITORY"
-line
-echo "Panel: $APP_URL/panel"
-echo "User: admin"
-echo "Pass: admin"
 line

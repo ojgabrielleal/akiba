@@ -5,6 +5,7 @@
     import { page, Link } from "@inertiajs/svelte";
     import { Section } from "@/ui/components/public";
     import { postTags } from "@/data";
+    import { resolvePlaceholderImage } from "@/utils";
 
     $: ({ posts } = $page.props);
 </script>
@@ -21,7 +22,7 @@
                     >
                         <article class="contents">
                             <img
-                                src={item.cover}
+                                src={resolvePlaceholderImage(item.cover, "placeholder")}
                                 alt={item.title}
                                 class="w-full sm:w-50 sm:h-40 aspect-square sm:aspect-auto object-cover rounded-md bg-amber-50 shrink-0"
                             />
