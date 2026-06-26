@@ -11,7 +11,7 @@ services:
         condition: service_healthy
     networks: 
       - akiba_network
-    command: tail -f /dev/null
+    command: php artisan serve --host=0.0.0.0 --port=8000
     container_name: akiba_laravel
 
   node: 
@@ -23,7 +23,7 @@ services:
       - "5173:5173"
     networks: 
       - akiba_network 
-    command: tail -f /dev/null
+    command: npm run dev -- --host 0.0.0.0
     container_name: akiba_node 
 
   mysql: 
