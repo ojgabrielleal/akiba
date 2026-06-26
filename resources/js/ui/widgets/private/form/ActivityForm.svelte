@@ -8,7 +8,7 @@
 
     let can = activityPermissions();
 
-    let form = useForm({
+    $: form = useForm({
         title: null,
         purpose: null,
         limit: null,

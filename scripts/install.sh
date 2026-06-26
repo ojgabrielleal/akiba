@@ -72,6 +72,14 @@ docker compose down
 clear
 
 line
+echo "Create storage link..."
+line
+
+docker compose exec laravel php storage:link
+docker compose down
+clear
+
+line
 echo "Environment configured successfully!"
 line
 echo "To start the environment, run:"

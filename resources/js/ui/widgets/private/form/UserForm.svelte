@@ -8,7 +8,7 @@
 
     let can = userPermissions();
 
-    let form = useForm({
+    $: form = useForm({
         is_virtual: false,
         username: null,
         password: null,

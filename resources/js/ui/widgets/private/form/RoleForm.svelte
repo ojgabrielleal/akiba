@@ -10,7 +10,7 @@
 
     let can = rolePermissions();
 
-    let form = useForm({
+    $: form = useForm({
         label: null,
         weight: null,
         description: null,

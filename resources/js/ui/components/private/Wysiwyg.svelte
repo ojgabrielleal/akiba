@@ -54,7 +54,7 @@
     }
 </script>
 
-<div class={["rounded-xl overflow-hidden bg-blue-ocean", 
+<div class={["rounded-md overflow-hidden bg-blue-ocean", 
     {'opacity-70 cursor-not-allowed': isDisabled}
 ]}>
     <div bind:this={editor} class="p-3" style="min-height: {height};"></div>

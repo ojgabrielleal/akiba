@@ -1,5 +1,4 @@
 <script>
-    export let label = null;
     export let status = null;
     export let can = [];
 </script>
@@ -31,7 +30,7 @@
                 value="published"
                 class="cursor-pointer font-noto-sans font-extrabold italic uppercase text-suspense-aurora py-2 px-6 rounded-full bg-purple-mystic"
             >
-                Aprovar {label}
+                Aprovar
             </button>
         {:else if status === 'published'}
             <button
@@ -40,7 +39,7 @@
                 value="published"
                 class="cursor-pointer font-noto-sans font-extrabold italic uppercase text-suspense-aurora py-2 px-6 rounded-full bg-blue-ocean"
             >
-                Atualizar {label}
+                Atualizar
             </button>
         {:else if can.publish}
             <button
@@ -49,7 +48,7 @@
                 value="published"
                 class="cursor-pointer font-noto-sans font-extrabold italic uppercase text-suspense-aurora py-2 px-6 rounded-full bg-blue-ocean"
             >
-                Publicar {label}
+                Publicar
             </button>
         {/if}
     </div>

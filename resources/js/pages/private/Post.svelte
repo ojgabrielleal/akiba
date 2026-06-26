@@ -9,7 +9,7 @@
     $: ({ post } = $page.props);
     
     let show = post ?? Cookies.get("akiba_post_show_editor");
-    let form = post?.data.module ?? Cookies.get("akiba_post_module");
+    $: form = post?.data.module ?? Cookies.get("akiba_post_module");
 
     let operation = (module) => {
         form = module;
@@ -51,8 +51,8 @@
 
 <Meta meta={{ title: pageName[form]}} />
 <Layout>
-    <h1 class="sr-only">{pageName[form] ?? "Conteudo"}</h1>
-    <Section title="Criar" {actions} />
+    <h1 class="sr-only">Posts</h1>
+    <Section title="Criar" {actions}>
         {#if show}
             {#if form === 'post'}
                 <PostForm />
@@ -62,5 +62,7 @@
                 <EventForm />
             {/if}
         {/if}
-        <PostGrid title="Todas as matérias, reviews e eventos"/>
+    </Section>
+
+    <PostGrid title="Todas as matérias, reviews e eventos"/>
 </Layout>

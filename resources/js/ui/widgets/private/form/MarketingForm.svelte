@@ -8,7 +8,7 @@
 
     let can = repositoryPermissions();
 
-    let form = useForm({
+    $: form = useForm({
         _method: null,
         image: null,
         name: null,
