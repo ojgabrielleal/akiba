@@ -8,7 +8,7 @@
 
     let can = musicPermissions();
 
-    let form = useForm({
+    $: form = useForm({
         _method: "PATCH",
         image: null,
         image_ranking: null,

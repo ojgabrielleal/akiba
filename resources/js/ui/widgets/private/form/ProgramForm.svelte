@@ -13,7 +13,7 @@
     let iconModalRef;
     let phraseIndex;
 
-    let form = useForm({
+    $: form = useForm({
         _method: programSelected ? "PATCH" : "POST",
         user: programSelected?.host.uuid ?? null,
         name: programSelected?.name ?? null,

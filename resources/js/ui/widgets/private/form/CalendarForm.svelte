@@ -10,7 +10,7 @@
 
     let can = calendarPermissions();
 
-    let form = useForm({
+    $: form = useForm({
         user: null,
         hour: null,
         date: null,

@@ -4,9 +4,7 @@
     import { postPermissions } from "@/utils";
     import { postTags } from "@/data";
 
-    let post = $page.props.post;
-    $: post = $page.props.post;
-
+    let { post } = $page.props;
     let can = postPermissions();
 
     const normalizeTags = (tags = []) => [
@@ -19,7 +17,7 @@
         { uuid: null, name: null, url: null, ...references[1] },
     ];
 
-    let form = useForm({
+    $: form = useForm({
         _method: post ? "PATCH" : "POST",
         module: "event",
         status: post?.data.status ?? null,
@@ -47,12 +45,12 @@
     };
 </script>
 
-<form class="container-page mb-20" on:submit|preventDefault={submit}>
+<form on:submit|preventDefault={submit}>
     <div class="lg:px-40">
         <div class="mb-8">
             <div class="mb-8">
                 <label for="title" class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block mb-1">
-                    Nome do evento
+                    Nome
                 </label>
                 <input
                     id="title"
@@ -66,7 +64,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 lg:gap-5 mb-8">
                 <div class="mb-8 lg:mb-0">
                     <label for="dates" class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block mb-1">
-                        Datas do evento
+                        Datas
                     </label>
                     <input
                         id="dates"
@@ -80,7 +78,7 @@
                 </div>
                 <div class="lg:mb-0">
                     <label for="address" class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block mb-1">
-                        Locais do evento
+                        Locais
                     </label>
                     <input
                         id="address"
@@ -95,7 +93,7 @@
             </div>
             <div class="mb-8">
                 <label for="cover" class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block mb-1">
-                    Capa do evento
+                    Capa
                 </label>
                 <Preview
                     name="cover"
@@ -106,7 +104,7 @@
             </div>
             <div>
                 <label for="content" class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block mb-1">
-                    Escreva sobre o evento
+                    Escreva
                 </label>
                 <Wysiwyg
                     name="content"
@@ -247,7 +245,6 @@
                 </div>
             </div>
             <PostActions
-                label="Evento"
                 post={post}
                 status={$form.status}
                 can={can}

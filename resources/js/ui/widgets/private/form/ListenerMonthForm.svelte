@@ -5,7 +5,7 @@
     import { useForm } from "@inertiajs/svelte";
     import { Preview } from "@/ui/components/private";
 
-    let form = useForm({
+    $: form = useForm({
         avatar: null,
         birthday: listenerMonthFound?.birthday ?? null,
     });

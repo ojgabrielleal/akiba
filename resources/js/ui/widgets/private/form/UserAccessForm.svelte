@@ -10,7 +10,7 @@
 
     let can = userPermissions().access;
 
-    let form = useForm({
+    $: form = useForm({
         password: null,
         roles: null,
     });

@@ -10,7 +10,7 @@
 
     let can = taskPermissions();
 
-    let form = useForm({
+    $: form = useForm({
         user: null,
         title: null,
         dead_line: null,

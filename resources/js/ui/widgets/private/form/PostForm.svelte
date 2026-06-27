@@ -4,9 +4,7 @@
     import { postPermissions } from "@/utils";
     import { postTags } from "@/data";
 
-    let post = $page.props.post;
-    $: post = $page.props.post;
-
+    let { post } = $page.props;
     let can = postPermissions();
 
     const normalizeTags = (tags = []) => [
@@ -19,7 +17,7 @@
         { uuid: null, name: null, url: null, ...references[1] },
     ];
 
-    let form = useForm({
+    $: form = useForm({
         _method: post ? "PATCH" : "POST",
         module: "post",
         status: post?.data.status ?? null,
@@ -45,7 +43,7 @@
     };
 </script>
 
-<form class="container-page mb-20" on:submit|preventDefault={submit}>
+<form on:submit|preventDefault={submit}>
     <div class="lg:px-40">
         <div class="mb-8">
             <div class="mb-8">
@@ -63,7 +61,7 @@
             </div>
             <div class="mb-8">
                 <label for="cover" class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block mb-1">
-                    Capa da matéria
+                    Capa
                 </label>
                 <Preview
                     name="cover"
@@ -74,7 +72,7 @@
             </div>
             <div>
                 <label for="content" class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block mb-1">
-                    Escreva sua matéria
+                    Escreva
                 </label>
                 <Wysiwyg
                     name="content"
@@ -217,7 +215,6 @@
                 </div>
             </div>
             <PostActions
-                label="Matéria"
                 post={post}
                 status={$form.status}
                 can={can}
