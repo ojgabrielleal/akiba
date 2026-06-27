@@ -8,7 +8,7 @@
     $: air = onair.data[0];
     $: success = false;
 
-    let form = useForm({
+    $: form = useForm({
         name: null,
         address: null,
         anime: null,

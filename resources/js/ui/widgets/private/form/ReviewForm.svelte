@@ -3,9 +3,7 @@
     import { PostActions, Preview, Wysiwyg, Tooltip } from "@/ui/components/private";
     import { postPermissions } from "@/utils";
 
-    let post = $page.props.post;
-    $: post = $page.props.post;
-    
+    let { post } = $page.props;
     let can = postPermissions();
 
     const normalizeTags = (tags = []) => [
@@ -18,7 +16,7 @@
         { uuid: null, name: null, url: null, ...references[1] },
     ];
 
-    let form = useForm({
+    $: form = useForm({
         _method: post ? "PATCH" : "POST",
         module: "review",
         image: post?.data.image ?? null,
@@ -45,13 +43,13 @@
     };
 </script>
 
-<form class="container-page mb-20" on:submit|preventDefault={submit}>
+<form on:submit|preventDefault={submit}>
     <div class="lg:px-40">
         <div class="mb-8">
             <div class="grid grid-cols-1 lg:grid-cols-[1fr_13rem] lg:gap-5">
                 <div class="mb-8 lg:mb-0">
                     <label for="title" class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block mb-1">
-                        Nome do anime
+                        Nome
                     </label>
                     <input
                         id="title"
@@ -78,7 +76,7 @@
             </div>
             <div class="mb-8">
                 <label for="sinopse" class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block mb-1">
-                    Sinopse do anime
+                    Sinopse
                 </label>
                 <Wysiwyg
                     height="13rem"
@@ -89,7 +87,7 @@
             </div>
             <div class="mb-8">
                 <label for="cover" class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block mb-1">
-                    Capa do anime
+                    Capa
                 </label>
                 <Preview
                     name="cover"
@@ -100,7 +98,7 @@
             </div>
             <div>
                 <label for="content" class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block mb-1">
-                    Escreva sobre o anime
+                    Escreva
                 </label>
                 {#if post?.data.opinions?.length}
                     <div class="mb-3 flex flex-wrap gap-2">
@@ -263,7 +261,6 @@
                 </div>
             </div>
             <PostActions
-                label="review"
                 status={$form.review?.status}
                 can={can}
             />

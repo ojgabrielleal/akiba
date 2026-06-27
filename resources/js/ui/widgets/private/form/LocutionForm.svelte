@@ -9,7 +9,7 @@
     let can = locutionPermissions();
     let notificationModalRef;
 
-    let form = useForm({
+    $: form = useForm({
         send_notification: null,
         program: null,
         phrase: {

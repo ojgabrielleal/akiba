@@ -37,6 +37,7 @@ class PodcastController extends Controller
 
         return PodcastResource::collection(
             Podcast::active()
+                ->latest()
                 ->with('author')
                 ->paginate(10)
         );

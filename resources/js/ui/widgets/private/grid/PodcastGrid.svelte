@@ -2,65 +2,89 @@
     export let title;
 
     import { router, page, Link } from "@inertiajs/svelte";
-    import { Section, ButtonPagination } from "@/ui/components/private/";
+    import { Section, ButtonPagination, Tooltip } from "@/ui/components/private/";
     import { podcastPermissions, resolvePlaceholderImage } from "@/utils";
 
     $: ({ podcasts } = $page.props);
 
     let can = podcastPermissions();
 
-    const requestDeactivatePodcast = (podcast) => {
-        router.delete(`/panel/podcast/${podcast}`, {},
+    const requestDeactivate = (item) => {
+        router.delete(`/panel/podcast/${item.uuid}`, {},
             { preserveScroll: true },
         );
     };
 </script>
 
 {#if podcasts}
-    <Section {title}>
-        <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5 lg:gap-y-10 lg:gap-x-5">
+     <Section {title}>
+        <ul class="gap-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
             {#each podcasts.data as item}
-                <li>
+                <li class="w-full h-65 bg-blue-ocean rounded-md overflow-hidden relative">
                     <article>
-                        <div class="aspect-square">
+                    <img 
+                        src={item.image}
+                        class="w-full h-65 object-cover"
+                        alt={item.title}
+                    />
+                    <div class="grid grid-cols-[0.4fr_1fr_0.6fr] items-center bg-blue-cerulean absolute bottom-0 w-full py-1 px-4">
+                        <div class="flex items-center gap-2 font-noto-sans font-extrabold italic uppercase text-md text-suspense-aurora truncate">
                             <img
-                                class="w-full h-full rounded-md"
-                                src={resolvePlaceholderImage(item.image, "placeholder")}
-                                alt={`Capa do podcast ${item.title}`}
+                                src="/svg/eye.svg"
+                                alt=""
+                                aria-hidden="true"
+                                class="w-4 filter-suspense-aurora"
+                                loading="lazy"
                             />
+                            0
                         </div>
-                        <div class="flex justify-between mt-3">
-                            <div class="text-orange-amber text-2xl font-noto-sans font-extrabold uppercase italic">
-                                S{item.season}-EP{item.episode}
-                            </div>
-                            <div class="flex items-center gap-3">
-                                {#if can.update}
+                        <div class="mt-[0.1rem] w-full font-noto-sans font-extrabold text-sm text-center text-suspense-aurora italic uppercase truncate">
+                            S{item.season} - Ep{item.episode}
+                        </div>
+                        <div class="flex gap-1 justify-end mt-1">
+                            {#if can.deactivate}
+                                <Tooltip>
+                                    <button
+                                        type="button"
+                                        aria-label={`Remover ${item.title}`}
+                                        class="w-7 h-7 bg-blue-night rounded-md flex items-center justify-center cursor-pointer"
+                                        on:click={()=> requestDeactivate(item)}
+                                    >
+                                        <img
+                                            src="/svg/trash.svg"
+                                            alt=""
+                                            aria-hidden="true"
+                                            class="w-4 filter-red-crimson"
+                                            loading="lazy"
+                                        />
+                                    </button>
+                                    <div slot="content">
+                                        Desativar
+                                    </div>
+                                </Tooltip>
+                            {/if}
+                            {#if can.update}
+                                <Tooltip>
                                     <Link
-                                        href={`/podcast/${item.uuid}`}
-                                        aria-label={`Editar ${item.title}`}
+                                        href={`/panel/podcast/${item.uuid}`}
+                                        aria-label={`Atualizar ${item.title}`}
+                                        class="w-7 h-7 bg-blue-night rounded-md flex items-center justify-center cursor-pointer"
                                     >
                                         <img
                                             src="/svg/edit.svg"
                                             alt=""
                                             aria-hidden="true"
-                                            class="w-5 filter-suspense-aurora"
+                                            class="w-4 filter-orange-citric"
                                             loading="lazy"
                                         />
                                     </Link>
-                                {/if}
-                                {#if can.deactivate}
-                                    <button type="button" class="cursor-pointer" aria-label={`Desativar ${item.title}`} on:click={() => requestDeactivatePodcast(item.uuid)}>
-                                        <img
-                                            src="/svg/trash.svg"
-                                            alt=""
-                                            aria-hidden="true"
-                                            class="w-5 filter-red-crimson"
-                                            loading="lazy"
-                                        />
-                                    </button>
-                                {/if}
-                            </div>
+                                    <div slot="content">
+                                        Atualizar
+                                    </div>
+                                </Tooltip>
+                            {/if}
                         </div>
+                    </div>
                     </article>
                 </li>
             {/each}

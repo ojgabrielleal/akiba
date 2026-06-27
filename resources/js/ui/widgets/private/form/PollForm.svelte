@@ -8,7 +8,7 @@
 
     let can = pollPermissions();
 
-    let form = useForm({
+    $: form = useForm({
         question: null,
         option_one: null,
         option_two: null,
