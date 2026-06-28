@@ -22,10 +22,10 @@ case "$command" in
         "$SCRIPT_DIR/scripts/up.sh" "$@"
         ;;
     artisan)
-        docker compose exec laravel php artisan "$@"
+        docker compose exec app php artisan "$@"
         ;;
     composer)
-        docker compose exec laravel composer "$@"
+        docker compose exec app composer "$@"
         ;;
     node)
         docker compose exec node "$@"

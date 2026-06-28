@@ -46,14 +46,14 @@ line
 echo "Installing PHP dependencies..."
 line
 
-docker compose exec laravel composer install
+docker compose exec app composer install
 clear
 
 line
 echo "Generating Laravel app key..."
 line
 
-docker compose exec laravel php artisan key:generate
+docker compose exec app php artisan key:generate
 clear
 
 line
@@ -67,7 +67,7 @@ line
 echo "Running database migrations..."
 line
 
-docker compose exec laravel php artisan migrate:fresh --seed
+docker compose exec app php artisan migrate:fresh --seed
 docker compose down
 clear
 
@@ -75,7 +75,7 @@ line
 echo "Create storage link..."
 line
 
-docker compose exec laravel php storage:link
+docker compose exec app php storage:link
 docker compose down
 clear
 

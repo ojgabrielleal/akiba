@@ -10,7 +10,7 @@ GITHUB_DEV="https://github.com/ojgabrielleal"
 GITHUB_REPOSITORY="https://github.com/ojgabrielleal/akiba"
 
 APP_URL="http://localhost:8000"
-PHPMYADMIN_URL="http://localhost:8080"
+PHPMYADMIN_URL="http://localhost:8081"
 
 line
 echo "Starting containers..."

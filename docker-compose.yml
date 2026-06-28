@@ -1,5 +1,5 @@
 services: 
-  laravel: 
+  app: 
     build: .
     working_dir: /app
     volumes: 
@@ -12,7 +12,7 @@ services:
     networks: 
       - akiba_network
     command: php artisan serve --host=0.0.0.0 --port=8000
-    container_name: akiba_laravel
+    container_name: akiba_app
 
   node: 
     image: node:22
@@ -29,11 +29,13 @@ services:
   mysql: 
     image: mysql:8
     ports: 
-      - "3307:3306"
+      - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     environment: 
-      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_ROOT_PASSWORD: "root"
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
@@ -47,7 +49,7 @@ services:
   phpmyadmin: 
     image: phpmyadmin/phpmyadmin
     ports: 
-      - "8080:80"
+      - "8081:80"
     environment:
       PMA_HOST: mysql
       PMA_PORT: 3306
