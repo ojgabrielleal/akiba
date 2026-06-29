@@ -68,14 +68,13 @@ echo "Running database migrations..."
 line
 
 docker compose exec app php artisan migrate:fresh --seed
-docker compose down
 clear
 
 line
 echo "Create storage link..."
 line
 
-docker compose exec app php storage:link
+docker compose exec app php artisan storage:link --force
 docker compose down
 clear
 
