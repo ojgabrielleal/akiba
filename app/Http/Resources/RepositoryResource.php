@@ -4,9 +4,13 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Collection;
+use App\Http\Resources\Concerns\HasFormats;
 
 class RepositoryResource extends JsonResource
 {
+    use HasFormats;
+
     /**
      * Transform the resource into an array.
      *
@@ -22,4 +26,27 @@ class RepositoryResource extends JsonResource
             'type' => $this->type,
         ];
     }
+
+    public static function toCollectionArray(Collection $collection, Request $request, ?string $format): ?array
+    {
+        if ($format !== 'grouped_by_type') {
+            return null;
+        }
+
+        return [
+            'tutorial' => self::resolveTypeModeCollection($collection, $request, 'tutorial'),
+            'package' => self::resolveTypeModeCollection($collection, $request, 'package'),
+            'software' => self::resolveTypeModeCollection($collection, $request, 'software'),
+        ];
+    }
+
+    private static function resolveTypeModeCollection(Collection $collection, Request $request, string $type): array
+    {
+        return $collection
+            ->filter(fn ($item) => $item->type === $type)
+            ->values()
+            ->map(fn ($item) => self::make($item->resource ?? $item)->resolve($request))
+            ->all();
+    }
+
 }

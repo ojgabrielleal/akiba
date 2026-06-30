@@ -42,7 +42,7 @@ class RepositoryController extends Controller
 
         return RepositoryResource::collection(
             Repository::active()->get()
-        );
+        )->format('grouped_by_type');
     }
 
     public function showRepository(Repository $repository)

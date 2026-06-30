@@ -1,6 +1,7 @@
 <script>
     export let close = () => {};
-    export let identifier;
+    export let fileSelected;
+    export let fileType;
 
     import { useForm } from "@inertiajs/svelte";
     import { Preview } from "@/ui/components/private";
@@ -9,39 +10,26 @@
     let can = repositoryPermissions();
 
     $: form = useForm({
-        _method: null,
-        image: null,
-        name: null,
-        type: null,
-        url: null,
+        _method: fileSelected ? 'PATCH' : 'POST',
+        image: fileSelected.image,
+        name: fileSelected.name,
+        type: fileSelected.type ?? fileType,
+        url: fileSelected.url,
     });
 
-    if (identifier) {
-        axios.get(`/panel/marketing/repository/${identifier}`)
-            .then((response) => {
-                const data = response.data.data;
-
-                $form._method = "PATCH";
-                $form.image = data.image;
-                $form.name = data.name;
-                $form.type = data.type;
-                $form.url = data.url;
-            })
-            .catch(() => {
-                console.error("Error when find file selected");
-                close();
-            });
-    }
-
     const submit = () => {
-        let url = identifier
-            ? `/marketing/repository/${identifier}`
+        let url = fileSelected
+            ? `/marketing/repository/${fileSelected.uuid}`
             : "/marketing/repository";
 
         $form.post(url, {
             preserveScroll: true,
             forceFormData: true,
-            onSuccess: () => close(),
+            onSuccess: (page) => {
+                if (page.props.flash?.type !== "error") {
+                    close();
+                }
+            },
         });
     };
 </script>
@@ -49,11 +37,13 @@
 <form on:submit|preventDefault={submit}>
     <div class="mb-4">
         <Preview
-            name="image"
             size="compact"
+            tone="muted"
+            color="muted"
+            name="image"
             src={$form.image}
             oninput={(event) => ($form.image = event.target.files[0])}
-            required={!identifier}
+            required={!fileSelected}
         />
     </div>
     <div class="mb-4">
@@ -66,34 +56,12 @@
             name="name"
             class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
             bind:value={$form.name}
-            required
+            required={!fileSelected}
         />
     </div>
     <div class="mb-4">
-        <label for="type" class="text-md text-gray-700 font-noto-sans block mb-1">
-            Categoria do arquivo
-        </label>
-        <select
-            id="type"
-            name="type"
-            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
-            bind:value={$form.type}
-            required
-        >
-            <option value="tutorial">
-                Tutoriais
-            </option>
-            <option value="software">
-                Programas
-            </option>
-            <option value="package">
-                Pacotes
-            </option>
-        </select>
-    </div>
-    <div class="mb-4">
         <label for="url" class="text-md text-gray-700 font-noto-sans block mb-1">
-            URL do conteúdo hospedado externamente
+            Endereço de download
         </label>
         <input
             id="url"
@@ -101,15 +69,28 @@
             name="url"
             class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
             bind:value={$form.url}
-            required
+            required={!fileSelected}
+        />
+    </div>
+    <div class="mb-4">
+        <label for="type" class="text-md text-gray-700 font-noto-sans block mb-1">
+            Categoria do arquivo
+        </label>
+        <input
+            id="type"
+            type="text"
+            name="type"
+            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400 disabled:opacity-50"
+            bind:value={$form.type}
+            disabled
         />
     </div>
     {#if can.create && can.update}
         <button
             type="submit"
-            class="cursor-pointer bg-blue-skywave px-8 py-2 rounded-md text-suspense-aurora font-noto-sans font-extrabold italic uppercase"
+            class="cursor-pointer font-noto-sans font-extrabold italic uppercase text-suspense-aurora py-2 px-6 rounded-full bg-blue-ocean"
         >
-            {identifier ? "Atualizar" : "Cadastrar"}
+            {fileSelected ? "Atualizar" : "Cadastrar"}
         </button>
     {/if}
 </form>

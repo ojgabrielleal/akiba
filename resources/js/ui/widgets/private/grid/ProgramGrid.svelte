@@ -9,10 +9,11 @@
     $: ({ programs } = $page.props);
     
     let can = programPermissions();
-    let selectedExecutionMode = "live";
-    let programSelected = null;
 
+    let selectedExecutionMode = "live";
+    
     let offcanvasRef;
+    let programSelected = null;
     $: offcanvasTitle = programSelected?.name ?? "Cadastrar Programa";
 
     let actions = [

@@ -1,5 +1,5 @@
 <script>
-    import { page, router } from "@inertiajs/svelte";
+    import { page, router, Link } from "@inertiajs/svelte";
     import { Section, Offcanvas } from "@/ui/components/private";
     import { MarketingForm } from "@/ui/widgets/private";
     import { repositoryPermissions, resolvePlaceholderImage } from "@/utils";
@@ -8,170 +8,93 @@
 
     let can = repositoryPermissions();
 
-    let offCanvasRef;
-    let identifier;
+    let offcanvasRef;
+    let fileType; 
+    let fileSelected;
+    $:offcanvasTitle = fileSelected?.name ?? "Cadastrar arquivo"
 
-    let tutorials;
-    let packages;
-    let softwares;
+    let getActions = (type) => [
+        {
+            title: "Criar",
+            icon: "/svg/plus.svg",
+            permission: can.create,
+            onClick: () => {
+                offcanvasRef.open();
+                fileSelected = [];
+                fileType = type;
+            },
+        },
+    ];
 
-    $: if (repositories) {
-        tutorials = repositories.data.filter(
-            (item) => item.type === "tutorial",
-        );
-        packages = repositories.data.filter((item) => item.type === "package");
-        softwares = repositories.data.filter(
-            (item) => item.type === "software",
-        );
+    let titles = {
+        tutorial: "Tutoriais",
+        package: "Pacotes",
+        software: "Programas",
     }
 
     const requestDeactivateRepository = (repository) => {
-        router.delete(
-            `/panel/marketing/repository/${repository}`,
-            {},
+        router.delete(`/panel/marketing/repository/${repository}`, {},
             { preserveScroll: true },
         );
     };
 </script>
 
-<Offcanvas bind:this={offCanvasRef} title={identifier ? "Atualizar arquivo" : "Cadastrar arquivo"}>
+<Offcanvas bind:this={offcanvasRef} title={offcanvasTitle}>
     <div slot="content" let:close>
-        <MarketingForm {identifier} {close} />
+        <MarketingForm {fileSelected} {fileType} {close} />
     </div>
 </Offcanvas>
 
-{#if repositories}
-    <Section title="Tutoriais">
-        <ul class="mb-10 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-4">
-            {#each tutorials as item}
-                <li class="w-full bg-blue-skywave relative">
-                    <a
-                        aria-label={`Abrir ${item.name}`}
+{#each Object.entries(repositories.data) as [type, items]}
+    <Section title={titles[type]} actions={getActions(type)}>
+        <ul class="mb-20 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-x-4 gap-y-15">
+            {#each items as item}
+                <li class="relative w-full bg-blue-ocean rounded-t-lg rounded-b-md">
+                    <Link
+                        aria-label={`Visitar ${item.name}`}
                         href={item.url}
                         target="_blank"
-                        rel="noopener noreferrer"
                     >
                         <img
                             src={resolvePlaceholderImage(item.image, "placeholder")}
                             alt={item.name}
-                            class="w-full h-48 object-cover aspect-square"
+                            class="w-full h-45 object-cover aspect-square rounded-t-md"
                             loading="lazy"
                         />
                         <div class="p-2 text-suspense-aurora text-center font-noto-sans font-light">
                             {item.name}
                         </div>
-                    </a>
-                </li>
-            {/each}
-        </ul>
-    </Section>
-
-    <Section title="Instaladores">
-        <ul class="mb-10 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-4">
-            {#each softwares as item}
-                <li class="w-full bg-blue-skywave relative">
-                    <a
-                        aria-label={`Abrir ${item.name}`}
-                        href={item.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        <img
-                            src={resolvePlaceholderImage(item.image, "placeholder")}
-                            alt={item.name}
-                            class="w-full h-48 object-cover aspect-square"
-                            loading="lazy"
-                        />
-                        <div class="p-2 text-suspense-aurora text-center font-noto-sans font-light">
-                            {item.name}
-                        </div>
-                    </a>
-                </li>
-            {/each}
-        </ul>
-    </Section>
-
-    <Section title="Pacotes e Modelos">
-        <ul class="mb-10 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-4">
-            {#each packages as item}
-                <li class="w-full bg-blue-skywave relative">
-                    <a
-                        aria-label={`Abrir ${item.name}`}
-                        href={item.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        <img
-                            src={resolvePlaceholderImage(item.image, "placeholder")}
-                            alt={item.name}
-                            class="w-full h-48 object-cover aspect-square"
-                            loading="lazy"
-                        />
-                        <div class="p-2 text-suspense-aurora text-center font-noto-sans font-light">
-                            {item.name}
-                        </div>
-                    </a>
-                </li>
-            {/each}
-        </ul>
-    </Section>
-{/if}
-
-<Section title="Todos os conteúdos">
-    {#if can.create}
-        <div class="flex justify-center mt-5 mb-10">
-            <button type="button" class="cursor-pointer w-full lg:w-auto py-2 px-6 border-4 border-solid border-orange-amber rounded-xl text-orange-amber text-xl font-extrabold font-noto-sans italic uppercase" onclick={() => { offCanvasRef.open(); identifier = null; }}>
-                Upar conteúdo
-            </button>
-        </div>
-    {/if}
-    {#if repositories}
-        <ul class="mb-20 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-x-4 gap-y-20">
-            {#each repositories.data as item}
-                <li class="w-full bg-blue-skywave relative">
-                    <a
-                        aria-label={`Abrir ${item.name}`}
-                        href={item.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        <img
-                            src={resolvePlaceholderImage(item.image, "placeholder")}
-                            alt={item.name}
-                            class="w-full h-48 object-cover aspect-square"
-                            loading="lazy"
-                        />
-                        <div class="p-2 text-suspense-aurora text-center font-noto-sans font-light">
-                            {item.name}
-                        </div>
-                    </a>
-                    <div class="absolute -bottom-9 right-0 flex flex-row gap-4">
-                        {#if can.show_button_create}
+                    </Link>
+                    <div class="absolute -bottom-8 right-0 flex flex-row gap-3">
+                        {#if can.update}
                             <button type="button"
                                 class="cursor-pointer"
-                                aria-label={`Editar ${item.name}`}
-                                onclick={() => { offCanvasRef.open(); identifier = item.uuid; }}
+                                aria-label={`Atualizar ${item.name}`}
+                                on:click={()=>{
+                                    offcanvasRef.open();
+                                    fileSelected = item;
+                                }}
                             >
                                 <img
                                     src="/svg/edit.svg"
                                     alt=""
                                     aria-hidden="true"
-                                    class="w-5 filter-blue-skywave"
+                                    class="w-4 filter-blue-skywave"
                                     loading="lazy"
                                 />
                             </button>
                         {/if}
                         {#if can.deactivate}
                             <button type="button"
-                                aria-label={`Remover ${item.name}`}
+                                aria-label={`Desativar ${item.name}`}
                                 class="cursor-pointer"
-                                onclick={() => requestDeactivateRepository(item.uuid)}
+                                on:click={()=>requestDeactivateRepository()}
                             >
                                 <img
                                     src="/svg/trash.svg"
                                     alt=""
                                     aria-hidden="true"
-                                    class="w-5 filter-red-crimson"
+                                    class="w-4 filter-red-crimson"
                                     loading="lazy"
                                 />
                             </button>
@@ -180,5 +103,5 @@
                 </li>
             {/each}
         </ul>
-    {/if}
-</Section>
+    </Section>
+{/each}
