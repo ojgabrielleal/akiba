@@ -101,7 +101,7 @@ class DashboardController extends Controller
             Post::active()
                 ->published()
                 ->mine()
-                ->with(['author'])
+                ->with(['author', 'views'])
                 ->limit(5)
                 ->get()
         )->format('summary');

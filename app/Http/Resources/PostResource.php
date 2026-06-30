@@ -23,7 +23,6 @@ class PostResource extends JsonResource
             'references' => ReferenceResource::collection($this->references),
             'tags' => TagResource::collection($this->tags),
             'module' => $this->module(),
-            'views' => $this->views_count,
         ];
 
         if ($this->format === 'summary') {
@@ -34,6 +33,7 @@ class PostResource extends JsonResource
                 'title' => $this->title,
                 'module' => $this->module(),
                 'author' => UserResource::make($this->author)->format('summary'),
+                'views' => $this->views_count,
             ];
         }
 

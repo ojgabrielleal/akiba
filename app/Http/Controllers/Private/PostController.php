@@ -35,8 +35,7 @@ class PostController extends Controller
         $user = request()->user();
         
         $query = Post::active()
-            ->featured()
-            ->with(['author', 'event', 'review.opinions'])
+            ->with(['author', 'views', 'event', 'review.opinions'])
             ->orderBy('created_at','desc');
 
         if ($user->hasPermission('post.list')) {

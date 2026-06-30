@@ -11,16 +11,16 @@
 
     $: form = useForm({
         _method: fileSelected ? 'PATCH' : 'POST',
-        image: fileSelected.image,
-        name: fileSelected.name,
-        type: fileSelected.type ?? fileType,
-        url: fileSelected.url,
+        image: fileSelected?.image,
+        name: fileSelected?.name,
+        type: fileSelected?.type ?? fileType,
+        url: fileSelected?.url,
     });
 
     const submit = () => {
         let url = fileSelected
-            ? `/marketing/repository/${fileSelected.uuid}`
-            : "/marketing/repository";
+            ? `/panel/marketing/repository/${fileSelected.uuid}`
+            : "/panel/marketing/repository";
 
         $form.post(url, {
             preserveScroll: true,

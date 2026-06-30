@@ -22,8 +22,8 @@
             icon: "/svg/plus.svg",
             permission: can.create,
             onClick: () => {
-                programSelected = null;
                 offcanvasRef.open();
+                programSelected = null;
             }
         },
     ];

@@ -25,7 +25,6 @@ class Post extends Model
         'title',
         'content',
         'cover',
-        'views',
     ];
 
     protected $casts = [
@@ -34,6 +33,10 @@ class Post extends Model
 
     protected $hidden = [
         'user_id',
+    ];
+
+    protected $withCount = [
+        'views',
     ];
 
     protected function title(): Attribute
@@ -77,11 +80,6 @@ class Post extends Model
     public function scopeMine($query)
     {
         return $query->where('user_id', Auth::id());
-    }
-
-    public function scopeFeatured($query)
-    {
-        return $query->withCount('views');
     }
     
     /**

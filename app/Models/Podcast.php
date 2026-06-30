@@ -36,6 +36,10 @@ class Podcast extends Model
         'user_id'
     ];
 
+    protected $withCount = [
+        'views',
+    ];
+
     protected function title(): Attribute
     {
         return Attribute::make(
@@ -75,6 +79,11 @@ class Podcast extends Model
      * Use these methods to access related data via Eloquent relationships
      * (hasOne, hasMany, belongsTo, belongsToMany, etc.).
      */
+    public function views()
+    {
+        return $this->morphMany(PageView::class, 'viewable');
+    }
+
     public function author()
     {
         return $this->belongsTo(User::class, 'user_id');

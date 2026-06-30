@@ -18,7 +18,7 @@
 
 {#if podcasts}
      <Section {title}>
-        <ul class="gap-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+        <ul class="gap-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
             {#each podcasts.data as item}
                 <li class="w-full h-65 bg-blue-ocean rounded-md overflow-hidden relative">
                     <article>
@@ -36,7 +36,7 @@
                                 class="w-4 filter-suspense-aurora"
                                 loading="lazy"
                             />
-                            0
+                            {item.views ?? 0}
                         </div>
                         <div class="mt-[0.1rem] w-full font-noto-sans font-extrabold text-sm text-center text-suspense-aurora italic uppercase truncate">
                             S{item.season} - Ep{item.episode}

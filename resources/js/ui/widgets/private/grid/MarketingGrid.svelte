@@ -20,7 +20,7 @@
             permission: can.create,
             onClick: () => {
                 offcanvasRef.open();
-                fileSelected = [];
+                fileSelected = null;
                 fileType = type;
             },
         },
@@ -33,7 +33,7 @@
     }
 
     const requestDeactivateRepository = (repository) => {
-        router.delete(`/panel/marketing/repository/${repository}`, {},
+        router.delete(`/panel/marketing/repository/${repository.uuid}`, {},
             { preserveScroll: true },
         );
     };
@@ -88,7 +88,7 @@
                             <button type="button"
                                 aria-label={`Desativar ${item.name}`}
                                 class="cursor-pointer"
-                                on:click={()=>requestDeactivateRepository()}
+                                on:click={()=>requestDeactivateRepository(item)}
                             >
                                 <img
                                     src="/svg/trash.svg"
