@@ -1,0 +1,22 @@
+name: Refactor
+description: Request a code refactor or internal improvement.
+title: "[REFACTOR] "
+labels:
+  - refactor
+
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What needs to be done?
+      description: Describe what should be refactored or improved.
+    validations:
+      required: true
+
+  - type: textarea
+    id: why
+    attributes:
+      label: Why should this be done?
+      description: Explain the reason for this refactor (readability, performance, structure, maintenance, etc.).
+    validations:
+      required: true

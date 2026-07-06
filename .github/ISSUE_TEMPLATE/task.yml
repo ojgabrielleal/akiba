@@ -1,0 +1,30 @@
+name: Task
+description: Create a new development task.
+title: "[TASK] "
+labels:
+  - task
+
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: What needs to be done?
+      description: Provide a clear and detailed description of the task.
+      placeholder: |
+        Example:
+        - Create a PollVote model.
+        - Add the migration.
+        - Update the API endpoint.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reason
+    attributes:
+      label: Why is this task necessary?
+      description: Explain the purpose and expected outcome of this task.
+      placeholder: |
+        Example:
+        This task is required to support multiple votes per poll and improve the database design.
+    validations:
+      required: true
