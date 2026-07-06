@@ -1,6 +1,5 @@
 name: Task
 description: Create a new development task.
-title: "[TASK] "
 labels:
   - task
 

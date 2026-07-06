@@ -1,6 +1,5 @@
 name: Refactor
 description: Request a code refactor or internal improvement.
-title: "[REFACTOR] "
 labels:
   - refactor
 
