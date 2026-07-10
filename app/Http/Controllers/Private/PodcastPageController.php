@@ -5,31 +5,16 @@ namespace App\Http\Controllers\Private;
 use App\Http\Controllers\Controller;
 use Inertia\Inertia;
 
-use App\Models\Podcast;
-
-use App\Http\Resources\PodcastResource;
+use App\Queries\Podcast\ListPodcastsQuery;
 
 class PodcastPageController extends Controller
 {
     private $render = 'private/Podcast';
 
-    public function render()
+    public function render(ListPodcastsQuery $podcasts)
     {
         return Inertia::render($this->render, [
-            'podcasts' => $this->indexPodcasts(),
+            'podcasts' => $podcasts->handle(request()->user()),
         ]);
     }
-
-    public function indexPodcasts()
-    {
-        $this->authorize('viewAny', Podcast::class);
-
-        return PodcastResource::collection(
-            Podcast::active()
-                ->latest()
-                ->with('author', 'views')
-                ->paginate(10)
-        );
-    }
-
 }

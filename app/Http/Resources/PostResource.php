@@ -15,14 +15,13 @@ class PostResource extends JsonResource
         $postData = [
             'uuid' => $this->uuid,
             'slug' => $this->slug,
-            'status' => $this->status,
             'title' => $this->title,
             'image' => $this->image,
             'cover' => $this->cover,
             'author' => UserResource::make($this->author)->format('summary'),
             'references' => ReferenceResource::collection($this->references),
             'tags' => TagResource::collection($this->tags),
-            'module' => $this->module(),
+            'module' => $this->module,
         ];
 
         if ($this->format === 'summary') {
@@ -31,7 +30,7 @@ class PostResource extends JsonResource
                 'slug' => $this->slug,
                 'status' => $this->status,
                 'title' => $this->title,
-                'module' => $this->module(),
+                'module' => $this->module,
                 'author' => UserResource::make($this->author)->format('summary'),
                 'views' => $this->views_count,
             ];
@@ -45,38 +44,26 @@ class PostResource extends JsonResource
         );
     }
 
-    private function module(): string
-    {
-        if ($this->review) {
-            return 'review';
-        }
-
-        if ($this->event) {
-            return 'event';
-        }
-
-        return 'post';
-    }
-
     public function post(): array 
     {
-        if(!$this->review && !$this->event){
+        if($this->module === 'post'){
             return [
+                'status' => $this->status,
                 'content' => $this->content,
-                'reactions' => ReactionResource::collection($this->reactions)
+                'reactions' => ReactionResource::collection($this->reactions),
             ];
         }
 
         return [];
     }
 
-    public function event(): array
+    public function event(): array 
     {
-        if($this->event){
+        if($this->module === 'event'){
             return [
-                'content'=> $this->content,
-                'dates' => $this->event->dates,
-                'address' => $this->event->address,
+                'status' => $this->status,
+                'content' => $this->content,
+                'metadata' => $this->metadata,
             ];
         }
 
@@ -85,40 +72,39 @@ class PostResource extends JsonResource
 
     public function review(Request $request): array
     {
-        if($this->review){
+        if($this->module === 'review'){
             return [
-                'year_of_release' => $this->review->year_of_release,
-                'sinopse' => $this->review->sinopse,
-                'opinions' => $this->reviewListOpinions($request),
-                'review' => $this->reviewCurrentUserOpinion($request),
+                'reviews' => $this->listReviews($request),
+                'review' => $this->reviewCurrentUser($request),
+                'metadata' => $this->metadata,
             ];
         }
 
         return [];
     }
 
-    private function reviewCurrentUserOpinion(Request $request): array
+    private function reviewCurrentUser(Request $request): array
     {
         $user = $request->user();
-        $opinion = $this->review->opinions->first(
+        $opinion = $this->reviews->first(
             fn ($opinion) => $opinion->user_id === $user->id
         );
 
         if ($opinion) {
-            return OpinionResource::make($opinion)->resolve();
+            return PostReviewResource::make($opinion)->resolve();
         }
 
         return $this->reviewGhostOpinion($user);
     }
 
-    private function reviewListOpinions(Request $request): array
+    private function listReviews(Request $request): array
     {
         if (!$request->user()->hasPermission('post.review.opinion.list')) {
             return [];
         }
 
         $user = $request->user();
-        $opinions = OpinionResource::collection($this->review->opinions)->resolve();
+        $opinions = PostReviewResource::collection($this->reviews)->resolve();
 
         $userOpinion = collect($opinions)->first(
             fn ($opinion) => $opinion['author']['uuid'] === $user->uuid
@@ -126,7 +112,10 @@ class PostResource extends JsonResource
 
         if (!$userOpinion) {
             return [
-                $this->reviewGhostOpinion($user),
+                'uuid' => null,
+                'status' => 'not_created',
+                'content' => null,
+                'author' => UserResource::make($user)->format('summary'),
                 ...$opinions,
             ];
         }
@@ -137,16 +126,6 @@ class PostResource extends JsonResource
                 ->reject(fn ($opinion) => $opinion['author']['uuid'] === $user->uuid)
                 ->values()
                 ->all(),
-        ];
-    }
-
-    private function reviewGhostOpinion($user): array
-    {
-        return [
-            'uuid' => null,
-            'status' => 'not_created',
-            'content' => null,
-            'author' => UserResource::make($user)->format('summary'),
         ];
     }
 }

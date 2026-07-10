@@ -13,7 +13,6 @@ class Post extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $table = 'posts';
 
     protected $fillable = [
         'uuid',
@@ -25,10 +24,13 @@ class Post extends Model
         'title',
         'content',
         'cover',
+        'module',
+        'metadata',
     ];
 
     protected $casts = [
-        'is_active' => 'boolean'
+        'is_active' => 'boolean',
+        'metadata' => 'array',
     ];
 
     protected $hidden = [
@@ -81,6 +83,26 @@ class Post extends Model
     {
         return $query->where('user_id', Auth::id());
     }
+
+    public function scopeFeatured($query)
+    {
+        return $query->orderByDesc('views_count');
+    }
+
+    public function scopePost($query)
+    {
+        return $query->where('module', 'post');
+    }
+
+    public function scopeReview($query)
+    {
+        return $query->where('module', 'review');
+    }
+
+    public function scopeEvent($query)
+    {
+        return $query->where('module', 'event');
+    }
     
     /**
      * Define the relationships between this model and other models.
@@ -95,27 +117,22 @@ class Post extends Model
 
     public function references()
     {
-        return $this->hasMany(Reference::class, 'post_id');
+        return $this->hasMany(PostReference::class, 'post_id');
     }
 
     public function reactions()
     {
-        return $this->hasMany(Reaction::class, 'post_id');
+        return $this->hasMany(PostReaction::class, 'post_id');
     }
 
     public function tags()
     {
-        return $this->hasMany(Tag::class, 'post_id');
+        return $this->hasMany(PostTag::class, 'post_id');
     }
 
-    public function event()
+    public function reviews()
     {
-        return $this->hasOne(Event::class, 'post_id');
-    }
-
-    public function review()
-    {
-        return $this->hasOne(Review::class, 'post_id');
+        return $this->hasMany(PostReview::class, 'post_id');
     }
 
     public function author()

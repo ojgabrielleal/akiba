@@ -25,8 +25,10 @@
         title: post?.data.title ?? null,
         cover: post?.data.cover ?? null,
         content: post?.data.content ?? null,
-        dates: post?.data.dates ?? null,
-        address: post?.data.address ?? null,
+        metadata: {
+            dates: post?.data.metadata?.dates ?? null,
+            address: post?.data.metadata?.address ?? null,
+        },
         tags: normalizeTags(post?.data.tags),
         references: normalizeReferences(post?.data.references),
     });
@@ -73,7 +75,7 @@
                         class="w-full h-12 bg-blue-ocean border border-blue-skywave font-noto-sans text-suspense-aurora rounded-md outline-none pl-4"
                         placeholder="Ex: 20 a 25 de Dezembro de 2024"
                         required={!post}
-                        bind:value={$form.dates}
+                        bind:value={$form.metadata.dates}
                     />
                 </div>
                 <div class="lg:mb-0">
@@ -87,7 +89,7 @@
                         class="w-full h-12 bg-blue-ocean border border-blue-skywave font-noto-sans text-suspense-aurora rounded-md outline-none pl-4"
                         placeholder="Ex: Av. Paulista, 1000 - São Paulo/SP"
                         required={!post}
-                        bind:value={$form.address}
+                        bind:value={$form.metadata.address}
                     />
                 </div>
             </div>

@@ -28,6 +28,32 @@ class PostFactory extends Factory
             'content' => fake()->paragraph(),
             'cover' => $this->fakeImageUrl(),
             'status' => fake()->randomElement(['published', 'revision', 'draft']),
+            'module' => 'post',
+            'metadata' => null,
         ];
+    }
+
+    public function review(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'module' => 'review',
+            'content' => null,
+            'status' => 'published',
+            'metadata' => [
+                'year_of_release' => fake()->year(),
+                'sinopse' => fake()->paragraph(),
+            ],
+        ]);
+    }
+
+    public function event(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'module' => 'event',
+            'metadata' => [
+                'dates' => fake()->date(),
+                'address' => fake()->address(),
+            ],
+        ]);
     }
 }

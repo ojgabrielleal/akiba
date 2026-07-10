@@ -299,8 +299,8 @@
       "comment": ""
     },
     {
-      "id": "socials",
-      "name": "socials",
+      "id": "user_socials",
+      "name": "user_socials",
       "x": 360,
       "y": 80,
       "color": "#60a5fa",
@@ -347,8 +347,8 @@
       "comment": ""
     },
     {
-      "id": "preferences",
-      "name": "preferences",
+      "id": "user_preferences",
+      "name": "user_preferences",
       "x": 360,
       "y": 260,
       "color": "#60a5fa",
@@ -394,8 +394,8 @@
       "comment": ""
     },
     {
-      "id": "favorities",
-      "name": "favorities",
+      "id": "user_favorites",
+      "name": "user_favorites",
       "x": 360,
       "y": 400,
       "color": "#60a5fa",
@@ -516,8 +516,8 @@
       "comment": ""
     },
     {
-      "id": "references",
-      "name": "references",
+      "id": "post_references",
+      "name": "post_references",
       "x": 1080,
       "y": 40,
       "color": "#86efac",
@@ -564,8 +564,8 @@
       "comment": ""
     },
     {
-      "id": "reactions",
-      "name": "reactions",
+      "id": "post_reactions",
+      "name": "post_reactions",
       "x": 1080,
       "y": 220,
       "color": "#86efac",
@@ -612,8 +612,8 @@
       "comment": ""
     },
     {
-      "id": "tags",
-      "name": "tags",
+      "id": "post_tags",
+      "name": "post_tags",
       "x": 1080,
       "y": 400,
       "color": "#86efac",
@@ -1019,8 +1019,8 @@
       "comment": ""
     },
     {
-      "id": "onair",
-      "name": "onair",
+      "id": "onairs",
+      "name": "onairs",
       "x": 400,
       "y": 1340,
       "color": "#fbbf24",
@@ -1067,8 +1067,8 @@
       "comment": ""
     },
     {
-      "id": "musics",
-      "name": "musics",
+      "id": "music",
+      "name": "music",
       "x": 760,
       "y": 1340,
       "color": "#d97706",
@@ -1116,8 +1116,8 @@
       "comment": ""
     },
     {
-      "id": "songs_requests",
-      "name": "songs_requests",
+      "id": "song_requests",
+      "name": "song_requests",
       "x": 1080,
       "y": 1340,
       "color": "#fbbf24",
@@ -1163,8 +1163,8 @@
       "comment": ""
     },
     {
-      "id": "listener_month",
-      "name": "listener_month",
+      "id": "listener_months",
+      "name": "listener_months",
       "x": 1400,
       "y": 1340,
       "color": "#d97706",
@@ -1294,8 +1294,8 @@
       "comment": ""
     },
     {
-      "id": "calendar",
-      "name": "calendar",
+      "id": "calendars",
+      "name": "calendars",
       "x": 1080,
       "y": 1940,
       "color": "#c084fc",
@@ -1425,8 +1425,8 @@
       "comment": ""
     },
     {
-      "id": "options",
-      "name": "options",
+      "id": "poll_options",
+      "name": "poll_options",
       "x": 1720,
       "y": 1720,
       "color": "#c084fc",
@@ -1509,8 +1509,8 @@
       "comment": ""
     },
     {
-      "id": "playlist_battle",
-      "name": "playlist_battle",
+      "id": "playlist_battles",
+      "name": "playlist_battles",
       "x": 1720,
       "y": 1340,
       "color": "#d97706",
@@ -1548,7 +1548,7 @@
     {
       "id": "rel_socials_users",
       "name": "socials_user_id_fk",
-      "startTableId": "socials",
+      "startTableId": "user_socials",
       "startFieldId": "socials_user_id",
       "endTableId": "users",
       "endFieldId": "users_id",
@@ -1559,7 +1559,7 @@
     {
       "id": "rel_preferences_users",
       "name": "preferences_user_id_fk",
-      "startTableId": "preferences",
+      "startTableId": "user_preferences",
       "startFieldId": "preferences_user_id",
       "endTableId": "users",
       "endFieldId": "users_id",
@@ -1570,7 +1570,7 @@
     {
       "id": "rel_favorities_users",
       "name": "favorities_user_id_fk",
-      "startTableId": "favorities",
+      "startTableId": "user_favorites",
       "startFieldId": "favorities_user_id",
       "endTableId": "users",
       "endFieldId": "users_id",
@@ -1636,7 +1636,7 @@
     {
       "id": "rel_references_posts",
       "name": "references_post_id_fk",
-      "startTableId": "references",
+      "startTableId": "post_references",
       "startFieldId": "references_post_id",
       "endTableId": "posts",
       "endFieldId": "posts_id",
@@ -1647,7 +1647,7 @@
     {
       "id": "rel_reactions_posts",
       "name": "reactions_post_id_fk",
-      "startTableId": "reactions",
+      "startTableId": "post_reactions",
       "startFieldId": "reactions_post_id",
       "endTableId": "posts",
       "endFieldId": "posts_id",
@@ -1658,7 +1658,7 @@
     {
       "id": "rel_tags_posts",
       "name": "tags_post_id_fk",
-      "startTableId": "tags",
+      "startTableId": "post_tags",
       "startFieldId": "tags_post_id",
       "endTableId": "posts",
       "endFieldId": "posts_id",
@@ -1746,7 +1746,7 @@
     {
       "id": "rel_onair_programs",
       "name": "onair_program_id_fk",
-      "startTableId": "onair",
+      "startTableId": "onairs",
       "startFieldId": "onair_program_id",
       "endTableId": "programs",
       "endFieldId": "programs_id",
@@ -1757,9 +1757,9 @@
     {
       "id": "rel_songs_requests_onair",
       "name": "songs_requests_onair_id_fk",
-      "startTableId": "songs_requests",
+      "startTableId": "song_requests",
       "startFieldId": "songs_requests_onair_id",
-      "endTableId": "onair",
+      "endTableId": "onairs",
       "endFieldId": "onair_id",
       "cardinality": "many_to_one",
       "updateConstraint": "No action",
@@ -1768,9 +1768,9 @@
     {
       "id": "rel_songs_requests_musics",
       "name": "songs_requests_music_id_fk",
-      "startTableId": "songs_requests",
+      "startTableId": "song_requests",
       "startFieldId": "songs_requests_music_id",
-      "endTableId": "musics",
+      "endTableId": "music",
       "endFieldId": "musics_id",
       "cardinality": "many_to_one",
       "updateConstraint": "No action",
@@ -1812,7 +1812,7 @@
     {
       "id": "rel_calendar_users",
       "name": "calendar_user_id_fk",
-      "startTableId": "calendar",
+      "startTableId": "calendars",
       "startFieldId": "calendar_user_id",
       "endTableId": "users",
       "endFieldId": "users_id",
@@ -1823,7 +1823,7 @@
     {
       "id": "rel_calendar_activities",
       "name": "calendar_activity_id_fk",
-      "startTableId": "calendar",
+      "startTableId": "calendars",
       "startFieldId": "calendar_activity_id",
       "endTableId": "activities",
       "endFieldId": "activities_id",
@@ -1845,7 +1845,7 @@
     {
       "id": "rel_options_polls",
       "name": "options_poll_id_fk",
-      "startTableId": "options",
+      "startTableId": "poll_options",
       "startFieldId": "options_poll_id",
       "endTableId": "polls",
       "endFieldId": "polls_id",

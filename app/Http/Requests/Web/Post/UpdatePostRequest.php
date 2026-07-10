@@ -6,6 +6,15 @@ use App\Http\Requests\Web\LoggedWebRequest;
 
 class UpdatePostRequest extends LoggedWebRequest
 {
+    protected function prepareForValidation(): void
+    {
+        $post = $this->route('post');
+
+        $this->merge([
+            'module' => $this->input('module', $post?->module ?? 'post'),
+        ]);
+    }
+
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -24,7 +33,7 @@ class UpdatePostRequest extends LoggedWebRequest
         return [
             'module' => 'nullable|in:post,review,event',
             'status' => 'required_unless:module,review|nullable|string',
-            'title' => 'required|string|max:255',
+            'title' => 'required',
             'image' => 'nullable',
             'cover' => 'nullable',
             'references' => 'required|array',
@@ -35,15 +44,15 @@ class UpdatePostRequest extends LoggedWebRequest
             'tags.*.uuid' => 'nullable|string',
             'tags.*.name' => 'required|string|max:255',
             'content' => 'required_unless:module,review|nullable|string',
-            'sinopse' => 'required_if:module,review|nullable|string',
-            'year_of_release' => 'required_if:module,review|nullable|integer',
             'review' => 'required_if:module,review|nullable|array',
             'review.uuid' => 'required_if:module,review|string',
-            'review.author.uuid' => 'required_if:module,review|exists:users,uuid',
             'review.status' => 'required_if:module,review|string',
             'review.content' => 'required_if:module,review|string',
-            'dates' => 'required_if:module,event|nullable|string',
-            'address' => 'required_if:module,event|nullable|string',
+            'metadata' => 'required_unless:module,post|nullable|array',
+            'metadata.dates' => 'required_if:module,event|string',
+            'metadata.address' => 'required_if:module,event|string',
+            'metadata.year_of_release' => 'required_if:module,review|integer',
+            'metadata.sinopse' => 'required_if:module,review|string',
         ];
     }
 }

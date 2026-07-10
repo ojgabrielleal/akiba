@@ -10,7 +10,6 @@ class Poll extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $table = 'polls';
 
     protected $fillable = [
         'uuid',
@@ -53,6 +52,6 @@ class Poll extends Model
      */
     public function options()
     {
-        return $this->hasMany(Option::class, 'poll_id');
+        return $this->hasMany(PollOption::class, 'poll_id');
     }
 }

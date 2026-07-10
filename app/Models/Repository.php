@@ -10,7 +10,6 @@ class Repository extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $table = 'repositories';
 
     protected $fillable = [
         'uuid',

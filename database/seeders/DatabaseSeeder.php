@@ -28,8 +28,6 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             PostSeeder::class,
-            ReviewSeeder::class,
-            EventSeeder::class,
         ]);
     }
 

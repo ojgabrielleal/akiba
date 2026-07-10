@@ -12,7 +12,6 @@ class Podcast extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $table = 'podcasts';
 
     protected $fillable = [
         'uuid',

@@ -10,7 +10,6 @@ class Program extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $table = 'programs';
 
     protected $fillable = [
         'uuid',

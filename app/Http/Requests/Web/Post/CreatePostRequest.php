@@ -23,9 +23,9 @@ class CreatePostRequest extends LoggedWebRequest
     public function rules(): array
     {
         return [
-            'module' => 'nullable|in:post,review,event',
+            'module' => 'required|in:post,review,event',
             'status' => 'required_unless:module,review|nullable|string',
-            'title' => 'required|string|max:255',
+            'title' => 'required',
             'image' => 'required',
             'cover' => 'required',
             'references' => 'required|array',
@@ -34,13 +34,14 @@ class CreatePostRequest extends LoggedWebRequest
             'tags' => 'required|array',
             'tags.*.name' => 'required|string|max:255',
             'content' => 'required_unless:module,review|nullable|string',
-            'sinopse' => 'required_if:module,review|nullable|string',
-            'year_of_release' => 'required_if:module,review|nullable|integer',
+            'metadata' => 'required_unless:module,post|nullable|array',
+            'metadata.dates' => 'required_if:module,event|string',
+            'metadata.address' => 'required_if:module,event|string',
+            'metadata.year_of_release' => 'required_if:module,review|integer',
+            'metadata.sinopse' => 'required_if:module,review|string',
             'review' => 'required_if:module,review|nullable|array',
             'review.status' => 'required_if:module,review|string',
             'review.content' => 'required_if:module,review|string',
-            'dates' => 'required_if:module,event|nullable|string',
-            'address' => 'required_if:module,event|nullable|string',
         ];
     }
 }

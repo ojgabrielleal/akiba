@@ -10,7 +10,6 @@ class Activity extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $table = 'activities';
 
     protected $fillable = [
         'uuid',

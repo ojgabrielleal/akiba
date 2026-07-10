@@ -10,8 +10,6 @@ class Music extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $table = 'musics';
-
     protected $fillable = [
         'uuid',
         'type',

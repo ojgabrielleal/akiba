@@ -7,8 +7,6 @@ use App\Services\Process\ImageProcessService;
 
 use App\Models\ListenerMonth;
 
-use InvalidArgumentException;
-
 class CreateListenerMonthAction
 {
     private ImageProcessService $image;

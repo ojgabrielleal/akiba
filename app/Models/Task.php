@@ -12,7 +12,6 @@ class Task extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $table = 'tasks';
 
     protected $fillable = [
         'uuid',

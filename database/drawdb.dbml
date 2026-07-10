@@ -55,7 +55,7 @@ Table permissions_pivot {
   role_id bigint [not null, ref: > roles.id]
 }
 
-Table socials {
+Table user_socials {
   id bigint [pk, increment]
   uuid uuid [unique, not null]
   user_id bigint [not null, ref: > users.id]
@@ -65,7 +65,7 @@ Table socials {
   updated_at timestamp
 }
 
-Table preferences {
+Table user_preferences {
   id bigint [pk, increment]
   uuid uuid [unique, not null]
   user_id bigint [not null, ref: > users.id]
@@ -75,7 +75,7 @@ Table preferences {
   updated_at timestamp
 }
 
-Table favorities {
+Table user_favorites {
   id bigint [pk, increment]
   uuid uuid [unique, not null]
   user_id bigint [not null, ref: > users.id]
@@ -110,7 +110,7 @@ Table programs_schedules {
   updated_at timestamp
 }
 
-Table onair {
+Table onairs {
   id bigint [pk, increment]
   uuid uuid [unique, not null]
   in_air boolean [not null, default: true]
@@ -124,7 +124,7 @@ Table onair {
   updated_at timestamp
 }
 
-Table musics {
+Table music {
   id bigint [pk, increment]
   uuid uuid [unique, not null]
   type varchar [not null, note: "OP, ED"]
@@ -139,13 +139,13 @@ Table musics {
   updated_at timestamp
 }
 
-Table songs_requests {
+Table song_requests {
   id bigint [pk, increment]
   uuid uuid [unique, not null]
   was_reproduced boolean [not null, default: false]
   was_canceled boolean [not null, default: false]
-  onair_id bigint [not null, ref: > onair.id]
-  music_id bigint [not null, ref: > musics.id]
+  onair_id bigint [not null, ref: > onairs.id]
+  music_id bigint [not null, ref: > music.id]
   ip_address varchar [not null]
   name varchar [not null]
   address varchar [not null]
@@ -186,7 +186,7 @@ Table posts {
   updated_at timestamp
 }
 
-Table references {
+Table post_references {
   id bigint [pk, increment]
   uuid uuid [unique, not null]
   post_id bigint [not null, ref: > posts.id]
@@ -196,7 +196,7 @@ Table references {
   updated_at timestamp
 }
 
-Table reactions {
+Table post_reactions {
   id bigint [pk, increment]
   uuid uuid [unique, not null]
   post_id bigint [not null, ref: > posts.id]
@@ -205,7 +205,7 @@ Table reactions {
   updated_at timestamp
 }
 
-Table tags {
+Table post_tags {
   id bigint [pk, increment]
   uuid uuid [unique, not null]
   post_id bigint [not null, ref: > posts.id]
@@ -290,7 +290,7 @@ Table activity_pivot {
   updated_at timestamp
 }
 
-Table calendar {
+Table calendars {
   id bigint [pk, increment]
   uuid uuid [unique, not null]
   user_id bigint [not null, ref: > users.id]
@@ -304,7 +304,7 @@ Table calendar {
   updated_at timestamp
 }
 
-Table playlist_battle {
+Table playlist_battles {
   id bigint [pk, increment]
   uuid uuid [unique, not null]
   day int [not null]
@@ -313,7 +313,7 @@ Table playlist_battle {
   updated_at timestamp
 }
 
-Table listener_month {
+Table listener_months {
   id bigint [pk, increment]
   uuid uuid [unique, not null]
   name varchar [not null]
@@ -335,7 +335,7 @@ Table polls {
   updated_at timestamp
 }
 
-Table options {
+Table poll_options {
   id bigint [pk, increment]
   uuid uuid [unique, not null]
   poll_id bigint [not null, ref: > polls.id]

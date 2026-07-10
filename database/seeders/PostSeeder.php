@@ -2,14 +2,14 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 use App\Models\User;
 use App\Models\Post;
-use App\Models\Reference;
-use App\Models\Reaction;
-use App\Models\Tag;
+use App\Models\PostReference;
+use App\Models\PostReaction;
+use App\Models\PostReview;
+use App\Models\PostTag;
 
 class PostSeeder extends Seeder
 {
@@ -27,21 +27,44 @@ class PostSeeder extends Seeder
 
     private function seedAdministration(User $admin): void
     {
-        Post::factory(5)
-            ->for($admin, 'author')
-            ->has(Reference::factory(2), 'references')
-            ->has(Tag::factory(2), 'tags')
-            ->has(Reaction::factory(5), 'reactions')
-            ->create();
+        $this->seedPosts($admin, 5);
+        $this->seedReviews($admin, 5);
+        $this->seedEvents($admin, 5);
     }
 
     private function seedNonAdministrationContent(User $user): void
     {
-        Post::factory(15)
+        $this->seedPosts($user, 15);
+        $this->seedReviews($user, 5);
+        $this->seedEvents($user, 5);
+    }
+
+    private function seedPosts(User $user, int $count): void
+    {
+        Post::factory($count)
             ->for($user, 'author')
-            ->has(Reference::factory(2), 'references')
-            ->has(Tag::factory(2), 'tags')
-            ->has(Reaction::factory(5), 'reactions')
+            ->has(PostReference::factory(2), 'references')
+            ->has(PostTag::factory(2), 'tags')
+            ->has(PostReaction::factory(5), 'reactions')
+            ->create();
+    }
+
+    private function seedReviews(User $user, int $count): void
+    {
+        Post::factory($count)
+            ->review()
+            ->for($user, 'author')
+            ->afterCreating(fn (Post $post) => PostReview::factory(5)
+                ->for($user, 'author')
+                ->create(['post_id' => $post->id]))
+            ->create();
+    }
+
+    private function seedEvents(User $user, int $count): void
+    {
+        Post::factory($count)
+            ->event()
+            ->for($user, 'author')
             ->create();
     }
 }

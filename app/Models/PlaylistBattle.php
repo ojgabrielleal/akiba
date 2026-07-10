@@ -10,8 +10,6 @@ class PlaylistBattle extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $table = 'playlist_battle';
-
     protected $fillable = [
         'uuid',
         'day',

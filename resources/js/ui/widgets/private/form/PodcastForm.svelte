@@ -24,7 +24,7 @@
 
         $form.post(url, {
             preserveState: podcast,
-            preserveScroll: true,
+            preserveScroll: false,
             forceFormData: true,
             onSuccess: () => {
                 podcast ? null : $form.reset();

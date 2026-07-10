@@ -14,7 +14,7 @@ use App\Http\Controllers\Private\MediaPageController;
 use App\Http\Controllers\Private\LogsPageController;
 use App\Http\Controllers\Private\ProfilePageController;
 
-use App\Http\Controllers\Private\Auth\LoginController as AuthLoginController;
+use App\Http\Controllers\Private\Auth\LoginController;
 use App\Http\Controllers\Private\Auth\LogoutController;
 use App\Http\Controllers\Private\Administration\Activity\ShowActivityController;
 use App\Http\Controllers\Private\Administration\Activity\StoreActivityController;
@@ -74,7 +74,7 @@ use App\Http\Controllers\Private\Radio\Program\UpdateProgramController;
 Route::prefix('panel')->middleware(['inertia'])->group(function () {
     Route::controller(LoginPageController::class)->group(function () {
         Route::get('', 'render')->name('login');
-        Route::post('auth', [AuthLoginController::class, '__invoke']);
+        Route::post('auth', [LoginController::class, '__invoke']);
     });
 
     Route::middleware(['auth'])->group(function () {

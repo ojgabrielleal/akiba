@@ -18,8 +18,7 @@ class UpdatePostController extends Controller
             $post,
             $request->all(),
             $request->file('image'),
-            $request->file('cover'),
-            module: $request->input('module', 'review'),
+            $request->file('cover')
         );
 
         return $this->flashMessage('update');

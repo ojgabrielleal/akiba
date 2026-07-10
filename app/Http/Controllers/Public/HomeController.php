@@ -7,15 +7,12 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
-use App\Models\Event;
 use App\Models\Onair;
 use App\Models\Post;
-use App\Models\Review;
 
 use App\Http\Resources\OnairResource;
 use App\Http\Resources\PostIndexResource;
 use App\Http\Resources\PostResource;
-use App\Http\Resources\ReviewResource;
 
 class HomeController extends Controller
 {
@@ -23,9 +20,9 @@ class HomeController extends Controller
 
     public function indexFeatured()
     {
-        $posts = Post::published()->featured()->take(15)->get();
-        $events = Event::featured()->take(15)->get();
-        $reviews = Review::with('opinions.author')->featured()->take(15)->get();
+        $posts = Post::published()->post()->featured()->take(15)->get();
+        $events = Post::published()->event()->featured()->take(15)->get();
+        $reviews = Post::published()->review()->with('postReviews.author')->featured()->take(15)->get();
 
         $feed = $posts
             ->concat($events)
@@ -39,8 +36,10 @@ class HomeController extends Controller
 
     public function indexReview()
     {
-        return ReviewResource::collection(
-            Review::latest()
+        return PostResource::collection(
+            Post::review()
+                ->with('postReviews.author')
+                ->latest()
                 ->limit(5)
                 ->get()
         );

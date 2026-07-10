@@ -21,9 +21,11 @@
         module: "review",
         image: post?.data.image ?? null,
         title: post?.data.title ?? null,
-        sinopse: post?.data.sinopse ?? null,
         cover: post?.data.cover ?? null,
-        year_of_release: post?.data.year_of_release ?? null,
+        metadata: {
+            year_of_release: post?.data.metadata?.year_of_release ?? null,
+            sinopse: post?.data.metadata?.sinopse ?? null,
+        },
         review: post?.data.review ?? { uuid: null, content: null, status: null, author: null },
         tags: normalizeTags(post?.data.tags),
         references: normalizeReferences(post?.data.references),
@@ -70,7 +72,7 @@
                         name="year_of_release"
                         class="w-full h-12 bg-blue-ocean border border-blue-skywave font-noto-sans text-suspense-aurora rounded-md outline-none pl-4 disabled:opacity-50 disabled:cursor-not-allowed"
                         required={!post}
-                        bind:value={$form.year_of_release}
+                        bind:value={$form.metadata.year_of_release}
                     />
                 </div>
             </div>
@@ -82,7 +84,7 @@
                     height="13rem"
                     name="sinopse"   
                     required={!post}
-                    bind:value={$form.sinopse}
+                    bind:value={$form.metadata.sinopse}
                 />
             </div>
             <div class="mb-8">
@@ -100,9 +102,9 @@
                 <label for="content" class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block mb-1">
                     Escreva
                 </label>
-                {#if post?.data.opinions?.length}
+                {#if post?.data.reviews?.length}
                     <div class="mb-3 flex flex-wrap gap-2">
-                        {#each post.data.opinions as opinion}
+                        {#each post.data.reviews as opinion}
                             <Tooltip>
                                 <button 
                                     type="button"

@@ -10,8 +10,6 @@ class Calendar extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $table = 'calendar';
-
     protected $fillable = [
         'uuid',
         'user_id',

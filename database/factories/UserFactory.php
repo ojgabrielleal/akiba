@@ -2,10 +2,10 @@
 
 namespace Database\Factories;
 
-use App\Models\Favority;
-use App\Models\Preference;
+use App\Models\UserFavorite;
+use App\Models\UserPreference;
 use App\Models\Role;
-use App\Models\Social;
+use App\Models\UserSocial;
 use App\Models\User;
 use Database\Factories\Concerns\HasFakeImages;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -89,19 +89,19 @@ class UserFactory extends Factory
         return $this->afterCreating(function (User $user) {
             if (! $user->socials()->exists()) {
                 foreach ($this->socials() as $social) {
-                    $user->socials()->save(Social::factory()->make($social));
+                    $user->socials()->save(UserSocial::factory()->make($social));
                 }
             }
 
             if (! $user->preferences()->exists()) {
                 foreach ($this->preferences() as $preference) {
-                    $user->preferences()->save(Preference::factory()->make($preference));
+                    $user->preferences()->save(UserPreference::factory()->make($preference));
                 }
             }
 
             if (! $user->favorites()->exists()) {
                 foreach ($this->favorites() as $favorite) {
-                    $user->favorites()->save(Favority::factory()->make($favorite));
+                    $user->favorites()->save(UserFavorite::factory()->make($favorite));
                 }
             }
         });

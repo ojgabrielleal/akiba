@@ -3,10 +3,9 @@
 namespace Tests\Unit\Models;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
-use App\Models\Option;
+use App\Models\PollOption;
 use App\Models\Poll;
 
 class PollTest extends TestCase
@@ -18,7 +17,7 @@ class PollTest extends TestCase
      */
     public function testOptionsRelationship(): void
     {
-        $options = Option::factory(3);
+        $options = PollOption::factory(3);
 
         $poll = Poll::factory()
             ->has($options, 'options')
@@ -27,14 +26,14 @@ class PollTest extends TestCase
         $firstOption = $poll->options->first();
 
         $this->assertCount(3, $poll->options);
-        $this->assertContainsOnlyInstancesOf(Option::class, $poll->options);
+        $this->assertContainsOnlyInstancesOf(PollOption::class, $poll->options);
         $this->assertNotNull($firstOption);
         $this->assertTrue($firstOption->poll->is($poll));
     }
 
-    public function testOptionUsesOptionsTable(): void
+    public function testOptionUsesPollOptionsTable(): void
     {
-        $this->assertSame('options', (new Option())->getTable());
+        $this->assertSame('poll_options', (new PollOption())->getTable());
     }
 
     /**

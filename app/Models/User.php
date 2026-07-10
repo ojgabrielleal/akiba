@@ -17,7 +17,6 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, HasFlashMessages, HasPermissions, HasUuids, Notifiable;
 
-    protected $table = 'users';
 
     protected $fillable = [
         'uuid',
@@ -95,17 +94,17 @@ class User extends Authenticatable
      */
     public function favorites()
     {
-        return $this->hasMany(Favority::class, 'user_id');
+        return $this->hasMany(UserFavorite::class, 'user_id');
     }
 
     public function socials()
     {
-        return $this->hasMany(Social::class, 'user_id');
+        return $this->hasMany(UserSocial::class, 'user_id');
     }
 
     public function preferences()
     {
-        return $this->hasMany(Preference::class, 'user_id');
+        return $this->hasMany(UserPreference::class, 'user_id');
     }
 
     public function roles()
@@ -125,7 +124,7 @@ class User extends Authenticatable
 
     public function events()
     {
-        return $this->hasManyThrough(Event::class, Post::class, 'user_id', 'post_id');
+        return $this->posts()->event();
     }
 
     public function programs()
@@ -150,7 +149,7 @@ class User extends Authenticatable
 
     public function opinions()
     {
-        return $this->hasMany(Opinion::class, 'user_id');
+        return $this->hasMany(PostReview::class, 'user_id');
     }
 
     public function tasks()

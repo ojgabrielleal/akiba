@@ -17,8 +17,7 @@ class StorePostController extends Controller
             $request->user(),
             $request->all(),
             $request->file('image'),
-            $request->file('cover'),
-            module: $request->input('module', 'post'),
+            $request->file('cover')
         );
 
         return $this->flashMessage('save');

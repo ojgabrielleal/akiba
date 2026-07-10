@@ -76,8 +76,8 @@
       "comment": ""
     },
     {
-      "id": "socials",
-      "name": "socials",
+      "id": "user_socials",
+      "name": "user_socials",
       "x": 360,
       "y": 80,
       "color": "#60a5fa",
@@ -90,8 +90,8 @@
       "comment": ""
     },
     {
-      "id": "preferences",
-      "name": "preferences",
+      "id": "user_preferences",
+      "name": "user_preferences",
       "x": 360,
       "y": 260,
       "color": "#60a5fa",
@@ -104,8 +104,8 @@
       "comment": ""
     },
     {
-      "id": "favorities",
-      "name": "favorities",
+      "id": "user_favorites",
+      "name": "user_favorites",
       "x": 360,
       "y": 400,
       "color": "#60a5fa",
@@ -134,8 +134,8 @@
       "comment": ""
     },
     {
-      "id": "references",
-      "name": "references",
+      "id": "post_references",
+      "name": "post_references",
       "x": 1080,
       "y": 40,
       "color": "#86efac",
@@ -148,8 +148,8 @@
       "comment": ""
     },
     {
-      "id": "reactions",
-      "name": "reactions",
+      "id": "post_reactions",
+      "name": "post_reactions",
       "x": 1080,
       "y": 220,
       "color": "#86efac",
@@ -162,8 +162,8 @@
       "comment": ""
     },
     {
-      "id": "tags",
-      "name": "tags",
+      "id": "post_tags",
+      "name": "post_tags",
       "x": 1080,
       "y": 400,
       "color": "#86efac",
@@ -276,8 +276,8 @@
       "comment": ""
     },
     {
-      "id": "onair",
-      "name": "onair",
+      "id": "onairs",
+      "name": "onairs",
       "x": 400,
       "y": 1340,
       "color": "#fbbf24",
@@ -290,8 +290,8 @@
       "comment": ""
     },
     {
-      "id": "musics",
-      "name": "musics",
+      "id": "music",
+      "name": "music",
       "x": 760,
       "y": 1340,
       "color": "#d97706",
@@ -304,8 +304,8 @@
       "comment": ""
     },
     {
-      "id": "songs_requests",
-      "name": "songs_requests",
+      "id": "song_requests",
+      "name": "song_requests",
       "x": 1080,
       "y": 1340,
       "color": "#fbbf24",
@@ -318,8 +318,8 @@
       "comment": ""
     },
     {
-      "id": "listener_month",
-      "name": "listener_month",
+      "id": "listener_months",
+      "name": "listener_months",
       "x": 1400,
       "y": 1340,
       "color": "#d97706",
@@ -359,8 +359,8 @@
       "comment": ""
     },
     {
-      "id": "calendar",
-      "name": "calendar",
+      "id": "calendars",
+      "name": "calendars",
       "x": 1080,
       "y": 1940,
       "color": "#c084fc",
@@ -400,8 +400,8 @@
       "comment": ""
     },
     {
-      "id": "options",
-      "name": "options",
+      "id": "poll_options",
+      "name": "poll_options",
       "x": 1720,
       "y": 1720,
       "color": "#c084fc",
@@ -427,8 +427,8 @@
       "comment": ""
     },
     {
-      "id": "playlist_battle",
-      "name": "playlist_battle",
+      "id": "playlist_battles",
+      "name": "playlist_battles",
       "x": 1720,
       "y": 1340,
       "color": "#d97706",
@@ -441,17 +441,17 @@
     }
   ],
   "relationships": [
-    { "id": "rel_socials_users", "name": "socials_user_id_fk", "startTableId": "socials", "startFieldId": "socials_user_id", "endTableId": "users", "endFieldId": "users_id", "cardinality": "many_to_one", "updateConstraint": "No action", "deleteConstraint": "Cascade" },
-    { "id": "rel_preferences_users", "name": "preferences_user_id_fk", "startTableId": "preferences", "startFieldId": "preferences_user_id", "endTableId": "users", "endFieldId": "users_id", "cardinality": "many_to_one", "updateConstraint": "No action", "deleteConstraint": "Cascade" },
-    { "id": "rel_favorities_users", "name": "favorities_user_id_fk", "startTableId": "favorities", "startFieldId": "favorities_user_id", "endTableId": "users", "endFieldId": "users_id", "cardinality": "many_to_one", "updateConstraint": "No action", "deleteConstraint": "Cascade" },
+    { "id": "rel_socials_users", "name": "socials_user_id_fk", "startTableId": "user_socials", "startFieldId": "socials_user_id", "endTableId": "users", "endFieldId": "users_id", "cardinality": "many_to_one", "updateConstraint": "No action", "deleteConstraint": "Cascade" },
+    { "id": "rel_preferences_users", "name": "preferences_user_id_fk", "startTableId": "user_preferences", "startFieldId": "preferences_user_id", "endTableId": "users", "endFieldId": "users_id", "cardinality": "many_to_one", "updateConstraint": "No action", "deleteConstraint": "Cascade" },
+    { "id": "rel_favorities_users", "name": "favorities_user_id_fk", "startTableId": "user_favorites", "startFieldId": "favorities_user_id", "endTableId": "users", "endFieldId": "users_id", "cardinality": "many_to_one", "updateConstraint": "No action", "deleteConstraint": "Cascade" },
     { "id": "rel_roles_pivot_users", "name": "roles_pivot_user_id_fk", "startTableId": "roles_pivot", "startFieldId": "roles_pivot_user_id", "endTableId": "users", "endFieldId": "users_id", "cardinality": "many_to_one", "updateConstraint": "No action", "deleteConstraint": "Cascade" },
     { "id": "rel_roles_pivot_roles", "name": "roles_pivot_role_id_fk", "startTableId": "roles_pivot", "startFieldId": "roles_pivot_role_id", "endTableId": "roles", "endFieldId": "roles_id", "cardinality": "many_to_one", "updateConstraint": "No action", "deleteConstraint": "Cascade" },
     { "id": "rel_permissions_pivot_permissions", "name": "permissions_pivot_permission_id_fk", "startTableId": "permissions_pivot", "startFieldId": "permissions_pivot_permission_id", "endTableId": "permissions", "endFieldId": "permissions_id", "cardinality": "many_to_one", "updateConstraint": "No action", "deleteConstraint": "Cascade" },
     { "id": "rel_permissions_pivot_roles", "name": "permissions_pivot_role_id_fk", "startTableId": "permissions_pivot", "startFieldId": "permissions_pivot_role_id", "endTableId": "roles", "endFieldId": "roles_id", "cardinality": "many_to_one", "updateConstraint": "No action", "deleteConstraint": "Cascade" },
     { "id": "rel_posts_users", "name": "posts_user_id_fk", "startTableId": "posts", "startFieldId": "posts_user_id", "endTableId": "users", "endFieldId": "users_id", "cardinality": "many_to_one", "updateConstraint": "No action", "deleteConstraint": "Cascade" },
-    { "id": "rel_references_posts", "name": "references_post_id_fk", "startTableId": "references", "startFieldId": "references_post_id", "endTableId": "posts", "endFieldId": "posts_id", "cardinality": "many_to_one", "updateConstraint": "No action", "deleteConstraint": "Cascade" },
-    { "id": "rel_reactions_posts", "name": "reactions_post_id_fk", "startTableId": "reactions", "startFieldId": "reactions_post_id", "endTableId": "posts", "endFieldId": "posts_id", "cardinality": "many_to_one", "updateConstraint": "No action", "deleteConstraint": "Cascade" },
-    { "id": "rel_tags_posts", "name": "tags_post_id_fk", "startTableId": "tags", "startFieldId": "tags_post_id", "endTableId": "posts", "endFieldId": "posts_id", "cardinality": "many_to_one", "updateConstraint": "No action", "deleteConstraint": "Cascade" },
+    { "id": "rel_references_posts", "name": "references_post_id_fk", "startTableId": "post_references", "startFieldId": "references_post_id", "endTableId": "posts", "endFieldId": "posts_id", "cardinality": "many_to_one", "updateConstraint": "No action", "deleteConstraint": "Cascade" },
+    { "id": "rel_reactions_posts", "name": "reactions_post_id_fk", "startTableId": "post_reactions", "startFieldId": "reactions_post_id", "endTableId": "posts", "endFieldId": "posts_id", "cardinality": "many_to_one", "updateConstraint": "No action", "deleteConstraint": "Cascade" },
+    { "id": "rel_tags_posts", "name": "tags_post_id_fk", "startTableId": "post_tags", "startFieldId": "tags_post_id", "endTableId": "posts", "endFieldId": "posts_id", "cardinality": "many_to_one", "updateConstraint": "No action", "deleteConstraint": "Cascade" },
     { "id": "rel_events_posts", "name": "events_post_id_fk", "startTableId": "events", "startFieldId": "events_post_id", "endTableId": "posts", "endFieldId": "posts_id", "cardinality": "many_to_one", "updateConstraint": "No action", "deleteConstraint": "Cascade" },
     { "id": "rel_reviews_posts", "name": "reviews_post_id_fk", "startTableId": "reviews", "startFieldId": "reviews_post_id", "endTableId": "posts", "endFieldId": "posts_id", "cardinality": "many_to_one", "updateConstraint": "No action", "deleteConstraint": "Cascade" },
     { "id": "rel_opinions_users", "name": "opinions_user_id_fk", "startTableId": "opinions", "startFieldId": "opinions_user_id", "endTableId": "users", "endFieldId": "users_id", "cardinality": "many_to_one", "updateConstraint": "No action", "deleteConstraint": "Cascade" },
@@ -459,16 +459,16 @@
     { "id": "rel_podcasts_users", "name": "podcasts_user_id_fk", "startTableId": "podcasts", "startFieldId": "podcasts_user_id", "endTableId": "users", "endFieldId": "users_id", "cardinality": "many_to_one", "updateConstraint": "No action", "deleteConstraint": "Cascade" },
     { "id": "rel_programs_users", "name": "programs_user_id_fk", "startTableId": "programs", "startFieldId": "programs_user_id", "endTableId": "users", "endFieldId": "users_id", "cardinality": "many_to_one", "updateConstraint": "No action", "deleteConstraint": "Cascade" },
     { "id": "rel_programs_schedules_programs", "name": "programs_schedules_program_id_fk", "startTableId": "programs_schedules", "startFieldId": "programs_schedules_program_id", "endTableId": "programs", "endFieldId": "programs_id", "cardinality": "many_to_one", "updateConstraint": "No action", "deleteConstraint": "Cascade" },
-    { "id": "rel_onair_programs", "name": "onair_program_id_fk", "startTableId": "onair", "startFieldId": "onair_program_id", "endTableId": "programs", "endFieldId": "programs_id", "cardinality": "many_to_one", "updateConstraint": "No action", "deleteConstraint": "Cascade" },
-    { "id": "rel_songs_requests_onair", "name": "songs_requests_onair_id_fk", "startTableId": "songs_requests", "startFieldId": "songs_requests_onair_id", "endTableId": "onair", "endFieldId": "onair_id", "cardinality": "many_to_one", "updateConstraint": "No action", "deleteConstraint": "Cascade" },
-    { "id": "rel_songs_requests_musics", "name": "songs_requests_music_id_fk", "startTableId": "songs_requests", "startFieldId": "songs_requests_music_id", "endTableId": "musics", "endFieldId": "musics_id", "cardinality": "many_to_one", "updateConstraint": "No action", "deleteConstraint": "Cascade" },
+    { "id": "rel_onair_programs", "name": "onair_program_id_fk", "startTableId": "onairs", "startFieldId": "onair_program_id", "endTableId": "programs", "endFieldId": "programs_id", "cardinality": "many_to_one", "updateConstraint": "No action", "deleteConstraint": "Cascade" },
+    { "id": "rel_songs_requests_onair", "name": "songs_requests_onair_id_fk", "startTableId": "song_requests", "startFieldId": "songs_requests_onair_id", "endTableId": "onairs", "endFieldId": "onair_id", "cardinality": "many_to_one", "updateConstraint": "No action", "deleteConstraint": "Cascade" },
+    { "id": "rel_songs_requests_musics", "name": "songs_requests_music_id_fk", "startTableId": "song_requests", "startFieldId": "songs_requests_music_id", "endTableId": "music", "endFieldId": "musics_id", "cardinality": "many_to_one", "updateConstraint": "No action", "deleteConstraint": "Cascade" },
     { "id": "rel_activities_users", "name": "activities_user_id_fk", "startTableId": "activities", "startFieldId": "activities_user_id", "endTableId": "users", "endFieldId": "users_id", "cardinality": "many_to_one", "updateConstraint": "No action", "deleteConstraint": "Cascade" },
     { "id": "rel_activity_pivot_users", "name": "activity_pivot_user_id_fk", "startTableId": "activity_pivot", "startFieldId": "activity_pivot_user_id", "endTableId": "users", "endFieldId": "users_id", "cardinality": "many_to_one", "updateConstraint": "No action", "deleteConstraint": "Cascade" },
     { "id": "rel_activity_pivot_activities", "name": "activity_pivot_activity_id_fk", "startTableId": "activity_pivot", "startFieldId": "activity_pivot_activity_id", "endTableId": "activities", "endFieldId": "activities_id", "cardinality": "many_to_one", "updateConstraint": "No action", "deleteConstraint": "Cascade" },
-    { "id": "rel_calendar_users", "name": "calendar_user_id_fk", "startTableId": "calendar", "startFieldId": "calendar_user_id", "endTableId": "users", "endFieldId": "users_id", "cardinality": "many_to_one", "updateConstraint": "No action", "deleteConstraint": "Cascade" },
-    { "id": "rel_calendar_activities", "name": "calendar_activity_id_fk", "startTableId": "calendar", "startFieldId": "calendar_activity_id", "endTableId": "activities", "endFieldId": "activities_id", "cardinality": "many_to_one", "updateConstraint": "No action", "deleteConstraint": "Cascade" },
+    { "id": "rel_calendar_users", "name": "calendar_user_id_fk", "startTableId": "calendars", "startFieldId": "calendar_user_id", "endTableId": "users", "endFieldId": "users_id", "cardinality": "many_to_one", "updateConstraint": "No action", "deleteConstraint": "Cascade" },
+    { "id": "rel_calendar_activities", "name": "calendar_activity_id_fk", "startTableId": "calendars", "startFieldId": "calendar_activity_id", "endTableId": "activities", "endFieldId": "activities_id", "cardinality": "many_to_one", "updateConstraint": "No action", "deleteConstraint": "Cascade" },
     { "id": "rel_tasks_users", "name": "tasks_user_id_fk", "startTableId": "tasks", "startFieldId": "tasks_user_id", "endTableId": "users", "endFieldId": "users_id", "cardinality": "many_to_one", "updateConstraint": "No action", "deleteConstraint": "Cascade" },
-    { "id": "rel_options_polls", "name": "options_poll_id_fk", "startTableId": "options", "startFieldId": "options_poll_id", "endTableId": "polls", "endFieldId": "polls_id", "cardinality": "many_to_one", "updateConstraint": "No action", "deleteConstraint": "Cascade" }
+    { "id": "rel_options_polls", "name": "options_poll_id_fk", "startTableId": "poll_options", "startFieldId": "options_poll_id", "endTableId": "polls", "endFieldId": "polls_id", "cardinality": "many_to_one", "updateConstraint": "No action", "deleteConstraint": "Cascade" }
   ],
   "notes": [],
   "subjectAreas": [

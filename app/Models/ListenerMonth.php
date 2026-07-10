@@ -13,8 +13,6 @@ class ListenerMonth extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $table = 'listener_month';
-
     protected $fillable = [
         'uuid',
         'name',
@@ -62,14 +60,14 @@ class ListenerMonth extends Model
 
         $listener = DB::selectOne('
             SELECT
-                songs_requests.name AS name,
-                songs_requests.address AS address,
+                song_requests.name AS name,
+                song_requests.address AS address,
                 COUNT(*) AS requests_total
-            FROM songs_requests
-            WHERE songs_requests.created_at BETWEEN ? AND ?
+            FROM song_requests
+            WHERE song_requests.created_at BETWEEN ? AND ?
             GROUP BY 
-                songs_requests.name,
-                songs_requests.address
+                song_requests.name,
+                song_requests.address
             ORDER BY requests_total DESC
             LIMIT 1
         ', [$startOfMonth, $endOfMonth]);
@@ -83,12 +81,12 @@ class ListenerMonth extends Model
                 programs.name AS name,
                 programs.image AS image,
                 COUNT(*) AS requests_total
-            FROM songs_requests
-            JOIN onair ON songs_requests.onair_id = onair.id
-            JOIN programs ON onair.program_id = programs.id 
-            WHERE songs_requests.created_at BETWEEN ? AND ? 
-                AND songs_requests.name = ? 
-                AND songs_requests.address = ?
+            FROM song_requests
+            JOIN onairs ON song_requests.onair_id = onairs.id
+            JOIN programs ON onairs.program_id = programs.id 
+            WHERE song_requests.created_at BETWEEN ? AND ? 
+                AND song_requests.name = ? 
+                AND song_requests.address = ?
             GROUP BY
                 programs.name,
                 programs.image 
@@ -98,21 +96,21 @@ class ListenerMonth extends Model
 
         $music = DB::selectOne('
             SELECT 
-                musics.name AS name,
-                musics.artist AS artist,
-                musics.production AS production,
-                musics.image AS image,
+                music.name AS name,
+                music.artist AS artist,
+                music.production AS production,
+                music.image AS image,
                 COUNT(*) AS requests_total
-            FROM songs_requests
-            JOIN musics ON songs_requests.music_id = musics.id 
-            WHERE songs_requests.created_at BETWEEN ? AND ? 
-                AND songs_requests.name = ? 
-                AND songs_requests.address = ?
+            FROM song_requests
+            JOIN music ON song_requests.music_id = music.id 
+            WHERE song_requests.created_at BETWEEN ? AND ? 
+                AND song_requests.name = ? 
+                AND song_requests.address = ?
             GROUP BY 
-                musics.name, 
-                musics.artist,
-                musics.production,
-                musics.image
+                music.name, 
+                music.artist,
+                music.production,
+                music.image
             ORDER BY requests_total DESC
             LIMIT 1
         ', [$startOfMonth, $endOfMonth, $listener->name, $listener->address]);

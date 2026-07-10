@@ -10,7 +10,6 @@ class Airtime extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $table = 'airtimes';
     
     protected $fillable = [
         'uuid',

@@ -10,8 +10,6 @@ class SongRequest extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $table = 'songs_requests';
-
     protected $fillable = [
         'uuid',
         'was_reproduced',

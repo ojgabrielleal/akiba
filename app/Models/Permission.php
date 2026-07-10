@@ -10,7 +10,6 @@ class Permission extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $table = 'permissions';
     
     protected $fillable = [
         'uuid',
