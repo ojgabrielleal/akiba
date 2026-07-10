@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Web\Administration;
 
 use App\Http\Requests\Web\LoggedWebRequest;
+use App\Models\Calendar;
 
 class CreateCalendarRequest extends LoggedWebRequest
 {
@@ -11,7 +12,7 @@ class CreateCalendarRequest extends LoggedWebRequest
      */
     public function authorize(): bool
     {
-        return $this->user()?->can('create', \App\Models\Calendar::class) ?? false;
+        return $this->user()?->can('create', Calendar::class) ?? false;
     }
 
     /**

@@ -11,7 +11,7 @@ class MusicPolicy
     /**
      * Determine whether the user can view any models.
      */
-    public function list(User $user): bool
+    public function viewAny(User $user): bool
     {
         return $user->hasPermission('music.list');
     }

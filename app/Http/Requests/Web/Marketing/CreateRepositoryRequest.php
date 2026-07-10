@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Web\Marketing;
 
 use App\Http\Requests\Web\LoggedWebRequest;
+use App\Models\Repository;
 
 class CreateRepositoryRequest extends LoggedWebRequest
 {
@@ -11,7 +12,7 @@ class CreateRepositoryRequest extends LoggedWebRequest
      */
     public function authorize(): bool
     {
-        return $this->user()?->can('create', \App\Models\Repository::class) ?? false;
+        return $this->user()?->can('create', Repository::class) ?? false;
     }
 
     /**

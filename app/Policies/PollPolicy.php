@@ -48,11 +48,4 @@ class PollPolicy
         return $user->hasPermission('poll.deactivate');
     }
 
-    /**
-     * Determine whether the user can vote.
-     */
-    public function vote(User $user, Poll $poll): bool
-    {
-        return $user->hasPermission('poll.create.vote');
-    }
 }

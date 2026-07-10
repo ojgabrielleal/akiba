@@ -18,6 +18,7 @@ class PollResource extends JsonResource
             'uuid' => $this->uuid,
             'question' => $this->question,
             'options' => OptionResource::collection($this->options),
+            'total_votes' => $this->options->sum('votes')
         ];
     }
 }

@@ -1,4 +1,6 @@
 <script>
+    export let title;
+
     import { router, page } from "@inertiajs/svelte";
     import { Section, Offcanvas } from "@/ui/components/private";
     import { PollForm } from "@/ui/widgets/private";
@@ -6,133 +8,140 @@
 
     $: ({ polls } = $page.props);
 
+    $:console.log(polls);
+
     let can = pollPermissions();
 
     let offcanvasRef;
-    let identifier;
+    let pollSelected;
+    $: offcanvasTitle = pollSelected ? 'Atualizar enquete' : 'Cadastrar enquete'
+    
+    let actions = [
+        {
+            title: "Criar",
+            icon: "/svg/plus.svg",
+            permission: can.create,
+            onClick: () => offcanvasRef.show()
+        },
+    ]; 
 
-    let storageVotedPolls = JSON.parse(localStorage.getItem("voted") || "[]");
-
-    const submitVote = (event, item) => {
-        const form = event.target;
-        const formData = new FormData(form);
+    let votedPolls = JSON.parse(localStorage.getItem("akiba_poll_voted")) ?? [];
+    const submitVote = (event) => {
+        const formData = new FormData(event.target);
         const option = formData.get("option");
 
         router.post(`/panel/media/poll/vote/${option}`, {}, {
                 preserveScroll: true,
                 onSuccess: () => {
-                    localStorage.setItem(
-                        "voted",
-                        JSON.stringify(storageVotedPolls),
-                    );
-                    storageVotedPolls.push(item.uuid);
-                    storageVotedPolls = storageVotedPolls;
-                },
-            });
-    };
+                    votedPolls.push(option);
 
-    const requestDeactivatePoll = (poll) => {
-        router.delete(`/panel/media/poll/${poll}`, {}, {
-                preserveScroll: true,
+                    localStorage.setItem(
+                        "akiba_poll_voted",
+                        JSON.stringify(votedPolls)
+                    );
+                },
             });
     };
 </script>
 
-<Offcanvas bind:this={offcanvasRef} title={identifier ? "Atualizar enquete" : "Cadastrar enquete"}>
+<Offcanvas bind:this={offcanvasRef} title={offcanvasTitle}>
     <div slot="content" let:close>
         <PollForm {identifier} {close} />
     </div>
 </Offcanvas>
 
 {#if polls}
-    <Section title="Enquetes">
-        {#if can.create || can.update}
-            <div class="flex justify-center">
-                <button type="button" class="cursor-pointer text-suspense-aurora text-xl font-noto-sans font-extrabold uppercase italic rounded-sm py-1 px-3 bg-orange-amber" on:click={() => { offcanvasRef.open(); identifier = null; }}>
-                    Criar enquete
-                </button>
-            </div>
-        {/if}
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 mt-10">
+    <Section {title} {actions}>
+        <div class={["grid gap-5", 
+            {"grid-cols-1": polls.data.length === 1 },
+            {"grid-cols-1 lg:grid-cols-2": polls.data.length === 2 },
+            {"sm:grid-cols-2 lg:grid-cols-3": polls.data.length >= 3 },
+        ]}>
             {#each polls.data as item}
-                {@const alreadyVoted = storageVotedPolls.includes(item.uuid)}
-                <form on:submit|preventDefault={(event)>
-                        submitVote(event, item)}
-                    class="flex flex-col justify-between gap-5 bg-blue-skywave p-5 rounded-md"
-                >
-                    <div class="text-suspense-aurora text-xl text-start font-noto-sans font-extrabold">
-                        {item.question}
-                    </div>
-                    <div class="flex flex-col gap-3">
-                        {#each item.options as optitem}
-                            <div class="inline-flex items-center">
-                                <div class="relative flex items-center cursor-pointer">
+                {@const isVoted = votedPolls.includes(item.uuid)}
+                <form on:submit|preventDefault={submitVote} class={`${isVoted ? 'opacity-50 pointer-none' : null}`}>
+                    <div class="w-full bg-gradient-blue-cerulean-glow p-4 rounded-md">
+                        <h2 class={["text-center text-orange-morning font-noto-sans font-extrabold uppercase italic", 
+                            {"text-2xl": polls.data.length === 1}, 
+                            {"text-xl": polls.data.length >=2}
+                        ]}>
+                            {item.question}
+                        </h2>
+                        <div class={["flex",
+                            {"flex-row gap-20 justify-center my-8": polls.data.length === 1},
+                            {"flex-col gap-5 justify-start my-5": polls.data.length >= 2} 
+                        ]}>
+                            {#each item.options as options}
+                                <div class="w-30 flex gap-2">
                                     <input
-                                        id={optitem.uuid}
+                                        id={options.uuid}
                                         name="option"
                                         type="radio"
-                                        class="peer h-5 w-5 cursor-pointer appearance-none rounded-full bg-suspense-aurora"
-                                        value={optitem.uuid}
-                                        disabled={alreadyVoted}
-                                        required
+                                        value={options.uuid}
+                                        class={["shrink-0", 
+                                            {"w-5 h-5 mt-2": polls.data.length === 1},
+                                            {"w-4 h-4 mt-[0.4rem]": polls.data.length >=2}
+                                        ]}
                                     />
-                                    <div class="absolute bg-blue-skywave w-2/4 h-2/4 rounded-full opacity-0 peer-checked:opacity-100 transition-opacity duration-200 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
+                                    <div>
+                                        <label for={options.uuid} class={["fonto-noto-sans font-bold text-suspense-aurora uppercase italic", 
+                                            {"text-xl": polls.data.length === 1}, 
+                                            {"text-lg": polls.data.length >=2}
+                                        ]}>
+                                            {options.option}
+                                        </label>
+                                        <div class="relative flex items-center w-30 h-3 bg-black rounded-full px-2 select-none mt-1">
+                                        <div class="h-1 bg-orange-500 rounded-sm" style={`width: ${(options.votes / item.total_votes) * 100}%`}></div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <label for={optitem.uuid} class="w-full ml-2 flex justify-between text-suspense-aurora text-md font-noto-sans cursor-pointer">
-                                    <div>
-                                        {optitem.option}
-                                    </div>
-                                    <div>
-                                        {optitem.votes}
-                                    </div>
-                                </label>
-                            </div>
-                        {/each}
-                    </div>
-                    <div class="flex justify-between">
-                        {#if can.vote.create}
-                            <button
-                                type="submit"
-                                class="cursor-pointer text-suspense-aurora text-md font-noto-sans font-extrabold uppercase italic rounded-sm py-1 px-3 bg-orange-amber disabled:opacity-50 disabled:cursor-not-allowed"
-                                disabled={alreadyVoted}
-                            >
-                                Votar
-                            </button>
-                        {/if}
-                        <div class="flex gap-3">
-                            {#if can.show_button_update}
-                                <button
-                                    type="button"
-                                    aria-label="Editar"
-                                    class="cursor-pointer"
-                                    on:click={() => { offcanvasRef.open(); identifier = item.uuid; }}
-                                >
-                                    <img
-                                        src="/svg/edit.svg"
-                                        alt=""
-                                        aria-hidden="true"
-                                        class="w-5 filter-suspense-aurora"
-                                        loading="lazy"
-                                    />
-                                </button>
-                            {/if}
-                            {#if can.deactivate}
-                                <button
-                                    type="button"
-                                    class="cursor-pointer"
-                                    aria-label="Desativar"
-                                    on:click={requestDeactivatePoll(item.uuid)}
-                                >
-                                    <img
-                                        src="/svg/trash.svg"
-                                        alt=""
-                                        aria-hidden="true"
-                                        class="w-5 filter-suspense-aurora"
-                                        loading="lazy"
-                                    />
-                                </button>
-                            {/if}
+                            {/each}
                         </div>
+                        {#if polls.data.length === 1}
+                            <div class="flex justify-between">
+                                <div class="font-noso-sans font-bold italic uppercase">
+                                    <span class="font-extrabold text-suspense-aurora text-3xl">
+                                        {item.total_votes}
+                                    </span>
+                                    <span class="text-orange-morning text-sm">
+                                        Votos
+                                    </span>
+                                </div>
+                                <div class="flex gap-2 items-center">
+                                    <span class="font-noto-sans font-normal text-orange-morning text-sm">
+                                        ** Vote com sabedoria, após confirmar, o voto não pode ser mudado e você não pode votar novamente**
+                                    </span>
+                                    <button
+                                        aria-label="votar"
+                                        type="submit"
+                                        class="cursor-pointer font-noto-sans font-extrabold italic uppercase text-blue-marinho py-2 px-6 rounded-full bg-orange-citric"
+                                    >
+                                        Votar
+                                    </button>
+                                </div>
+                            </div>
+                        {:else}
+                            <div class="flex justify-between my-2">
+                                <div class="font-noso-sans font-bold italic uppercase">
+                                    <span class="font-extrabold text-suspense-aurora text-3xl">
+                                        {item.total_votes}
+                                    </span>
+                                    <span class="text-orange-morning text-sm">
+                                        Votos
+                                    </span>
+                                </div>
+                                <button
+                                    aria-label="votar"
+                                    type="submit"
+                                    class="cursor-pointer font-noto-sans font-extrabold italic uppercase text-blue-marinho py-2 px-6 rounded-full bg-orange-citric"
+                                >
+                                    Votar
+                                </button>
+                            </div>
+                            <span class="font-noto-sans font-normal text-orange-morning text-sm">
+                                ** Vote com sabedoria, após confirmar, o voto não pode ser mudado e você não pode votar novamente**
+                            </span>
+                        {/if}
                     </div>
                 </form>
             {/each}

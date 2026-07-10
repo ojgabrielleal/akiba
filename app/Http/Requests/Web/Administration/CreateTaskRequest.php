@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Web\Administration;
 
 use App\Http\Requests\Web\LoggedWebRequest;
+use App\Models\Task;
 
 class CreateTaskRequest extends LoggedWebRequest
 {
@@ -11,7 +12,7 @@ class CreateTaskRequest extends LoggedWebRequest
      */
     public function authorize(): bool
     {
-        return $this->user()?->can('create', \App\Models\Task::class) ?? false;
+        return $this->user()?->can('create', Task::class) ?? false;
     }
 
     /**

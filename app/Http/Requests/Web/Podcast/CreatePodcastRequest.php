@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Web\Podcast;
 
 use App\Http\Requests\Web\LoggedWebRequest;
+use App\Models\Podcast;
 
 class CreatePodcastRequest extends LoggedWebRequest
 {
@@ -11,7 +12,7 @@ class CreatePodcastRequest extends LoggedWebRequest
      */
     public function authorize(): bool
     {
-        return $this->user()?->can('create', \App\Models\Podcast::class) ?? false;
+        return $this->user()?->can('create', Podcast::class) ?? false;
     }
 
     /**

@@ -8,5 +8,4 @@
 <Layout>
     <h1 class="sr-only">Midias</h1>
     <PollGrid />
-    <EventGrid variant="detailed" />
 </Layout>

@@ -7,7 +7,6 @@
     import { resolvePlaceholderImage } from "@/utils";
 
     $: ({ user, onair } = $page.props);
-
     $: isLocutionFormBlocked = ["live", "playlist", "scheduled"].includes(onair.data.execution_mode);
 
     const redirectToDashboard = () => {

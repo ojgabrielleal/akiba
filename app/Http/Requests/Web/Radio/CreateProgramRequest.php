@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Web\Radio;
 
 use App\Http\Requests\Web\LoggedWebRequest;
+use App\Models\Program;
 
 class CreateProgramRequest extends LoggedWebRequest
 {
@@ -11,7 +12,7 @@ class CreateProgramRequest extends LoggedWebRequest
      */
     public function authorize(): bool
     {
-        return $this->user()?->can('create', \App\Models\Program::class) ?? false;
+        return $this->user()?->can('create', Program::class) ?? false;
     }
 
     /**

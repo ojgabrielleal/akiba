@@ -2,18 +2,69 @@
 
 use Illuminate\Support\Facades\Route;
 
-// Private controllers
-use App\Http\Controllers\Private\LoginController;
-use App\Http\Controllers\Private\AdministrationController;
-use App\Http\Controllers\Private\LocutionController;
-use App\Http\Controllers\Private\DashboardController;
-use App\Http\Controllers\Private\PostController;
-use App\Http\Controllers\Private\RadioController;
-use App\Http\Controllers\Private\PodcastController;
-use App\Http\Controllers\Private\RepositoryController;
-use App\Http\Controllers\Private\MediaController;
-use App\Http\Controllers\Private\LogsController;
-use App\Http\Controllers\Private\ProfileController;
+use App\Http\Controllers\Private\LoginPageController;
+use App\Http\Controllers\Private\AdministrationPageController;
+use App\Http\Controllers\Private\LocutionPageController;
+use App\Http\Controllers\Private\DashboardPageController;
+use App\Http\Controllers\Private\PostPageController;
+use App\Http\Controllers\Private\RadioPageController;
+use App\Http\Controllers\Private\PodcastPageController;
+use App\Http\Controllers\Private\RepositoryPageController;
+use App\Http\Controllers\Private\MediaPageController;
+use App\Http\Controllers\Private\LogsPageController;
+use App\Http\Controllers\Private\ProfilePageController;
+
+use App\Http\Controllers\Private\Auth\LoginController as AuthLoginController;
+use App\Http\Controllers\Private\Auth\LogoutController;
+use App\Http\Controllers\Private\Administration\Activity\ShowActivityController;
+use App\Http\Controllers\Private\Administration\Activity\StoreActivityController;
+use App\Http\Controllers\Private\Administration\Activity\UpdateActivityController;
+use App\Http\Controllers\Private\Administration\Calendar\ShowCalendarController;
+use App\Http\Controllers\Private\Administration\Calendar\StoreCalendarController;
+use App\Http\Controllers\Private\Administration\Calendar\UpdateCalendarController;
+use App\Http\Controllers\Private\Administration\Role\DestroyRoleController;
+use App\Http\Controllers\Private\Administration\Role\ShowRoleController;
+use App\Http\Controllers\Private\Administration\Role\StoreRoleController;
+use App\Http\Controllers\Private\Administration\Role\UpdateRoleController;
+use App\Http\Controllers\Private\Administration\Task\ShowTaskController;
+use App\Http\Controllers\Private\Administration\Task\StoreTaskController;
+use App\Http\Controllers\Private\Administration\Task\UpdateTaskController;
+use App\Http\Controllers\Private\Administration\User\DeactivateUserController;
+use App\Http\Controllers\Private\Administration\User\ShowUserController;
+use App\Http\Controllers\Private\Administration\User\StoreUserController;
+use App\Http\Controllers\Private\Administration\User\UpdateUserAccessController;
+use App\Http\Controllers\Private\Dashboard\Activity\ConfirmActivityParticipantController;
+use App\Http\Controllers\Private\Dashboard\Task\MarkTaskToReviewController;
+use App\Http\Controllers\Private\Locution\FinishLocutionController;
+use App\Http\Controllers\Private\Locution\MarkSongRequestAsCanceledController;
+use App\Http\Controllers\Private\Locution\MarkSongRequestAsPlayedController;
+use App\Http\Controllers\Private\Locution\StartLocutionController;
+use App\Http\Controllers\Private\Locution\ToggleSongRequestBoxStatusController;
+use App\Http\Controllers\Private\Marketing\Repository\DeactivateRepositoryController;
+use App\Http\Controllers\Private\Marketing\Repository\ShowRepositoryController;
+use App\Http\Controllers\Private\Marketing\Repository\StoreRepositoryController;
+use App\Http\Controllers\Private\Marketing\Repository\UpdateRepositoryController;
+use App\Http\Controllers\Private\Media\Poll\DeactivatePollController;
+use App\Http\Controllers\Private\Media\Poll\ShowPollController;
+use App\Http\Controllers\Private\Media\Poll\StorePollController;
+use App\Http\Controllers\Private\Media\Poll\UpdatePollController;
+use App\Http\Controllers\Private\Media\Poll\Vote\StoreVoteController;
+use App\Http\Controllers\Private\Podcast\DeactivatePodcastController;
+use App\Http\Controllers\Private\Podcast\ShowPodcastController;
+use App\Http\Controllers\Private\Podcast\StorePodcastController;
+use App\Http\Controllers\Private\Podcast\UpdatePodcastController;
+use App\Http\Controllers\Private\Post\DeactivatePostController;
+use App\Http\Controllers\Private\Post\ShowPostController;
+use App\Http\Controllers\Private\Post\StorePostController;
+use App\Http\Controllers\Private\Post\UpdatePostController;
+use App\Http\Controllers\Private\Profile\User\UpdateProfileController;
+use App\Http\Controllers\Private\Radio\ListenerMonth\StoreListenerMonthController;
+use App\Http\Controllers\Private\Radio\Music\GenerateMusicRankingController;
+use App\Http\Controllers\Private\Radio\Music\UpdateMusicController;
+use App\Http\Controllers\Private\Radio\Program\DeactivateProgramController;
+use App\Http\Controllers\Private\Radio\Program\ShowProgramController;
+use App\Http\Controllers\Private\Radio\Program\StoreProgramController;
+use App\Http\Controllers\Private\Radio\Program\UpdateProgramController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,139 +72,139 @@ use App\Http\Controllers\Private\ProfileController;
 |--------------------------------------------------------------------------
 */
 Route::prefix('panel')->middleware(['inertia'])->group(function () {
-    Route::controller(LoginController::class)->group(function () {
+    Route::controller(LoginPageController::class)->group(function () {
         Route::get('', 'render')->name('login');
-        Route::post('auth', 'login');
+        Route::post('auth', [AuthLoginController::class, '__invoke']);
     });
 
     Route::middleware(['auth'])->group(function () {
-        Route::post('logout', [LoginController::class, 'logout'])->name('logout');
+        Route::post('logout', [LogoutController::class, '__invoke'])->name('logout');
 
-        Route::prefix('dashboard')->controller(DashboardController::class)->group(function () {
+        Route::prefix('dashboard')->controller(DashboardPageController::class)->group(function () {
             Route::get('', 'render')->name('panel.dashboard');
             Route::prefix('activity')->group(function () {
-                Route::post('{activity:uuid}/confirm', 'confirmActivityParticipant');
+                Route::post('{activity:uuid}/confirm', [ConfirmActivityParticipantController::class, '__invoke']);
             });
             Route::prefix('task')->group(function () {
-                Route::post('{task:uuid}/complete', 'markTaskToReview');
+                Route::post('{task:uuid}/complete', [MarkTaskToReviewController::class, '__invoke']);
             });
             Route::prefix('post')->group(function () {
-                Route::delete('{post:uuid}', 'deactivatePost');
+                Route::delete('{post:uuid}', [DeactivatePostController::class, '__invoke']);
             });
         });
 
-        Route::prefix('post')->controller(PostController::class)->group(function () {
+        Route::prefix('post')->controller(PostPageController::class)->group(function () {
             Route::get('', 'render')->name('panel.post');
-            Route::post('', 'createPost');
-            Route::post('review', 'createReview');
-            Route::patch('{post:uuid}', 'updatePost');
-            Route::get('{post:uuid}', 'showPost');
-            Route::delete('{post:uuid}', 'deactivatePost');
+            Route::post('', [StorePostController::class, '__invoke']);
+            Route::post('review', [StorePostController::class, '__invoke']);
+            Route::patch('{post:uuid}', [UpdatePostController::class, '__invoke']);
+            Route::get('{post:uuid}', [ShowPostController::class, '__invoke']);
+            Route::delete('{post:uuid}', [DeactivatePostController::class, '__invoke']);
         });
         
-        Route::prefix('locution')->controller(LocutionController::class)->group(function () {
+        Route::prefix('locution')->controller(LocutionPageController::class)->group(function () {
             Route::prefix('locution')->group(function () {
-                Route::post('start/{program:uuid}', 'startLocution');
-                Route::patch('finish', 'finishLocution');
+                Route::post('start/{program:uuid}', [StartLocutionController::class, '__invoke']);
+                Route::patch('finish', [FinishLocutionController::class, '__invoke']);
             });
             Route::prefix('songrequest')->group(function () {
-                Route::patch('{songRequest:uuid}/played', 'markSongRequestAsPlayed');
-                Route::patch('{songRequest:uuid}/canceled', 'markSongRequestAsCanceled');
-                Route::patch('toggle', 'toggleSongRequestBoxStatus');
+                Route::patch('{songRequest:uuid}/played', [MarkSongRequestAsPlayedController::class, '__invoke']);
+                Route::patch('{songRequest:uuid}/canceled', [MarkSongRequestAsCanceledController::class, '__invoke']);
+                Route::patch('toggle', [ToggleSongRequestBoxStatusController::class, '__invoke']);
             });
             Route::get('', 'render')->name('panel.locucao');
         });
 
-        Route::prefix('radio')->controller(RadioController::class)->group(function () {
+        Route::prefix('radio')->controller(RadioPageController::class)->group(function () {
             Route::prefix('program')->group(function () {
-                Route::post('', 'createProgram');
-                Route::patch('{program:uuid}', 'updateProgram');
-                Route::get('{program:uuid}', 'showProgram');
-                Route::delete('{program:uuid}', 'deactivateProgram');
+                Route::post('', [StoreProgramController::class, '__invoke']);
+                Route::patch('{program:uuid}', [UpdateProgramController::class, '__invoke']);
+                Route::get('{program:uuid}', [ShowProgramController::class, '__invoke']);
+                Route::delete('{program:uuid}', [DeactivateProgramController::class, '__invoke']);
             });
             Route::prefix('music')->group(function () {
-                Route::post('ranking', 'generateMusicRanking');
-                Route::patch('{music:uuid}', 'updateMusic');
+                Route::post('ranking', [GenerateMusicRankingController::class, '__invoke']);
+                Route::patch('{music:uuid}', [UpdateMusicController::class, '__invoke']);
             });
             Route::prefix('listener-month')->group(function () {
-                Route::post('', 'createListenerMonth');
+                Route::post('', [StoreListenerMonthController::class, '__invoke']);
             });
             Route::get('', 'render')->name('panel.radio');
         });
 
-        Route::prefix('podcast')->controller(PodcastController::class)->group(function () {
+        Route::prefix('podcast')->controller(PodcastPageController::class)->group(function () {
             Route::get('', 'render')->name('panel.podcast');
-            Route::post('', 'createPodcast');
-            Route::patch('{podcast:uuid}', 'updatePodcast');
-            Route::delete('{podcast:uuid}', 'deactivatePodcast');
-            Route::get('{podcast:uuid}', 'showPodcast');
+            Route::post('', [StorePodcastController::class, '__invoke']);
+            Route::patch('{podcast:uuid}', [UpdatePodcastController::class, '__invoke']);
+            Route::delete('{podcast:uuid}', [DeactivatePodcastController::class, '__invoke']);
+            Route::get('{podcast:uuid}', [ShowPodcastController::class, '__invoke']);
         });
 
-        Route::prefix('marketing')->controller(RepositoryController::class)->group(function () {
+        Route::prefix('marketing')->controller(RepositoryPageController::class)->group(function () {
             Route::prefix('repository')->group(function () {
-                Route::post('', 'createRepository');
-                Route::get('{repository:uuid}', 'showRepository');
-                Route::patch('{repository:uuid}', 'updateRepository');
-                Route::delete('{repository:uuid}', 'deactivateRepository');
+                Route::post('', [StoreRepositoryController::class, '__invoke']);
+                Route::get('{repository:uuid}', [ShowRepositoryController::class, '__invoke']);
+                Route::patch('{repository:uuid}', [UpdateRepositoryController::class, '__invoke']);
+                Route::delete('{repository:uuid}', [DeactivateRepositoryController::class, '__invoke']);
             });
             Route::get('', 'render')->name('panel.marketing');
         });
 
-        Route::prefix('media')->controller(MediaController::class)->group(function () {
+        Route::prefix('media')->controller(MediaPageController::class)->group(function () {
             Route::prefix('event')->group(function () {
                 Route::delete('{event:uuid}', 'deactivateEvent');
             });
             Route::prefix('poll')->group(function () {
-                Route::post('', 'createPoll');
-                Route::patch('{poll:uuid}', 'updatePoll');
-                Route::delete('{poll:uuid}', 'deactivatePoll');
-                Route::get('{poll:uuid}', 'showPoll');
+                Route::post('', [StorePollController::class, '__invoke']);
+                Route::patch('{poll:uuid}', [UpdatePollController::class, '__invoke']);
+                Route::delete('{poll:uuid}', [DeactivatePollController::class, '__invoke']);
+                Route::get('{poll:uuid}', [ShowPollController::class, '__invoke']);
                 Route::prefix('vote')->group(function () {
-                    Route::post('{pollOption:uuid}', 'createVote');
+                    Route::post('{option:uuid}', [StoreVoteController::class, '__invoke']);
                 });
             });
             Route::get('', 'render')->name('panel.medias');
         });
 
-        Route::prefix('administration')->controller(AdministrationController::class)->group(function () {
+        Route::prefix('administration')->controller(AdministrationPageController::class)->group(function () {
             Route::prefix('user')->group(function () {
-                Route::post('', 'createUser');
-                Route::get('{user:uuid}', 'showUser');
-                Route::delete('{user:uuid}', 'deactivateUser');
-                Route::patch('{user:uuid}', 'updateUserAccess');
+                Route::post('', [StoreUserController::class, '__invoke']);
+                Route::get('{user:uuid}', [ShowUserController::class, '__invoke']);
+                Route::delete('{user:uuid}', [DeactivateUserController::class, '__invoke']);
+                Route::patch('{user:uuid}', [UpdateUserAccessController::class, '__invoke']);
                 Route::prefix('role')->group(function () {
                     Route::patch('{user:uuid}', 'changeUserRoles');
                 });
             });
             Route::prefix('role')->group(function(){
-                Route::post('', 'createRole');
-                Route::get('{role:uuid}', 'showRole');
-                Route::patch('{role:uuid}', 'updateRole');
-                Route::delete('{role:uuid}', 'removeRole');
+                Route::post('', [StoreRoleController::class, '__invoke']);
+                Route::get('{role:uuid}', [ShowRoleController::class, '__invoke']);
+                Route::patch('{role:uuid}', [UpdateRoleController::class, '__invoke']);
+                Route::delete('{role:uuid}', [DestroyRoleController::class, '__invoke']);
             });
             Route::prefix('calendar')->group(function(){
-                Route::post('', 'createCalendar');
-                Route::get('{calendar:uuid}', 'showCalendar');
-                Route::patch('{calendar:uuid}', 'updateCalendar');
+                Route::post('', [StoreCalendarController::class, '__invoke']);
+                Route::get('{calendar:uuid}', [ShowCalendarController::class, '__invoke']);
+                Route::patch('{calendar:uuid}', [UpdateCalendarController::class, '__invoke']);
             });
             Route::prefix('activity')->group(function () {
-                Route::post('', 'createActivity');
-                Route::get('{activity:uuid}', 'showActivity');
-                Route::patch('{activity:uuid}', 'updateActivity');
+                Route::post('', [StoreActivityController::class, '__invoke']);
+                Route::get('{activity:uuid}', [ShowActivityController::class, '__invoke']);
+                Route::patch('{activity:uuid}', [UpdateActivityController::class, '__invoke']);
                 Route::delete('{activity:uuid}', 'removeActivity');
             });
             Route::prefix('task')->group(function () {
-                Route::get('{task:uuid}', 'showTask');
-                Route::post('', 'createTask');
-                Route::patch('{task:uuid}', 'updateTask');
+                Route::get('{task:uuid}', [ShowTaskController::class, '__invoke']);
+                Route::post('', [StoreTaskController::class, '__invoke']);
+                Route::patch('{task:uuid}', [UpdateTaskController::class, '__invoke']);
             });
             Route::get('', 'render')->name('panel.adms');
         });
-        Route::prefix('logs')->controller(LogsController::class)->group(function () {
+        Route::prefix('logs')->controller(LogsPageController::class)->group(function () {
             Route::get('', 'render')->name('panel.logs');
         });
-        Route::prefix('profile')->controller(ProfileController::class)->group(function () {
-            Route::patch('{user:uuid}', 'updateProfile');
+        Route::prefix('profile')->controller(ProfilePageController::class)->group(function () {
+            Route::patch('{user:uuid}', [UpdateProfileController::class, '__invoke']);
             Route::get('{user:uuid}', 'render')->name('panel.profile');
         });
     });

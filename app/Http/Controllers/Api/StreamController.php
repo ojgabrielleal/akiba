@@ -18,12 +18,6 @@ class StreamController extends Controller
         $this->stream = $stream;
     }
 
-    /*
-    * ======================
-    * METADATA
-    * ======================
-    */
-
     public function showMetadata()
     {
         $stream = $this->stream->data();

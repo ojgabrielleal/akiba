@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Web\Media;
 
 use App\Http\Requests\Web\LoggedWebRequest;
+use App\Models\Poll;
 
 class CreatePollRequest extends LoggedWebRequest
 {
@@ -11,7 +12,7 @@ class CreatePollRequest extends LoggedWebRequest
      */
     public function authorize(): bool
     {
-        return $this->user()?->can('create', \App\Models\Poll::class) ?? false;
+        return $this->user()?->can('create', Poll::class) ?? false;
     }
 
     /**

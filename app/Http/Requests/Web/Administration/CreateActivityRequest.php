@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Web\Administration;
 
 use App\Http\Requests\Web\LoggedWebRequest;
+use App\Models\Activity;
 
 class CreateActivityRequest extends LoggedWebRequest
 {
@@ -11,7 +12,7 @@ class CreateActivityRequest extends LoggedWebRequest
      */
     public function authorize(): bool
     {
-        return $this->user()?->can('create', \App\Models\Activity::class) ?? false;
+        return $this->user()?->can('create', Activity::class) ?? false;
     }
 
     /**

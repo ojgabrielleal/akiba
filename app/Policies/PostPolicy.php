@@ -8,9 +8,9 @@ use App\Models\User;
 class PostPolicy
 {
     /**
-     * Determine whether the user can list results of the model.
+     * Determine whether the user can view any models.
      */
-    public function list(User $user): bool
+    public function viewAny(User $user): bool
     {
         return $user->hasPermission('post.list');
     }
