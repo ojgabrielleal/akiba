@@ -10,15 +10,22 @@ class Poll extends Model
 {
     use HasFactory, HasUuids;
 
+    protected $withCount = [
+        'votes',
+    ];
 
     protected $fillable = [
         'uuid',
+        'user_id',
         'is_active',
+        'status',
         'question',
+        'expires_at',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
+        'expires_at' => 'datetime',
     ];
 
     /**
@@ -44,6 +51,16 @@ class Poll extends Model
         return $query->where('is_active', true);
     }
 
+    public function scopeValid($query)
+    {
+        return $query
+            ->where('is_active', true)
+            ->where(function ($query) {
+                $query->whereNull('expires_at')
+                    ->orWhere('expires_at', '>', now());
+            });
+    }
+
     /**
      * Define the relationships between this model and other models.
      *
@@ -53,5 +70,15 @@ class Poll extends Model
     public function options()
     {
         return $this->hasMany(PollOption::class, 'poll_id');
+    }
+
+    public function votes()
+    {
+        return $this->hasMany(PollVote::class, 'poll_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

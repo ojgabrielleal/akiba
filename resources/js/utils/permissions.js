@@ -45,6 +45,8 @@ export const podcastPermissions = () => ({
 export const pollPermissions = () => ({
     create: hasPermission("poll.create"),
     update: hasPermission("poll.update"),
+    publish: hasPermission("poll.publish"),
+    approve: hasPermission("poll.approve"),
     deactivate: hasPermission("poll.deactivate"),
     vote: {
         create: hasPermission("poll.create.vote"),

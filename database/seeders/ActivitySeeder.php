@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-
-use App\Models\User;
 use App\Models\Activity;
+use App\Models\User;
+use Illuminate\Database\Seeder;
 
 class ActivitySeeder extends Seeder
 {
@@ -14,7 +13,7 @@ class ActivitySeeder extends Seeder
      */
     public function run(): void
     {
-        $admin = User::find(1);
+        $admin = User::query()->firstOrFail();
 
         $this->seedHasConfirmations($admin);
         $this->seedNotHasConfirmations($admin);

@@ -14,18 +14,22 @@ class SongRequestSeeder extends Seeder
      */
     public function run(): void
     {
-        if (SongRequest::exists()) return;
+        if (SongRequest::exists()) {
+            return;
+        }
 
         $onairs = Onair::inRandomOrder()->take(5)->get();
         $music = Music::inRandomOrder()->first();
 
-        if ($onairs->isEmpty() || !$music) return;
+        if ($onairs->isEmpty() || ! $music) {
+            return;
+        }
 
-        foreach ($onairs as $onair) {
+        $onairs->each(function (Onair $onair) use ($music) {
             SongRequest::factory(5)
                 ->for($onair, 'onair')
                 ->for($music, 'music')
                 ->create();
-        }
+        });
     }
 }

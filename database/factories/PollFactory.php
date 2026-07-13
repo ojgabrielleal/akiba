@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +18,10 @@ class PollFactory extends Factory
     public function definition(): array
     {
         return [
+            'user_id' => User::factory(),
+            'status' => fake()->randomElement(['published', 'revision', 'draft']),
             'question' => fake()->sentence(),
+            'expires_at' => now()->addDays(7),
         ];
     }
 }

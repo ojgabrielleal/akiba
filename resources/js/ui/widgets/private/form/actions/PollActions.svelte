@@ -1,26 +1,28 @@
 <script>
     export let status = null;
     export let can = [];
+
+    const buttonClasses = "cursor-pointer rounded-md px-3 py-1 text-center font-noto-sans text-sm font-extrabold uppercase italic leading-tight";
 </script>
 
 {#if can.create || can.update}
-    <div class="w-full flex flex-col lg:flex-row lg:flex-wrap gap-4 justify-start">
+    <div class="w-full flex flex-wrap flex-wrap items-center gap-3">
         <button
             aria-label="salvar como rascunho"
             type="submit"
             value="draft"
-            class="cursor-pointer font-noto-sans font-extrabold italic uppercase text-blue-marinho py-2 px-6 rounded-full bg-green-forest"
+            class={`${buttonClasses} bg-green-forest text-blue-marinho`}
         >
-            {status === 'draft' ? 'Atualizar rascunho' : 'Salvar como rascunho'}
+            {status === 'draft' ? 'Atualizar' : 'Rascunho'}
         </button>
         {#if status !== 'published'}
             <button
                 aria-label="mandar pra avaliação"
                 type="submit"
                 value="revision"
-                class="cursor-pointer font-noto-sans font-extrabold italic uppercase text-blue-marinho py-2 px-6 rounded-full bg-orange-citric"
+                class={`${buttonClasses} bg-orange-citric text-blue-marinho`}
             >
-                {status === 'revision' ? 'Atualizar avaliação' : 'Enviar para avaliação'}
+                {status === 'revision' ? 'Atualizar' : 'Avaliação'}
             </button>
         {/if}
         {#if status === 'revision' && can.approve}
@@ -28,16 +30,16 @@
                 aria-label="aprovar"
                 type="submit"
                 value="published"
-                class="cursor-pointer font-noto-sans font-extrabold italic uppercase text-suspense-aurora py-2 px-6 rounded-full bg-purple-mystic"
+                class={`${buttonClasses} bg-purple-mystic text-suspense-aurora`}
             >
                 Aprovar
             </button>
         {:else if status === 'published'}
             <button
-                aria-label="atualizar"
+                aria-label="publicar"
                 type="submit"
                 value="published"
-                class="cursor-pointer font-noto-sans font-extrabold italic uppercase text-suspense-aurora py-2 px-6 rounded-full bg-blue-ocean"
+                class={`${buttonClasses} bg-blue-ocean text-suspense-aurora`}
             >
                 Atualizar
             </button>
@@ -46,7 +48,7 @@
                 aria-label="publicar"
                 type="submit"
                 value="published"
-                class="cursor-pointer font-noto-sans font-extrabold italic uppercase text-suspense-aurora py-2 px-6 rounded-full bg-blue-ocean"
+                class={`${buttonClasses} bg-blue-ocean text-suspense-aurora`}
             >
                 Publicar
             </button>

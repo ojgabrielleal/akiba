@@ -2,14 +2,13 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-
-use App\Models\User;
 use App\Models\Post;
-use App\Models\PostReference;
 use App\Models\PostReaction;
+use App\Models\PostReference;
 use App\Models\PostReview;
 use App\Models\PostTag;
+use App\Models\User;
+use Illuminate\Database\Seeder;
 
 class PostSeeder extends Seeder
 {
@@ -18,8 +17,8 @@ class PostSeeder extends Seeder
      */
     public function run(): void
     {
-        $admin = User::find(1);
-        $user = User::inRandomOrder()->first();
+        $admin = User::query()->firstOrFail();
+        $user = User::whereKeyNot($admin->id)->inRandomOrder()->firstOrFail();
 
         $this->seedAdministration($admin);
         $this->seedNonAdministrationContent($user);

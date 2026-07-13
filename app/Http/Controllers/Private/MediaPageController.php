@@ -17,6 +17,7 @@ class MediaPageController extends Controller
     {
         return Inertia::render($this->render, [
             'polls' => $this->indexPolls(),
+            'latestPoll' => $this->latestValidPoll(),
         ]);
     }
 
@@ -25,8 +26,32 @@ class MediaPageController extends Controller
         $this->authorize('viewAny', Poll::class);
 
         return PollResource::collection(
-            Poll::active()->get()
+            Poll::active()
+                ->with([
+                    'options.votes',
+                    'votes.user',
+                ])
+                ->get()
         );
+    }
+
+    public function latestValidPoll()
+    {
+        $this->authorize('viewAny', Poll::class);
+
+        $poll = Poll::active()
+            ->where(function ($query) {
+                $query->whereNull('expires_at')
+                    ->orWhere('expires_at', '>', now());
+            })
+            ->with([
+                'options.votes',
+                'votes.user',
+            ])
+            ->latest()
+            ->first();
+
+        return PollResource::make($poll);
     }
 
 }

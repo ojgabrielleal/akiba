@@ -5,17 +5,17 @@ namespace Tests\Unit\Models;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-use App\Http\Resources\AirtimeResource;
-use App\Models\Airtime;
+use App\Http\Resources\ProgramAirtimeResource;
+use App\Models\ProgramAirtime;
 use App\Models\Program;
 use App\Models\User;
 
-class AirtimeTest extends TestCase
+class ProgramAirtimeTest extends TestCase
 {
     use RefreshDatabase;
 
     /**
-     * Tests from Airtime model relationships.
+     * Tests from ProgramAirtime model relationships.
      */
     public function testProgramRelationship(): void
     {
@@ -25,7 +25,7 @@ class AirtimeTest extends TestCase
             ->for($user, 'host')
             ->create();
 
-        $schedule = Airtime::factory()
+        $schedule = ProgramAirtime::factory()
             ->for($program, 'program')
             ->create();
 
@@ -34,22 +34,22 @@ class AirtimeTest extends TestCase
 
     public function testResourceReturnsOriginalMidnightFormat(): void
     {
-        $airtime = Airtime::factory()->make([
+        $programAirtime = ProgramAirtime::factory()->make([
             'hour' => '00:00:00',
         ]);
 
-        $resource = AirtimeResource::make($airtime)->resolve();
+        $resource = ProgramAirtimeResource::make($programAirtime)->resolve();
 
         $this->assertSame('00:00:00', $resource['hour']);
     }
 
     public function testResourceReturnsOriginalNoonFormat(): void
     {
-        $airtime = Airtime::factory()->make([
+        $programAirtime = ProgramAirtime::factory()->make([
             'hour' => '12:00:00',
         ]);
 
-        $resource = AirtimeResource::make($airtime)->resolve();
+        $resource = ProgramAirtimeResource::make($programAirtime)->resolve();
 
         $this->assertSame('12:00:00', $resource['hour']);
     }

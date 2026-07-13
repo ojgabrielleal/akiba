@@ -147,6 +147,11 @@ class User extends Authenticatable
         return $this->hasMany(Post::class, 'user_id');
     }
 
+    public function polls()
+    {
+        return $this->hasMany(Poll::class, 'user_id');
+    }
+
     public function opinions()
     {
         return $this->hasMany(PostReview::class, 'user_id');
@@ -155,5 +160,10 @@ class User extends Authenticatable
     public function tasks()
     {
         return $this->hasMany(Task::class, 'user_id');
+    }
+
+    public function pollVotes()
+    {
+        return $this->hasMany(PollVote::class, 'user_id');
     }
 }

@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-
 use App\Models\Music;
+use Illuminate\Database\Seeder;
 
 class MusicSeeder extends Seeder
 {

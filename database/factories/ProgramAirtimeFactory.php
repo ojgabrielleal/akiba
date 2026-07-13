@@ -5,9 +5,9 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Airtime>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ProgramAirtime>
  */
-class AirtimeFactory extends Factory
+class ProgramAirtimeFactory extends Factory
 {
     /**
      * Define the model's default state.

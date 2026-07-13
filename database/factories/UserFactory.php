@@ -2,11 +2,11 @@
 
 namespace Database\Factories;
 
+use App\Models\Role;
+use App\Models\User;
 use App\Models\UserFavorite;
 use App\Models\UserPreference;
-use App\Models\Role;
 use App\Models\UserSocial;
-use App\Models\User;
 use Database\Factories\Concerns\HasFakeImages;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -87,23 +87,20 @@ class UserFactory extends Factory
     public function withDefaults(): static
     {
         return $this->afterCreating(function (User $user) {
-            if (! $user->socials()->exists()) {
-                foreach ($this->socials() as $social) {
-                    $user->socials()->save(UserSocial::factory()->make($social));
-                }
-            }
+            $user->socials()->saveMany(
+                collect($this->socials())
+                    ->map(fn (array $social) => UserSocial::factory()->make($social))
+            );
 
-            if (! $user->preferences()->exists()) {
-                foreach ($this->preferences() as $preference) {
-                    $user->preferences()->save(UserPreference::factory()->make($preference));
-                }
-            }
+            $user->preferences()->saveMany(
+                collect($this->preferences())
+                    ->map(fn (array $preference) => UserPreference::factory()->make($preference))
+            );
 
-            if (! $user->favorites()->exists()) {
-                foreach ($this->favorites() as $favorite) {
-                    $user->favorites()->save(UserFavorite::factory()->make($favorite));
-                }
-            }
+            $user->favorites()->saveMany(
+                collect($this->favorites())
+                    ->map(fn (array $favorite) => UserFavorite::factory()->make($favorite))
+            );
         });
     }
 
@@ -140,5 +137,4 @@ class UserFactory extends Factory
             ['name' => null, 'image' => null],
         ];
     }
-
 }

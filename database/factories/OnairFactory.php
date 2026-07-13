@@ -27,7 +27,7 @@ class OnairFactory extends Factory
                 'text' => fake()->sentence(),
                 'icon' => $this->fakeImageUrl(),
                 'decoration' => null,
-                 'texture' => null,
+                'texture' => null,
             ],
             'execution_mode' => $executionMode,
             'allows_song_requests' => true,

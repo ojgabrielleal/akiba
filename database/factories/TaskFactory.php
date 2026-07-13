@@ -29,8 +29,9 @@ class TaskFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'dead_line' => fake()->dateTimeBetween(
-                now()->startOfWeek(), now()->endOfWeek()
-            )->format('Y-m-d')
+                now()->startOfWeek(),
+                now()->endOfWeek()
+            )->format('Y-m-d'),
         ]);
     }
 }

@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use Database\Factories\Concerns\HasFakeImages;
 use App\Models\User;
+use Database\Factories\Concerns\HasFakeImages;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

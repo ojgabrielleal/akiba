@@ -41,17 +41,17 @@ class UpdateProgramAction
             if ($program->execution_mode === 'live') {
                 $program->plans()->where('action', 'start_program')->delete();
             } else {
-                $program->airtimes()->delete();
+                $program->programAirtimes()->delete();
             }
 
             if ($program->execution_mode === 'live') {
                 $airtimes = collect($data['airtimes'] ?? []);
 
                 $uuids = $airtimes->pluck('uuid')->filter()->toArray();
-                $program->airtimes()->whereNotIn('uuid', $uuids)->delete();
+                $program->programAirtimes()->whereNotIn('uuid', $uuids)->delete();
 
                 foreach ($airtimes as $schedule) {
-                    $program->airtimes()->updateOrCreate(
+                    $program->programAirtimes()->updateOrCreate(
                         ['uuid' => $schedule['uuid']],
                         [
                             'day' => $schedule['day'], 

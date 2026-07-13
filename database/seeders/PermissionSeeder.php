@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-
 use App\Models\Permission;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class PermissionSeeder extends Seeder
 {
@@ -165,6 +165,8 @@ class PermissionSeeder extends Seeder
             ['name' => 'poll.create', 'label' => '[Enquetes] Criar'],
             ['name' => 'poll.update', 'label' => '[Enquetes] Atualizar'],
             ['name' => 'poll.deactivate', 'label' => '[Enquetes] Desativar'],
+            ['name' => 'poll.publish', 'label' => '[Enquetes] Publicar enquete (imediatamente)'],
+            ['name' => 'poll.approve', 'label' => '[Enquetes] Aprovar enquete'],
             ['name' => 'poll.create.vote', 'label' => '[Enquetes] Votar'],
 
             /*
@@ -200,13 +202,10 @@ class PermissionSeeder extends Seeder
 
         $this->renamePublicationPermissionsToPost($permissions);
 
-        foreach ($permissions as $item) {
-            Permission::updateOrCreate(
-                ['name' => $item['name']],
-                ['label' => $item['label']]
-            );
-        }
-
+        collect($permissions)->each(fn (array $permission) => Permission::updateOrCreate(
+            ['name' => $permission['name']],
+            ['label' => $permission['label']]
+        ));
     }
 
     private function renamePublicationPermissionsToPost(array $permissions): void

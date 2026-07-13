@@ -1,6 +1,7 @@
 <script>
     import { page, useForm } from "@inertiajs/svelte";
-    import { PostActions, Preview, Wysiwyg, Tooltip } from "@/ui/components/private";
+    import { Preview, Wysiwyg, Tooltip } from "@/ui/components/private";
+    import PostActions from "./actions/PostActions.svelte";
     import { postPermissions } from "@/utils";
 
     let { post } = $page.props;

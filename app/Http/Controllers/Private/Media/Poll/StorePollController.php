@@ -14,21 +14,19 @@ class StorePollController extends Controller
     public function __invoke(CreatePollRequest $request)
     {
         $poll = Poll::create([
+            'user_id' => $request->user()->id,
+            'status' => $request->input('status'),
             'question' => $request->input('question'),
+            'expires_at' => $request->input('expires_at'),
         ]);
 
-        $options = [
-            $request->input('option_one'),
-            $request->input('option_two'),
-            $request->input('option_three'),
-            $request->input('option_four'),
-        ];
-
-        foreach ($options as $text) {
-            $poll->options()->create([
-                'option' => $text,
-            ]);
-        }
+        $poll->options()->createMany(
+            collect($request->input('options'))
+                ->map(fn (array $option) => [
+                    'option' => $option['option'],
+                ])
+                ->all()
+        );
 
         return $this->flashMessage('save');
     }

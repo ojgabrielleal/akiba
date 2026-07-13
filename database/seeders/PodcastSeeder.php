@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-
-use App\Models\User;
 use App\Models\Podcast;
+use App\Models\User;
+use Illuminate\Database\Seeder;
 
 class PodcastSeeder extends Seeder
 {
@@ -14,8 +13,8 @@ class PodcastSeeder extends Seeder
      */
     public function run(): void
     {
-        $admin = User::find(1);
-        $user = User::inRandomOrder()->first();
+        $admin = User::query()->firstOrFail();
+        $user = User::whereKeyNot($admin->id)->inRandomOrder()->firstOrFail();
 
         $this->seedAdministration($admin);
         $this->seedNonAdministrationContent($user);

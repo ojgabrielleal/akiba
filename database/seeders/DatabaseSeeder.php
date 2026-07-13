@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -55,11 +54,11 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             PollSeeder::class,
+            PollVoteSeeder::class,
             TaskSeeder::class,
             RepositorySeeder::class,
             ActivitySeeder::class,
             CalendarSeeder::class,
         ]);
     }
-
 }

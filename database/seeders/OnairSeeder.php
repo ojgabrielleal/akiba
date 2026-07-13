@@ -13,36 +13,70 @@ class OnairSeeder extends Seeder
      */
     public function run(): void
     {
-        $auto = Program::where('execution_mode', 'playlist')
+        $this->seedAutoDj();
+        $this->seedLive();
+        $this->seedScheduled();
+        $this->seedPlaylist();
+    }
+
+    private function seedAutoDj(): void
+    {
+        $program = Program::where('execution_mode', 'auto_dj')
+            ->orderByDesc('is_default_auto_dj')
             ->first();
 
-        if (!$auto) return;
+        if (! $program) {
+            return;
+        }
 
         Onair::factory()
-            ->for($auto, 'program')
-            ->withAutoDj()
+            ->for($program, 'program')
+            ->autoDj()
             ->create(['in_air' => true]);
+    }
 
-        $programs = Program::where('execution_mode', '!=', 'playlist')
-            ->take(2)
-            ->get();
+    private function seedLive(): void
+    {
+        $program = Program::where('execution_mode', 'live')
+            ->whereHas('programAirtimes')
+            ->with('programAirtimes')
+            ->first();
 
-        $scheduled = $programs->first();
-
-        if ($scheduled) {
-            Onair::factory()
-                ->for($scheduled, 'program')
-                ->scheduled()
-                ->create(['in_air' => false]);
+        if (! $program) {
+            return;
         }
 
-        $playlist = $programs->skip(1)->first() ?? $scheduled;
+        Onair::factory()
+            ->for($program, 'program')
+            ->live()
+            ->create(['in_air' => false]);
+    }
 
-        if ($playlist) {
-            Onair::factory()
-                ->for($playlist, 'program')
-                ->playlist()
-                ->create(['in_air' => false]);
+    private function seedScheduled(): void
+    {
+        $program = Program::where('execution_mode', 'scheduled')->first();
+
+        if (! $program) {
+            return;
         }
+
+        Onair::factory()
+            ->for($program, 'program')
+            ->scheduled()
+            ->create(['in_air' => false]);
+    }
+
+    private function seedPlaylist(): void
+    {
+        $program = Program::where('execution_mode', 'playlist')->first();
+
+        if (! $program) {
+            return;
+        }
+
+        Onair::factory()
+            ->for($program, 'program')
+            ->playlist()
+            ->create(['in_air' => false]);
     }
 }

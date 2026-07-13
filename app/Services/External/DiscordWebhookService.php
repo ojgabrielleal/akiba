@@ -4,7 +4,7 @@ namespace App\Services\External;
 
 use Illuminate\Support\Facades\Http;
 
-class DiscordService
+class DiscordWebhookService
 {
     public function sendStreamNotificationHook($user, $program)
     {

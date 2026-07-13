@@ -8,7 +8,8 @@ use App\Models\Onair;
 use App\Models\Plan;
 use App\Models\Program;
 use App\Models\User;
-use App\Services\External\DiscordService;
+use App\Services\External\DiscordWebhookService;
+use App\Services\External\OneSignalService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -39,7 +40,7 @@ class LocutionPlanPauseTest extends TestCase
             'status' => 'paused',
         ]);
 
-        $startAction = new StartLocutionAction(new DiscordService());
+        $startAction = new StartLocutionAction(new DiscordWebhookService(), new OneSignalService());
 
         $startAction->execute($user, $program, [
             'phrase' => [
@@ -48,6 +49,7 @@ class LocutionPlanPauseTest extends TestCase
                 'decoration' => 'default',
                 'texture' => null,
             ],
+            'send_notification' => false,
         ]);
 
         $liveOnair = Onair::live()->first();

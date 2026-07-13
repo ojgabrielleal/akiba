@@ -17,7 +17,7 @@ class OptionResource extends JsonResource
         return [
             'uuid' => $this->uuid,
             'option' => $this->option,
-            'votes' => $this->votes,
+            'votes' => $this->relationLoaded('votes') ? $this->votes->count() : ($this->votes_count ?? $this->votes()->count()),
         ];
     }
 }

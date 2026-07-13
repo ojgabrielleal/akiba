@@ -12,6 +12,11 @@ class ShowPollController extends Controller
     {
         $this->authorize('view', $poll);
 
+        $poll->load([
+            'options.votes',
+            'votes.user',
+        ]);
+
         return new PollResource($poll);
     }
 }

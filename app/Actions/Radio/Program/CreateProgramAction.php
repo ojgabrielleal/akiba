@@ -38,7 +38,7 @@ class CreateProgramAction
             }
 
             if (!empty($data['airtimes']) && $data['execution_mode'] === 'live') {
-                $program->airtimes()->createMany(collect($data['airtimes']));
+                $program->programAirtimes()->createMany(collect($data['airtimes']));
             }
 
             if (!empty($data['plans']) && $data['execution_mode'] !== 'live') {

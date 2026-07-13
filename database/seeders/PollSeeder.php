@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-
-use App\Models\PollOption;
 use App\Models\Poll;
+use App\Models\PollOption;
+use App\Models\User;
+use Illuminate\Database\Seeder;
 
 class PollSeeder extends Seeder
 {
@@ -14,7 +14,10 @@ class PollSeeder extends Seeder
      */
     public function run(): void
     {
+        $user = User::query()->firstOrFail();
+
         Poll::factory(5)
+            ->for($user)
             ->has(PollOption::factory(4), 'options')
             ->create();
     }

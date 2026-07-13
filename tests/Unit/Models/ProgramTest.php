@@ -9,7 +9,7 @@ use App\Models\User;
 use App\Models\Onair;
 use App\Models\Plan;
 use App\Models\Program;
-use App\Models\Airtime;
+use App\Models\ProgramAirtime;
 use App\Actions\Radio\Program\UpdateProgramAction;
 use App\Services\Process\ImageProcessService;
 use Database\Seeders\ProgramSeeder;
@@ -32,18 +32,18 @@ class ProgramTest extends TestCase
         $this->assertTrue($program->host->is($user));
     }
 
-    public function testAirtimesRelationship(): void
+    public function testProgramAirtimesRelationship(): void
     {
         $user = User::factory()->create();
-        $airtimes = Airtime::factory(3);
+        $programAirtimes = ProgramAirtime::factory(3);
 
         $program = Program::factory()
             ->for($user, 'host')
-            ->has($airtimes, 'airtimes')
+            ->has($programAirtimes, 'programAirtimes')
             ->create();
 
-        $this->assertCount(3, $program->airtimes);
-        $this->assertContainsOnlyInstancesOf(Airtime::class, $program->airtimes);
+        $this->assertCount(3, $program->programAirtimes);
+        $this->assertContainsOnlyInstancesOf(ProgramAirtime::class, $program->programAirtimes);
     }
 
     public function testOnairRelationship(): void
@@ -237,7 +237,7 @@ class ProgramTest extends TestCase
         $this->assertTrue($newDefault->refresh()->is_default_auto_dj);
     }
 
-    public function testProgramSeederCreatesAirtimesForLivePrograms(): void
+    public function testProgramSeederCreatesProgramAirtimesForLivePrograms(): void
     {
         User::factory()->create(['id' => 1]);
         User::factory()->create([
@@ -258,8 +258,8 @@ class ProgramTest extends TestCase
         $this->assertNotNull($scheduled);
         $this->assertNotNull($playlist);
         $this->assertNotNull($autoDJ);
-        $this->assertTrue($livePrograms->every(fn (Program $program) => $program->airtimes()->exists()));
-        $this->assertFalse($playlist->airtimes()->exists());
+        $this->assertTrue($livePrograms->every(fn (Program $program) => $program->programAirtimes()->exists()));
+        $this->assertFalse($playlist->programAirtimes()->exists());
         $this->assertTrue($livePrograms->every(fn (Program $program) => $program->phrases === null));
         $this->assertNull($scheduled->phrases);
         $this->assertNull($playlist->phrases);

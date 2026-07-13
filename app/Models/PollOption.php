@@ -15,15 +15,10 @@ class PollOption extends Model
         'uuid',
         'poll_id',
         'option',
-        'votes',
     ];
 
     protected $hidden = [
         'poll_id'
-    ];
-
-    protected $casts = [
-        'votes' => 'integer',
     ];
 
     /**
@@ -41,5 +36,10 @@ class PollOption extends Model
     public function poll()
     {
         return $this->belongsTo(Poll::class, 'poll_id');
+    }
+
+    public function votes()
+    {
+        return $this->hasMany(PollVote::class, 'poll_option_id');
     }
 }

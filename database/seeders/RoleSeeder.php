@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-
-use App\Models\Role;
 use App\Models\Permission;
+use App\Models\Role;
+use Illuminate\Database\Seeder;
 
 class RoleSeeder extends Seeder
 {
@@ -63,9 +62,7 @@ class RoleSeeder extends Seeder
                 'weight' => 400,
             ],
         ];
-
-        
-        foreach($roles as $item){
+        collect($roles)->each(function (array $item) {
             Role::updateOrCreate(
                 ['label' => $item['label']],
                 [
@@ -75,10 +72,10 @@ class RoleSeeder extends Seeder
                     'weight' => $item['weight'],
                 ]
             );
-        }
+        });
 
-        $role = Role::where('name', 'administrator')->first();
-        $permissions = Permission::all()->pluck('id');
+        $role = Role::where('name', 'administrator')->firstOrFail();
+        $permissions = Permission::query()->pluck('id');
 
         $role->permissions()->syncWithoutDetaching($permissions);
     }

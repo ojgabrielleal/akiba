@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Airtime;
 use App\Models\Program;
+use App\Models\ProgramAirtime;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -14,7 +14,7 @@ class ProgramSeeder extends Seeder
      */
     public function run(): void
     {
-        $admin = User::find(1);
+        $admin = User::query()->first();
         $user = User::where('id', '!=', 1)->where('is_virtual', false)->inRandomOrder()->first();
         $virtualUser = User::where('is_virtual', true)->inRandomOrder()->first();
 
@@ -25,21 +25,25 @@ class ProgramSeeder extends Seeder
         $this->seedScheduled($virtualUser);
     }
 
-    private function seedAdministrator($user): void
+    private function seedAdministrator(?User $user): void
     {
-        if(!$user) return;
+        if (! $user) {
+            return;
+        }
 
         $program = Program::factory()
             ->withPrivate()
             ->for($user, 'host')
             ->create();
 
-        $this->seedAirtimes($program);
+        $this->seedProgramAirtimes($program);
     }
 
     private function seedPrograms(?User $user): void
     {
-       if(!$user) return;
+        if (! $user) {
+            return;
+        }
 
         $free = Program::factory()
             ->withFree()
@@ -51,13 +55,15 @@ class ProgramSeeder extends Seeder
             ->for($user, 'host')
             ->create();
 
-        $this->seedAirtimes($free);
-        $this->seedAirtimes($private);
+        $this->seedProgramAirtimes($free);
+        $this->seedProgramAirtimes($private);
     }
 
     private function seedAutoDJ(?User $user): void
     {
-        if(!$user) return;
+        if (! $user) {
+            return;
+        }
 
         Program::factory()
             ->withAutoDJ()
@@ -68,7 +74,9 @@ class ProgramSeeder extends Seeder
 
     private function seedPlaylist(?User $user): void
     {
-        if(!$user) return;
+        if (! $user) {
+            return;
+        }
 
         Program::factory()
             ->withPlaylist()
@@ -78,7 +86,9 @@ class ProgramSeeder extends Seeder
 
     private function seedScheduled(?User $user): void
     {
-        if(!$user) return;
+        if (! $user) {
+            return;
+        }
 
         Program::factory()
             ->withScheduled()
@@ -86,11 +96,13 @@ class ProgramSeeder extends Seeder
             ->create();
     }
 
-    private function seedAirtimes(Program $program): void
+    private function seedProgramAirtimes(Program $program): void
     {
-        if($program->execution_mode !== 'live') return;
+        if ($program->execution_mode !== 'live') {
+            return;
+        }
 
-        Airtime::factory(3)
+        ProgramAirtime::factory(3)
             ->for($program, 'program')
             ->create();
     }

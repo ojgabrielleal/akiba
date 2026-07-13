@@ -92,7 +92,6 @@ class ProgramFactory extends Factory
         ]);
     }
 
-
     private function phrases(): array
     {
         return [

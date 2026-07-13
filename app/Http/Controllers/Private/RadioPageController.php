@@ -46,7 +46,7 @@ class RadioPageController extends Controller
         return ProgramResource::collection(
             Program::with([
                     'host', 
-                    'airtimes', 
+                    'programAirtimes', 
                     'plans' => fn ($query) => $query->unexecuted()->orderBy('scheduled_at')
                 ])
                 ->active()

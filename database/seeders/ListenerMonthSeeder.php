@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-
 use App\Models\ListenerMonth;
+use Illuminate\Database\Seeder;
 
 class ListenerMonthSeeder extends Seeder
 {

@@ -27,7 +27,7 @@ class ProgramResource extends JsonResource
             'is_default_auto_dj' => $this->is_default_auto_dj,
             'phrases' => $this->phrases ?? [],
             'host' => UserResource::make($this->host)->format('summary'),
-            'airtimes' => AirtimeResource::collection($this->airtimes),
+            'airtimes' => ProgramAirtimeResource::collection($this->programAirtimes),
             'plans' => PlanResource::collection($this->plans)->format('summary'),
         ];
     }

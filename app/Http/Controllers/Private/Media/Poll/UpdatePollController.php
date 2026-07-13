@@ -14,24 +14,17 @@ class UpdatePollController extends Controller
     public function __invoke(UpdatePollRequest $request, Poll $poll)
     {
         $poll->update([
+            'status' => $request->input('status'),
             'question' => $request->input('question'),
+            'expires_at' => $request->input('expires_at'),
         ]);
 
-        $options = $poll->options->values();
+        $options = $poll->options->keyBy('uuid');
 
-        $mapped = [
-            'option_one' => $options->get(0),
-            'option_two' => $options->get(1),
-            'option_three' => $options->get(2),
-            'option_four' => $options->get(3),
-        ];
-
-        foreach ($mapped as $key => $option) {
-            if ($option) {
-                $option->update([
-                    'option' => $request->input($key),
-                ]);
-            }
+        foreach ($request->input('options') as $option) {
+            $options->get($option['uuid'])->update([
+                'option' => $option['option'],
+            ]);
         }
 
         return $this->flashMessage('update');

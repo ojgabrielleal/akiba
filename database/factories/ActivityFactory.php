@@ -28,4 +28,5 @@ class ActivityFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'allows_confirmations' => true,
         ]);
-    }}
+    }
+}

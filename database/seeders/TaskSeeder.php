@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-
-use App\Models\User;
 use App\Models\Task;
+use App\Models\User;
+use Illuminate\Database\Seeder;
 
 class TaskSeeder extends Seeder
 {
@@ -14,8 +13,8 @@ class TaskSeeder extends Seeder
      */
     public function run(): void
     {
-        $admin = User::find(1);
-        $user = User::where('id', '!=', 1)->inRandomOrder()->first();
+        $admin = User::query()->firstOrFail();
+        $user = User::whereKeyNot($admin->id)->inRandomOrder()->firstOrFail();
 
         $this->seedAdministration($admin);
         $this->seedNonAdministrationContent($user);

@@ -4,7 +4,7 @@
     import Cookies from "js-cookie";
     import { page, router, Link } from "@inertiajs/svelte";
     import { Section, ButtonPagination, Tooltip } from "@/ui/components/private";
-    import { postPermissions } from "@/utils";
+    import { postPermissions, resolveStatusBackground } from "@/utils";
 
     $: ({ posts } = $page.props);
 
@@ -33,11 +33,7 @@
                             {item.title}
                         </h3>
                     </div>
-                    <div class={["grid grid-cols-[0.4fr_1fr_0.6fr] items-center absolute bottom-0 w-full py-1 px-4",
-                        { "bg-orange-amber": item.status === "draft" },
-                        { "bg-blue-cerulean": item.status === "published" },
-                        { "bg-green-mint": item.status === "revision" },
-                    ]}>
+                    <div class={`grid grid-cols-[0.4fr_1fr_0.6fr] items-center absolute bottom-0 w-full py-1 px-4 ${resolveStatusBackground(item, { useValidity: false })}`}>
                         <div class="flex items-center gap-2 font-noto-sans font-extrabold italic uppercase text-md text-suspense-aurora truncate">
                             <img
                                 src="/svg/eye.svg"

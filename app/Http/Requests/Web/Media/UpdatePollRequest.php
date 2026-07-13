@@ -22,11 +22,10 @@ class UpdatePollRequest extends LoggedWebRequest
     public function rules(): array
     {
         return [
+            'status' => 'required|string|in:published,revision,draft',
             'question' => 'required',
-            'option_one' => 'required',
-            'option_two' => 'required',
-            'option_three' => 'required',
-            'option_four' => 'required',
+            'expires_at' => 'nullable|date|after:now',
+            'options' => 'required|array|size:4',
         ];
     }
 }

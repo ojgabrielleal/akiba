@@ -16,7 +16,9 @@ class PlanSeeder extends Seeder
     {
         $user = User::where('is_virtual', false)->first() ?? User::first();
 
-        if (!$user) return;
+        if (! $user) {
+            return;
+        }
 
         Program::active()
             ->whereNotIn('execution_mode', ['playlist', 'auto_dj'])

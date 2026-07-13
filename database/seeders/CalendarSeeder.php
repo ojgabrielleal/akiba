@@ -16,7 +16,9 @@ class CalendarSeeder extends Seeder
     {
         $user = User::inRandomOrder()->first();
 
-        if (!$user || Calendar::exists()) return;
+        if (! $user || Calendar::exists()) {
+            return;
+        }
 
         $this->seedHasActivity($user);
         $this->seedNotHasActivity($user);
@@ -27,15 +29,17 @@ class CalendarSeeder extends Seeder
         $activities = Activity::where('allows_confirmations', true)
             ->get();
 
-        if ($activities->isEmpty()) return;
+        if ($activities->isEmpty()) {
+            return;
+        }
 
-        foreach ($activities as $activity) {
+        $activities->each(function (Activity $activity) use ($user) {
             Calendar::factory()
                 ->for($user, 'responsible')
                 ->for($activity, 'activity')
                 ->withActivity()
                 ->create();
-        }
+        });
     }
 
     public function seedNotHasActivity(User $user): void

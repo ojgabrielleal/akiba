@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-
 use App\Models\Repository;
+use Illuminate\Database\Seeder;
 
 class RepositorySeeder extends Seeder
 {

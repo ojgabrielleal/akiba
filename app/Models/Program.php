@@ -85,9 +85,9 @@ class Program extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function airtimes()
+    public function programAirtimes()
     {
-        return $this->hasMany(Airtime::class, 'program_id');
+        return $this->hasMany(ProgramAirtime::class, 'program_id');
     }
 
     public function plans()

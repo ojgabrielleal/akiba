@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-
 use App\Models\PlaylistBattle;
+use Illuminate\Database\Seeder;
 
 class PlaylistBattleSeeder extends Seeder
 {

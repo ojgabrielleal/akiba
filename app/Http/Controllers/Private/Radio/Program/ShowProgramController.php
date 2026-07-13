@@ -15,7 +15,7 @@ class ShowProgramController extends Controller
         return new ProgramResource(
             $program->load([
                 'host',
-                'airtimes',
+                'programAirtimes',
                 'plans' => fn ($query) => $query->unexecuted()->orderBy('scheduled_at'),
                 'plans.user',
             ])

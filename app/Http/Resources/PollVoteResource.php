@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class AirtimeResource extends JsonResource
+class PollVoteResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,8 +16,8 @@ class AirtimeResource extends JsonResource
     {
         return [
             'uuid' => $this->uuid,
-            'hour' => $this->hour->format('H:i:s'),
-            'day' => $this->day,
+            'user' => (new UserResource($this->whenLoaded('user')))->format('summary'),
+            'created_at' => $this->created_at,
         ];
     }
 }
