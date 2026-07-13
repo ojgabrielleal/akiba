@@ -59,7 +59,7 @@
                     </h2>
                     <div class="flex flex-col lg:flex-row gap-5 lg:gap-20 justify-center mt-5 mb-10 lg:my-13">
                         {#each latestPoll.data.options as item}
-                            <div class="w-30 flex gap-2">
+                            <div class="w-full lg:w-40 flex gap-2">
                                 <input
                                     id={item.uuid}
                                     name="option"
