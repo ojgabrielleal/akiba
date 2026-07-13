@@ -67,8 +67,8 @@
                                     value={item.uuid}
                                     class="shrink-0 w-5 h-5 mt-2"
                                 />
-                                <div>
-                                    <label for={item.uuid} class="fonto-noto-sans font-bold text-suspense-aurora text-xl uppercase italic">
+                                <div class="min-w-0">
+                                    <label for={item.uuid} title={item.option} class="block max-w-full truncate fonto-noto-sans font-bold text-suspense-aurora text-xl uppercase italic">
                                         {item.option}
                                     </label>
                                     <div class="relative flex items-center w-30 h-3 bg-black rounded-full px-2 select-none mt-1">
