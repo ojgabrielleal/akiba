@@ -51,7 +51,7 @@ class MediaPageController extends Controller
             ->latest()
             ->first();
 
-        return PollResource::make($poll);
+        return $poll ? PollResource::make($poll) : null;
     }
 
 }

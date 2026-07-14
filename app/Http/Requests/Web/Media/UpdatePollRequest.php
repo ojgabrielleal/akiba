@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Web\Media;
 
 use App\Http\Requests\Web\LoggedWebRequest;
+use Illuminate\Validation\Rule;
 
 class UpdatePollRequest extends LoggedWebRequest
 {
@@ -21,11 +22,13 @@ class UpdatePollRequest extends LoggedWebRequest
      */
     public function rules(): array
     {
+        $poll = $this->route('poll');
+
         return [
             'status' => 'required|string|in:published,revision,draft',
             'question' => 'required',
             'expires_at' => 'nullable|date|after:now',
-            'options' => 'required|array|size:4',
+            'options' => 'required|array',
         ];
     }
 }

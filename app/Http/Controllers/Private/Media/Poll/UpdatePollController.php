@@ -13,6 +13,8 @@ class UpdatePollController extends Controller
 
     public function __invoke(UpdatePollRequest $request, Poll $poll)
     {
+        $data = $request->validated();
+
         $poll->update([
             'status' => $request->input('status'),
             'question' => $request->input('question'),
