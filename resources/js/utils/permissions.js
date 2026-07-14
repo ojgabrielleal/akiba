@@ -18,12 +18,19 @@ export const calendarPermissions = () => ({
 });
 
 export const eventPermissions = () => ({
-    create: hasPermission("event.create"),
-    deactivate: hasPermission("event.deactivate"),
+    create: hasPermission("post.create"),
+    update: hasPermission("post.update"),
+    deactivate: hasPermission("post.deactivate"),
 });
 
 export const listenerMonthPermissions = () => ({
     set: hasPermission("listener.month.set"),
+});
+
+export const listenerGalleryPermissions = () => ({
+    create: hasPermission("listener.gallery.create"),
+    update: hasPermission("listener.gallery.update"),
+    remove: hasPermission("listener.gallery.remove"),
 });
 
 export const locutionPermissions = () => ({

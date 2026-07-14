@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Private;
 use App\Http\Controllers\Controller;
 use Inertia\Inertia;
 
+use App\Models\ListenerGallery;
 use App\Models\Poll;
 
+use App\Http\Resources\ListenerGalleryResource;
 use App\Http\Resources\PollResource;
 
 class MediaPageController extends Controller
@@ -18,7 +20,17 @@ class MediaPageController extends Controller
         return Inertia::render($this->render, [
             'polls' => $this->indexPolls(),
             'latestPoll' => $this->latestValidPoll(),
+            'listenerGalleries' => $this->indexListenerGalleries(),
         ]);
+    }
+
+    public function indexListenerGalleries()
+    {
+        $this->authorize('viewAny', ListenerGallery::class);
+
+        return ListenerGalleryResource::collection(
+            ListenerGallery::latest()->paginate(20)
+        );
     }
 
     public function indexPolls()

@@ -44,6 +44,10 @@ use App\Http\Controllers\Private\Marketing\Repository\DeactivateRepositoryContro
 use App\Http\Controllers\Private\Marketing\Repository\ShowRepositoryController;
 use App\Http\Controllers\Private\Marketing\Repository\StoreRepositoryController;
 use App\Http\Controllers\Private\Marketing\Repository\UpdateRepositoryController;
+use App\Http\Controllers\Private\Media\ListenerGallery\DestroyListenerGalleryController;
+use App\Http\Controllers\Private\Media\ListenerGallery\ShowListenerGalleryController;
+use App\Http\Controllers\Private\Media\ListenerGallery\StoreListenerGalleryController;
+use App\Http\Controllers\Private\Media\ListenerGallery\UpdateListenerGalleryController;
 use App\Http\Controllers\Private\Media\Poll\DeactivatePollController;
 use App\Http\Controllers\Private\Media\Poll\ShowPollController;
 use App\Http\Controllers\Private\Media\Poll\StorePollController;
@@ -153,6 +157,12 @@ Route::prefix('panel')->middleware(['inertia'])->group(function () {
         Route::prefix('media')->controller(MediaPageController::class)->group(function () {
             Route::prefix('event')->group(function () {
                 Route::delete('{event:uuid}', 'deactivateEvent');
+            });
+            Route::prefix('listener-gallery')->group(function () {
+                Route::post('', [StoreListenerGalleryController::class, '__invoke']);
+                Route::get('{listenerGallery:uuid}', [ShowListenerGalleryController::class, '__invoke']);
+                Route::patch('{listenerGallery:uuid}', [UpdateListenerGalleryController::class, '__invoke']);
+                Route::delete('{listenerGallery:uuid}', [DestroyListenerGalleryController::class, '__invoke']);
             });
             Route::prefix('poll')->group(function () {
                 Route::post('', [StorePollController::class, '__invoke']);

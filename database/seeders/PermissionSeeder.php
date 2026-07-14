@@ -134,6 +134,17 @@ class PermissionSeeder extends Seeder
 
             /*
             |--------------------------------------------------------------------------
+            | Galeria dos ouvintes
+            |--------------------------------------------------------------------------
+            */
+            ['name' => 'listener.gallery.list', 'label' => '[Galeria Ouvintes] Listar'],
+            ['name' => 'listener.gallery.view', 'label' => '[Galeria Ouvintes] Visualizar'],
+            ['name' => 'listener.gallery.create', 'label' => '[Galeria Ouvintes] Criar'],
+            ['name' => 'listener.gallery.update', 'label' => '[Galeria Ouvintes] Atualizar'],
+            ['name' => 'listener.gallery.remove', 'label' => '[Galeria Ouvintes] Remover'],
+
+            /*
+            |--------------------------------------------------------------------------
             | Podcasts
             |--------------------------------------------------------------------------
             */
