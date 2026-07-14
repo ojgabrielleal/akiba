@@ -66,7 +66,8 @@ class RadioPageController extends Controller
         $this->authorize('listener.month.view');
 
         $listener = ListenerMonth::first();
-        return new ListenerMonthResource($listener);
+
+        return $listener ? new ListenerMonthResource($listener) : null;
     }
 
     public function foundListenerMonth()

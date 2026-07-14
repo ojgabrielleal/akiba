@@ -37,9 +37,9 @@ class LocutionPageController extends Controller
 
     public function currentOnair()
     {
-        return new OnairResource(
-            Onair::live()->with('program.host')->first()
-        );
+        $onair = Onair::live()->with('program.host')->first();
+
+        return $onair ? new OnairResource($onair) : null;
     }
 
     public function indexSongRequests()
