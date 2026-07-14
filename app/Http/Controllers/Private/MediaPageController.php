@@ -39,11 +39,7 @@ class MediaPageController extends Controller
     {
         $this->authorize('viewAny', Poll::class);
 
-        $poll = Poll::active()
-            ->where(function ($query) {
-                $query->whereNull('expires_at')
-                    ->orWhere('expires_at', '>', now());
-            })
+        $poll = Poll::valid()
             ->with([
                 'options.votes',
                 'votes.user',
