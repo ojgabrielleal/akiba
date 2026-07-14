@@ -22,8 +22,8 @@ class UpdateMusicAction
             'production' => $data['production'],
             'artist' => $data['artist'],
             'name' => $data['name'],
-            'image' => $this->image->store('musics', $image, 'public', $music->image),
-            'image_ranking' => $this->image->store('musics/ranking', $imageRanking, 'public', $music->image_ranking),
+            'image' => $this->image->store('musics', $image, $music->image),
+            'image_ranking' => $this->image->store('musics/ranking', $imageRanking, $music->image_ranking),
         ]);
 
         if ($music->isDirty()) {

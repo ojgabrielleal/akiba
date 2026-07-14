@@ -3,48 +3,37 @@
 namespace App\Services\Process;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 
 class ImageProcessService
 {
-    public function store(string $subfolder, ?UploadedFile $file, string $disk = 'public', ?string $oldImagePath = null): string
+    private const DISK = 'public';
+
+    public function store(string $folder, ?UploadedFile $image, ?string $oldImage = null): string
     {
-        if (!$file) {
-            return $oldImagePath ?? ''; 
-        }
+        if(!$image) return $oldImage ?? '';
+        if ($oldImage) $this->delete($oldImage);
 
-        if ($oldImagePath) {
-            $this->delete($oldImagePath, $disk);
-        }
+        $folder = 'images/' . trim($folder, '/');
 
-        $folder = 'images/' . trim($subfolder, '/');
         $manager = new ImageManager(new Driver());
+        $imageContent = $manager->read($image)->toWebp(85);
 
-        // Check if the uploaded file is a GIF
-        if (strtolower($file->extension()) === 'gif') {
-            $extension = 'gif';
-            $imageContent = $file->get();
-        } else {
-            // For other images, convert to WebP
-            $extension = 'webp';
-            $imageContent = $manager->read($file)->toWebp(85);
-        }
-
-        $name = (string) \Illuminate\Support\Str::uuid() . '.' . $extension;
+        $name = (string) Str::uuid() . '.' . 'webp';
         $path = $folder . '/' . $name;
 
-        Storage::disk($disk)->put($path, (string) $imageContent);
-
+        Storage::disk(self::DISK)->put($path, (string) $imageContent);
         return '/storage/' . $path;
     }
 
-    public function delete(string $imagePath, string $disk = 'public'): bool
+    public function delete(string $imagePath): bool
     {
         $filePath = str_replace('/storage/', '', $imagePath);
         
-        if (Storage::disk($disk)->exists($filePath)) {
-            return Storage::disk($disk)->delete($filePath);
+        if (Storage::disk(self::DISK)->exists($filePath)) {
+            return Storage::disk(self::DISK)->delete($filePath);
         }
 
         return false;

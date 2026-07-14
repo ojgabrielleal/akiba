@@ -22,7 +22,7 @@ class CreateListenerMonthAction
         if (!$found) return null;
 
         return ListenerMonth::first()->update([
-            'avatar' => $this->image->store('listener-month', $avatar, 'public'),
+            'avatar' => $this->image->store('listener-month', $avatar),
             'name' => $found->name,
             'birthday' => $data['birthday'],
             'address' => $found->address,

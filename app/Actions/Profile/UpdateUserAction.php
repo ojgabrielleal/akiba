@@ -20,7 +20,7 @@ class UpdateUserAction
     {
         return DB::transaction(function () use ($user, $data,) {
             $user->fill([
-                'avatar' => $this->image->store('users', $data['avatar'], 'public', $user->avatar),
+                'avatar' => $this->image->store('users', $data['avatar'], $user->avatar),
                 'is_virtual' => $data['is_virtual'],
                 'name' => $data['name'],
                 'nickname' => $data['nickname'],

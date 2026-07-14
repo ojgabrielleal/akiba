@@ -26,8 +26,8 @@ class CreatePostAction
                 'title' => $data['title'],
                 'status' => $data['status'] ?? "published",
                 'content' => $data['content'] ?? null,
-                'image' => $this->image->store('posts', $image, 'public'),
-                'cover' => $this->image->store('posts', $cover, 'public'),
+                'image' => $this->image->store('posts', $image),
+                'cover' => $this->image->store('posts', $cover),
                 'module' => $data['module'] ?? 'post',
                 'metadata' => $data['metadata'] ?? null,
             ]);

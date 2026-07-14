@@ -20,7 +20,7 @@ class CreatePodcastAction
     {
         return Podcast::create([
             'user_id' => $user->id,
-            'image' => $this->image->store('podcasts', $data['image'], 'public'),
+            'image' => $this->image->store('podcasts', $data['image']),
             'season' => $data['season'],
             'episode' => $data['episode'],
             'title' => $data['title'],

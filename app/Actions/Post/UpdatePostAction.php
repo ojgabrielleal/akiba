@@ -24,8 +24,8 @@ class UpdatePostAction
                 'title' => $data['title'],
                 'status' => $data['status'] ?? "published",
                 'content' => $data['content'] ?? null,
-                'image' => $this->image->store('posts', $image, 'public', $post->image),
-                'cover' => $this->image->store('posts', $cover, 'public', $post->cover),
+                'image' => $this->image->store('posts', $image, $post->image),
+                'cover' => $this->image->store('posts', $cover, $post->cover),
                 'module' => $data['module'] ?? $post->module,
                 'metadata' => $data['metadata'] ?? null,
             ]);

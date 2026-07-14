@@ -18,7 +18,7 @@ class UpdatePodcastAction
     public function execute(Podcast $podcast, array $data, ?UploadedFile $image = null): Podcast
     {
         $podcast->fill([
-            'image' => $this->image->store('podcasts', $image, 'public', $podcast->image),
+            'image' => $this->image->store('podcasts', $image, $podcast->image),
             'season' => $data['season'],
             'episode' => $data['episode'],
             'title' => $data['title'],

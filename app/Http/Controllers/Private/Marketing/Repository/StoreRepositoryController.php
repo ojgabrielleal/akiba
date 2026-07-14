@@ -17,7 +17,7 @@ class StoreRepositoryController extends Controller
         Repository::create([
             'name' => $request->input('name'),
             'url' => $request->input('url'),
-            'image' => $image->store('repository', $request->file('image'), 'public'),
+            'image' => $image->store('repository', $request->file('image')),
             'type' => $request->input('type'),
         ]);
 

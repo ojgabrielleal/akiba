@@ -25,7 +25,7 @@ class UpdateProgramAction
             $program->fill([
                 'user_id' => $data['access_type'] === 'free' ? $user->id : User::where('uuid', $data['user'])->first()->id,
                 'name' => $data['name'],
-                'image' => $this->image->store('programs', $image, 'public', $program->image),
+                'image' => $this->image->store('programs', $image, $program->image),
                 'access_type' => $data['access_type'],
                 'execution_mode' => $data['execution_mode'],
                 'is_default_auto_dj' => filter_var($data['is_default_auto_dj'] ?? false, FILTER_VALIDATE_BOOLEAN),

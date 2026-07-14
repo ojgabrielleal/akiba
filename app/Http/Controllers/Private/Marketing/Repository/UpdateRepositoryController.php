@@ -17,7 +17,7 @@ class UpdateRepositoryController extends Controller
         $repository->fill([
             'name' => $request->input('name', $repository->name),
             'url' => $request->input('url', $repository->url),
-            'image' => $image->store('repository', $request->file('image'), 'public', $repository->image),
+            'image' => $image->store('repository', $request->file('image'), $repository->image),
             'type' => $request->input('type', $repository->type),
         ]);
 

@@ -17,7 +17,7 @@ class UpdateProfileAction
     {
         return DB::transaction(function () use ($user, $data, $avatar) {
             $user->fill([
-                'avatar' => $this->image->store('users', $avatar, 'public', $user->avatar),
+                'avatar' => $this->image->store('users', $avatar, $user->avatar),
                 'is_virtual' => $data['is_virtual'] ?? $user->is_virtual,
                 'name' => $data['name'],
                 'nickname' => $data['nickname'],
