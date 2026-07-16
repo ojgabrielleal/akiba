@@ -12,6 +12,8 @@ class ShowRoleController extends Controller
     {
         $this->authorize('view', $role);
 
-        return new RoleResource($role);
+        return new RoleResource(
+            $role->loadCount('members')->load('permissions')
+        );
     }
 }

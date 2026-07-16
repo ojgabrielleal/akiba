@@ -11,7 +11,6 @@ use App\Models\Onair;
 use App\Models\Post;
 
 use App\Http\Resources\Onair\OnairResource;
-use App\Http\Resources\Post\PostFeaturedResource;
 use App\Http\Resources\Post\PostResource;
 
 class HomeController extends Controller
@@ -20,9 +19,9 @@ class HomeController extends Controller
 
     public function indexFeatured()
     {
-        $posts = Post::published()->post()->featured()->take(15)->get();
-        $events = Post::published()->event()->featured()->take(15)->get();
-        $reviews = Post::published()->review()->with('postReviews.author')->featured()->take(15)->get();
+        $posts = Post::withStatus('published')->forModule('post')->withCount('views')->orderByMostViewed()->take(15)->get();
+        $events = Post::withStatus('published')->forModule('event')->withCount('views')->orderByMostViewed()->take(15)->get();
+        $reviews = Post::withStatus('published')->forModule('review')->withCount('views')->with('postReviews.author')->orderByMostViewed()->take(15)->get();
 
         $feed = $posts
             ->concat($events)
@@ -31,13 +30,13 @@ class HomeController extends Controller
             ->take(3)
             ->values();
 
-        return PostFeaturedResource::collection($feed);
+        return PostResource::collection($feed)->format('featured');
     }
 
     public function indexReview()
     {
         return PostResource::collection(
-            Post::review()
+            Post::forModule('review')
                 ->with('postReviews.author')
                 ->latest()
                 ->limit(5)
@@ -48,11 +47,12 @@ class HomeController extends Controller
     public function indexPost()
     {
         return PostResource::collection(
-            Post::published()
+            Post::withStatus('published')
+                ->withCount('views')
                 ->latest()
                 ->limit(6)
                 ->get()
-        )->format('summary');
+        );
     }
 
     public function showOnair()

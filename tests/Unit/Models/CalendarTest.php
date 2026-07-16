@@ -68,7 +68,7 @@ class CalendarTest extends TestCase
                 'hour' => now()->subDay()->format('H:i:s'),
             ]);
 
-        $calendars = Calendar::valid()->get();
+        $calendars = Calendar::upcoming()->get();
 
         $this->assertTrue($calendars->contains($futureCalendar));
         $this->assertFalse($calendars->contains($pastCalendar));

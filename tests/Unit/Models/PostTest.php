@@ -95,7 +95,7 @@ class PostTest extends TestCase
     public function testEventFactoryState(): void
     {
         $post = Post::factory()
-            ->event()
+            ->forModule('event')
             ->create();
 
         $this->assertSame('event', $post->module);
@@ -106,7 +106,7 @@ class PostTest extends TestCase
     public function testReviewFactoryState(): void
     {
         $post = Post::factory()
-            ->review()
+            ->forModule('review')
             ->create();
 
         $this->assertSame('review', $post->module);
@@ -119,7 +119,7 @@ class PostTest extends TestCase
         $postReviews = PostReview::factory(2);
 
         $post = Post::factory()
-            ->review()
+            ->forModule('review')
             ->has($postReviews, 'postReviews')
             ->create();
 
@@ -180,13 +180,13 @@ class PostTest extends TestCase
             ->state(['status' => 'draft'])
             ->create();
 
-        $publishedPosts = Post::published()->get();
+        $publishedPosts = Post::withStatus('published')->get();
 
         $this->assertTrue($publishedPosts->contains($publishedPost));
         $this->assertFalse($publishedPosts->contains($draftPost));
     }
 
-    public function testMineScope(): void
+    public function testAuthoredByScope(): void
     {
         /** @var User $user */
         $user = User::factory()->create();
@@ -200,9 +200,7 @@ class PostTest extends TestCase
             ->for($otherUser, 'author')
             ->create();
 
-        $this->actingAs($user);
-
-        $myPosts = Post::mine()->get();
+        $myPosts = Post::authoredBy($user)->get();
 
         $this->assertTrue($myPosts->contains($myPost));
         $this->assertFalse($myPosts->contains($otherPost));
@@ -221,7 +219,7 @@ class PostTest extends TestCase
             ->for($regularPost, 'viewable')
             ->create();
 
-        $posts = Post::featured()->get()->keyBy('id');
+        $posts = Post::withCount('views')->orderByMostViewed()->get()->keyBy('id');
 
         $this->assertSame(3, $posts[$featuredPost->id]->views_count);
         $this->assertSame(1, $posts[$regularPost->id]->views_count);

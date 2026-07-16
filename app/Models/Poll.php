@@ -3,16 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class Poll extends Model
 {
     use HasFactory, HasUuids;
-
-    protected $withCount = [
-        'votes',
-    ];
 
     protected $fillable = [
         'uuid',
@@ -46,15 +44,16 @@ class Poll extends Model
      * These methods define reusable query filters that can be
      * applied to Eloquent queries (e.g., active()).
      */
-    public function scopeActive($query)
+    #[Scope]
+    protected function active(Builder $query): void
     {
-        return $query->where('is_active', true);
+        $query->where('is_active', true);
     }
 
-    public function scopeValid($query)
+    #[Scope]
+    protected function open(Builder $query): void
     {
-        return $query
-            ->where('is_active', true)
+        $query->where('is_active', true)
             ->where(function ($query) {
                 $query->whereNull('expires_at')
                     ->orWhere('expires_at', '>', now());

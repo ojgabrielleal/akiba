@@ -21,7 +21,7 @@ class RoleResource extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             'weight' => $this->weight,
-            'members_total' => $this->members()->count(),
+            'members_total' => $this->members_count,
             'permissions' => PermissionResource::collection($this->permissions),
         ];
     }

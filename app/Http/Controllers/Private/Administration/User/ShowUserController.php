@@ -12,6 +12,10 @@ class ShowUserController extends Controller
     {
         $this->authorize('view', $user);
 
-        return new UserResource($user->load(['roles']));
+        return new UserResource($user->load([
+            'roles' => fn ($query) => $query
+                ->withCount('members')
+                ->with('permissions'),
+        ]));
     }
 }

@@ -75,7 +75,7 @@ class ActivityTest extends TestCase
             ->for($admin, 'author')
             ->create(['limit' => now()->addDays(3)]);
 
-        $activities = Activity::valid()->get();
+        $activities = Activity::notExpired()->get();
 
         $this->assertTrue($activities->contains($validActivity));
         $this->assertFalse($activities->contains($expiredActivity));

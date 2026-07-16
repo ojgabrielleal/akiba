@@ -36,7 +36,7 @@ class RadioPageController extends Controller
     {
         $this->authorize('viewAny', User::class);
 
-        return UserResource::collection(User::get())->format('compact');
+        return UserResource::collection(User::get());
     }
     
     public function indexPrograms()
@@ -47,11 +47,11 @@ class RadioPageController extends Controller
             Program::with([
                     'host', 
                     'programAirtimes', 
-                    'plans' => fn ($query) => $query->unexecuted()->orderBy('scheduled_at')
+                    'plans' => fn ($query) => $query->pendingExecution()->orderBy('scheduled_at')
                 ])
                 ->active()
                 ->get()
-        )->format('grouped_by_execution_mode');
+        )->format('grouped');
     }
 
     public function indexRanking()

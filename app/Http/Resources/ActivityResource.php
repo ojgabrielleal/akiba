@@ -18,7 +18,7 @@ class ActivityResource extends JsonResource
             'limit' => $this->limit->format('Y-m-d'),
             'hour' => $this->calendar?->hour->format('H:i'),
             'date' => $this->calendar?->date->format('Y-m-d'),
-            'author' => UserResource::make($this->author)->format('compact'),
+            'author' => UserResource::make($this->author),
             'confirmations' => UserResource::collection($this->confirmations),
         ];
     }

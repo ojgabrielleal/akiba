@@ -30,13 +30,13 @@ class ProgramResource extends JsonResource
             'phrases' => $this->phrases ?? [],
             'host' => UserResource::make($this->host)->format('summary'),
             'airtimes' => ProgramAirtimeResource::collection($this->programAirtimes),
-            'plans' => PlanResource::collection($this->plans)->format('summary'),
+            'plans' => PlanResource::collection($this->plans),
         ];
     }
 
     public static function toCollectionArray(Collection $collection, Request $request, ?string $format): ?array
     {
-        if ($format !== 'grouped_by_execution_mode') {
+        if ($format !== 'grouped') {
             return null;
         }
 
@@ -56,4 +56,5 @@ class ProgramResource extends JsonResource
             ->map(fn ($item) => self::make($item->resource ?? $item)->resolve($request))
             ->all();
     }
+
 }

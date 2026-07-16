@@ -24,7 +24,7 @@ class MusicTest extends TestCase
             'in_ranking' => false
         ]);
 
-        $musics = Music::ranking()->get();
+        $musics = Music::inRanking()->get();
 
         $this->assertTrue($musics->contains($rankedMusic));
         $this->assertFalse($musics->contains($notRankedMusic));

@@ -15,11 +15,12 @@ class ListPostQuery
         }
         
         $query = Post::active()
-            ->with(['author', 'views', 'reviews.author'])
+            ->withCount('views')
+            ->with(['author', 'reviews.author'])
             ->orderBy('created_at', 'desc');
 
         if ($user->hasPermission('post.list')) {
-            return PostResource::collection($query->paginate(10))->format('summary');
+            return PostResource::collection($query->paginate(10));
         }
 
         if ($user->hasPermission('post.list.own')) {
@@ -29,6 +30,6 @@ class ListPostQuery
             });
         }
 
-        return PostResource::collection($query->paginate(10))->format('summary');
+        return PostResource::collection($query->paginate(10));
     }
 }

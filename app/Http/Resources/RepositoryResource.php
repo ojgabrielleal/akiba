@@ -2,10 +2,10 @@
 
 namespace App\Http\Resources;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Collection;
 use App\Http\Resources\Concerns\HasFormats;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 class RepositoryResource extends JsonResource
 {
@@ -29,7 +29,7 @@ class RepositoryResource extends JsonResource
 
     public static function toCollectionArray(Collection $collection, Request $request, ?string $format): ?array
     {
-        if ($format !== 'grouped_by_type') {
+        if ($format !== 'grouped') {
             return null;
         }
 

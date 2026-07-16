@@ -17,7 +17,7 @@ class ListPodcastsQuery
         return PodcastResource::collection(
             Podcast::active()
                 ->latest()
-                ->with('author', 'views')
+                ->with('author')
                 ->paginate(10)
         );
     }

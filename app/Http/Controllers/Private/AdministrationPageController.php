@@ -40,7 +40,7 @@ class AdministrationPageController extends Controller
         $this->authorize('viewAny', Activity::class);
 
         return ActivityResource::collection(
-            Activity::valid()->with(['author', 'confirmations'])->latest()->get()
+            Activity::notExpired()->with(['author', 'confirmations'])->latest()->get()
         );
     }
 
@@ -48,14 +48,14 @@ class AdministrationPageController extends Controller
     {
         $this->authorize('viewAny', Task::class);
 
-        return TaskResource::collection(Task::incompleted()->get());
+        return TaskResource::collection(Task::incomplete()->get());
     }
 
     public function indexCalendar()
     {
         $this->authorize('viewAny', Calendar::class);
 
-        return CalendarResource::collection(Calendar::valid()->get());
+        return CalendarResource::collection(Calendar::upcoming()->get());
     }
 
     public function indexUsers()
@@ -69,7 +69,9 @@ class AdministrationPageController extends Controller
     {
         $this->authorize('viewAny', Role::class);
 
-        return RoleResource::collection(Role::with(['permissions', 'members'])->get());
+        return RoleResource::collection(
+            Role::withCount('members')->with('permissions')->get()
+        );
     }
 
     public function indexPermissions()

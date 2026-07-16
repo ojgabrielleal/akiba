@@ -19,7 +19,7 @@ class PostReviewResource extends JsonResource
             'uuid' => $this->uuid,
             'status' => $this->status,
             'content' => $this->content,
-            'author' => UserResource::make($this->author)->format('compact'),
+            'author' => UserResource::make($this->author),
         ];
     }
 }

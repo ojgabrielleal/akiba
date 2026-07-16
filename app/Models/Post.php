@@ -3,9 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
@@ -37,10 +38,6 @@ class Post extends Model
         'user_id',
     ];
 
-    protected $withCount = [
-        'views',
-    ];
-
     protected function title(): Attribute
     {
         return Attribute::make(
@@ -69,39 +66,34 @@ class Post extends Model
      * These methods define reusable query filters that can be
      * applied to Eloquent queries (e.g., active()).
      */
-    public function scopeActive($query)
+    #[Scope]
+    protected function active(Builder $query): void
     {
-        return $query->where('is_active', true);
+        $query->where('is_active', true);
     }
 
-    public function scopePublished($query)
+    #[Scope]
+    protected function withStatus(Builder $query, string $status): void
     {
-        return $query->where('status', 'published');
+        $query->where('status', $status);
     }
 
-    public function scopeMine($query)
+    #[Scope]
+    protected function authoredBy(Builder $query, User $user): void
     {
-        return $query->where('user_id', Auth::id());
+        $query->whereBelongsTo($user, 'author');
     }
 
-    public function scopeFeatured($query)
+    #[Scope]
+    protected function orderByMostViewed(Builder $query): void
     {
-        return $query->orderByDesc('views_count');
+        $query->orderByDesc('views_count');
     }
 
-    public function scopePost($query)
+    #[Scope]
+    protected function forModule(Builder $query, string $module): void
     {
-        return $query->where('module', 'post');
-    }
-
-    public function scopeReview($query)
-    {
-        return $query->where('module', 'review');
-    }
-
-    public function scopeEvent($query)
-    {
-        return $query->where('module', 'event');
+        $query->where('module', $module);
     }
     
     /**

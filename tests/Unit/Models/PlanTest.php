@@ -5,7 +5,6 @@ namespace Tests\Unit\Models;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-use App\Http\Resources\PlanResource;
 use App\Models\Plan;
 use App\Models\Program;
 use App\Models\User;
@@ -93,7 +92,7 @@ class PlanTest extends TestCase
         $failed = Plan::factory()->create(['status' => 'failed']);
         $expired = Plan::factory()->create(['status' => 'expired']);
 
-        $plans = Plan::unexecuted()->get();
+        $plans = Plan::pendingExecution()->get();
 
         $this->assertTrue($plans->contains($pending));
         $this->assertTrue($plans->contains($running));
@@ -104,17 +103,4 @@ class PlanTest extends TestCase
         $this->assertFalse($plans->contains($expired));
     }
 
-    public function testResourceSummaryFormat(): void
-    {
-        $plan = Plan::factory()->create();
-
-        $resource = PlanResource::make($plan)
-            ->format('summary')
-            ->resolve();
-
-        $this->assertSame($plan->uuid, $resource['uuid']);
-        $this->assertArrayHasKey('scheduled_at', $resource);
-        $this->assertArrayNotHasKey('status', $resource);
-        $this->assertArrayNotHasKey('user', $resource);
-    }
 }

@@ -22,7 +22,7 @@ class PollResource extends JsonResource
             'question' => $this->question,
             'expires_at' => $this->expires_at?->setTimezone('America/Sao_Paulo')->format('Y-m-d\TH:i'),
             'options' => PollOptionResource::collection($this->options),
-            'total_votes' => $this->totalVotes(),
+            'total_votes' => $this->votes_count,
             'has_voted' => $this->hasVoteFrom($request),
             'is_valid' => $this->isValid(),
         ];
@@ -33,15 +33,6 @@ class PollResource extends JsonResource
         return $this->is_active && (
             $this->expires_at === null || $this->expires_at->isFuture()
         );
-    }
-
-    private function totalVotes(): int
-    {
-        if ($this->relationLoaded('votes')) {
-            return $this->votes->count();
-        }
-
-        return $this->votes_count ?? $this->votes()->count();
     }
 
     private function hasVoteFrom(Request $request): bool

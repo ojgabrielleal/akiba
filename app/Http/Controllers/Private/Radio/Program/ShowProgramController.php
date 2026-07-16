@@ -16,7 +16,7 @@ class ShowProgramController extends Controller
             $program->load([
                 'host',
                 'programAirtimes',
-                'plans' => fn ($query) => $query->unexecuted()->orderBy('scheduled_at'),
+                'plans' => fn ($query) => $query->pendingExecution()->orderBy('scheduled_at'),
                 'plans.user',
             ])
         );

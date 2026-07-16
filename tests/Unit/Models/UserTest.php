@@ -98,7 +98,7 @@ class UserTest extends TestCase
         $user = User::factory()->create();
 
         Post::factory()
-            ->event()
+            ->forModule('event')
             ->for($user, 'author')
             ->create();
 
@@ -144,7 +144,7 @@ class UserTest extends TestCase
         $user = User::factory()->create();
 
         $post = Post::factory()
-            ->review()
+            ->forModule('review')
             ->create();
 
         PostReview::factory()

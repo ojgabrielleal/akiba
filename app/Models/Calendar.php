@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
@@ -50,9 +52,10 @@ class Calendar extends Model
      * These methods define reusable query filters that can be
      * applied to Eloquent queries (e.g., active()).
      */
-    public function scopeValid($query)
+    #[Scope]
+    protected function upcoming(Builder $query): void
     {
-        return $query->whereRaw("TIMESTAMP(date, hour) > NOW()");
+        $query->whereRaw("TIMESTAMP(date, hour) > NOW()");
     }
 
     /**

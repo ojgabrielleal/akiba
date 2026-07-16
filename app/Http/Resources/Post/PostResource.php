@@ -13,6 +13,18 @@ class PostResource extends JsonResource
 
     public function toArray(Request $request): array
     {
+        if ($this->format === 'featured') {
+            return [
+                'model' => $this->model,
+                'uuid' => $this->uuid,
+                'slug' => $this->slug,
+                'title' => $this->title,
+                'image' => $this->image,
+                'cover' => $this->cover,
+                'views' => $this->views_count,
+            ];
+        }
+
         $postData = [
             'uuid' => $this->uuid,
             'slug' => $this->slug,
@@ -24,18 +36,6 @@ class PostResource extends JsonResource
             'tags' => PostTagResource::collection($this->tags),
             'module' => $this->module,
         ];
-
-        if ($this->format === 'summary') {
-            return [
-                'uuid' => $this->uuid,
-                'slug' => $this->slug,
-                'status' => $this->status,
-                'title' => $this->title,
-                'module' => $this->module,
-                'author' => UserResource::make($this->author)->format('summary'),
-                'views' => $this->views_count,
-            ];
-        }
 
         return array_merge(
             $postData,

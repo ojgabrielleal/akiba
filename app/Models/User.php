@@ -7,6 +7,8 @@ use App\Models\Concerns\HasPermissions;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
@@ -81,9 +83,10 @@ class User extends Authenticatable
      * These methods define reusable query filters that can be
      * applied to Eloquent queries (e.g., active()).
      */
-    public function scopeActive($query)
+    #[Scope]
+    protected function active(Builder $query): void
     {
-        return $query->where('is_active', true);
+        $query->where('is_active', true);
     }
 
     /**
@@ -124,7 +127,7 @@ class User extends Authenticatable
 
     public function events()
     {
-        return $this->posts()->event();
+        return $this->posts()->forModule('event');
     }
 
     public function programs()

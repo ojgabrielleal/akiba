@@ -39,8 +39,11 @@ class MediaPageController extends Controller
 
         return PollResource::collection(
             Poll::active()
+                ->withCount('votes')
                 ->with([
-                    'options.votes',
+                    'options' => fn ($query) => $query
+                        ->withCount('votes')
+                        ->with('votes'),
                     'votes.user',
                 ])
                 ->get()
@@ -51,9 +54,12 @@ class MediaPageController extends Controller
     {
         $this->authorize('viewAny', Poll::class);
 
-        $poll = Poll::valid()
+        $poll = Poll::open()
+            ->withCount('votes')
             ->with([
-                'options.votes',
+                'options' => fn ($query) => $query
+                    ->withCount('votes')
+                    ->with('votes'),
                 'votes.user',
             ])
             ->latest()

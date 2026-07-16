@@ -52,7 +52,7 @@ class TaskTest extends TestCase
         $this->assertFalse($activeTasks->contains($inactiveTask));
     }
 
-    public function testIncompletedScope(): void
+    public function testIncompleteScope(): void
     {
         $user = User::factory()->create();
 
@@ -81,15 +81,15 @@ class TaskTest extends TestCase
                 'status' => 'completed'
             ]);
 
-        $incompletedTasks = Task::incompleted()->get();
+        $incompleteTasks = Task::incomplete()->get();
 
-        $this->assertTrue($incompletedTasks->contains($inProgressTask));
-        $this->assertTrue($incompletedTasks->contains($inReviewTask));
-        $this->assertTrue($incompletedTasks->contains($overdueTask));
-        $this->assertFalse($incompletedTasks->contains($completedTask));
+        $this->assertTrue($incompleteTasks->contains($inProgressTask));
+        $this->assertTrue($incompleteTasks->contains($inReviewTask));
+        $this->assertTrue($incompleteTasks->contains($overdueTask));
+        $this->assertFalse($incompleteTasks->contains($completedTask));
     }
 
-    public function testMineScope(): void
+    public function testAssignedToScope(): void
     {
         /** @var User $user */
         $user = User::factory()->create();
@@ -103,9 +103,7 @@ class TaskTest extends TestCase
             ->for($otherUser, 'responsible')
             ->create();
 
-        $this->actingAs($user);
-
-        $myTasks = Task::mine()->get();
+        $myTasks = Task::assignedTo($user)->get();
 
         $this->assertTrue($myTasks->contains($myTask));
         $this->assertFalse($myTasks->contains($otherTask));

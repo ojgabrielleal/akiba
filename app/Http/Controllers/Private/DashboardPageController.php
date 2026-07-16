@@ -34,7 +34,7 @@ class DashboardPageController extends Controller
         $this->authorize('viewAny', Activity::class);
 
         return ActivityResource::collection(
-            Activity::valid()
+            Activity::notExpired()
                 ->with(['author', 'confirmations'])
                 ->latest()
                 ->get()
@@ -47,9 +47,8 @@ class DashboardPageController extends Controller
 
         return TaskResource::collection(
             Task::active()
-                ->incompleted()
-                ->mine()
-                ->where('status', '!=', 'completed')
+                ->incomplete()
+                ->assignedTo(request()->user())
                 ->with(['responsible'])
                 ->orderBy('dead_line')
                 ->orderBy('created_at', 'desc')
@@ -63,12 +62,13 @@ class DashboardPageController extends Controller
 
         return PostResource::collection(
             Post::active()
-                ->published()
-                ->mine()
-                ->with(['author', 'views'])
+                ->withStatus('published')
+                ->authoredBy(request()->user())
+                ->withCount('views')
+                ->with('author')
                 ->limit(5)
                 ->get()
-        )->format('summary');
+        );
     }
 
     public function indexCalendar()
@@ -76,7 +76,7 @@ class DashboardPageController extends Controller
         $this->authorize('viewAny', Calendar::class);
 
         return CalendarWeekResource::make(
-            Calendar::valid()
+            Calendar::upcoming()
                 ->with(['activity', 'responsible'])
                 ->get()
         );

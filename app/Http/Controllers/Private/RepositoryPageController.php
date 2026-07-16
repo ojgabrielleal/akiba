@@ -26,7 +26,7 @@ class RepositoryPageController extends Controller
 
         return RepositoryResource::collection(
             Repository::active()->get()
-        )->format('grouped_by_type');
+        )->format('grouped');
     }
 
 }

@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Str;
@@ -11,7 +13,6 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 class Podcast extends Model
 {
     use HasFactory, HasUuids;
-
 
     protected $fillable = [
         'uuid',
@@ -33,10 +34,6 @@ class Podcast extends Model
 
     protected $hidden = [
         'user_id'
-    ];
-
-    protected $withCount = [
-        'views',
     ];
 
     protected function title(): Attribute
@@ -67,9 +64,10 @@ class Podcast extends Model
      * These methods define reusable query filters that can be
      * applied to Eloquent queries (e.g., active()).
      */
-    public function scopeActive($query)
+    #[Scope]
+    protected function active(Builder $query): void
     {
-        return $query->where('is_active', true);
+        $query->where('is_active', true);
     }
 
     /**

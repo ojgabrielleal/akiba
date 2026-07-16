@@ -10,7 +10,7 @@ class RefreshMusicRankingAction
     public function execute(): void
     {
         DB::transaction(function () {
-            Music::ranking()->update([
+            Music::inRanking()->update([
                 'in_ranking' => false
             ]);
 

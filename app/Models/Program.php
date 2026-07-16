@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
@@ -51,15 +53,16 @@ class Program extends Model
      * These methods define reusable query filters that can be
      * applied to Eloquent queries (e.g., active()).
      */
-    public function scopeActive($query)
+    #[Scope]
+    protected function active(Builder $query): void
     {
-        return $query->where('is_active', true);
+        $query->where('is_active', true);
     }
 
-    public function scopeAvailableForLocution($query, User $user)
+    #[Scope]
+    protected function availableForLocution(Builder $query, User $user): void
     {
-        return $query
-            ->active()
+        $query->active()
             ->where('execution_mode', 'live')
             ->where(function ($q) use ($user) {
                 $q->where(function ($q) use ($user) {

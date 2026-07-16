@@ -12,8 +12,10 @@ class ShowPollController extends Controller
     {
         $this->authorize('view', $poll);
 
-        $poll->load([
-            'options.votes',
+        $poll->loadCount('votes')->load([
+            'options' => fn ($query) => $query
+                ->withCount('votes')
+                ->with('votes'),
             'votes.user',
         ]);
 

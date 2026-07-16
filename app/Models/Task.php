@@ -3,8 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
@@ -78,19 +79,22 @@ class Task extends Model
      * These methods define reusable query filters that can be
      * applied to Eloquent queries (e.g., active()).
      */
-    public function scopeActive($query)
+    #[Scope]
+    protected function active(Builder $query): void
     {
-        return $query->where('is_active', true);
+        $query->where('is_active', true);
     }
 
-    public function scopeIncompleted($query)
+    #[Scope]
+    protected function incomplete(Builder $query): void
     {
-        return $query->where('status', '!=', 'completed');
+        $query->where('status', '!=', 'completed');
     }
 
-    public function scopeMine($query)
+    #[Scope]
+    protected function assignedTo(Builder $query, User $user): void
     {
-        return $query->where('user_id', Auth::id());
+        $query->whereBelongsTo($user, 'responsible');
     }
 
     /**

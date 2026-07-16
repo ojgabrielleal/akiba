@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
@@ -47,11 +49,12 @@ class Plan extends Model
      * Query scopes for this model.
      *
      * These methods define reusable query filters that can be
-     * applied to Eloquent queries (e.g., unexecuted()).
+     * applied to Eloquent queries (e.g., pendingExecution()).
      */
-    public function scopeUnexecuted($query)
+    #[Scope]
+    protected function pendingExecution(Builder $query): void
     {
-        return $query->whereIn('status', ['pending', 'running', 'paused']);
+        $query->whereIn('status', ['pending', 'running', 'paused']);
     }
 
     /**

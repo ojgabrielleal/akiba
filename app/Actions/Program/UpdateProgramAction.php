@@ -108,7 +108,7 @@ class UpdateProgramAction
             return;
         }
 
-        $hasConflict = Plan::unexecuted()
+        $hasConflict = Plan::pendingExecution()
             ->where('action', 'start_program')
             ->whereIn('scheduled_at', $scheduledTimes->all())
             ->when($ignoredUuids, fn ($query) => $query->whereNotIn('uuid', $ignoredUuids))
