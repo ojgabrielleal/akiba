@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Private\Radio\Program;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\ProgramResource;
+use App\Http\Resources\Program\ProgramResource;
 use App\Models\Program;
 
 class ShowProgramController extends Controller

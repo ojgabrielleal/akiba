@@ -2,21 +2,20 @@
 
 namespace App\Http\Controllers\Private\Media\ListenerGallery;
 
+use App\Actions\ListenerGallery\DestroyListenerGalleryAction;
 use App\Http\Controllers\Concerns\HasFlashMessages;
 use App\Http\Controllers\Controller;
 use App\Models\ListenerGallery;
-use App\Services\Process\ImageProcessService;
 
 class DestroyListenerGalleryController extends Controller
 {
     use HasFlashMessages;
 
-    public function __invoke(ListenerGallery $listenerGallery, ImageProcessService $image)
+    public function __invoke(ListenerGallery $listenerGallery, DestroyListenerGalleryAction $destroyListenerGalleryAction)
     {
         $this->authorize('delete', $listenerGallery);
 
-        $image->delete($listenerGallery->image);
-        $listenerGallery->delete();
+        $destroyListenerGalleryAction->execute($listenerGallery);
 
         return $this->flashMessage('delete');
     }

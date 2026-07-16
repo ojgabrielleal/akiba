@@ -2,24 +2,18 @@
 
 namespace App\Http\Controllers\Private\Marketing\Repository;
 
+use App\Actions\Repository\StoreRepositoryAction;
 use App\Http\Controllers\Concerns\HasFlashMessages;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Web\Marketing\CreateRepositoryRequest;
-use App\Models\Repository;
-use App\Services\Process\ImageProcessService;
+use App\Http\Requests\Repository\StoreRepositoryRequest;
 
 class StoreRepositoryController extends Controller
 {
     use HasFlashMessages;
 
-    public function __invoke(CreateRepositoryRequest $request, ImageProcessService $image)
+    public function __invoke(StoreRepositoryRequest $request, StoreRepositoryAction $storeRepositoryAction)
     {
-        Repository::create([
-            'name' => $request->input('name'),
-            'url' => $request->input('url'),
-            'image' => $image->store('repository', $request->file('image')),
-            'type' => $request->input('type'),
-        ]);
+        $storeRepositoryAction->execute($request->validated(), $request->file('image'));
 
         return $this->flashMessage('save');
     }

@@ -2,20 +2,20 @@
 
 namespace App\Http\Controllers\Private\Radio\Program;
 
-use App\Actions\Radio\Program\CreateProgramAction;
+use App\Actions\Program\StoreProgramAction;
 use App\Http\Controllers\Concerns\HasFlashMessages;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Web\Radio\CreateProgramRequest;
+use App\Http\Requests\Program\StoreProgramRequest;
 use DomainException;
 
 class StoreProgramController extends Controller
 {
     use HasFlashMessages;
 
-    public function __invoke(CreateProgramRequest $request, CreateProgramAction $createProgramAction)
+    public function __invoke(StoreProgramRequest $request, StoreProgramAction $storeProgramAction)
     {
         try {
-            $createProgramAction->execute(
+            $storeProgramAction->execute(
                 $request->user(),
                 $request->validated(),
                 $request->file('image')

@@ -8,7 +8,7 @@ use Inertia\Inertia;
 
 use App\Models\Onair;
 
-use App\Http\Resources\OnairResource;
+use App\Http\Resources\Onair\OnairResource;
 
 class LogsPageController extends Controller
 {

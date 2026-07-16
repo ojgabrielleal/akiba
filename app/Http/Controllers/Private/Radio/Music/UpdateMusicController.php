@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Private\Radio\Music;
 
-use App\Actions\Radio\Music\UpdateMusicAction;
+use App\Actions\Music\UpdateMusicAction;
 use App\Http\Controllers\Concerns\HasFlashMessages;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Web\Radio\UpdateMusicRequest;
+use App\Http\Requests\Music\UpdateMusicRequest;
 use App\Models\Music;
 
 class UpdateMusicController extends Controller

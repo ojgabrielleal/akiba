@@ -2,31 +2,18 @@
 
 namespace App\Http\Controllers\Private\Media\Poll;
 
+use App\Actions\Poll\StorePollAction;
 use App\Http\Controllers\Concerns\HasFlashMessages;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Web\Media\CreatePollRequest;
-use App\Models\Poll;
+use App\Http\Requests\Poll\StorePollRequest;
 
 class StorePollController extends Controller
 {
     use HasFlashMessages;
 
-    public function __invoke(CreatePollRequest $request)
+    public function __invoke(StorePollRequest $request, StorePollAction $storePollAction)
     {
-        $poll = Poll::create([
-            'user_id' => $request->user()->id,
-            'status' => $request->input('status'),
-            'question' => $request->input('question'),
-            'expires_at' => $request->input('expires_at'),
-        ]);
-
-        $poll->options()->createMany(
-            collect($request->input('options'))
-                ->map(fn (array $option) => [
-                    'option' => $option['option'],
-                ])
-                ->all()
-        );
+        $storePollAction->execute($request->user(), $request->validated());
 
         return $this->flashMessage('save');
     }

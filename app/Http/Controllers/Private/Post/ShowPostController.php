@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Private\Post;
 use App\Http\Controllers\Controller;
 use Inertia\Inertia;
 
-use App\Http\Resources\PostResource;
+use App\Http\Resources\Post\PostResource;
 use App\Queries\Post\ListPostQuery;
 use App\Models\Post;
 

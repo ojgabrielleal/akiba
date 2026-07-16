@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers\Private\Podcast;
 
-use App\Actions\Podcast\CreatePodcastAction;
+use App\Actions\Podcast\StorePodcastAction;
 use App\Http\Controllers\Concerns\HasFlashMessages;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Web\Podcast\CreatePodcastRequest;
+use App\Http\Requests\Podcast\StorePodcastRequest;
 
 class StorePodcastController extends Controller
 {
     use HasFlashMessages;
 
-    public function __invoke(CreatePodcastRequest $request, CreatePodcastAction $createPodcastAction)
+    public function __invoke(StorePodcastRequest $request, StorePodcastAction $storePodcastAction)
     {
-        $createPodcastAction->execute(
+        $storePodcastAction->execute(
             $request->user(),
             $request->validated()
         );

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Private\Administration\User;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\UserResource;
+use App\Http\Resources\User\UserResource;
 use App\Models\User;
 
 class ShowUserController extends Controller

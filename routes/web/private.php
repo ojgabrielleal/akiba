@@ -63,7 +63,7 @@ use App\Http\Controllers\Private\Post\StorePostController;
 use App\Http\Controllers\Private\Post\UpdatePostController;
 use App\Http\Controllers\Private\Profile\User\UpdateProfileController;
 use App\Http\Controllers\Private\Radio\ListenerMonth\StoreListenerMonthController;
-use App\Http\Controllers\Private\Radio\Music\GenerateMusicRankingController;
+use App\Http\Controllers\Private\Radio\Music\RefreshMusicRankingController;
 use App\Http\Controllers\Private\Radio\Music\UpdateMusicController;
 use App\Http\Controllers\Private\Radio\Program\DeactivateProgramController;
 use App\Http\Controllers\Private\Radio\Program\ShowProgramController;
@@ -127,7 +127,7 @@ Route::prefix('panel')->middleware(['inertia'])->group(function () {
                 Route::delete('{program:uuid}', [DeactivateProgramController::class, '__invoke']);
             });
             Route::prefix('music')->group(function () {
-                Route::post('ranking', [GenerateMusicRankingController::class, '__invoke']);
+                Route::post('ranking', [RefreshMusicRankingController::class, '__invoke']);
                 Route::patch('{music:uuid}', [UpdateMusicController::class, '__invoke']);
             });
             Route::prefix('listener-month')->group(function () {

@@ -2,28 +2,19 @@
 
 namespace App\Http\Controllers\Private\Marketing\Repository;
 
+use App\Actions\Repository\UpdateRepositoryAction;
 use App\Http\Controllers\Concerns\HasFlashMessages;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Web\Marketing\UpdateRepositoryRequest;
+use App\Http\Requests\Repository\UpdateRepositoryRequest;
 use App\Models\Repository;
-use App\Services\Process\ImageProcessService;
 
 class UpdateRepositoryController extends Controller
 {
     use HasFlashMessages;
 
-    public function __invoke(UpdateRepositoryRequest $request, Repository $repository, ImageProcessService $image)
+    public function __invoke(UpdateRepositoryRequest $request, Repository $repository, UpdateRepositoryAction $updateRepositoryAction)
     {
-        $repository->fill([
-            'name' => $request->input('name', $repository->name),
-            'url' => $request->input('url', $repository->url),
-            'image' => $image->store('repository', $request->file('image'), $repository->image),
-            'type' => $request->input('type', $repository->type),
-        ]);
-
-        if ($repository->isDirty()) {
-            $repository->save();
-        }
+        $updateRepositoryAction->execute($repository, $request->validated(), $request->file('image'));
 
         return $this->flashMessage('update');
     }

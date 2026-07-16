@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Private\Radio\Program;
 
-use App\Actions\Radio\Program\UpdateProgramAction;
+use App\Actions\Program\UpdateProgramAction;
 use App\Http\Controllers\Concerns\HasFlashMessages;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Web\Radio\UpdateProgramRequest;
+use App\Http\Requests\Program\UpdateProgramRequest;
 use App\Models\Program;
 use DomainException;
 

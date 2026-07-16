@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Private\Administration\Calendar;
 
-use App\Actions\Administration\Calendar\UpdateCalendarAction;
+use App\Actions\Calendar\UpdateCalendarAction;
 use App\Http\Controllers\Concerns\HasFlashMessages;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Web\Administration\UpdateCalendarRequest;
+use App\Http\Requests\Calendar\UpdateCalendarRequest;
 use App\Models\Calendar;
 use App\Models\User;
 

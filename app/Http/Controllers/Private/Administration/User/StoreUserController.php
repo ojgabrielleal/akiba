@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers\Private\Administration\User;
 
-use App\Actions\Administration\User\CreateUserAction;
+use App\Actions\User\StoreUserAction;
 use App\Http\Controllers\Concerns\HasFlashMessages;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Web\Administration\CreateUserRequest;
+use App\Http\Requests\User\StoreUserRequest;
 
 class StoreUserController extends Controller
 {
     use HasFlashMessages;
 
-    public function __invoke(CreateUserRequest $request, CreateUserAction $createUserAction)
+    public function __invoke(StoreUserRequest $request, StoreUserAction $storeUserAction)
     {
-        $createUserAction->execute($request->validated());
+        $storeUserAction->execute($request->validated());
 
         return $this->flashMessage('save');
     }

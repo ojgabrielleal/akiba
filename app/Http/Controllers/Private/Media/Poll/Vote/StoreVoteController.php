@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Private\Media\Poll\Vote;
 
+use App\Actions\Poll\StorePollVoteAction;
 use App\Http\Controllers\Concerns\HasFlashMessages;
 use App\Http\Controllers\Controller;
 use App\Models\PollOption;
@@ -11,7 +12,7 @@ class StoreVoteController extends Controller
 {
     use HasFlashMessages;
 
-    public function __invoke(Request $request, PollOption $option)
+    public function __invoke(Request $request, PollOption $option, StorePollVoteAction $storePollVoteAction)
     {
         $this->authorize('vote', $option);
 
@@ -26,10 +27,7 @@ class StoreVoteController extends Controller
             403,
         );
 
-        $option->poll->votes()->firstOrCreate(
-            ['user_id' => $request->user()->id],
-            ['poll_option_id' => $option->id],
-        );
+        $storePollVoteAction->execute($option, $request->user());
 
         return $this->flashMessage('save');
     }

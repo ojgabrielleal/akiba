@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers\Private\Radio\ListenerMonth;
 
-use App\Actions\Radio\ListenerMonth\CreateListenerMonthAction;
+use App\Actions\ListenerMonth\StoreListenerMonthAction;
 use App\Http\Controllers\Concerns\HasFlashMessages;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Web\Radio\CreateListenerMonthRequest;
+use App\Http\Requests\ListenerMonth\StoreListenerMonthRequest;
 
 class StoreListenerMonthController extends Controller
 {
     use HasFlashMessages;
 
-    public function __invoke(CreateListenerMonthRequest $request, CreateListenerMonthAction $createListenerMonthAction)
+    public function __invoke(StoreListenerMonthRequest $request, StoreListenerMonthAction $storeListenerMonthAction)
     {
-        $createListenerMonthAction->execute(
+        $storeListenerMonthAction->execute(
             $request->validated(),
             $request->file('avatar')
         );

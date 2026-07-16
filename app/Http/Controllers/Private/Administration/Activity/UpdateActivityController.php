@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Private\Administration\Activity;
 
-use App\Actions\Administration\Activity\UpdateActivityAction;
+use App\Actions\Activity\UpdateActivityAction;
 use App\Http\Controllers\Concerns\HasFlashMessages;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Web\Administration\UpdateActivityRequest;
+use App\Http\Requests\Activity\UpdateActivityRequest;
 use App\Models\Activity;
 
 class UpdateActivityController extends Controller

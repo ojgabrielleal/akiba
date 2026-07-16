@@ -7,7 +7,7 @@ use App\Services\External\StreamService;
 
 use App\Models\Onair;
 
-use App\Http\Resources\StreamResource;
+use App\Http\Resources\Onair\OnairStreamResource;
 
 class StreamController extends Controller
 {
@@ -28,6 +28,6 @@ class StreamController extends Controller
             $item->streaming_data = $stream ?? [];
         });
 
-        return StreamResource::collection($onair);
+        return OnairStreamResource::collection($onair);
     }
 }

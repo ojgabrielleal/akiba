@@ -13,11 +13,11 @@ use App\Models\Task;
 use App\Models\User;
 
 use App\Http\Resources\ActivityResource;
-use App\Http\Resources\CalendarResource;
+use App\Http\Resources\Calendar\CalendarResource;
 use App\Http\Resources\PermissionResource;
 use App\Http\Resources\RoleResource;
 use App\Http\Resources\TaskResource;
-use App\Http\Resources\UserResource;
+use App\Http\Resources\User\UserResource;
 
 class AdministrationPageController extends Controller
 {

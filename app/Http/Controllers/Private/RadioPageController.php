@@ -12,8 +12,8 @@ use App\Models\User;
 
 use App\Http\Resources\ListenerMonthResource;
 use App\Http\Resources\MusicResource;
-use App\Http\Resources\ProgramResource;
-use App\Http\Resources\UserResource;
+use App\Http\Resources\Program\ProgramResource;
+use App\Http\Resources\User\UserResource;
 
 class RadioPageController extends Controller
 {

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Private\Administration\Calendar;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\CalendarResource;
+use App\Http\Resources\Calendar\CalendarResource;
 use App\Models\Calendar;
 
 class ShowCalendarController extends Controller

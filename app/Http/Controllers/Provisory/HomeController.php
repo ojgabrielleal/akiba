@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Provisory;
 
-use App\Actions\SongRequest\CreateSongRequestAction;
+use App\Actions\SongRequest\StoreSongRequestAction;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Web\Provisory\CreateSongRequestRequest;
+use App\Http\Requests\SongRequest\StoreSongRequestRequest;
 use Inertia\Inertia;
 
 use App\Models\Onair;
 
-use App\Http\Resources\OnairResource;
+use App\Http\Resources\Onair\OnairResource;
 
 class HomeController extends Controller
 {
@@ -22,9 +22,9 @@ class HomeController extends Controller
         );
     }
 
-    public function createSongRequest(CreateSongRequestRequest $request, CreateSongRequestAction $createSongRequestAction)
+    public function createSongRequest(StoreSongRequestRequest $request, StoreSongRequestAction $storeSongRequestAction)
     {
-        $createSongRequestAction->execute(
+        $storeSongRequestAction->execute(
             $request->all(), 
             $request->ip()
         );

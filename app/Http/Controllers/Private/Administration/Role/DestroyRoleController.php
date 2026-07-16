@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Private\Administration\Role;
 
-use App\Exceptions\RoleHasMembersException;
+use App\Actions\Role\DestroyRoleAction;
 use App\Http\Controllers\Concerns\HasFlashMessages;
 use App\Http\Controllers\Controller;
 use App\Models\Role;
@@ -11,15 +11,11 @@ class DestroyRoleController extends Controller
 {
     use HasFlashMessages;
 
-    public function __invoke(Role $role)
+    public function __invoke(Role $role, DestroyRoleAction $destroyRoleAction)
     {
         $this->authorize('delete', $role);
 
-        if ($role->members()->count() > 0) {
-            throw new RoleHasMembersException;
-        }
-
-        $role->delete();
+        $destroyRoleAction->execute($role);
 
         return $this->flashMessage('delete');
     }

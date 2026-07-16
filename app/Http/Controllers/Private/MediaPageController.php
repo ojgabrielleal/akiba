@@ -9,7 +9,7 @@ use App\Models\ListenerGallery;
 use App\Models\Poll;
 
 use App\Http\Resources\ListenerGalleryResource;
-use App\Http\Resources\PollResource;
+use App\Http\Resources\Poll\PollResource;
 
 class MediaPageController extends Controller
 {

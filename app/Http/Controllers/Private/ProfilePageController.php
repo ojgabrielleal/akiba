@@ -7,7 +7,7 @@ use Inertia\Inertia;
 
 use App\Models\User;
 
-use App\Http\Resources\UserResource;
+use App\Http\Resources\User\UserResource;
 
 class ProfilePageController extends Controller
 {

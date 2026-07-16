@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Private\Profile\User;
 use App\Actions\Profile\UpdateProfileAction;
 use App\Http\Controllers\Concerns\HasFlashMessages;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Web\Profile\UpdateProfileRequest;
+use App\Http\Requests\Profile\UpdateProfileRequest;
 use App\Models\User;
 
 class UpdateProfileController extends Controller

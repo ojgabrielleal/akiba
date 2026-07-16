@@ -5,7 +5,7 @@ namespace Tests\Unit\Models;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-use App\Http\Resources\ProgramAirtimeResource;
+use App\Http\Resources\Program\ProgramAirtimeResource;
 use App\Models\ProgramAirtime;
 use App\Models\Program;
 use App\Models\User;

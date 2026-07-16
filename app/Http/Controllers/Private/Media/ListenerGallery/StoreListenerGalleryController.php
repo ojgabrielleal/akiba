@@ -2,24 +2,18 @@
 
 namespace App\Http\Controllers\Private\Media\ListenerGallery;
 
+use App\Actions\ListenerGallery\StoreListenerGalleryAction;
 use App\Http\Controllers\Concerns\HasFlashMessages;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Web\Media\CreateListenerGalleryRequest;
-use App\Models\ListenerGallery;
-use App\Services\Process\ImageProcessService;
+use App\Http\Requests\ListenerGallery\StoreListenerGalleryRequest;
 
 class StoreListenerGalleryController extends Controller
 {
     use HasFlashMessages;
 
-    public function __invoke(CreateListenerGalleryRequest $request, ImageProcessService $image)
+    public function __invoke(StoreListenerGalleryRequest $request, StoreListenerGalleryAction $storeListenerGalleryAction)
     {
-        ListenerGallery::create([
-            'user_id' => $request->user()->id,
-            'image' => $image->store('listener-gallery', $request->file('image')),
-            'caption' => $request->input('caption'),
-            'listener_name' => $request->input('listener_name'),
-        ]);
+        $storeListenerGalleryAction->execute($request->user(), $request->validated(), $request->file('image'));
 
         return $this->flashMessage('save');
     }

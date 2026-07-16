@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Public;
 
-use App\Actions\SongRequest\CreateSongRequestAction;
+use App\Actions\SongRequest\StoreSongRequestAction;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -10,9 +10,9 @@ use Inertia\Inertia;
 use App\Models\Onair;
 use App\Models\Post;
 
-use App\Http\Resources\OnairResource;
-use App\Http\Resources\PostIndexResource;
-use App\Http\Resources\PostResource;
+use App\Http\Resources\Onair\OnairResource;
+use App\Http\Resources\Post\PostFeaturedResource;
+use App\Http\Resources\Post\PostResource;
 
 class HomeController extends Controller
 {
@@ -31,7 +31,7 @@ class HomeController extends Controller
             ->take(3)
             ->values();
 
-        return PostIndexResource::collection($feed);
+        return PostFeaturedResource::collection($feed);
     }
 
     public function indexReview()
@@ -62,7 +62,7 @@ class HomeController extends Controller
         );
     }
 
-    public function createSongRequest(Request $request, CreateSongRequestAction $createSongRequestAction)
+    public function createSongRequest(Request $request, StoreSongRequestAction $storeSongRequestAction)
     {
         $data = $request->validate([
             'name' => 'required',
@@ -72,7 +72,7 @@ class HomeController extends Controller
             'message' => 'required',
         ]);
 
-        $createSongRequestAction->execute($data, $request->ip());
+        $storeSongRequestAction->execute($data, $request->ip());
 
         return back(303);
     }

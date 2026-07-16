@@ -5,6 +5,7 @@ namespace App\Actions\OAuth;
 use App\Models\OAuth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class DiscordOAuthAction
@@ -13,16 +14,20 @@ class DiscordOAuthAction
     {
         $accountToken = Str::random(64);
 
-        $oauth = OAuth::query()
-            ->where('provider->name', 'discord')
-            ->where('provider->user_id', $discordUser['id'])
-            ->firstOrNew();
+        $oauth = DB::transaction(function () use ($discordUser, $accountToken) {
+            $oauth = OAuth::query()
+                ->where('provider->name', 'discord')
+                ->where('provider->user_id', $discordUser['id'])
+                ->firstOrNew();
 
-        $oauth->fill([
-            'provider' => $this->provider($discordUser),
-            'account_token_hash' => hash('sha256', $accountToken),
-        ]);
-        $oauth->save();
+            $oauth->fill([
+                'provider' => $this->provider($discordUser),
+                'account_token_hash' => hash('sha256', $accountToken),
+            ]);
+            $oauth->save();
+
+            return $oauth;
+        });
 
         Cookie::queue(
             Cookie::make(

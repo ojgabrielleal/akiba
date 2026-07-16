@@ -2,26 +2,18 @@
 
 namespace App\Http\Controllers\Private\Administration\Task;
 
+use App\Actions\Task\StoreTaskAction;
 use App\Http\Controllers\Concerns\HasFlashMessages;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Web\Administration\CreateTaskRequest;
-use App\Models\Task;
-use App\Models\User;
+use App\Http\Requests\Task\StoreTaskRequest;
 
 class StoreTaskController extends Controller
 {
     use HasFlashMessages;
 
-    public function __invoke(CreateTaskRequest $request)
+    public function __invoke(StoreTaskRequest $request, StoreTaskAction $storeTaskAction)
     {
-        $user = User::where('uuid', $request->input('user'))->firstOrFail();
-
-        Task::create([
-            'user_id' => $user->id,
-            'title' => $request->input('title'),
-            'description' => $request->input('description'),
-            'dead_line' => $request->input('dead_line'),
-        ]);
+        $storeTaskAction->execute($request->validated());
 
         return $this->flashMessage('save');
     }

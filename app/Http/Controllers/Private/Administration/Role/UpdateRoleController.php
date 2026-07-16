@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Private\Administration\Role;
 
-use App\Actions\Administration\Role\UpdateRoleAction;
+use App\Actions\Role\UpdateRoleAction;
 use App\Http\Controllers\Concerns\HasFlashMessages;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Web\Administration\UpdateRoleRequest;
+use App\Http\Requests\Role\UpdateRoleRequest;
 use App\Models\Role;
 
 class UpdateRoleController extends Controller

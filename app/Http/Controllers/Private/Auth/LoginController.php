@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Private\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Web\Login\AuthLoginRequest;
+use App\Http\Requests\Login\AuthLoginRequest;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 

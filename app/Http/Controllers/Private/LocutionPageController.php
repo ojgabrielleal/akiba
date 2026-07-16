@@ -9,8 +9,8 @@ use App\Models\Onair;
 use App\Models\Program;
 use App\Models\SongRequest;
 
-use App\Http\Resources\OnairResource;
-use App\Http\Resources\ProgramResource;
+use App\Http\Resources\Onair\OnairResource;
+use App\Http\Resources\Program\ProgramResource;
 use App\Http\Resources\SongRequestResource;
 
 class LocutionPageController extends Controller

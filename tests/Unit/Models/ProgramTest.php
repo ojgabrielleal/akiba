@@ -10,7 +10,7 @@ use App\Models\Onair;
 use App\Models\Plan;
 use App\Models\Program;
 use App\Models\ProgramAirtime;
-use App\Actions\Radio\Program\UpdateProgramAction;
+use App\Actions\Program\UpdateProgramAction;
 use App\Services\Process\ImageProcessService;
 use Database\Seeders\ProgramSeeder;
 

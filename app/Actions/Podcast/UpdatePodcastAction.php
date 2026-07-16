@@ -5,6 +5,7 @@ namespace App\Actions\Podcast;
 use App\Services\Process\ImageProcessService;
 use Illuminate\Http\UploadedFile;
 use App\Models\Podcast;
+use Illuminate\Support\Facades\DB;
 
 class UpdatePodcastAction
 {
@@ -17,20 +18,22 @@ class UpdatePodcastAction
 
     public function execute(Podcast $podcast, array $data, ?UploadedFile $image = null): Podcast
     {
-        $podcast->fill([
-            'image' => $this->image->store('podcasts', $image, $podcast->image),
-            'season' => $data['season'],
-            'episode' => $data['episode'],
-            'title' => $data['title'],
-            'summary' => $data['summary'],
-            'description' => $data['description'],
-            'audio' => $data['audio'],
-        ]);
+        return DB::transaction(function () use ($podcast, $data, $image) {
+            $podcast->fill([
+                'image' => $this->image->store('podcasts', $image, $podcast->image),
+                'season' => $data['season'],
+                'episode' => $data['episode'],
+                'title' => $data['title'],
+                'summary' => $data['summary'],
+                'description' => $data['description'],
+                'audio' => $data['audio'],
+            ]);
 
-        if ($podcast->isDirty()) {
-            $podcast->save();
-        }
+            if ($podcast->isDirty()) {
+                $podcast->save();
+            }
 
-        return $podcast;
+            return $podcast;
+        });
     }
 }
