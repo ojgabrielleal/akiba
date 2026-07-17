@@ -70,18 +70,6 @@ Vamos avaliar:
 - diferenças entre o padrão existente e as recomendações atuais do ecossistema;
 - pontos que podem ser melhorados sem gerar uma migração grande demais.
 
-Com esse diagnóstico, devemos preparar uma sugestão para adoção de TypeScript no frontend.
-
-A proposta precisa considerar:
-
-- benefícios reais para este projeto;
-- custo e risco da migração;
-- estratégia gradual, sem exigir conversão completa de uma vez;
-- configuração de Svelte, Vite e ferramentas relacionadas;
-- tipagem de props, formulários, respostas do Inertia, Utils e Stores;
-- convivência temporária entre arquivos JavaScript e TypeScript;
-- ordem recomendada para iniciar a migração.
-
 ## 6. Preparar a página de Administração para o módulo de Calendário
 
 Vamos preparar a página de Administração para receber o primeiro módulo de Calendário.
@@ -106,6 +94,5 @@ Não devemos iniciar a implementação dessa feature na mesma branch das revisõ
 4. Analisar componentes Svelte e oportunidades de reutilização.
 5. Simplificar componentes, Utils e Stores.
 6. Documentar as convenções atuais de Svelte e JavaScript.
-7. Elaborar a proposta de adoção gradual de TypeScript.
-8. Planejar a integração do módulo de Calendário na página de Administração.
-9. Criar uma branch separada para desenvolver a feature de Calendário.
+7. Planejar a integração do módulo de Calendário na página de Administração.
+8. Criar uma branch separada para desenvolver a feature de Calendário.

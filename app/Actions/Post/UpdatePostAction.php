@@ -54,7 +54,7 @@ class UpdatePostAction
             }
 
             if (!empty($data['review'])) {
-                $post->postReviews()->where('uuid', $data['review']['uuid'])->update([
+                $post->reviews()->where('uuid', $data['review']['uuid'])->update([
                     'status' => $data['review']['status'],
                     'content' => $data['review']['content']
                 ]);

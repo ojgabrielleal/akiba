@@ -31,7 +31,7 @@ class UpdateProgramRequest extends LoggedWebRequest
             'airtimes' => 'nullable|array',
             'airtimes.*.uuid' => 'nullable|string',
             'airtimes.*.day' => 'required_with:airtimes|integer|min:0|max:6',
-            'airtimes.*.hour' => 'required_with:airtimes|date_format:H:i',
+            'airtimes.*.hour' => 'required_with:airtimes|date_format:H:i:s',
             'plans' => 'nullable|array',
             'plans.*.uuid' => 'nullable|string',
             'plans.*.scheduled_at' => 'required_with:plans|date',

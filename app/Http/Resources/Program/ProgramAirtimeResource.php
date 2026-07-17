@@ -16,7 +16,7 @@ class ProgramAirtimeResource extends JsonResource
     {
         return [
             'uuid' => $this->uuid,
-            'hour' => $this->hour->format('H:i:s'),
+            'hour' => $this->hour->format('H:i'),
             'day' => $this->day,
         ];
     }

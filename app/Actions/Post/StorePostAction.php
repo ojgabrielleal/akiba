@@ -42,7 +42,7 @@ class StorePostAction
             }
 
             if (!empty($data['review'])) {
-                $post->postReviews()->create([
+                $post->reviews()->create([
                     'user_id' => $user->id,
                     'status' => $data['review']['status'],
                     'content' => $data['review']['content'],

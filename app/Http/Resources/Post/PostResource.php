@@ -4,6 +4,7 @@ namespace App\Http\Resources\Post;
 
 use App\Http\Resources\Concerns\HasFormats;
 use App\Http\Resources\User\UserResource;
+use App\Models\User;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -84,6 +85,16 @@ class PostResource extends JsonResource
 
         return [];
     }
+    
+    private function reviewGhostUser(User $user): array
+    {
+        return [
+            'uuid' => null,
+            'status' => 'not_created',
+            'content' => null,
+            'author' => UserResource::make($user)->format('summary'),
+        ];
+    }
 
     private function reviewCurrentUser(Request $request): array
     {
@@ -96,7 +107,7 @@ class PostResource extends JsonResource
             return PostReviewResource::make($opinion)->resolve();
         }
 
-        return $this->reviewGhostOpinion($user);
+        return $this->reviewGhostUser($user);
     }
 
     private function listReviews(Request $request): array
@@ -114,10 +125,7 @@ class PostResource extends JsonResource
 
         if (!$userOpinion) {
             return [
-                'uuid' => null,
-                'status' => 'not_created',
-                'content' => null,
-                'author' => UserResource::make($user)->format('summary'),
+                $this->reviewGhostUser($user),
                 ...$opinions,
             ];
         }
