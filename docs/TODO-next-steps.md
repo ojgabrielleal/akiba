@@ -1,6 +1,8 @@
 # Próximas etapas
 
-## 1. Validar a interface atual
+## 1. Validar a interface atual — Concluído
+
+A interface atual foi revisada e as regressões encontradas durante a validação foram corrigidas.
 
 Antes de iniciar novas refatorações ou desenvolver funcionalidades, precisamos rodar a aplicação e navegar pela interface completa.
 
@@ -88,8 +90,8 @@ Não devemos iniciar a implementação dessa feature na mesma branch das revisõ
 
 ## Ordem sugerida
 
-1. Rodar e validar toda a interface atual.
-2. Corrigir regressões encontradas.
+1. ✅ Rodar e validar toda a interface atual.
+2. ✅ Corrigir regressões encontradas.
 3. Revisar Seeders e Factories.
 4. Analisar componentes Svelte e oportunidades de reutilização.
 5. Simplificar componentes, Utils e Stores.
