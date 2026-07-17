@@ -3,8 +3,9 @@
 namespace App\Http\Resources;
 
 use App\Http\Resources\Concerns\HasFormats;
-use Illuminate\Http\Resources\Json\JsonResource;
+
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Collection;
 
 class RepositoryResource extends JsonResource

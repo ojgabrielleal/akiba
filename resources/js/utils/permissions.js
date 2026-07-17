@@ -30,7 +30,7 @@ export const listenerMonthPermissions = () => ({
 export const listenerGalleryPermissions = () => ({
     create: hasPermission("listener.gallery.create"),
     update: hasPermission("listener.gallery.update"),
-    remove: hasPermission("listener.gallery.remove"),
+    delete: hasPermission("listener.gallery.delete"),
 });
 
 export const locutionPermissions = () => ({
@@ -40,7 +40,7 @@ export const locutionPermissions = () => ({
 
 export const musicPermissions = () => ({
     update: hasPermission("music.update"),
-    set: hasPermission("music.set.ranking"),
+    updateRanking: hasPermission("music.ranking.update"),
 });
 
 export const podcastPermissions = () => ({
@@ -56,7 +56,7 @@ export const pollPermissions = () => ({
     approve: hasPermission("poll.approve"),
     deactivate: hasPermission("poll.deactivate"),
     vote: {
-        create: hasPermission("poll.create.vote"),
+        create: hasPermission("poll.vote"),
     },
 });
 
@@ -75,7 +75,7 @@ export const programPermissions = () => ({
 });
 
 export const programFormPermissions = () => ({
-    create: hasPermission("program.tete"),
+    create: hasPermission("program.create"),
     update: hasPermission("program.update"),
 });
 
@@ -88,14 +88,14 @@ export const repositoryPermissions = () => ({
 export const rolePermissions = () => ({
     create: hasPermission("role.create"),
     update: hasPermission("role.update"),
-    remove: hasPermission("role.remove"),
+    delete: hasPermission("role.delete"),
 });
 
 export const songRequestPermissions = () => ({
-    list: hasPermission("songrequest.list"),
-    toggle: hasPermission("songrequest.toggle"),
-    reproduce: hasPermission("songrequest.reproduce"),
-    cancel: hasPermission("songrequest.cancel"),
+    list: hasPermission("song.request.list"),
+    toggle: hasPermission("song.request.toggle"),
+    reproduce: hasPermission("song.request.reproduce"),
+    cancel: hasPermission("song.request.cancel"),
     locution: {
         finish: hasPermission("locution.finish"),
     },
@@ -104,7 +104,7 @@ export const songRequestPermissions = () => ({
 export const taskPermissions = () => ({
     create: hasPermission("task.create"),
     update: hasPermission("task.update"),
-    completed: hasPermission("task.complete"),
+    review: hasPermission("task.review"),
 });
 
 export const userPermissions = () => ({
@@ -115,7 +115,7 @@ export const userPermissions = () => ({
         update: hasPermission("user.access.update"),
     },
     authority: {
-        update: hasPermission("user.update.authority"),
+        update: hasPermission("user.authority.update"),
     },
 });
 

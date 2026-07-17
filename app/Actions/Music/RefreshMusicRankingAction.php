@@ -2,8 +2,9 @@
 
 namespace App\Actions\Music;
 
-use Illuminate\Support\Facades\DB;
 use App\Models\Music;
+
+use Illuminate\Support\Facades\DB;
 
 class RefreshMusicRankingAction
 {

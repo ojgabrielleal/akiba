@@ -2,10 +2,11 @@
 
 namespace App\Actions\Podcast;
 
+use App\Models\Podcast;
+use App\Models\User;
+
 use App\Services\Process\ImageProcessService;
 
-use App\Models\User;
-use App\Models\Podcast;
 use Illuminate\Support\Facades\DB;
 
 class StorePodcastAction

@@ -33,7 +33,6 @@
   <!-- Meta padrão -->
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="csrf-token" content={$page.props.csrf_token}>
   <meta name="description" content={metaDescription} />
   <meta name="keywords" content={metaKeywords} />
   <meta name="author" content={meta.author || 'Rede Akiba'} />

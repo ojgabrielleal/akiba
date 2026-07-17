@@ -40,9 +40,9 @@ class PodcastPolicy
     }
 
     /**
-     * Determine whether the user can delete the model.
+     * Determine whether the user can deactivate the model.
      */
-    public function delete(User $user, Podcast $podcast): bool
+    public function deactivate(User $user, Podcast $podcast): bool
     {
         return $user->hasPermission('podcast.deactivate');
     }

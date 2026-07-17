@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\OAuth;
 
 use App\Http\Controllers\Controller;
+
 use Illuminate\Http\Request;
 
 class OAuthCallbackController extends Controller

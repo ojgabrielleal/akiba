@@ -19,7 +19,7 @@
     });
 
     const submit = () => {
-        $form.post("/administration/user", {
+        $form.post("/panel/administration/user", {
             preserveScroll: true,
             onSuccess: () => close(),
         });

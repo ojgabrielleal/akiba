@@ -42,7 +42,7 @@
             {#if can.event.create}
                 <Link
                     class="w-30 bg-blue-marinho p-2 rounded-md flex justify-center items-center flex-col gap-2 font-noto-sans font-extrabold text-[0.7rem] text-orange-citric text-center uppercase italic"
-                    href="/panel/event"
+                    href="/panel/post"
                 >
                     <img
                         src="/svg/events.svg"

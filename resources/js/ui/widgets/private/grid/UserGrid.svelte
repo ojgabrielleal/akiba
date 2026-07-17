@@ -20,7 +20,7 @@
     let identifier;
 
     const requestDeactivateUser = (user) => {
-        router.delete(`/panel/administration/user/${user}`, {},
+        router.patch(`/panel/administration/user/${user}/deactivate`, {},
             { preserveScroll: true },
         );
     };

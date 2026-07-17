@@ -31,7 +31,7 @@
     const startLocution = (sendNotification) => {
         $form.send_notification = sendNotification;
 
-        $form.post(`/panel/locution/locution/start/${$form.program}`, {
+        $form.post(`/panel/locution/start/${$form.program}`, {
             preserveScroll: true,
             onSuccess: () => {
                 notificationModalRef.close();

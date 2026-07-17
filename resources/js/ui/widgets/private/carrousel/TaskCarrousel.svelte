@@ -9,8 +9,8 @@
 
     let can = taskPermissions();
 
-    const requestmarkTaskToReview = (task) => {
-        router.post(`/panel/dashboard/task/${task}/complete`, {}, {
+    const requestMarkTaskToReview = (task) => {
+        router.post(`/panel/dashboard/task/${task}/review`, {}, {
             preserveScroll: true,
             preserveState: true,
         });
@@ -60,12 +60,12 @@
                                     </div>
                                 {:else}
                                     <div class="flex items-center justify-center bg-blue-night px-3">
-                                        {#if can.completed}
+                                        {#if can.review}
                                             <button
                                                 type="button"
-                                                aria-label="Marcar tarefa como concluida"
+                                                aria-label="Enviar tarefa para avaliação"
                                                 class="group flex h-full w-full cursor-pointer items-center justify-center"
-                                                on:click={() => requestmarkTaskToReview(task.uuid)}
+                                                on:click={() => requestMarkTaskToReview(task.uuid)}
                                             >
                                                 <img
                                                     src="/svg/verify.svg"

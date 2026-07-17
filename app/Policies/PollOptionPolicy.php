@@ -12,6 +12,6 @@ class PollOptionPolicy
      */
     public function vote(User $user, PollOption $option): bool
     {
-        return $user->hasPermission('poll.create.vote');
+        return $user->hasPermission('poll.vote');
     }
 }

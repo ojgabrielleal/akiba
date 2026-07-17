@@ -2,11 +2,12 @@
 
 namespace App\Actions\Activity;
 
-use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
-
-use App\Models\User;
 use App\Models\Activity;
+use App\Models\User;
+
+use Carbon\Carbon;
+
+use Illuminate\Support\Facades\DB;
 
 class StoreActivityAction
 {

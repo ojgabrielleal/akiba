@@ -44,7 +44,6 @@ class PermissionSeeder extends Seeder
             ['name' => 'activity.view', 'label' => '[Atividades] Visualizar'],
             ['name' => 'activity.create', 'label' => '[Atividades] Criar'],
             ['name' => 'activity.update', 'label' => '[Atividades] Atualizar'],
-            ['name' => 'activity.deactivate', 'label' => '[Atividades] Desativar'],
             ['name' => 'activity.participate', 'label' => '[Atividades] Confirmar participação'],
 
             /*
@@ -57,7 +56,7 @@ class PermissionSeeder extends Seeder
             ['name' => 'task.create', 'label' => '[Tarefas] Criar'],
             ['name' => 'task.update', 'label' => '[Tarefas] Atualizar'],
             ['name' => 'task.deactivate', 'label' => '[Tarefas] Desativar'],
-            ['name' => 'task.complete', 'label' => '[Tarefas] Concluir'],
+            ['name' => 'task.review', 'label' => '[Tarefas] Enviar para avaliação'],
 
             /*
             |--------------------------------------------------------------------------
@@ -99,10 +98,10 @@ class PermissionSeeder extends Seeder
             | Pedidos musicais
             |--------------------------------------------------------------------------
             */
-            ['name' => 'songrequest.list', 'label' => '[Pedidos Música] Listar'],
-            ['name' => 'songrequest.reproduce', 'label' => '[Pedidos Música] Atender'],
-            ['name' => 'songrequest.cancel', 'label' => '[Pedidos Música] Cancelar'],
-            ['name' => 'songrequest.toggle', 'label' => '[Pedidos Música] Ativar/Desativar '],
+            ['name' => 'song.request.list', 'label' => '[Pedidos Música] Listar'],
+            ['name' => 'song.request.reproduce', 'label' => '[Pedidos Música] Atender'],
+            ['name' => 'song.request.cancel', 'label' => '[Pedidos Música] Cancelar'],
+            ['name' => 'song.request.toggle', 'label' => '[Pedidos Música] Ativar/Desativar'],
 
             /*
             |--------------------------------------------------------------------------
@@ -122,7 +121,7 @@ class PermissionSeeder extends Seeder
             */
             ['name' => 'music.list', 'label' => '[Músicas] Listar'],
             ['name' => 'music.update', 'label' => '[Músicas] Atualizar'],
-            ['name' => 'music.set.ranking', 'label' => '[Músicas] Definir ranking'],
+            ['name' => 'music.ranking.update', 'label' => '[Músicas] Definir ranking'],
 
             /*
             |--------------------------------------------------------------------------
@@ -141,7 +140,7 @@ class PermissionSeeder extends Seeder
             ['name' => 'listener.gallery.view', 'label' => '[Galeria Ouvintes] Visualizar'],
             ['name' => 'listener.gallery.create', 'label' => '[Galeria Ouvintes] Criar'],
             ['name' => 'listener.gallery.update', 'label' => '[Galeria Ouvintes] Atualizar'],
-            ['name' => 'listener.gallery.remove', 'label' => '[Galeria Ouvintes] Remover'],
+            ['name' => 'listener.gallery.delete', 'label' => '[Galeria Ouvintes] Excluir'],
 
             /*
             |--------------------------------------------------------------------------
@@ -178,7 +177,7 @@ class PermissionSeeder extends Seeder
             ['name' => 'poll.deactivate', 'label' => '[Enquetes] Desativar'],
             ['name' => 'poll.publish', 'label' => '[Enquetes] Publicar enquete (imediatamente)'],
             ['name' => 'poll.approve', 'label' => '[Enquetes] Aprovar enquete'],
-            ['name' => 'poll.create.vote', 'label' => '[Enquetes] Votar'],
+            ['name' => 'poll.vote', 'label' => '[Enquetes] Votar'],
 
             /*
             |--------------------------------------------------------------------------
@@ -191,7 +190,8 @@ class PermissionSeeder extends Seeder
             ['name' => 'user.update', 'label' => '[Usuários] Atualizar'],
             ['name' => 'user.deactivate', 'label' => '[Usuários] Desativar'],
             ['name' => 'user.view.own', 'label' => '[Usuários] Visualizar perfil próprio'],
-            ['name' => 'user.update.authority', 'label' => '[Usuários] Atualizar Acessos/Cargos'],
+            ['name' => 'user.update.own', 'label' => '[Usuários] Atualizar perfil próprio'],
+            ['name' => 'user.authority.update', 'label' => '[Usuários] Atualizar Acessos/Cargos'],
 
             /*
             |--------------------------------------------------------------------------
@@ -202,7 +202,7 @@ class PermissionSeeder extends Seeder
             ['name' => 'role.view', 'label' => '[Cargos] Visualizar'],
             ['name' => 'role.create', 'label' => '[Cargos] Criar'],
             ['name' => 'role.update', 'label' => '[Cargos] Atualizar'],
-            ['name' => 'role.remove', 'label' => '[Cargos] Remover'],
+            ['name' => 'role.delete', 'label' => '[Cargos] Excluir'],
 
             /*
             |--------------------------------------------------------------------------
@@ -211,19 +211,8 @@ class PermissionSeeder extends Seeder
             */
         ];
 
-        $this->renamePublicationPermissionsToPost($permissions);
-
-        collect($permissions)->each(fn (array $permission) => Permission::updateOrCreate(
-            ['name' => $permission['name']],
-            ['label' => $permission['label']]
-        ));
-    }
-
-    private function renamePublicationPermissionsToPost(array $permissions): void
-    {
-        $labels = collect($permissions)->pluck('label', 'name');
-
-        $renamedPermissions = [
+        $this->renamePermissions($permissions, [
+            'task.complete' => 'task.review',
             'publication.list' => 'post.list',
             'publication.view' => 'post.view',
             'publication.update' => 'post.update',
@@ -231,7 +220,30 @@ class PermissionSeeder extends Seeder
             'publication.list.own' => 'post.list.own',
             'publication.update.own' => 'post.update.own',
             'publication.approve' => 'post.approve',
-        ];
+            'songrequest.list' => 'song.request.list',
+            'songrequest.reproduce' => 'song.request.reproduce',
+            'songrequest.cancel' => 'song.request.cancel',
+            'songrequest.toggle' => 'song.request.toggle',
+            'music.set.ranking' => 'music.ranking.update',
+            'listener.gallery.remove' => 'listener.gallery.delete',
+            'poll.create.vote' => 'poll.vote',
+            'user.update.authority' => 'user.authority.update',
+            'role.remove' => 'role.delete',
+        ]);
+
+        collect($permissions)->each(fn (array $permission) => Permission::updateOrCreate(
+            ['name' => $permission['name']],
+            ['label' => $permission['label']]
+        ));
+
+        Permission::whereIn('name', [
+            'activity.deactivate',
+        ])->delete();
+    }
+
+    private function renamePermissions(array $permissions, array $renamedPermissions): void
+    {
+        $labels = collect($permissions)->pluck('label', 'name');
 
         foreach ($renamedPermissions as $oldName => $newName) {
             $oldPermission = Permission::where('name', $oldName)->first();
@@ -252,8 +264,15 @@ class PermissionSeeder extends Seeder
 
             DB::table('permissions_pivot')
                 ->where('permission_id', $oldPermission->id)
-                ->update(['permission_id' => $newPermission->id]);
+                ->pluck('role_id')
+                ->each(function (int $roleId) use ($newPermission): void {
+                    DB::table('permissions_pivot')->updateOrInsert([
+                        'permission_id' => $newPermission->id,
+                        'role_id' => $roleId,
+                    ]);
+                });
 
+            DB::table('permissions_pivot')->where('permission_id', $oldPermission->id)->delete();
             $oldPermission->delete();
         }
     }

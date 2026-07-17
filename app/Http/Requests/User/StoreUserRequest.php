@@ -3,6 +3,7 @@
 namespace App\Http\Requests\User;
 
 use App\Http\Requests\LoggedWebRequest;
+
 use App\Models\User;
 
 class StoreUserRequest extends LoggedWebRequest

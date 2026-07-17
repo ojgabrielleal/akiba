@@ -40,18 +40,18 @@ class TaskPolicy
     }
 
     /**
-     * Determine whether the user can delete the model (deactivate).
+     * Determine whether the user can deactivate the model.
      */
-    public function delete(User $user, Task $task): bool
+    public function deactivate(User $user, Task $task): bool
     {
         return $user->hasPermission('task.deactivate');
     }
 
     /**
-     * Determine whether the user can complete the task.
+     * Determine whether the user can mark the task for review.
      */
-    public function complete(User $user, Task $task): bool
+    public function markForReview(User $user, Task $task): bool
     {
-        return $user->hasPermission('task.complete');
+        return $user->hasPermission('task.review');
     }
 }

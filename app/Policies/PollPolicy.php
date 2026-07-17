@@ -40,11 +40,10 @@ class PollPolicy
     }
 
     /**
-     * Determine whether the user can delete the model.
+     * Determine whether the user can deactivate the model.
      */
-    public function delete(User $user, Poll $poll): bool
+    public function deactivate(User $user, Poll $poll): bool
     {
         return $user->hasPermission('poll.deactivate');
     }
-
 }

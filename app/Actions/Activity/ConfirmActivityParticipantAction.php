@@ -4,6 +4,7 @@ namespace App\Actions\Activity;
 
 use App\Models\Activity;
 use App\Models\User;
+
 use Illuminate\Support\Facades\DB;
 
 class ConfirmActivityParticipantAction

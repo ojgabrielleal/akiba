@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Role;
 
 use App\Http\Requests\LoggedWebRequest;
+
 use App\Models\Role;
 
 class StoreRoleRequest extends LoggedWebRequest

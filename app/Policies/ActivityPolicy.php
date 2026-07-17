@@ -40,17 +40,9 @@ class ActivityPolicy
     }
 
     /**
-     * Determine whether the user can delete the model (deactivate).
-     */
-    public function delete(User $user, Activity $activity): bool
-    {
-        return $user->hasPermission('activity.deactivate');
-    }
-
-    /**
      * Determine whether the user can participate in the activity.
      */
-    public function participate(User $user, Activity $activity): bool
+    public function confirmParticipation(User $user, Activity $activity): bool
     {
         return $user->hasPermission('activity.participate');
     }

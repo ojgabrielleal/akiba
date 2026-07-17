@@ -2,10 +2,10 @@
 
 namespace App\Http\Resources\Poll;
 
+use App\Models\OAuth;
+
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-
-use App\Models\OAuth;
 
 class PollResource extends JsonResource
 {

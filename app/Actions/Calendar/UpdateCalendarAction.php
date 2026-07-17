@@ -2,10 +2,11 @@
 
 namespace App\Actions\Calendar;
 
+use App\Models\Calendar;
+use App\Models\User;
+
 use Carbon\Carbon;
 
-use App\Models\User;
-use App\Models\Calendar;
 use Illuminate\Support\Facades\DB;
 
 class UpdateCalendarAction

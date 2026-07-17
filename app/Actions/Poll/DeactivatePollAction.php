@@ -3,6 +3,7 @@
 namespace App\Actions\Poll;
 
 use App\Models\Poll;
+
 use Illuminate\Support\Facades\DB;
 
 class DeactivatePollAction

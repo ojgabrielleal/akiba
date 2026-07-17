@@ -16,7 +16,7 @@
     }
 
     const requestDeactivate = (post) => {
-        router.delete(`/panel/post/${post.uuid}`, {
+        router.patch(`/panel/post/${post.uuid}/deactivate`, {}, {
             preserveScroll: true,
         });
     };

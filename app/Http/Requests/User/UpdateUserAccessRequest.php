@@ -11,7 +11,7 @@ class UpdateUserAccessRequest extends LoggedWebRequest
      */
     public function authorize(): bool
     {
-        return $this->user()?->can('updateAuthority', $this->route('user')) ?? false;
+        return $this->user()?->can('updateAccess', $this->route('user')) ?? false;
     }
 
     /**

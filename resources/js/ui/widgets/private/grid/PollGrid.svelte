@@ -27,7 +27,7 @@
     ]; 
 
     const requestDeactivate = (poll) => {
-        router.delete(`/panel/media/poll/${poll.uuid}`, {
+        router.patch(`/panel/media/poll/${poll.uuid}/deactivate`, {}, {
             preserveScroll: true,
         });
     };
@@ -36,7 +36,7 @@
         const formData = new FormData(event.target);
         const option = formData.get("option");
 
-        router.post(`/panel/media/poll/vote/${option}`, {}, {
+        router.post(`/panel/media/poll/option/${option}/vote`, {}, {
             preserveScroll: true,
             preserveState: false,
         });

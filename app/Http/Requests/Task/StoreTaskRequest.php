@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Task;
 
 use App\Http\Requests\LoggedWebRequest;
+
 use App\Models\Task;
 
 class StoreTaskRequest extends LoggedWebRequest

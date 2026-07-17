@@ -40,9 +40,9 @@ class ProgramPolicy
     }
 
     /**
-     * Determine whether the user can delete the model.
+     * Determine whether the user can deactivate the model.
      */
-    public function delete(User $user, Program $program): bool
+    public function deactivate(User $user, Program $program): bool
     {
         return $user->hasPermission('program.deactivate');
     }

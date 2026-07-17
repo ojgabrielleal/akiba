@@ -2,10 +2,10 @@
 
 namespace App\Actions\Role;
 
-use Illuminate\Support\Facades\DB;
-
-use App\Models\Role;
 use App\Models\Permission;
+use App\Models\Role;
+
+use Illuminate\Support\Facades\DB;
 
 class StoreRoleAction
 {

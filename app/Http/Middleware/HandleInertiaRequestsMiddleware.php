@@ -2,15 +2,12 @@
 
 namespace App\Http\Middleware;
 
-use App\Http\Controllers\Concerns\ResolvesUserLogged;
 use App\Services\External\StreamService;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
 class HandleInertiaRequestsMiddleware extends Middleware
 {
-    use ResolvesUserLogged;
-
     /**
      * The root template that is loaded on the first page visit.
      *
@@ -32,9 +29,7 @@ class HandleInertiaRequestsMiddleware extends Middleware
     public function share(Request $request): array
     {
         return array_merge(parent::share($request), [
-            'user' => fn () => $this->getUserLogged(),
             'stream' => fn () => (new StreamService)->data(),
-            'csrf_token' => fn () => csrf_token(),
             'flash' => fn () => session('flash'),
         ]);
     }

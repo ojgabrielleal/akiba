@@ -2,10 +2,11 @@
 
 namespace App\Actions\Profile;
 
-use Illuminate\Support\Facades\DB;
+use App\Models\User;
+
 use App\Services\Process\ImageProcessService;
 
-use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class UpdateUserAction
 {

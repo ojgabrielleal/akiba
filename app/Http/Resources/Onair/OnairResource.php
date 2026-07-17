@@ -3,8 +3,9 @@
 namespace App\Http\Resources\Onair;
 
 use App\Http\Resources\Program\ProgramResource;
-use Illuminate\Http\Resources\Json\JsonResource;
+
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class OnairResource extends JsonResource
 {

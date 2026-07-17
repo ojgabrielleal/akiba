@@ -2,12 +2,13 @@
 
 namespace App\Actions\Post;
 
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\DB;
+use App\Models\Post;
+use App\Models\User;
+
 use App\Services\Process\ImageProcessService;
 
-use App\Models\User;
-use App\Models\Post;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 
 class StorePostAction
 {

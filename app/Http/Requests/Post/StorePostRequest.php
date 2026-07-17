@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Post;
 
 use App\Http\Requests\LoggedWebRequest;
+
 use App\Models\Post;
 
 class StorePostRequest extends LoggedWebRequest

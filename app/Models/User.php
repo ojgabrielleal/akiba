@@ -2,22 +2,23 @@
 
 namespace App\Models;
 
-use App\Http\Controllers\Concerns\HasFlashMessages;
 use App\Models\Concerns\HasPermissions;
+
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, HasFlashMessages, HasPermissions, HasUuids, Notifiable;
+    use HasApiTokens, HasFactory, HasPermissions, HasUuids, Notifiable;
 
 
     protected $fillable = [

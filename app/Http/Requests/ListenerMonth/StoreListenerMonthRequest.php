@@ -4,6 +4,8 @@ namespace App\Http\Requests\ListenerMonth;
 
 use App\Http\Requests\LoggedWebRequest;
 
+use App\Models\ListenerMonth;
+
 class StoreListenerMonthRequest extends LoggedWebRequest
 {
     /**
@@ -11,7 +13,7 @@ class StoreListenerMonthRequest extends LoggedWebRequest
      */
     public function authorize(): bool
     {
-        return $this->user()?->can('listener.month.set') ?? false;
+        return $this->user()?->can('create', ListenerMonth::class) ?? false;
     }
 
     /**

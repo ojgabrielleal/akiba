@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Program;
 
 use App\Http\Requests\LoggedWebRequest;
+
 use App\Models\Program;
 
 class StoreProgramRequest extends LoggedWebRequest

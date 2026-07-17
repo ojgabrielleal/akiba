@@ -40,10 +40,10 @@ class RolePolicy
     }
 
     /**
-     * Determine whether the user can delete the model (remove).
+     * Determine whether the user can delete the model.
      */
     public function delete(User $user, Role $role): bool
     {
-        return $user->hasPermission('role.remove');
+        return $user->hasPermission('role.delete');
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Resources\Calendar;
 
 use App\Http\Resources\ActivityResource;
 use App\Http\Resources\User\UserResource;
+
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 

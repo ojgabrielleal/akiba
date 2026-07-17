@@ -40,9 +40,9 @@ class CalendarPolicy
     }
 
     /**
-     * Determine whether the user can delete the model (deactivate).
+     * Determine whether the user can deactivate the model.
      */
-    public function delete(User $user, Calendar $calendar): bool
+    public function deactivate(User $user, Calendar $calendar): bool
     {
         return $user->hasPermission('calendar.deactivate');
     }

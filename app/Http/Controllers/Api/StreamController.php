@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Services\External\StreamService;
+
+use App\Http\Resources\Onair\OnairStreamResource;
 
 use App\Models\Onair;
 
-use App\Http\Resources\Onair\OnairStreamResource;
+use App\Services\External\StreamService;
 
 class StreamController extends Controller
 {

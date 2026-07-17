@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Activity;
 
 use App\Http\Requests\LoggedWebRequest;
+
 use App\Models\Activity;
 
 class StoreActivityRequest extends LoggedWebRequest

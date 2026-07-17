@@ -1,0 +1,61 @@
+<?php
+
+namespace App\Http\Controllers\Private\Pages;
+
+use App\Filters\OnairFilter;
+use App\Filters\ProgramFilter;
+use App\Filters\SongRequestFilter;
+
+use App\Http\Controllers\Concerns\ResolvesAuthorizedProps;
+use App\Http\Controllers\Controller;
+
+use App\Http\Resources\Onair\OnairResource;
+use App\Http\Resources\Program\ProgramResource;
+use App\Http\Resources\SongRequestResource;
+
+use App\Models\Program;
+use App\Models\SongRequest;
+
+use Inertia\Inertia;
+
+class LocutionPageController extends Controller
+{
+    use ResolvesAuthorizedProps;
+
+    private $render = 'private/Locution';
+
+    public function __construct(
+        private OnairFilter $onairFilter,
+        private ProgramFilter $programFilter,
+        private SongRequestFilter $songRequestFilter,
+    ) {}
+
+    public function render()
+    {
+        $onair = $this->onairFilter->apply([
+            'live' => true,
+            'with' => 'program.host',
+            'first' => true,
+        ]);
+
+        return Inertia::render($this->render, [
+            'programs' => $this->whenCanViewAny(Program::class,
+                fn () => ProgramResource::collection(
+                    $this->programFilter->apply([
+                        'available_for_locution' => request()->user(),
+                    ])
+                ),
+            ),
+            'onair' => $onair ? new OnairResource($onair) : null,
+            'songRequests' => $this->whenCanViewAny(SongRequest::class,
+                fn () => SongRequestResource::collection(
+                    $this->songRequestFilter->apply([
+                        'onair_id' => $onair?->id,
+                        'order_by' => 'created_at',
+                        'order_direction' => 'asc',
+                    ])
+                ),
+            ),
+        ]);
+    }
+}

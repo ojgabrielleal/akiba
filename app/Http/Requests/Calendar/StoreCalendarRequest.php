@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Calendar;
 
 use App\Http\Requests\LoggedWebRequest;
+
 use App\Models\Calendar;
 
 class StoreCalendarRequest extends LoggedWebRequest

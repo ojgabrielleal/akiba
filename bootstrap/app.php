@@ -20,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'inertia' => \App\Http\Middleware\HandleInertiaRequestsMiddleware::class,
             'oauth' => \App\Http\Middleware\EnsureOAuthAuthenticated::class,
+            'authenticated.user' => \App\Http\Middleware\ShareAuthenticatedUserMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

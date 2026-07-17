@@ -51,7 +51,7 @@
                         loading="lazy"
                     />
                     <div class="absolute inset-x-0 bottom-0 flex h-7 items-center justify-end gap-1 bg-blue-cerulean px-2 py-5">
-                        {#if can.remove}
+                        {#if can.delete}
                             <Tooltip>
                                 <button
                                     type="button"

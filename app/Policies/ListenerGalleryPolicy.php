@@ -44,6 +44,6 @@ class ListenerGalleryPolicy
      */
     public function delete(User $user, ListenerGallery $listenerGallery): bool
     {
-        return $user->hasPermission('listener.gallery.remove');
+        return $user->hasPermission('listener.gallery.delete');
     }
 }

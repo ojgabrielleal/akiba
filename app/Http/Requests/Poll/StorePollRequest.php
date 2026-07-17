@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Poll;
 
 use App\Http\Requests\LoggedWebRequest;
+
 use App\Models\Poll;
 
 class StorePollRequest extends LoggedWebRequest

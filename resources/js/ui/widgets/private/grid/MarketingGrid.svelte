@@ -33,7 +33,7 @@
     }
 
     const requestDeactivateRepository = (repository) => {
-        router.delete(`/panel/marketing/repository/${repository.uuid}`, {},
+        router.patch(`/panel/marketing/repository/${repository.uuid}/deactivate`, {},
             { preserveScroll: true },
         );
     };

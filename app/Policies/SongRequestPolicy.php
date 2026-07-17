@@ -12,30 +12,30 @@ class SongRequestPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasPermission('songrequest.list');
+        return $user->hasPermission('song.request.list');
     }
 
     /**
-     * Determine whether the user can reproduce models.
+     * Determine whether the user can mark the song request as played.
      */
-    public function reproduce(User $user, SongRequest $songRequest): bool
+    public function markAsPlayed(User $user, SongRequest $songRequest): bool
     {
-        return $user->hasPermission('songrequest.reproduce');
+        return $user->hasPermission('song.request.reproduce');
     }
 
     /**
-     * Determine whether the user can cancel models.
+     * Determine whether the user can mark the song request as canceled.
      */
-    public function cancel(User $user, SongRequest $songRequest): bool
+    public function markAsCanceled(User $user, SongRequest $songRequest): bool
     {
-        return $user->hasPermission('songrequest.cancel');
+        return $user->hasPermission('song.request.cancel');
     }
 
     /**
-     * Determine whether the user can toggle models.
+     * Determine whether the user can toggle the song request box status.
      */
-    public function toggle(User $user): bool
+    public function toggleBoxStatus(User $user): bool
     {
-        return $user->hasPermission('songrequest.toggle');
+        return $user->hasPermission('song.request.toggle');
     }
 }

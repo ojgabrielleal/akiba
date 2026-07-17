@@ -16,7 +16,7 @@
         {
             title: "Salvar",
             icon: "/svg/save.svg",
-            permission: can.set,
+            permission: can.updateRanking,
             onClick: () => setRanking(),
         },
     ];
@@ -37,7 +37,7 @@
     ];
 
     const setRanking = () => {
-        router.post("/panel/radio/music/ranking", {}, {
+        router.post("/panel/radio/music/ranking/refresh", {}, {
             preserveScroll: true,
         });
     };

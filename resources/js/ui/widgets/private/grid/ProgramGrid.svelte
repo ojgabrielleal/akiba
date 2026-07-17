@@ -52,7 +52,7 @@
     ];
 
     const requestDeactivateProgram = (program) => {
-        router.delete(`/panel/radio/program/${program}`, {}, {
+        router.patch(`/panel/radio/program/${program}/deactivate`, {}, {
             preserveScroll: true,
             preserveState: true,
         });

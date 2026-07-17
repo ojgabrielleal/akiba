@@ -3,6 +3,7 @@
 namespace App\Http\Requests\ListenerGallery;
 
 use App\Http\Requests\LoggedWebRequest;
+
 use App\Models\ListenerGallery;
 
 class StoreListenerGalleryRequest extends LoggedWebRequest

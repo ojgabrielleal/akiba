@@ -2,18 +2,12 @@
 
 namespace App\Exceptions;
 
-use App\Http\Controllers\Concerns\HasFlashMessages;
 use Exception;
 
 class RoleHasMembersException extends Exception
 {
-    use HasFlashMessages;
-
-    /**
-     * Renderiza a exceção em uma resposta HTTP.
-     */
-    public function render($request)
+    public function __construct()
     {
-        return $this->flashMessage('dependencies');
+        parent::__construct('Tire os vínculos antes! Senão dá ruim.');
     }
 }

@@ -38,25 +38,25 @@
     ];
 
     const requestToggleSongRequest = () => {
-        router.patch("/panel/locution/songrequest/toggle", {}, {
+        router.patch("/panel/locution/song-request/box/toggle", {}, {
             preserveScroll: true,
         });
     };
 
     const markToReproduced = (songrequest) => {
-        router.patch(`/panel/locution/songrequest/${songrequest}/played`, {}, {
+        router.patch(`/panel/locution/song-request/${songrequest}/played`, {}, {
             preserveScroll: true,
         });
     };
 
     const markToCanceled = (songrequest) => {
-        router.patch(`/panel/locution/songrequest/${songrequest}/canceled`, {}, {
+        router.patch(`/panel/locution/song-request/${songrequest}/canceled`, {}, {
             preserveScroll: true,
         });
     };
 
     const requestFinishlocution = () => {
-        router.patch(`/panel/locution/locution/finish`);
+        router.patch(`/panel/locution/finish`);
     };
 
     // -------------- Notificações de PEDIDOS para os locutores --------------

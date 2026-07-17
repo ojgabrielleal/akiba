@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Poll;
 
 use App\Http\Requests\LoggedWebRequest;
+
 use Illuminate\Validation\Rule;
 
 class UpdatePollRequest extends LoggedWebRequest

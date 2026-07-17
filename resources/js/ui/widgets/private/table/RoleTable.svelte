@@ -81,7 +81,7 @@
                                             />
                                         </button>
                                     {/if}
-                                    {#if can.remove}
+                                    {#if can.delete}
                                         <button type="button"
                                             class="bg-red-crimson p-3 rounded-md cursor-pointer shrink-0"
                                             aria-label="remover cargo"

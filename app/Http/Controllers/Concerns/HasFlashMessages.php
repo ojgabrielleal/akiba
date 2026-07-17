@@ -23,10 +23,6 @@ trait HasFlashMessages
                 'icon' => '😴',
                 'message' => 'Desativado! Bora descansar também.',
             ],
-            'activate' => [
-                'icon' => '⚡',
-                'message' => 'Ativado! Voltou com energia.',
-            ],
             'complete' => [
                 'icon' => '🎯',
                 'message' => 'Concluído! Finalmente, né.',
@@ -39,17 +35,14 @@ trait HasFlashMessages
                 'icon' => '🎊',
                 'message' => 'Finalizado! Missão cumprida.',
             ],
-            'dependencies' => [
-                'icon' => '⛓️',
-                'message' => 'Tire os vínculos antes! Senão dá ruim.',
-            ],
             'error' => [
                 'icon' => '❌',
                 'message' => 'Algo deu errado! Acontece nas melhores famílias.',
             ],
         ];
 
-        $base = $messages[$action] ?? $messages['save'];
+        $action = array_key_exists($action, $messages) ? $action : 'error';
+        $base = $messages[$action];
         $final = $message ?? $base['message'];
 
         $flash = [

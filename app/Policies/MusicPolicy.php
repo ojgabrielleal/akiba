@@ -23,8 +23,8 @@ class MusicPolicy
     /**
      * Determine whether the user can set the ranking.
      */
-    public function setRanking(User $user): bool
+    public function refreshRanking(User $user): bool
     {
-        return $user->hasPermission('music.set.ranking');
+        return $user->hasPermission('music.ranking.update');
     }
 }

@@ -10,7 +10,7 @@
     let can = podcastPermissions();
 
     const requestDeactivate = (item) => {
-        router.delete(`/panel/podcast/${item.uuid}`, {},
+        router.patch(`/panel/podcast/${item.uuid}/deactivate`, {},
             { preserveScroll: true },
         );
     };

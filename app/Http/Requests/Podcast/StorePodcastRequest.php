@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Podcast;
 
 use App\Http\Requests\LoggedWebRequest;
+
 use App\Models\Podcast;
 
 class StorePodcastRequest extends LoggedWebRequest

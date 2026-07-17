@@ -40,9 +40,9 @@ class PostPolicy
     }
 
     /**
-     * Determine whether the user can delete the model (deactivate).
+     * Determine whether the user can deactivate the model.
      */
-    public function delete(User $user, Post $post): bool
+    public function deactivate(User $user, Post $post): bool
     {
         return $user->hasPermission('post.deactivate');
     }
