@@ -23,15 +23,16 @@
     ];
 </script>
 
-<Offcanvas bind:this={offcanvasRef} title={listenerMonth.found.name}>
-    <div slot="content" let:close>
-        <ListenerMonthForm {close} listenerMonthFound={listenerMonth.found} />
-    </div>
-</Offcanvas>
-
 {#if listenerMonth}
+    <Offcanvas bind:this={offcanvasRef} title={listenerMonth.found?.name ?? "Ouvinte do mês"}>
+        <div slot="content" let:close>
+            <ListenerMonthForm {close} listenerMonthFound={listenerMonth.found} />
+        </div>
+    </Offcanvas>
+
     <Section {title} {actions}>
-        <div class="grid grid-cols-1 lg:grid-cols-[18rem_1fr] gap-5">
+        {#if listenerMonth.current?.data}
+            <div class="grid grid-cols-1 lg:grid-cols-[18rem_1fr] gap-5">
             <img 
                 src={resolvePlaceholderImage(listenerMonth.current.data.avatar, "avatar")}
                 class="object-contain"
@@ -80,6 +81,11 @@
                     </div>
                 </div>
             </div>
-        </div>
+            </div>
+        {:else}
+            <p class="font-noto-sans text-center text-suspense-aurora">
+                Nenhum ouvinte do mês foi definido.
+            </p>
+        {/if}
     </Section>
 {/if}
