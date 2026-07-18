@@ -237,7 +237,7 @@
                 variant="outline"
                 size="lg"
                 loading={$form.processing}
-                className="w-full lg:w-auto"
+                class="w-full lg:w-auto"
             >
                 Atualizar
             </Button>

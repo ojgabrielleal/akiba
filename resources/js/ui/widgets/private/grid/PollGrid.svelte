@@ -84,7 +84,7 @@
                             type="submit"
                             variant="accent"
                             shape="pill"
-                            className="order-1 md:order-3"
+                            class="order-1 md:order-3"
                         >
                             Votar
                         </Button>

@@ -6,7 +6,8 @@
     export let size = "md";
     export let disabled = false;
     export let tooltipPosition = "top";
-    export let className = "";
+    let className = "";
+    export { className as class };
     export let icon = null;
     export let tone = null;
     export let surface = null;

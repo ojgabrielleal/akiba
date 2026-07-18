@@ -48,7 +48,7 @@
             type="text"
             name="listener"
             value={listenerMonthFound?.name}
-            className="disabled:cursor-not-allowed disabled:bg-gray-200"
+            class="disabled:cursor-not-allowed disabled:bg-gray-200"
             disabled
         />
     </FormField>
@@ -59,7 +59,7 @@
             type="text"
             name="address"
             value={listenerMonthFound?.address}
-            className="disabled:cursor-not-allowed disabled:bg-gray-200"
+            class="disabled:cursor-not-allowed disabled:bg-gray-200"
             disabled
         />
     </FormField>
@@ -70,7 +70,7 @@
             type="text"
             name="favorite_show"
             value={listenerMonthFound?.favorite_program?.name}
-            className="disabled:cursor-not-allowed disabled:bg-gray-200"
+            class="disabled:cursor-not-allowed disabled:bg-gray-200"
             disabled
         />
     </FormField>
@@ -81,7 +81,7 @@
             type="text"
             name="favorite_anime"
             value={listenerMonthFound?.favorite_music?.production}
-            className="disabled:cursor-not-allowed disabled:bg-gray-200"
+            class="disabled:cursor-not-allowed disabled:bg-gray-200"
             disabled
         />
     </FormField>
@@ -92,7 +92,7 @@
             type="text"
             name="requests_total"
             value={listenerMonthFound?.requests_total}
-            className="disabled:cursor-not-allowed disabled:bg-gray-200"
+            class="disabled:cursor-not-allowed disabled:bg-gray-200"
             disabled
         />
     </FormField>

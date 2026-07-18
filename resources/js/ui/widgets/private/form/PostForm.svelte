@@ -149,7 +149,7 @@
                         Fontes
                     </div>
                     <div class="w-full flex mb-6">
-                        <FormField for="reference-0-name" label="Nome:" error={$form.errors["references.0.name"]} labelVariant="metadata-indented" spacing="none" className="flex-1" >
+                        <FormField for="reference-0-name" label="Nome:" error={$form.errors["references.0.name"]} labelVariant="metadata-indented" spacing="none" class="flex-1">
                             <TextInput
                                 id="reference-0-name"
                                 type="text"
@@ -160,7 +160,7 @@
                                 error={$form.errors["references.0.name"]}
                             />
                         </FormField>
-                        <FormField for="reference-0-url" label="Link:" error={$form.errors["references.0.url"]} labelVariant="metadata" spacing="none" className="flex-1" >
+                        <FormField for="reference-0-url" label="Link:" error={$form.errors["references.0.url"]} labelVariant="metadata" spacing="none" class="flex-1">
                             <TextInput
                                 id="reference-0-url"
                                 type="url"
@@ -173,7 +173,7 @@
                         </FormField>
                     </div>
                     <div class="w-full flex">
-                        <FormField for="reference-1-name" label="Nome:" error={$form.errors["references.1.name"]} labelVariant="metadata-indented" spacing="none" className="flex-1" >
+                        <FormField for="reference-1-name" label="Nome:" error={$form.errors["references.1.name"]} labelVariant="metadata-indented" spacing="none" class="flex-1">
                             <TextInput
                                 id="reference-1-name"
                                 type="text"
@@ -184,7 +184,7 @@
                                 error={$form.errors["references.1.name"]}
                             />
                         </FormField>
-                        <FormField for="reference-1-url" label="Link:" error={$form.errors["references.1.url"]} labelVariant="metadata" spacing="none" className="flex-1" >
+                        <FormField for="reference-1-url" label="Link:" error={$form.errors["references.1.url"]} labelVariant="metadata" spacing="none" class="flex-1">
                             <TextInput
                                 id="reference-1-url"
                                 type="url"

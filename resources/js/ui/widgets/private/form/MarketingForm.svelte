@@ -76,7 +76,7 @@
             name="type"
             bind:value={$form.type}
             error={$form.errors.type}
-            className="disabled:opacity-50"
+            class="disabled:opacity-50"
             disabled
         />
     </FormField>

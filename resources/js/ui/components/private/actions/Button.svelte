@@ -5,7 +5,8 @@
     export let shape = "rounded";
     export let loading = false;
     export let disabled = false;
-    export let className = "";
+    let className = "";
+    export { className as class };
 
 
     const variants = {

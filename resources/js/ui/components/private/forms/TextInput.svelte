@@ -1,9 +1,10 @@
 <script>
+    let className;
+    export { className as class };
     export let id;
     export let type = "text";
     export let value = null;
     export let error = null;
-    export let className = "";
     export let variant = "default";
 
     const variants = {

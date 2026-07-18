@@ -1,11 +1,12 @@
 <script>
+    let className;
+    export { className as class };
     export let id;
     export let label;
     export let description = null;
     export let value = null;
     export let checked = false;
     export let group = undefined;
-    export let className = "";
 
     $: classes = [
         "size-4 shrink-0 cursor-pointer border-gray-300 text-blue-skywave focus:ring-blue-skywave",

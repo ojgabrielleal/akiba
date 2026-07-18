@@ -1,10 +1,11 @@
 <script>
     let forId;
+    let className;
     export { forId as for };
+    export { className as class };
     export let label;
     export let help = null;
     export let error = null;
-    export let className = "";
     export let labelVariant = "default";
     export let spacing = "md";
 
