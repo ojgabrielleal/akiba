@@ -3,7 +3,7 @@
     export let gallerySelected;
 
     import { useForm } from "@inertiajs/svelte";
-    import { Preview } from "@/ui/components/private";
+    import { Button, FormField, Preview, TextArea, TextInput } from "@/ui/components/private";
     import { listenerGalleryPermissions } from "@/utils";
 
     let can = listenerGalleryPermissions();
@@ -44,39 +44,35 @@
             required={!gallerySelected}
         />
     </div>
-    <div class="mb-4">
-        <label for="listener_name" class="text-md text-gray-700 font-noto-sans block mb-1">
-            Nome do ouvinte
-        </label>
-        <input
+    <FormField for="listener_name" label="Nome do ouvinte" error={$form.errors.listener_name}>
+        <TextInput
+            variant="offcanvas"
             id="listener_name"
             type="text"
             name="listener_name"
             maxlength="255"
-            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none px-4 border border-gray-400"
             bind:value={$form.listener_name}
+            error={$form.errors.listener_name}
         />
-    </div>
-    <div class="mb-4">
-        <label for="caption" class="text-md text-gray-700 font-noto-sans block mb-1">
-            Legenda
-        </label>
-        <textarea
+    </FormField>
+    <FormField for="caption" label="Legenda" error={$form.errors.caption}>
+        <TextArea
             id="caption"
             name="caption"
             rows="4"
             maxlength="255"
-            class="w-full bg-white font-noto-sans text-md text-black rounded-md outline-none p-4 border border-gray-400 resize-none"
             bind:value={$form.caption}
-        ></textarea>
-    </div>
+            error={$form.errors.caption}
+        />
+    </FormField>
     {#if (gallerySelected && can.update) || (!gallerySelected && can.create)}
-        <button
+        <Button
             type="submit"
-            disabled={$form.processing}
-            class="cursor-pointer font-noto-sans font-extrabold italic uppercase text-suspense-aurora py-2 px-6 rounded-full bg-blue-ocean disabled:cursor-not-allowed disabled:opacity-50"
+            loading={$form.processing}
+            variant="secondary"
+            shape="pill"
         >
             {gallerySelected ? "Atualizar" : "Cadastrar"}
-        </button>
+        </Button>
     {/if}
 </form>

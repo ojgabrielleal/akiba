@@ -1,8 +1,8 @@
 <script>
     export let title;
 
-    import { router, page, Link } from "@inertiajs/svelte";
-    import { Section, ButtonPagination, Tooltip } from "@/ui/components/private/";
+    import { router, page } from "@inertiajs/svelte";
+    import { ButtonPagination, IconButton, Section } from "@/ui/components/private/";
     import { podcastPermissions, resolvePlaceholderImage } from "@/utils";
 
     $: ({ podcasts } = $page.props);
@@ -43,45 +43,22 @@
                         </div>
                         <div class="flex gap-1 justify-end mt-1">
                             {#if can.deactivate}
-                                <Tooltip>
-                                    <button
-                                        type="button"
-                                        aria-label={`Remover ${item.title}`}
-                                        class="w-7 h-7 bg-blue-night rounded-md flex items-center justify-center cursor-pointer"
-                                        on:click={()=> requestDeactivate(item)}
-                                    >
-                                        <img
-                                            src="/svg/trash.svg"
-                                            alt=""
-                                            aria-hidden="true"
-                                            class="w-4 filter-red-crimson"
-                                            loading="lazy"
-                                        />
-                                    </button>
-                                    <div slot="content">
-                                        Desativar
-                                    </div>
-                                </Tooltip>
+                                <IconButton
+                                    variant="trash"
+                                    label="Desativar"
+                                    size="sm"
+                                    surface="dark"
+                                    on:click={() => requestDeactivate(item)}
+                                />
                             {/if}
                             {#if can.update}
-                                <Tooltip>
-                                    <Link
-                                        href={`/panel/podcast/${item.uuid}`}
-                                        aria-label={`Atualizar ${item.title}`}
-                                        class="w-7 h-7 bg-blue-night rounded-md flex items-center justify-center cursor-pointer"
-                                    >
-                                        <img
-                                            src="/svg/edit.svg"
-                                            alt=""
-                                            aria-hidden="true"
-                                            class="w-4 filter-orange-citric"
-                                            loading="lazy"
-                                        />
-                                    </Link>
-                                    <div slot="content">
-                                        Atualizar
-                                    </div>
-                                </Tooltip>
+                                <IconButton
+                                    variant="edit"
+                                    label="Atualizar"
+                                    href={`/panel/podcast/${item.uuid}`}
+                                    size="sm"
+                                    surface="dark"
+                                />
                             {/if}
                         </div>
                     </div>

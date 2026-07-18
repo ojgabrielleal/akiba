@@ -2,7 +2,7 @@
     export let title;
 
     import { router, page } from "@inertiajs/svelte";
-    import { Section, Offcanvas, Tooltip } from "@/ui/components/private";
+    import { Button, IconButton, Offcanvas, Section } from "@/ui/components/private";
     import { PollForm } from "@/ui/widgets/private";
     import { pollPermissions, resolveStatusBackground } from "@/utils";
 
@@ -79,13 +79,15 @@
                         {/each}
                     </div>
                     <div class="flex flex-wrap items-center justify-between gap-3 md:flex-nowrap">
-                        <button
+                        <Button
                             aria-label="votar"
                             type="submit"
-                            class="cursor-pointer font-noto-sans font-extrabold italic uppercase text-blue-marinho py-2 px-6 rounded-full bg-orange-citric order-1 md:order-3"
+                            variant="accent"
+                            shape="pill"
+                            className="order-1 md:order-3"
                         >
                             Votar
-                        </button>
+                        </Button>
                         <div class="font-noto-sans font-bold italic uppercase order-2 md:order-1">
                             <span class="font-extrabold text-suspense-aurora text-3xl">
                                 {latestPoll.data.total_votes}
@@ -125,49 +127,25 @@
                             <div></div>
                             <div class="flex gap-1 justify-end">
                                 {#if can.deactivate}
-                                    <Tooltip>
-                                        <button
-                                            type="button"
-                                            aria-label={`Remover ${item.question}`}
-                                            class="w-7 h-7 bg-blue-night rounded-md flex items-center justify-center cursor-pointer"
-                                            on:click={() => requestDeactivate(item)}
-                                        >
-                                            <img
-                                                src="/svg/trash.svg"
-                                                alt=""
-                                                aria-hidden="true"
-                                                class="w-4 filter-red-crimson"
-                                                loading="lazy"
-                                            />
-                                        </button>
-                                        <div slot="content">
-                                            Desativar
-                                        </div>
-                                    </Tooltip>
+                                    <IconButton
+                                        variant="trash"
+                                        label="Desativar"
+                                        size="sm"
+                                        surface="dark"
+                                        on:click={() => requestDeactivate(item)}
+                                    />
                                 {/if}
                                 {#if can.update}
-                                    <Tooltip>
-                                        <button
-                                            type="button"
-                                            aria-label={`Editar ${item.question}`}
-                                            class="w-7 h-7 bg-blue-night rounded-md flex items-center justify-center cursor-pointer"
-                                            on:click={() => {
+                                    <IconButton
+                                        variant="edit"
+                                        label="Atualizar"
+                                        size="sm"
+                                        surface="dark"
+                                        on:click={() => {
                                                 pollSelected = item;
                                                 offcanvasRef.open();
                                             }}
-                                        >
-                                            <img
-                                                src="/svg/edit.svg"
-                                                alt=""
-                                                aria-hidden="true"
-                                                class="w-4 filter-orange-citric"
-                                                loading="lazy"
-                                            />
-                                        </button>
-                                        <div slot="content">
-                                            Atualizar
-                                        </div>
-                                    </Tooltip>
+                                    />
                                 {/if}
                             </div>
                         </div>

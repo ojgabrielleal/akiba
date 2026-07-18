@@ -2,8 +2,8 @@
     export let title;
 
     import Cookies from "js-cookie";
-    import { page, router, Link } from "@inertiajs/svelte";
-    import { Section, ButtonPagination, Tooltip } from "@/ui/components/private";
+    import { page, router } from "@inertiajs/svelte";
+    import { ButtonPagination, IconButton, Section } from "@/ui/components/private";
     import { postPermissions, resolveStatusBackground } from "@/utils";
 
     $: ({ posts } = $page.props);
@@ -49,46 +49,23 @@
                         </div>
                         <div class="flex gap-1 justify-end mt-1">
                             {#if can.deactivate}
-                                <Tooltip>
-                                    <button
-                                        type="button"
-                                        aria-label={`Remover ${item.title}`}
-                                        class="w-7 h-7 bg-blue-night rounded-md flex items-center justify-center cursor-pointer"
-                                        on:click={() => requestDeactivate(item)}
-                                    >
-                                        <img
-                                            src="/svg/trash.svg"
-                                            alt=""
-                                            aria-hidden="true"
-                                            class="w-4 filter-red-crimson"
-                                            loading="lazy"
-                                        />
-                                    </button>
-                                    <div slot="content">
-                                        Desativar
-                                    </div>
-                                </Tooltip>
+                                <IconButton
+                                    variant="trash"
+                                    label="Desativar"
+                                    size="sm"
+                                    surface="dark"
+                                    on:click={() => requestDeactivate(item)}
+                                />
                             {/if}
                             {#if can.update}
-                                <Tooltip>
-                                    <Link
-                                        href={`/panel/post/${item.uuid}`}
-                                        aria-label={`Editar ${item.title}`}
-                                        class="w-7 h-7 bg-blue-night rounded-md flex items-center justify-center cursor-pointer"
-                                        on:click={() => operation(item.module)}
-                                    >
-                                        <img
-                                            src="/svg/edit.svg"
-                                            alt=""
-                                            aria-hidden="true"
-                                            class="w-4 filter-orange-citric"
-                                            loading="lazy"
-                                        />
-                                    </Link>
-                                    <div slot="content">
-                                        Atualizar
-                                    </div>
-                                </Tooltip>
+                                <IconButton
+                                    variant="edit"
+                                    label="Atualizar"
+                                    href={`/panel/post/${item.uuid}`}
+                                    size="sm"
+                                    surface="dark"
+                                    on:click={() => operation(item.module)}
+                                />
                             {/if}
                         </div>
                     </div>

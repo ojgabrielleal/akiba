@@ -1,8 +1,8 @@
 <script>
     export let title;
 
-    import { page, Link } from "@inertiajs/svelte";
-    import { Section, ButtonPagination } from "@/ui/components/private";
+    import { page } from "@inertiajs/svelte";
+    import { ButtonPagination, IconButton, Section } from "@/ui/components/private";
     import { eventPermissions } from "@/utils";
 
     $: ({ events } = $page.props);
@@ -33,35 +33,25 @@
                         {item.author.nickname}
                     </div>
                     <div class="flex gap-3 justify-end mt-1">
-                        <a
+                        <IconButton
+                            variant="eye"
+                            label="Visualizar"
                             href={`/materia/${item.slug}`}
+                            size="sm"
+                            surface="transparent"
+                            tone="light"
                             target="_blank"
                             rel="noopener noreferrer"
-                            aria-label={`Visualizar ${item.title}`}
-                            class="cursor-pointer"
-                        >
-                            <img
-                                src="/svg/eye.svg"
-                                alt=""
-                                aria-hidden="true"
-                                class="w-5 filter-suspense-aurora"
-                                loading="lazy"
-                            />
-                        </a>
+                        />
                         {#if can.update}
-                            <Link
+                            <IconButton
+                                variant="edit"
+                                label="Atualizar"
                                 href={`/panel/post/${item.uuid}`}
-                                aria-label={`Editar ${item.title}`}
-                                class="cursor-pointer"
-                            >
-                                <img
-                                    src="/svg/edit.svg"
-                                    alt=""
-                                    aria-hidden="true"
-                                    class="w-4 filter-suspense-aurora"
-                                    loading="lazy"
-                                />
-                            </Link>
+                                size="sm"
+                                surface="transparent"
+                                tone="light"
+                            />
                         {/if}
                     </div>
                 </div>

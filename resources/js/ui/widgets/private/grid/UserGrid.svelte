@@ -1,8 +1,8 @@
 <script>
     export let title;
 
-    import { page, router, Link } from "@inertiajs/svelte";
-    import { Section, Offcanvas } from "@/ui/components/private";
+    import { page, router } from "@inertiajs/svelte";
+    import { Button, IconButton, Offcanvas, Section } from "@/ui/components/private";
     import {
         UserForm,
         UserAccessForm,
@@ -45,15 +45,21 @@
 {#if users}
     <div class="flex justify-center gap-5 mb-5">
         {#if can.create}
-            <button type="button" class="text-blue-skywave text-xl font-noto-sans font-extrabold italic uppercase cursor-pointer" on:click={() => { offCanvasUserRef.open(); }}>
+            <Button
+                variant="outline"
+                on:click={() => { offCanvasUserRef.open(); }}
+            >
                 Cadastrar membro
-            </button>
+            </Button>
             <span class="border-l border-suspense-aurora/30"></span>
         {/if}
         {#if can.activity.create}
-            <button type="button" class="text-blue-skywave text-xl font-noto-sans font-extrabold italic uppercase cursor-pointer" on:click={() => { offCanvasActivityRef.open(); }}>
+            <Button
+                variant="outline"
+                on:click={() => { offCanvasActivityRef.open(); }}
+            >
                 Criar Atividade e Avisos
-            </button>
+            </Button>
         {/if}
     </div>
     <Section {title}>
@@ -84,47 +90,26 @@
                         </span>
                         <div class="flex flex-wrap lg:flex-nowrap gap-2" aria-label={`Acoes de ${item.nickname}`}>
                             {#if !item.is_virtual && can.authority.update}
-                                <button type="button"
-                                    aria-label="Definir permissões"
-                                    class="w-8 h-8 bg-suspense-aurora rounded-md flex justify-center items-center font-noto-sans italic font-extrabold cursor-pointer"
+                                <IconButton
+                                    variant="crown"
+                                    label="Definir permissões"
                                     on:click={() => { identifier = item.uuid; offCanvasUserAccessRef.open(); }}
-                                >
-                                    <img
-                                        src="/svg/crown.svg"
-                                        alt=""
-                                        aria-hidden="true"
-                                        class="w-4 filter-blue-marinho"
-                                        loading="lazy"
-                                    />
-                                </button>
-                            {/if}
-                            <Link
-                                href={`/panel/profile/${item.uuid}`}
-                                aria-label={`Editar perfil de ${item.nickname}`}
-                                class="w-8 h-8 bg-suspense-aurora rounded-md flex justify-center items-center font-noto-sans italic font-extrabold cursor-pointer"
-                            >
-                                <img
-                                    src="/svg/edit.svg"
-                                    alt=""
-                                    aria-hidden="true"
-                                    class="w-4 filter-blue-marinho"
-                                    loading="lazy"
                                 />
-                            </Link>
+                            {/if}
+                            <IconButton
+                                href={`/panel/profile/${item.uuid}`}
+                                variant="edit"
+                                label="Editar perfil"
+                                tone="dark"
+                                surface="light"
+                            />
                             {#if can.deactivate}
-                                <button type="button"
-                                    aria-label={`Desativar perfil de ${item.nickname}`}
-                                    class="w-8 h-8 bg-suspense-aurora rounded-md flex justify-center items-center font-noto-sans italic font-extrabold cursor-pointer"
+                                <IconButton
+                                    variant="trash"
+                                    label="Desativar perfil"
+                                    surface="light"
                                     on:click={()=> requestDeactivateUser(item.uuid)}
-                                >
-                                    <img
-                                        src="/svg/trash.svg"
-                                        alt=""
-                                        aria-hidden="true"
-                                        class="w-4 filter-red-crimson"
-                                        loading="lazy"
-                                    />
-                                </button>
+                                />
                             {/if}
                         </div>
                     </footer>

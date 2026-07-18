@@ -1,6 +1,13 @@
 <script>
     import { page, useForm } from "@inertiajs/svelte";
-    import { Preview, Wysiwyg, Tooltip } from "@/ui/components/private";
+    import {
+        FormField,
+        Preview,
+        SelectInput,
+        TextInput,
+        Tooltip,
+        Wysiwyg,
+    } from "@/ui/components/private";
     import PostActions from "./actions/PostActions.svelte";
     import { postPermissions } from "@/utils";
 
@@ -50,59 +57,46 @@
     <div class="lg:px-40">
         <div class="mb-8">
             <div class="grid grid-cols-1 lg:grid-cols-[1fr_13rem] lg:gap-5">
-                <div class="mb-8 lg:mb-0">
-                    <label for="title" class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block mb-1">
-                        Nome
-                    </label>
-                    <input
+                <FormField for="title" label="Nome" labelVariant="editorial" spacing="lg" error={$form.errors.title} className="lg:mb-0">
+                    <TextInput
                         id="title"
                         type="text"
                         name="title"
-                        class="w-full h-12 bg-blue-ocean border border-blue-skywave font-noto-sans text-suspense-aurora rounded-md outline-none pl-4 disabled:opacity-50 disabled:cursor-not-allowed"
+                        variant="editorial"
                         required={!post}
                         bind:value={$form.title}
+                        error={$form.errors.title}
                     />
-                </div>
-                <div class="mb-8">
-                    <label for="year_of_release" class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block mb-1">
-                        Ano de lançamento
-                    </label>
-                    <input
+                </FormField>
+                <FormField for="year_of_release" label="Ano de lançamento" labelVariant="editorial" spacing="lg" error={$form.errors["metadata.year_of_release"]}>
+                    <TextInput
                         id="year_of_release"
                         type="number"
-                        name="year_of_release"
-                        class="w-full h-12 bg-blue-ocean border border-blue-skywave font-noto-sans text-suspense-aurora rounded-md outline-none pl-4 disabled:opacity-50 disabled:cursor-not-allowed"
+                        name="metadata[year_of_release]"
+                        variant="editorial"
                         required={!post}
                         bind:value={$form.metadata.year_of_release}
+                        error={$form.errors["metadata.year_of_release"]}
                     />
-                </div>
+                </FormField>
             </div>
-            <div class="mb-8">
-                <label for="sinopse" class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block mb-1">
-                    Sinopse
-                </label>
+            <FormField for="sinopse" label="Sinopse" labelVariant="editorial" spacing="lg" error={$form.errors["metadata.sinopse"]}>
                 <Wysiwyg
                     height="13rem"
                     name="sinopse"   
                     required={!post}
                     bind:value={$form.metadata.sinopse}
                 />
-            </div>
-            <div class="mb-8">
-                <label for="cover" class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block mb-1">
-                    Capa
-                </label>
+            </FormField>
+            <FormField for="cover" label="Capa" labelVariant="editorial" spacing="lg" error={$form.errors.cover}>
                 <Preview
                     name="cover"
                     src={$form.cover}
                     oninput={(event) => ($form.cover = event.target.files[0])}
                     required={!post}
                 />
-            </div>
-            <div>
-                <label for="content" class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block mb-1">
-                    Escreva
-                </label>
+            </FormField>
+            <FormField for="content" label="Escreva" labelVariant="editorial" spacing="none" error={$form.errors["review.content"]}>
                 {#if post?.data.reviews?.length}
                     <div class="mb-3 flex flex-wrap gap-2">
                         {#each post.data.reviews as opinion}
@@ -133,7 +127,7 @@
                     required
                     bind:value={$form.review.content}
                 />
-            </div>
+            </FormField>
         </div>
     </div>
     <div class="grid grid-cols-1 lg:grid-cols-[18rem_1fr] gap-5">
@@ -162,38 +156,34 @@
                     <div class="text-center text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans mb-5">
                         Tags
                     </div>
-                    <div class="mb-6">
-                        <label for="tags" class="text-blue-skywave font-extrabold italic text-md uppercase font-noto-sans block mb-1 ml-3">
-                            Primeira Tag
-                        </label>
-                        <select
-                            id="tags"
-                            name="tags"
-                            class="w-full h-12 bg-suspense-aurora font-noto-sans rounded-full pl-4 disabled:opacity-50 disabled:cursor-not-allowed"
+                    <FormField for="tag-0" label="Primeira Tag" labelVariant="metadata-indented" spacing="section">
+                        <SelectInput
+                            id="tag-0"
+                            name="tags[0][name]"
+                            variant="pill"
+                            className="disabled:cursor-not-allowed disabled:opacity-50"
                             disabled
                             bind:value={$form.tags[0].name}
                         >
                             <option value="reviews">
                                 Reviews
                             </option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="tags" class="text-blue-skywave font-extrabold italic text-md uppercase font-noto-sans block mb-1 ml-3">
-                            Segunda Tag
-                        </label>
-                        <select
-                            id="tags"
-                            name="tags"
-                            class="w-full h-12 bg-suspense-aurora font-noto-sans rounded-full pl-4 disabled:opacity-50 disabled:cursor-not-allowed"
+                        </SelectInput>
+                    </FormField>
+                    <FormField for="tag-1" label="Segunda Tag" labelVariant="metadata-indented" spacing="none">
+                        <SelectInput
+                            id="tag-1"
+                            name="tags[1][name]"
+                            variant="pill"
+                            className="disabled:cursor-not-allowed disabled:opacity-50"
                             disabled
                             bind:value={$form.tags[1].name}
                         >
                             <option value="anime">
                                 Anime
                             </option>
-                        </select>
-                    </div>
+                        </SelectInput>
+                    </FormField>
                     <div class="text-center text-neutral-gray font-light italic text-md uppercase font-noto-sans mt-5">
                         Tags escolhidas automaticamente para reviews
                     </div>
@@ -203,60 +193,52 @@
                         Fontes
                     </div>
                     <div class="w-full flex mb-6">
-                        <div class="flex-1">
-                            <label for="references" class="text-blue-skywave font-extrabold italic text-md uppercase font-noto-sans block mb-1 ml-3">
-                                Nome:
-                            </label>
-                            <input
-                                id="references"
+                        <FormField for="reference-0-name" label="Nome:" labelVariant="metadata-indented" spacing="none" error={$form.errors["references.0.name"]} className="flex-1">
+                            <TextInput
+                                id="reference-0-name"
                                 type="text"
-                                name="references"
-                                class="w-full h-12 bg-suspense-aurora border-r border-blue-marinho font-noto-sans rounded-l-full pl-4"
+                                name="references[0][name]"
+                                variant="pillLeft"
                                 required={!post}
                                 bind:value={$form.references[0].name}
+                                error={$form.errors["references.0.name"]}
                             />
-                        </div>
-                        <div class="flex-1">
-                            <label for="references" class="text-blue-skywave font-extrabold italic text-md uppercase font-noto-sans block mb-1">
-                                Link:
-                            </label>
-                            <input
-                                id="references"
+                        </FormField>
+                        <FormField for="reference-0-url" label="Link:" labelVariant="metadata" spacing="none" error={$form.errors["references.0.url"]} className="flex-1">
+                            <TextInput
+                                id="reference-0-url"
                                 type="url"
-                                name="references"
-                                class="w-full h-12 bg-suspense-aurora font-noto-sans rounded-r-full pl-4"
+                                name="references[0][url]"
+                                variant="pillRight"
                                 required={!post}
                                 bind:value={$form.references[0].url}
+                                error={$form.errors["references.0.url"]}
                             />
-                        </div>
+                        </FormField>
                     </div>
                     <div class="w-full flex">
-                        <div class="flex-1">
-                            <label for="references" class="text-blue-skywave font-extrabold italic text-md uppercase font-noto-sans block mb-1 ml-3">
-                                Nome:
-                            </label>
-                            <input
-                                id="references"
+                        <FormField for="reference-1-name" label="Nome:" labelVariant="metadata-indented" spacing="none" error={$form.errors["references.1.name"]} className="flex-1">
+                            <TextInput
+                                id="reference-1-name"
                                 type="text"
-                                name="references"
-                                class="w-full h-12 bg-suspense-aurora border-r border-blue-marinho font-noto-sans rounded-l-full pl-4"
+                                name="references[1][name]"
+                                variant="pillLeft"
                                 required={!post}
                                 bind:value={$form.references[1].name}
+                                error={$form.errors["references.1.name"]}
                             />
-                        </div>
-                        <div class="flex-1">
-                            <label for="references" class="text-blue-skywave font-extrabold italic text-md uppercase font-noto-sans block mb-1">
-                                Link:
-                            </label>
-                            <input
-                                id="references"
+                        </FormField>
+                        <FormField for="reference-1-url" label="Link:" labelVariant="metadata" spacing="none" error={$form.errors["references.1.url"]} className="flex-1">
+                            <TextInput
+                                id="reference-1-url"
                                 type="url"
-                                name="references"
-                                class="w-full h-12 bg-suspense-aurora font-noto-sans rounded-r-full pl-4"
+                                name="references[1][url]"
+                                variant="pillRight"
                                 required={!post}
                                 bind:value={$form.references[1].url}
+                                error={$form.errors["references.1.url"]}
                             />
-                        </div>
+                        </FormField>
                     </div>
                     <div class="text-center text-neutral-gray font-light italic text-md uppercase font-noto-sans mt-5">
                         Preencha até duas fontes de pesquisa usadas para obter informações sobre o anime

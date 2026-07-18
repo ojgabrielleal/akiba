@@ -4,7 +4,7 @@
     export let fileType;
 
     import { useForm } from "@inertiajs/svelte";
-    import { Preview } from "@/ui/components/private";
+    import { Button, FormField, Preview, TextInput } from "@/ui/components/private";
     import { repositoryPermissions } from "@/utils";
 
     let can = repositoryPermissions();
@@ -46,51 +46,48 @@
             required={!fileSelected}
         />
     </div>
-    <div class="mb-4">
-        <label for="name" class="text-md text-gray-700 font-noto-sans block mb-1">
-            Nome do arquivo
-        </label>
-        <input
+    <FormField for="name" label="Nome do arquivo" error={$form.errors.name}>
+        <TextInput
+            variant="offcanvas"
             id="name"
             type="text"
             name="name"
-            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
             bind:value={$form.name}
+            error={$form.errors.name}
             required={!fileSelected}
         />
-    </div>
-    <div class="mb-4">
-        <label for="url" class="text-md text-gray-700 font-noto-sans block mb-1">
-            Endereço de download
-        </label>
-        <input
+    </FormField>
+    <FormField for="url" label="Endereço de download" error={$form.errors.url}>
+        <TextInput
+            variant="offcanvas"
             id="url"
             type="url"
             name="url"
-            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
             bind:value={$form.url}
+            error={$form.errors.url}
             required={!fileSelected}
         />
-    </div>
-    <div class="mb-4">
-        <label for="type" class="text-md text-gray-700 font-noto-sans block mb-1">
-            Categoria do arquivo
-        </label>
-        <input
+    </FormField>
+    <FormField for="type" label="Categoria do arquivo" error={$form.errors.type}>
+        <TextInput
+            variant="offcanvas"
             id="type"
             type="text"
             name="type"
-            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400 disabled:opacity-50"
             bind:value={$form.type}
+            error={$form.errors.type}
+            className="disabled:opacity-50"
             disabled
         />
-    </div>
+    </FormField>
     {#if can.create && can.update}
-        <button
+        <Button
             type="submit"
-            class="cursor-pointer font-noto-sans font-extrabold italic uppercase text-suspense-aurora py-2 px-6 rounded-full bg-blue-ocean"
+            variant="secondary"
+            shape="pill"
+            loading={$form.processing}
         >
             {fileSelected ? "Atualizar" : "Cadastrar"}
-        </button>
+        </Button>
     {/if}
 </form>

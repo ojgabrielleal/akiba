@@ -2,7 +2,7 @@
     export let title;
 
     import { page, router } from "@inertiajs/svelte";
-    import { Offcanvas, Section, Tooltip } from "@/ui/components/private";
+    import { IconButton, Offcanvas, Section } from "@/ui/components/private";
     import { MusicForm } from "@/ui/widgets/private";
     import { musicPermissions, resolvePlaceholderImage } from "@/utils";
 
@@ -66,28 +66,15 @@
                             />
                             {#if can.update}
                                 <div class="absolute right-3 bottom-2 z-10">
-                                    <Tooltip>
-                                        <button
-                                            type="button"
-                                            aria-label={`Atualizar ${ranking.data[index].name}`}
-                                            class="w-7 h-7 bg-blue-marinho rounded-md flex justify-center items-center font-noto-sans italic font-extrabold cursor-pointer"
-                                            on:click={() => {
-                                                musicSelected = ranking.data[index];
-                                                offcanvasRef.open();
-                                            }}
-                                        >
-                                            <img
-                                                src="/svg/edit.svg"
-                                                alt=""
-                                                aria-hidden="true"
-                                                class="w-4 filter-orange-citric"
-                                                loading="lazy"
-                                            />
-                                        </button>
-                                        <div slot="content">
-                                            Atualizar
-                                        </div>
-                                    </Tooltip>
+                                    <IconButton
+                                        variant="edit"
+                                        label="Atualizar"
+                                        size="sm"
+                                        on:click={() => {
+                                            musicSelected = ranking.data[index];
+                                            offcanvasRef.open();
+                                        }}
+                                    />
                                 </div>
                             {/if}
                             <h2 class="mb-2 h-10 max-w-full sm:w-[18rem] font-noto-sans text-base font-extrabold uppercase italic leading-5 text-blue-marinho sm:text-xl sm:leading-[1.3rem]">

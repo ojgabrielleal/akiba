@@ -3,7 +3,7 @@
     export let variant;
 
     import { page } from "@inertiajs/svelte";
-    import { Offcanvas, Section } from "@/ui/components/private/";
+    import { Button, Offcanvas, Section } from "@/ui/components/private/";
     import { CalendarForm } from "@/ui/widgets/private";
     import { calendarPermissions, resolveHour } from "@/utils";
     import { calendarTags } from "@/data";
@@ -25,9 +25,11 @@
 <Section {title}>
     {#if can.create && variant === "administration"}
         <div class="flex justify-center gap-5 mb-8">
-            <button type="button" class="cursor-pointer bg-blue-skywave px-4 py-2 rounded-md font-noto-sans font-extrabold italic uppercase text-suspense-aurora" on:click={() => { identifier = null; offcanvasRef.open(); }}>
+            <Button
+                on:click={() => { identifier = null; offcanvasRef.open(); }}
+            >
                 Cadastrar evento
-            </button>
+            </Button>
         </div>
     {/if}
     <ul class="w-full mb-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-2" aria-label="Legenda do calendario">

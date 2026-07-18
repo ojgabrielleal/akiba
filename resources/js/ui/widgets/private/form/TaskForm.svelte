@@ -4,6 +4,12 @@
 
     import axios from "axios";
     import { useForm, page } from "@inertiajs/svelte";
+    import {
+        Button,
+        FormField,
+        SelectInput,
+        TextInput,
+    } from "@/ui/components/private";
     import { taskPermissions } from "@/utils";
 
     $: ({ users } = $page.props);
@@ -47,15 +53,13 @@
 </script>
 
 <form on:submit|preventDefault={submit}>
-    <div class="mb-4">
-        <label for="user" class="text-md text-gray-700 font-noto-sans block mb-1">
-            Membro responsável
-        </label>
-        <select
+    <FormField for="user" label="Membro responsável" error={$form.errors.user}>
+        <SelectInput
+            variant="offcanvas"
             id="user"
             name="user"
-            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
             bind:value={$form.user}
+            error={$form.errors.user}
             required
         >
             <option value="">
@@ -66,53 +70,47 @@
                     {user.nickname}
                 </option>
             {/each}
-        </select>
-    </div>
-    <div class="mb-4">
-        <label for="title" class="text-md text-gray-700 font-noto-sans block mb-1">
-            Título
-        </label>
-        <input
+        </SelectInput>
+    </FormField>
+    <FormField for="title" label="Título" error={$form.errors.title}>
+        <TextInput
+            variant="offcanvas"
             id="title"
             type="text"
             name="title"
-            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
             bind:value={$form.title}
+            error={$form.errors.title}
             required
         />
-    </div>
-    <div class="mb-4">
-        <label for="dead_line" class="text-md text-gray-700 font-noto-sans block mb-1">
-            Data de vencimento
-        </label>
-        <input
+    </FormField>
+    <FormField for="dead_line" label="Data de vencimento" error={$form.errors.dead_line}>
+        <TextInput
+            variant="offcanvas"
             id="dead_line"
             type="date"
             name="dead_line"
-            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
             bind:value={$form.dead_line}
+            error={$form.errors.dead_line}
             required
         />
-    </div>
-    <div class="mb-4">
-        <label for="description" class="text-md text-gray-700 font-noto-sans block mb-1">
-            Descrição
-        </label>
-        <input
+    </FormField>
+    <FormField for="description" label="Descrição" error={$form.errors.description}>
+        <TextInput
+            variant="offcanvas"
             id="description"
             type="text"
             name="description"
-            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
             bind:value={$form.description}
+            error={$form.errors.description}
             required
         />
-    </div>
+    </FormField>
     {#if can.create || can.update}
-        <button
+        <Button
             type="submit"
-            class="cursor-pointer bg-blue-skywave px-8 py-2 rounded-md text-suspense-aurora font-noto-sans font-extrabold italic uppercase"
+            size="lg"
         >
             {identifier ? "Atualizar" : "Cadastrar"}
-        </button>
+        </Button>
     {/if}
 </form>

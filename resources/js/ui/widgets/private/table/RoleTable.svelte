@@ -2,7 +2,7 @@
     export let title;
 
     import { router, page } from "@inertiajs/svelte";
-    import { Section, Offcanvas } from "@/ui/components/private";
+    import { Button, IconButton, Offcanvas, Section } from "@/ui/components/private";
     import { RoleForm } from "@/ui/widgets/private";
     import { rolePermissions } from "@/utils";
 
@@ -30,9 +30,12 @@
 <Section {title}>
     {#if can.create}
         <div class="flex justify-center gap-5 mb-5">
-            <button type="button" class="cursor-pointer bg-blue-ocean px-4 py-2 rounded-sm font-noto-sans font-extrabold italic uppercase text-suspense-aurora" on:click={() => { identifier = null; offCanvasRef.open(); }}>
+            <Button
+                variant="info"
+                on:click={() => { identifier = null; offCanvasRef.open(); }}
+            >
                 Cadastrar cargo
-            </button>
+            </Button>
         </div>
     {/if}
     {#if roles && roles.data.length > 0}
@@ -67,34 +70,24 @@
                             <td class="p-4 min-w-[140px]">
                                 <div class="flex justify-start gap-3">
                                     {#if can.update}
-                                        <button type="button"
-                                            class="bg-blue-ocean rounded-md p-3 cursor-pointer shrink-0"
-                                            aria-label="atualizar cargo"
+                                        <IconButton
+                                            variant="edit"
+                                            label="Atualizar"
+                                            size="lg"
+                                            surface="ocean"
+                                            tone="light"
                                             on:click={() => { identifier = item.uuid; offCanvasRef.open(); }}
-                                        >
-                                            <img
-                                                src="/svg/edit.svg"
-                                                alt=""
-                                                aria-hidden="true"
-                                                class="w-[1.2rem] filter-suspense-aurora"
-                                                loading="lazy"
-                                            />
-                                        </button>
+                                        />
                                     {/if}
                                     {#if can.delete}
-                                        <button type="button"
-                                            class="bg-red-crimson p-3 rounded-md cursor-pointer shrink-0"
-                                            aria-label="remover cargo"
+                                        <IconButton
+                                            variant="trash"
+                                            label="Remover"
+                                            size="lg"
+                                            surface="danger"
+                                            tone="light"
                                             on:click={() => { requestRemoveRole(item.uuid); }}
-                                        >
-                                            <img
-                                                src="/svg/trash.svg"
-                                                alt=""
-                                                aria-hidden="true"
-                                                class="w-[1.2rem] filter-suspense-aurora"
-                                                loading="lazy"
-                                            />
-                                        </button>
+                                        />
                                     {/if}
                                 </div>
                             </td>

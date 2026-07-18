@@ -2,7 +2,7 @@
     export let title;
 
     import { page, router } from "@inertiajs/svelte";
-    import { ButtonPagination, Offcanvas, Section, Tooltip } from "@/ui/components/private";
+    import { ButtonPagination, IconButton, Offcanvas, Section } from "@/ui/components/private";
     import { ListenerGalleryForm } from "@/ui/widgets/private";
     import { listenerGalleryPermissions, resolvePlaceholderImage } from "@/utils";
 
@@ -52,43 +52,25 @@
                     />
                     <div class="absolute inset-x-0 bottom-0 flex h-7 items-center justify-end gap-1 bg-blue-cerulean px-2 py-5">
                         {#if can.delete}
-                            <Tooltip>
-                                <button
-                                    type="button"
-                                    aria-label={`Remover imagem de ${item.listener_name || "ouvinte"}`}
-                                    class="flex h-7 w-7 cursor-pointer items-center justify-center rounded-md bg-blue-night"
-                                    on:click={() => requestDestroy(item)}
-                                >
-                                    <img
-                                        src="/svg/trash.svg"
-                                        alt=""
-                                        aria-hidden="true"
-                                        class="w-4 filter-red-crimson"
-                                    />
-                                </button>
-                                <div slot="content">Remover</div>
-                            </Tooltip>
+                            <IconButton
+                                variant="trash"
+                                label="Remover imagem"
+                                size="sm"
+                                surface="dark"
+                                on:click={() => requestDestroy(item)}
+                            />
                         {/if}
                         {#if can.update}
-                            <Tooltip>
-                                <button
-                                    type="button"
-                                    aria-label={`Editar imagem de ${item.listener_name || "ouvinte"}`}
-                                    class="flex h-7 w-7 cursor-pointer items-center justify-center rounded-md bg-blue-night"
-                                    on:click={() => {
+                            <IconButton
+                                variant="edit"
+                                label="Atualizar imagem"
+                                size="sm"
+                                surface="dark"
+                                on:click={() => {
                                         gallerySelected = item;
                                         offcanvasRef.open();
                                     }}
-                                >
-                                    <img
-                                        src="/svg/edit.svg"
-                                        alt=""
-                                        aria-hidden="true"
-                                        class="w-4 filter-orange-citric"
-                                    />
-                                </button>
-                                <div slot="content">Atualizar</div>
-                            </Tooltip>
+                            />
                         {/if}
                     </div>
                 </article>

@@ -2,7 +2,7 @@
     export let title;
 
     import { router, page } from "@inertiajs/svelte";
-    import { Offcanvas, Section, Tooltip } from "@/ui/components/private/";
+    import { IconButton, Offcanvas, Section } from "@/ui/components/private/";
     import { ProgramForm } from "@/ui/widgets/private";
     import { programPermissions, resolveDateTime, resolveDay, resolveHour, resolvePlaceholderImage } from "@/utils";
 
@@ -120,49 +120,23 @@
                             </div>
                             <div class="flex gap-1 absolute bottom-3 right-4 z-10">
                                 {#if can.deactivate}
-                                    <Tooltip>
-                                        <button
-                                            type="button"
-                                            aria-label={`Desativar ${item.name}`}
-                                            class="w-7 h-7 bg-blue-marinho rounded-md flex justify-center items-center font-noto-sans italic font-extrabold cursor-pointer"
-                                            on:click={() => requestDeactivateProgram(item.uuid)}
-                                        >
-                                            <img
-                                                src="/svg/trash.svg"
-                                                alt=""
-                                                aria-hidden="true"
-                                                class="w-4 filter-red-crimson"
-                                                loading="lazy"
-                                            />
-                                        </button>
-                                        <div slot="content">
-                                            Desativar
-                                        </div>
-                                    </Tooltip>
+                                    <IconButton
+                                        variant="trash"
+                                        label="Desativar"
+                                        size="sm"
+                                        on:click={() => requestDeactivateProgram(item.uuid)}
+                                    />
                                 {/if}
                                 {#if can.update}
-                                    <Tooltip>
-                                        <button
-                                            type="button"
-                                            aria-label={`Atualizar ${item.name}`}
-                                            class="w-7 h-7 bg-blue-marinho rounded-md flex justify-center items-center font-noto-sans italic font-extrabold cursor-pointer"
-                                            on:click={() => {
+                                    <IconButton
+                                        variant="edit"
+                                        label="Atualizar"
+                                        size="sm"
+                                        on:click={() => {
                                                 programSelected = item;
                                                 offcanvasRef.open();
                                             }}
-                                        >
-                                            <img
-                                                src="/svg/edit.svg"
-                                                alt=""
-                                                aria-hidden="true"
-                                                class="w-4 filter-orange-citric"
-                                                loading="lazy"
-                                            />
-                                        </button>
-                                        <div slot="content">
-                                            Atualizar
-                                        </div>
-                                    </Tooltip>
+                                    />
                                 {/if}
                             </div>
                             <img

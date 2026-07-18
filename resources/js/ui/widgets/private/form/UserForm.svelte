@@ -2,6 +2,14 @@
     export let close = () => {};
 
     import { useForm, page } from "@inertiajs/svelte";
+    import {
+        Button,
+        CheckboxInput,
+        FormField,
+        RadioInput,
+        SelectInput,
+        TextInput,
+    } from "@/ui/components/private";
     import { userPermissions } from "@/utils";
 
     $: ({ roles } = $page.props);
@@ -32,63 +40,48 @@
             <div class="text-md text-gray-700 font-noto-sans mb-2">
                 Esse usuário é humano ou virtual?
             </div>
-            <div class="flex items-center gap-2 mb-1">
-                <input
+            <div class="mb-1">
+                <RadioInput
                     id="human"
-                    type="radio"
                     name="is_virtual"
                     value={false}
-                    class="cursor-pointer w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                    label="Humano"
                     bind:group={$form.is_virtual}
-                />
-                <label for="human" class="cursor-pointer text-md text-gray-700 font-noto-sans">
-                    Humano
-                </label>
-            </div>
-            <div class="flex items-center gap-2">
-                <input
-                    id="virtual"
-                    type="radio"
-                    name="is_virtual"
-                    value={true}
-                    class="cursor-pointer w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
-                    bind:group={$form.is_virtual}
-                />
-                <label for="virtual" class="cursor-pointer text-md text-gray-700 font-noto-sans">
-                    Virtual
-                </label>
-            </div>
-        </div>
-        {#if !$form.is_virtual}
-            <div class="mb-4">
-                <label for="username" class="text-md font-noto-sans mb-1 block text-gray-700">
-                    Login
-                </label>
-                <input
-                    id="username"
-                    type="text"
-                    name="username"
-                    class="font-noto-sans text-md h-10 w-full rounded-md border border-gray-400 bg-white pl-4 outline-none"
-                    bind:value={$form.username}
-                    required
                 />
             </div>
             <div>
-                <label for="password" class="text-md font-noto-sans mb-1 block text-gray-700">
-                    Senha
-                </label>
-                <input
+                <RadioInput
+                    id="virtual"
+                    name="is_virtual"
+                    value={true}
+                    label="Virtual"
+                    bind:group={$form.is_virtual}
+                />
+            </div>
+        </div>
+        {#if !$form.is_virtual}
+            <FormField for="username" label="Login" error={$form.errors.username}>
+                <TextInput
+                    variant="offcanvas"
+                    id="username"
+                    type="text"
+                    name="username"
+                    bind:value={$form.username}
+                    error={$form.errors.username}
+                    required
+                />
+            </FormField>
+            <FormField for="password" label="Senha" help="Essa senha será criptografada para proteção" error={$form.errors.password} spacing="none">
+                <TextInput
+                    variant="offcanvas"
                     id="password"
                     type="password"
                     name="password"
-                    class="font-noto-sans text-md h-10 w-full rounded-md border border-gray-400 bg-white pl-4 outline-none"
                     bind:value={$form.password}
+                    error={$form.errors.password}
                     required
                 />
-                <div class="font-noto-sans mt-1 text-sm text-gray-400">
-                    Essa senha será criptografada para proteção
-                </div>
-            </div>
+            </FormField>
         {/if}
     </div>
     <div class="mb-10">
@@ -101,41 +94,35 @@
                 <div class="bg-blue-skywave absolute top-1/2 right-0 h-[0.1rem] w-1/5 -translate-y-1/2 rounded-full"></div>
             </div>
         </div>
-        <div class="mb-4">
-            <label for="name" class="text-md font-noto-sans mb-1 block text-gray-700">
-                Nome
-            </label>
-            <input
+        <FormField for="name" label="Nome" error={$form.errors.name}>
+            <TextInput
+                variant="offcanvas"
                 id="name"
                 type="text"
                 name="name"
-                class="font-noto-sans text-md h-10 w-full rounded-md border border-gray-400 bg-white pl-4 outline-none"
                 bind:value={$form.name}
+                error={$form.errors.name}
                 required
             />
-        </div>
-        <div class="mb-4">
-            <label for="nickname" class="text-md font-noto-sans mb-1 block text-gray-700">
-                Apelido
-            </label>
-            <input
+        </FormField>
+        <FormField for="nickname" label="Apelido" error={$form.errors.nickname}>
+            <TextInput
+                variant="offcanvas"
                 id="nickname"
                 type="text"
                 name="nickname"
-                class="font-noto-sans text-md h-10 w-full rounded-md border border-gray-400 bg-white pl-4 outline-none"
                 bind:value={$form.nickname}
+                error={$form.errors.nickname}
                 required
             />
-        </div>
-        <div>
-            <label for="gender" class="text-md font-noto-sans mb-1 block text-gray-700">
-                Gênero
-            </label>
-            <select
+        </FormField>
+        <FormField for="gender" label="Gênero" error={$form.errors.gender} spacing="none">
+            <SelectInput
+                variant="offcanvas"
                 id="gender"
                 name="gender"
-                class="font-noto-sans text-md h-10 w-full rounded-md border border-gray-400 bg-white pl-4 outline-none"
                 bind:value={$form.gender}
+                error={$form.errors.gender}
                 required
             >
                 <option value="male">
@@ -144,8 +131,8 @@
                 <option value="female">
                     Feminino
                 </option>
-            </select>
-        </div>
+            </SelectInput>
+        </FormField>
     </div>
     <div class="mb-5">
         <div class="mb-5 flex w-full items-center justify-center">
@@ -160,30 +147,24 @@
         <div class="flex flex-col gap-2">
             {#if roles}
                 {#each roles.data as item}
-                    <div class="flex gap-2">
-                        <input
-                            type="checkbox"
-                            name={item.name}
-                            id={item.name}
-                            value={item.name}
-                            bind:group={$form.roles}
-                        />
-                        <label for={item.name}>
-                            <div class="font-noto-sans text-sm font-semibold">
-                                {item.label}
-                            </div>
-                            <div class="font-noto-sans line-clamp-2 text-xs text-gray-400">
-                                {item.description}
-                            </div>
-                        </label>
-                    </div>
+                    <CheckboxInput
+                        label={item.label}
+                        description={item.description}
+                        name={item.name}
+                        id={item.name}
+                        value={item.name}
+                        bind:group={$form.roles}
+                    />
                 {/each}
             {/if}
         </div>
     </div>
     {#if can.create}
-        <button type="submit" class="bg-blue-skywave text-suspense-aurora font-noto-sans cursor-pointer rounded-md px-8 py-2 font-extrabold uppercase italic">
+        <Button
+            type="submit"
+            size="lg"
+        >
             Cadastrar
-        </button>
+        </Button>
     {/if}
 </form>

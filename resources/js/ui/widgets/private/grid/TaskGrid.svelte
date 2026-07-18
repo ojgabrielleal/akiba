@@ -2,7 +2,7 @@
     export let title;
 
     import { page } from "@inertiajs/svelte";
-    import { Offcanvas, Section } from "@/ui/components/private/";
+    import { Button, IconButton, Offcanvas, Section } from "@/ui/components/private/";
     import { TaskForm } from "@/ui/widgets/private/";
     import { taskPermissions } from "@/utils";
 
@@ -24,9 +24,11 @@
     <Section {title}>
         {#if can.create}
             <div class="flex justify-center gap-5 mb-8">
-                <button type="button" class="cursor-pointer bg-blue-skywave px-4 py-2 rounded-md font-noto-sans font-extrabold italic uppercase text-suspense-aurora" on:click={() => { identifier = null; offcanvasRef.open(); }}>
+                <Button
+                    on:click={() => { identifier = null; offcanvasRef.open(); }}
+                >
                     Cadastrar tarefa
-                </button>
+                </Button>
             </div>
         {/if}
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
@@ -40,19 +42,13 @@
                         {task.title}
                     </div>
                     {#if can.update}
-                        <button type="button"
-                            aria-label="Atualizar tarefa"
-                            class="cursor-pointer"
+                        <IconButton
+                            label="Atualizar"
+                            icon="/svg/edit.svg"
+                            tone="light"
+                            surface="transparent"
                             on:click={() => { identifier = task.uuid; offcanvasRef.open(); }}
-                        >
-                            <img
-                                src="/svg/edit.svg"
-                                alt=""
-                                aria-hidden="true"
-                                loading="lazy"
-                                class="w-5 h-5 filter-suspense-aurora"
-                            />
-                        </button>
+                        />
                     {/if}
                 </div>
             {/each}

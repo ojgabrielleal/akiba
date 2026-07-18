@@ -1,6 +1,14 @@
 <script>
     import { useForm, page } from "@inertiajs/svelte";
-    import { Section, Preview } from "@/ui/components/private/";
+    import {
+        Button,
+        FormField,
+        Preview,
+        Section,
+        SelectInput,
+        TextArea,
+        TextInput,
+    } from "@/ui/components/private/";
     import { userPermissions } from "@/utils";
     import { userPreferences } from "@/data";
 
@@ -64,41 +72,35 @@
             </div>
             <div>
                 <div class="grid grid-cols-1 lg:grid-cols-[1fr_1fr_0.5fr_0.5fr] gap-5 mb-8">
-                    <div>
-                        <label for="name" class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block mb-1">
-                            Nome completo
-                        </label>
-                        <input
+                    <FormField for="name" label="Nome completo" labelVariant="editorial" spacing="none" error={$form.errors.name}>
+                        <TextInput
                             id="name"
                             type="text"
                             name="name"
-                            class="w-full h-12 bg-suspense-aurora font-noto-sans rounded-md outline-none pl-4"
+                            variant="profile"
                             bind:value={$form.name}
+                            error={$form.errors.name}
                             required
                         />
-                    </div>
-                    <div>
-                        <label for="nickname" class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block mb-1">
-                            Apelido
-                        </label>
-                        <input
+                    </FormField>
+                    <FormField for="nickname" label="Apelido" labelVariant="editorial" spacing="none" error={$form.errors.nickname}>
+                        <TextInput
                             id="nickname"
                             type="text"
                             name="nickname"
-                            class="w-full h-12 bg-suspense-aurora font-noto-sans rounded-md outline-none pl-4"
+                            variant="profile"
                             bind:value={$form.nickname}
+                            error={$form.errors.nickname}
                             required
                         />
-                    </div>
-                    <div>
-                        <label for="gender" class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block mb-1">
-                            Gênero
-                        </label>
-                        <select
+                    </FormField>
+                    <FormField for="gender" label="Gênero" labelVariant="editorial" spacing="none" error={$form.errors.gender}>
+                        <SelectInput
                             id="gender"
                             name="gender"
-                            class="w-full h-12 bg-suspense-aurora font-noto-sans rounded-md outline-none pl-4"
+                            variant="profile"
                             bind:value={$form.gender}
+                            error={$form.errors.gender}
                             required
                         >
                             <option value="male">
@@ -107,63 +109,54 @@
                             <option value="female">
                                 Feminino
                             </option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="birthday" class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block mb-1">
-                            Nascimento
-                        </label>
-                        <input
+                        </SelectInput>
+                    </FormField>
+                    <FormField for="birthday" label="Nascimento" labelVariant="editorial" spacing="none" error={$form.errors.birthday}>
+                        <TextInput
                             id="birthday"
                             type="date"
                             name="birthday"
-                            class="w-full h-12 bg-suspense-aurora font-noto-sans rounded-md outline-none pl-4"
+                            variant="profile"
                             bind:value={$form.birthday}
+                            error={$form.errors.birthday}
                             required
                         />
-                    </div>
+                    </FormField>
                 </div>
                 <div class="grid grid-cols-1 lg:grid-cols-4 gap-5 mb-8">
-                    <div>
-                        <label for="city" class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block mb-1">
-                            Cidade
-                        </label>
-                        <input
+                    <FormField for="city" label="Cidade" labelVariant="editorial" spacing="none" error={$form.errors.city}>
+                        <TextInput
                             id="city"
                             type="text"
                             name="city"
-                            class="w-full h-12 bg-suspense-aurora font-noto-sans rounded-md outline-none pl-4"
+                            variant="profile"
                             bind:value={$form.city}
+                            error={$form.errors.city}
                             required
                         />
-                    </div>
-                    <div>
-                        <label for="state" class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block mb-1">
-                            Estado
-                        </label>
-                        <input
+                    </FormField>
+                    <FormField for="state" label="Estado" labelVariant="editorial" spacing="none" error={$form.errors.state}>
+                        <TextInput
                             id="state"
                             type="text"
                             name="state"
-                            class="w-full h-12 bg-suspense-aurora font-noto-sans rounded-md outline-none pl-4"
+                            variant="profile"
                             bind:value={$form.state}
+                            error={$form.errors.state}
                             required
                         />
-                    </div>
-                    <div>
-                        <label for="country" class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block mb-1">
-                            País
-                        </label>
-                        <input
+                    </FormField>
+                    <FormField for="country" label="País" labelVariant="editorial" spacing="none" error={$form.errors.country}>
+                        <TextInput
                             id="country"
                             type="text"
                             name="country"
-                            class="w-full h-12 bg-suspense-aurora font-noto-sans rounded-md outline-none pl-4"
-                            defaultValue="Brasil"
+                            variant="profile"
                             bind:value={$form.country}
+                            error={$form.errors.country}
                             required
                         />
-                    </div>
+                    </FormField>
                 </div>
             </div>
         </div>
@@ -172,48 +165,40 @@
         <div class="mb-8">
             <div class="grid grid-cols-1 lg:grid-cols-4 gap-5 mb-8">
                 {#if $form.socials}
-                    {#each $form.socials as item}
-                        <div>
-                            <label for={item.url} class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block mb-1">
-                                {item.name}
-                            </label>
-                            <input
-                                id={item.name}
+                    {#each $form.socials as item, index}
+                        <FormField for={`social-${index}`} label={item.name} labelVariant="editorial" spacing="none">
+                            <TextInput
+                                id={`social-${index}`}
                                 type="url"
-                                name={item.name}
-                                class="w-full h-12 bg-suspense-aurora font-noto-sans rounded-md outline-none pl-4"
+                                name={`socials[${index}][url]`}
+                                variant="profile"
                                 bind:value={item.url}
                             />
-                        </div>
+                        </FormField>
                     {/each}
                 {/if}
             </div>
         </div>
     </Section>
     <Section title="Aprofundando">
-        <div class="mb-8">
-            <label for="bibliography" class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block mb-1">
-                Biografia
-            </label>
-            <textarea
+        <FormField for="bibliography" label="Biografia" labelVariant="editorial" spacing="lg" error={$form.errors.bibliography}>
+            <TextArea
                 id="bibliography"
                 name="bibliography"
                 rows="5"
-                class="w-full bg-suspense-aurora font-noto-sans rounded-md outline-none p-4"
+                variant="profile"
                 bind:value={$form.bibliography}
+                error={$form.errors.bibliography}
                 required
-            ></textarea>
-        </div>
-        <div class="mb-8">
-            <label for="likes" class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block mb-1">
-                3 Gêneros de anime que você mais gosta
-            </label>
+            />
+        </FormField>
+        <FormField for="likes-0" label="3 Gêneros de anime que você mais gosta" labelVariant="editorial" spacing="lg">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
-                {#each $form.preferences.likes as item}
-                    <select
-                        id="likes"
-                        name="likes"
-                        class="w-full h-12 bg-suspense-aurora font-noto-sans rounded-md outline-none pl-4"
+                {#each $form.preferences.likes as item, index}
+                    <SelectInput
+                        id={`likes-${index}`}
+                        name={`preferences[likes][${index}][content]`}
+                        variant="profile"
                         bind:value={item.content}
                     >
                         {#each userPreferences as item}
@@ -221,20 +206,17 @@
                                 {item.name}
                             </option>
                         {/each}
-                    </select>
+                    </SelectInput>
                 {/each}
             </div>
-        </div>
-        <div>
-            <label for="unlikes" class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block mb-1">
-                3 Gêneros de anime que você menos gosta
-            </label>
+        </FormField>
+        <FormField for="unlikes-0" label="3 Gêneros de anime que você menos gosta" labelVariant="editorial" spacing="none">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
-                {#each $form.preferences.unlikes as item}
-                    <select
-                        id="unlikes"
-                        name="unlikes"
-                        class="w-full h-12 bg-suspense-aurora font-noto-sans rounded-md outline-none pl-4"
+                {#each $form.preferences.unlikes as item, index}
+                    <SelectInput
+                        id={`unlikes-${index}`}
+                        name={`preferences[unlikes][${index}][content]`}
+                        variant="profile"
                         bind:value={item.content}
                     >
                         {#each userPreferences as item}
@@ -242,20 +224,23 @@
                                 {item.name}
                             </option>
                         {/each}
-                    </select>
+                    </SelectInput>
                 {/each}
             </div>
-        </div>
+        </FormField>
     </Section>
     {#if can.update}
         <div class="flex justify-center mt-5 mb-8">
-            <button
+            <Button
                 type="submit"
                 value="published"
-                class="cursor-pointer w-full lg:w-auto py-2 px-6 border-4 border-solid border-blue-skywave rounded-xl text-blue-skywave text-xl font-extrabold font-noto-sans italic uppercase"
+                variant="outline"
+                size="lg"
+                loading={$form.processing}
+                className="w-full lg:w-auto"
             >
                 Atualizar
-            </button>
+            </Button>
         </div>
     {/if}
 </form>

@@ -4,6 +4,13 @@
 
     import axios from "axios";
     import { useForm } from "@inertiajs/svelte";
+    import {
+        Button,
+        FormField,
+        RadioInput,
+        TextArea,
+        TextInput,
+    } from "@/ui/components/private";
     import { activityPermissions } from "@/utils";
 
     let can = activityPermissions();
@@ -53,127 +60,91 @@
         <div class="text-md text-gray-700 font-noto-sans mb-2">
             Qual a finalidade desta criação?
         </div>
-        <div class="flex items-center gap-2 mb-1">
-            <input
+        <div class="mb-1">
+            <RadioInput
                 id="notice"
-                type="radio"
                 name="purpose"
                 value="notice"
-                class="cursor-pointer w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                label="Aviso"
                 bind:group={$form.purpose}
+                error={$form.errors.purpose}
             />
-            <label for="notice" class="cursor-pointer text-md text-gray-700 font-noto-sans">
-                Aviso
-            </label>
         </div>
-        <div class="flex items-center gap-2">
-            <input
+        <div>
+            <RadioInput
                 id="activity"
-                type="radio"
                 name="purpose"
                 value="activity"
-                class="cursor-pointer w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                label="Atividade"
                 bind:group={$form.purpose}
+                error={$form.errors.purpose}
             />
-            <label for="activity" class="cursor-pointer text-md text-gray-700 font-noto-sans">
-                Atividade
-            </label>
         </div>
     </div>
-    <div class="mb-4">
-        <label for="title" class="text-md text-gray-700 font-noto-sans block mb-1">
-            {#if $form.purpose === "activity"}
-                Título da atividade
-            {:else if $form.purpose === "notice"}
-                Título do aviso
-            {:else}
-                Título
-            {/if}
-        </label>
-        <input
+    <FormField for="title" label={$form.purpose === "activity" ? "Título da atividade" : $form.purpose === "notice" ? "Título do aviso" : "Título"} error={$form.errors.title}>
+        <TextInput
+            variant="offcanvas"
             type="text"
             id="title"
             name="title"
-            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
             bind:value={$form.title}
+            error={$form.errors.title}
             required
         />
-    </div>
-    <div class="mb-4">
-        <label for="limit" class="text-md text-gray-700 font-noto-sans block mb-1">
-            Data limite
-        </label>
-        <input
+    </FormField>
+    <FormField for="limit" label="Data limite" help={$form.purpose === "notice" ? "Data limite para exibição do aviso" : $form.purpose === "activity" ? "Data limite para confirmação da atividade" : null} error={$form.errors.limit}>
+        <TextInput
+            variant="offcanvas"
             type="date"
             id="limit"
             name="limit"
-            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
             bind:value={$form.limit}
+            error={$form.errors.limit}
             required
         />
-        <div class="text-sm font-noto-sans text-gray-400 mt-1">
-            {#if $form.purpose === "notice"}
-                Data limite para exibição do aviso
-            {:else if $form.purpose === "activity"}
-                Data limite para confirmação da atividade
-            {/if}
-        </div>
-    </div>
+    </FormField>
     {#if $form.purpose === "activity"}
         <div class="grid grid-cols-2 gap-3">
-            <div class="mb-4">
-                <label for="hour" class="text-md text-gray-700 font-noto-sans block mb-1">
-                    Hora
-                </label>
-                <input
+            <FormField for="hour" label="Hora" help="Hora da atividade" error={$form.errors.hour}>
+                <TextInput
+                    variant="offcanvas"
                     type="time"
                     id="hour"
                     name="hour"
-                    class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
                     bind:value={$form.hour}
+                    error={$form.errors.hour}
                     required
                 />
-                <div class="text-sm font-noto-sans text-gray-400 mt-1">
-                    Hora da atividade
-                </div>
-            </div>
-            <div class="mb-4">
-                <label for="date" class="text-md text-gray-700 font-noto-sans block mb-1">
-                    Data
-                </label>
-                <input
+            </FormField>
+            <FormField for="date" label="Data" help="Data da atividade" error={$form.errors.date}>
+                <TextInput
+                    variant="offcanvas"
                     type="date"
                     id="date"
                     name="date"
-                    class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
                     bind:value={$form.date}
+                    error={$form.errors.date}
                     required
                 />
-                <div class="text-sm font-noto-sans text-gray-400 mt-1">
-                    Data da atividade
-                </div>
-            </div>
+            </FormField>
         </div>
     {/if}
-    <div class="mb-4">
-        <label for="content" class="text-md text-gray-700 font-noto-sans block mb-1">
-            Conteúdo
-        </label>
-        <textarea
+    <FormField for="content" label="Conteúdo" error={$form.errors.content}>
+        <TextArea
             id="content"
             name="content"
             rows="3"
-            class="w-full bg-white font-noto-sans text-md rounded-md outline-none py-2 px-4 border border-gray-400"
             bind:value={$form.content}
+            error={$form.errors.content}
             required
-        ></textarea>
-    </div>
+        />
+    </FormField>
     {#if can.create || can.update}
-        <button
+        <Button
             type="submit"
-            class="cursor-pointer bg-blue-skywave px-8 py-2 rounded-md text-suspense-aurora font-noto-sans font-extrabold italic uppercase"
+            size="lg"
         >
             {identifier ? "Atualizar" : "Cadastrar"}
-        </button>
+        </Button>
     {/if}
 </form>

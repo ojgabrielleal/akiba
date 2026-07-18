@@ -24,7 +24,7 @@
 </script>
 
 {#if listenerMonth}
-    <Offcanvas bind:this={offcanvasRef} title={listenerMonth.found?.name ?? "Ouvinte do mês"}>
+    <Offcanvas bind:this={offcanvasRef} title={listenerMonth.found?.name}>
         <div slot="content" let:close>
             <ListenerMonthForm {close} listenerMonthFound={listenerMonth.found} />
         </div>

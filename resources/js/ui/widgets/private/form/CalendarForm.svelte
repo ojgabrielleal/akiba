@@ -4,6 +4,13 @@
 
     import axios from "axios";
     import { useForm, page } from "@inertiajs/svelte";
+    import {
+        Button,
+        FormField,
+        SelectInput,
+        TextArea,
+        TextInput,
+    } from "@/ui/components/private";
     import { calendarPermissions } from "@/utils";
 
     let { users } = $page.props;
@@ -49,15 +56,13 @@
 </script>
 
 <form on:submit|preventDefault={submit}>
-    <div class="mb-4">
-        <label for="user" class="text-md text-gray-700 font-noto-sans block mb-1">
-            Membro designado
-        </label>
-        <select
+    <FormField for="user" label="Membro designado" error={$form.errors.user}>
+        <SelectInput
+            variant="offcanvas"
             id="user"
             name="user"
-            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
             bind:value={$form.user}
+            error={$form.errors.user}
             required
         >
             {#each users.data as item}
@@ -65,17 +70,15 @@
                     {item.nickname}
                 </option>
             {/each}
-        </select>
-    </div>
-    <div class="mb-4">
-        <label for="type" class="text-md text-gray-700 font-noto-sans block mb-1">
-            Tipo do evento
-        </label>
-        <select
+        </SelectInput>
+    </FormField>
+    <FormField for="type" label="Tipo do evento" error={$form.errors.type}>
+        <SelectInput
+            variant="offcanvas"
             id="type"
             name="type"
-            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
             bind:value={$form.type}
+            error={$form.errors.type}
             required
         >
             <option value="show">
@@ -90,61 +93,48 @@
             <option value="podcast">
                 Podcast
             </option>
-        </select>
-    </div>
+        </SelectInput>
+    </FormField>
     <div class="grid grid-cols-2 gap-3">
-        <div class="mb-4">
-            <label for="hour" class="text-md text-gray-700 font-noto-sans block mb-1">
-                Hora
-            </label>
-            <input
+        <FormField for="hour" label="Hora" help="Hora do evento" error={$form.errors.hour}>
+            <TextInput
+                variant="offcanvas"
                 type="time"
                 id="hour"
                 name="hour"
-                class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
                 bind:value={$form.hour}
+                error={$form.errors.hour}
                 required
             />
-            <div class="text-sm font-noto-sans text-gray-400 mt-1">
-                Hora do evento
-            </div>
-        </div>
-        <div class="mb-4">
-            <label for="date" class="text-md text-gray-700 font-noto-sans block mb-1">
-                Data
-            </label>
-            <input
+        </FormField>
+        <FormField for="date" label="Data" help="Data do evento" error={$form.errors.date}>
+            <TextInput
+                variant="offcanvas"
                 type="date"
                 id="date"
                 name="date"
-                class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
                 bind:value={$form.date}
+                error={$form.errors.date}
                 required
             />
-            <div class="text-sm font-noto-sans text-gray-400 mt-1">
-                Data do evento
-            </div>
-        </div>
+        </FormField>
     </div>
-    <div class="mb-4">
-        <label for="content" class="text-md text-gray-700 font-noto-sans block mb-1">
-            Conteúdo
-        </label>
-        <textarea
+    <FormField for="content" label="Conteúdo" error={$form.errors.content}>
+        <TextArea
             id="content"
             name="content"
             rows="3"
-            class="w-full bg-white font-noto-sans text-md rounded-md outline-none py-2 px-4 border border-gray-400"
             bind:value={$form.content}
+            error={$form.errors.content}
             required
-        ></textarea>
-    </div>
+        />
+    </FormField>
     {#if can.create || can.update}
-        <button
+        <Button
             type="submit"
-            class="cursor-pointer bg-blue-skywave px-8 py-2 rounded-md text-suspense-aurora font-noto-sans font-extrabold italic uppercase"
+            size="lg"
         >
             {identifier ? "Atualizar" : "Cadastrar"}
-        </button>
+        </Button>
     {/if}
 </form>

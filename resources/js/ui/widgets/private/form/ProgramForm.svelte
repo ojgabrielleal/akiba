@@ -4,7 +4,16 @@
 
     import { useForm, page } from "@inertiajs/svelte";
     import { locutionIcons } from "@/data";
-    import { Modal, Preview } from "@/ui/components/private";
+    import {
+        Button,
+        CheckboxInput,
+        FormField,
+        Modal,
+        Preview,
+        RadioInput,
+        SelectInput,
+        TextInput,
+    } from "@/ui/components/private";
     import { programFormPermissions } from "@/utils";
     
     $: ({ users } = $page.props);
@@ -111,28 +120,24 @@
             required={!programSelected}
         />
     </div>
-    <div class="mb-4">
-        <label for="name" class="text-md text-gray-700 font-noto-sans block mb-1">
-            Programa
-        </label>
-        <input
+    <FormField for="name" label="Programa" error={$form.errors.name}>
+        <TextInput
+            variant="offcanvas"
             id="name"
             type="text"
             name="name"
-            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
             bind:value={$form.name}
+            error={$form.errors.name}
             required
         />
-    </div>
-    <div class="mb-4">
-        <label for="execution_mode" class="text-md text-gray-700 font-noto-sans block mb-1">
-            Formato de programa
-        </label>
-        <select
+    </FormField>
+    <FormField for="execution_mode" label="Formato de programa" error={$form.errors.execution_mode}>
+        <SelectInput
+            variant="offcanvas"
             id="execution_mode"
             name="execution_mode"
-            class="w-full h-10 bg-white font-noto-sans rounded-md outline-none pl-4 border border-gray-400"
             bind:value={$form.execution_mode}
+            error={$form.errors.execution_mode}
             on:change={(event) => {
                 $form.access_type = null;
                 $form.is_default_auto_dj = false;
@@ -155,20 +160,16 @@
             <option value="auto_dj">
                 Auto DJ
             </option>
-        </select>
-    </div>
+        </SelectInput>
+    </FormField>
     {#if $form.execution_mode === "auto_dj"}
-        <div class="mb-4 flex items-center gap-2">
-            <input
+        <div class="mb-4">
+            <CheckboxInput
                 id="is_default_auto_dj"
-                type="checkbox"
                 name="is_default_auto_dj"
-                class="cursor-pointer w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                label="Usar como Auto DJ padrão"
                 bind:checked={$form.is_default_auto_dj}
             />
-            <label for="is_default_auto_dj" class="cursor-pointer text-md text-gray-700 font-noto-sans">
-                Usar como Auto DJ padrão
-            </label>
         </div>
     {/if}
     {#if $form.execution_mode === "live"}
@@ -176,44 +177,36 @@
             <div class="text-md text-gray-700 font-noto-sans mb-2">
                 Este programa estará disponível a todos?
             </div>
-            <div class="flex items-center gap-2 mb-1">
-                <input
+            <div class="mb-1">
+                <RadioInput
                     id="open"
-                    type="radio"
                     name="free"
                     value="free"
-                    class="cursor-pointer w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                    label="Sim"
                     bind:group={$form.access_type}
+                    error={$form.errors.access_type}
                 />
-                <label for="free" class="cursor-pointer text-md text-gray-700 font-noto-sans">
-                    Sim
-                </label>
             </div>
-            <div class="flex items-center gap-2">
-                <input
+            <div>
+                <RadioInput
                     id="close"
-                    type="radio"
                     name="private"
                     value="private"
-                    class="cursor-pointer w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                    label="Não"
                     bind:group={$form.access_type}
+                    error={$form.errors.access_type}
                 />
-                <label for="private" class="cursor-pointer text-md text-gray-700 font-noto-sans">
-                    Não
-                </label>
             </div>
         </div>
     {/if}
     {#if $form.access_type === "private"}
-        <div class="mb-4">
-            <label for="user" class="text-md text-gray-700 font-noto-sans block mb-1">
-                Locutor
-            </label>
-            <select
+        <FormField for="user" label="Locutor" error={$form.errors.user}>
+            <SelectInput
+                variant="offcanvas"
                 id="user"
                 name="user"
-                class="w-full h-10 bg-white font-noto-sans rounded-md outline-none pl-4 border border-gray-400"
                 bind:value={$form.user}
+                error={$form.errors.user}
                 required
             >
                 <option value={null} disabled>
@@ -224,8 +217,8 @@
                         {item.nickname}
                     </option>
                 {/each}
-            </select>
-        </div>
+            </SelectInput>
+        </FormField>
     {/if}
     {#if $form.execution_mode !== "live"}
         <div class="flex items-center justify-center w-full mt-8 mb-5">
@@ -282,18 +275,15 @@
                                 />
                             {/if}
                         </button>
-                        <div class="mb-2">
-                            <label for={`phrase-${index}`} class="text-md text-gray-700 font-noto-sans block mb-1">
-                                Frase
-                            </label>
-                            <input
+                        <FormField for={`phrase-${index}`} label="Frase" spacing="sm">
+                            <TextInput
+                                variant="offcanvas"
                                 id={`phrase-${index}`}
                                 name={`phrases[${index}][phrase]`}
-                                class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
                                 bind:value={phrase.text}
                                 required
                             />
-                        </div>
+                        </FormField>
                     </div>
                     <button
                         type="button"
@@ -340,18 +330,15 @@
         {#if $form.plans}
             {#each $form.plans as plan, index}
                 <div class="mb-4 border border-gray-400 p-4 rounded-md">
-                    <div class="mb-2">
-                        <label for="scheduled_at" class="text-md text-gray-700 font-noto-sans block mb-1">
-                            Agendado para
-                        </label>
-                        <input
-                            id="scheduled_at"
+                    <FormField for={`scheduled-at-${index}`} label="Agendado para" spacing="sm">
+                        <TextInput
+                            variant="offcanvas"
+                            id={`scheduled-at-${index}`}
                             type="datetime-local"
-                            name="scheduled_at"
-                            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
+                            name={`plans[${index}][scheduled_at]`}
                             bind:value={plan.scheduled_at}
                         />
-                    </div>
+                    </FormField>
                     <button
                         type="button"
                         class="cursor-pointer mt-4 flex items-center gap-[0.2rem] text-blue-ocean text-md font-noto-sans"
@@ -396,14 +383,11 @@
         {#if $form.airtimes}
             {#each $form.airtimes as schedule, index}
                 <div class="mb-4 border border-gray-400 p-4 rounded-md">
-                    <div class="mb-2">
-                        <label for="day" class="text-md text-gray-700 font-noto-sans block mb-1">
-                            Dia da semana
-                        </label>
-                        <select
-                            id="day"
-                            name="day"
-                            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
+                    <FormField for={`day-${index}`} label="Dia da semana" spacing="sm">
+                        <SelectInput
+                            variant="offcanvas"
+                            id={`day-${index}`}
+                            name={`airtimes[${index}][day]`}
                             bind:value={schedule.day}
                         >
                             <option value={0}>
@@ -427,20 +411,17 @@
                             <option value={6}>
                                 Sábado
                             </option>
-                        </select>
-                    </div>
-                    <div class="mb-2">
-                        <label for="hour" class="text-md text-gray-700 font-noto-sans block mb-1">
-                            Horário
-                        </label>
-                        <input
-                            id="hour"
+                        </SelectInput>
+                    </FormField>
+                    <FormField for={`hour-${index}`} label="Horário" spacing="sm">
+                        <TextInput
+                            variant="offcanvas"
+                            id={`hour-${index}`}
                             type="time"
-                            name="hour"
-                            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
+                            name={`airtimes[${index}][hour]`}
                             bind:value={schedule.hour}
                         />
-                    </div>
+                    </FormField>
                     <button
                         type="button"
                         class="cursor-pointer mt-4 flex items-center gap-[0.2rem] text-blue-ocean text-md font-noto-sans"
@@ -460,11 +441,13 @@
         {/if}
     {/if}
     {#if can.create || can.update}
-        <button
+        <Button
             type="submit"
-            class="cursor-pointer font-noto-sans font-extrabold italic uppercase text-suspense-aurora py-2 px-6 rounded-full bg-blue-ocean"
+            variant="secondary"
+            shape="pill"
+            loading={$form.processing}
         >
             {programSelected ? "Atualizar" : "Cadastrar"}
-        </button>
+        </Button>
     {/if}
 </form>

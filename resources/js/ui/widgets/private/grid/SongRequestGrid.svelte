@@ -3,7 +3,7 @@
 
     import { onMount } from "svelte";
     import { page, router } from "@inertiajs/svelte";
-    import { Section } from "@/ui/components/private/";
+    import { IconButton, Section } from "@/ui/components/private/";
     import { resolvePlaceholderImage, songRequestPermissions } from "@/utils";
 
     $: ({ onair, songRequests } = $page.props);
@@ -220,34 +220,24 @@
                         {#if !item.was_reproduced && !item.was_canceled}
                             <div class="flex gap-1">
                                 {#if can.cancel}
-                                    <button type="button"
-                                        aria-label="Marcar como cancelado"
-                                        class="w-7 h-7 bg-blue-marinho rounded-md flex justify-center items-center font-noto-sans italic font-extrabold cursor-pointer"
+                                    <IconButton
+                                        variant="close"
+                                        label="Marcar como cancelado"
+                                        size="sm"
+                                        surface="default"
+                                        tone="danger"
                                         on:click={() => markToCanceled(item.uuid)}
-                                    >
-                                        <img
-                                            src="/svg/close.svg"
-                                            alt=""
-                                            aria-hidden="true"
-                                            class="w-6 filter-red-crimson"
-                                            loading="lazy"
-                                        />
-                                    </button>
+                                    />
                                 {/if}
                                 {#if can.reproduce}
-                                    <button type="button"
-                                        aria-label="Marcar como atendido"
-                                        class="w-7 h-7 bg-blue-marinho rounded-md flex justify-center items-center font-noto-sans italic font-extrabold cursor-pointer"
+                                    <IconButton
+                                        variant="verify"
+                                        label="Marcar como atendido"
+                                        size="sm"
+                                        surface="default"
+                                        tone="accent"
                                         on:click={() => markToReproduced(item.uuid)}
-                                    >
-                                        <img
-                                            src="/svg/verify.svg"
-                                            alt=""
-                                            aria-hidden="true"
-                                            class="w-6 filter-orange-citric"
-                                            loading="lazy"
-                                        />
-                                    </button>
+                                    />
                                 {/if}
                             </div>
                         {/if}

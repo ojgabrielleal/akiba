@@ -3,7 +3,13 @@
     export let musicSelected;
 
     import { useForm } from "@inertiajs/svelte";
-    import { Preview } from "@/ui/components/private";
+    import {
+        Button,
+        FormField,
+        Preview,
+        SelectInput,
+        TextInput,
+    } from "@/ui/components/private";
     import { musicPermissions } from "@/utils";
 
     let can = musicPermissions();
@@ -50,54 +56,46 @@
             oninput={(event) => ($form.image_ranking = event.target.files[0])}
         />
     </div>
-    <div class="mb-4">
-        <label for="music-name" class="text-md text-gray-700 font-noto-sans block mb-1">
-            Música
-        </label>
-        <input
+    <FormField for="music-name" label="Música" error={$form.errors.name}>
+        <TextInput
+            variant="offcanvas"
             id="music-name"
             type="text"
             name="name"
-            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
             bind:value={$form.name}
+            error={$form.errors.name}
             required
         />
-    </div>
-    <div class="mb-4">
-        <label for="artist" class="text-md text-gray-700 font-noto-sans block mb-1">
-            Cantor/Banda
-        </label>
-        <input
+    </FormField>
+    <FormField for="artist" label="Cantor/Banda" error={$form.errors.artist}>
+        <TextInput
+            variant="offcanvas"
             id="artist"
             type="text"
             name="artist"
-            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
             bind:value={$form.artist}
+            error={$form.errors.artist}
             required
         />
-    </div>
-    <div class="mb-4">
-        <label for="production" class="text-md text-gray-700 font-noto-sans block mb-1">
-            Anime
-        </label>
-        <input
+    </FormField>
+    <FormField for="production" label="Anime" error={$form.errors.production}>
+        <TextInput
+            variant="offcanvas"
             id="production"
             type="text"
             name="production"
-            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
             bind:value={$form.production}
+            error={$form.errors.production}
             required
         />
-    </div>
-    <div class="mb-6">
-        <label for="type" class="text-md text-gray-700 font-noto-sans block mb-1">
-            Tipo
-        </label>
-        <select
+    </FormField>
+    <FormField for="type" label="Tipo" error={$form.errors.type} spacing="section">
+        <SelectInput
+            variant="offcanvas"
             id="type"
             name="type"
-            class="w-full h-10 bg-white font-noto-sans rounded-md outline-none pl-4 border border-gray-400"
             bind:value={$form.type}
+            error={$form.errors.type}
             required
         >
             <option value={null} disabled>
@@ -109,14 +107,16 @@
             <option value="ED">
                 ED
             </option>
-        </select>
-    </div>
+        </SelectInput>
+    </FormField>
     {#if can.update}
-        <button
+        <Button
             type="submit"
-            class="cursor-pointer font-noto-sans font-extrabold italic uppercase text-suspense-aurora py-2 px-6 rounded-full bg-blue-ocean"
+            variant="secondary"
+            shape="pill"
+            loading={$form.processing}
         >
             Atualizar
-        </button>
+        </Button>
     {/if}
 </form>

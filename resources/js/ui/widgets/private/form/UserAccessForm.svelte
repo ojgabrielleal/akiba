@@ -4,6 +4,7 @@
 
     import { useForm, page } from "@inertiajs/svelte";
     import axios from "axios";
+    import { Button, CheckboxInput, FormField, TextInput } from "@/ui/components/private";
     import { userPermissions } from "@/utils";
 
     $: ({ roles } = $page.props);
@@ -36,22 +37,17 @@
 </script>
 
 <form on:submit|preventDefault={submit}>
-    <div class="mb-4">
-        <label for="password" class="text-md text-gray-700 font-noto-sans block mb-1">
-            Nova senha
-        </label>
-        <input
+    <FormField for="password" label="Nova senha" help="Essa senha será criptografada para proteção" error={$form.errors.password}>
+        <TextInput
+            variant="offcanvas"
             id="password"
             type="password"
             name="password"
-            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
             placeholder="∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗"
             bind:value={$form.password}
+            error={$form.errors.password}
         />
-        <div class="text-sm font-noto-sans text-gray-400 mt-1">
-            Essa senha será criptografada para proteção
-        </div>
-    </div>
+    </FormField>
     <div class="flex items-center justify-center w-full mt-8 mb-5">
         <div class="relative w-full">
             <div class="absolute left-0 w-1/3 h-[0.1rem] bg-blue-skywave rounded-full top-1/2 -translate-y-1/2"></div>
@@ -65,30 +61,24 @@
         <div class="flex flex-col gap-2">
             {#if roles}
                 {#each roles.data as item}
-                    <div class="flex gap-2">
-                        <input
-                            type="checkbox"
-                            name={item.name}
-                            id={item.name}
-                            value={item.name}
-                            bind:group={$form.roles}
-                        />
-                        <label for={item.name}>
-                            <div class="text-sm font-noto-sans font-semibold">
-                                {item.label}
-                            </div>
-                            <div class="text-xs text-gray-400 font-noto-sans line-clamp-2">
-                                {item.description}
-                            </div>
-                        </label>
-                    </div>
+                    <CheckboxInput
+                        label={item.label}
+                        description={item.description}
+                        name={item.name}
+                        id={item.name}
+                        value={item.name}
+                        bind:group={$form.roles}
+                    />
                 {/each}
             {/if}
         </div>
     </div>
     {#if can.update}
-        <button type="submit" class="cursor-pointer bg-blue-skywave px-8 py-2 rounded-md text-suspense-aurora font-noto-sans font-extrabold italic uppercase">
+        <Button
+            type="submit"
+            size="lg"
+        >
             Atualizar
-        </button>
+        </Button>
     {/if}
 </form>

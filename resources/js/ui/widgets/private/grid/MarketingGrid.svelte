@@ -1,6 +1,6 @@
 <script>
     import { page, router, Link } from "@inertiajs/svelte";
-    import { Section, Offcanvas } from "@/ui/components/private";
+    import { IconButton, Offcanvas, Section } from "@/ui/components/private";
     import { MarketingForm } from "@/ui/widgets/private";
     import { repositoryPermissions, resolvePlaceholderImage } from "@/utils";
 
@@ -67,37 +67,24 @@
                     </Link>
                     <div class="absolute -bottom-8 right-0 flex flex-row gap-3">
                         {#if can.update}
-                            <button type="button"
-                                class="cursor-pointer"
-                                aria-label={`Atualizar ${item.name}`}
+                            <IconButton
+                                variant="edit"
+                                label="Atualizar"
+                                surface="transparent"
+                                tone="primary"
                                 on:click={()=>{
                                     offcanvasRef.open();
                                     fileSelected = item;
                                 }}
-                            >
-                                <img
-                                    src="/svg/edit.svg"
-                                    alt=""
-                                    aria-hidden="true"
-                                    class="w-4 filter-blue-skywave"
-                                    loading="lazy"
-                                />
-                            </button>
+                            />
                         {/if}
                         {#if can.deactivate}
-                            <button type="button"
-                                aria-label={`Desativar ${item.name}`}
-                                class="cursor-pointer"
+                            <IconButton
+                                variant="trash"
+                                label="Desativar"
+                                surface="transparent"
                                 on:click={()=>requestDeactivateRepository(item)}
-                            >
-                                <img
-                                    src="/svg/trash.svg"
-                                    alt=""
-                                    aria-hidden="true"
-                                    class="w-4 filter-red-crimson"
-                                    loading="lazy"
-                                />
-                            </button>
+                            />
                         {/if}
                     </div>
                 </li>

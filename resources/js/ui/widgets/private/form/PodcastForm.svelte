@@ -1,6 +1,13 @@
 <script>
     import { useForm, page } from "@inertiajs/svelte";
-    import { Section, Preview, Wysiwyg } from "@/ui/components/private";
+    import {
+        Button,
+        FormField,
+        Preview,
+        Section,
+        TextInput,
+        Wysiwyg,
+    } from "@/ui/components/private";
     import { podcastPermissions } from "@/utils";
 
     $: ({ podcast } = $page.props);
@@ -48,94 +55,82 @@
             </div>
             <div class="flex flex-col gap-5">
                 <div class="grid grid-cols-1 xl:grid-cols-[9rem_9rem_1fr] gap-5">
-                    <div>
-                        <label for="season" class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block mb-1">
-                            Temporada
-                        </label>
-                        <input
+                    <FormField for="season" label="Temporada" labelVariant="editorial" spacing="none" error={$form.errors.season}>
+                        <TextInput
                             id="season"
                             type="number"
                             name="season"
-                            class="w-full h-12 bg-blue-ocean border border-blue-skywave font-noto-sans text-suspense-aurora rounded-md outline-none pl-4"
+                            variant="editorial"
                             bind:value={$form.season}
+                            error={$form.errors.season}
                             required
                         />
-                    </div>
-                    <div>
-                        <label for="episode" class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block mb-1">
-                            Episódio
-                        </label>
-                        <input
+                    </FormField>
+                    <FormField for="episode" label="Episódio" labelVariant="editorial" spacing="none" error={$form.errors.episode}>
+                        <TextInput
                             id="episode"
                             type="number"
                             name="episode"
-                            class="w-full h-12 bg-blue-ocean border border-blue-skywave font-noto-sans text-suspense-aurora rounded-md outline-none pl-4"
+                            variant="editorial"
                             bind:value={$form.episode}
+                            error={$form.errors.episode}
                             required
                         />
-                    </div>
-                    <div>
-                        <label for="title" class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block mb-1">
-                            Título
-                        </label>
-                        <input
+                    </FormField>
+                    <FormField for="title" label="Título" labelVariant="editorial" spacing="none" error={$form.errors.title}>
+                        <TextInput
                             id="title"
                             type="text"
                             name="title"
-                            class="w-full h-12 bg-blue-ocean border border-blue-skywave font-noto-sans text-suspense-aurora rounded-md outline-none pl-4"
+                            variant="editorial"
                             bind:value={$form.title}
+                            error={$form.errors.title}
                             required
                         />
-                    </div>
+                    </FormField>
                 </div>
-                <div>
-                    <label for="summary" class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block mb-1">
-                        Resumo
-                    </label>
+                <FormField for="summary" label="Resumo" labelVariant="editorial" spacing="none" error={$form.errors.summary}>
                     <Wysiwyg
                         height="7.5rem"
                         name="summary"
                         bind:value={$form.summary}
                         required
                     />
-                </div>
+                </FormField>
             </div>
         </div>
         <div class="flex flex-col px-0 xl:px-40 mb-8">
-            <div class="mb-8">
-                <label for="description" class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block mb-1">
-                    Escreva
-                </label>
+            <FormField for="description" label="Escreva" labelVariant="editorial" spacing="lg" error={$form.errors.description}>
                 <Wysiwyg
                     height="25rem"
                     name="description"
                     bind:value={$form.description}
                     required
                 />
-            </div>
-            <div>
-                <label for="audio" class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block mb-1">
-                    Spotify embeded
-                </label>
-                <input
+            </FormField>
+            <FormField for="audio" label="Spotify embeded" labelVariant="editorial" spacing="none" error={$form.errors.audio}>
+                <TextInput
                     id="audio"
                     type="url"
                     name="audio"
-                    class="w-full h-12 bg-blue-ocean border border-blue-skywave font-noto-sans text-suspense-aurora rounded-md outline-none pl-4"
+                    variant="editorial"
                     placeholder="https://open.spotify.com/embed/episode/...."
                     bind:value={$form.audio}
+                    error={$form.errors.audio}
                     required
                 />
-            </div>
+            </FormField>
         </div>
         {#if can.create || can.update}
             <div class="flex justify-end">
-                <button
+                <Button
                     type="submit"
-                    class="cursor-pointer font-noto-sans font-extrabold italic uppercase text-blue-marinho text-md py-2 px-6 rounded-full bg-orange-citric"
+                    variant="accent"
+                    shape="pill"
+                    loading={$form.processing}
                 >
                     {podcast ? "Atualizar podcast" : "Publicar podcast"}
-                </button>
+                </Button>
             </div>
         {/if}
     </form>

@@ -3,6 +3,7 @@
     export let pollSelected;
 
     import { useForm } from "@inertiajs/svelte";
+    import { FormField, TextArea, TextInput } from "@/ui/components/private";
     import { pollPermissions } from "@/utils";
     import PollActions from "./actions/PollActions.svelte";
 
@@ -42,88 +43,75 @@
 </script>
 
 <form on:submit|preventDefault={submit}>
-    <div class="mb-4">
-        <label for="question" class="text-md text-gray-700 font-noto-sans block mb-1">
-            Título
-        </label>
-        <textarea
+    <FormField for="question" label="Título" error={$form.errors.question}>
+        <TextArea
             id="question"
             name="question"
             rows="3"
-            class="w-full bg-white font-noto-sans text-md text-black rounded-md outline-none p-4 border border-gray-400 resize-none"
             bind:value={$form.question}
-        ></textarea>
-    </div>
+            error={$form.errors.question}
+        />
+    </FormField>
     <hr class="mb-4 border-gray-300" />
-    <div class="mb-4">
-        <label for="expires_at" class="text-md text-gray-700 font-noto-sans block mb-1">
-            A enquete ficará aberta até
-        </label>
-        <input
+    <FormField for="expires_at" label="A enquete ficará aberta até" error={$form.errors.expires_at}>
+        <TextInput
+            variant="offcanvas"
             id="expires_at"
             name="expires_at"
             type="datetime-local"
-            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
             bind:value={$form.expires_at}
+            error={$form.errors.expires_at}
         />
-    </div>
+    </FormField>
     <hr class="mb-4 border-gray-300" />
-    <div class="mb-4">
-        <label for="options_0" class="text-md text-gray-700 font-noto-sans block mb-1">
-            1º Opção
-        </label>
-        <input
+    <FormField for="options_0" label="1º Opção" error={$form.errors["options.0.option"]}>
+        <TextInput
+            variant="offcanvas"
             id="options_0"
             name="options[0]"
             type="text"
             placeholder="Digite a primeira opção"
-            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
             bind:value={$form.options[0].option}
+            error={$form.errors["options.0.option"]}
             required
         />
-    </div>
-    <div class="mb-4">
-        <label for="options_1" class="text-md text-gray-700 font-noto-sans block mb-1">
-            2º Opção
-        </label>
-        <input
+    </FormField>
+    <FormField for="options_1" label="2º Opção" error={$form.errors["options.1.option"]}>
+        <TextInput
+            variant="offcanvas"
             id="options_1"
             name="options[1]"
             type="text"
             placeholder="Digite a segunda opção"
-            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
             bind:value={$form.options[1].option}
+            error={$form.errors["options.1.option"]}
             required
         />
-    </div>
-    <div class="mb-4">
-        <label for="options_2" class="text-md text-gray-700 font-noto-sans block mb-1">
-            3º Opção
-        </label>
-        <input
+    </FormField>
+    <FormField for="options_2" label="3º Opção" error={$form.errors["options.2.option"]}>
+        <TextInput
+            variant="offcanvas"
             id="options_2"
             name="options[2]"
             type="text"
             placeholder="Digite a terceira opção"
-            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
             bind:value={$form.options[2].option}
+            error={$form.errors["options.2.option"]}
             required
         />
-    </div>
-    <div class="mb-6">
-        <label for="options_3" class="text-md text-gray-700 font-noto-sans block mb-1">
-            4º Opção
-        </label>
-        <input
+    </FormField>
+    <FormField for="options_3" label="4º Opção" error={$form.errors["options.3.option"]} spacing="section">
+        <TextInput
+            variant="offcanvas"
             id="options_3"
             name="options[3]"
             type="text"
             placeholder="Digite a quarta opção"
-            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
             bind:value={$form.options[3].option}
+            error={$form.errors["options.3.option"]}
             required
         />
-    </div>
+    </FormField>
     <PollActions
         status={$form.status}
         can={can}

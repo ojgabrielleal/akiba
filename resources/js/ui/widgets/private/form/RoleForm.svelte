@@ -4,6 +4,7 @@
 
     import { useForm, page } from "@inertiajs/svelte";
     import axios from "axios";
+    import { Button, FormField, TextArea, TextInput } from "@/ui/components/private";
     import { rolePermissions } from "@/utils";
 
     $: ({ permissions } = $page.props);
@@ -47,48 +48,37 @@
 </script>
 
 <form on:submit|preventDefault={submit}>
-    <div class="mb-3">
-        <label for="label" class="text-md text-gray-700 font-noto-sans block mb-1">
-            Nome
-        </label>
-        <input
+    <FormField for="label" label="Nome" error={$form.errors.label} spacing="compact">
+        <TextInput
+            variant="offcanvas"
             type="text"
             name="label"
             id="label"
-            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
             bind:value={$form.label}
+            error={$form.errors.label}
             required
         />
-    </div>
-    <div class="mb-3">
-        <label for="weight" class="text-md text-gray-700 font-noto-sans block mb-1">
-            Peso
-        </label>
-        <input
+    </FormField>
+    <FormField for="weight" label="Peso" help="Importância do cargo sobre demais existentes" error={$form.errors.weight} spacing="compact">
+        <TextInput
+            variant="offcanvas"
             type="number"
             name="weight"
             id="weight"
-            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400"
             bind:value={$form.weight}
+            error={$form.errors.weight}
             required
         />
-        <div class="text-sm font-noto-sans text-gray-400 mt-1">
-            Importância do cargo sobre demais existentes
-        </div>
-    </div>
-    <div class="mb-3">
-        <label for="description" class="text-md text-gray-700 font-noto-sans block mb-1">
-            Descrição
-        </label>
-        <textarea
-            type="text"
+    </FormField>
+    <FormField for="description" label="Descrição" error={$form.errors.description} spacing="compact">
+        <TextArea
             name="description"
             id="description"
             rows="3"
-            class="w-full bg-white font-noto-sans text-md rounded-md outline-none py-2 px-4 border border-gray-400"
             bind:value={$form.description}
-        ></textarea>
-    </div>
+            error={$form.errors.description}
+        />
+    </FormField>
     <div class="mb-3">
         <label for="permissions" class="text-md text-gray-700 font-noto-sans block mb-1">
             Permissões
@@ -111,11 +101,11 @@
         </div>
     </div>
     {#if can.create || can.update}
-        <button
+        <Button
             type="submit"
-            class="cursor-pointer bg-blue-skywave px-8 py-2 rounded-md text-suspense-aurora font-noto-sans font-extrabold italic uppercase"
+            size="lg"
         >
             {identifier ? "Atualizar" : "Cadastrar"}
-        </button>
+        </Button>
     {/if}
 </form>

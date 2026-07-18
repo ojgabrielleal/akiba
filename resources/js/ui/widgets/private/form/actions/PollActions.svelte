@@ -2,56 +2,61 @@
     export let status = null;
     export let can = [];
 
-    const buttonClasses = "cursor-pointer rounded-md px-3 py-1 text-center font-noto-sans text-sm font-extrabold uppercase italic leading-tight";
+    import { Button } from "@/ui/components/private";
 </script>
 
 {#if can.create || can.update}
     <div class="w-full flex flex-wrap flex-wrap items-center gap-3">
-        <button
+        <Button
             aria-label="salvar como rascunho"
             type="submit"
             value="draft"
-            class={`${buttonClasses} bg-green-forest text-blue-marinho`}
+            variant="success"
+            size="sm"
         >
             {status === 'draft' ? 'Atualizar' : 'Rascunho'}
-        </button>
+        </Button>
         {#if status !== 'published'}
-            <button
+            <Button
                 aria-label="mandar pra avaliação"
                 type="submit"
                 value="revision"
-                class={`${buttonClasses} bg-orange-citric text-blue-marinho`}
+                variant="accent"
+                size="sm"
             >
                 {status === 'revision' ? 'Atualizar' : 'Avaliação'}
-            </button>
+            </Button>
         {/if}
         {#if status === 'revision' && can.approve}
-            <button
+            <Button
                 aria-label="aprovar"
                 type="submit"
                 value="published"
-                class={`${buttonClasses} bg-purple-mystic text-suspense-aurora`}
+                variant="review"
+                size="sm"
             >
                 Aprovar
-            </button>
+            </Button>
         {:else if status === 'published'}
-            <button
+            <Button
                 aria-label="publicar"
                 type="submit"
                 value="published"
-                class={`${buttonClasses} bg-blue-ocean text-suspense-aurora`}
+                variant="info"
+                size="sm"
             >
                 Atualizar
-            </button>
+            </Button>
         {:else if can.publish}
-            <button
+            <Button
                 aria-label="publicar"
                 type="submit"
                 value="published"
-                class={`${buttonClasses} bg-blue-ocean text-suspense-aurora`}
+                variant="info"
+                size="sm"
             >
                 Publicar
-            </button>
+            </Button>
         {/if}
     </div>
 {/if}

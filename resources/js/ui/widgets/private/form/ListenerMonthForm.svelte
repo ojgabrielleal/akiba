@@ -3,7 +3,7 @@
     export let listenerMonthFound;
 
     import { useForm } from "@inertiajs/svelte";
-    import { Preview } from "@/ui/components/private";
+    import { Button, FormField, Preview, TextInput } from "@/ui/components/private";
 
     $: form = useForm({
         avatar: null,
@@ -30,85 +30,79 @@
             required
         />
     </div>
-    <div class="mb-4">
-        <label for="address" class="text-md text-gray-700 font-noto-sans block mb-1">
-            Aniversário
-        </label>
-        <input
+    <FormField for="birthday" label="Aniversário" error={$form.errors.birthday}>
+        <TextInput
+            variant="offcanvas"
             id="birthday"
             type="date"
             name="birthday"
-            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400 disabled:bg-gray-200 disabled:cursor-not-allowed"
             bind:value={$form.birthday}
+            error={$form.errors.birthday}
             required
         />
-    </div>
-    <div class="mb-4">
-        <label for="listener" class="text-md text-gray-700 font-noto-sans block mb-1">
-            Ouvinte
-        </label>
-        <input
-        id="listener"
-        type="text"
-        name="listener"
-        class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400 disabled:bg-gray-200 disabled:cursor-not-allowed"
-        value={listenerMonthFound?.name}
-        disabled
+    </FormField>
+    <FormField for="listener" label="Ouvinte">
+        <TextInput
+            variant="offcanvas"
+            id="listener"
+            type="text"
+            name="listener"
+            value={listenerMonthFound?.name}
+            className="disabled:cursor-not-allowed disabled:bg-gray-200"
+            disabled
         />
-    </div>
-    <div class="mb-4">
-        <label for="address" class="text-md text-gray-700 font-noto-sans block mb-1">
-            Endereço
-        </label>
-        <input
+    </FormField>
+    <FormField for="address" label="Endereço">
+        <TextInput
+            variant="offcanvas"
             id="address"
             type="text"
             name="address"
-            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400 disabled:bg-gray-200 disabled:cursor-not-allowed"
             value={listenerMonthFound?.address}
+            className="disabled:cursor-not-allowed disabled:bg-gray-200"
             disabled
         />
-    </div>
-    <div class="mb-4">
-        <label for="favorite_show" class="text-md text-gray-700 font-noto-sans block mb-1">
-            Programa favorito
-        </label>
-        <input
+    </FormField>
+    <FormField for="favorite_show" label="Programa favorito">
+        <TextInput
+            variant="offcanvas"
             id="favorite_show"
             type="text"
             name="favorite_show"
-            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400 disabled:bg-gray-200 disabled:cursor-not-allowed"
             value={listenerMonthFound?.favorite_program?.name}
+            className="disabled:cursor-not-allowed disabled:bg-gray-200"
             disabled
         />
-    </div>
-    <div class="mb-4">
-        <label for="favorite_anime" class="text-md text-gray-700 font-noto-sans block mb-1">
-            Anime favorito
-        </label>
-        <input
+    </FormField>
+    <FormField for="favorite_anime" label="Anime favorito">
+        <TextInput
+            variant="offcanvas"
             id="favorite_anime"
             type="text"
             name="favorite_anime"
-            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400 disabled:bg-gray-200 disabled:cursor-not-allowed"
             value={listenerMonthFound?.favorite_music?.production}
+            className="disabled:cursor-not-allowed disabled:bg-gray-200"
             disabled
         />
-    </div>
-    <div class="mb-4">
-        <label for="requests_total" class="text-md text-gray-700 font-noto-sans block mb-1">
-            Quantidade de pedidos feitos
-        </label>
-        <input
+    </FormField>
+    <FormField for="requests_total" label="Quantidade de pedidos feitos">
+        <TextInput
+            variant="offcanvas"
             id="requests_total"
             type="text"
             name="requests_total"
-            class="w-full h-10 bg-white font-noto-sans text-md rounded-md outline-none pl-4 border border-gray-400 disabled:bg-gray-200 disabled:cursor-not-allowed"
             value={listenerMonthFound?.requests_total}
+            className="disabled:cursor-not-allowed disabled:bg-gray-200"
             disabled
         />
-    </div>
-    <button type="submit" class="cursor-pointer bg-blue-marinho px-8 py-2 rounded-full text-suspense-aurora font-noto-sans font-extrabold italic uppercase">
+    </FormField>
+    <Button
+        type="submit"
+        variant="secondary"
+        size="lg"
+        shape="pill"
+        loading={$form.processing}
+    >
         Atualizar
-    </button>
+    </Button>
 </form>

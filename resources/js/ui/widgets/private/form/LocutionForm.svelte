@@ -1,6 +1,6 @@
 <script>
     import { useForm, page } from "@inertiajs/svelte";
-    import { Modal, Section } from "@/ui/components/private/";
+    import { Button, Modal, Section } from "@/ui/components/private/";
     import { locutionPermissions, resolvePlaceholderImage } from "@/utils";
     import { locutionIcons, locutionTextures, locutionDecorations } from "@/data";
 
@@ -49,22 +49,24 @@
             nas plataformas da Rede Akiba?
         </p>
         <div class="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <button
+            <Button
                 type="button"
-                class="cursor-pointer rounded-full border border-blue-ocean/20 px-1 py-2 text-sm font-extrabold uppercase italic text-blue-marinho transition hover:bg-blue-ocean/10 disabled:cursor-not-allowed disabled:opacity-60"
+                variant="outline"
+                shape="pill"
                 disabled={$form.processing}
                 on:click={() => startLocution(true)}
             >
                 Avisar
-            </button>
-            <button
+            </Button>
+            <Button
                 type="button"
-                class="cursor-pointer rounded-full bg-orange-citric px-1 py-2 text-sm font-extrabold uppercase italic text-blue-marinho transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-60"
+                variant="accent"
+                shape="pill"
                 disabled={$form.processing}
                 on:click={() => startLocution(false)}
             >
                 Não avisar
-            </button>
+            </Button>
         </div>
     </div>
 </Modal>
@@ -202,9 +204,11 @@
         </div>
         {#if can.start}
             <div class="flex justify-center mt-10">
-                <button 
+                <Button
                     type="submit"
-                    class="cursor-pointer flex gap-1 items-center justify-center font-noto-sans font-extrabold italic uppercase text-blue-marinho py-2 px-6 rounded-full bg-orange-citric"
+                    variant="accent"
+                    shape="pill"
+                    loading={$form.processing}
                 >
                     Iniciar programa
                     <img 
@@ -213,7 +217,7 @@
                         aria-hidden="true"
                         class="w-6 filter-blue-marinho"
                     />
-                </button>
+                </Button>
             </div>
         {/if}
     </Section>
