@@ -2,14 +2,14 @@
     export let title;
 
     import { page } from "@inertiajs/svelte";
-    import { Carrousel, Section } from "@/ui/components/private/";
+    import { Carousel, Section } from "@/ui/components/private/";
     import { resolvePlaceholderImage } from "@/utils";
 
     $: ({ audience } = $page.props);
 </script>
 
 <Section {title}>
-    <Carrousel styles="mt-5">
+    <Carousel class="mt-5" label={title}>
         {#each audience as item}
             <article class="shrink-0 flex flex-col items-center justify-center gap-4 px-5 lg:first:pl-0 lg:border-r-2 lg:border-suspense-aurora/10 lg:last:border-0">
                 <div class="">
@@ -46,5 +46,5 @@
                 </div>
             </article>
         {/each}
-    </Carrousel>
+    </Carousel>
 </Section>

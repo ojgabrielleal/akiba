@@ -2,7 +2,7 @@
     export let title;
 
     import { page, router } from "@inertiajs/svelte";
-    import { ButtonPagination, IconButton, Offcanvas, Section } from "@/ui/components/private";
+    import { EmptyState, GridList, IconButton, Offcanvas, Pagination, Section } from "@/ui/components/private";
     import { ListenerGalleryForm } from "@/ui/widgets/private";
     import { listenerGalleryPermissions, resolvePlaceholderImage } from "@/utils";
 
@@ -40,7 +40,8 @@
 </Offcanvas>
 
 <Section {title} {actions}>
-    <ul class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+    {#if listenerGalleries.data.length > 0}
+    <GridList preset="media">
         {#each listenerGalleries.data as item}
             <li>
                 <article class="relative aspect-[4/5] w-full overflow-hidden rounded-md bg-blue-ocean">
@@ -76,9 +77,15 @@
                 </article>
             </li>
         {/each}
-    </ul>
+    </GridList>
+    {:else}
+        <EmptyState
+            title="Nenhuma imagem encontrada"
+            description="As imagens enviadas pelos ouvintes aparecerão aqui."
+        />
+    {/if}
 
     {#if listenerGalleries.links}
-        <ButtonPagination pages={listenerGalleries} only={["listenerGalleries"]} />
+        <Pagination pages={listenerGalleries} only={["listenerGalleries"]} />
     {/if}
 </Section>

@@ -2,7 +2,7 @@
     export let title;
 
     import { page } from "@inertiajs/svelte";
-    import { Section, Offcanvas } from "@/ui/components/private";
+    import { EmptyState, Section, Offcanvas } from "@/ui/components/private";
     import { ListenerMonthForm } from "@/ui/widgets/private";
     import { listenerMonthPermissions, resolveAge, resolvePlaceholderImage } from "@/utils";
 
@@ -83,9 +83,10 @@
             </div>
             </div>
         {:else}
-            <p class="font-noto-sans text-center text-suspense-aurora">
-                Nenhum ouvinte do mês foi definido.
-            </p>
+            <EmptyState
+                title="Nenhum ouvinte do mês definido"
+                description="Selecione um ouvinte para destacar nesta seção."
+            />
         {/if}
     </Section>
 {/if}

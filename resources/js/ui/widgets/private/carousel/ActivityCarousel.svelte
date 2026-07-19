@@ -3,7 +3,7 @@
     export let variant;
 
     import { page, router } from "@inertiajs/svelte";
-    import { Carrousel, Offcanvas, Section, Tooltip } from "@/ui/components/private/";
+    import { Carousel, Offcanvas, Section, Tooltip } from "@/ui/components/private/";
     import { ActivityForm } from "@/ui/widgets/private";
     import { activityPermissions, resolvePlaceholderImage } from "@/utils";
 
@@ -30,7 +30,7 @@
 
 {#if activities}
     <Section {title}>
-        <Carrousel>
+        <Carousel label={title}>
             {#each activities.data as item}
                 {@const canParticipate = can.participate && !item.confirmations.some((conf) => conf.uuid === user.uuid)}
                 <article class={["w-100 h-45 lg:w-116 shrink-0 rounded-md p-4 relative",
@@ -130,6 +130,6 @@
                     </div>
                 </article>
             {/each}
-        </Carrousel>
+        </Carousel>
     </Section>
 {/if}

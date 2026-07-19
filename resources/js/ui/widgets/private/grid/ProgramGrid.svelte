@@ -2,7 +2,7 @@
     export let title;
 
     import { router, page } from "@inertiajs/svelte";
-    import { IconButton, Offcanvas, Section } from "@/ui/components/private/";
+    import { EmptyState, GridList, IconButton, Offcanvas, Section } from "@/ui/components/private/";
     import { ProgramForm } from "@/ui/widgets/private";
     import { programPermissions, resolveDateTime, resolveDay, resolveHour, resolvePlaceholderImage } from "@/utils";
 
@@ -92,7 +92,8 @@
                 </button>
             {/each}
         </div>
-        <ul class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-5 mt-10">
+        {#if programs.data[selectedExecutionMode].length > 0}
+        <GridList preset="wide" class="mt-10">
             {#each programs.data[selectedExecutionMode] as item}
                 <li>
                     <article class="w-full">
@@ -173,6 +174,13 @@
                     </article>
                 </li>
             {/each}
-        </ul>
+        </GridList>
+        {:else}
+            <EmptyState
+                class="mt-10"
+                title="Nenhum programa encontrado"
+                description="Não há programas cadastrados neste formato."
+            />
+        {/if}
     </Section>
 {/if}

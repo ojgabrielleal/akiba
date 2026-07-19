@@ -49,20 +49,17 @@
     $: selectedSize = sizes[size] ?? sizes.default;
     $: selectedTone = tones[tone] ?? tones.default;
     $: selectedColor = colors[color] ?? colors.default;
+
     $: placeholderCSS = `${selectedSize.frame} ${selectedTone} ${selectedColor} w-full flex items-center justify-center overflow-hidden font-noto-sans text-7xl font-extrabold italic uppercase`;
     $: previewCSS = `${selectedSize.image} ${selectedTone} w-full object-top object-contain`;
 
     const previewImage = (event) => {
-        if (disabled) {
-            return;
-        }
-
+        if (disabled) return;
         const file = event.target.files[0];
+
         if (file) {
             const reader = new FileReader();
-            reader.onload = (e) => {
-                preview = e.target.result;
-            };
+            reader.onload = (e) => preview = e.target.result;
             reader.readAsDataURL(file);
         } else {
             preview = null;
@@ -90,9 +87,9 @@
     <input
         id={name}
         type="file"
-        {name}
         class="sr-only"
         accept="image/*"
+        {name}
         {required}
         {disabled}
         on:input={oninput}

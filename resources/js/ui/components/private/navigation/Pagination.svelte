@@ -4,7 +4,8 @@
     export let only = [];
 
     import { router } from "@inertiajs/svelte";
-    import Tooltip from "./Tooltip.svelte";
+    import LoadingSpinner from "../feedback/LoadingSpinner.svelte";
+    import Tooltip from "../overlays/Tooltip.svelte";
 
     let isLoading = false;
     let loadingAction = null;
@@ -106,7 +107,7 @@
         <div class="flex items-center justify-center gap-4 min-h-12">
             {#if pageHistory.length > 1 && !hasNextPage}
                 {#if isLoading && loadingAction === "previous"}
-                    <span class="pagination-spinner" aria-label={loadingLabel}></span>
+                    <LoadingSpinner label={loadingLabel} />
                 {:else}
                     <Tooltip>
                         <button
@@ -132,7 +133,7 @@
             {/if}
             {#if hasNextPage}
                 {#if isLoading && loadingAction === "next"}
-                    <span class="pagination-spinner" aria-label={loadingLabel}></span>
+                    <LoadingSpinner label={loadingLabel} />
                 {:else}
                     <Tooltip>
                         <button
@@ -169,15 +170,6 @@
         animation: pagination-less-arrow-bounce 1.8s ease-in-out infinite;
     }
 
-    .pagination-spinner {
-        width: 1.5rem;
-        height: 1.5rem;
-        border: 0.2rem solid rgb(255 143 0 / 0.25);
-        border-top-color: rgb(255 143 0);
-        border-radius: 9999px;
-        animation: pagination-spinner-spin 0.75s linear infinite;
-    }
-
     @keyframes pagination-more-arrow-bounce {
         0%,
         100% {
@@ -197,12 +189,6 @@
 
         50% {
             transform: translateY(-0.15rem);
-        }
-    }
-
-    @keyframes pagination-spinner-spin {
-        to {
-            transform: rotate(360deg);
         }
     }
 </style>

@@ -2,7 +2,7 @@
     export let title;
 
     import { router, page } from "@inertiajs/svelte";
-    import { ButtonPagination, IconButton, Section } from "@/ui/components/private/";
+    import { EmptyState, GridList, IconButton, Pagination, Section } from "@/ui/components/private/";
     import { podcastPermissions, resolvePlaceholderImage } from "@/utils";
 
     $: ({ podcasts } = $page.props);
@@ -18,7 +18,8 @@
 
 {#if podcasts}
      <Section {title}>
-        <ul class="gap-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+        {#if podcasts.data.length > 0}
+        <GridList preset="content">
             {#each podcasts.data as item}
                 <li class="w-full h-65 bg-blue-ocean rounded-md overflow-hidden relative">
                     <article>
@@ -65,7 +66,13 @@
                     </article>
                 </li>
             {/each}
-        </ul>
-        <ButtonPagination pages={podcasts} only={["podcasts"]} />
+        </GridList>
+        {:else}
+            <EmptyState
+                title="Nenhum podcast encontrado"
+                description="Os podcasts cadastrados aparecerão aqui."
+            />
+        {/if}
+        <Pagination pages={podcasts} only={["podcasts"]} />
     </Section>
 {/if}

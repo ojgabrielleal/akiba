@@ -2,7 +2,7 @@
     export let title;
 
     import { page } from "@inertiajs/svelte";
-    import { ButtonPagination, IconButton, Section } from "@/ui/components/private";
+    import { IconButton, Pagination, Section } from "@/ui/components/private";
     import { eventPermissions } from "@/utils";
 
     $: ({ events } = $page.props);
@@ -60,4 +60,4 @@
         {/each}
     </ul>
 </Section>
-<ButtonPagination pages={events} only={["events"]} />
+<Pagination pages={events} only={["events"]} />

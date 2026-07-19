@@ -2,7 +2,7 @@
     export let title;
 
     import { page } from "@inertiajs/svelte";
-    import { Button, IconButton, Offcanvas, Section } from "@/ui/components/private/";
+    import { Button, EmptyState, GridList, IconButton, Offcanvas, Section } from "@/ui/components/private/";
     import { TaskForm } from "@/ui/widgets/private/";
     import { taskPermissions } from "@/utils";
 
@@ -31,7 +31,8 @@
                 </Button>
             </div>
         {/if}
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        {#if tasks.data.length > 0}
+        <GridList as="div" preset="split">
             {#each tasks.data as task}
                 <div class={["flex items-center justify-between p-3 rounded-md",
                     { "bg-red-crimson": task.is_overdue },
@@ -52,6 +53,12 @@
                     {/if}
                 </div>
             {/each}
-        </div>
+        </GridList>
+        {:else}
+            <EmptyState
+                title="Nenhuma tarefa encontrada"
+                description="As tarefas cadastradas aparecerão aqui."
+            />
+        {/if}
     </Section>
 {/if}

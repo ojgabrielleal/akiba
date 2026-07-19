@@ -11,6 +11,7 @@
         Modal,
         Preview,
         RadioInput,
+        SectionDivider,
         SelectInput,
         TextInput,
     } from "@/ui/components/private";
@@ -221,15 +222,7 @@
         </FormField>
     {/if}
     {#if $form.execution_mode !== "live"}
-        <div class="flex items-center justify-center w-full mt-8 mb-5">
-            <div class="relative w-full">
-                <div class="absolute left-0 w-30 h-[0.1rem] bg-blue-ocean rounded-full top-1/2 -translate-y-1/2"></div>
-                <span class="absolute inset-0 flex items-center justify-center text-blue-ocean font-noto-sans font-extrabold uppercase italic">
-                    Frases
-                </span>
-                <div class="absolute right-0 w-30 h-[0.1rem] bg-blue-ocean rounded-full top-1/2 -translate-y-1/2"></div>
-            </div>
-        </div>
+        <SectionDivider tone="ocean">Frases</SectionDivider>
         <button
             type="button"
             class="cursor-pointer mb-2 flex items-center gap-[0.2rem] text-blue-ocean text-md font-noto-sans"
@@ -304,15 +297,7 @@
         {/if}
     {/if}
     {#if $form.execution_mode !== "live" && $form.execution_mode !== "auto_dj"}
-        <div class="flex items-center justify-center w-full mt-8 mb-5">
-            <div class="relative w-full">
-                <div class="absolute left-0 w-20 h-[0.1rem] bg-blue-ocean rounded-full top-1/2 -translate-y-1/2"></div>
-                <span class="absolute inset-0 flex items-center justify-center text-blue-ocean font-noto-sans font-extrabold uppercase italic">
-                    Agendamentos
-                </span>
-                <div class="absolute right-0 w-20 h-[0.1rem] bg-blue-ocean rounded-full top-1/2 -translate-y-1/2"></div>
-            </div>
-        </div>
+        <SectionDivider tone="ocean">Agendamentos</SectionDivider>
         <button
             type="button"
             class="cursor-pointer mb-2 flex items-center gap-[0.2rem] text-blue-ocean text-md font-noto-sans"
@@ -357,15 +342,7 @@
             {/each}
         {/if}
     {:else if $form.execution_mode === "live" && $form.access_type === "private"}
-        <div class="flex items-center justify-center w-full mt-8 mb-5">
-            <div class="relative w-full">
-                <div class="absolute left-0 w-12 h-[0.1rem] bg-blue-ocean rounded-full top-1/2 -translate-y-1/2"></div>
-                <span class="absolute inset-0 flex items-center justify-center text-blue-ocean font-noto-sans font-extrabold uppercase italic">
-                    Grade de programação
-                </span>
-                <div class="absolute right-0 w-12 h-[0.1rem] bg-blue-ocean rounded-full top-1/2 -translate-y-1/2"></div>
-            </div>
-        </div>
+        <SectionDivider tone="ocean">Grade de programação</SectionDivider>
         <button
             type="button"
             class="cursor-pointer mb-2 flex items-center gap-[0.2rem] text-blue-ocean text-md font-noto-sans"

@@ -1,7 +1,9 @@
-// Carrousels
-export { default as ActivityCarrousel } from "./carrousel/ActivityCarrousel.svelte"
-export { default as TaskCarrousel } from "./carrousel/TaskCarrousel.svelte"
-export { default as AudienceCarrousel } from "./carrousel/AudienceCarrousel.svelte";
+// Carousels
+export { default as ActivityCarousel } from "./carousel/ActivityCarousel.svelte"
+export { default as AudienceCarousel } from "./carousel/AudienceCarousel.svelte";
+
+// Lists
+export { default as TaskList } from "./list/TaskList.svelte"
 
 // Forms
 export { default as LoginForm } from './form/LoginForm.svelte'

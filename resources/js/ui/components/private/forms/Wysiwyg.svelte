@@ -43,10 +43,7 @@
     });
 
     $: isDisabled = disabled;
-
-    $: if (quill) {
-        quill.enable(!isDisabled);
-    }
+    $: if (quill) quill.enable(!isDisabled);
 
     $: if (quill && value !== quill.root.innerHTML) {
         quill.root.innerHTML = value;

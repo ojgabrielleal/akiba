@@ -7,6 +7,7 @@
         CheckboxInput,
         FormField,
         RadioInput,
+        SectionDivider,
         SelectInput,
         TextInput,
     } from "@/ui/components/private";
@@ -85,15 +86,7 @@
         {/if}
     </div>
     <div class="mb-10">
-        <div class="mb-5 flex w-full items-center justify-center">
-            <div class="relative w-full">
-                <div class="bg-blue-skywave absolute top-1/2 left-0 h-[0.1rem] w-1/5 -translate-y-1/2 rounded-full"></div>
-                <span class="text-blue-skywave font-noto-sans absolute inset-0 flex items-center justify-center font-extrabold uppercase italic">
-                    Informações básicas
-                </span>
-                <div class="bg-blue-skywave absolute top-1/2 right-0 h-[0.1rem] w-1/5 -translate-y-1/2 rounded-full"></div>
-            </div>
-        </div>
+        <SectionDivider spacing="sm">Informações básicas</SectionDivider>
         <FormField for="name" label="Nome" error={$form.errors.name}>
             <TextInput
                 variant="offcanvas"
@@ -135,15 +128,7 @@
         </FormField>
     </div>
     <div class="mb-5">
-        <div class="mb-5 flex w-full items-center justify-center">
-            <div class="relative w-full">
-                <div class="bg-blue-skywave absolute top-1/2 left-0 h-[0.1rem] w-1/3 -translate-y-1/2 rounded-full"></div>
-                <span class="text-blue-skywave font-noto-sans absolute inset-0 flex items-center justify-center font-extrabold uppercase italic">
-                    Cargos
-                </span>
-                <div class="bg-blue-skywave absolute top-1/2 right-0 h-[0.1rem] w-1/3 -translate-y-1/2 rounded-full"></div>
-            </div>
-        </div>
+        <SectionDivider spacing="sm">Cargos</SectionDivider>
         <div class="flex flex-col gap-2">
             {#if roles}
                 {#each roles.data as item}

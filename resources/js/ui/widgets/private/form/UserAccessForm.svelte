@@ -4,7 +4,7 @@
 
     import { useForm, page } from "@inertiajs/svelte";
     import axios from "axios";
-    import { Button, CheckboxInput, FormField, TextInput } from "@/ui/components/private";
+    import { Button, CheckboxInput, FormField, SectionDivider, TextInput } from "@/ui/components/private";
     import { userPermissions } from "@/utils";
 
     $: ({ roles } = $page.props);
@@ -48,15 +48,7 @@
             error={$form.errors.password}
         />
     </FormField>
-    <div class="flex items-center justify-center w-full mt-8 mb-5">
-        <div class="relative w-full">
-            <div class="absolute left-0 w-1/3 h-[0.1rem] bg-blue-skywave rounded-full top-1/2 -translate-y-1/2"></div>
-            <span class="absolute inset-0 flex items-center justify-center text-blue-skywave font-noto-sans font-extrabold uppercase italic">
-                Cargos
-            </span>
-            <div class="absolute right-0 w-1/3 h-[0.1rem] bg-blue-skywave rounded-full top-1/2 -translate-y-1/2"></div>
-        </div>
-    </div>
+    <SectionDivider>Cargos</SectionDivider>
     <div class="mb-4">
         <div class="flex flex-col gap-2">
             {#if roles}

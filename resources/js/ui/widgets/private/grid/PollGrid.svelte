@@ -2,7 +2,7 @@
     export let title;
 
     import { router, page } from "@inertiajs/svelte";
-    import { Button, IconButton, Offcanvas, Section } from "@/ui/components/private";
+    import { Button, EmptyState, GridList, IconButton, Offcanvas, Section } from "@/ui/components/private";
     import { PollForm } from "@/ui/widgets/private";
     import { pollPermissions, resolveStatusBackground } from "@/utils";
 
@@ -104,7 +104,8 @@
             </form>
         {/if}
 
-        <div class="mt-5 gap-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+        {#if polls.data.length > 0}
+        <GridList as="div" preset="content" class="mt-5">
             {#each polls.data as item}
                 <div class="w-full h-40 bg-blue-ocean rounded-md overflow-hidden relative">
                     <article>
@@ -152,6 +153,13 @@
                     </article>
                 </div>
             {/each}
-        </div>
+        </GridList>
+        {:else}
+            <EmptyState
+                class="mt-5"
+                title="Nenhuma enquete encontrada"
+                description="As enquetes cadastradas aparecerão aqui."
+            />
+        {/if}
     </Section>
 {/if}

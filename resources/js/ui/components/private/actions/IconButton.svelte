@@ -13,7 +13,7 @@
     export let surface = null;
 
     import { Link } from "@inertiajs/svelte";
-    import Tooltip from "../Tooltip.svelte";
+    import Tooltip from "../overlays/Tooltip.svelte";
 
     const variants = {
         edit: {

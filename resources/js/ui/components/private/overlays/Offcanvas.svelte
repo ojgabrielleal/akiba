@@ -2,13 +2,16 @@
     export let title;
 
     import { fly } from "svelte/transition";
-    import { onDestroy } from "svelte";
+    import { onMount, onDestroy } from "svelte";
 
     let visible = false;
+    let titleId = title ? `offcanvas-title-${Math.random().toString(36).slice(2)}` : undefined;
 
-    $: if (typeof document !== "undefined") {
-        document.body.style.overflow = visible ? "hidden" : "auto";
-    }
+    onMount(()=>{        
+        if (typeof document !== "undefined") {
+            document.body.style.overflow = visible ? "hidden" : "auto";
+        }
+    });
 
     onDestroy(() => {
         if (typeof document !== "undefined") {
@@ -27,8 +30,6 @@
     const block = (event) => {
         event.stopPropagation();
     };
-
-    const titleId = `offcanvas-title-${Math.random().toString(36).slice(2)}`;
 </script>
 
 {#if visible}

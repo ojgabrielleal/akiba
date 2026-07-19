@@ -4,8 +4,8 @@
     import { Layout } from "@/ui/layouts/private/";
     import {
         WellcomeHero,
-        ActivityCarrousel,
-        TaskCarrousel,
+        ActivityCarousel,
+        TaskList,
         PostGrid,
         CalendarGrid,
     } from "@/ui/widgets/private";
@@ -16,8 +16,8 @@
 <Meta meta={{ title: "Dashboard" } } />
 <Layout>
     <WellcomeHero />
-    <ActivityCarrousel title="Avisos e Atividades" />
-    <TaskCarrousel title="Minhas Tarefas" />
+    <ActivityCarousel title="Avisos e Atividades" />
+    <TaskList title="Minhas Tarefas" />
     <PostGrid title="Minhas últimas matérias" />
     <CalendarGrid title="Calendário" />
 </Layout>

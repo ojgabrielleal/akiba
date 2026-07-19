@@ -2,13 +2,16 @@
     export let title = "";
 
     import { fade } from "svelte/transition";
-    import { onDestroy } from "svelte";
+    import { onMount, onDestroy } from "svelte";
 
     let visible = false;
-
-    $: if (typeof document !== "undefined") {
-        document.body.style.overflow = visible ? "hidden" : "auto";
-    }
+    let titleId = title ? `modal-title-${Math.random().toString(36).slice(2)}` : undefined;
+    
+    onMount(()=>{
+        if (typeof document !== "undefined"){
+            document.body.style.overflow = visible ? "hidden" : "auto";
+        }
+    });
 
     onDestroy(() => {
         if (typeof document !== "undefined") {
@@ -27,8 +30,6 @@
     const block = (event) => {
         event.stopPropagation();
     };
-
-    const titleId = `modal-title-${Math.random().toString(36).slice(2)}`;
 </script>
 
 {#if visible}
@@ -44,7 +45,7 @@
             class="w-full min-w-sm max-w-sm bg-suspense-aurora rounded-md overflow-hidden"
             role="dialog"
             aria-modal="true"
-            aria-labelledby={title ? titleId : undefined}
+            aria-labelledby={titleId}
             aria-label={title ? undefined : "Janela modal"}
             tabindex="-1"
             on:click={block}

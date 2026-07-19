@@ -5,15 +5,13 @@
     $: ({ flash } = $page.props);
 
     let lastToast = null;
-    $: toastId = flash?.id ?? flash?.message;
+    $: toastId = flash?.id;
 
-    $: if (flash?.message && toastId !== lastToast) {
+    $: if (flash && toastId !== lastToast) {
         lastToast = toastId;
-
-        toast(flash.message, {
+        toast[flash.type](flash.message, {
             icon: flash.icon,
         });
     }
 </script>
-
 <Toaster />

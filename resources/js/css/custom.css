@@ -10,12 +10,12 @@
  }
 
 
- /* Carrousel */
- .carrousel-scroll {
+ /* Carousel */
+ .carousel-scroll {
      -ms-overflow-style: none;
      scrollbar-width: none;
  }
 
- .carrousel-scroll::-webkit-scrollbar {
+ .carousel-scroll::-webkit-scrollbar {
      display: none;
  }

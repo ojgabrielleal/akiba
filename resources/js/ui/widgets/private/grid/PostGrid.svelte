@@ -3,7 +3,7 @@
 
     import Cookies from "js-cookie";
     import { page, router } from "@inertiajs/svelte";
-    import { ButtonPagination, IconButton, Section } from "@/ui/components/private";
+    import { EmptyState, GridList, IconButton, Pagination, Section } from "@/ui/components/private";
     import { postPermissions, resolveStatusBackground } from "@/utils";
 
     $: ({ posts } = $page.props);
@@ -24,7 +24,8 @@
 
 {#if posts}
     <Section {title}>
-        <ul class="gap-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+        {#if posts.data.length > 0}
+        <GridList preset="content">
             {#each posts.data as item}
                 <li class="w-full h-53 bg-blue-ocean rounded-md overflow-hidden relative">
                     <article>
@@ -72,7 +73,13 @@
                     </article>
                 </li>
             {/each}
-        </ul>
-        <ButtonPagination pages={posts} only={["posts"]} />
+        </GridList>
+        {:else}
+            <EmptyState
+                title="Nenhuma matéria encontrada"
+                description="As matérias cadastradas aparecerão aqui."
+            />
+        {/if}
+        <Pagination pages={posts} only={["posts"]} />
     </Section>
 {/if}
