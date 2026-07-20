@@ -3,7 +3,6 @@
 namespace App\Actions\Locution;
 
 use App\Models\Onair;
-use App\Models\Plan;
 use App\Models\Program;
 use App\Models\SongRequest;
 
@@ -20,15 +19,7 @@ class FinishLocutionAction
                 ->where('is_default_auto_dj', true)
                 ->first();
 
-            if($onair) {
-                if($onair->paused_plan_id) {
-                    Plan::whereKey($onair->paused_plan_id)
-                        ->where('status', 'paused')
-                        ->update([
-                            'status' => 'running',
-                        ]);
-                }
-
+            if ($onair) {
                 $onair->update([
                     'in_air' => false,
                     'allows_song_requests' => false,
@@ -39,7 +30,7 @@ class FinishLocutionAction
                     ->where('was_canceled', false)
                     ->update(['was_canceled' => true]);
             }
-                    
+
             if ($auto) {
                 $selected = collect($auto->phrases)->random();
 

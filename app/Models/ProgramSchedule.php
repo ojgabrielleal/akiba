@@ -8,16 +8,14 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Plan extends Model
+class ProgramSchedule extends Model
 {
     use HasFactory, HasUuids;
-
 
     protected $fillable = [
         'uuid',
         'user_id',
-        'plannable_type',
-        'plannable_id',
+        'program_id',
         'action',
         'scheduled_at',
         'status',
@@ -29,8 +27,7 @@ class Plan extends Model
 
     protected $hidden = [
         'user_id',
-        'plannable_type',
-        'plannable_id',
+        'program_id',
     ];
 
     /**
@@ -38,7 +35,6 @@ class Plan extends Model
      *
      * This method specifies that the 'uuid' column should be automatically
      * generated as a sortable, unique identifier when the model is created.
-     *
      */
     public function uniqueIds(): array
     {
@@ -54,7 +50,7 @@ class Plan extends Model
     #[Scope]
     protected function pendingExecution(Builder $query): void
     {
-        $query->whereIn('status', ['pending', 'running', 'paused']);
+        $query->where('status', 'pending');
     }
 
     /**
@@ -68,8 +64,8 @@ class Plan extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function plannable()
+    public function program()
     {
-        return $this->morphTo();
+        return $this->belongsTo(Program::class, 'program_id');
     }
 }

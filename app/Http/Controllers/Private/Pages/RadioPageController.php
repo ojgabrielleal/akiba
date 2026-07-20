@@ -47,7 +47,7 @@ class RadioPageController extends Controller
                         'with' => [
                             'host',
                             'programAirtimes',
-                            'plans' => fn ($query) => $query->pendingExecution()->orderBy('scheduled_at'),
+                            'schedules' => fn ($query) => $query->pendingExecution()->orderBy('scheduled_at'),
                         ],
                         'active' => true,
                     ])

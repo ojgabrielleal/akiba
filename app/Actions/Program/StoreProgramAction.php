@@ -2,8 +2,8 @@
 
 namespace App\Actions\Program;
 
-use App\Models\Plan;
 use App\Models\Program;
+use App\Models\ProgramSchedule;
 use App\Models\User;
 
 use App\Services\Process\ImageProcessService;
@@ -43,15 +43,15 @@ class StoreProgramAction
                 $program->programAirtimes()->createMany(collect($data['airtimes']));
             }
 
-            if (!empty($data['plans']) && $data['execution_mode'] !== 'live') {
-                $plans = collect($data['plans']);
-                $this->ensurePlansCanBeScheduled($plans);
+            if (!empty($data['schedules']) && $data['execution_mode'] !== 'live') {
+                $schedules = collect($data['schedules']);
+                $this->ensureSchedulesCanBeScheduled($schedules);
 
-                foreach ($plans as $plan) {
-                    $program->plans()->create([
+                foreach ($schedules as $schedule) {
+                    $program->schedules()->create([
                         'user_id' => $user->id,
                         'action' => 'start_program',
-                        'scheduled_at' => $plan['scheduled_at'],
+                        'scheduled_at' => $schedule['scheduled_at'],
                     ]);
                 }
             }
@@ -68,9 +68,9 @@ class StoreProgramAction
             ->update(['is_default_auto_dj' => false]);
     }
 
-    private function ensurePlansCanBeScheduled($plans): void
+    private function ensureSchedulesCanBeScheduled($schedules): void
     {
-        $scheduledTimes = $plans
+        $scheduledTimes = $schedules
             ->pluck('scheduled_at')
             ->filter()
             ->values();
@@ -83,7 +83,7 @@ class StoreProgramAction
             return;
         }
 
-        $hasConflict = Plan::pendingExecution()
+        $hasConflict = ProgramSchedule::pendingExecution()
             ->where('action', 'start_program')
             ->whereIn('scheduled_at', $scheduledTimes->all())
             ->exists();

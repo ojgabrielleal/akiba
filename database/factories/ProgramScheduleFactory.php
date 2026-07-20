@@ -7,9 +7,9 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Plan>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ProgramSchedule>
  */
-class PlanFactory extends Factory
+class ProgramScheduleFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -20,18 +20,10 @@ class PlanFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'plannable_type' => Program::class,
-            'plannable_id' => Program::factory()->for(User::factory(), 'host'),
+            'program_id' => Program::factory()->for(User::factory(), 'host'),
             'action' => 'start_program',
             'scheduled_at' => now()->addHour(),
             'status' => 'pending',
         ];
-    }
-
-    public function finishProgram(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'action' => 'finish_program',
-        ]);
     }
 }

@@ -159,13 +159,13 @@
                                 </dl>
                             {/each}
                         {:else}
-                            {#each item.plans as plan}
+                            {#each item.schedules as schedule}
                                 <dl class="w-full rounded-md py-2 px-4 bg-suspense-aurora flex justify-between mb-2">
                                     <dt class="block text-blue-marinho text-sm font-noto-sans italic uppercase font-extrabold">
                                         Agendado para:
                                     </dt>
                                     <dd class="block text-blue-marinho text-sm font-noto-sans italic uppercase font-extrabold">
-                                        {resolveDateTime(plan.scheduled_at)}
+                                        {resolveDateTime(schedule.scheduled_at)}
                                     </dd>
                                 </dl>
                             {/each}

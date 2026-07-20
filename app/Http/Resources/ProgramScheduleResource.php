@@ -7,7 +7,7 @@ use App\Http\Resources\User\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class PlanResource extends JsonResource
+class ProgramScheduleResource extends JsonResource
 {
     /**
      * Transform the resource into an array.

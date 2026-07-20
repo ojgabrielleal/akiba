@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -12,7 +13,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('opinions', function (Blueprint $table) {
-            $table->dropForeign('reviews_contents_review_id_foreign');
+            if (DB::getDriverName() === 'sqlite') {
+                $table->dropForeign(['review_id']);
+            } else {
+                $table->dropForeign('reviews_contents_review_id_foreign');
+            }
+
             $table->dropColumn('review_id');
             $table->foreignId('post_id')->after('user_id')->constrained('posts')->cascadeOnDelete();
         });

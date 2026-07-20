@@ -5,19 +5,19 @@ namespace Tests\Unit\Actions\Locution;
 use App\Actions\Locution\FinishLocutionAction;
 use App\Actions\Locution\StartLocutionAction;
 use App\Models\Onair;
-use App\Models\Plan;
 use App\Models\Program;
+use App\Models\ProgramSchedule;
 use App\Models\User;
 use App\Services\External\DiscordWebhookService;
 use App\Services\External\OneSignalService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class LocutionPlanPauseTest extends TestCase
+class LocutionProgramScheduleTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testFinishLocutionResumesOnlyPlanPausedByCurrentLocution(): void
+    public function test_starting_and_finishing_locution_does_not_change_schedule_status(): void
     {
         $user = User::factory()->create();
 
@@ -30,17 +30,12 @@ class LocutionPlanPauseTest extends TestCase
             ->for($program, 'program')
             ->create();
 
-        $runningPlan = Plan::factory()->create([
+        $completedSchedule = ProgramSchedule::factory()->create([
             'action' => 'start_program',
-            'status' => 'running',
+            'status' => 'completed',
         ]);
 
-        $alreadyPausedPlan = Plan::factory()->create([
-            'action' => 'start_program',
-            'status' => 'paused',
-        ]);
-
-        $startAction = new StartLocutionAction(new DiscordWebhookService(), new OneSignalService());
+        $startAction = new StartLocutionAction(new DiscordWebhookService, new OneSignalService);
 
         $startAction->execute($user, $program, [
             'phrase' => [
@@ -52,15 +47,10 @@ class LocutionPlanPauseTest extends TestCase
             'send_notification' => false,
         ]);
 
-        $liveOnair = Onair::live()->first();
+        $this->assertSame('completed', $completedSchedule->refresh()->status);
 
-        $this->assertSame($runningPlan->id, $liveOnair->paused_plan_id);
-        $this->assertSame('paused', $runningPlan->refresh()->status);
-        $this->assertSame('paused', $alreadyPausedPlan->refresh()->status);
+        (new FinishLocutionAction)->execute();
 
-        (new FinishLocutionAction())->execute();
-
-        $this->assertSame('running', $runningPlan->refresh()->status);
-        $this->assertSame('paused', $alreadyPausedPlan->refresh()->status);
+        $this->assertSame('completed', $completedSchedule->refresh()->status);
     }
 }

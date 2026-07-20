@@ -3,7 +3,7 @@
 namespace App\Http\Resources\Program;
 
 use App\Http\Resources\Concerns\HasFormats;
-use App\Http\Resources\PlanResource;
+use App\Http\Resources\ProgramScheduleResource;
 use App\Http\Resources\User\UserResource;
 
 use Illuminate\Http\Request;
@@ -31,7 +31,7 @@ class ProgramResource extends JsonResource
             'phrases' => $this->phrases ?? [],
             'host' => UserResource::make($this->host)->format('summary'),
             'airtimes' => ProgramAirtimeResource::collection($this->programAirtimes),
-            'plans' => PlanResource::collection($this->plans),
+            'schedules' => ProgramScheduleResource::collection($this->schedules),
         ];
     }
 

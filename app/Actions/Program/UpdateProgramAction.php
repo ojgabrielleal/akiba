@@ -2,8 +2,8 @@
 
 namespace App\Actions\Program;
 
-use App\Models\Plan;
 use App\Models\Program;
+use App\Models\ProgramSchedule;
 use App\Models\User;
 
 use App\Services\Process\ImageProcessService;
@@ -41,7 +41,7 @@ class UpdateProgramAction
             }
 
             if ($program->execution_mode === 'live') {
-                $program->plans()->where('action', 'start_program')->delete();
+                $program->schedules()->where('action', 'start_program')->delete();
             } else {
                 $program->programAirtimes()->delete();
             }
@@ -62,23 +62,23 @@ class UpdateProgramAction
                     );
                 }
             }else{
-                $plans = collect($data['plans']);
-                $uuids = $plans->pluck('uuid')->filter()->toArray();
+                $schedules = collect($data['schedules']);
+                $uuids = $schedules->pluck('uuid')->filter()->toArray();
 
-                $this->ensurePlansCanBeScheduled($plans, $uuids);
+                $this->ensureSchedulesCanBeScheduled($schedules, $uuids);
 
-                $program->plans()
+                $program->schedules()
                     ->where('action', 'start_program')
                     ->whereNotIn('uuid', $uuids)
                     ->delete();
 
-                foreach ($plans as $plan) {
-                    $program->plans()->updateOrCreate(
-                        ['uuid' => $plan['uuid']],
+                foreach ($schedules as $schedule) {
+                    $program->schedules()->updateOrCreate(
+                        ['uuid' => $schedule['uuid']],
                         [
                             'user_id' => $user->id,
                             'action' => 'start_program',
-                            'scheduled_at' => $plan['scheduled_at'],
+                            'scheduled_at' => $schedule['scheduled_at'],
                         ]
                     );
                 }
@@ -95,9 +95,9 @@ class UpdateProgramAction
             ->update(['is_default_auto_dj' => false]);
     }
 
-    private function ensurePlansCanBeScheduled($plans, array $ignoredUuids = []): void
+    private function ensureSchedulesCanBeScheduled($schedules, array $ignoredUuids = []): void
     {
-        $scheduledTimes = $plans
+        $scheduledTimes = $schedules
             ->pluck('scheduled_at')
             ->filter()
             ->values();
@@ -110,7 +110,7 @@ class UpdateProgramAction
             return;
         }
 
-        $hasConflict = Plan::pendingExecution()
+        $hasConflict = ProgramSchedule::pendingExecution()
             ->where('action', 'start_program')
             ->whereIn('scheduled_at', $scheduledTimes->all())
             ->when($ignoredUuids, fn ($query) => $query->whereNotIn('uuid', $ignoredUuids))

@@ -32,7 +32,7 @@
         execution_mode: programSelected?.execution_mode ?? null,
         is_default_auto_dj: programSelected?.is_default_auto_dj ?? false,
         airtimes: programSelected?.airtimes ?? [],
-        plans: programSelected?.plans ?? [],
+        schedules: programSelected?.schedules ?? [],
         phrases: programSelected?.phrases ?? [],
     });
 
@@ -63,15 +63,15 @@
         $form.airtimes = $form.airtimes.filter((_, i) => i !== index);
     };
     
-    const addPlan = () => {
-        $form.plans = [
-            ...$form.plans,
+    const addSchedule = () => {
+        $form.schedules = [
+            ...$form.schedules,
             { uuid: null, name: null, price: null, benefits: [] },
         ];
     }
     
-    const removePlan = (index) => {
-        $form.plans = $form.plans.filter((_, i) => i !== index);
+    const removeSchedule = (index) => {
+        $form.schedules = $form.schedules.filter((_, i) => i !== index);
     };
     
     const addPhrase = () => {
@@ -301,7 +301,7 @@
         <button
             type="button"
             class="cursor-pointer mb-2 flex items-center gap-[0.2rem] text-blue-ocean text-md font-noto-sans"
-            on:click={() => addPlan()}
+            on:click={() => addSchedule()}
         >
             <img
                 src="/svg/plus.svg"
@@ -312,22 +312,22 @@
             />
             Adicionar agendamento
         </button>
-        {#if $form.plans}
-            {#each $form.plans as plan, index}
+        {#if $form.schedules}
+            {#each $form.schedules as schedule, index}
                 <div class="mb-4 border border-gray-400 p-4 rounded-md">
                     <FormField for={`scheduled-at-${index}`} label="Agendado para" spacing="sm">
                         <TextInput
                             variant="offcanvas"
                             id={`scheduled-at-${index}`}
                             type="datetime-local"
-                            name={`plans[${index}][scheduled_at]`}
-                            bind:value={plan.scheduled_at}
+                            name={`schedules[${index}][scheduled_at]`}
+                            bind:value={schedule.scheduled_at}
                         />
                     </FormField>
                     <button
                         type="button"
                         class="cursor-pointer mt-4 flex items-center gap-[0.2rem] text-blue-ocean text-md font-noto-sans"
-                        on:click={() => removePlan(index)}
+                        on:click={() => removeSchedule(index)}
                     >
                         <img
                             src="/svg/close.svg"

@@ -2,12 +2,12 @@
 
 namespace Database\Seeders;
 
-use App\Models\Plan;
 use App\Models\Program;
+use App\Models\ProgramSchedule;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
-class PlanSeeder extends Seeder
+class ProgramScheduleSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -28,21 +28,12 @@ class PlanSeeder extends Seeder
                     ->addDays($index + 1)
                     ->setTime(14, 0);
 
-                Plan::factory()
+                ProgramSchedule::factory()
                     ->for($user)
-                    ->for($program, 'plannable')
+                    ->for($program)
                     ->create([
                         'action' => 'start_program',
                         'scheduled_at' => $startAt,
-                        'status' => 'pending',
-                    ]);
-
-                Plan::factory()
-                    ->finishProgram()
-                    ->for($user)
-                    ->for($program, 'plannable')
-                    ->create([
-                        'scheduled_at' => $startAt->copy()->addHours(2),
                         'status' => 'pending',
                     ]);
             });

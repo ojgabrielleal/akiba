@@ -16,12 +16,11 @@ class Onair extends Model
         'uuid',
         'in_air',
         'program_id',
-        'paused_plan_id',
         'phrase',
         'execution_mode',
         'icon',
         'allows_song_requests',
-        'song_requests_total'
+        'song_requests_total',
     ];
 
     protected $casts = [
@@ -32,15 +31,14 @@ class Onair extends Model
     ];
 
     protected $hidden = [
-        'show_id'
+        'show_id',
     ];
 
     /**
      * Determine the columns that should receive a unique identifier.
      *
-     * This method specifies that the 'uuid' column should be automatically 
+     * This method specifies that the 'uuid' column should be automatically
      * generated as a sortable, unique identifier when the model is created.
-     *
      */
     public function uniqueIds(): array
     {
@@ -76,11 +74,6 @@ class Onair extends Model
     public function program()
     {
         return $this->belongsTo(Program::class, 'program_id');
-    }
-
-    public function pausedPlan()
-    {
-        return $this->belongsTo(Plan::class, 'paused_plan_id');
     }
 
     public function songRequests()

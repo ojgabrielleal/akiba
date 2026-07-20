@@ -93,8 +93,8 @@ class Program extends Model
         return $this->hasMany(ProgramAirtime::class, 'program_id');
     }
 
-    public function plans()
+    public function schedules()
     {
-        return $this->morphMany(Plan::class, 'plannable');
+        return $this->hasMany(ProgramSchedule::class, 'program_id');
     }
 }

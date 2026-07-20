@@ -4,8 +4,8 @@ namespace Tests\Unit\Actions\Locution;
 
 use App\Actions\Locution\StartLocutionAction;
 use App\Models\Onair;
-use App\Models\Plan;
 use App\Models\Program;
+use App\Models\ProgramSchedule;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -14,7 +14,7 @@ class StartLocutionActionTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testItPausesRunningStartProgramPlansWhenStartingLocution(): void
+    public function test_it_does_not_change_program_schedules_when_starting_locution(): void
     {
         $user = User::factory()->create();
 
@@ -32,27 +32,21 @@ class StartLocutionActionTest extends TestCase
             ->for($user, 'host')
             ->create();
 
-        $runningStartProgramPlan = Plan::factory()
+        $completedStartProgramSchedule = ProgramSchedule::factory()
             ->for($user)
-            ->for($liveProgram, 'plannable')
+            ->for($liveProgram)
             ->create([
                 'action' => 'start_program',
-                'status' => 'running',
+                'status' => 'completed',
             ]);
 
-        $pendingStartProgramPlan = Plan::factory()
+        $pendingStartProgramSchedule = ProgramSchedule::factory()
             ->for($user)
-            ->for($liveProgram, 'plannable')
+            ->for($liveProgram)
             ->create([
                 'action' => 'start_program',
                 'status' => 'pending',
             ]);
-
-        $runningFinishProgramPlan = Plan::factory()
-            ->finishProgram()
-            ->for($user)
-            ->for($liveProgram, 'plannable')
-            ->create(['status' => 'running']);
 
         app(StartLocutionAction::class)->execute($user, $liveProgram, [
             'phrase' => [
@@ -61,10 +55,10 @@ class StartLocutionActionTest extends TestCase
                 'decoration' => 'default',
                 'texture' => null,
             ],
+            'send_notification' => false,
         ]);
 
-        $this->assertSame('paused', $runningStartProgramPlan->refresh()->status);
-        $this->assertSame('pending', $pendingStartProgramPlan->refresh()->status);
-        $this->assertSame('running', $runningFinishProgramPlan->refresh()->status);
+        $this->assertSame('completed', $completedStartProgramSchedule->refresh()->status);
+        $this->assertSame('pending', $pendingStartProgramSchedule->refresh()->status);
     }
 }

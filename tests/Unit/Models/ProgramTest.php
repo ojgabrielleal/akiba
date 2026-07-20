@@ -2,17 +2,17 @@
 
 namespace Tests\Unit\Models;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
-
-use App\Models\User;
+use App\Actions\Program\UpdateProgramAction;
 use App\Models\Onair;
-use App\Models\Plan;
+
 use App\Models\Program;
 use App\Models\ProgramAirtime;
-use App\Actions\Program\UpdateProgramAction;
+use App\Models\ProgramSchedule;
+use App\Models\User;
 use App\Services\Process\ImageProcessService;
 use Database\Seeders\ProgramSeeder;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class ProgramTest extends TestCase
 {
@@ -21,7 +21,7 @@ class ProgramTest extends TestCase
     /**
      * Tests from Program model relationships.
      */
-    public function testHostRelationship(): void
+    public function test_host_relationship(): void
     {
         $user = User::factory()->create();
 
@@ -32,7 +32,7 @@ class ProgramTest extends TestCase
         $this->assertTrue($program->host->is($user));
     }
 
-    public function testProgramAirtimesRelationship(): void
+    public function test_program_airtimes_relationship(): void
     {
         $user = User::factory()->create();
         $programAirtimes = ProgramAirtime::factory(3);
@@ -46,7 +46,7 @@ class ProgramTest extends TestCase
         $this->assertContainsOnlyInstancesOf(ProgramAirtime::class, $program->programAirtimes);
     }
 
-    public function testOnairRelationship(): void
+    public function test_onair_relationship(): void
     {
         $user = User::factory()->create();
 
@@ -64,7 +64,7 @@ class ProgramTest extends TestCase
     /**
      * Tests from Program model scopes.
      */
-    public function testActiveScope(): void
+    public function test_active_scope(): void
     {
         $user = User::factory()->create();
 
@@ -82,7 +82,7 @@ class ProgramTest extends TestCase
         $this->assertFalse($activePrograms->contains($inactiveProgram));
     }
 
-    public function testAvailableForLocutionScope(): void
+    public function test_available_for_locution_scope(): void
     {
         $user = User::factory()->create();
         $otherUser = User::factory()->create();
@@ -127,7 +127,7 @@ class ProgramTest extends TestCase
         $this->assertFalse($programs->contains($inactiveOwnPrivateLive));
     }
 
-    public function testFactoryExecutionModeStates(): void
+    public function test_factory_execution_mode_states(): void
     {
         $user = User::factory()->create();
 
@@ -157,7 +157,7 @@ class ProgramTest extends TestCase
         $this->assertSame('auto_dj', $autoDJ->execution_mode);
     }
 
-    public function testFactoryAccessTypeStates(): void
+    public function test_factory_access_type_states(): void
     {
         $user = User::factory()->create();
 
@@ -175,7 +175,7 @@ class ProgramTest extends TestCase
         $this->assertSame('private', $private->access_type);
     }
 
-    public function testFactoryProvidesPhrasesOnlyForAutoDjPrograms(): void
+    public function test_factory_provides_phrases_only_for_auto_dj_programs(): void
     {
         $user = User::factory()->create();
 
@@ -206,7 +206,7 @@ class ProgramTest extends TestCase
         $this->assertNull($live->phrases);
     }
 
-    public function testUpdateProgramActionKeepsOnlyOneDefaultProgram(): void
+    public function test_update_program_action_keeps_only_one_default_program(): void
     {
         $user = User::factory()->create();
 
@@ -221,7 +221,7 @@ class ProgramTest extends TestCase
             ->withAutoDJ()
             ->create();
 
-        $action = new UpdateProgramAction(new ImageProcessService());
+        $action = new UpdateProgramAction(new ImageProcessService);
 
         $action->execute($newDefault, $user, [
             'name' => $newDefault->name,
@@ -230,14 +230,14 @@ class ProgramTest extends TestCase
             'execution_mode' => 'auto_dj',
             'is_default_auto_dj' => true,
             'phrases' => $newDefault->phrases,
-            'plans' => [],
+            'schedules' => [],
         ]);
 
         $this->assertFalse($currentDefault->refresh()->is_default_auto_dj);
         $this->assertTrue($newDefault->refresh()->is_default_auto_dj);
     }
 
-    public function testProgramSeederCreatesProgramAirtimesForLivePrograms(): void
+    public function test_program_seeder_creates_program_airtimes_for_live_programs(): void
     {
         User::factory()->create(['id' => 1]);
         User::factory()->create([
@@ -267,7 +267,7 @@ class ProgramTest extends TestCase
         $this->assertTrue($autoDJ->is_default_auto_dj);
     }
 
-    public function testUpdateProgramActionDeletesOnlyStartProgramPlansWhenSubmittedEmpty(): void
+    public function test_update_program_action_deletes_program_schedules_when_submitted_empty(): void
     {
         $user = User::factory()->create();
 
@@ -277,32 +277,24 @@ class ProgramTest extends TestCase
             ->withScheduled()
             ->create();
 
-        $startProgramPlan = $program->plans()->create([
+        $startProgramSchedule = $program->schedules()->create([
             'user_id' => $user->id,
             'action' => 'start_program',
             'scheduled_at' => now()->addHour(),
             'status' => 'pending',
         ]);
 
-        $finishProgramPlan = $program->plans()->create([
-            'user_id' => $user->id,
-            'action' => 'finish_program',
-            'scheduled_at' => now()->addHours(2),
-            'status' => 'pending',
-        ]);
-
-        $action = new UpdateProgramAction(new ImageProcessService());
+        $action = new UpdateProgramAction(new ImageProcessService);
 
         $action->execute($program, $user, [
             'name' => $program->name,
             'user' => $user->uuid,
             'access_type' => 'private',
             'execution_mode' => 'scheduled',
-            'plans' => [],
+            'schedules' => [],
         ]);
 
-        $this->assertFalse($program->plans()->whereKey($startProgramPlan)->exists());
-        $this->assertTrue($program->plans()->whereKey($finishProgramPlan)->exists());
-        $this->assertDatabaseCount((new Plan())->getTable(), 1);
+        $this->assertFalse($program->schedules()->whereKey($startProgramSchedule)->exists());
+        $this->assertDatabaseCount((new ProgramSchedule)->getTable(), 0);
     }
 }
