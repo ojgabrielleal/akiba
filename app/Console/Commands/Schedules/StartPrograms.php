@@ -22,10 +22,7 @@ class StartPrograms extends Command
 
         if ($this->hasLiveLocution()) {
             $expired = $this->expireDueSchedules();
-
-            if ($expired > 0) {
-                $this->warn("Expired program schedules: {$expired}.");
-            }
+            if ($expired > 0) $this->warn("Expired program schedules: {$expired}.");
 
             $this->info('Scheduled programs skipped because a live locution is on air.');
             return self::SUCCESS;
@@ -47,14 +44,7 @@ class StartPrograms extends Command
         $schedules->each(function (ProgramSchedule $schedule) use (&$processed, &$failed) {
             try {
                 DB::transaction(function () use ($schedule, &$processed) {
-                    $program = $schedule->program;
-
-                    if (!$program instanceof Program) {
-                        $schedule->update(['status' => 'failed']);
-                        return;
-                    }
-
-                    $this->startProgram($program, $schedule);
+                    $this->startProgram($schedule->program, $schedule);
                     $processed++;
                 });
             } catch (Throwable $exception) {
@@ -70,16 +60,13 @@ class StartPrograms extends Command
 
         $this->startDefaultAutoDjWhenIdle();
 
-        $failed > 0 ?? $this->warn("Scheduled programs failed: {$failed}.");
+        if($failed > 0 ) $this->warn("Scheduled programs failed: {$failed}.");
         return $failed > 0 ? self::FAILURE : self::SUCCESS;
     }
 
     private function selectPhrase(Program $program): array
     {
-        if (empty($program->phrases)) {
-            return [];
-        }
-
+        if (empty($program->phrases)) return [];
         return collect($program->phrases)->random();
     }
 
