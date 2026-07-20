@@ -92,6 +92,8 @@
         activeSearchDropdown = false;
 
         searchQuery = item.title;
+        $form.anime = item.title;
+
         searchMusicResults = item.musics.map((music) => ({
             production: item.title,
             image: item.image,
@@ -106,7 +108,6 @@
             return;
         }
         
-        $form.anime = item.title;
     };
 
 </script>
