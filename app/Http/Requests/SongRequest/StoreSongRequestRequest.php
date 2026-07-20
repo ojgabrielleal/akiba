@@ -22,7 +22,6 @@ class StoreSongRequestRequest extends LoggedWebRequest
     public function rules(): array
     {
         return [
-            'address' => 'sometimes|required|string|max:255',
             'anime' => 'required|string',
             'music' => 'required|array',
             'music.production' => 'required|string',
