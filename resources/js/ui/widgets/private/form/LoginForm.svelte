@@ -27,7 +27,7 @@
             type="text"
             name="username"
             placeholder="👤 Usuário"
-            class="w-full h-14 bg-white font-noto-sans text-md rounded-md outline-none mb-3 pl-4 border border-gray-400"
+            class="w-full h-14 bg-white font-noto-sans text-md rounded-md outline-none mb-2 pl-4 border border-gray-400"
             bind:value={$form.username}
             required
         />
@@ -39,7 +39,7 @@
             bind:value={$form.password}
             required
         />
-        <button type="submit" class="cursor-pointer font-noto-sans flex h-14 w-full items-center justify-center gap-1 rounded-md bg-blue-skywave pt-1 text-md font-light text-suspense-aurora hover:bg-blue-skywave/80">
+        <button type="submit" class="flex h-14 w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-blue-marinho px-4 py-2 font-noto-sans text-md font-extrabold uppercase italic text-suspense-aurora transition hover:brightness-95">
             Entrar
         </button>
     </form>
