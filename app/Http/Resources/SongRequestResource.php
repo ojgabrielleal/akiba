@@ -2,8 +2,6 @@
 
 namespace App\Http\Resources;
 
-use App\Http\Resources\MusicResource;
-
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -20,10 +18,13 @@ class SongRequestResource extends JsonResource
             'uuid' => $this->uuid,
             'was_reproduced' => $this->was_reproduced,
             'was_canceled' => $this->was_canceled,
-            'ip_address' => $this->ip_address,
-            'name' => $this->name,
-            'address' => $this->address,
-            'message' => $this->message ?? "Ouvinte não deixou mensagem",
+            'name' => $this->oauthAccount?->nickname,
+            'address' => $this->oauthAccount?->address ?? collect([
+                $this->oauthAccount?->city,
+                $this->oauthAccount?->state,
+                $this->oauthAccount?->country,
+            ])->filter()->join(', '),
+            'message' => $this->message ?? 'Ouvinte não deixou mensagem',
             'music' => MusicResource::make($this->music),
             'created_at' => $this->created_at->setTimezone('America/Sao_Paulo')->format('H:i'),
         ];

@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Api\OAuth;
+namespace App\Http\Controllers\Api\External\OAuthAccount;
 
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\RedirectResponse;
 
-class OAuthRedirectController extends Controller
+class OAuthAccountRedirectController extends Controller
 {
     public function __invoke(string $provider): RedirectResponse
     {

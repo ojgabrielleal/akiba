@@ -1,13 +1,13 @@
 <?php
 
-use App\Actions\OAuth\DiscordOAuthAction;
-use App\Services\External\OAuth\DiscordOAuthService;
+use App\Actions\OAuthAccount\Providers\DiscordOAuthAccountAction;
+use App\Services\External\OAuthAccount\DiscordOAuthAccountService;
 
 return [
     'providers' => [
         'discord' => [
-            'service' => DiscordOAuthService::class,
-            'action' => DiscordOAuthAction::class,
+            'service' => DiscordOAuthAccountService::class,
+            'action' => DiscordOAuthAccountAction::class,
         ],
     ],
 ];

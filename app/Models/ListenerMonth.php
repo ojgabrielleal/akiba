@@ -15,17 +15,13 @@ class ListenerMonth extends Model
 
     protected $fillable = [
         'uuid',
-        'name',
-        'avatar',
-        'address',
-        'birthday',
+        'oauth_account_id',
         'favorite_program',
         'favorite_music',
         'requests_total',
     ];
 
     protected $casts = [
-        'birthday' => 'date:Y-m-d',
         'requests_total' => 'integer',
         'favorite_program' => 'array',
         'favorite_music' => 'array',
@@ -41,6 +37,14 @@ class ListenerMonth extends Model
     public function uniqueIds(): array
     {
         return ['uuid'];
+    }
+
+    /**
+     * Define the relationships between this model and other models.
+     */
+    public function oauthAccount()
+    {
+        return $this->belongsTo(OAuthAccount::class, 'oauth_account_id');
     }
 
     /**
@@ -60,14 +64,12 @@ class ListenerMonth extends Model
 
         $listener = DB::selectOne('
             SELECT
-                song_requests.name AS name,
-                song_requests.address AS address,
+                song_requests.oauth_account_id AS oauth_account_id,
                 COUNT(*) AS requests_total
             FROM song_requests
             WHERE song_requests.created_at BETWEEN ? AND ?
-            GROUP BY 
-                song_requests.name,
-                song_requests.address
+                AND song_requests.oauth_account_id IS NOT NULL
+            GROUP BY song_requests.oauth_account_id
             ORDER BY requests_total DESC
             LIMIT 1
         ', [$startOfMonth, $endOfMonth]);
@@ -85,14 +87,13 @@ class ListenerMonth extends Model
             JOIN onairs ON song_requests.onair_id = onairs.id
             JOIN programs ON onairs.program_id = programs.id 
             WHERE song_requests.created_at BETWEEN ? AND ? 
-                AND song_requests.name = ? 
-                AND song_requests.address = ?
+                AND song_requests.oauth_account_id = ?
             GROUP BY
                 programs.name,
                 programs.image 
             ORDER BY requests_total DESC
             LIMIT 1
-        ', [$startOfMonth, $endOfMonth, $listener->name, $listener->address]);
+        ', [$startOfMonth, $endOfMonth, $listener->oauth_account_id]);
 
         $music = DB::selectOne('
             SELECT 
@@ -104,8 +105,7 @@ class ListenerMonth extends Model
             FROM song_requests
             JOIN music ON song_requests.music_id = music.id 
             WHERE song_requests.created_at BETWEEN ? AND ? 
-                AND song_requests.name = ? 
-                AND song_requests.address = ?
+                AND song_requests.oauth_account_id = ?
             GROUP BY 
                 music.name, 
                 music.artist,
@@ -113,11 +113,10 @@ class ListenerMonth extends Model
                 music.image
             ORDER BY requests_total DESC
             LIMIT 1
-        ', [$startOfMonth, $endOfMonth, $listener->name, $listener->address]);
+        ', [$startOfMonth, $endOfMonth, $listener->oauth_account_id]);
 
         return (object) [
-            'name' => $listener->name,
-            'address' => $listener->address,
+            'oauth_account_id' => $listener->oauth_account_id,
             'requests_total' => $listener->requests_total,
             'favorite_program' => [
                 'name' => $program?->name,

@@ -46,9 +46,9 @@ class PollVote extends Model
         return $this->belongsTo(PollOption::class, 'poll_option_id');
     }
 
-    public function oauth()
+    public function oauthAccount()
     {
-        return $this->belongsTo(OAuth::class, 'oauth_id');
+        return $this->belongsTo(OAuthAccount::class, 'oauth_id');
     }
 
     public function user()

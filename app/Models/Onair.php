@@ -59,6 +59,14 @@ class Onair extends Model
         $query->where('in_air', true);
     }
 
+    #[Scope]
+    protected function acceptingSongRequests(Builder $query): void
+    {
+        $query
+            ->where('in_air', true)
+            ->where('allows_song_requests', true);
+    }
+
     /**
      * Define the relationships between this model and other models.
      *

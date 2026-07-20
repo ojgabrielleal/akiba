@@ -32,7 +32,7 @@ class User extends Authenticatable
         'nickname',
         'gender',
         'avatar',
-        'birthday',
+        'birth_date',
         'city',
         'state',
         'country',
@@ -47,7 +47,7 @@ class User extends Authenticatable
     protected $casts = [
         'is_active' => 'boolean',
         'is_virtual' => 'boolean',
-        'birthday' => 'date:Y-m-d',
+        'birth_date' => 'date:Y-m-d',
     ];
 
     protected function password(): Attribute

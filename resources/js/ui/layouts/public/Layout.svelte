@@ -2,7 +2,7 @@
     import { usePoll } from "@inertiajs/svelte";
     import { Navbar } from "@/ui/widgets/public";
 
-    usePoll(30 * 1000, {
+    usePoll(10 * 1000, {
         only: ["onair"]
     });
 </script>
@@ -16,5 +16,4 @@
 </main>
 
 <footer>
-
 </footer>

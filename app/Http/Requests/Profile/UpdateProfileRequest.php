@@ -19,7 +19,7 @@ class UpdateProfileRequest extends LoggedWebRequest
             'name' => 'required|string|max:255',
             'nickname' => 'required|string|max:255',
             'gender' => 'required|in:male,female',
-            'birthday' => 'required|date',
+            'birth_date' => 'required|date',
             'city' => 'required|string|max:255',
             'state' => 'required|string|max:255',
             'country' => 'required|string|max:255',

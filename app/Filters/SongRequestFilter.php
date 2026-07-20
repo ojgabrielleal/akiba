@@ -13,6 +13,7 @@ class SongRequestFilter
     public function apply(array $filters = []): Collection|LengthAwarePaginator
     {
         $query = SongRequest::query()
+            ->with('oauthAccount')
             ->when(
                 $filters['onair_id'] ?? null,
                 fn (Builder $query, int $onairId) => $query->where('onair_id', $onairId)

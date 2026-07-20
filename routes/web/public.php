@@ -3,8 +3,8 @@
 use Illuminate\Support\Facades\Route;
 
 // Public controllers
-use App\Http\Controllers\Api\OAuth\OAuthCallbackController;
-use App\Http\Controllers\Api\OAuth\OAuthRedirectController;
+use App\Http\Controllers\Api\External\OAuthAccount\OAuthAccountCallbackController;
+use App\Http\Controllers\Api\External\OAuthAccount\OAuthAccountRedirectController;
 use App\Http\Controllers\Public\HomeController;
 
 /*
@@ -13,13 +13,13 @@ use App\Http\Controllers\Public\HomeController;
 |--------------------------------------------------------------------------
 */
 
-Route::get('/oauth/{provider}/redirect', OAuthRedirectController::class)
+Route::get('/oauth/{provider}/redirect', OAuthAccountRedirectController::class)
     ->name('oauth.redirect');
 
-Route::get('/oauth/{provider}/callback', OAuthCallbackController::class)
+Route::get('/oauth/{provider}/callback', OAuthAccountCallbackController::class)
     ->name('oauth.callback');
 
-Route::prefix("site")->middleware(['inertia', 'auth'])->group(function () {
+Route::prefix("site")->middleware(['oauth.resolve', 'inertia', 'auth'])->group(function () {
     Route::controller(HomeController::class)->group(function () {
         Route::get('', 'render')->name('home');
     });

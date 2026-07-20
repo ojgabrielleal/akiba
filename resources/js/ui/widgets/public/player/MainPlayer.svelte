@@ -1,6 +1,8 @@
 <script>
     import { page } from "@inertiajs/svelte";
-    import { Modal } from "@/ui/components/public";
+    import { onMount } from "svelte";
+    import Cookies from "js-cookie";
+    import { AuthGuard, Modal } from "@/ui/components/public";
     import { SongRequestForm } from "@/ui/widgets/public";
     import { player, toggleAudio, setVolume } from "@/store";
     import { locutionIcons, locutionTextures, locutionDecorations } from "@/data";
@@ -9,7 +11,13 @@
     $: ({ onair: { data: [air] }, stream } = $page.props);
 
     let modalRef;
-    
+
+    onMount(() => {
+        if (!$page.props.oauth?.authenticated || Cookies.get("akiba_oauth_intent") !== "song-request") return;
+        Cookies.remove("akiba_oauth_intent");
+        modalRef.open();
+    });
+
     $: playerData = {
         program: {
             image: air.program.image,
@@ -35,8 +43,7 @@
         },
     };
 
-    
-    function splitHighlightedText(text) {
+    const splitHighlightedText = (text) => {
         return String(text).split(/(\[[^\]]+\])/g).filter(Boolean).map((part) => ({
             text: part.startsWith("[") && part.endsWith("]")
                 ? part.slice(1, -1)
@@ -48,8 +55,14 @@
 </script>
 
 <Modal bind:this={modalRef}>
-    <div slot="content">
-        <SongRequestForm />
+    <div slot="content" let:close>
+        <AuthGuard
+            title="Entre para pedir sua música"
+            description="Use sua conta do Discord para continuar."
+            intent="song-request"
+        >
+            <SongRequestForm {close} />
+        </AuthGuard>
     </div>
 </Modal>
 
@@ -164,9 +177,7 @@
                     Tocando agora:
                 </div>
                 <div class="w-full text-suspense-aurora text-lg font-noto-sans font-extrabold uppercase italic line-clamp-2 leading-6">
-                    {decodeURIComponent(
-                        escape(playerData.current_song.music || "Estamos offline"),
-                    )}
+                    {playerData.current_song.music || "Estamos offline"}
                 </div>
             </div>
         </div>
@@ -184,7 +195,7 @@
         </div>
     </div>
     <!--Third Column-->
-    <div class="block">
+    <div class="flex flex-col">
         <!-- Player Type Information-->
         <div class={["h-10 mb-5 flex justify-center gap-2 items-center rounded-md",
             { "bg-neutral-gray": playerData.execution_mode === "auto_dj" || playerData.execution_mode === "playlist" },
@@ -295,13 +306,47 @@
         <!-- Song Request Button-->
         <button type="button"
             aria-label="Faça seu pedido"
-            class="cursor-pointer w-full py-2 px-1 border border-suspense-aurora rounded-full text-blue-skywave text-xl text-center font-noto-sans font-extrabold italic uppercase disabled:cursor-not-allowed"
+            class={[
+                "cursor-pointer w-full py-2 px-1 border-2 border-suspense-aurora rounded-full text-blue-skywave text-xl text-center font-noto-sans font-extrabold italic uppercase disabled:cursor-not-allowed disabled:border-gray-500 disabled:bg-gray-500/20 disabled:text-gray-500",
+                { "song-request-active": air.allows_song_requests },
+            ]}
+            disabled={!air.allows_song_requests}
             on:click={() => modalRef.open()}
         >
-            & Faça seu <strong class="text-orange-citric">Pedido</strong>
+            & Faça seu <strong class={[
+                { "text-orange-citric": air.allows_song_requests },
+                { "text-gray-500": !air.allows_song_requests },
+            ]}>Pedido</strong>
         </button>
     </div>
 </section>
+
+<style>
+    .song-request-active {
+        animation: song-request-glow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes song-request-glow {
+        0% {
+            box-shadow:
+                0 0 16px color-mix(in srgb, var(--color-blue-skywave) 32%, transparent),
+                0 0 28px color-mix(in srgb, var(--color-orange-citric) 16%, transparent);
+        }
+
+        100% {
+            box-shadow:
+                0 0 24px color-mix(in srgb, var(--color-blue-skywave) 55%, transparent),
+                0 0 40px color-mix(in srgb, var(--color-orange-citric) 30%, transparent);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .song-request-active {
+            animation: none;
+            box-shadow: 0 0 18px color-mix(in srgb, var(--color-blue-skywave) 40%, transparent);
+        }
+    }
+</style>
 
 <section class="container-player">
     <div class="mb-10 grid grid-cols-2 gap-5">

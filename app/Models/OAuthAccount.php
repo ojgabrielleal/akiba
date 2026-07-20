@@ -6,15 +6,26 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class OAuth extends Model
+class OAuthAccount extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $table = 'oauth';
+    protected $table = 'oauth_accounts';
 
     protected $fillable = [
         'uuid',
         'provider',
+        'provider_user_id',
+        'username',
+        'nickname',
+        'address',
+        'avatar',
+        'birth_date',
+        'city',
+        'state',
+        'country',
+        'bio',
+        'profile_completed_at',
         'account_token_hash',
     ];
 
@@ -23,7 +34,8 @@ class OAuth extends Model
     ];
 
     protected $casts = [
-        'provider' => 'array',
+        'birth_date' => 'date:Y-m-d',
+        'profile_completed_at' => 'datetime',
     ];
 
     /**
@@ -40,5 +52,15 @@ class OAuth extends Model
     public function pollVotes()
     {
         return $this->hasMany(PollVote::class, 'oauth_id');
+    }
+
+    public function songRequests()
+    {
+        return $this->hasMany(SongRequest::class, 'oauth_account_id');
+    }
+
+    public function listenerMonths()
+    {
+        return $this->hasMany(ListenerMonth::class, 'oauth_account_id');
     }
 }

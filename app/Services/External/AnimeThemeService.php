@@ -10,18 +10,23 @@ class AnimeThemeService
 {
     private $baseUrl = 'https://api.animethemes.moe';
 
-    public function getMusics($name = null)
+    public function search(string $query)
     {
-        $nameQuery = mb_strtolower(trim((string) $name));
-        $cacheKey = 'animethemes.musics.' . md5($nameQuery);
+        $query = mb_strtolower(trim($query));
+
+        if ($query === '') return collect();
+
+        $cacheKey = 'animethemes.musics.v2.' . md5($query);
 
         if (Cache::has($cacheKey)) return Cache::get($cacheKey);
 
         $response = Http::timeout(5)->withOptions([
             'verify' => false,
-        ])->get("{$this->baseUrl}/anime", [
-            'q'=> $nameQuery,
-            'include' => 'animethemes.song.artists,images'
+        ])->get("{$this->baseUrl}/search", [
+            'q' => $query,
+            'include' => [
+                'animetheme' => 'anime.images,song.artists',
+            ],
         ]);
 
         if ($response->failed()) {
@@ -31,19 +36,25 @@ class AnimeThemeService
 
         $data = $response->json();
 
-        $formatted = collect($data['anime'] ?? [])->map(function ($item) {
-            return [
-                'anime' => $item['name'],
-                'banner' => $item['images'][0]['link'] ?? null,
-                'musics' => collect($item['animethemes'] ?? [])->map(function ($music) {
-                    return [
-                        'type' => $music['type'],
-                        'title' => $music['song']['title'] ?? null,
-                        'artists' => collect($music['song']['artists'] ?? [])->pluck('name')->join(', ')
-                    ];
-                })->values()
-            ];
-        })->values();
+        $formatted = collect($data['search']['animethemes'] ?? [])
+            ->filter(fn ($item) => isset($item['anime']))
+            ->groupBy('anime.id')
+            ->map(function ($themes) {
+                $anime = $themes->first()['anime'];
+
+                return [
+                    'anime' => $anime['name'],
+                    'banner' => $anime['images'][0]['link'] ?? null,
+                    'musics' => $themes->map(function ($music) {
+                        return [
+                            'type' => $music['type'],
+                            'title' => $music['song']['title'] ?? null,
+                            'artists' => collect($music['song']['artists'] ?? [])->pluck('name')->join(', ')
+                        ];
+                    })->values(),
+                ];
+            })
+            ->values();
 
         Cache::put($cacheKey, $formatted, now()->addHours(12));
 

@@ -3,6 +3,7 @@
 namespace App\Actions\SongRequest;
 
 use App\Models\Music;
+use App\Models\OAuthAccount;
 use App\Models\Onair;
 use App\Models\SongRequest;
 
@@ -10,13 +11,20 @@ use Illuminate\Support\Facades\DB;
 
 class StoreSongRequestAction
 {
-    public function execute(array $data, string $ipAddress): SongRequest
+    public function execute(array $data, OAuthAccount $oauthAccount): SongRequest
     {
-        return DB::transaction(function () use ($data, $ipAddress) {
-            $onair = Onair::live()->firstOrFail();
+        return DB::transaction(function () use ($data, $oauthAccount) {
+            $onair = Onair::acceptingSongRequests()->firstOrFail();
             $music = Music::where('name', $data['music']['name'])->first();
-        
-            if (! $music) {
+
+            if (array_key_exists('address', $data)) {
+                $oauthAccount->update([
+                    'address' => $data['address'],
+                    'profile_completed_at' => now(),
+                ]);
+            }
+
+            if (!$music) {
                 $music = Music::create([
                     'production' => $data['music']['production'],
                     'type' => $data['music']['type'],
@@ -29,11 +37,9 @@ class StoreSongRequestAction
             }
 
             return $onair->songRequests()->create([
-                'ip_address' => $ipAddress,
-                'name' => $data['name'],
-                'address' => $data['address'],
-                'message' => $data['message'],
+                'oauth_account_id' => $oauthAccount->id,
                 'music_id' => $music->id,
+                'message' => $data['message'],
             ]);
         });
     }

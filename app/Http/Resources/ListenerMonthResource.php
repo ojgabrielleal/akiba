@@ -19,10 +19,14 @@ class ListenerMonthResource extends JsonResource
 
         return [
             'uuid' => $this->uuid,
-            'avatar' => $this->avatar,
-            'name' => $this->name,
-            'address' => $this->address,
-            'birthday' => $this->birthday?->format('Y-m-d'),
+            'avatar' => $this->oauthAccount?->avatar,
+            'name' => $this->oauthAccount?->nickname,
+            'address' => collect([
+                $this->oauthAccount?->city,
+                $this->oauthAccount?->state,
+                $this->oauthAccount?->country,
+            ])->filter()->join(', '),
+            'birth_date' => $this->oauthAccount?->birth_date?->format('Y-m-d'),
             'favorite_program' => [
                 'name' => $favoriteProgram['name'],
                 'image' => $favoriteProgram['image'],

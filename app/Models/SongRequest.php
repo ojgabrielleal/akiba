@@ -16,15 +16,14 @@ class SongRequest extends Model
         'was_canceled',
         'onair_id',
         'music_id',
-        'ip_address',
-        'name',
-        'address',
+        'oauth_account_id',
         'message',
     ];
 
     protected $hidden = [
         'onair_id',
-        'music_id'
+        'music_id',
+        'oauth_account_id',
     ];
 
     protected $casts = [
@@ -58,5 +57,10 @@ class SongRequest extends Model
     public function music()
     {
         return $this->belongsTo(Music::class, 'music_id');
+    }
+
+    public function oauthAccount()
+    {
+        return $this->belongsTo(OAuthAccount::class, 'oauth_account_id');
     }
 }

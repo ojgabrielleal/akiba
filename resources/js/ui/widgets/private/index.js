@@ -13,7 +13,6 @@ export { default as EventForm } from './form/EventForm.svelte'
 export { default as LocutionForm } from "./form/LocutionForm.svelte"
 export { default as ProgramForm } from "./form/ProgramForm.svelte"
 export { default as MusicForm } from "./form/MusicForm.svelte"
-export { default as ListenerMonthForm } from "./form/ListenerMonthForm.svelte"
 export { default as ListenerGalleryForm } from "./form/ListenerGalleryForm.svelte"
 export { default as PodcastForm } from "./form/PodcastForm.svelte"
 export { default as MarketingForm } from "./form/MarketingForm.svelte"

@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Services\External\OAuth;
+namespace App\Services\External\OAuthAccount;
 
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
-class DiscordOAuthService
+class DiscordOAuthAccountService
 {
     private const AUTHORIZE_URL = 'https://discord.com/oauth2/authorize';
     private const TOKEN_URL = 'https://discord.com/api/oauth2/token';

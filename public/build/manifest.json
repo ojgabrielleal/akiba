@@ -18,7 +18,7 @@
     ]
   },
   "resources/js/app.js": {
-    "file": "assets/app-DDcVNyuT.js",
+    "file": "assets/app-BDnFDOuS.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
@@ -27,11 +27,11 @@
       "_vendor-CHCVpFLn.js"
     ],
     "css": [
-      "assets/app-DwvFBf9a.css"
+      "assets/app-0fdoK8_e.css"
     ]
   },
   "resources/js/css/app.css": {
-    "file": "assets/app-DwjmzvWJ.css",
+    "file": "assets/app-PjcnvA82.css",
     "name": "app",
     "names": [
       "app.css"

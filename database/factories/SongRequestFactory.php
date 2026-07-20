@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\OAuthAccount;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,9 +20,7 @@ class SongRequestFactory extends Factory
         return [
             'was_reproduced' => false,
             'was_canceled' => false,
-            'ip_address' => fake()->ipv4(),
-            'name' => fake()->userName(),
-            'address' => fake()->address(),
+            'oauth_account_id' => OAuthAccount::factory(),
             'message' => fake()->sentence(),
         ];
     }

@@ -19,8 +19,9 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'inertia' => \App\Http\Middleware\HandleInertiaRequestsMiddleware::class,
-            'oauth' => \App\Http\Middleware\EnsureOAuthAuthenticated::class,
-            'authenticated.user' => \App\Http\Middleware\ShareAuthenticatedUserMiddleware::class,
+            'oauth.resolve' => \App\Http\Middleware\OAuth\ResolveOAuthAccount::class,
+            'oauth' => \App\Http\Middleware\OAuth\EnsureOAuthAccountAuthenticated::class,
+            'authenticated.user' => \App\Http\Middleware\Auth\ShareAuthenticatedUserMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

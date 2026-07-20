@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Music;
+use App\Models\OAuthAccount;
 use App\Models\Onair;
 use App\Models\SongRequest;
 use Illuminate\Database\Seeder;
@@ -26,9 +27,12 @@ class SongRequestSeeder extends Seeder
         }
 
         $onairs->each(function (Onair $onair) use ($music) {
+            $oauthAccount = OAuthAccount::factory()->create();
+
             SongRequest::factory(5)
                 ->for($onair, 'onair')
                 ->for($music, 'music')
+                ->for($oauthAccount, 'oauthAccount')
                 ->create();
         });
     }

@@ -1,10 +1,11 @@
 <script>
     import { onMount } from "svelte";
     import { usePoll } from "@inertiajs/svelte";
+    import { Toaster } from "svelte-hot-french-toast";
     import { Meta } from "@/config";
     import { MainPlayer, MobilePlayer } from "@/ui/widgets/public";
 
-    usePoll(30 * 1000, {
+    usePoll(10 * 1000, {
         only: ["onair", "stream"],
     });
 
@@ -14,6 +15,7 @@
 </script>
 
 <Meta />
+<Toaster />
 <header>
     <div class="w-full flex overflow-hidden fixed top-0 z-10">
         <div class="flex shrink-0">

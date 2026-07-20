@@ -1,6 +1,8 @@
 <script>
     import { page } from "@inertiajs/svelte";
-    import { Modal } from "@/ui/components/public";
+    import { onMount } from "svelte";
+    import Cookies from "js-cookie";
+    import { AuthGuard, Modal } from "@/ui/components/public";
     import { SongRequestForm } from "@/ui/widgets/public";
     import { player, toggleAudio, setVolume } from "@/store";
     import { resolvePlaceholderImage } from "@/utils";
@@ -8,6 +10,13 @@
     $: ({ onair: { data: [air] }, stream } = $page.props);
 
     let modalRef;
+
+    onMount(() => {
+        if (!$page.props.oauth?.authenticated || Cookies.get("akiba_oauth_intent") !== "song-request") return;
+
+        modalRef.open();
+        setTimeout(() => Cookies.remove("akiba_oauth_intent", { path: "/" }));
+    });
 
     $: playerData = {
         program: {
@@ -49,8 +58,14 @@
 </script>
 
 <Modal bind:this={modalRef}>
-    <div slot="content">
-        <SongRequestForm />
+    <div slot="content" let:close>
+        <AuthGuard
+            title="Entre para pedir sua música"
+            description="Use sua conta do Discord para continuar."
+            intent="song-request"
+        >
+            <SongRequestForm {close} />
+        </AuthGuard>
     </div>
 </Modal>
 
@@ -128,7 +143,7 @@
                         Tocando agora
                     </p>
                     <p class="truncate text-suspense-aurora/75 text-xs font-noto-sans font-bold uppercase italic">
-                        {decodeURIComponent(escape(playerData.currentSong.music || "Estamos offline"))}
+                        {playerData.currentSong.music || "Estamos offline"}
                     </p>
                 </div>
             </div>
@@ -177,10 +192,14 @@
 
             <button
                 type="button"
-                class="w-full py-3 px-5 rounded-full border border-suspense-aurora/30 text-blue-skywave text-base text-center font-noto-sans font-extrabold italic uppercase active:scale-[0.98] transition-transform"
+                class="w-full py-3 px-5 rounded-full border border-suspense-aurora/30 text-blue-skywave text-base text-center font-noto-sans font-extrabold italic uppercase active:scale-[0.98] transition-transform disabled:cursor-not-allowed disabled:border-gray-500 disabled:bg-gray-500/20 disabled:text-gray-500 disabled:active:scale-100"
+                disabled={!air.allows_song_requests}
                 on:click={() => modalRef.open()}
             >
-                Faça seu <strong class="text-orange-citric">pedido</strong>
+                Faça seu <strong class={[
+                    { "text-orange-citric": air.allows_song_requests },
+                    { "text-gray-500": !air.allows_song_requests },
+                ]}>pedido</strong>
             </button>
         </div>
     </div>
@@ -261,7 +280,7 @@
                             Tocando agora
                         </p>
                         <p class="line-clamp-2 text-suspense-aurora/80 text-sm leading-4 font-noto-sans font-bold uppercase italic">
-                            {decodeURIComponent(escape(playerData.currentSong.music || "Estamos offline"))}
+                            {playerData.currentSong.music || "Estamos offline"}
                         </p>
                     </div>
                 </div>
@@ -311,10 +330,14 @@
 
                 <button
                     type="button"
-                    class="w-full py-3 px-5 rounded-full border border-suspense-aurora/30 text-blue-skywave text-base text-center font-noto-sans font-extrabold italic uppercase active:scale-[0.98] transition-transform"
+                    class="w-full py-3 px-5 rounded-full border border-suspense-aurora/30 text-blue-skywave text-base text-center font-noto-sans font-extrabold italic uppercase active:scale-[0.98] transition-transform disabled:cursor-not-allowed disabled:border-gray-500 disabled:bg-gray-500/20 disabled:text-gray-500 disabled:active:scale-100"
+                    disabled={!air.allows_song_requests}
                     on:click={() => modalRef.open()}
                 >
-                    Faça seu <strong class="text-orange-citric">pedido</strong>
+                    Faça seu <strong class={[
+                        { "text-orange-citric": air.allows_song_requests },
+                        { "text-gray-500": !air.allows_song_requests },
+                    ]}>pedido</strong>
                 </button>
             </div>
         </div>

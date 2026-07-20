@@ -23,9 +23,6 @@ class StoreListenerMonthRequest extends LoggedWebRequest
      */
     public function rules(): array
     {
-        return [
-            'avatar' => 'required|image',
-            'birthday' => 'required',
-        ];
+        return [];
     }
 }

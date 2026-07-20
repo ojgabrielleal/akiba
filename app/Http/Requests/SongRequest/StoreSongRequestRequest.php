@@ -22,8 +22,7 @@ class StoreSongRequestRequest extends LoggedWebRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string',
-            'address' => 'required|string',
+            'address' => 'sometimes|required|string|max:255',
             'anime' => 'required|string',
             'music' => 'required|array',
             'music.production' => 'required|string',
@@ -31,6 +30,7 @@ class StoreSongRequestRequest extends LoggedWebRequest
             'music.artist' => 'required|string',
             'music.name' => 'required|string',
             'music.image' => 'nullable|string',
+            'message' => 'nullable|string',
         ];
     }
 }

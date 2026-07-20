@@ -19,10 +19,7 @@ class ListenerMonthController extends Controller
 
     public function store(StoreListenerMonthRequest $request)
     {
-        $this->storeListenerMonthAction->execute(
-            $request->validated(),
-            $request->file('avatar')
-        );
+        $this->storeListenerMonthAction->execute();
 
         return $this->flashMessage('save');
     }

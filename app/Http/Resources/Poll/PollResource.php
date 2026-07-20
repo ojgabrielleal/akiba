@@ -2,7 +2,7 @@
 
 namespace App\Http\Resources\Poll;
 
-use App\Models\OAuth;
+use App\Models\OAuthAccount;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -38,23 +38,23 @@ class PollResource extends JsonResource
     private function hasVoteFrom(Request $request): bool
     {
         $user = $request->user();
-        $oauth = $this->oauth($request);
+        $oauthAccount = $this->oauthAccount($request);
 
-        if (!$user && !$oauth) return false;
+        if (!$user && !$oauthAccount) return false;
 
         return $this->votes->contains(
-            fn ($vote) => ($user && $vote->user_id === $user->id) || ($oauth && $vote->oauth_id === $oauth->id)
+            fn ($vote) => ($user && $vote->user_id === $user->id) || ($oauthAccount && $vote->oauth_id === $oauthAccount->id)
         );
     }
 
-    private function oauth(Request $request): ?OAuth
+    private function oauthAccount(Request $request): ?OAuthAccount
     {
-        $oauth = $request->attributes->get('oauth');
-        if ($oauth instanceof OAuth) return $oauth;
+        $oauthAccount = $request->attributes->get('oauth_account');
+        if ($oauthAccount instanceof OAuthAccount) return $oauthAccount;
 
         $oauthToken = $request->cookie('akiba_oauth_token');
         if (!$oauthToken) return null;
 
-        return OAuth::where('account_token_hash', hash('sha256', $oauthToken))->first();
+        return OAuthAccount::where('account_token_hash', hash('sha256', $oauthToken))->first();
     }
 }

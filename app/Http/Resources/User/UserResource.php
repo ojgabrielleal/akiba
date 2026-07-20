@@ -37,7 +37,7 @@ class UserResource extends JsonResource
             'nickname' => $this->nickname,
             'avatar' => $this->avatar,
             'gender' => $this->gender,
-            'birthday' => $this->birthday?->format('Y-m-d'),
+            'birth_date' => $this->birth_date?->format('Y-m-d'),
             'city' => $this->city,
             'state' => $this->state,
             'country' => $this->country,

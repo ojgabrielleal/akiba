@@ -3,7 +3,9 @@
 namespace App\Http\Middleware;
 
 use App\Services\External\StreamService;
+
 use Illuminate\Http\Request;
+
 use Inertia\Middleware;
 
 class HandleInertiaRequestsMiddleware extends Middleware

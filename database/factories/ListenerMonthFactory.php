@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\OAuthAccount;
 use Database\Factories\Concerns\HasFakeImages;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -20,10 +21,7 @@ class ListenerMonthFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
-            'avatar' => $this->fakeImageUrl(),
-            'birthday' => $this->faker->date(),
-            'address' => fake()->address(),
+            'oauth_account_id' => OAuthAccount::factory(),
             'favorite_program' => [
                 'name' => fake()->name(),
                 'image' => $this->fakeImageUrl(),

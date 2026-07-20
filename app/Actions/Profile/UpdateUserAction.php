@@ -26,7 +26,7 @@ class UpdateUserAction
                 'name' => $data['name'],
                 'nickname' => $data['nickname'],
                 'gender' => $data['gender'],
-                'birthday' => $data['birthday'],
+                'birth_date' => $data['birth_date'],
                 'city' => $data['city'],
                 'state' => $data['state'],
                 'country' => $data['country'],

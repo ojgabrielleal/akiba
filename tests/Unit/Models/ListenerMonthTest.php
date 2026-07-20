@@ -11,10 +11,21 @@ use App\Models\Onair;
 use App\Models\SongRequest;
 use App\Models\Music;
 use App\Models\ListenerMonth;
+use App\Models\OAuthAccount;
 
 class ListenerMonthTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function testOAuthAccountRelationship(): void
+    {
+        $oauthAccount = OAuthAccount::factory()->create();
+        $listenerMonth = ListenerMonth::factory()
+            ->for($oauthAccount, 'oauthAccount')
+            ->create();
+
+        $this->assertTrue($listenerMonth->oauthAccount->is($oauthAccount));
+    }
 
     /**
      * Tests from ListenerMonth model static methods.
@@ -32,25 +43,23 @@ class ListenerMonthTest extends TestCase
             ->create();
 
         $music = Music::factory()->create();
+        $oauthAccount = OAuthAccount::factory()->create();
 
         SongRequest::factory(5)
             ->for($onair, 'onair')
             ->for($music, 'music')
             ->create([
-                'name' => 'John Doe',
-                'address' => '123 Main St',
+                'oauth_account_id' => $oauthAccount->id,
                 'was_reproduced' => true,
             ]);
 
         $mostActiveListener = ListenerMonth::mostActiveListenerOfCurrentMonth();
 
         $this->assertNotNull($mostActiveListener);
-        $this->assertEquals('John Doe', $mostActiveListener->name);
-        $this->assertEquals('123 Main St', $mostActiveListener->address ?? '');
-        $this->assertEquals($program->uuid, $mostActiveListener->program_uuid);
-        $this->assertEquals($program->name, $mostActiveListener->program_name);
-        $this->assertEquals($program->image, $mostActiveListener->program_image);
-        $this->assertEquals($program->name, $mostActiveListener->favorite_program);
+        $this->assertEquals($oauthAccount->id, $mostActiveListener->oauth_account_id);
+        $this->assertEquals($program->name, $mostActiveListener->favorite_program['name']);
+        $this->assertEquals($program->image, $mostActiveListener->favorite_program['image']);
+        $this->assertEquals($music->name, $mostActiveListener->favorite_music['name']);
         $this->assertEquals(5, $mostActiveListener->requests_total);
     }
 }

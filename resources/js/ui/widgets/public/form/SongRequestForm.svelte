@@ -1,15 +1,14 @@
 <script>
+    export let close = () => {};
+
     import axios from "axios";
-    import { useForm, page } from "@inertiajs/svelte";
+    import { page, useForm } from "@inertiajs/svelte";
+    import toast from "svelte-hot-french-toast";
     import { debounce, resolvePlaceholderImage } from "@/utils";
 
-    $: ({ onair } = $page.props);
-
-    $: air = onair.data[0];
-    $: success = false;
+    $:({ oauth } = $page.props);
 
     $: form = useForm({
-        name: null,
         address: null,
         anime: null,
         music: null,
@@ -19,95 +18,101 @@
     const submit = () => {
         $form.post("/song-request", {
             onSuccess: () => {
-                success = true;
+                toast.success("Pedido enviado");
+                close();
             },
         });
     };
 
-    let activeAnimeDropdown = false;
-    let activeMusicDropdown = false;
+    let activeSearchDropdown = false;
 
-    let animeSearch = "";
-    let animesList = [];
-    let animeThemesList = [];
+    let searchQuery = "";
+    let searchResults = [];
+    let searchMusicResults = [];
 
-    const getAnimeMusics = (value) => {
-        animesList = [];
-        animeThemesList = [];
-        
+    let searchError = false;
+    let hasSearched = false;
+
+    let latestSearchId = 0;
+    let isSearching = false;
+
+    const searchAnimeThemes = async (value, searchId) => {
+        try {
+            const response = await axios.get("/api/anime-themes/search", {
+                params: { query: value },
+            });
+
+            if (searchId !== latestSearchId) return;
+
+            const results = Array.isArray(response.data) ? response.data : [];
+            searchResults = results.map((item) => ({
+                title: item.anime,
+                image: item.banner,
+                musics: item.musics ?? [],
+            }));
+
+            hasSearched = true;
+        } catch (error) {
+            if (searchId !== latestSearchId) return;
+            console.error("AnimeThemes API: Error searching anime themes", error);
+            searchError = true;
+        }finally {
+            if (searchId === latestSearchId) {
+                isSearching = false;
+            }
+        }
+    };
+
+    const debouncedSearchAnimeThemes = debounce(searchAnimeThemes);
+
+    const handleSearchInput = (value) => {
+        searchQuery = value;
+
+        searchResults = [];
+        searchMusicResults = [];
+        searchError = false;
+        hasSearched = false;
+
         $form.anime = null;
         $form.music = null;
 
-        if (!value) return;
+        const query = value.trim();
+        const searchId = ++latestSearchId;
 
-        axios.get(`/api/anime/music?name=${encodeURIComponent(value)}`)
-            .then((response) => {
-                const animes = Array.isArray(response.data) ? response.data : [];
+        if (!query) {
+            isSearching = false;
+            return;
+        }
 
-                animesList = animes.map((item) => ({
-                    title: item.anime,
-                    image: item.banner,
-                    musics: item.musics ?? [],
-                }));
-            })
-            .catch(() => {
-                console.error("Anime API: Error to fetch anime musics");
-            });
+        isSearching = true;
+        debouncedSearchAnimeThemes(query, searchId);
     };
 
     const selectAnime = (item) => {
-        animeSearch = item.title;
+        activeSearchDropdown = false;
 
-        $form.anime = item.title;
-        activeAnimeDropdown = false;
-
-        animeThemesList = item.musics.map((music) => ({
+        searchQuery = item.title;
+        searchMusicResults = item.musics.map((music) => ({
             production: item.title,
             image: item.image,
             type: music.type,
             name: music.title,
             artist: music.artists,
         }));
+
+        if (searchMusicResults.length === 1) {
+            searchQuery = item.title + "[" + searchMusicResults[0].type + "]" + " - " + searchMusicResults[0].name;
+            $form.music = searchMusicResults[0];
+            return;
+        }
+        
+        $form.anime = item.title;
     };
 
-    const selectMusic = (item) => {
-        $form.music = item;
-        activeMusicDropdown = false;
-    }
-
-    const debouncedGetAnimeMusics = debounce(getAnimeMusics);
 </script>
 
-{#if success}
-    <div class="h-100 py-3">
-        <div class="mb-4 text-sm font-noto-sans text-gray-500">
-            💌 Yay! Pedido enviado!
-        </div>
-        <div class="text-sm font-noto-sans text-gray-500">
-            Seu pedido já tá a caminho! {air.program.host.gender === "male" ? "O" : "A"}
-            {air.program.host.nickname}
-            vai ver rapidinho. Fica por aqui e curte a vibe da programação! ✨🔥
-        </div>
-    </div>
-{:else if air.allows_song_requests}
-    <form on:submit|preventDefault={submit}>
-        <div class="mb-3">
-            <label for="name" class="text-md text-gray-700 font-noto-sans block mb-1">
-                Como gostaria de ser chamado?
-            </label>
-            <input
-                id="name"
-                type="text"
-                name="name"
-                class="w-full h-10 bg-white font-noto-sans text-black text-md rounded-md outline-none pl-4 border border-gray-400"
-                placeholder="Ex: Ayasumi"
-                bind:value={$form.name}
-                required
-            />
-            <span class="text-[0.8rem] text-gray-500 font-noto-sans mt-1 block">
-                Vale apelido, nome social.. Só pra falar que o pedido é seu!
-            </span>
-        </div>
+<form on:submit|preventDefault={submit}>
+    {#if !oauth.profile_completed}
         <div class="mb-3">
             <label for="address" class="text-md text-gray-700 font-noto-sans block mb-1">
                 Qual é a sua cidade e estado?
@@ -125,157 +130,158 @@
                 Não está no Brasil? Fala ai a cidade e país que está agora.
             </span>
         </div>
-        <div class="mb-3 relative">
-            <label for="anime" class="text-md text-gray-700 font-noto-sans block mb-1">
-                Escolha um anime para ouvir a música
-            </label>
-            <input
-                id="anime"
-                type="text"
-                name="anime"
-                class="w-full h-10 bg-white font-noto-sans text-md text-black rounded-md outline-none pl-4 border border-gray-400"
-                placeholder="Ex: Naruto"
-                autocomplete="off"
-                bind:value={animeSearch}
-                on:input={(e) => debouncedGetAnimeMusics(e.target.value)}
-                on:focus={() => (activeAnimeDropdown = true)}
-                on:blur={() => (activeAnimeDropdown = false)}
-            />
-            <span class="text-[0.8rem] text-gray-500 font-noto-sans mt-1 block">
-                Selecione o anime para que possamos buscar as músicas.
-            </span>
-            {#if activeAnimeDropdown}
-                <div class="absolute w-full bg-white border border-gray-200 rounded-2xl shadow-xl z-25 max-h-56 overflow-y-auto p-2">
-                    {#if !animeSearch.trim()}
-                        <div class="p-3 font-noto-sans text-center">
-                            <div class="text-gray-700 text-sm font-semibold">
-                                Qual anime vai embalar seu pedido?
-                            </div>
-                            <div class="text-gray-500 text-xs mt-1">
-                                Tente Naruto, One Piece, Bleach...
-                            </div>
+    {/if}
+    <div class="mb-3 relative">
+        <label for="anime-theme-search" class="text-md text-gray-700 font-noto-sans block mb-1">
+            Busque por anime ou música
+        </label>
+        <input
+            id="anime-theme-search"
+            type="text"
+            name="anime_theme_search"
+            class="w-full h-10 bg-white font-noto-sans text-md text-black rounded-md outline-none pl-4 border border-gray-400"
+            placeholder="Ex: Naruto ou unravel"
+            autocomplete="off"
+            bind:value={searchQuery}
+            on:input={(e) => handleSearchInput(e.target.value)}
+            on:focus={() => (activeSearchDropdown = true)}
+            on:blur={() => (activeSearchDropdown = false)}
+        />
+        <span class="text-[0.8rem] text-gray-500 font-noto-sans mt-1 block">
+            Diga o nome do anime ou da música e faremos o resto!
+        </span>
+        {#if activeSearchDropdown}
+            <div class="absolute w-full bg-white border border-gray-200 rounded-2xl shadow-xl z-25 max-h-56 overflow-y-auto p-2">
+                {#if !searchQuery.trim()}
+                    <div class="p-3 font-noto-sans text-center">
+                        <div class="text-gray-700 text-sm font-semibold">
+                            O que vai embalar seu pedido?
                         </div>
-                    {:else if animesList.length === 0}
-                        <div class="p-3 font-noto-sans text-center flex flex-col items-center gap-2">
-                            <svg class="w-5 h-5 text-gray-300 animate-spin fill-blue-ocean" viewBox="0 0 24 24" aria-hidden="true">
-                                <path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2v3a7 7 0 1 0 7 7h3c0 5.523-4.477 10-10 10Z"/>
-                            </svg>
-                            <div class="text-gray-700 text-sm font-semibold">
-                                Buscando anime...
-                            </div>
+                        <div class="text-gray-500 text-xs mt-1">
+                            Tente Naruto, unravel, Blue Bird...
                         </div>
-                    {:else}
-                        {#each animesList as item}
-                            <button aria-label={`Selecionar anime ${item.title}`}
-                                type="button"
-                                class="cursor-pointer flex items-center gap-3 w-full p-2 rounded-xl"
-                                on:mousedown={() => selectAnime(item)}
-                            >
-                                <img
-                                    src={resolvePlaceholderImage(item.image, "placeholder")}
-                                    alt={item.title}
-                                    class="w-14 h-14 object-cover rounded-md border border-gray-100 shadow-sm shrink-0"
-                                    loading="lazy"
-                                />
-                                <div class="flex flex-col items-start text-left">
-                                    <div class="font-noto-sans font-semibold text-gray-900 text-sm line-clamp-1">
-                                        {item.title}
-                                    </div>
-                                </div>
-                            </button>
-                        {/each}
-                    {/if}
-                </div>
-            {/if}
-        </div>
-        {#if $form.anime}
-            <div class="mb-5 relative">
-                <div class="text-md text-gray-700 font-noto-sans block mb-1">
-                    Escolha uma música do anime escolhido
-                </div>
-                <button
-                    type="button"
-                    class="w-full h-11 flex items-center justify-between bg-white font-noto-sans text-md text-black rounded-md outline-none px-4 border border-gray-400"
-                    on:click={() => (activeMusicDropdown = true)}
-                    on:blur={() => (activeMusicDropdown = false)}
-                >
-                    {#if $form.music}
-                        <div class="flex flex-col items-start overflow-hidden flex-1 min-w-0">
-                            <span class="text-sm text-gray-900 font-normal truncate w-full text-left">
-                                {$form.music.name} - {$form.music.artist}
-                            </span>
-                        </div>
-                    {:else}
-                        <div class="flex-1 text-left">
-                            <span class="text-gray-400 italic text-sm">
-                                Selecione uma música
-                            </span>
-                        </div>
-                    {/if}
-                    <img
-                        src="/svg/chevron-down.svg"
-                        alt=""
-                        class="w-5 h-5 text-gray-400 shrink-0 ml-2"
-                        aria-hidden="true"
-                    />
-                </button>
-                {#if activeMusicDropdown}
-                    <div class="absolute w-full mt-2 bg-white border border-gray-100 rounded-2xl shadow-2xl z-30 max-h-56 overflow-y-auto">
-                        {#each ["OP", "ED"] as type}
-                            <div class="px-3 py-2 text-[0.6rem] font-extrabold text-gray-400 uppercase tracking-[0.2em]">
-                                {type === "OP" ? "Aberturas" : "Encerramentos"}
-                            </div>
-                            {#each animeThemesList.filter((item) => item.type === type) as item}
-                                <button aria-label={`Selecionar musica ${item.name}`}
-                                    type="button"
-                                    class="w-full flex flex-col items-start gap-0.5 p-3 rounded-xl hover:bg-gray-50 active:bg-pink-50 transition-colors border-b last:border-0 border-gray-50 mb-1"
-                                    on:mousedown={() => selectMusic(item)}
-                                >
-                                    <div class="font-noto-sans font-extrabold text-gray-900 text-sm line-clamp-1 w-full text-left leading-tight">
-                                        {item.name}
-                                    </div>
-                                    <div class="font-noto-sans text-gray-500 text-xs truncate w-full text-left">
-                                        {item.artist}
-                                    </div>
-                                </button>
-                            {/each}
-                        {/each}
                     </div>
+                {:else if isSearching}
+                    <div class="p-3 font-noto-sans text-center flex flex-col items-center gap-2">
+                        <svg class="w-5 h-5 text-gray-300 animate-spin fill-blue-ocean" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2v3a7 7 0 1 0 7 7h3c0 5.523-4.477 10-10 10Z"/>
+                        </svg>
+                        <div class="text-gray-700 text-sm font-semibold">
+                            Buscando animes e músicas...
+                        </div>
+                    </div>
+                {:else if searchError}
+                    <div class="p-3 font-noto-sans text-center">
+                        <div class="text-red-600 text-sm font-semibold">
+                            Não foi possível realizar a busca.
+                        </div>
+                        <div class="text-gray-500 text-xs mt-1">
+                            Tente novamente em instantes.
+                        </div>
+                    </div>
+                {:else if hasSearched && searchResults.length === 0}
+                    <div class="p-3 font-noto-sans text-center">
+                        <div class="text-gray-700 text-sm font-semibold">
+                            Nenhum anime ou música encontrado.
+                        </div>
+                        <div class="text-gray-500 text-xs mt-1">
+                            Confira o termo pesquisado e tente novamente.
+                        </div>
+                    </div>
+                {:else}
+                    {#each searchResults as item}
+                        <button aria-label={`Selecionar anime ${item.title}`}
+                            type="button"
+                            class="cursor-pointer flex items-center gap-3 w-full p-2 rounded-xl"
+                            on:mousedown={() => selectAnime(item)}
+                        >
+                            <img
+                                src={resolvePlaceholderImage(item.image, "placeholder")}
+                                alt={item.title}
+                                class="w-14 h-14 object-cover rounded-md border border-gray-100 shadow-sm shrink-0"
+                                loading="lazy"
+                            />
+                            <div class="flex flex-col items-start text-left">
+                                <div class="font-noto-sans font-semibold text-gray-900 text-sm line-clamp-1">
+                                    {item.title}
+                                </div>
+                                {#each item.musics.slice(0, 2) as music}
+                                    <div class="w-full text-gray-500 text-xs line-clamp-1">
+                                        <span class="font-bold text-blue-ocean">{music.type}</span>
+                                        {music.title}{music.artists ? ` — ${music.artists}` : ""}
+                                    </div>
+                                {/each}
+                                {#if item.musics.length > 2}
+                                    <div class="text-gray-400 text-[0.65rem]">
+                                        +{item.musics.length - 2} músicas
+                                    </div>
+                                {/if}
+                            </div>
+                        </button>
+                    {/each}
                 {/if}
             </div>
         {/if}
-        <div class="mb-3">
-            <label for="message" class="text-md text-gray-700 font-noto-sans block mb-1">
-                Escreva uma mensagem
-            </label>
-            <textarea
-                id="message"
-                name="message"
-                rows="3"
-                class="w-full bg-white font-noto-sans text-md text-black rounded-md outline-none p-4 border border-gray-400 resize-none"
-                placeholder="(Opcional) Deixe uma mensagem amigável"
-                bind:value={$form.message}
-            ></textarea>
-            <span class="text-[0.8rem] text-gray-500 font-noto-sans mt-1 block">
-                Vamos evitar ofensas! Seu pedido pode não tocar por isso.
-            </span>
-        </div>
-        <button 
-            type="submit" 
-            class="cursor-pointer font-noto-sans font-extrabold italic uppercase text-suspense-aurora py-2 px-6 rounded-full bg-blue-ocean"
-        >
-            Enviar
-        </button>
-    </form>
-{:else}
-    <div class="h-100 py-3">
-        <div class="mb-4 text-sm font-noto-sans text-gray-500">
-            😭 Ai… não dá pra mandar pedido agora!
-        </div>
-        <div class="text-sm font-noto-sans text-gray-500">
-            O programa não tá rolando ou {air.program.host.gender === "male" ? "o" : "a"}
-            {air.program.host.nickname.toLowerCase()} tá dando uma pausa, tá? Mas
-            relaxa, daqui a pouco você consegue mandar sua música! 💬🎶
-        </div>
     </div>
-{/if}
+    {#if searchMusicResults.length > 1}
+        <div class="mb-5">
+            <div class="text-md text-gray-700 font-noto-sans block mb-1">
+                Escolha uma música:
+            </div>
+            <div class="max-h-40 overflow-y-auto rounded-md border border-gray-400 bg-white p-2">
+                {#each ["OP", "ED"] as type}
+                    {#if searchMusicResults.some((item) => item.type === type)}
+                        <div class="px-3 py-2 text-[0.6rem] font-extrabold text-gray-400 uppercase tracking-[0.2em]">
+                            {type === "OP" ? "Aberturas" : "Encerramentos"}
+                        </div>
+                        {#each searchMusicResults.filter((item) => item.type === type) as item}
+                            <label class={["mb-1 flex cursor-pointer items-center gap-3 rounded-xl border p-3 transition-colors",
+                                { "border-blue-ocean bg-blue-ocean/5": $form.music === item },
+                                { "border-gray-100 hover:bg-gray-50": $form.music !== item },
+                            ]}>
+                                <input
+                                    type="radio"
+                                    name="music"
+                                    value={item}
+                                    bind:group={$form.music}
+                                    class="size-4 shrink-0 accent-blue-ocean"
+                                    required
+                                />
+                                <span class="min-w-0 font-noto-sans">
+                                    <span class="block truncate text-sm font-extrabold text-gray-900">
+                                        {item.name}
+                                    </span>
+                                    <span class="block truncate text-xs text-gray-500">
+                                        {item.artist || "Artista não informado"}
+                                    </span>
+                                </span>
+                            </label>
+                        {/each}
+                    {/if}
+                {/each}
+            </div>
+        </div>
+    {/if}
+    <div class="mb-3">
+        <label for="message" class="text-md text-gray-700 font-noto-sans block mb-1">
+            Escreva uma mensagem
+        </label>
+        <textarea
+            id="message"
+            name="message"
+            rows="3"
+            class="w-full bg-white font-noto-sans text-md text-black rounded-md outline-none p-4 border border-gray-400 resize-none"
+            placeholder="(Opcional) Deixe uma mensagem amigável"
+            bind:value={$form.message}
+        ></textarea>
+        <span class="text-[0.8rem] text-gray-500 font-noto-sans mt-1 block">
+            Vamos evitar ofensas! Seu pedido pode não tocar por isso.
+        </span>
+    </div>
+    <button
+        type="submit"
+        class="cursor-pointer font-noto-sans font-extrabold italic uppercase text-suspense-aurora py-2 px-6 rounded-full bg-blue-ocean"
+    >
+        Enviar
+    </button>
+</form>

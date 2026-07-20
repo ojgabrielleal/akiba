@@ -1,15 +1,12 @@
 <script>
     export let title;
 
-    import { page } from "@inertiajs/svelte";
-    import { EmptyState, Section, Offcanvas } from "@/ui/components/private";
-    import { ListenerMonthForm } from "@/ui/widgets/private";
+    import { page, router } from "@inertiajs/svelte";
+    import { EmptyState, Section } from "@/ui/components/private";
     import { listenerMonthPermissions, resolveAge, resolvePlaceholderImage } from "@/utils";
 
     $: ({ listenerMonth } = $page.props);
-
     let can = listenerMonthPermissions();
-    let offcanvasRef;
 
     let actions = [
         {
@@ -17,19 +14,15 @@
             icon: "/svg/edit.svg",
             permission: can.set,
             onClick: () => {
-                offcanvasRef.open();
+                router.post("/panel/radio/listener-month", {}, {
+                    preserveScroll: true,
+                });
             },
         },
     ];
 </script>
 
 {#if listenerMonth}
-    <Offcanvas bind:this={offcanvasRef} title={listenerMonth.found?.name}>
-        <div slot="content" let:close>
-            <ListenerMonthForm {close} listenerMonthFound={listenerMonth.found} />
-        </div>
-    </Offcanvas>
-
     <Section {title} {actions}>
         {#if listenerMonth.current?.data}
             <div class="grid grid-cols-1 lg:grid-cols-[18rem_1fr] gap-5">
@@ -47,7 +40,7 @@
                         {listenerMonth.current.data.address}
                     </div>
                     <div class="font-noto-sans font-extrabold text-blue-marinho text-center italic uppercase bg-suspense-aurora px-4 rounded-md">
-                        {resolveAge(listenerMonth.current.data.birthday)} anos
+                        {resolveAge(listenerMonth.current.data.birth_date)} anos
                     </div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">

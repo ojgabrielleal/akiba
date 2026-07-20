@@ -22,7 +22,7 @@
         nickname: null,
         gender: null,
         avatar: null,
-        birthday: null,
+        birth_date: null,
         city: null,
         state: null,
         country: null,
@@ -36,7 +36,7 @@
         $form.nickname = profile.data.nickname;
         $form.gender = profile.data.gender;
         $form.avatar = profile.data.avatar;
-        $form.birthday = profile.data.birthday;
+        $form.birth_date = profile.data.birth_date;
         $form.city = profile.data.city;
         $form.state = profile.data.state;
         $form.country = profile.data.country;
@@ -111,14 +111,14 @@
                             </option>
                         </SelectInput>
                     </FormField>
-                    <FormField for="birthday" label="Nascimento" labelVariant="editorial" spacing="none" error={$form.errors.birthday}>
+                    <FormField for="birth_date" label="Nascimento" labelVariant="editorial" spacing="none" error={$form.errors.birth_date}>
                         <TextInput
-                            id="birthday"
+                            id="birth_date"
                             type="date"
-                            name="birthday"
+                            name="birth_date"
                             variant="profile"
-                            bind:value={$form.birthday}
-                            error={$form.errors.birthday}
+                            bind:value={$form.birth_date}
+                            error={$form.errors.birth_date}
                             required
                         />
                     </FormField>

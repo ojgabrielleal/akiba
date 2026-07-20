@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers\Public;
 
-use App\Actions\SongRequest\StoreSongRequestAction;
-
 use App\Http\Controllers\Controller;
 
 use App\Http\Resources\Onair\OnairResource;
@@ -11,8 +9,6 @@ use App\Http\Resources\Post\PostResource;
 
 use App\Models\Onair;
 use App\Models\Post;
-
-use Illuminate\Http\Request;
 
 use Inertia\Inertia;
 
@@ -63,21 +59,6 @@ class HomeController extends Controller
         return OnairResource::collection(
             Onair::live()->with('program.host')->get()
         );
-    }
-
-    public function createSongRequest(Request $request, StoreSongRequestAction $storeSongRequestAction)
-    {
-        $data = $request->validate([
-            'name' => 'required',
-            'address' => 'required',
-            'anime' => 'required',
-            'music' => 'required',
-            'message' => 'required',
-        ]);
-
-        $storeSongRequestAction->execute($data, $request->ip());
-
-        return back(303);
     }
 
     public function render()

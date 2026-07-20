@@ -4,7 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Api\StreamController;
-use App\Http\Controllers\Api\AnimeController;
+use App\Http\Controllers\Api\External\AnimeThemesController;
 
 /*
 Route::get('/user', function (Request $request) {
@@ -12,9 +12,9 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 */
 
-Route::prefix('anime')->group(function () {
-    Route::controller(AnimeController::class)->group(function () {
-        Route::get('music', 'getMusic');
+Route::prefix('anime-themes')->group(function () {
+    Route::controller(AnimeThemesController::class)->group(function () {
+        Route::get('search', 'search');
     });
 });
 

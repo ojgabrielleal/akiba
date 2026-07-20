@@ -84,6 +84,42 @@ class OnairTest extends TestCase
         $this->assertFalse($onairs->contains($notLiveOnair));
     }
 
+    public function testAcceptingSongRequestsScope(): void
+    {
+        $user = User::factory()->create();
+
+        $program = Program::factory()
+            ->for($user, 'host')
+            ->create();
+
+        $acceptingRequests = Onair::factory()
+            ->for($program, 'program')
+            ->create([
+                'in_air' => true,
+                'allows_song_requests' => true,
+            ]);
+
+        $notAcceptingRequests = Onair::factory()
+            ->for($program, 'program')
+            ->create([
+                'in_air' => true,
+                'allows_song_requests' => false,
+            ]);
+
+        $notLive = Onair::factory()
+            ->for($program, 'program')
+            ->create([
+                'in_air' => false,
+                'allows_song_requests' => true,
+            ]);
+
+        $onairs = Onair::acceptingSongRequests()->get();
+
+        $this->assertTrue($onairs->contains($acceptingRequests));
+        $this->assertFalse($onairs->contains($notAcceptingRequests));
+        $this->assertFalse($onairs->contains($notLive));
+    }
+
     public function testFactoryExecutionModeStates(): void
     {
         $user = User::factory()->create();

@@ -10,6 +10,7 @@ use App\Models\Onair;
 use App\Models\Music;
 use App\Models\User;
 use App\Models\Program;
+use App\Models\OAuthAccount;
 
 class SongRequestTest extends TestCase
 {
@@ -58,5 +59,22 @@ class SongRequestTest extends TestCase
             ->create(['onair_id' => $onair->id]);
 
         $this->assertTrue($songRequest->music->is($music));
+    }
+
+    public function testOAuthAccountRelationship(): void
+    {
+        $oauthAccount = OAuthAccount::factory()->create();
+        $user = User::factory()->create();
+        $program = Program::factory()->for($user, 'host')->create();
+        $onair = Onair::factory()->for($program, 'program')->create();
+        $music = Music::factory()->create();
+
+        $songRequest = SongRequest::factory()
+            ->for($oauthAccount, 'oauthAccount')
+            ->for($onair, 'onair')
+            ->for($music, 'music')
+            ->create();
+
+        $this->assertTrue($songRequest->oauthAccount->is($oauthAccount));
     }
 }

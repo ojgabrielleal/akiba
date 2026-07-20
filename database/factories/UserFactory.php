@@ -34,7 +34,7 @@ class UserFactory extends Factory
             'nickname' => fake()->userName(),
             'gender' => $this->attributes['gender'] ?? fake()->randomElement(['male', 'female']),
             'avatar' => '/img/placeholders/avatar.webp',
-            'birthday' => fake()->date(),
+            'birth_date' => fake()->date(),
             'city' => fake()->city(),
             'state' => fake()->state(),
             'country' => fake()->country(),
