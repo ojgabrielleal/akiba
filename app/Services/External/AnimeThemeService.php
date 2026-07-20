@@ -49,7 +49,7 @@ class AnimeThemeService
                         return [
                             'type' => $music['type'],
                             'title' => $music['song']['title'] ?? null,
-                            'artists' => collect($music['song']['artists'] ?? [])->pluck('name')->join(', ') ?: 'Artista não informado'
+                            'artists' => collect($music['song']['artists'] ?? [])->pluck('name')->join(', ') ?: 'Não informado'
                         ];
                     })->values(),
                 ];
