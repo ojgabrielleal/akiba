@@ -1,22 +1,16 @@
 <script>
     import { page } from "@inertiajs/svelte";
     import { onMount } from "svelte";
-    import Cookies from "js-cookie";
     import { AuthGuard, Modal } from "@/ui/components/public";
     import { SongRequestForm } from "@/ui/widgets/public";
     import { player, toggleAudio, setVolume } from "@/store";
-    import { resolvePlaceholderImage } from "@/utils";
+    import { listenForOAuth, resolvePlaceholderImage } from "@/utils";
 
     $: ({ onair: { data: [air] }, stream } = $page.props);
 
     let modalRef;
 
-    onMount(() => {
-        if (!$page.props.oauth?.authenticated || Cookies.get("akiba_oauth_intent") !== "song-request") return;
-
-        modalRef.open();
-        setTimeout(() => Cookies.remove("akiba_oauth_intent", { path: "/" }));
-    });
+    onMount(() => listenForOAuth(() => modalRef.open()));
 
     $: playerData = {
         program: {
@@ -62,7 +56,6 @@
         <AuthGuard
             title="Entre para pedir sua música"
             description="Use sua conta do Discord para continuar."
-            intent="song-request"
         >
             <SongRequestForm {close} />
         </AuthGuard>
