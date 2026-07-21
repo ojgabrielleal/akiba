@@ -106,7 +106,7 @@
     {:else}
         <EmptyState
             title="Nenhum evento no calendário"
-            description="Os próximos eventos e programas aparecerão aqui."
+            description="Os próximos eventos aparecerão aqui."
         />
     {/if}
 </Section>
