@@ -68,7 +68,7 @@
                                 ]}>
                                     {resolveHour(item.hour)}
                                 </time>
-                                <h4 class={["my-5 w-full flex-1 text-center font-noto-sans text-2xl font-extrabold italic leading-tight",
+                                <h4 class={["my-5 w-full flex-1 break-words px-2 text-center font-noto-sans text-2xl font-extrabold italic leading-tight",
                                     { "text-blue-night": item.activity },
                                     { "text-suspense-aurora": !item.activity },
                                 ]}>
