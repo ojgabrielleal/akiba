@@ -17,9 +17,10 @@ class StoreSongRequestAction
             $onair = Onair::acceptingSongRequests()->firstOrFail();
             $music = Music::where('name', $data['music']['name'])->first();
 
-            if (array_key_exists('address', $data)) {
+            if (!empty($data['address']) && !empty($data['birth_date'])) {
                 $oauthAccount->update([
                     'address' => $data['address'],
+                    'birth_date' => $data['birth_date'],
                     'profile_completed_at' => now(),
                 ]);
             }

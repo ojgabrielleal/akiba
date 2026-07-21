@@ -61,7 +61,7 @@
                                 {card.position}
                             </div>
                             <img
-                                src={resolvePlaceholderImage(ranking.data[index].ranking.image, "placeholder")}
+                                src={resolvePlaceholderImage(ranking.data[index].ranking.image, "avatar")}
                                 alt={`Imagem do ranking da música ${ranking.data[index].name}`}
                                 class="absolute bottom-0 right-0 h-28 w-28 object-contain sm:h-40 sm:w-40"
                             />

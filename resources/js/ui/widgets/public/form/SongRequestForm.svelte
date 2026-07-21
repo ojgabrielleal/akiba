@@ -10,6 +10,7 @@
 
     $: form = useForm({
         address: null,
+        birth_date: null,
         anime: null,
         music: null,
         message: null,
@@ -114,22 +115,40 @@
 
 <form on:submit|preventDefault={submit}>
     {#if !oauth.profile_completed}
-        <div class="mb-3">
-            <label for="address" class="text-md text-gray-700 font-noto-sans block mb-1">
-                Qual é a sua cidade e estado?
-            </label>
-            <input
-                id="address"
-                type="text"
-                name="address"
-                class="w-full h-10 bg-white font-noto-sans text-md text-black rounded-md outline-none pl-4 border border-gray-400"
-                placeholder="Ex: Salto - SP"
-                bind:value={$form.address}
-                required
-            />
-            <span class="text-[0.8rem] text-gray-500 font-noto-sans mt-1 block">
-                Não está no Brasil? Fala ai a cidade e país que está agora.
-            </span>
+        <div class="mb-3 grid grid-cols-1 gap-3">
+            <div>
+                <label for="address" class="text-md text-gray-700 font-noto-sans block mb-1">
+                    Qual é a sua cidade e estado?
+                </label>
+                <input
+                    id="address"
+                    type="text"
+                    name="address"
+                    class="w-full h-10 bg-white font-noto-sans text-md text-black rounded-md outline-none pl-4 border border-gray-400"
+                    placeholder="Ex: Salto - SP"
+                    bind:value={$form.address}
+                    required
+                />
+                <span class="text-[0.8rem] text-gray-500 font-noto-sans mt-1 block">
+                    Fora do Brasil? Informe cidade e país que tu está!.
+                </span>
+            </div>
+            <div>
+                <label for="birth-date" class="text-md text-gray-700 font-noto-sans block mb-1">
+                    Qual é a sua data de nascimento?
+                </label>
+                <input
+                    id="birth-date"
+                    type="date"
+                    name="birth_date"
+                    class="w-full h-10 bg-white font-noto-sans text-md text-black rounded-md outline-none px-4 border border-gray-400"
+                    bind:value={$form.birth_date}
+                    required
+                />
+                <span class="text-[0.8rem] text-gray-500 font-noto-sans mt-1 block">
+                    É só pra mostrar sua idade caso você seja o Ouvinte do Mês.
+                </span>
+            </div>
         </div>
     {/if}
     <div class="mb-3 relative">

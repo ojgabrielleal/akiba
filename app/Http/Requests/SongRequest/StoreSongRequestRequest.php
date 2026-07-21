@@ -21,7 +21,12 @@ class StoreSongRequestRequest extends LoggedWebRequest
      */
     public function rules(): array
     {
+        $oauthAccount = $this->attributes->get('oauth_account');
+        $profileIncomplete = $oauthAccount?->profile_completed_at === null;
+
         return [
+            'address' => [$profileIncomplete ? 'required' : 'nullable', 'string', 'max:255'],
+            'birth_date' => [$profileIncomplete ? 'required' : 'nullable', 'date', 'before:today'],
             'anime' => 'required|string',
             'music' => 'required|array',
             'music.production' => 'required|string',
