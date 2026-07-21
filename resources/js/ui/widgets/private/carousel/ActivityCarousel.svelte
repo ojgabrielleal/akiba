@@ -3,7 +3,7 @@
     export let variant = null;
 
     import { page, router } from "@inertiajs/svelte";
-    import { Carousel, IconButton, Offcanvas, Section, Tooltip } from "@/ui/components/private/";
+    import { Carousel, EmptyState, IconButton, Offcanvas, Section, Tooltip } from "@/ui/components/private/";
     import { ActivityForm } from "@/ui/widgets/private";
     import { activityPermissions, resolvePlaceholderImage } from "@/utils";
 
@@ -43,8 +43,9 @@
 
 {#if activities}
     <Section {title} {actions}>
-        <Carousel label={title}>
-            {#each activities.data as item}
+        {#if activities.data.length}
+            <Carousel label={title}>
+                {#each activities.data as item}
                 {@const canParticipate = can.participate && !item.confirmations.some((conf) => conf.uuid === user.uuid)}
                 <article class={["w-100 h-45 lg:w-116 shrink-0 rounded-md p-4 relative",
                     { "bg-gradient-orange-morning-aurora": item.allows_confirmations },
@@ -121,7 +122,13 @@
                         {/if}
                     </div>
                 </article>
-            {/each}
-        </Carousel>
+                {/each}
+            </Carousel>
+        {:else}
+            <EmptyState
+                title="Nenhum aviso ou atividade"
+                description="Os avisos e atividades da equipe aparecerão aqui."
+            />
+        {/if}
     </Section>
 {/if}
