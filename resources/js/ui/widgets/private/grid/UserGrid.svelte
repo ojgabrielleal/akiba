@@ -66,7 +66,18 @@
                     />
                     <footer class="absolute inset-x-0 bottom-2 z-10 flex w-full items-end justify-between gap-2 px-2">
                         <div class="flex min-w-0 max-w-[65%] items-center gap-1">
-                            {#if item.highest_role}
+                            {#if item.is_virtual}
+                                <Badge variant="review" size="sm" class="min-w-0" title="Bot">
+                                    <img
+                                        src="/svg/robot.svg"
+                                        alt=""
+                                        aria-hidden="true"
+                                        class="h-3.5 w-3.5 filter-suspense-aurora"
+                                        loading="lazy"
+                                    />
+                                    Bot
+                                </Badge>
+                            {:else if item.highest_role}
                                 <Badge variant="light" size="sm" class="min-w-0" title={item.highest_role.label}>
                                     {item.highest_role.label}
                                 </Badge>

@@ -29,6 +29,10 @@ class UserFilter
                 $filters['search'] ?? null,
                 fn (Builder $query, string $search) => $query->whereLike('name', '%'.trim($search).'%')
             )
+            ->when(
+                $filters['virtual_last'] ?? false,
+                fn (Builder $query) => $query->orderBy('is_virtual', 'asc')
+            )
             ->orderBy(
                 $filters['order_by'] ?? 'id',
                 $filters['order_direction'] ?? 'desc'

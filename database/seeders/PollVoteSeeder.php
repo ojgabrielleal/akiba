@@ -23,9 +23,27 @@ class PollVoteSeeder extends Seeder
             $users = $users->merge(
                 User::factory(5 - $users->count())
                     ->withVirtual()
+                    ->withDefaults()
                     ->create()
             );
         }
+
+        $users->each(function (User $user) {
+            foreach ([true, false] as $isLike) {
+                $missing = 3 - $user->preferences()
+                    ->where('is_like', $isLike)
+                    ->count();
+
+                if ($missing > 0) {
+                    $user->preferences()->createMany(
+                        array_fill(0, $missing, [
+                            'is_like' => $isLike,
+                            'content' => null,
+                        ])
+                    );
+                }
+            }
+        });
 
         Poll::with('options')
             ->has('options')

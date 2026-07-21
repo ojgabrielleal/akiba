@@ -78,7 +78,7 @@ class AdministrationPageController extends Controller
                 fn () => UserResource::collection(
                     $this->userFilter->apply([
                         'active' => true,
-                        'is_virtual' => false,
+                        'virtual_last' => true,
                         'with' => ['roles'],
                     ])
                 )->format('summary'),
