@@ -53,7 +53,7 @@
     {#if roles?.data?.length}
         <Carousel label="Cargos da equipe">
             {#each roles.data as item (item.uuid)}
-                <article class="flex h-44 w-40 shrink-0 flex-col overflow-hidden rounded-md bg-blue-ocean">
+                <article class="flex h-44 w-40 shrink-0 flex-col rounded-md bg-blue-ocean">
                     <div class="flex items-center gap-1 px-2 pt-2">
                         <strong class="shrink-0 font-noto-sans text-2xl font-black leading-none text-suspense-aurora">
                             {item.members_total ?? 0}
@@ -74,7 +74,7 @@
                     </div>
 
                     {#if variant === "administration" && (can.update || can.delete)}
-                        <div class="flex h-10 items-center justify-end gap-1.5 bg-blue-cerulean px-2">
+                        <div class="flex h-10 items-center justify-end gap-1.5 rounded-b-md bg-blue-cerulean px-2">
                             {#if can.delete}
                                 <IconButton
                                     variant="trash"
