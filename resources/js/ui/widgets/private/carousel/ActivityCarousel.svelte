@@ -1,9 +1,8 @@
 <script>
     export let title;
-    export let variant;
 
     import { page, router } from "@inertiajs/svelte";
-    import { Carousel, Offcanvas, Section, Tooltip } from "@/ui/components/private/";
+    import { Carousel, IconButton, Offcanvas, Section, Tooltip } from "@/ui/components/private/";
     import { ActivityForm } from "@/ui/widgets/private";
     import { activityPermissions, resolvePlaceholderImage } from "@/utils";
 
@@ -12,7 +11,20 @@
     let can = activityPermissions();
 
     let offcanvasRef;
-    let identifier;
+    let activitySelected = null;
+    $: offcanvasTitle = activitySelected ? `Atualizar ${activitySelected.title}` : "Criar atividade / aviso";
+
+    let actions = [
+        {
+            title: "Criar aviso / atividade",
+            icon: "/svg/plus.svg",
+            permission: can.create,
+            onClick: () => {
+                activitySelected = null;
+                offcanvasRef.open();
+            },
+        },
+    ];
 
     const requestConfirmActivityParticipant = (activity) => {
         router.post(`/panel/dashboard/activity/${activity}/confirm`, {}, {
@@ -22,14 +34,14 @@
     };
 </script>
 
-<Offcanvas bind:this={offcanvasRef} title="Atualizar atividade/aviso">
+<Offcanvas bind:this={offcanvasRef} title={offcanvasTitle}>
     <div slot="content" let:close>
-        <ActivityForm {identifier} {close} />
+        <ActivityForm {activitySelected} {close} />
     </div>
 </Offcanvas>
 
 {#if activities}
-    <Section {title}>
+    <Section {title} {actions}>
         <Carousel label={title}>
             {#each activities.data as item}
                 {@const canParticipate = can.participate && !item.confirmations.some((conf) => conf.uuid === user.uuid)}
@@ -85,47 +97,26 @@
                         </div>
                     {/if}
                     <div class="flex gap-2 absolute bottom-3 right-4">
-                        {#if can.update && variant === "administration"}
-                            <Tooltip>
-                                <button
-                                    type="button"
-                                    aria-label="Atualizar"
-                                    class="w-7 h-7 bg-blue-marinho rounded-md flex justify-center items-center font-noto-sans italic font-extrabold cursor-pointer"
-                                    on:click={() => { identifier = item.uuid; offcanvasRef.open(); }}
-                                >
-                                    <img
-                                        src="/svg/edit.svg"
-                                        alt=""
-                                        aria-hidden="true"
-                                        class="w-6 filter-orange-citric"
-                                        loading="lazy"
-                                    />
-                                </button>
-                                <div slot="content">
-                                    Atualizar
-                                </div>
-                            </Tooltip>
+                        {#if can.update}
+                            <IconButton
+                                variant="edit"
+                                label="Atualizar"
+                                size="sm"
+                                surface="dark"
+                                class="hover:!brightness-100"
+                                on:click={() => { activitySelected = item; offcanvasRef.open(); }}
+                            />
                         {/if}
                         {#if canParticipate && item.allows_confirmations}
-                            <Tooltip>
-                                <button
-                                    type="button"
-                                    aria-label="Confirmar"
-                                    class="w-7 h-7 bg-blue-marinho rounded-md flex justify-center items-center font-noto-sans italic font-extrabold cursor-pointer"
-                                    on:click={()=>requestConfirmActivityParticipant(item.uuid)}
-                                >
-                                    <img
-                                        src="/svg/verify.svg"
-                                        alt=""
-                                        aria-hidden="true"
-                                        class="w-6 filter-orange-citric"
-                                        loading="lazy"
-                                    />
-                                </button>
-                                <div slot="content">
-                                    Participar
-                                </div>
-                            </Tooltip>
+                            <IconButton
+                                variant="verify"
+                                label="Participar"
+                                size="sm"
+                                surface="dark"
+                                tone="accent"
+                                class="hover:!brightness-100"
+                                on:click={() => requestConfirmActivityParticipant(item.uuid)}
+                            />
                         {/if}
                     </div>
                 </article>

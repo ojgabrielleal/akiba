@@ -1,8 +1,7 @@
 <script>
     export let close = () => {};
-    export let identifier;
+    export let activitySelected;
 
-    import axios from "axios";
     import { useForm } from "@inertiajs/svelte";
     import {
         Button,
@@ -16,36 +15,18 @@
     let can = activityPermissions();
 
     $: form = useForm({
-        title: null,
-        purpose: null,
-        limit: null,
-        hour: null,
-        date: null,
-        content: null,
+        title: activitySelected?.title ?? null,
+        purpose: activitySelected ? (activitySelected.allows_confirmations ? "activity" : "notice") : null,
+        limit: activitySelected?.limit ?? null,
+        hour: activitySelected?.hour ?? null,
+        date: activitySelected?.date ?? null,
+        content: activitySelected?.content ?? null,
     });
 
-    if (identifier) {
-        axios.get(`/panel/administration/activity/${identifier}`)
-            .then((response) => {
-                const data = response.data.data;
-
-                $form.title = data.title;
-                $form.purpose = data.allows_confirmations ? "activity" : "notice";
-                $form.limit = data.limit;
-                $form.hour = data.hour;
-                $form.date = data.date;
-                $form.content = data.content;
-            })
-            .catch(() => {
-                console.error("Error when find activity");
-                close();
-            });
-    }
-
     const submit = () => {
-        const method = identifier ? "patch" : "post";
-        const url = identifier
-            ? `/panel/administration/activity/${identifier}`
+        const method = activitySelected ? "patch" : "post";
+        const url = activitySelected
+            ? `/panel/administration/activity/${activitySelected.uuid}`
             : "/panel/administration/activity";
 
         $form[method](url, {
@@ -81,7 +62,7 @@
             />
         </div>
     </div>
-    <FormField for="title" label={$form.purpose === "activity" ? "Título da atividade" : $form.purpose === "notice" ? "Título do aviso" : "Título"} error={$form.errors.title}>
+    <FormField for="title" label={$form.purpose === "activity" ? "Título da atividade" : $form.purpose === "notice" ? "Título do aviso" : "Título"} error={$form.errors.title} spacing="compact">
         <TextInput
             variant="offcanvas"
             type="text"
@@ -92,7 +73,7 @@
             required
         />
     </FormField>
-    <FormField for="limit" label="Data limite" help={$form.purpose === "notice" ? "Data limite para exibição do aviso" : $form.purpose === "activity" ? "Data limite para confirmação da atividade" : null} error={$form.errors.limit}>
+    <FormField for="limit" label="Data limite" help={$form.purpose === "notice" ? "Data limite para exibição do aviso" : $form.purpose === "activity" ? "Data limite para confirmação da atividade" : null} error={$form.errors.limit} spacing="compact">
         <TextInput
             variant="offcanvas"
             type="date"
@@ -105,7 +86,7 @@
     </FormField>
     {#if $form.purpose === "activity"}
         <div class="grid grid-cols-2 gap-3">
-            <FormField for="hour" label="Hora" help="Hora da atividade" error={$form.errors.hour}>
+            <FormField for="hour" label="Hora" help="Hora da atividade" error={$form.errors.hour} spacing="compact">
                 <TextInput
                     variant="offcanvas"
                     type="time"
@@ -116,7 +97,7 @@
                     required
                 />
             </FormField>
-            <FormField for="date" label="Data" help="Data da atividade" error={$form.errors.date}>
+            <FormField for="date" label="Data" help="Data da atividade" error={$form.errors.date} spacing="compact">
                 <TextInput
                     variant="offcanvas"
                     type="date"
@@ -129,8 +110,9 @@
             </FormField>
         </div>
     {/if}
-    <FormField for="content" label="Conteúdo" error={$form.errors.content}>
+    <FormField for="content" label="Conteúdo" error={$form.errors.content} spacing="compact">
         <TextArea
+            variant="offcanvas"
             id="content"
             name="content"
             rows="3"
@@ -139,13 +121,14 @@
             required
         />
     </FormField>
-    {#if can.create || can.update}
+    {#if activitySelected ? can.update : can.create}
         <Button
             type="submit"
-            size="lg"
             loading={$form.processing}
+            variant="secondary"
+            shape="pill"
         >
-            {identifier ? "Atualizar" : "Cadastrar"}
+            {activitySelected ? "Atualizar" : "Cadastrar"}
         </Button>
     {/if}
 </form>
