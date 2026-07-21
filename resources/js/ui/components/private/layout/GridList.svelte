@@ -9,6 +9,7 @@
         media: "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3",
         wide: "grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-5",
         split: "grid-cols-1 lg:grid-cols-2 gap-5",
+        calendar: "grid-cols-7 gap-3",
     };
 
     $: classes = ["grid", presets[preset] ?? presets.content, className];

@@ -13,7 +13,7 @@ use App\Http\Controllers\Concerns\ResolvesAuthorizedProps;
 use App\Http\Controllers\Controller;
 
 use App\Http\Resources\ActivityResource;
-use App\Http\Resources\Calendar\CalendarResource;
+use App\Http\Resources\Calendar\CalendarWeekResource;
 use App\Http\Resources\PermissionResource;
 use App\Http\Resources\RoleResource;
 use App\Http\Resources\TaskResource;
@@ -67,8 +67,11 @@ class AdministrationPageController extends Controller
                 ),
             ),
             'calendar' => $this->whenCanViewAny(Calendar::class,
-                fn () => CalendarResource::collection(
-                    $this->calendarFilter->apply(['upcoming' => true])
+                fn () => CalendarWeekResource::make(
+                    $this->calendarFilter->apply([
+                        'upcoming' => true,
+                        'with' => ['activity', 'responsible'],
+                    ])
                 ),
             ),
             'users' => $this->whenCanViewAny(User::class,

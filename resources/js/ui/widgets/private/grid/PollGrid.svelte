@@ -12,6 +12,7 @@
 
     let offcanvasRef;
     let pollSelected;
+    let voting = false;
     $: offcanvasTitle = pollSelected ? 'Atualizar enquete' : 'Cadastrar enquete'
     
     let actions = [
@@ -39,6 +40,8 @@
         router.post(`/panel/media/poll/option/${option}/vote`, {}, {
             preserveScroll: true,
             preserveState: false,
+            onStart: () => voting = true,
+            onFinish: () => voting = false,
         });
     };
 </script>
@@ -85,6 +88,7 @@
                             variant="accent"
                             shape="pill"
                             class="order-1 md:order-3"
+                            loading={voting}
                         >
                             Votar
                         </Button>

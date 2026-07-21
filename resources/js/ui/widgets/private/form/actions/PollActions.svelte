@@ -1,8 +1,12 @@
 <script>
     export let status = null;
     export let can = [];
+    export let processing = false;
 
     import { Button } from "@/ui/components/private";
+
+    let activeAction = null;
+    $: if (!processing) activeAction = null;
 </script>
 
 {#if can.create || can.update}
@@ -13,6 +17,9 @@
             value="draft"
             variant="success"
             size="sm"
+            loading={processing && activeAction === "draft"}
+            disabled={processing}
+            on:click={() => activeAction = "draft"}
         >
             {status === 'draft' ? 'Atualizar' : 'Rascunho'}
         </Button>
@@ -23,6 +30,9 @@
                 value="revision"
                 variant="accent"
                 size="sm"
+                loading={processing && activeAction === "revision"}
+                disabled={processing}
+                on:click={() => activeAction = "revision"}
             >
                 {status === 'revision' ? 'Atualizar' : 'Avaliação'}
             </Button>
@@ -34,6 +44,9 @@
                 value="published"
                 variant="review"
                 size="sm"
+                loading={processing && activeAction === "published"}
+                disabled={processing}
+                on:click={() => activeAction = "published"}
             >
                 Aprovar
             </Button>
@@ -44,6 +57,9 @@
                 value="published"
                 variant="info"
                 size="sm"
+                loading={processing && activeAction === "published"}
+                disabled={processing}
+                on:click={() => activeAction = "published"}
             >
                 Atualizar
             </Button>
@@ -54,6 +70,9 @@
                 value="published"
                 variant="info"
                 size="sm"
+                loading={processing && activeAction === "published"}
+                disabled={processing}
+                on:click={() => activeAction = "published"}
             >
                 Publicar
             </Button>

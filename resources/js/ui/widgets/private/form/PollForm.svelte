@@ -115,5 +115,6 @@
     <PollActions
         status={$form.status}
         can={can}
+        processing={$form.processing}
     />
 </form>

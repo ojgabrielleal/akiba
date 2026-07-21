@@ -205,6 +205,7 @@
                 post={post}
                 status={$form.status}
                 can={can}
+                processing={$form.processing}
             />
         </div>
     </div>

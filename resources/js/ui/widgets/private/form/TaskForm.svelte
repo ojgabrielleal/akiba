@@ -109,6 +109,7 @@
         <Button
             type="submit"
             size="lg"
+            loading={$form.processing}
         >
             {identifier ? "Atualizar" : "Cadastrar"}
         </Button>

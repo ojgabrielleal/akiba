@@ -1,8 +1,7 @@
 <script>
     export let close = () => {};
-    export let identifier;
+    export let eventSelected;
 
-    import axios from "axios";
     import { useForm, page } from "@inertiajs/svelte";
     import {
         Button,
@@ -13,39 +12,22 @@
     } from "@/ui/components/private";
     import { calendarPermissions } from "@/utils";
 
-    let { users } = $page.props;
+    $: ({ users } = $page.props);
 
     let can = calendarPermissions();
 
     $: form = useForm({
-        user: null,
-        hour: null,
-        date: null,
-        content: null,
-        type: null,
+        user: eventSelected?.responsible.uuid ?? null,
+        hour: eventSelected?.hour ?? null,
+        date: eventSelected?.date ?? null,
+        content: eventSelected?.content ?? null,
+        type: eventSelected?.type ?? null,
     });
 
-    $: if (identifier) {
-        axios.get(`/panel/administration/calendar/${identifier}`)
-            .then((response) => {
-                const data = response.data.data;
-
-                $form.user = data.responsible.uuid;
-                $form.hour = data.hour;
-                $form.date = data.date;
-                $form.content = data.content;
-                $form.type = data.type;
-            })
-            .catch(() => {
-                console.error("Error when find calendar");
-                close();
-            });
-    }
-
     const submit = () => {
-        const method = identifier ? "patch" : "post";
-        const url = identifier
-            ? `/panel/administration/calendar/${identifier}`
+        const method = eventSelected ? "patch" : "post";
+        const url = eventSelected
+            ? `/panel/administration/calendar/${eventSelected.uuid}`
             : "/panel/administration/calendar";
 
         $form[method](url, {
@@ -56,7 +38,7 @@
 </script>
 
 <form on:submit|preventDefault={submit}>
-    <FormField for="user" label="Membro designado" error={$form.errors.user}>
+    <FormField for="user" label="Membro designado" error={$form.errors.user} spacing="compact">
         <SelectInput
             variant="offcanvas"
             id="user"
@@ -65,6 +47,9 @@
             error={$form.errors.user}
             required
         >
+            <option value="">
+                Selecione um membro
+            </option>
             {#each users.data as item}
                 <option value={item.uuid}>
                     {item.nickname}
@@ -72,7 +57,7 @@
             {/each}
         </SelectInput>
     </FormField>
-    <FormField for="type" label="Tipo do evento" error={$form.errors.type}>
+    <FormField for="type" label="Tipo do evento" error={$form.errors.type} spacing="compact">
         <SelectInput
             variant="offcanvas"
             id="type"
@@ -81,6 +66,9 @@
             error={$form.errors.type}
             required
         >
+            <option value="">
+                Selecione um tipo
+            </option>
             <option value="show">
                 Programa
             </option>
@@ -96,7 +84,7 @@
         </SelectInput>
     </FormField>
     <div class="grid grid-cols-2 gap-3">
-        <FormField for="hour" label="Hora" help="Hora do evento" error={$form.errors.hour}>
+        <FormField for="hour" label="Hora" help="Hora do evento" error={$form.errors.hour} spacing="compact">
             <TextInput
                 variant="offcanvas"
                 type="time"
@@ -107,7 +95,7 @@
                 required
             />
         </FormField>
-        <FormField for="date" label="Data" help="Data do evento" error={$form.errors.date}>
+        <FormField for="date" label="Data" help="Data do evento" error={$form.errors.date} spacing="compact">
             <TextInput
                 variant="offcanvas"
                 type="date"
@@ -119,8 +107,9 @@
             />
         </FormField>
     </div>
-    <FormField for="content" label="Conteúdo" error={$form.errors.content}>
+    <FormField for="content" label="Conteúdo" error={$form.errors.content} spacing="compact">
         <TextArea
+            variant="offcanvas"
             id="content"
             name="content"
             rows="3"
@@ -129,12 +118,14 @@
             required
         />
     </FormField>
-    {#if can.create || can.update}
+    {#if eventSelected ? can.update : can.create}
         <Button
             type="submit"
-            size="lg"
+            loading={$form.processing}
+            variant="secondary"
+            shape="pill"
         >
-            {identifier ? "Atualizar" : "Cadastrar"}
+            {eventSelected ? "Atualizar" : "Cadastrar"}
         </Button>
     {/if}
 </form>

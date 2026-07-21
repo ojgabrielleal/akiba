@@ -62,7 +62,7 @@
                     id="title"
                     type="text"
                     name="title"
-                    labelVariant="editorial"
+                    variant="editorial"
                     required={!post}
                     bind:value={$form.title}
                     error={$form.errors.title}
@@ -233,6 +233,7 @@
                 post={post}
                 status={$form.status}
                 can={can}
+                processing={$form.processing}
             />
         </div>
     </div>

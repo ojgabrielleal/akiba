@@ -1,9 +1,8 @@
 <script>
     export let title;
-    export let variant;
 
     import { page } from "@inertiajs/svelte";
-    import { Button, Offcanvas, Section } from "@/ui/components/private/";
+    import { GridList, IconButton, Offcanvas, Section } from "@/ui/components/private/";
     import { CalendarForm } from "@/ui/widgets/private";
     import { calendarPermissions, resolveHour } from "@/utils";
     import { calendarTags } from "@/data";
@@ -13,97 +12,90 @@
     let can = calendarPermissions();
 
     let offcanvasRef;
-    let identifier;
+    let eventSelected = null;
+    $: eventName = eventSelected?.activity?.title ?? eventSelected?.content;
+    $: offcanvasTitle = eventSelected ? eventName : "Cadastrar evento";
+
+    const openEvent = (event = null) => {
+        eventSelected = event;
+        offcanvasRef.open();
+    };
+
+    let actions = [
+        {
+            title: "Cadastrar",
+            icon: "/svg/plus.svg",
+            permission: can.create,
+            onClick: () => openEvent(),
+        },
+    ];
 </script>
 
-<Offcanvas bind:this={offcanvasRef} title={identifier ? "Atualizar evento" : "Cadastrar evento"}>
+<Offcanvas bind:this={offcanvasRef} title={offcanvasTitle}>
     <div slot="content" let:close>
-        <CalendarForm {identifier} {close} />
+        <CalendarForm {eventSelected} {close} />
     </div>
 </Offcanvas>
 
-<Section {title}>
-    {#if can.create && variant === "administration"}
-        <div class="flex justify-center gap-5 mb-8">
-            <Button
-                on:click={() => { identifier = null; offcanvasRef.open(); }}
-            >
-                Cadastrar evento
-            </Button>
-        </div>
-    {/if}
-    <ul class="w-full mb-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-2" aria-label="Legenda do calendario">
-        {#each calendarTags as item}
-            <li class={`py-1 text-md font-noto-sans font-extrabold uppercase italic rounded-md flex justify-center items-center ${item.color} ${item.textcolor}`}>
-                {item.label}
-            </li>
-        {/each}
-    </ul>
-    <div class="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-2" aria-label="Eventos por dia">
-        {#each Object.entries(calendar?.data ?? {}) as [day, events], dayIndex}
-            <section class="flex flex-col gap-2 w-full" aria-labelledby={`calendar-day-${dayIndex}`}>
-                <h3 id={`calendar-day-${dayIndex}`} class="text-suspense-aurora text-lg font-noto-sans text-center font-extrabold uppercase italic">
-                    {day}
-                </h3>
-                {#each events as item}
-                    <article class={["w-full rounded-md pt-4 pl-4 pr-4 pb-3 mt-5",
-                        { "bg-blue-skywave": item.type === "show" },
-                        { "bg-purple-mystic": item.type === "live" },
-                        { "bg-red-crimson": item.type === "video" },
-                        { "bg-green-mint": item.type === "podcast" },
-                        { "bg-suspense-honeycream": item.activity },
-                    ]}>
-                        <div class="flex events-center">
-                            <time class={["w-full font-noto-sans text-2xl text-center uppercase",
-                                { "text-blue-night": item.activity },
-                                { "text-suspense-aurora": !item.activity },
-                            ]}>
-                                {resolveHour(item.hour)}
-                            </time>
-                        </div>
-                        <h4 class={["w-full font-noto-sans font-extrabold text-xl text-center italic mt-4 mb-4",
-                            { "text-blue-night": item.activity },
-                            { "text-suspense-aurora": !item.activity },
-                        ]}>
-                            {item.activity ? item.activity.title : item.content}
-                        </h4>
-                        <div class="flex justify-between items-center">
-                            {#if can.update && variant === "administration"}
-                                <button
-                                    type="button"
-                                    aria-label="Editar evento"
-                                    class={["w-full cursor-pointer ", 
-                                        { "filter-suspense-aurora": !item.activity }, 
-                                        { "filter-suspense-aurora-0": item.activity }, 
-                                    ]}
-                                >
-                                    <img
-                                        src="/svg/edit.svg"
-                                        alt=""
-                                        aria-hidden="true"
-                                        class="w-4"
-                                    />
-                                </button>
-                            {/if}
-                            <button
-                                type="button"
-                                aria-label="Atualizar evento"
-                                class={["w-full font-noto-sans text-sm text-end", 
-                                    { "text-blue-night": item.activity }, 
-                                    { "text-suspense-aurora": !item.activity }
-                                ]}
-                                on:click={() => { 
-                                    identifier = item.uuid; 
-                                    offcanvasRef.open(); 
-                                }}
-                            >
-
-                                {item.responsible.nickname}
-                            </button>
-                        </div>
-                    </article>
+<Section {title} {actions}>
+    <div class="w-full overflow-x-auto pb-2">
+        <div class="min-w-[70rem] lg:min-w-0">
+            <GridList preset="calendar" class="mb-9" aria-label="Legenda do calendário">
+                {#each calendarTags as item}
+                    <li class={`flex min-h-8 items-center justify-center rounded-md px-2 py-1 font-noto-sans text-lg font-extrabold uppercase italic ${item.color} ${item.textcolor}`} aria-hidden={!item.label}>
+                        {item.label}
+                    </li>
                 {/each}
-            </section>
-        {/each}
+            </GridList>
+            <GridList as="div" preset="calendar" class="items-start" aria-label="Eventos por dia">
+                {#each Object.entries(calendar?.data ?? {}) as [day, events], dayIndex}
+                    <section class="flex w-full flex-col gap-3" aria-labelledby={`calendar-day-${dayIndex}`}>
+                        <h3 id={`calendar-day-${dayIndex}`} class="mb-2 text-center font-noto-sans text-xl font-extrabold uppercase italic text-suspense-aurora">
+                            {day}
+                        </h3>
+                        {#each events as item}
+                            <article class={["flex w-full flex-col rounded-md px-3 pt-4 pb-2",
+                                { "bg-blue-skywave": item.type === "show" && !item.activity },
+                                { "bg-purple-mystic": item.type === "live" && !item.activity },
+                                { "bg-red-crimson": item.type === "video" && !item.activity },
+                                { "bg-green-mint": item.type === "podcast" && !item.activity },
+                                { "bg-suspense-honeycream": item.activity },
+                            ]}>
+                                <time class={["w-full text-center font-noto-sans text-2xl uppercase leading-tight",
+                                    { "text-blue-night": item.activity },
+                                    { "text-suspense-aurora": !item.activity },
+                                ]}>
+                                    {resolveHour(item.hour)}
+                                </time>
+                                <h4 class={["my-5 w-full flex-1 text-center font-noto-sans text-2xl font-extrabold italic leading-tight",
+                                    { "text-blue-night": item.activity },
+                                    { "text-suspense-aurora": !item.activity },
+                                ]}>
+                                    {item.activity ? item.activity.title : item.content}
+                                </h4>
+                                <div class="flex min-h-4 items-end justify-between gap-2">
+                                    {#if can.update}
+                                        <IconButton
+                                            variant="edit"
+                                            label={`Atualizar evento ${item.activity ? item.activity.title : item.content}`}
+                                            tone={item.activity ? "dark" : "light"}
+                                            size="sm"
+                                            surface="transparent"
+                                            on:click={() => openEvent(item)}
+                                        />
+                                    {/if}
+                                    <span class={["ml-auto truncate text-end font-noto-sans text-sm",
+                                        { "text-blue-night": item.activity },
+                                        { "text-suspense-aurora": !item.activity }
+                                    ]}>
+                                        {item.responsible.nickname}
+                                    </span>
+                                </div>
+                            </article>
+                        {/each}
+                    </section>
+                {/each}
+            </GridList>
+        </div>
     </div>
 </Section>

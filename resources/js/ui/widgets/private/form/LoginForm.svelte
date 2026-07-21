@@ -1,5 +1,6 @@
 <script>
     import { useForm } from "@inertiajs/svelte";
+    import { Button } from "@/ui/components/private";
 
     $: form = useForm({
         username: null,
@@ -39,8 +40,14 @@
             bind:value={$form.password}
             required
         />
-        <button type="submit" class="flex h-14 w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-blue-marinho px-4 py-2 font-noto-sans text-md font-extrabold uppercase italic text-suspense-aurora transition hover:brightness-95">
+        <Button
+            type="submit"
+            variant="secondary"
+            shape="pill"
+            loading={$form.processing}
+            class="h-14 w-full"
+        >
             Entrar
-        </button>
+        </Button>
     </form>
 </div>

@@ -1,8 +1,12 @@
 <script>
     export let status = null;
+    export let processing = false;
     export let can = [];
 
     import { Button } from "@/ui/components/private";
+
+    let activeAction = null;
+    $: if (!processing) activeAction = null;
 </script>
 
 {#if can.create || can.update}
@@ -13,6 +17,9 @@
             value="draft"
             variant="success"
             shape="pill"
+            loading={processing && activeAction === "draft"}
+            disabled={processing}
+            on:click={() => activeAction = "draft"}
         >
             {status === 'draft' ? 'Atualizar rascunho' : 'Salvar como rascunho'}
         </Button>
@@ -23,6 +30,9 @@
                 value="revision"
                 variant="accent"
                 shape="pill"
+                loading={processing && activeAction === "revision"}
+                disabled={processing}
+                on:click={() => activeAction = "revision"}
             >
                 {status === 'revision' ? 'Atualizar avaliação' : 'Enviar para avaliação'}
             </Button>
@@ -34,6 +44,9 @@
                 value="published"
                 variant="review"
                 shape="pill"
+                loading={processing && activeAction === "published"}
+                disabled={processing}
+                on:click={() => activeAction = "published"}
             >
                 Aprovar
             </Button>
@@ -44,6 +57,9 @@
                 value="published"
                 variant="info"
                 shape="pill"
+                loading={processing && activeAction === "published"}
+                disabled={processing}
+                on:click={() => activeAction = "published"}
             >
                 Atualizar
             </Button>
@@ -54,6 +70,9 @@
                 value="published"
                 variant="info"
                 shape="pill"
+                loading={processing && activeAction === "published"}
+                disabled={processing}
+                on:click={() => activeAction = "published"}
             >
                 Publicar
             </Button>

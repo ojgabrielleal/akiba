@@ -248,6 +248,7 @@
             <PostActions
                 status={$form.review?.status}
                 can={can}
+                processing={$form.processing}
             />
         </div>
     </div>
