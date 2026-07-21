@@ -28,7 +28,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-[18rem_1fr] gap-5">
             <img 
                 src={resolvePlaceholderImage(listenerMonth.current.data.avatar, "avatar", listenerMonth.current.data.gender)}
-                class="h-full min-h-80 w-full rounded-md border-2 border-blue-skywave object-cover object-center"
+                class="h-72 w-full self-center rounded-md object-cover object-center"
                 alt={listenerMonth.current.data.name}
             />
             <div class="bg-gradient-blue-cerulean-glow rounded-md p-4">
