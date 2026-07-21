@@ -8,7 +8,6 @@
         FormField,
         RadioInput,
         SectionDivider,
-        SelectInput,
         TextInput,
     } from "@/ui/components/private";
     import { userPermissions } from "@/utils";
@@ -24,7 +23,7 @@
         name: null,
         nickname: null,
         gender: null,
-        roles: null,
+        roles: [],
     });
 
     const submit = () => {
@@ -36,30 +35,7 @@
 </script>
 
 <form on:submit|preventDefault={submit}>
-    <div class="mb-10">
-        <div class="mb-4">
-            <div class="text-md text-gray-700 font-noto-sans mb-2">
-                Esse usuário é humano ou virtual?
-            </div>
-            <div class="mb-1">
-                <RadioInput
-                    id="human"
-                    name="is_virtual"
-                    value={false}
-                    label="Humano"
-                    bind:group={$form.is_virtual}
-                />
-            </div>
-            <div>
-                <RadioInput
-                    id="virtual"
-                    name="is_virtual"
-                    value={true}
-                    label="Virtual"
-                    bind:group={$form.is_virtual}
-                />
-            </div>
-        </div>
+    <div class="mb-4">
         {#if !$form.is_virtual}
             <FormField for="username" label="Login" error={$form.errors.username}>
                 <TextInput
@@ -84,9 +60,32 @@
                 />
             </FormField>
         {/if}
+        <div class="mt-4">
+            <div class="mb-2 font-noto-sans text-md text-gray-700">
+                Tipo de usuário
+            </div>
+            <div class="mb-1">
+                <RadioInput
+                    id="human"
+                    name="is_virtual"
+                    value={false}
+                    label="Membro da equipe"
+                    bind:group={$form.is_virtual}
+                />
+            </div>
+            <div>
+                <RadioInput
+                    id="virtual"
+                    name="is_virtual"
+                    value={true}
+                    label="Bot"
+                    bind:group={$form.is_virtual}
+                />
+            </div>
+        </div>
     </div>
-    <div class="mb-10">
-        <SectionDivider spacing="sm">Informações básicas</SectionDivider>
+    <div class="mb-4">
+        <SectionDivider tone="ocean" spacing="sm">Informações básicas</SectionDivider>
         <FormField for="name" label="Nome" error={$form.errors.name}>
             <TextInput
                 variant="offcanvas"
@@ -109,26 +108,31 @@
                 required
             />
         </FormField>
-        <FormField for="gender" label="Gênero" error={$form.errors.gender} spacing="none">
-            <SelectInput
-                variant="offcanvas"
-                id="gender"
-                name="gender"
-                bind:value={$form.gender}
-                error={$form.errors.gender}
-                required
-            >
-                <option value="male">
-                    Masculino
-                </option>
-                <option value="female">
-                    Feminino
-                </option>
-            </SelectInput>
+        <FormField for="gender-male" label="Gênero" error={$form.errors.gender} spacing="none">
+            <div class="flex flex-col gap-1">
+                <RadioInput
+                    id="gender-male"
+                    name="gender"
+                    value="male"
+                    label="Masculino"
+                    bind:group={$form.gender}
+                    error={$form.errors.gender}
+                    required
+                />
+                <RadioInput
+                    id="gender-female"
+                    name="gender"
+                    value="female"
+                    label="Feminino"
+                    bind:group={$form.gender}
+                    error={$form.errors.gender}
+                    required
+                />
+            </div>
         </FormField>
     </div>
     <div class="mb-5">
-        <SectionDivider spacing="sm">Cargos</SectionDivider>
+        <SectionDivider tone="ocean" spacing="sm">Cargos</SectionDivider>
         <div class="flex flex-col gap-2">
             {#if roles}
                 {#each roles.data as item}
@@ -147,8 +151,9 @@
     {#if can.create}
         <Button
             type="submit"
-            size="lg"
             loading={$form.processing}
+            variant="secondary"
+            shape="pill"
         >
             Cadastrar
         </Button>

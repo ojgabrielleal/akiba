@@ -1,13 +1,10 @@
 <script>
     export let title;
+    export let variant = null;
 
     import { page, router } from "@inertiajs/svelte";
-    import { Button, IconButton, Offcanvas, Section } from "@/ui/components/private";
-    import {
-        UserForm,
-        UserAccessForm,
-        ActivityForm,
-    } from "@/ui/widgets/private";
+    import { Badge, EmptyState, GridList, IconButton, Offcanvas, Section } from "@/ui/components/private";
+    import { UserForm, UserAccessForm } from "@/ui/widgets/private";
     import { resolvePlaceholderImage, userGridPermissions } from "@/utils";
 
     $: ({ users } = $page.props);
@@ -16,8 +13,17 @@
 
     let offCanvasUserRef;
     let offCanvasUserAccessRef;
-    let offCanvasActivityRef;
-    let identifier;
+    let userSelected = null;
+    $: accessOffcanvasTitle = userSelected ? userSelected.nickname : "Editar acessos";
+
+    let actions = [
+        {
+            title: "Adicionar membro",
+            icon: "/svg/plus.svg",
+            permission: can.create && variant === "administration",
+            onClick: () => offCanvasUserRef.open(),
+        },
+    ];
 
     const requestDeactivateUser = (user) => {
         router.patch(`/panel/administration/user/${user}/deactivate`, {},
@@ -31,84 +37,67 @@
         <UserForm {close} />
     </div>
 </Offcanvas>
-<Offcanvas bind:this={offCanvasUserAccessRef} title="Configurações administrativas">
+<Offcanvas bind:this={offCanvasUserAccessRef} title={accessOffcanvasTitle}>
     <div slot="content" let:close>
-        <UserAccessForm {identifier} {close} />
-    </div>
-</Offcanvas>
-<Offcanvas bind:this={offCanvasActivityRef} title="Criar atividade/aviso">
-    <div slot="content" let:close>
-        <ActivityForm {close} />
+        <UserAccessForm {userSelected} {close} />
     </div>
 </Offcanvas>
 
 {#if users}
-    <div class="flex justify-center gap-5 mb-5">
-        {#if can.create}
-            <Button
-                variant="outline"
-                on:click={() => { offCanvasUserRef.open(); }}
-            >
-                Cadastrar membro
-            </Button>
-            <span class="border-l border-suspense-aurora/30"></span>
-        {/if}
-        {#if can.activity.create}
-            <Button
-                variant="outline"
-                on:click={() => { offCanvasActivityRef.open(); }}
-            >
-                Criar Atividade e Avisos
-            </Button>
-        {/if}
-    </div>
-    <Section {title}>
-        <ul class="mt-18 grid grid-cols-1 lg:grid-cols-4 gap-15 lg:gap-x-5 lg:gap-y-18">
+    <Section {title} {actions}>
+        {#if users.data.length > 0}
+        <GridList preset="members" class="mt-16">
             {#each users.data as item}
-                {@const highestRole = item.roles.reduce((prev, current) => {
-                    return prev.weight > current.weight ? prev : current;
-                })}
                 <li>
-                    <article class="h-35 px-3 py-1 bg-blue-skywave rounded-sm relative">
-                    <header>
-                        <h3 class="text-suspense-aurora text-xl lg:text-2xl font-noto-sans font-extrabold italic uppercase">
+                    <article class="relative h-32 overflow-visible rounded-md bg-gradient-blue-cerulean-glow px-3 py-2">
+                    <header class="relative z-10 max-w-[65%]">
+                        <h3 class="truncate font-noto-sans text-xl font-extrabold uppercase italic text-suspense-aurora lg:text-2xl" title={item.nickname}>
                             {item.nickname}
                         </h3>
-                        <p class="text-suspense-aurora text-xs font-noto-sans font-semibold italic uppercase">
+                        <p class="truncate font-noto-sans text-[0.65rem] font-semibold uppercase italic text-suspense-aurora" title={item.name}>
                             {item.name}
                         </p>
                     </header>
                     <img
-                        class="w-35 absolute right-0 bottom-0"
+                        class="absolute bottom-0 right-0 z-0 h-43 max-w-[58%] object-contain object-bottom"
                         src={resolvePlaceholderImage(item.avatar, "avatar")}
-                        alt=""
-                        aria-hidden="true"
+                        alt={item.nickname}
+                        loading="lazy"
                     />
-                    <footer class="w-full flex justify-between items-end px-3 absolute left-0 bottom-2">
-                        <span class="rounded-full p-2 bg-suspense-aurora text-xs text-blue-marinho font-noto-sans font-extrabold uppercase italic">
-                            {highestRole.label}
-                        </span>
-                        <div class="flex flex-wrap lg:flex-nowrap gap-2" aria-label={`Acoes de ${item.nickname}`}>
-                            {#if !item.is_virtual && can.authority.update}
+                    <footer class="absolute inset-x-0 bottom-2 z-10 flex w-full items-end justify-between gap-2 px-2">
+                        <div class="flex min-w-0 max-w-[65%] items-center gap-1">
+                            {#if item.highest_role}
+                                <Badge variant="light" size="sm" class="min-w-0" title={item.highest_role.label}>
+                                    {item.highest_role.label}
+                                </Badge>
+                            {/if}
+                        </div>
+                        <div class="flex shrink-0 gap-1" aria-label={`Ações de ${item.nickname}`}>
+                            {#if can.update && variant === "administration"}
                                 <IconButton
-                                    variant="crown"
-                                    label="Definir permissões"
-                                    on:click={() => { identifier = item.uuid; offCanvasUserAccessRef.open(); }}
+                                    href={`/panel/profile/${item.uuid}`}
+                                    variant="edit"
+                                    label="Editar perfil"
+                                    size="sm"
+                                    surface="dark"
+                                    tone="accent"
                                 />
                             {/if}
-                            <IconButton
-                                href={`/panel/profile/${item.uuid}`}
-                                variant="edit"
-                                label="Editar perfil"
-                                tone="dark"
-                                surface="light"
-                            />
-                            {#if can.deactivate}
+                            {#if !item.is_virtual && can.authority.update && variant === "administration"}
+                                <IconButton
+                                    variant="authority"
+                                    label="Atualizar acessos"
+                                    size="sm"
+                                    on:click={() => { userSelected = item; offCanvasUserAccessRef.open(); }}
+                                />
+                            {/if}
+                            {#if can.deactivate && variant === "administration"}
                                 <IconButton
                                     variant="trash"
-                                    label="Desativar perfil"
-                                    surface="light"
-                                    on:click={()=> requestDeactivateUser(item.uuid)}
+                                    label="Desativar membro"
+                                    size="sm"
+                                    surface="dark"
+                                    on:click={() => requestDeactivateUser(item.uuid)}
                                 />
                             {/if}
                         </div>
@@ -116,6 +105,12 @@
                     </article>
                 </li>
             {/each}
-        </ul>
+        </GridList>
+        {:else}
+            <EmptyState
+                title="Nenhum membro encontrado"
+                description="Os membros ativos aparecerão aqui."
+            />
+        {/if}
     </Section>
 {/if}

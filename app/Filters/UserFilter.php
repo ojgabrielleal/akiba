@@ -18,6 +18,10 @@ class UserFilter
                 fn (Builder $query) => $query->active()
             )
             ->when(
+                array_key_exists('is_virtual', $filters),
+                fn (Builder $query) => $query->where('is_virtual', $filters['is_virtual'])
+            )
+            ->when(
                 $filters['with'] ?? null,
                 fn (Builder $query, array|string $relations) => $query->with($relations)
             )

@@ -27,6 +27,17 @@ class UserResource extends JsonResource
                 'nickname' => $this->nickname,
                 'avatar' => $this->avatar,
                 'gender' => $this->gender,
+                'roles' => $this->whenLoaded('roles', fn () => $this->roles
+                    ->map(fn ($role) => [
+                        'uuid' => $role->uuid,
+                        'name' => $role->name,
+                        'label' => $role->label,
+                        'weight' => $role->weight,
+                    ])
+                    ->values()),
+                'highest_role' => $this->relationLoaded('roles')
+                    ? $this->roles->sortByDesc('weight')->first()
+                    : null,
             ];
         }
 

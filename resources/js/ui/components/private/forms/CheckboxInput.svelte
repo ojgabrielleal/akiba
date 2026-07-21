@@ -14,6 +14,15 @@
     ];
 
     const labelClasses = "cursor-pointer font-noto-sans text-md text-gray-700";
+
+    $: groupValues = Array.isArray(group) ? group : [];
+    $: isGroupChecked = groupValues.includes(value);
+
+    const updateGroup = (event) => {
+        group = event.currentTarget.checked
+            ? [...new Set([...groupValues, value])]
+            : groupValues.filter((item) => item !== value);
+    };
 </script>
 
 <div class="flex items-start gap-2">
@@ -24,7 +33,8 @@
             {value}
             class={classes}
             type="checkbox"
-            bind:group
+            checked={isGroupChecked}
+            on:change={updateGroup}
         />
     {:else}
         <input

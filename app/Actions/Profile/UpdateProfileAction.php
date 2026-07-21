@@ -37,10 +37,17 @@ class UpdateProfileAction
 
             if (!empty($data['socials'])) {
                 foreach ($data['socials'] as $social) {
-                    $user->socials()->where('uuid', $social['uuid'])->update([
-                        'name' => $social['name'],
-                        'url' => $social['url'],
-                    ]);
+                    if (!empty($social['uuid'])) {
+                        $user->socials()->where('uuid', $social['uuid'])->update([
+                            'name' => $social['name'],
+                            'url' => $social['url'],
+                        ]);
+                    } else {
+                        $user->socials()->updateOrCreate(
+                            ['name' => $social['name']],
+                            ['url' => $social['url']],
+                        );
+                    }
                 }
             }
 

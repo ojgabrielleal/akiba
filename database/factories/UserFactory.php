@@ -109,6 +109,7 @@ class UserFactory extends Factory
         return [
             ['name' => 'Facebook', 'url' => null],
             ['name' => 'Instagram', 'url' => null],
+            ['name' => 'Threads', 'url' => null],
             ['name' => 'Twitter', 'url' => null],
             ['name' => 'Bluesky', 'url' => null],
             ['name' => 'Discord', 'url' => null],

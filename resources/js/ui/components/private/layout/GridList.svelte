@@ -10,6 +10,7 @@
         wide: "grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-5",
         split: "grid-cols-1 lg:grid-cols-2 gap-5",
         calendar: "grid-cols-7 gap-3",
+        members: "grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-x-5 gap-y-16",
     };
 
     $: classes = ["grid", presets[preset] ?? presets.content, className];

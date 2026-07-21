@@ -56,6 +56,11 @@
             tone: "dark",
             surface: "light",
         },
+        authority: {
+            icon: "/svg/crown.svg",
+            tone: "accent",
+            surface: "dark",
+        },
     };
 
     const tones = {

@@ -1,35 +1,22 @@
 <script>
     export let close = () => {};
-    export let identifier;
+    export let userSelected;
 
     import { useForm, page } from "@inertiajs/svelte";
-    import axios from "axios";
     import { Button, CheckboxInput, FormField, SectionDivider, TextInput } from "@/ui/components/private";
     import { userPermissions } from "@/utils";
 
     $: ({ roles } = $page.props);
 
-    let can = userPermissions().access;
+    let can = userPermissions().authority;
 
     $: form = useForm({
         password: null,
-        roles: null,
+        roles: userSelected?.roles.map((role) => role.name) ?? [],
     });
 
-    if (identifier) {
-        axios.get(`/panel/administration/user/${identifier}`)
-            .then((response) => {
-                const data = response.data.data;
-                $form.roles = data.roles.map((role) => role.name);
-            })
-            .catch(() => {
-                console.error("Error when find member selected");
-                close();
-            });
-    }
-
     const submit = () => {
-        $form.patch(`/panel/administration/user/${identifier}`, {
+        $form.patch(`/panel/administration/user/${userSelected.uuid}`, {
             preserveScroll: true,
             onSuccess: () => close(),
         });
@@ -37,7 +24,7 @@
 </script>
 
 <form on:submit|preventDefault={submit}>
-    <FormField for="password" label="Nova senha" help="Essa senha será criptografada para proteção" error={$form.errors.password}>
+    <FormField for="password" label="Nova senha" help="Essa senha será criptografada para proteção" error={$form.errors.password} spacing="compact">
         <TextInput
             variant="offcanvas"
             id="password"
@@ -48,7 +35,7 @@
             error={$form.errors.password}
         />
     </FormField>
-    <SectionDivider>Cargos</SectionDivider>
+    <SectionDivider tone="ocean">Cargos</SectionDivider>
     <div class="mb-4">
         <div class="flex flex-col gap-2">
             {#if roles}
@@ -68,8 +55,9 @@
     {#if can.update}
         <Button
             type="submit"
-            size="lg"
             loading={$form.processing}
+            variant="secondary"
+            shape="pill"
         >
             Atualizar
         </Button>

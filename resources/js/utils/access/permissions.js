@@ -49,6 +49,10 @@ export const podcastPermissions = () => ({
     deactivate: hasPermission("podcast.deactivate"),
 });
 
+export const profilePermissions = () => ({
+    update: hasPermission("user.update") || hasPermission("user.update.own"),
+});
+
 export const pollPermissions = () => ({
     create: hasPermission("poll.create"),
     update: hasPermission("poll.update"),

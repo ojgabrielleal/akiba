@@ -12,8 +12,8 @@ class UpdateUserAccessAction
     public function execute(User $user, array $data): User
     {
         return DB::transaction(function () use ($user, $data) {
-            if ($data['roles']) {
-                $roles = Role::whereIn('name', $data['roles'])
+            if (array_key_exists('roles', $data)) {
+                $roles = Role::whereIn('name', $data['roles'] ?? [])
                     ->pluck('id')
                     ->toArray();
 

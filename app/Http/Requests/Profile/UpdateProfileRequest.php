@@ -25,7 +25,7 @@ class UpdateProfileRequest extends LoggedWebRequest
             'country' => 'required|string|max:255',
             'bibliography' => 'required|string',
             'socials' => 'nullable|array',
-            'socials.*.uuid' => 'required_with:socials|string',
+            'socials.*.uuid' => 'nullable|string',
             'socials.*.name' => 'required_with:socials|string|max:255',
             'socials.*.url' => 'nullable|url',
             'preferences' => 'nullable|array',
