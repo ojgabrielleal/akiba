@@ -1,100 +1,107 @@
 <script>
     export let title;
+    export let variant = null;
 
-    import { router, page } from "@inertiajs/svelte";
-    import { Button, IconButton, Offcanvas, Section } from "@/ui/components/private";
+    import { page, router } from "@inertiajs/svelte";
+    import {
+        Badge,
+        Carousel,
+        EmptyState,
+        IconButton,
+        Offcanvas,
+        Section,
+    } from "@/ui/components/private";
     import { RoleForm } from "@/ui/widgets/private";
     import { rolePermissions } from "@/utils";
 
     $: ({ roles } = $page.props);
 
     let can = rolePermissions();
-
     let offCanvasRef;
-    let identifier;
+    let roleSelected = null;
+
+    const openRoleForm = (role = null) => {
+        roleSelected = role;
+        offCanvasRef.open();
+    };
 
     const requestRemoveRole = (role) => {
-        router.delete(`/panel/administration/role/${role}`, {
+        router.delete(`/panel/administration/role/${role.uuid}`, {
             preserveScroll: true,
             preserveState: true,
         });
     };
+
+    $: actions = [{
+        title: "Criar cargo",
+        icon: "/svg/plus.svg",
+        permission: variant === "administration" && can.create,
+        onClick: () => openRoleForm(),
+    }];
 </script>
 
-<Offcanvas bind:this={offCanvasRef} title={identifier ? "Atualizar cargo" : "Cadastrar cargo"}>
+<Offcanvas
+    bind:this={offCanvasRef}
+    title={roleSelected ? `Atualizar ${roleSelected.label}` : "Cadastrar cargo"}
+>
     <div slot="content" let:close>
-        <RoleForm {identifier} {close} />
+        <RoleForm {roleSelected} {close} />
     </div>
 </Offcanvas>
 
-<Section {title}>
-    {#if can.create}
-        <div class="flex justify-center gap-5 mb-5">
-            <Button
-                variant="info"
-                on:click={() => { identifier = null; offCanvasRef.open(); }}
-            >
-                Cadastrar cargo
-            </Button>
-        </div>
-    {/if}
-    {#if roles && roles.data.length > 0}
-        <div class="overflow-x-auto w-full">
-            <table class="min-w-[900px] w-full border-collapse table-auto">
-                <thead>
-                    <tr class="text-orange-amber uppercase text-lg font-extrabold font-noto-sans italic whitespace-nowrap">
-                        <th class="p-4 text-start min-w-[180px]">
-                            Cargo
-                        </th>
-                        <th class="p-4 text-start min-w-[180px]">
-                            Membros relacionados
-                        </th>
-                        <th class="p-4 text-start min-w-[300px]">
-                            Descrição
-                        </th>
-                        <th class="p-4 text-start min-w-[140px]"> </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {#each roles.data as item}
-                        <tr class="border-t border-suspense-aurora/20 font-noto-sans text-suspense-aurora whitespace-nowrap">
-                            <td class="p-4 align-center min-w-[180px]">
-                                {item.label}
-                            </td>
-                            <td class="p-4 align-center min-w-[180px]">
-                                {item.members_total} membros
-                            </td>
-                            <td class="p-4 min-w-[300px] max-w-[400px] whitespace-normal wrap-break-words">
-                                {item.description}
-                            </td>
-                            <td class="p-4 min-w-[140px]">
-                                <div class="flex justify-start gap-3">
-                                    {#if can.update}
-                                        <IconButton
-                                            variant="edit"
-                                            label="Atualizar"
-                                            size="lg"
-                                            surface="ocean"
-                                            tone="light"
-                                            on:click={() => { identifier = item.uuid; offCanvasRef.open(); }}
-                                        />
-                                    {/if}
-                                    {#if can.delete}
-                                        <IconButton
-                                            variant="trash"
-                                            label="Remover"
-                                            size="lg"
-                                            surface="danger"
-                                            tone="light"
-                                            on:click={() => { requestRemoveRole(item.uuid); }}
-                                        />
-                                    {/if}
-                                </div>
-                            </td>
-                        </tr>
-                    {/each}
-                </tbody>
-            </table>
-        </div>
+<Section {title} {actions}>
+    {#if roles?.data?.length}
+        <Carousel label="Cargos da equipe">
+            {#each roles.data as item (item.uuid)}
+                <article class="flex h-44 w-40 shrink-0 flex-col overflow-hidden rounded-md bg-blue-ocean">
+                    <div class="flex items-center gap-1 px-2 pt-2">
+                        <strong class="shrink-0 font-noto-sans text-2xl font-black leading-none text-suspense-aurora">
+                            {item.members_total ?? 0}
+                        </strong>
+                        <Badge class="min-w-0 flex-1 px-2" title={item.label}>
+                            {item.label}
+                        </Badge>
+                    </div>
+
+                    <div class="flex min-h-0 flex-1 items-center justify-center px-4 py-2">
+                        <img
+                            src={item.icon ?? "/svg/dots.svg"}
+                            alt=""
+                            aria-hidden="true"
+                            class="h-11 w-11 object-contain filter-orange-citric"
+                            loading="lazy"
+                        />
+                    </div>
+
+                    {#if variant === "administration" && (can.update || can.delete)}
+                        <div class="flex h-10 items-center justify-end gap-1.5 bg-blue-cerulean px-2">
+                            {#if can.delete}
+                                <IconButton
+                                    variant="trash"
+                                    label={`Remover ${item.label}`}
+                                    size="sm"
+                                    surface="dark"
+                                    on:click={() => requestRemoveRole(item)}
+                                />
+                            {/if}
+                            {#if can.update}
+                                <IconButton
+                                    variant="edit"
+                                    label={`Editar ${item.label}`}
+                                    size="sm"
+                                    surface="dark"
+                                    on:click={() => openRoleForm(item)}
+                                />
+                            {/if}
+                        </div>
+                    {/if}
+                </article>
+            {/each}
+        </Carousel>
+    {:else}
+        <EmptyState
+            title="Nenhum cargo por aqui"
+            description="Cadastre um cargo para organizar as responsabilidades da equipe."
+        />
     {/if}
 </Section>

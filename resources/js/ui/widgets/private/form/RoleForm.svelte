@@ -1,53 +1,95 @@
 <script>
     export let close = () => {};
-    export let identifier;
+    export let roleSelected = null;
 
-    import { useForm, page } from "@inertiajs/svelte";
-    import axios from "axios";
-    import { Button, FormField, TextArea, TextInput } from "@/ui/components/private";
+    import { page, useForm } from "@inertiajs/svelte";
+    import {
+        Button,
+        CheckboxInput,
+        FormField,
+        Preview,
+        SectionDivider,
+        TextArea,
+        TextInput,
+    } from "@/ui/components/private";
     import { rolePermissions } from "@/utils";
 
     $: ({ permissions } = $page.props);
 
     let can = rolePermissions();
 
+    const permissionGroup = (permission) => {
+        if (permission.name?.endsWith(".module.view")) {
+            return "Acesso às páginas";
+        }
+
+        const match = permission.label?.match(/^\[([^\]]+)\]/);
+
+        return match?.[1] ?? "Outras";
+    };
+
+    const permissionLabel = (permission) => {
+        const match = permission.label?.match(/^\[([^\]]+)\]/);
+
+        if (permission.name?.endsWith(".module.view")) {
+            return match?.[1] ?? permission.label;
+        }
+
+        return permission.label?.replace(/^\[[^\]]+\]\s*/, "")
+            ?? permission.name;
+    };
+
+    $: permissionGroups = Object.entries(
+        (permissions?.data ?? []).reduce((groups, permission) => {
+            const group = permissionGroup(permission);
+
+            groups[group] = [...(groups[group] ?? []), permission];
+
+            return groups;
+        }, {})
+    );
+
     $: form = useForm({
-        label: null,
-        weight: null,
-        description: null,
-        permissions: [],
+        _method: roleSelected ? "PATCH" : "POST",
+        label: roleSelected?.label ?? null,
+        weight: roleSelected?.weight ?? null,
+        description: roleSelected?.description ?? null,
+        icon: null,
+        permissions: roleSelected?.permissions?.map((item) => item.uuid) ?? [],
     });
 
-    if (identifier) {
-        axios.get(`/panel/administration/role/${identifier}`)
-            .then(function (response) {
-                const data = response.data.data;
-
-                $form.label = data.label;
-                $form.weight = data.weight;
-                $form.description = data.description;
-                $form.permissions = data.permissions.map((item) => item.uuid);
-            })
-            .catch(() => {
-                console.error("Error when find role");
-                close();
-            });
-    }
-
     const submit = () => {
-        const method = identifier ? "patch" : "post";
-        const url = identifier
-            ? `/panel/administration/role/${identifier}`
+        const url = roleSelected
+            ? `/panel/administration/role/${roleSelected.uuid}`
             : "/panel/administration/role";
 
-        $form[method](url, {
+        $form.post(url, {
             preserveScroll: true,
+            forceFormData: true,
             onSuccess: () => close(),
         });
     };
 </script>
 
 <form on:submit|preventDefault={submit}>
+    <FormField
+        for="icon"
+        label="Ícone"
+        help="Envie um PNG, JPG ou WebP de até 1 MB."
+        error={$form.errors.icon}
+        spacing="compact"
+    >
+        <Preview
+            name="icon"
+            size="icon"
+            tone="muted"
+            color="muted"
+            src={roleSelected?.icon}
+            oninput={(event) => ($form.icon = event.target.files[0])}
+            required={!roleSelected}
+        />
+    </FormField>
+
     <FormField for="label" label="Nome" error={$form.errors.label} spacing="compact">
         <TextInput
             variant="offcanvas"
@@ -59,7 +101,14 @@
             required
         />
     </FormField>
-    <FormField for="weight" label="Peso" help="Importância do cargo sobre demais existentes" error={$form.errors.weight} spacing="compact">
+
+    <FormField
+        for="weight"
+        label="Peso"
+        help="Maior peso, maior prioridade."
+        error={$form.errors.weight}
+        spacing="compact"
+    >
         <TextInput
             variant="offcanvas"
             type="number"
@@ -70,43 +119,50 @@
             required
         />
     </FormField>
+
     <FormField for="description" label="Descrição" error={$form.errors.description} spacing="compact">
         <TextArea
+            variant="offcanvas"
             name="description"
             id="description"
             rows="3"
             bind:value={$form.description}
             error={$form.errors.description}
+            required
         />
     </FormField>
-    <div class="mb-3">
-        <label for="permissions" class="text-md text-gray-700 font-noto-sans block mb-1">
-            Permissões
-        </label>
-        <select
-            id="permissions"
-            name="permissions"
-            class="w-full h-60 bg-white font-noto-sans text-md rounded-md outline-none py-2 px-4 border border-gray-400"
-            bind:value={$form.permissions}
-            multiple
-        >
-            {#each permissions.data as permission}
-                <option value={permission.uuid}>
-                    {permission.label}
-                </option>
-            {/each}
-        </select>
-        <div class="text-sm font-noto-sans text-gray-400 mt-1">
-            Pressione CTRL para manipular as permissões
-        </div>
+
+    <SectionDivider tone="ocean" spacing="sm">Permissões</SectionDivider>
+
+    <div class="mb-5 max-h-80 space-y-4 overflow-y-auto pr-2">
+        {#each permissionGroups as [group, groupPermissions] (group)}
+            <fieldset class="rounded-md border border-blue-ocean/15 bg-blue-ocean/5 p-3">
+                <legend class="px-1 font-noto-sans text-sm font-extrabold uppercase italic text-blue-ocean">
+                    {group}
+                </legend>
+
+                <div class="space-y-2">
+                    {#each groupPermissions as permission (permission.uuid)}
+                        <CheckboxInput
+                            id={`permission-${permission.uuid}`}
+                            value={permission.uuid}
+                            label={permissionLabel(permission)}
+                            bind:group={$form.permissions}
+                        />
+                    {/each}
+                </div>
+            </fieldset>
+        {/each}
     </div>
-    {#if can.create || can.update}
+
+    {#if roleSelected ? can.update : can.create}
         <Button
             type="submit"
-            size="lg"
             loading={$form.processing}
+            variant="secondary"
+            shape="pill"
         >
-            {identifier ? "Atualizar" : "Cadastrar"}
+            {roleSelected ? "Atualizar" : "Cadastrar"}
         </Button>
     {/if}
 </form>

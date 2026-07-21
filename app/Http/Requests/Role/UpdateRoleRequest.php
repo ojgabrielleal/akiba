@@ -25,6 +25,7 @@ class UpdateRoleRequest extends LoggedWebRequest
             'label' => 'required|string|max:255',
             'weight' => 'required|integer',
             'description' => 'nullable|string',
+            'icon' => 'nullable|image|mimes:png,jpg,jpeg,webp|max:1024',
             'permissions' => 'nullable|array',
             'permissions.*' => 'exists:permissions,uuid',
         ];

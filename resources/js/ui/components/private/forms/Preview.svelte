@@ -30,6 +30,10 @@
             frame: "w-24 h-24 rounded-md",
             image: "w-24 h-24 rounded-md",
         },
+        icon: {
+            frame: "h-20 w-20 rounded-md",
+            image: "h-20 w-20 rounded-md",
+        },
     };
 
     const tones = {

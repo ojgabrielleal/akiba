@@ -18,6 +18,7 @@ class Role extends Model
         'label',
         'name',
         'description',
+        'icon',
         'weight'
     ];
 

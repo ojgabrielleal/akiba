@@ -27,6 +27,7 @@ class StoreRoleRequest extends LoggedWebRequest
             'label' => 'required|string|max:255|unique:roles,label',
             'weight' => 'required|integer',
             'description' => 'nullable|string',
+            'icon' => 'required|image|mimes:png,jpg,jpeg,webp|max:1024',
             'permissions' => 'nullable|array',
             'permissions.*' => 'exists:permissions,uuid',
         ];
