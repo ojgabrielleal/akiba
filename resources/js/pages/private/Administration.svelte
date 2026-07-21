@@ -4,7 +4,7 @@
     import {
         ActivityCarousel,
         CalendarGrid,
-        RoleTable,
+        RoleCarousel,
         TaskList,
         UserGrid,
     } from "@/ui/widgets/private";
@@ -16,5 +16,5 @@
     <ActivityCarousel title="Avisos e atividades" variant="administration" />
     <TaskList title="Tarefas da equipe" variant="administration" />
     <UserGrid title="Membros" variant="administration" />
-    <RoleTable title="Cargos" variant="administration" />
+    <RoleCarousel title="Cargos" variant="administration" />
 </Layout>

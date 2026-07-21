@@ -1,6 +1,7 @@
 // Carousels
 export { default as ActivityCarousel } from "./carousel/ActivityCarousel.svelte"
 export { default as AudienceCarousel } from "./carousel/AudienceCarousel.svelte";
+export { default as RoleCarousel } from "./carousel/RoleCarousel.svelte";
 
 // Lists
 export { default as TaskList } from "./list/TaskList.svelte"
@@ -43,11 +44,10 @@ export { default as StreamMetricsGrid } from './grid/StreamMetricsGrid.svelte';
 export { default as TaskGrid } from "./grid/TaskGrid.svelte";
 
 // Hero
-export { default as WellcomeHero } from './hero/WellcomeHero.svelte';	
+export { default as WellcomeHero } from './hero/WellcomeHero.svelte';
 
 // Navbar 
 export { default as Navbar } from './navbar/Navbar.svelte';
 
 // Tables
-export { default as RoleTable } from "./table/RoleTable.svelte";
 export { default as ProgramHistoryTable } from "./table/ProgramHistoryTable.svelte";
