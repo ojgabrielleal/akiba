@@ -35,7 +35,7 @@
                 <div class="relative shrink-0">
                     <div class="h-20 w-20 overflow-hidden rounded-md bg-blue-marinho">
                         <img
-                            src={resolvePlaceholderImage(onair.data.program.host.avatar, "avatar")}
+                            src={resolvePlaceholderImage(onair.data.program.host.avatar, "avatar", onair.data.program.host.gender)}
                             alt=""
                             class="h-full w-full object-cover object-top"
                         />

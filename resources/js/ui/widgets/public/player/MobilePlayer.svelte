@@ -115,7 +115,7 @@
                 <div class="relative w-40 h-full flex items-end justify-end">
                     <div class="absolute right-0 bottom-3 size-32 rounded-full bg-blue-skywave/15 blur-2xl"></div>
                     <img
-                        src={resolvePlaceholderImage(playerData.host.avatar, "avatar")}
+                        src={resolvePlaceholderImage(playerData.host.avatar, "avatar", playerData.host.gender)}
                         alt={playerData.host.nickname || "Locutor atual"}
                         class="relative z-10 w-40 max-h-56 object-contain object-bottom"
                         loading="lazy"
@@ -250,7 +250,7 @@
                     <div class="relative w-52 h-full -translate-x-10 flex items-end justify-end">
                         <div class="absolute right-2 bottom-4 size-40 rounded-full bg-blue-skywave/15 blur-3xl"></div>
                         <img
-                            src={resolvePlaceholderImage(playerData.host.avatar, "avatar")}
+                            src={resolvePlaceholderImage(playerData.host.avatar, "avatar", playerData.host.gender)}
                             alt={playerData.host.nickname || "Locutor atual"}
                             class="relative z-10 w-52 max-h-64 object-contain object-bottom"
                             loading="lazy"

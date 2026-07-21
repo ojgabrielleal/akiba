@@ -23,6 +23,7 @@ class ShareAuthenticatedUserMiddleware
                 'name' => $user->name,
                 'nickname' => $user->nickname,
                 'avatar' => $user->avatar,
+                'gender' => $user->gender,
                 'roles' => $user->roles,
                 'permissions' => $user->roles
                     ->flatMap(fn ($role) => $role->permissions)

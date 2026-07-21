@@ -11,7 +11,7 @@
         TextArea,
         TextInput,
     } from "@/ui/components/private/";
-    import { profilePermissions } from "@/utils";
+    import { profilePermissions, resolvePlaceholderImage } from "@/utils";
     import { userPreferences } from "@/data";
 
     $: ({ profile } = $page.props);
@@ -91,7 +91,7 @@
                             size="profile"
                             tone="muted"
                             color="muted"
-                            src={$form.avatar}
+                            src={resolvePlaceholderImage($form.avatar, "avatar", $form.gender)}
                             oninput={(event) => ($form.avatar = event.target.files[0])}
                         />
                         <Badge variant="accent" size="sm" class="absolute bottom-5 left-5">

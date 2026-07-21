@@ -2,7 +2,7 @@
     export let title;
 
     import { page } from "@inertiajs/svelte";
-    import { IconButton, Pagination, Section } from "@/ui/components/private";
+    import { EmptyState, IconButton, Pagination, Section } from "@/ui/components/private";
     import { eventPermissions } from "@/utils";
 
     $: ({ events } = $page.props);
@@ -11,8 +11,9 @@
 </script>
 
 <Section {title}>
-    <ul class="gap-6 grid grid-cols-1 lg:grid-cols-4 xl:grid-cols-5">
-        {#each events.data as item}
+    {#if events?.data?.length}
+        <ul class="gap-6 grid grid-cols-1 lg:grid-cols-4 xl:grid-cols-5">
+            {#each events.data as item}
             <li>
                 <article class="w-full h-56 rounded-md p-4 relative bg-blue-skywave">
                 <div class="font-noto-sans text-lg text-suspense-aurora line-clamp-5 uppercase">
@@ -57,7 +58,15 @@
                 </div>
                 </article>
             </li>
-        {/each}
-    </ul>
+            {/each}
+        </ul>
+    {:else}
+        <EmptyState
+            title="Nenhum evento encontrado"
+            description="Os eventos cadastrados aparecerão aqui."
+        />
+    {/if}
 </Section>
-<Pagination pages={events} only={["events"]} />
+{#if events}
+    <Pagination pages={events} only={["events"]} />
+{/if}

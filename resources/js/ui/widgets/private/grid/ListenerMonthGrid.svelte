@@ -27,7 +27,7 @@
         {#if listenerMonth.current?.data}
             <div class="grid grid-cols-1 lg:grid-cols-[18rem_1fr] gap-5">
             <img 
-                src={resolvePlaceholderImage(listenerMonth.current.data.avatar, "avatar")}
+                src={resolvePlaceholderImage(listenerMonth.current.data.avatar, "avatar", listenerMonth.current.data.gender)}
                 class="object-contain"
                 alt={listenerMonth.current.data.name}
             />

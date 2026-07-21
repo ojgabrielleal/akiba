@@ -3,7 +3,7 @@
     export let variant = null;
 
     import { page } from "@inertiajs/svelte";
-    import { GridList, IconButton, Offcanvas, Section } from "@/ui/components/private/";
+    import { EmptyState, GridList, IconButton, Offcanvas, Section } from "@/ui/components/private/";
     import { CalendarForm } from "@/ui/widgets/private";
     import { calendarPermissions, resolveHour } from "@/utils";
     import { calendarTags } from "@/data";
@@ -11,6 +11,9 @@
     $: ({ calendar } = $page.props);
 
     let can = calendarPermissions();
+
+    $: calendarDays = Object.entries(calendar?.data ?? {});
+    $: hasCalendarEvents = calendarDays.some(([, events]) => events.length > 0);
 
     let offcanvasRef;
     let eventSelected = null;
@@ -39,7 +42,8 @@
 </Offcanvas>
 
 <Section {title} {actions}>
-    <div class="w-full overflow-x-auto pb-2">
+    {#if hasCalendarEvents}
+        <div class="w-full overflow-x-auto pb-2">
         <div class="min-w-[70rem] lg:min-w-0">
             <GridList preset="calendar" class="mb-9" aria-label="Legenda do calendário">
                 {#each calendarTags as item}
@@ -49,7 +53,7 @@
                 {/each}
             </GridList>
             <GridList as="div" preset="calendar" class="items-start" aria-label="Eventos por dia">
-                {#each Object.entries(calendar?.data ?? {}) as [day, events], dayIndex}
+                {#each calendarDays as [day, events], dayIndex}
                     <section class="flex w-full flex-col gap-3" aria-labelledby={`calendar-day-${dayIndex}`}>
                         <h3 id={`calendar-day-${dayIndex}`} class="mb-2 text-center font-noto-sans text-xl font-extrabold uppercase italic text-suspense-aurora">
                             {day}
@@ -98,5 +102,11 @@
                 {/each}
             </GridList>
         </div>
-    </div>
+        </div>
+    {:else}
+        <EmptyState
+            title="Nenhum evento no calendário"
+            description="Os próximos eventos e programas aparecerão aqui."
+        />
+    {/if}
 </Section>

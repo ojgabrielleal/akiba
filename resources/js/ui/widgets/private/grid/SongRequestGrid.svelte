@@ -3,7 +3,7 @@
 
     import { onMount } from "svelte";
     import { page, router } from "@inertiajs/svelte";
-    import { IconButton, Section } from "@/ui/components/private/";
+    import { EmptyState, IconButton, Section } from "@/ui/components/private/";
     import { resolvePlaceholderImage, songRequestPermissions } from "@/utils";
 
     $: ({ onair, songRequests } = $page.props);
@@ -108,8 +108,9 @@
 
 {#if can.list}
     <Section {title} {actions}>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-            {#each songRequests.data as item}
+        {#if songRequests?.data?.length}
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+                {#each songRequests.data as item}
                 <article class={["relative w-full rounded-md p-3",
                     { "bg-gradient-green-pine-mint": item.was_reproduced },
                     { "bg-gradient-red-blood-crimson": item.was_canceled },
@@ -243,7 +244,13 @@
                         {/if}
                     </div>
                 </article>
-            {/each}
-        </div>
+                {/each}
+            </div>
+        {:else}
+            <EmptyState
+                title="Nenhum pedido musical"
+                description="Os pedidos dos ouvintes aparecerão aqui."
+            />
+        {/if}
     </Section>
 {/if}

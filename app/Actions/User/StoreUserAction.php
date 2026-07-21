@@ -20,7 +20,7 @@ class StoreUserAction
                 'username' => $data['username'],
                 'password' => $data['password'],
                 'name' => $data['name'],
-                'avatar' => '/img/placeholders/avatar.webp',
+                'avatar' => "/img/placeholders/avatar-{$data['gender']}.webp",
                 'nickname' => $data['nickname'],
                 'gender' => $data['gender'],
                 'is_virtual' => $data['is_virtual'],

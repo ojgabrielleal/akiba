@@ -181,7 +181,7 @@
         <!--Host Image-->
         <div class="w-65">
             <img
-                src={resolvePlaceholderImage(playerData.host.avatar, "avatar")}
+                src={resolvePlaceholderImage(playerData.host.avatar, "avatar", playerData.host.gender)}
                 alt={playerData.host.nickname || "Locutor atual"}
                 class="w-full h-full"
                 loading="lazy"

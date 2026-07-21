@@ -68,7 +68,7 @@
                                 <Tooltip>
                                     <div class="w-8 h-8 rounded-full overflow-hidden bg-suspense-aurora">
                                         <img
-                                            src={resolvePlaceholderImage(conf.avatar, "avatar")}
+                                            src={resolvePlaceholderImage(conf.avatar, "avatar", conf.gender)}
                                             alt={conf.nickname}
                                             class="w-full h-full object-cover object-top scale-200"
                                             loading="lazy"

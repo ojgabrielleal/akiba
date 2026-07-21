@@ -72,7 +72,7 @@
                     class="bg-suspense-aurora w-10 h-10 rounded-full flex items-center justify-center overflow-hidden"
                 >
                     <img
-                        src={resolvePlaceholderImage(user.avatar, "avatar")}
+                        src={resolvePlaceholderImage(user.avatar, "avatar", user.gender)}
                         alt={user.nickname}
                         class="w-full h-full object-cover object-top scale-200 "
                     />
@@ -145,7 +145,7 @@
                     >
                         <div class="bg-suspense-aurora w-7 h-7 rounded-full flex items-center justify-center overflow-hidden shadow shrink-0">
                             <img
-                                src={resolvePlaceholderImage(user.avatar, "avatar")}
+                                src={resolvePlaceholderImage(user.avatar, "avatar", user.gender)}
                                 alt={user.nickname}
                                 class="w-full h-full object-cover object-top scale-200"
                             />

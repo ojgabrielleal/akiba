@@ -142,7 +142,7 @@
                             </div>
                             <img
                                 class="w-36 aspect-square absolute right-0 bottom-0 object-cover object-top"
-                                src={resolvePlaceholderImage(item.host.avatar, "avatar")}
+                                src={resolvePlaceholderImage(item.host.avatar, "avatar", item.host.gender)}
                                 alt={item.host.nickname}
                                 loading="lazy"
                             />

@@ -1,6 +1,6 @@
 <script>
     import { page, router, Link } from "@inertiajs/svelte";
-    import { IconButton, Offcanvas, Section } from "@/ui/components/private";
+    import { EmptyState, IconButton, Offcanvas, Section } from "@/ui/components/private";
     import { MarketingForm } from "@/ui/widgets/private";
     import { repositoryPermissions, resolvePlaceholderImage } from "@/utils";
 
@@ -45,10 +45,11 @@
     </div>
 </Offcanvas>
 
-{#each Object.entries(repositories.data) as [type, items]}
+{#each Object.entries(repositories?.data ?? {}) as [type, items]}
     <Section title={titles[type]} actions={getActions(type)}>
-        <ul class="mb-20 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-x-4 gap-y-15">
-            {#each items as item}
+        {#if items.length}
+            <ul class="mb-20 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-x-4 gap-y-15">
+                {#each items as item}
                 <li class="relative w-full bg-blue-ocean rounded-t-lg rounded-b-md">
                     <Link
                         aria-label={`Visitar ${item.name}`}
@@ -88,7 +89,13 @@
                         {/if}
                     </div>
                 </li>
-            {/each}
-        </ul>
+                {/each}
+            </ul>
+        {:else}
+            <EmptyState
+                title={`Nenhum item em ${titles[type]?.toLowerCase() ?? "marketing"}`}
+                description="Os arquivos cadastrados nesta categoria aparecerão aqui."
+            />
+        {/if}
     </Section>
 {/each}

@@ -3,7 +3,7 @@
     export let variant = null;
 
     import { page, router } from "@inertiajs/svelte";
-    import { Button, IconButton, Offcanvas, Pagination, Section, Tooltip } from "@/ui/components/private/";
+    import { Button, EmptyState, IconButton, Offcanvas, Pagination, Section, Tooltip } from "@/ui/components/private/";
     import { TaskForm } from "@/ui/widgets/private";
     import { taskPermissions } from "@/utils";
 
@@ -61,8 +61,9 @@
 
 {#if tasks}
     <Section {title} {actions}>
-        <div class="flex flex-col gap-4">
-            {#each tasks.data as task}
+        {#if tasks.data.length}
+            <div class="flex flex-col gap-4">
+                {#each tasks.data as task}
                 <article class={["w-full rounded-md px-4 py-3",
                     { "bg-gradient-blue-cerulean-glow": task.status === 'pending' },
                     { "bg-gradient-green-forest-pine": task.status === 'in_review' },
@@ -156,8 +157,14 @@
                         </div>
                     </div>
                 </article>
-            {/each}
-        </div>
+                {/each}
+            </div>
+        {:else}
+            <EmptyState
+                title="Nenhuma tarefa por aqui"
+                description="As tarefas da equipe aparecerão aqui."
+            />
+        {/if}
         <Pagination
             pages={tasks}
             only={["tasks"]}

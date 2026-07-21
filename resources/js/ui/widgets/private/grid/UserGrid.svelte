@@ -60,7 +60,7 @@
                     </header>
                     <img
                         class="absolute bottom-0 right-0 z-0 h-43 max-w-[58%] object-contain object-bottom"
-                        src={resolvePlaceholderImage(item.avatar, "avatar")}
+                        src={resolvePlaceholderImage(item.avatar, "avatar", item.gender)}
                         alt={item.nickname}
                         loading="lazy"
                     />
