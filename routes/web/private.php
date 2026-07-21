@@ -15,11 +15,13 @@ use App\Http\Controllers\Private\Pages\RadioPageController;
 use App\Http\Controllers\Private\Pages\RepositoryPageController;
 
 use App\Http\Controllers\Private\Invokes\ConfirmActivityParticipantController;
+use App\Http\Controllers\Private\Invokes\CompleteTaskController;
 use App\Http\Controllers\Private\Invokes\DeactivatePodcastController;
 use App\Http\Controllers\Private\Invokes\DeactivatePollController;
 use App\Http\Controllers\Private\Invokes\DeactivatePostController;
 use App\Http\Controllers\Private\Invokes\DeactivateProgramController;
 use App\Http\Controllers\Private\Invokes\DeactivateRepositoryController;
+use App\Http\Controllers\Private\Invokes\DeactivateTaskController;
 use App\Http\Controllers\Private\Invokes\DeactivateUserController;
 use App\Http\Controllers\Private\Invokes\FinishLocutionController;
 use App\Http\Controllers\Private\Invokes\LoginController;
@@ -166,6 +168,8 @@ Route::prefix('panel')->middleware(['inertia'])->group(function () {
                 Route::get('{task:uuid}', [TaskController::class, 'show']);
                 Route::post('', [TaskController::class, 'store']);
                 Route::patch('{task:uuid}', [TaskController::class, 'update']);
+                Route::patch('{task:uuid}/complete', [CompleteTaskController::class, '__invoke']);
+                Route::patch('{task:uuid}/deactivate', [DeactivateTaskController::class, '__invoke']);
             });
             Route::get('', 'render')->name('panel.administration');
         });

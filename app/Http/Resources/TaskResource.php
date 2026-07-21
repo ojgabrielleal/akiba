@@ -17,6 +17,7 @@ class TaskResource extends JsonResource
             'days_remaining' => $this->days_remaining,
             'status' => $this->status,
             'title' => $this->title,
+            'dead_line' => $this->dead_line->format('Y-m-d'),
             'description' => $this->description,
             'responsible' => UserResource::make($this->responsible),
         ];

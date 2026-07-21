@@ -1,8 +1,7 @@
 <script>
     export let close = () => {};
-    export let identifier;
+    export let taskSelected;
 
-    import axios from "axios";
     import { useForm, page } from "@inertiajs/svelte";
     import {
         Button,
@@ -17,37 +16,21 @@
     let can = taskPermissions();
 
     $: form = useForm({
-        user: null,
-        title: null,
-        dead_line: null,
-        description: null,
+        user: taskSelected?.responsible.uuid ?? null,
+        title: taskSelected?.title ?? null,
+        dead_line: taskSelected?.dead_line ?? null,
+        description: taskSelected?.description ?? null,
     });
 
-    if (identifier) {
-        axios.get(`/panel/administration/task/${identifier}`)
-            .then((response) => {
-                const data = response.data.data;
-
-                $form.user = data.responsible.uuid;
-                $form.title = data.title;
-                $form.dead_line = data.dead_line;
-                $form.description = data.description;
-            })
-            .catch((err) => {
-                console.error("Error when find task selected", err);
-                close();
-            });
-    }
-
     const submit = () => {
-        const method = identifier ? "patch" : "post";
-        let url = identifier
-            ? `/panel/administration/task/${identifier}`
+        const method = taskSelected ? "patch" : "post";
+        let url = taskSelected
+            ? `/panel/administration/task/${taskSelected.uuid}`
             : "/panel/administration/task";
 
         $form[method](url, {
             preserveScroll: true,
-            onFinish: () => close(),
+            onSuccess: () => close(),
         });
     };
 </script>
@@ -105,13 +88,14 @@
             required
         />
     </FormField>
-    {#if can.create || can.update}
+    {#if taskSelected ? can.update : can.create}
         <Button
             type="submit"
-            size="lg"
             loading={$form.processing}
+            variant="secondary"
+            shape="pill"
         >
-            {identifier ? "Atualizar" : "Cadastrar"}
+            {taskSelected ? "Atualizar" : "Cadastrar"}
         </Button>
     {/if}
 </form>

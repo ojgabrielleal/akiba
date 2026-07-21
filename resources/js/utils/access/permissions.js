@@ -104,6 +104,7 @@ export const songRequestPermissions = () => ({
 export const taskPermissions = () => ({
     create: hasPermission("task.create"),
     update: hasPermission("task.update"),
+    deactivate: hasPermission("task.deactivate"),
     review: hasPermission("task.review"),
 });
 

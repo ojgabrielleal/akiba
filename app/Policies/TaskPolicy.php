@@ -54,4 +54,12 @@ class TaskPolicy
     {
         return $user->hasPermission('task.review');
     }
+
+    /**
+     * Determine whether the user can complete the task review.
+     */
+    public function complete(User $user, Task $task): bool
+    {
+        return $user->hasPermission('task.review');
+    }
 }

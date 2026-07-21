@@ -1,5 +1,6 @@
 <script>
     export let title;
+    export let variant = null;
 
     import { page, router } from "@inertiajs/svelte";
     import { Carousel, IconButton, Offcanvas, Section, Tooltip } from "@/ui/components/private/";
@@ -18,7 +19,7 @@
         {
             title: "Criar aviso / atividade",
             icon: "/svg/plus.svg",
-            permission: can.create,
+            permission: can.create && variant === "administration",
             onClick: () => {
                 activitySelected = null;
                 offcanvasRef.open();
@@ -97,7 +98,7 @@
                         </div>
                     {/if}
                     <div class="flex gap-2 absolute bottom-3 right-4">
-                        {#if can.update}
+                        {#if can.update && variant === "administration"}
                             <IconButton
                                 variant="edit"
                                 label="Atualizar"
@@ -107,7 +108,7 @@
                                 on:click={() => { activitySelected = item; offcanvasRef.open(); }}
                             />
                         {/if}
-                        {#if canParticipate && item.allows_confirmations}
+                        {#if variant !== "administration" && canParticipate && item.allows_confirmations}
                             <IconButton
                                 variant="verify"
                                 label="Participar"

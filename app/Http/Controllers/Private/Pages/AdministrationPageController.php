@@ -84,7 +84,16 @@ class AdministrationPageController extends Controller
             ),
             'tasks' => $this->whenCanViewAny(Task::class,
                 fn () => TaskResource::collection(
-                    $this->taskFilter->apply(['incomplete' => true])
+                    $this->taskFilter->apply([
+                        'active' => true,
+                        'incomplete' => true,
+                        'with' => ['responsible'],
+                        'order_by' => 'dead_line',
+                        'order_direction' => 'asc',
+                        'then_order_by' => 'created_at',
+                        'then_order_direction' => 'desc',
+                        'paginate' => 5,
+                    ])
                 ),
             ),
         ]);

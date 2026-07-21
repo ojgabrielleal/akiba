@@ -1,5 +1,6 @@
 <script>
     export let title;
+    export let variant = null;
 
     import { page } from "@inertiajs/svelte";
     import { GridList, IconButton, Offcanvas, Section } from "@/ui/components/private/";
@@ -25,7 +26,7 @@
         {
             title: "Cadastrar",
             icon: "/svg/plus.svg",
-            permission: can.create,
+            permission: can.create && variant === "administration",
             onClick: () => openEvent(),
         },
     ];
@@ -74,7 +75,7 @@
                                     {item.activity ? item.activity.title : item.content}
                                 </h4>
                                 <div class="flex min-h-4 items-end justify-between gap-2">
-                                    {#if can.update}
+                                    {#if can.update && variant === "administration"}
                                         <IconButton
                                             variant="edit"
                                             label={`Atualizar evento ${item.activity ? item.activity.title : item.content}`}
