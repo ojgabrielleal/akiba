@@ -32,10 +32,11 @@
     };
 
     $: classes = [
-        "inline-flex cursor-pointer items-center justify-center gap-2 font-noto-sans font-extrabold uppercase italic transition disabled:cursor-not-allowed disabled:opacity-50",
+        "inline-flex cursor-pointer items-center justify-center gap-2 font-noto-sans font-extrabold uppercase italic transition disabled:cursor-not-allowed",
         variants[variant] ?? variants.primary,
         sizes[size] ?? sizes.md,
         shapes[shape] ?? shapes.rounded,
+        { "opacity-50": disabled && !loading },
         className,
     ];
 </script>
@@ -50,7 +51,7 @@
 >
     {#if loading}
         <span
-            class="size-4 animate-spin rounded-full border-2 border-current border-t-transparent"
+            class="size-4 shrink-0 animate-spin rounded-full border-2 border-current border-t-transparent"
             aria-hidden="true"
         ></span>
     {/if}
