@@ -1,6 +1,6 @@
 <script>
     import { useForm, page } from "@inertiajs/svelte";
-    import { Button, Modal, Section } from "@/ui/components/private/";
+    import { Button, EmptyState, Modal, Section } from "@/ui/components/private/";
     import { locutionPermissions, resolvePlaceholderImage } from "@/utils";
     import { locutionIcons, locutionTextures, locutionDecorations } from "@/data";
 
@@ -95,6 +95,11 @@
                     </button>
                 {/each}
             </div>
+        {:else}
+            <EmptyState
+                title="Nenhum programa disponível"
+                description="Os programas disponíveis para locução aparecerão aqui."
+            />
         {/if}
     </Section>
     <Section title="Personalização do player">

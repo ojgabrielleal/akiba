@@ -14,9 +14,7 @@ class CompleteOAuthAccountProfileAction
             $oauthAccount->update([
                 'nickname' => $data['nickname'],
                 'birth_date' => $data['birth_date'],
-                'city' => $data['city'],
-                'state' => $data['state'],
-                'country' => $data['country'],
+                'address' => $data['address'],
                 'bio' => $data['bio'] ?? null,
                 'profile_completed_at' => now(),
             ]);

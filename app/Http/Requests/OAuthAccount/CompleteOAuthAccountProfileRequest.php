@@ -26,19 +26,8 @@ class CompleteOAuthAccountProfileRequest extends FormRequest
         return [
             'nickname' => ['required', 'string', 'max:255'],
             'birth_date' => ['required', 'date', 'before:today'],
-            'city' => ['required', 'string', 'max:255'],
-            'state' => ['required', 'string', 'max:255'],
-            'country' => ['required', 'string', 'size:2'],
+            'address' => ['required', 'string', 'max:255'],
             'bio' => ['nullable', 'string', 'max:500'],
         ];
-    }
-
-    protected function prepareForValidation(): void
-    {
-        if ($this->filled('country')) {
-            $this->merge([
-                'country' => strtoupper($this->string('country')->toString()),
-            ]);
-        }
     }
 }

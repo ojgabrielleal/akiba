@@ -19,11 +19,7 @@ class SongRequestResource extends JsonResource
             'was_reproduced' => $this->was_reproduced,
             'was_canceled' => $this->was_canceled,
             'name' => $this->oauthAccount?->nickname,
-            'address' => $this->oauthAccount?->address ?? collect([
-                $this->oauthAccount?->city,
-                $this->oauthAccount?->state,
-                $this->oauthAccount?->country,
-            ])->filter()->join(', '),
+            'address' => $this->oauthAccount?->address,
             'message' => $this->message ?? 'Ouvinte não deixou mensagem',
             'music' => MusicResource::make($this->music),
             'created_at' => $this->created_at->setTimezone('America/Sao_Paulo')->format('H:i'),

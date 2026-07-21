@@ -21,11 +21,7 @@ class ListenerMonthResource extends JsonResource
             'uuid' => $this->uuid,
             'avatar' => $this->oauthAccount?->avatar,
             'name' => $this->oauthAccount?->nickname,
-            'address' => collect([
-                $this->oauthAccount?->city,
-                $this->oauthAccount?->state,
-                $this->oauthAccount?->country,
-            ])->filter()->join(', '),
+            'address' => $this->oauthAccount?->address,
             'birth_date' => $this->oauthAccount?->birth_date?->format('Y-m-d'),
             'favorite_program' => [
                 'name' => $favoriteProgram['name'],

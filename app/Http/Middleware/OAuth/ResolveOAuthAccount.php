@@ -34,9 +34,7 @@ class ResolveOAuthAccount
             'profile' => $oauthAccount ? [
                 'nickname' => $oauthAccount->nickname,
                 'birth_date' => $oauthAccount->birth_date?->format('Y-m-d'),
-                'city' => $oauthAccount->city,
-                'state' => $oauthAccount->state,
-                'country' => $oauthAccount->country,
+                'address' => $oauthAccount->address,
                 'bio' => $oauthAccount->bio,
             ] : null,
         ]);
