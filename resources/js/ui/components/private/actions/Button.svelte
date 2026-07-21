@@ -32,11 +32,10 @@
     };
 
     $: classes = [
-        "inline-flex cursor-pointer items-center justify-center gap-2 font-noto-sans font-extrabold uppercase italic transition disabled:cursor-not-allowed",
+        "inline-flex cursor-pointer items-center justify-center gap-2 font-noto-sans font-extrabold uppercase italic transition disabled:cursor-not-allowed disabled:opacity-50",
         variants[variant] ?? variants.primary,
         sizes[size] ?? sizes.md,
         shapes[shape] ?? shapes.rounded,
-        { "opacity-50": disabled && !loading },
         className,
     ];
 </script>
