@@ -17,6 +17,13 @@
     let chart;
     let loading = false;
 
+    const xAxisTickLimit = (width) => {
+        if (width < 640) return 8;
+        if (width < 1024) return 12;
+
+        return history?.period === "day" ? 25 : 12;
+    };
+
     const audienceLabelsPlugin = {
         id: "audienceLabels",
         afterDatasetsDraw(chart) {
@@ -65,8 +72,8 @@
 
     const updateChart = () => {
         chart.data = chartData();
-        chart.options.scales.x.ticks.autoSkip = history?.period !== "day";
-        chart.options.scales.x.ticks.maxTicksLimit = history?.period === "day" ? 25 : 12;
+        chart.options.scales.x.ticks.autoSkip = true;
+        chart.options.scales.x.ticks.maxTicksLimit = xAxisTickLimit(chart.width);
         chart.update();
     };
 
@@ -117,6 +124,9 @@
                 responsive: true,
                 maintainAspectRatio: false,
                 animation: false,
+                onResize: (chart, size) => {
+                    chart.options.scales.x.ticks.maxTicksLimit = xAxisTickLimit(size.width);
+                },
                 interaction: {
                     mode: "index",
                     intersect: false,
@@ -141,8 +151,8 @@
                         ticks: {
                             color: "rgba(255, 255, 255, 0.55)",
                             maxRotation: 0,
-                            autoSkip: history?.period !== "day",
-                            maxTicksLimit: history?.period === "day" ? 25 : 12,
+                            autoSkip: true,
+                            maxTicksLimit: 8,
                         },
                     },
                     y: {
@@ -164,7 +174,7 @@
 
 <Section {title}>
     {#if history?.series?.length}
-        <div class="grid min-h-90 min-w-0 grid-cols-1 gap-3 md:grid-cols-[8rem_minmax(0,1fr)_5rem]">
+        <div class="grid min-h-90 min-w-0 w-full grid-cols-1 gap-3 md:grid-cols-[8rem_minmax(0,1fr)_5rem]">
             <div class="flex min-w-0 gap-2 overflow-x-auto md:flex-col md:overflow-visible" aria-label="Legenda das rádios">
                 {#each history.series as series (series.uuid)}
                     <div
