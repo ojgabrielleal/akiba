@@ -33,6 +33,7 @@ class DatabaseSeeder extends Seeder
     public function radio(): void
     {
         $this->call([
+            RadioStationSeeder::class,
             PodcastSeeder::class,
             MusicSeeder::class,
             PlaylistBattleSeeder::class,

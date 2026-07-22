@@ -33,7 +33,7 @@ class PermissionSeeder extends Seeder
             ['name' => 'marketing.module.view', 'label' => '[Marketing] Acesso ao módulo'],
             ['name' => 'media.module.view', 'label' => '[Mídias] Acesso ao módulo'],
             ['name' => 'administration.module.view', 'label' => '[Administração] Acesso ao módulo'],
-            ['name' => 'log.module.view', 'label' => '[Logs] Acesso ao módulo'],
+            ['name' => 'report.module.view', 'label' => '[Relatórios] Acesso ao módulo'],
 
             /*
             |--------------------------------------------------------------------------
@@ -212,6 +212,7 @@ class PermissionSeeder extends Seeder
         ];
 
         $this->renamePermissions($permissions, [
+            'log.module.view' => 'report.module.view',
             'task.complete' => 'task.review',
             'publication.list' => 'post.list',
             'publication.view' => 'post.view',

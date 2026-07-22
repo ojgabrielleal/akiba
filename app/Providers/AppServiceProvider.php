@@ -39,7 +39,7 @@ class AppServiceProvider extends ServiceProvider
             'marketing.module.view',
             'media.module.view',
             'administration.module.view',
-            'log.module.view',
+            'report.module.view',
             'locution.start',
             'locution.finish',
         ];
