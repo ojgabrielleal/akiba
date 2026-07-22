@@ -68,6 +68,7 @@
         danger: "filter-red-crimson",
         light: "filter-suspense-aurora",
         primary: "filter-blue-skywave",
+        neutral: "filter-neutral-gray",
         dark: "filter-blue-marinho",
     };
 

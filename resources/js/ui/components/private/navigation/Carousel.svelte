@@ -92,9 +92,9 @@
     });
 </script>
 
-<div {...$$restProps} class={["relative", className]}>
+<div {...$$restProps} class={["relative min-w-0 w-full max-w-full overflow-hidden xl:overflow-visible", className]}>
     {#if canScrollLeft}
-        <div class="pointer-events-none absolute -left-6 top-0 bottom-0 z-10 flex w-14 items-center justify-center xl:-left-9 xl:w-22 2xl:-left-12">
+        <div class="pointer-events-none absolute left-0 top-0 bottom-0 z-10 flex w-14 items-center justify-center xl:-left-9 xl:w-22 2xl:-left-12">
             <button
                 type="button"
                 aria-label="Voltar no carrossel"
@@ -115,7 +115,7 @@
 
     <div
         bind:this={container}
-        class="carousel-scroll flex flex-nowrap gap-5 overflow-x-auto scroll-smooth"
+        class="carousel-scroll flex min-w-0 w-full max-w-full flex-nowrap gap-5 overflow-x-auto overscroll-x-contain scroll-smooth"
         role="region"
         aria-roledescription="carrossel"
         aria-label={label}
@@ -125,7 +125,7 @@
     </div>
 
     {#if canScrollRight}
-        <div class="pointer-events-none absolute -right-6 top-0 bottom-0 z-10 flex w-14 items-center justify-center xl:-right-9 xl:w-22 2xl:-right-12">
+        <div class="pointer-events-none absolute right-0 top-0 bottom-0 z-10 flex w-14 items-center justify-center xl:-right-9 xl:w-22 2xl:-right-12">
             <button
                 type="button"
                 aria-label="Avançar no carrossel"

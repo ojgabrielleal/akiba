@@ -1,8 +1,9 @@
 <script>
     import { page, Link } from "@inertiajs/svelte";
+    import { fade, fly } from "svelte/transition";
     import { hasPermission, resolvePlaceholderImage } from "@/utils";
     import { navbar } from "@/data";
-    import { Tooltip } from "@/ui/components/private";
+    import { IconButton } from "@/ui/components/private";
 
     $: ({ user } = $page.props);
 
@@ -22,39 +23,26 @@
             class="block lg:hidden rounded-sm"
         />
     </div>
-    <button
-        type="button"
-        aria-label="Abrir menu de navegacao"
-        class="w-6 lg:hidden"
-        on:click={() => (mobilenavbar = !mobilenavbar)}
-    >
-        <img
-            src="/svg/menu.svg"
-                alt=""
-                aria-hidden="true"
-                class="filter-orange-citric"
-            />
-    </button>
+    <IconButton
+        label="Abrir menu de navegacao"
+        icon="/svg/menu.svg"
+        tone="accent"
+        surface="transparent"
+        class="lg:hidden"
+        on:click={() => (mobilenavbar = true)}
+    />
     <ul class="hidden lg:flex flex-1 justify-center">
         {#each navbar.private as item}
             {#if hasPermission(item.permission)}
                 <li class="px-5 first:pl-0 border-l first:border-none border-neutral-gray/50 group/item">
-                    <Tooltip position="bottom">
-                        <Link
-                            aria-label={item.name}
-                            href={item.address}
-                        >
-                            <img
-                                src={item.icon}
-                                alt=""
-                                aria-hidden="true"
-                                class="w-5 h-5 inline-block mr-1 filter-neutral-gray group-hover/item:filter-orange-citric"
-                            />
-                        </Link>
-                        <span slot="content">
-                            {item.name}
-                        </span>
-                    </Tooltip>
+                    <IconButton
+                        href={item.address}
+                        label={item.name}
+                        icon={item.icon}
+                        tone="neutral"
+                        surface="transparent"
+                        tooltipPosition="bottom"
+                    />
                 </li>
             {/if}
         {/each}
@@ -100,22 +88,21 @@
     </div>
 
     <!-- Mobile Navbar -->
-    <div class={["lg:hidden fixed inset-0 z-100 transition-opacity duration-300",
-        { "opacity-100 pointer-events-auto": mobilenavbar },
-        { "opacity-0 pointer-events-none": !mobilenavbar },
-    ]}>
-        <button
-            type="button"
-            aria-label="Fechar menu de navegacao"
-            class="absolute inset-0 bg-blue-night/40 backdrop-blur-sm"
-            on:click={() => (mobilenavbar = false)}>
-        </button>
-        <aside class={["absolute top-0 right-0 h-screen w-[min(15rem,85vw)] bg-suspense-aurora shadow-xl transition-transform duration-300",
-            { "translate-x-0": mobilenavbar },
-            { "translate-x-full": !mobilenavbar },
-        ]}>
-            <div class="h-full flex flex-col">
-                <ul class="flex-1 overflow-y-auto p-6 flex flex-col gap-4">
+    {#if mobilenavbar}
+        <div class="fixed inset-0 z-100 overflow-hidden lg:hidden">
+            <button
+                type="button"
+                aria-label="Fechar menu de navegacao"
+                class="absolute inset-0 bg-blue-night/40 backdrop-blur-sm"
+                transition:fade={{ duration: 300 }}
+                on:click={() => (mobilenavbar = false)}
+            ></button>
+            <aside
+                class="absolute top-0 right-0 h-dvh max-h-dvh w-[min(15rem,85vw)] bg-suspense-aurora shadow-xl"
+                transition:fly={{ x: 240, duration: 300 }}
+            >
+                <div class="flex h-full flex-col">
+                    <ul class="flex flex-1 flex-col gap-4 overflow-y-auto p-6">
                     {#each navbar.private as item}
                         {#if hasPermission(item.permission)}
                             <li>
@@ -136,8 +123,8 @@
                             </li>
                         {/if}
                     {/each}
-                </ul>
-                <div class="p-6 border-t border-neutral-gray/20 flex items-center justify-between gap-4">
+                    </ul>
+                    <div class="flex items-center justify-between gap-4 border-t border-neutral-gray/20 p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
                     <Link
                         href={`/panel/profile/${user.uuid}`}
                         class="min-w-0 flex items-center gap-3 group/profile"
@@ -160,23 +147,20 @@
                             </span>
                         </div>
                     </Link>
-                    <Link
+                    <IconButton
                         href="/panel/logout"
                         method="post"
-                        as="button"
-                        aria-label="Desconectar"
-                        class="cursor-pointer w-10 h-10 rounded-full flex items-center justify-center bg-neutral-gray/10 hover:bg-orange-citric/10 group/logout shrink-0"
+                        label="Desconectar"
+                        icon="/svg/logout.svg"
+                        tone="neutral"
+                        surface="transparent"
+                        size="lg"
+                        class="rounded-full bg-neutral-gray/10 hover:bg-orange-citric/10"
                         on:click={() => (mobilenavbar = false)}
-                    >
-                        <img
-                            src="/svg/logout.svg"
-                            alt=""
-                            aria-hidden="true"
-                            class="w-5 h-5 filter-neutral-gray mr-1 group-hover/logout:filter-orange-citric"
-                        />
-                    </Link>
-                </div>
+                    />
+                    </div>
+                    </div>
+                </aside>
             </div>
-        </aside>
-    </div>
+    {/if}
 </nav>

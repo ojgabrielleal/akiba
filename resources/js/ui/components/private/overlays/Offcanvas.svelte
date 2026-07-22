@@ -7,24 +7,26 @@
     let visible = false;
     let titleId = title ? `offcanvas-title-${Math.random().toString(36).slice(2)}` : undefined;
 
-    onMount(()=>{        
-        if (typeof document !== "undefined") {
-            document.body.style.overflow = visible ? "hidden" : "auto";
-        }
-    });
+    const setPageOverflowY = (overflow) => {
+        if (typeof document !== "undefined") document.body.style.overflowY = overflow;
+    };
+
+    onMount(() => setPageOverflowY("auto"));
 
     onDestroy(() => {
         if (typeof document !== "undefined") {
-            document.body.style.overflow = "auto";
+            setPageOverflowY("auto");
         }
     });
 
     export const open = () => {
         visible = true;
+        setPageOverflowY("hidden");
     };
 
     export const close = () => {
         visible = false;
+        setPageOverflowY("auto");
     };
 
     const block = (event) => {
@@ -37,12 +39,12 @@
     <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div
         transition:fly={{ x: 400, duration: 300 }}
-        class="w-screen h-screen fixed inset-0 bg-black/1 backdrop-blur-xs z-100"
+        class="fixed inset-0 z-100 h-dvh max-h-dvh w-screen bg-black/1 backdrop-blur-xs"
         role="presentation"
         on:click={close}
     >
         <div
-            class="max-w-sm min-w-sm h-screen float-right bg-suspense-aurora"
+            class="float-right flex h-dvh max-h-dvh w-[min(24rem,100vw)] flex-col bg-suspense-aurora"
             role="dialog"
             aria-modal="true"
             aria-labelledby={titleId}
@@ -50,11 +52,11 @@
             on:click={block}
         >
         {#if title}
-            <h2 id={titleId} class="bg-blue-ocean py-5 px-4 text-suspense-aurora text-center font-bold italic uppercase">
+            <h2 id={titleId} class="shrink-0 bg-blue-ocean py-5 px-4 text-suspense-aurora text-center font-bold italic uppercase">
                 {title}
             </h2>
         {/if}
-            <div class="pl-5 pr-8 pt-8 h-[calc(100vh-6rem)] overflow-y-auto">
+            <div class="min-h-0 flex-1 overflow-y-auto pl-5 pr-8 pt-8 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
                 <slot name="content" {close} />
             </div>
         </div>

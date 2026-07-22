@@ -174,28 +174,30 @@
 
 <Section {title}>
     {#if history?.series?.length}
-        <div class="grid min-h-90 min-w-0 w-full grid-cols-1 gap-3 md:grid-cols-[8rem_minmax(0,1fr)_5rem]">
-            <div class="flex min-w-0 gap-2 overflow-x-auto md:flex-col md:overflow-visible" aria-label="Legenda das rádios">
-                {#each history.series as series (series.uuid)}
-                    <div
-                        class="flex h-12 min-w-28 items-center justify-end overflow-hidden rounded-sm bg-blue-ocean"
-                        title={series.name}
-                    >
-                        <span class="sr-only">{series.name}</span>
-                        <span class="flex min-w-0 flex-1 items-center justify-center px-2">
-                            <img
-                                src={resolvePlaceholderImage(series.logo, "placeholder")}
-                                alt={`Logo da ${series.name}`}
-                                loading="lazy"
-                                class="max-h-8 max-w-full object-contain"
-                            />
-                        </span>
-                        <span class="h-full w-3" style={`background-color: ${series.color}`}></span>
-                    </div>
-                {/each}
+        <div class="flex min-h-90 min-w-0 w-full flex-col gap-3 lg:grid lg:grid-cols-[8rem_minmax(0,1fr)_5rem]">
+            <div class="min-w-0 w-full max-w-full overflow-hidden lg:w-auto lg:overflow-visible">
+                <div class="carousel-scroll flex min-w-0 w-full max-w-full gap-2 overflow-x-auto overscroll-x-contain lg:w-auto lg:flex-col lg:overflow-visible" aria-label="Legenda das rádios">
+                    {#each history.series as series (series.uuid)}
+                        <div
+                            class="flex h-12 min-w-28 items-center justify-end overflow-hidden rounded-sm bg-blue-ocean"
+                            title={series.name}
+                        >
+                            <span class="sr-only">{series.name}</span>
+                            <span class="flex min-w-0 flex-1 items-center justify-center px-2">
+                                <img
+                                    src={resolvePlaceholderImage(series.logo, "placeholder")}
+                                    alt={`Logo da ${series.name}`}
+                                    loading="lazy"
+                                    class="max-h-8 max-w-full object-contain"
+                                />
+                            </span>
+                            <span class="h-full w-3" style={`background-color: ${series.color}`}></span>
+                        </div>
+                    {/each}
+                </div>
             </div>
 
-            <div class="relative min-h-80 min-w-0 overflow-hidden rounded-lg border border-blue-skywave/50 bg-blue-ocean/45 p-3">
+            <div class="relative min-h-80 min-w-0 w-full overflow-hidden rounded-lg border border-blue-skywave/50 bg-blue-ocean/45 p-3 lg:w-auto">
                 <canvas class="block max-w-full" bind:this={canvas} aria-label="Gráfico do histórico de audiência"></canvas>
                 {#if loading}
                     <div class="absolute inset-0 flex items-center justify-center rounded-lg bg-blue-marinho/65 text-sm font-extrabold uppercase italic text-orange-citric">
@@ -204,14 +206,14 @@
                 {/if}
             </div>
 
-            <div class="grid min-w-0 grid-cols-2 gap-1 sm:grid-cols-4 md:flex md:flex-col" aria-label="Período do histórico">
+            <div class="grid min-w-0 w-full grid-cols-2 gap-1 sm:grid-cols-4 lg:flex lg:w-auto lg:flex-col" aria-label="Período do histórico">
                 {#each periods as period}
                     <button
                         type="button"
                         disabled={loading}
                         aria-pressed={history.period === period.value}
                         class={[
-                            "h-8 min-w-0 cursor-pointer rounded-md px-3 font-noto-sans text-xs font-black uppercase italic transition disabled:cursor-wait disabled:opacity-60 md:w-full",
+                            "h-8 min-w-0 cursor-pointer rounded-md px-3 font-noto-sans text-xs font-black uppercase italic transition disabled:cursor-wait disabled:opacity-60 lg:w-full",
                             history.period === period.value
                                 ? "bg-orange-citric text-blue-marinho"
                                 : "bg-blue-cerulean text-blue-marinho hover:bg-blue-skywave",
