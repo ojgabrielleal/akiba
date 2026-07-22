@@ -11,3 +11,11 @@ Artisan::command('inspire', function () {
 Schedule::command('programs:start')
     ->everyMinute()
     ->withoutOverlapping();
+
+Schedule::command('audience:collect')
+    ->everyFiveMinutes()
+    ->withoutOverlapping();
+
+Schedule::command('audience:prune')
+    ->cron('0 3 1 1,7 *')
+    ->withoutOverlapping();
