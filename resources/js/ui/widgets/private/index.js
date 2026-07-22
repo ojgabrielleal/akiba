@@ -3,6 +3,9 @@ export { default as ActivityCarousel } from "./carousel/ActivityCarousel.svelte"
 export { default as AudienceCarousel } from "./carousel/AudienceCarousel.svelte";
 export { default as RoleCarousel } from "./carousel/RoleCarousel.svelte";
 
+// Charts
+export { default as AudienceHistoryChart } from "./chart/AudienceHistoryChart.svelte";
+
 // Lists
 export { default as TaskList } from "./list/TaskList.svelte"
 

@@ -6,7 +6,7 @@ use App\Http\Controllers\Private\Pages\AdministrationPageController;
 use App\Http\Controllers\Private\Pages\DashboardPageController;
 use App\Http\Controllers\Private\Pages\LocutionPageController;
 use App\Http\Controllers\Private\Pages\LoginPageController;
-use App\Http\Controllers\Private\Pages\LogsPageController;
+use App\Http\Controllers\Private\Pages\ReportsPageController;
 use App\Http\Controllers\Private\Pages\MediaPageController;
 use App\Http\Controllers\Private\Pages\PodcastPageController;
 use App\Http\Controllers\Private\Pages\PostPageController;
@@ -173,8 +173,8 @@ Route::prefix('panel')->middleware(['inertia'])->group(function () {
             });
             Route::get('', 'render')->name('panel.administration');
         });
-        Route::prefix('logs')->controller(LogsPageController::class)->group(function () {
-            Route::get('', 'render')->name('panel.logs');
+        Route::prefix('relatorios')->controller(ReportsPageController::class)->group(function () {
+            Route::get('', 'render')->name('panel.reports');
         });
         Route::prefix('profile')->controller(ProfilePageController::class)->group(function () {
             Route::patch('{user:uuid}', [ProfileController::class, 'update']);

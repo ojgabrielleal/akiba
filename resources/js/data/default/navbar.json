@@ -49,10 +49,10 @@
       "address": "/panel/administration"
     },
     {
-      "name": "Logs",
+      "name": "Relatórios",
       "icon": "/svg/logs.svg",
-      "permission": "log.module.view",
-      "address": "/panel/logs"
+      "permission": "report.module.view",
+      "address": "/panel/relatorios"
     }
   ],
   "public": [
