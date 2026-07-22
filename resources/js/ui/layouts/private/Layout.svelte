@@ -4,9 +4,9 @@
     import { FlashToaster } from "@/ui/components/private";
     import { Navbar, StreamMetricsGrid } from "@/ui/widgets/private";
 
-    // Polling for updates in audience, song requests and stream status every 60 seconds
+    // Polling for updates in audience, audience history, song requests and stream status every 60 seconds
     usePoll(60 * 1000, {
-        only: ["songRequests", "audience", "stream"],
+        only: ["songRequests", "audience", "audienceHistory", "stream"],
     });
 
     // Set background color on mount

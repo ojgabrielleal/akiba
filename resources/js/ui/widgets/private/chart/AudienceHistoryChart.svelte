@@ -65,6 +65,8 @@
 
     const updateChart = () => {
         chart.data = chartData();
+        chart.options.scales.x.ticks.autoSkip = history?.period !== "day";
+        chart.options.scales.x.ticks.maxTicksLimit = history?.period === "day" ? 25 : 12;
         chart.update();
     };
 
@@ -139,8 +141,8 @@
                         ticks: {
                             color: "rgba(255, 255, 255, 0.55)",
                             maxRotation: 0,
-                            autoSkip: true,
-                            maxTicksLimit: 12,
+                            autoSkip: history?.period !== "day",
+                            maxTicksLimit: history?.period === "day" ? 25 : 12,
                         },
                     },
                     y: {
