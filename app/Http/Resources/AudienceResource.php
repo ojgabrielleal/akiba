@@ -64,12 +64,13 @@ class AudienceResource extends JsonResource
         $allStations = $collection
             ->map(fn ($item) => $item->resource ?? $item);
         $akiba = $allStations->firstWhere('name', 'Rádio Akiba');
-        $competitors = $allStations
+        $stations = $allStations
             ->reject(fn (RadioStation $station) => $station->is($akiba))
-            ->sortByDesc(fn (RadioStation $station) => $station->audienceSnapshots->avg('listeners') ?? -1);
-        $stations = collect([$akiba])
+            ->sortByDesc(fn (RadioStation $station) => $station->audienceSnapshots->avg('listeners') ?? -1)
+            ->take($akiba ? 4 : 5)
+            ->concat([$akiba])
             ->filter()
-            ->concat($competitors)
+            ->sortByDesc(fn (RadioStation $station) => $station->audienceSnapshots->avg('listeners') ?? -1)
             ->values();
 
         return [
