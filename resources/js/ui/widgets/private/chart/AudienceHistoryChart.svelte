@@ -59,7 +59,7 @@
             pointHoverRadius: 4,
             pointBorderWidth: 0,
             tension: 0,
-            spanGaps: false,
+            spanGaps: true,
         })),
     });
 
