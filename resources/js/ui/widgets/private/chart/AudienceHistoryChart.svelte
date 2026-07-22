@@ -164,11 +164,11 @@
 
 <Section {title}>
     {#if history?.series?.length}
-        <div class="grid min-h-90 grid-cols-1 gap-3 md:grid-cols-[8rem_minmax(0,1fr)_5rem]">
-            <div class="flex gap-2 overflow-x-auto md:flex-col md:overflow-visible" aria-label="Legenda das rádios">
+        <div class="grid min-h-90 grid-cols-1 gap-3 md:h-96 md:grid-cols-[8rem_minmax(0,1fr)_5rem]">
+            <div class="flex gap-2 overflow-x-auto md:min-h-0 md:flex-col md:overflow-x-hidden md:overflow-y-auto" aria-label="Legenda das rádios">
                 {#each history.series as series (series.uuid)}
                     <div
-                        class="flex h-12 min-w-28 items-center justify-end overflow-hidden rounded-sm bg-blue-ocean"
+                        class="flex h-12 min-w-28 shrink-0 items-center justify-end overflow-hidden rounded-sm bg-blue-ocean"
                         title={series.name}
                     >
                         <span class="sr-only">{series.name}</span>
@@ -185,7 +185,7 @@
                 {/each}
             </div>
 
-            <div class="relative min-h-80 rounded-lg border border-blue-skywave/50 bg-blue-ocean/45 p-3">
+            <div class="relative min-h-80 rounded-lg border border-blue-skywave/50 bg-blue-ocean/45 p-3 md:min-h-0">
                 <canvas bind:this={canvas} aria-label="Gráfico do histórico de audiência"></canvas>
                 {#if loading}
                     <div class="absolute inset-0 flex items-center justify-center rounded-lg bg-blue-marinho/65 text-sm font-extrabold uppercase italic text-orange-citric">
