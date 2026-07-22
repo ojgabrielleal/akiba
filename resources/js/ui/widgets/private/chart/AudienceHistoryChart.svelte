@@ -164,8 +164,8 @@
 
 <Section {title}>
     {#if history?.series?.length}
-        <div class="grid min-h-90 grid-cols-1 gap-3 md:grid-cols-[8rem_minmax(0,1fr)_5rem]">
-            <div class="flex gap-2 overflow-x-auto md:flex-col md:overflow-visible" aria-label="Legenda das rádios">
+        <div class="grid min-h-90 min-w-0 grid-cols-1 gap-3 md:grid-cols-[8rem_minmax(0,1fr)_5rem]">
+            <div class="flex min-w-0 gap-2 overflow-x-auto md:flex-col md:overflow-visible" aria-label="Legenda das rádios">
                 {#each history.series as series (series.uuid)}
                     <div
                         class="flex h-12 min-w-28 items-center justify-end overflow-hidden rounded-sm bg-blue-ocean"
@@ -185,8 +185,8 @@
                 {/each}
             </div>
 
-            <div class="relative min-h-80 rounded-lg border border-blue-skywave/50 bg-blue-ocean/45 p-3">
-                <canvas bind:this={canvas} aria-label="Gráfico do histórico de audiência"></canvas>
+            <div class="relative min-h-80 min-w-0 overflow-hidden rounded-lg border border-blue-skywave/50 bg-blue-ocean/45 p-3">
+                <canvas class="block max-w-full" bind:this={canvas} aria-label="Gráfico do histórico de audiência"></canvas>
                 {#if loading}
                     <div class="absolute inset-0 flex items-center justify-center rounded-lg bg-blue-marinho/65 text-sm font-extrabold uppercase italic text-orange-citric">
                         Atualizando…
@@ -194,14 +194,14 @@
                 {/if}
             </div>
 
-            <div class="flex gap-1 md:flex-col" aria-label="Período do histórico">
+            <div class="grid min-w-0 grid-cols-2 gap-1 sm:grid-cols-4 md:flex md:flex-col" aria-label="Período do histórico">
                 {#each periods as period}
                     <button
                         type="button"
                         disabled={loading}
                         aria-pressed={history.period === period.value}
                         class={[
-                            "h-8 min-w-18 cursor-pointer rounded-md px-3 font-noto-sans text-xs font-black uppercase italic transition disabled:cursor-wait disabled:opacity-60 md:w-full",
+                            "h-8 min-w-0 cursor-pointer rounded-md px-3 font-noto-sans text-xs font-black uppercase italic transition disabled:cursor-wait disabled:opacity-60 md:w-full",
                             history.period === period.value
                                 ? "bg-orange-citric text-blue-marinho"
                                 : "bg-blue-cerulean text-blue-marinho hover:bg-blue-skywave",
