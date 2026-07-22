@@ -33,7 +33,7 @@
             <div class={["h-px flex-1", lineColor]}></div>
 
             {#if hasActions}
-                <div class="flex w-full justify-start gap-2 sm:w-auto sm:justify-end">
+                <div class="flex w-full flex-wrap justify-start gap-2 sm:w-auto sm:justify-end">
                     {#each visibleActions as action}
                         {#if action.onClick}
                             <button

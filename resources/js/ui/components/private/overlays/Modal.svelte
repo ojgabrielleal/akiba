@@ -37,12 +37,12 @@
     <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div
         transition:fade={{ duration: 200 }}
-        class="w-screen h-screen fixed inset-0 flex justify-center items-center bg-black/40 backdrop-blur-xs z-100 p-4"
+        class="fixed inset-0 z-100 flex h-dvh w-full items-center justify-center overflow-y-auto bg-black/40 p-3 backdrop-blur-xs sm:p-4"
         role="presentation"
         on:click={close}
     >
         <div
-            class="w-full min-w-sm max-w-sm bg-suspense-aurora rounded-md overflow-hidden"
+            class="my-auto w-full min-w-0 max-w-sm overflow-hidden rounded-md bg-suspense-aurora"
             role="dialog"
             aria-modal="true"
             aria-labelledby={titleId}
@@ -72,7 +72,7 @@
                     </button>
                 </div>
             {/if}
-            <div class="p-6 overflow-y-auto max-h-[80vh]">
+            <div class="max-h-[calc(100dvh-5rem)] overflow-y-auto p-4 sm:p-6">
                 <slot name="content" {close} />
             </div>
         </div>

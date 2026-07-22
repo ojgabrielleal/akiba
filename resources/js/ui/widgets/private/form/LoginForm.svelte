@@ -12,10 +12,10 @@
     };
 </script>
 
-<div>
+<div class="min-w-0 w-full">
     <div class="flex justify-center mb-4">
         <img
-            class="w-60"
+            class="w-full max-w-60"
             src="/img/brand/logo.webp"
             alt="logo"
         />

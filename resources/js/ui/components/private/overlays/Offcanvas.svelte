@@ -56,7 +56,7 @@
                 {title}
             </h2>
         {/if}
-            <div class="min-h-0 flex-1 overflow-y-auto pl-5 pr-8 pt-8 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
+            <div class="min-h-0 flex-1 overflow-y-auto px-4 pt-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:pl-5 sm:pr-8 sm:pt-8">
                 <slot name="content" {close} />
             </div>
         </div>

@@ -11,16 +11,16 @@
 </script>
 
 <nav class="container-page flex items-center justify-between" aria-label="Navegacao principal">
-    <div class="w-8 lg:w-60">
+    <div class="w-8 xl:w-60">
         <img
             src="/img/brand/logo.webp"
             alt="Logo"
-            class="hidden lg:block"
+            class="hidden xl:block"
         />
         <img
             src="/favicon.ico"
             alt="Logo"
-            class="block lg:hidden rounded-sm"
+            class="block rounded-sm xl:hidden"
         />
     </div>
     <IconButton
@@ -28,10 +28,10 @@
         icon="/svg/menu.svg"
         tone="accent"
         surface="transparent"
-        class="lg:hidden"
+        class="xl:hidden"
         on:click={() => (mobilenavbar = true)}
     />
-    <ul class="hidden lg:flex flex-1 justify-center">
+    <ul class="hidden flex-1 justify-center xl:flex">
         {#each navbar.private as item}
             {#if hasPermission(item.permission)}
                 <li class="px-5 first:pl-0 border-l first:border-none border-neutral-gray/50 group/item">
@@ -47,7 +47,7 @@
             {/if}
         {/each}
     </ul>
-    <div class="w-60 hidden lg:flex justify-end">
+    <div class="hidden w-60 justify-end xl:flex">
         <div class="flex items-center gap-4">
             <span class="flex items-center gap-1 text-sm font-noto-sans text-green-500">
                 Online
@@ -89,7 +89,7 @@
 
     <!-- Mobile Navbar -->
     {#if mobilenavbar}
-        <div class="fixed inset-0 z-100 overflow-hidden lg:hidden">
+        <div class="fixed inset-0 z-100 overflow-hidden xl:hidden">
             <button
                 type="button"
                 aria-label="Fechar menu de navegacao"

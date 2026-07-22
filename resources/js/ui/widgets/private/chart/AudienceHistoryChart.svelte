@@ -29,6 +29,10 @@
         afterDatasetsDraw(chart) {
             const { ctx } = chart;
 
+            // Values on every point are useful on desktop, but turn into an
+            // unreadable block on narrow charts. Tooltips still expose every value.
+            if (chart.width < 640) return;
+
             ctx.save();
             ctx.font = "700 10px Noto Sans, sans-serif";
             ctx.textAlign = "center";
@@ -37,7 +41,13 @@
             chart.data.datasets.forEach((dataset, datasetIndex) => {
                 const metadata = chart.getDatasetMeta(datasetIndex);
 
+                const step = chart.width < 900
+                    ? Math.max(1, Math.ceil(metadata.data.length / 8))
+                    : Math.max(1, Math.ceil(metadata.data.length / 16));
+
                 metadata.data.forEach((point, pointIndex) => {
+                    if (pointIndex % step !== 0 && pointIndex !== metadata.data.length - 1) return;
+
                     const listeners = dataset.data[pointIndex];
                     if (listeners === null || listeners === undefined) return;
 
@@ -174,12 +184,12 @@
 
 <Section {title}>
     {#if history?.series?.length}
-        <div class="flex min-h-90 min-w-0 w-full flex-col gap-3 lg:grid lg:grid-cols-[8rem_minmax(0,1fr)_5rem]">
-            <div class="min-w-0 w-full max-w-full overflow-hidden lg:w-auto lg:overflow-visible">
-                <div class="carousel-scroll flex min-w-0 w-full max-w-full gap-2 overflow-x-auto overscroll-x-contain lg:w-auto lg:flex-col lg:overflow-visible" aria-label="Legenda das rádios">
+        <div class="flex min-w-0 w-full flex-col gap-3 xl:grid xl:min-h-90 xl:grid-cols-[8rem_minmax(0,1fr)_5rem]">
+            <div class="min-w-0 w-full max-w-full xl:w-auto">
+                <div class="grid min-w-0 w-full max-w-full grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 xl:flex xl:w-auto xl:flex-col" aria-label="Legenda das rádios">
                     {#each history.series as series (series.uuid)}
                         <div
-                            class="flex h-12 min-w-28 items-center justify-end overflow-hidden rounded-sm bg-blue-ocean"
+                            class="flex h-12 min-w-0 items-center justify-end overflow-hidden rounded-sm bg-blue-ocean"
                             title={series.name}
                         >
                             <span class="sr-only">{series.name}</span>
@@ -197,7 +207,7 @@
                 </div>
             </div>
 
-            <div class="relative min-h-80 min-w-0 w-full overflow-hidden rounded-lg border border-blue-skywave/50 bg-blue-ocean/45 p-3 lg:w-auto">
+            <div class="relative h-64 min-w-0 w-full overflow-hidden rounded-lg border border-blue-skywave/50 bg-blue-ocean/45 p-2 sm:h-80 sm:p-3 xl:h-auto xl:min-h-80 xl:w-auto">
                 <canvas class="block max-w-full" bind:this={canvas} aria-label="Gráfico do histórico de audiência"></canvas>
                 {#if loading}
                     <div class="absolute inset-0 flex items-center justify-center rounded-lg bg-blue-marinho/65 text-sm font-extrabold uppercase italic text-orange-citric">
@@ -206,14 +216,14 @@
                 {/if}
             </div>
 
-            <div class="grid min-w-0 w-full grid-cols-2 gap-1 sm:grid-cols-4 lg:flex lg:w-auto lg:flex-col" aria-label="Período do histórico">
+            <div class="grid min-w-0 w-full grid-cols-2 gap-1 sm:grid-cols-4 xl:flex xl:w-auto xl:flex-col" aria-label="Período do histórico">
                 {#each periods as period}
                     <button
                         type="button"
                         disabled={loading}
                         aria-pressed={history.period === period.value}
                         class={[
-                            "h-8 min-w-0 cursor-pointer rounded-md px-3 font-noto-sans text-xs font-black uppercase italic transition disabled:cursor-wait disabled:opacity-60 lg:w-full",
+                            "h-9 min-w-0 cursor-pointer rounded-md px-2 font-noto-sans text-xs font-black uppercase italic transition disabled:cursor-wait disabled:opacity-60 sm:px-3 xl:h-8 xl:w-full",
                             history.period === period.value
                                 ? "bg-orange-citric text-blue-marinho"
                                 : "bg-blue-cerulean text-blue-marinho hover:bg-blue-skywave",

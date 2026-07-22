@@ -74,12 +74,12 @@
 <form on:submit|preventDefault={submit}>
     <Section title="Meus Programas">
         {#if programs.data.length > 0}
-            <div class="flex flex-wrap justify-center gap-15 lg:gap-x-0 lg:gap-y-15">
+            <div class="flex flex-wrap justify-center gap-8 sm:gap-15 lg:gap-x-0 lg:gap-y-15">
                 {#each programs.data as item}
                     <button
                         type="button"
                         aria-label={item.name}
-                        class="flex-none cursor-pointer lg:px-10 lg:border-r-2 lg:border-suspense-aurora/10 lg:last:border-0"
+                        class="max-w-full flex-none cursor-pointer lg:border-r-2 lg:border-suspense-aurora/10 lg:px-10 lg:last:border-0"
                         on:click={() => { $form.program = item.uuid; }}
                     >
                         <img
@@ -87,7 +87,7 @@
                             alt=""
                             aria-hidden="true"
                             loading="lazy"
-                            class={["w-60 transition duration-300 ease-in-out", 
+                            class={["w-full max-w-60 transition duration-300 ease-in-out",
                                 { "opacity-100 scale-100 drop-shadow-[0_0_20px_rgba(0,255,200,0.3)]": $form.program === item.uuid }, 
                                 { "opacity-50 scale-90": $form.program !== item.uuid }
                             ]}
@@ -139,7 +139,7 @@
             bind:value={$form.phrase.text}
         >
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mt-5 lg:mt-12">
-            <div class="grid grid-cols-5 sm:grid-cols-10 gap-5">
+            <div class="grid grid-cols-3 gap-3 min-[24rem]:grid-cols-4 sm:grid-cols-5 sm:gap-5 xl:grid-cols-10">
                 {#each locutionDecorations as item}
                     <button
                         type="button"
@@ -186,7 +186,7 @@
                 {/each}
             </div>
         </div>
-        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-9 gap-3 gap-y-18 mt-23">
+        <div class="mt-16 grid grid-cols-2 gap-x-3 gap-y-16 min-[24rem]:grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:mt-23 lg:grid-cols-9 lg:gap-y-18">
             {#each locutionIcons as item, index}
                 <button
                     type="button"

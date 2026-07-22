@@ -1,6 +1,6 @@
  /* Container */
  .container-page {
-     width: min(100% - clamp(4rem, 5vw, 5rem), 81.25rem);
+     width: min(100% - clamp(2rem, 5vw, 5rem), 81.25rem);
      margin-inline: auto;
  }
 
@@ -18,4 +18,34 @@
 
  .carousel-scroll::-webkit-scrollbar {
      display: none;
+ }
+
+ /* Keep long labels and media from creating page-level horizontal scroll. */
+ html,
+ body {
+     width: 100%;
+     max-width: 100%;
+     overflow-x: hidden;
+     overscroll-behavior-x: none;
+     background-color: var(--color-blue-marinho);
+ }
+
+ body > #app {
+     width: 100%;
+     min-width: 0;
+     max-width: 100%;
+     overflow-x: hidden;
+ }
+
+ img,
+ video,
+ canvas,
+ svg {
+     max-width: 100%;
+ }
+
+ @media (max-width: 24rem) {
+     .container-page {
+         width: calc(100% - 1.25rem);
+     }
  }

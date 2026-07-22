@@ -29,11 +29,11 @@
 </Layout>
 
 {#if onair.data.execution_mode === "live" && onair.data.program.host.uuid !== user.uuid}
-    <div transition:fade={{ duration: 300 }} class="fixed inset-0 z-50 flex items-center justify-center bg-blue-marinho/85 px-5 font-noto-sans backdrop-blur-md" role="dialog" aria-modal="true" aria-labelledby="live-lock-title" tabindex="-1">
+    <div transition:fade={{ duration: 300 }} class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-blue-marinho/85 px-3 py-4 font-noto-sans backdrop-blur-md sm:px-5" role="dialog" aria-modal="true" aria-labelledby="live-lock-title" tabindex="-1">
         <div class="w-full max-w-md overflow-hidden rounded-md bg-blue-ocean shadow-[0_1.25rem_4rem_rgba(0,0,0,0.35)]">
-            <div class="flex items-center gap-4 px-5 py-5">
+            <div class="flex items-center gap-3 px-4 py-5 sm:gap-4 sm:px-5">
                 <div class="relative shrink-0">
-                    <div class="h-20 w-20 overflow-hidden rounded-md bg-blue-marinho">
+                    <div class="h-16 w-16 overflow-hidden rounded-md bg-blue-marinho sm:h-20 sm:w-20">
                         <img
                             src={resolvePlaceholderImage(onair.data.program.host.avatar, "avatar", onair.data.program.host.gender)}
                             alt=""
@@ -56,7 +56,7 @@
                     </p>
                 </div>
             </div>
-            <div class="px-5 pt-2 pb-5">
+            <div class="px-4 pt-2 pb-5 sm:px-5">
                 <p class="text-sm leading-relaxed text-suspense-aurora/80">
                     Não é possível começar um novo programa enquanto
                     {onair.data.program.host.gender === "male" ? "o" : "a"} DJ
@@ -88,11 +88,11 @@
 {/if}
 
 {#if onair.data.execution_mode === "scheduled"}
-    <div transition:fade={{ duration: 300 }} class="fixed inset-0 z-50 flex items-center justify-center bg-blue-marinho/85 px-5 font-noto-sans backdrop-blur-md" role="dialog" aria-modal="true" aria-labelledby="scheduled-lock-title" tabindex="-1">
+    <div transition:fade={{ duration: 300 }} class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-blue-marinho/85 px-3 py-4 font-noto-sans backdrop-blur-md sm:px-5" role="dialog" aria-modal="true" aria-labelledby="scheduled-lock-title" tabindex="-1">
         <div class="w-full max-w-md overflow-hidden rounded-md bg-blue-ocean shadow-[0_1.25rem_4rem_rgba(0,0,0,0.35)]">
-            <div class="flex items-center gap-4 px-5 py-5">
+            <div class="flex items-center gap-3 px-4 py-5 sm:gap-4 sm:px-5">
                 <div class="relative shrink-0">
-                    <div class="flex h-20 w-20 items-center justify-center rounded-md bg-blue-marinho">
+                    <div class="flex h-16 w-16 items-center justify-center rounded-md bg-blue-marinho sm:h-20 sm:w-20">
                         <img
                             src="/svg/calendar.svg"
                             alt=""
@@ -115,7 +115,7 @@
                     </p>
                 </div>
             </div>
-            <div class="px-5 pt-2 pb-5">
+            <div class="px-4 pt-2 pb-5 sm:px-5">
                 <p class="text-sm leading-relaxed text-suspense-aurora/80">
                     Não é possível iniciar um novo programa ao vivo enquanto o programa 
                     <span class="font-extrabold text-suspense-aurora">

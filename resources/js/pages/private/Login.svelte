@@ -6,10 +6,10 @@
 
 <FlashToaster />
 <Meta meta={{ title: "Realize o Login" } } />
-<main class="w-screen h-screen flex justify-center items-center bg-blue-marinho p-5">
+<main class="flex min-h-dvh w-full items-center justify-center bg-blue-marinho p-3 sm:p-5">
     <h1 class="sr-only">Login</h1>
-    <section class="bg-suspense-aurora rounded-l-lg rounded-xl shadow-xl/30 xl:w-240 xl:h-120 xl:grid xl:grid-cols-[2fr_3fr]">
-        <div class="flex items-center p-8">
+    <section class="w-full max-w-md rounded-xl bg-suspense-aurora shadow-xl/30 xl:grid xl:h-120 xl:max-w-240 xl:grid-cols-[2fr_3fr]">
+        <div class="flex items-center p-5 sm:p-8">
             <LoginForm />
         </div>
         <div class="h-full overflow-hidden rounded-r-lg hidden xl:block">

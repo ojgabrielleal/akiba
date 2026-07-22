@@ -83,7 +83,7 @@
             </option>
         </SelectInput>
     </FormField>
-    <div class="grid grid-cols-2 gap-3">
+    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <FormField for="hour" label="Hora" help="Hora do evento" error={$form.errors.hour} spacing="compact">
             <TextInput
                 variant="offcanvas"

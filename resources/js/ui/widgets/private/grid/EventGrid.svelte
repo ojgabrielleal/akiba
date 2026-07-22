@@ -19,7 +19,7 @@
                 <div class="font-noto-sans text-lg text-suspense-aurora line-clamp-5 uppercase">
                     {item.title}
                 </div>
-                <div class="grid grid-cols-3 absolute bottom-2 left-4 w-[calc(100%-2rem)]">
+                <div class="absolute bottom-2 left-4 grid w-[calc(100%-2rem)] grid-cols-3 gap-1">
                     <div class="flex items-center gap-2 font-noto-sans font-extrabold italic uppercase text-lg text-suspense-aurora truncate">
                         <img
                             src="/svg/statistics.svg"

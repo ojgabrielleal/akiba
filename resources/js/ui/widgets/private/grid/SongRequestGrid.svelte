@@ -116,7 +116,7 @@
                     { "bg-gradient-red-blood-crimson": item.was_canceled },
                     { "bg-gradient-blue-ocean-skywave": !item.was_reproduced && !item.was_canceled },
                 ]}>
-                    <div class="w-70 flex items-center gap-1.5 text-suspense-aurora text-[1.2rem] font-noto-sans font-extrabold italic">
+                    <div class="flex w-full min-w-0 items-center gap-1.5 font-noto-sans text-[1.2rem] font-extrabold italic text-suspense-aurora">
                         <img
                             src="/svg/profile.svg"
                             alt=""

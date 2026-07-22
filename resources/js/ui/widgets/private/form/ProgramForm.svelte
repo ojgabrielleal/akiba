@@ -87,7 +87,7 @@
 </script>
 
 <Modal bind:this={iconModalRef} title="Selecionar ícone">
-    <div slot="content" class="grid grid-cols-3 gap-3">
+    <div slot="content" class="grid grid-cols-2 gap-3 sm:grid-cols-3">
         {#each locutionIcons as icon, index}
             <button
                 type="button"
