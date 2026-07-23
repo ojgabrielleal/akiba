@@ -50,7 +50,7 @@ class ReportsPageController extends Controller
                 $this->onairFilter->apply([
                     'execution_modes' => ['live', 'scheduled'],
                     'with' => ['program.host'],
-                    'paginate' => 10,
+                    'paginate' => 5,
                 ])
             ),
             'ranking_interno' => [
