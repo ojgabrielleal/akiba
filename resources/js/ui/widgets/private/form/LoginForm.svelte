@@ -15,7 +15,7 @@
 <div class="min-w-0 w-full">
     <div class="flex justify-center mb-4">
         <img
-            class="w-full max-w-60"
+            class="w-60 max-w-full"
             src="/img/brand/logo.webp"
             alt="logo"
         />
