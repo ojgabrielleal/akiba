@@ -134,7 +134,7 @@
 
     <SectionDivider tone="ocean" spacing="sm">Permissões</SectionDivider>
 
-    <div class="mb-5 space-y-4 pr-2">
+    <div class="mb-5 max-h-80 space-y-4 overflow-y-auto pr-2">
         {#each permissionGroups as [group, groupPermissions] (group)}
             <fieldset class="rounded-md border border-blue-ocean/15 bg-blue-ocean/5 p-3">
                 <legend class="px-1 font-noto-sans text-sm font-extrabold uppercase italic text-blue-ocean">
@@ -156,13 +156,12 @@
     </div>
 
     {#if roleSelected ? can.update : can.create}
-        <div class="mt-5">
+        <div class="sticky bottom-0 z-10 mt-5 border-t border-blue-ocean/10 bg-suspense-aurora py-4">
             <Button
                 type="submit"
                 loading={$form.processing}
                 variant="secondary"
                 shape="pill"
-                class="w-full"
             >
                 {roleSelected ? "Atualizar" : "Cadastrar"}
             </Button>
