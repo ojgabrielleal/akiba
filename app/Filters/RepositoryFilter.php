@@ -14,8 +14,8 @@ class RepositoryFilter
     {
         $query = Repository::query()
             ->when(
-                $filters['active'] ?? false,
-                fn (Builder $query) => $query->active()
+                array_key_exists('active', $filters),
+                fn (Builder $query) => $query->where('is_active', $filters['active'])
             )
             ->orderBy(
                 $filters['order_by'] ?? 'id',

@@ -34,6 +34,8 @@ class PermissionSeeder extends Seeder
             ['name' => 'media.module.view', 'label' => '[Mídias] Acesso ao módulo'],
             ['name' => 'administration.module.view', 'label' => '[Administração] Acesso ao módulo'],
             ['name' => 'report.module.view', 'label' => '[Relatórios] Acesso ao módulo'],
+            ['name' => 'inactive.module.view', 'label' => '[Itens desativados] Acesso ao módulo'],
+            ['name' => 'inactive.restore', 'label' => '[Itens desativados] Reativar'],
 
             /*
             |--------------------------------------------------------------------------

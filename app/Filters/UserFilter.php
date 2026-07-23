@@ -14,8 +14,8 @@ class UserFilter
     {
         $query = User::query()
             ->when(
-                $filters['active'] ?? false,
-                fn (Builder $query) => $query->active()
+                array_key_exists('active', $filters),
+                fn (Builder $query) => $query->where('is_active', $filters['active'])
             )
             ->when(
                 array_key_exists('is_virtual', $filters),

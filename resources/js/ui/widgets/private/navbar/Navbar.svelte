@@ -41,6 +41,7 @@
                         label={item.name}
                         icon={item.icon}
                         tone="neutral"
+                        iconClass="group-hover/item:filter-orange-citric"
                         surface="transparent"
                         size="navbar"
                         tooltipPosition="bottom"

@@ -40,6 +40,8 @@ class AppServiceProvider extends ServiceProvider
             'media.module.view',
             'administration.module.view',
             'report.module.view',
+            'inactive.module.view',
+            'inactive.restore',
             'locution.start',
             'locution.finish',
         ];

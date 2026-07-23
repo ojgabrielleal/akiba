@@ -9,6 +9,7 @@
     let className = "";
     export { className as class };
     export let icon = null;
+    export let iconClass = "";
     export let tone = null;
     export let surface = null;
 
@@ -121,7 +122,7 @@
                 src={selectedIcon}
                 alt=""
                 aria-hidden="true"
-                class={[selectedSize.icon, tones[selectedTone]]}
+                class={[selectedSize.icon, tones[selectedTone], iconClass]}
                 loading="lazy"
             />
         </Link>
@@ -138,7 +139,7 @@
                 src={selectedIcon}
                 alt=""
                 aria-hidden="true"
-                class={[selectedSize.icon, tones[selectedTone]]}
+                class={[selectedSize.icon, tones[selectedTone], iconClass]}
                 loading="lazy"
             />
         </button>

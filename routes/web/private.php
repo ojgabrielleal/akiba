@@ -1,21 +1,10 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Private\ActivityController;
 
-use App\Http\Controllers\Private\Pages\AdministrationPageController;
-use App\Http\Controllers\Private\Pages\DashboardPageController;
-use App\Http\Controllers\Private\Pages\LocutionPageController;
-use App\Http\Controllers\Private\Pages\LoginPageController;
-use App\Http\Controllers\Private\Pages\ReportsPageController;
-use App\Http\Controllers\Private\Pages\MediaPageController;
-use App\Http\Controllers\Private\Pages\PodcastPageController;
-use App\Http\Controllers\Private\Pages\PostPageController;
-use App\Http\Controllers\Private\Pages\ProfilePageController;
-use App\Http\Controllers\Private\Pages\RadioPageController;
-use App\Http\Controllers\Private\Pages\RepositoryPageController;
-
-use App\Http\Controllers\Private\Invokes\ConfirmActivityParticipantController;
+use App\Http\Controllers\Private\CalendarController;
 use App\Http\Controllers\Private\Invokes\CompleteTaskController;
+use App\Http\Controllers\Private\Invokes\ConfirmActivityParticipantController;
 use App\Http\Controllers\Private\Invokes\DeactivatePodcastController;
 use App\Http\Controllers\Private\Invokes\DeactivatePollController;
 use App\Http\Controllers\Private\Invokes\DeactivatePostController;
@@ -25,19 +14,31 @@ use App\Http\Controllers\Private\Invokes\DeactivateTaskController;
 use App\Http\Controllers\Private\Invokes\DeactivateUserController;
 use App\Http\Controllers\Private\Invokes\FinishLocutionController;
 use App\Http\Controllers\Private\Invokes\LoginController;
+
 use App\Http\Controllers\Private\Invokes\LogoutController;
 use App\Http\Controllers\Private\Invokes\MarkSongRequestAsCanceledController;
 use App\Http\Controllers\Private\Invokes\MarkSongRequestAsPlayedController;
 use App\Http\Controllers\Private\Invokes\MarkTaskToReviewController;
 use App\Http\Controllers\Private\Invokes\PollVoteController;
+use App\Http\Controllers\Private\Invokes\ReactivateInactiveItemController;
 use App\Http\Controllers\Private\Invokes\RefreshMusicRankingController;
 use App\Http\Controllers\Private\Invokes\StartLocutionController;
 use App\Http\Controllers\Private\Invokes\ToggleSongRequestBoxStatusController;
-use App\Http\Controllers\Private\ActivityController;
-use App\Http\Controllers\Private\CalendarController;
 use App\Http\Controllers\Private\ListenerGalleryController;
 use App\Http\Controllers\Private\ListenerMonthController;
 use App\Http\Controllers\Private\MusicController;
+use App\Http\Controllers\Private\Pages\AdministrationPageController;
+use App\Http\Controllers\Private\Pages\DashboardPageController;
+use App\Http\Controllers\Private\Pages\InactiveItemsPageController;
+use App\Http\Controllers\Private\Pages\LocutionPageController;
+use App\Http\Controllers\Private\Pages\LoginPageController;
+use App\Http\Controllers\Private\Pages\MediaPageController;
+use App\Http\Controllers\Private\Pages\PodcastPageController;
+use App\Http\Controllers\Private\Pages\PostPageController;
+use App\Http\Controllers\Private\Pages\ProfilePageController;
+use App\Http\Controllers\Private\Pages\RadioPageController;
+use App\Http\Controllers\Private\Pages\ReportsPageController;
+use App\Http\Controllers\Private\Pages\RepositoryPageController;
 use App\Http\Controllers\Private\PodcastController;
 use App\Http\Controllers\Private\PollController;
 use App\Http\Controllers\Private\PostController;
@@ -47,6 +48,7 @@ use App\Http\Controllers\Private\RepositoryController;
 use App\Http\Controllers\Private\RoleController;
 use App\Http\Controllers\Private\TaskController;
 use App\Http\Controllers\Private\UserController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -175,6 +177,11 @@ Route::prefix('panel')->middleware(['inertia'])->group(function () {
         });
         Route::prefix('reports')->controller(ReportsPageController::class)->group(function () {
             Route::get('', 'render')->name('panel.reports');
+        });
+        Route::prefix('inactive')->middleware('can:inactive.module.view')->group(function () {
+            Route::get('', [InactiveItemsPageController::class, 'render'])->name('panel.inactive');
+            Route::patch('{type}/{uuid}/reactivate', ReactivateInactiveItemController::class)
+                ->middleware('can:inactive.restore');
         });
         Route::prefix('profile')->controller(ProfilePageController::class)->group(function () {
             Route::patch('{user:uuid}', [ProfileController::class, 'update']);

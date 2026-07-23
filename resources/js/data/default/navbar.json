@@ -53,6 +53,12 @@
       "icon": "/svg/logs.svg",
       "permission": "report.module.view",
       "address": "/panel/reports"
+    },
+    {
+      "name": "Itens desativados",
+      "icon": "/svg/trash.svg",
+      "permission": "inactive.module.view",
+      "address": "/panel/inactive"
     }
   ],
   "public": [
