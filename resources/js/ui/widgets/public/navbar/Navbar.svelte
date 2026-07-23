@@ -1,200 +1,278 @@
 <script>
-    import { Link } from "@inertiajs/svelte";
+    import { page, Link } from "@inertiajs/svelte";
+    import { onMount } from "svelte";
+    import { fade, fly } from "svelte/transition";
     import { navbar } from "@/data";
+    import { listenForOAuth } from "@/utils";
+    import { Button, IconButton, Modal, Tooltip } from "@/ui/components/public";
+    import ProfileForm from "../form/ProfileForm.svelte";
 
-    let theme = "night";
     let mobilenavbar = false;
+    let profileModalRef;
+    let theme = "night";
+
+    $: oauth = $page.props.oauth;
+    $: profile = oauth?.profile;
+    $: avatar = profile?.avatar || "/img/placeholders/avatar.webp";
+    $: nickname = profile?.nickname || profile?.username || "Perfil";
+
+    const closeMobileNavbar = () => {
+        mobilenavbar = false;
+    };
+
+    const openOAuthLogin = () => {
+        window.open("/oauth/discord/redirect", "_blank");
+    };
+
+    const themes = [
+        { name: "light", label: "Modo claro", icon: "/svg/dawn.svg" },
+        { name: "akiba", label: "Modo Akiba", icon: "/svg/akiba.svg" },
+        { name: "night", label: "Modo escuro", icon: "/svg/night.svg" },
+    ];
+
+    onMount(() => listenForOAuth(() => {}));
 </script>
 
-<nav class="w-full relative" aria-label="Navegacao principal">
-    <div class="container-page h-24 xl:h-[2.57rem] relative xl:top-15 flex xl:justify-between items-center">
-        <button type="button"
-            aria-label="Abrir menu"
-            class="xl:hidden p-1 filter-suspense-aurora"
-            on:click={() => (mobilenavbar = !mobilenavbar)}
-        >
-            <img
-                src="/svg/menu.svg"
-                alt=""
-                class="w-5 h-5"
-                aria-hidden="true"
-            />
-        </button>
-
-        <div class="ml-5">
+<nav aria-label="Navegação principal">
+    <div class="container-page flex items-center justify-between gap-4 pt-10 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto]">
+        <Link href="/site" class="w-52 shrink-0" aria-label="Página inicial">
             <img
                 src="/img/brand/logo.webp"
-                alt="Logo"
-                class="w-30 xl:w-35"
+                alt="Akiba Station"
+                class="w-full"
             />
-        </div>
-
-        <ul class="hidden xl:flex">
+        </Link>
+        <ul class="mt-1 hidden w-full min-w-0 items-center justify-center lg:flex lg:justify-self-center">
             {#each navbar.public as item}
-                <li class="pr-5 pl-5 first:pl-0 border-l first:border-none border-neutral-gray/50 h-6 flex items-center">
-                            <Link
+                <li class="flex h-6 items-center border-l border-neutral-gray/35 px-3 first:border-none first:pl-0 xl:px-4">
+                    <Link
                         href={item.address}
                         aria-label={item.name}
-                        class="relative flex items-center gap-1 text-lg font-noto-sans font-extrabold text-neutral-gray hover:text-orange-amber italic uppercase group/item"
+                        class="group/item relative flex items-center gap-1 whitespace-nowrap font-noto-sans text-[0.825rem] font-extrabold uppercase italic text-neutral-gray transition-colors hover:text-orange-amber"
                     >
                         <img
                             src={item.icon}
                             alt=""
                             aria-hidden="true"
-                            class="w-5 h-5 filter-neutral-gray group-hover/item:filter-orange-amber"
-                            loading="lazy"
+                            class="size-[1.3125rem] filter-neutral-gray transition group-hover/item:filter-orange-amber"
                         />
                         {item.name}
-                        <span class="absolute -bottom-1 left-0 h-px rounded-full w-full bg-orange-amber scale-x-0 group-hover/item:scale-x-100 origin-left transition-transform duration-300"></span>
+                        <span
+                            class="absolute -bottom-2 left-0 h-0.5 w-full origin-left scale-x-0 rounded-full bg-orange-amber transition-transform duration-300 group-hover/item:scale-x-100"
+                            aria-hidden="true"
+                        ></span>
                     </Link>
                 </li>
             {/each}
         </ul>
 
-        <div class="w-35">
-            <div class="hidden xl:flex justify-center items-center w-22 h-8 gap-1 bg-blue-skywave rounded-full">
-                <button type="button"
-                    aria-label="Modo Claro"
-                    class={["cursor-pointer shrink-0 p-1",
-                        { "bg-orange-morning rounded-full": theme === "light" },
-                    ]}
-                    on:click={() => (theme = "light")}
-                >
-                    <img
-                        src="/svg/dawn.svg"
-                        alt=""
-                        aria-hidden="true"
-                        class={["w-4 h-4", { "filter-orange-amber": theme === "light" }, { "filter-suspense-aurora": theme !== "light" }, ]}
-                    />
-                </button>
-                <button type="button"
-                    aria-label="Modo Akiba"
-                    class={["cursor-pointer shrink-0 p-1",
-                        { "bg-blue-night rounded-full": theme === "akiba" },
-                    ]}
-                    on:click={() => (theme = "akiba")}
-                >
-                    <img
-                        src="/svg/akiba.svg"
-                        alt=""
-                        aria-hidden="true"
-                        class={["w-4 h-4", { "filter-orange-amber": theme === "akiba" }, { "filter-suspense-aurora": theme !== "akiba" }, ]}
-                    />
-                </button>
-                <button type="button"
-                    aria-label="Modo Escuro"
-                    class={["cursor-pointer shrink-0 p-1",
-                        { "bg-blue-night rounded-full": theme === "night" },
-                    ]}
-                    on:click={() => (theme = "night")}
-                >
-                    <img
-                        src="/svg/night.svg"
-                        alt=""
-                        aria-hidden="true"
-                        class={["w-4 h-4", { "filter-orange-morning": theme === "night" }, { "filter-suspense-aurora": theme !== "night" }, ]}
-                    />
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Mobile Navbar -->
-    <div class={["fixed inset-0 z-150 transition-opacity duration-300 xl:hidden",
-        { "opacity-100 pointer-events-auto": mobilenavbar },
-        { "opacity-0 pointer-events-none": !mobilenavbar },
-    ]}>
-        <button aria-label="Fechar menu"
-            type="button"
-            class="absolute inset-0 bg-blue-night/40 backdrop-blur-sm"
-            on:click={mobilenavbar = false}>
-        </button>
-
-        <!-- Sidebar        -->
-        <div class={["absolute left-0 top-0 h-screen w-72 bg-suspense-aurora shadow-2xl transition-transform duration-300 ease-out",
-            { "translate-x-0": mobilenavbar },
-            { "-translate-x-full": !mobilenavbar },
-        ]}>
-            <div class="p-6 border-b border-blue-night/10 flex items-center justify-between">
-                <img
-                    src="/img/brand/logo.webp"
-                    alt="Logo"
-                    class="w-30"
+        <div class="hidden shrink-0 items-center justify-end gap-2 lg:flex">
+            {#if false}
+                <IconButton
+                    label="Buscar"
+                    icon="/svg/search.svg"
+                    tone="light"
+                    surface="transparent"
+                    size="sm"
+                    tooltipPosition="bottom"
                 />
-                <button type="button"
-                    aria-label="Fechar menu"
-                    class="text-blue-night"
-                    on:click={() => (mobilenavbar = false)}
+                <IconButton
+                    label="Notificações"
+                    icon="/svg/bell.svg"
+                    tone="light"
+                    surface="transparent"
+                    size="sm"
+                    tooltipPosition="bottom"
+                />
+            {/if}
+            {#if oauth?.authenticated}
+                <Tooltip position="bottom">
+                    <button
+                        type="button"
+                        aria-label={`Editar perfil de ${nickname}`}
+                        class="ml-1 flex size-10 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-full border-2 border-suspense-aurora bg-suspense-aurora shadow"
+                        on:click={() => profileModalRef.open()}
+                    >
+                        <img
+                            src={avatar}
+                            alt={nickname}
+                            class="h-full w-full object-cover object-top"
+                        />
+                    </button>
+                    <span slot="content">Editar perfil</span>
+                </Tooltip>
+            {:else}
+                <Button
+                    size="sm"
+                    shape="pill"
+                    class="ml-1"
+                    on:click={openOAuthLogin}
                 >
-                    <img
-                        src="/svg/x.svg"
-                        alt=""
-                        class="w-6 h-6"
-                        aria-hidden="true"
-                    />
-                </button>
-            </div>
-
-            <nav class="p-6 overflow-y-auto h-[calc(100%-12rem)]" aria-label="Navegacao mobile">
-                <ul class="space-y-5">
-                    {#each navbar.public as item}
-                        <li>
-                            <Link
-                                aria-label={item.name}
-                                href={item.address}
-                                class="flex items-center gap-2 text-md font-noto-sans font-extrabold italic uppercase text-blue-night"
-                                on:click={() => (mobilenavbar = false)}
-                            >
-                                <img
-                                    src={item.icon}
-                                    alt=""
-                                    aria-hidden="true"
-                                    class="w-5 h-5 filter-blue-night"
-                                />
-                                {item.name}
-                            </Link>
-                        </li>
-                    {/each}
-                </ul>
-            </nav>
-
-            <div class="absolute bottom-0 left-0 w-full p-6 border-t border-blue-night/10 bg-suspense-aurora z-10">
-                <span class="w-full block text-[0.6rem] font-extrabold uppercase tracking-widest text-blue-night text-center opacity-40 mb-3">
-                    Temas da Akiba
-                </span>
-                <div class="w-25 h-8 mx-auto flex justify-center items-center gap-1 bg-blue-skywave p-1 rounded-full">
-                    <button aria-label="Selecionar tema claro" type="button" class={["flex-1 flex justify-center items-center transition-all h-full",
-                        { "bg-orange-morning rounded-full": theme === "light" },
-                    ]} on:click={() => (theme = "light")}>
+                    Entrar
+                </Button>
+            {/if}
+            <div class="ml-1 flex h-[1.625rem] items-center rounded-full bg-blue-skywave p-0.5" aria-label="Selecionar tema">
+                {#each themes as item}
+                    <button
+                        type="button"
+                        aria-label={item.label}
+                        aria-pressed={theme === item.name}
+                        class={[
+                            "flex size-[1.375rem] cursor-pointer items-center justify-center rounded-full transition",
+                            { "bg-blue-night": theme === item.name },
+                        ]}
+                        on:click={() => (theme = item.name)}
+                    >
                         <img
-                            src="/svg/dawn.svg"
+                            src={item.icon}
                             alt=""
                             aria-hidden="true"
-                            class={["w-4 h-4", { "filter-orange-amber": theme === "light" }, { "filter-suspense-aurora": theme !== "light" }, ]}
+                            class={[
+                                "size-[0.8125rem] filter-suspense-aurora",
+                                { "filter-orange-morning": theme === item.name },
+                            ]}
                         />
                     </button>
-                    <button aria-label="Selecionar tema Akiba" type="button" class={["flex-1 flex justify-center items-center transition-all h-full",
-                        { "bg-blue-night rounded-full": theme === "akiba" },
-                    ]} on:click={() => (theme = "akiba")}>
-                        <img
-                            src="/svg/akiba.svg"
-                            alt=""
-                            aria-hidden="true"
-                            class={["w-4 h-4", { "filter-orange-amber": theme === "akiba" }, { "filter-suspense-aurora": theme !== "akiba" }, ]}
-                        />
-                    </button>
-                    <button aria-label="Selecionar tema escuro" type="button" class={["flex-1 flex justify-center items-center transition-all h-full",
-                        { "bg-blue-night rounded-full": theme === "night" },
-                    ]} on:click={() => (theme = "night")}>
-                        <img
-                            src="/svg/night.svg"
-                            alt=""
-                            aria-hidden="true"
-                            class={["w-4 h-4", { "filter-orange-morning": theme === "night" }, { "filter-suspense-aurora": theme !== "night" }, ]}
-                        />
-                    </button>
-                </div>
+                {/each}
             </div>
         </div>
+        <IconButton
+            label="Abrir menu de navegação"
+            icon="/svg/menu.svg"
+            tone="light"
+            surface="transparent"
+            size="md"
+            class="lg:hidden"
+            on:click={() => (mobilenavbar = true)}
+        />
     </div>
+
+    {#if mobilenavbar}
+        <div class="fixed inset-0 z-100 overflow-hidden lg:hidden">
+            <button
+                type="button"
+                aria-label="Fechar menu de navegação"
+                class="absolute inset-0 bg-blue-night/60 backdrop-blur-sm"
+                transition:fade={{ duration: 250 }}
+                on:click={closeMobileNavbar}
+            ></button>
+            <aside
+                class="absolute right-0 top-0 h-dvh w-[min(14rem,75vw)] overflow-hidden bg-suspense-aurora shadow-2xl"
+                transition:fly={{ x: 288, duration: 300 }}
+                aria-label="Navegação mobile"
+            >
+                <div class="flex h-full min-h-0 flex-col">
+                    <ul class="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto px-4 pt-6 pb-3">
+                        {#each navbar.public as item}
+                            <li>
+                                <Link
+                                    href={item.address}
+                                    aria-label={item.name}
+                                    class="group/item flex min-h-9 items-center gap-2.5 rounded-md px-2 py-1 font-noto-sans text-[0.8125rem] font-extrabold uppercase italic text-blue-night transition hover:bg-orange-citric/10 hover:text-orange-copper"
+                                    on:click={closeMobileNavbar}
+                                >
+                                    <img
+                                        src={item.icon}
+                                        alt=""
+                                        aria-hidden="true"
+                                        class="size-5 filter-blue-marinho group-hover/item:filter-orange-citric"
+                                    />
+                                    {item.name}
+                                </Link>
+                            </li>
+                        {/each}
+                    </ul>
+                    <div class="border-t border-blue-night/10 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+                        <div class="flex items-center justify-between gap-2">
+                            {#if oauth?.authenticated}
+                                <button
+                                    type="button"
+                                    class="flex min-w-0 items-center gap-2 text-left"
+                                    on:click={() => {
+                                        closeMobileNavbar();
+                                        profileModalRef.open();
+                                    }}
+                                >
+                                    <div class="size-8 shrink-0 overflow-hidden rounded-full border-2 border-blue-night/10">
+                                        <img
+                                            src={avatar}
+                                            alt={nickname}
+                                            class="h-full w-full object-cover object-top"
+                                        />
+                                    </div>
+                                    <span class="min-w-0 truncate font-noto-sans text-xs font-extrabold text-blue-night">
+                                        {nickname}
+                                    </span>
+                                </button>
+                            {:else}
+                                <Button
+                                    size="sm"
+                                    shape="pill"
+                                    on:click={openOAuthLogin}
+                                >
+                                    Entrar
+                                </Button>
+                            {/if}
+                            {#if false}
+                                <div class="flex gap-1">
+                                    <IconButton
+                                        label="Buscar"
+                                        icon="/svg/search.svg"
+                                        tone="dark"
+                                        surface="transparent"
+                                        size="sm"
+                                    />
+                                    <IconButton
+                                        label="Notificações"
+                                        icon="/svg/bell.svg"
+                                        tone="dark"
+                                        surface="transparent"
+                                        size="sm"
+                                    />
+                                </div>
+                            {/if}
+                            <div class="flex h-7 shrink-0 items-center rounded-full bg-blue-skywave p-0.5">
+                                {#each themes as item}
+                                    <button
+                                        type="button"
+                                        aria-label={item.label}
+                                        aria-pressed={theme === item.name}
+                                        class={[
+                                            "flex size-6 items-center justify-center rounded-full",
+                                            { "bg-blue-night": theme === item.name },
+                                        ]}
+                                        on:click={() => (theme = item.name)}
+                                    >
+                                        <img
+                                            src={item.icon}
+                                            alt=""
+                                            aria-hidden="true"
+                                            class={[
+                                                "size-3 filter-suspense-aurora",
+                                                { "filter-orange-morning": theme === item.name },
+                                            ]}
+                                        />
+                                    </button>
+                                {/each}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    {/if}
 </nav>
+
+{#if oauth?.authenticated}
+    <Modal
+        bind:this={profileModalRef}
+        title="Meu perfil"
+        label={`Perfil de ${nickname}`}
+        size="md"
+    >
+        <ProfileForm
+            {profile}
+            close={() => profileModalRef.close()}
+        />
+    </Modal>
+{/if}

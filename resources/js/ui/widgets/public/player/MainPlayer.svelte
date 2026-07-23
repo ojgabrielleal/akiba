@@ -1,7 +1,7 @@
 <script>
     import { page } from "@inertiajs/svelte";
     import { onMount } from "svelte";
-    import { AuthGuard, Modal } from "@/ui/components/public";
+    import { AuthGuard, CustomModal } from "@/ui/components/public";
     import { SongRequestForm } from "@/ui/widgets/public";
     import { player, toggleAudio, setVolume } from "@/store";
     import { locutionIcons, locutionTextures, locutionDecorations } from "@/data";
@@ -49,7 +49,7 @@
 
 </script>
 
-<Modal bind:this={modalRef}>
+<CustomModal bind:this={modalRef}>
     <div slot="content" let:close>
         <AuthGuard
             title="Entre para pedir sua música"
@@ -58,7 +58,7 @@
             <SongRequestForm {close} />
         </AuthGuard>
     </div>
-</Modal>
+</CustomModal>
 
 <!-- Phrase Section -->
 <section class="w-full bg-contain bg-right bg-no-repeat mt-5 mb-7"  style={`background-image: url('${playerData.phrase.texture}'), var(--gradient-blue-ocean-cerulean);`}>

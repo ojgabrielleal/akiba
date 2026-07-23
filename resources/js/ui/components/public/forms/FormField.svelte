@@ -15,6 +15,7 @@
         accent: "font-extrabold uppercase italic text-orange-citric",
         primary: "font-extrabold uppercase italic text-blue-skywave",
         compact: "text-[0.65rem] uppercase italic text-suspense-aurora/70",
+        dark: "font-semibold text-blue-night/70",
     };
 
     const spacings = {

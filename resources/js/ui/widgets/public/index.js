@@ -1,5 +1,6 @@
 // Form
 export { default as SongRequestForm } from "./form/SongRequestForm.svelte"
+export { default as ProfileForm } from "./form/ProfileForm.svelte"
 
 // Grid
 export { default as FeaturedGrid } from "./grid/FeaturedGrid.svelte"

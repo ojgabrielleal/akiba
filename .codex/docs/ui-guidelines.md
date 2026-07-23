@@ -112,7 +112,9 @@ components/public/
 │   ├── Button.svelte
 │   └── IconButton.svelte
 ├── feedback/
+│   ├── AuthGuard.svelte
 │   ├── Badge.svelte
+│   ├── FlashToaster.svelte
 │   ├── LoadingSpinner.svelte
 │   └── StatusMessage.svelte
 ├── forms/
@@ -125,6 +127,7 @@ components/public/
 ├── layout/
 │   ├── GridList.svelte
 │   ├── PageHeader.svelte
+│   ├── Section.svelte
 │   ├── SectionDivider.svelte
 │   ├── SectionHeader.svelte
 │   └── Surface.svelte
@@ -133,10 +136,10 @@ components/public/
 │   ├── Pagination.svelte
 │   └── Tabs.svelte
 └── overlays/
+    ├── CustomModal.svelte
+    ├── Modal.svelte
     └── Tooltip.svelte
 ```
-
-Os componentes legados `AuthGuard`, `Modal` e `Section` permanecem na raiz até uma revisão específica.
 
 Todos os componentes novos são exportados por `components/public/index.js`:
 

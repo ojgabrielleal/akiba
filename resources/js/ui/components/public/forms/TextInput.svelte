@@ -12,6 +12,7 @@
         dark: "h-11 rounded-md bg-blue-ocean text-suspense-aurora placeholder:text-suspense-aurora/35",
         transparent: "h-11 rounded-md bg-transparent text-suspense-aurora placeholder:text-suspense-aurora/35",
         pill: "h-11 rounded-full bg-suspense-aurora text-blue-night placeholder:text-blue-night/35",
+        profile: "h-11 rounded-md bg-neutral-white text-blue-night placeholder:text-blue-night/35",
     };
 
     const borders = {
@@ -19,6 +20,7 @@
         dark: "border border-blue-skywave/40 focus:border-blue-skywave",
         transparent: "border border-suspense-aurora/25 focus:border-orange-citric",
         pill: "border border-transparent focus:border-blue-skywave",
+        profile: "border border-blue-night/15 focus:border-blue-skywave",
     };
 
     $: classes = [

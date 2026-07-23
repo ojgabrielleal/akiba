@@ -1,5 +1,6 @@
 <script>
     import { usePoll } from "@inertiajs/svelte";
+    import { FlashToaster } from "@/ui/components/public";
     import { Navbar } from "@/ui/widgets/public";
 
     usePoll(10 * 1000, {
@@ -7,11 +8,12 @@
     });
 </script>
 
-<header class="h-0">
+<FlashToaster />
+<header>
     <Navbar />
 </header>
 
-<main id="conteudo-principal">
+<main>
     <slot />
 </main>
 

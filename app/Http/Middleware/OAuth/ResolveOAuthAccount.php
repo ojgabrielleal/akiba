@@ -32,7 +32,11 @@ class ResolveOAuthAccount
             'authenticated' => $oauthAccount instanceof OAuthAccount,
             'profile_completed' => $oauthAccount?->profile_completed_at !== null,
             'profile' => $oauthAccount ? [
+                'uuid' => $oauthAccount->uuid,
+                'provider' => $oauthAccount->provider,
+                'username' => $oauthAccount->username,
                 'nickname' => $oauthAccount->nickname,
+                'avatar' => $oauthAccount->avatar,
                 'birth_date' => $oauthAccount->birth_date?->format('Y-m-d'),
                 'address' => $oauthAccount->address,
                 'bio' => $oauthAccount->bio,

@@ -24,7 +24,7 @@
  html, body {
      width: 100%;
      max-width: 100%;
-     overflow-x: hidden;
+     overflow-x: clip;
      overscroll-behavior-x: none;
      background-color: var(--color-blue-marinho);
  }
@@ -33,7 +33,7 @@
      width: 100%;
      min-width: 0;
      max-width: 100%;
-     overflow-x: hidden;
+     overflow-x: clip;
  }
 
  img, video, canvas, svg {
