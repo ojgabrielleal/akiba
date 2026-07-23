@@ -13,7 +13,7 @@ Schedule::command('programs:start')
     ->withoutOverlapping();
 
 Schedule::command('audience:collect')
-    ->everyFiveMinutes()
+    ->everyTenMinutes()
     ->withoutOverlapping();
 
 Schedule::command('audience:prune')
