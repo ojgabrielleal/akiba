@@ -1,5 +1,9 @@
 export * from "./access/permissions.js"
-export { listenForOAuth } from "./access/oauthBroadcast.js"
+export {
+    OAuthAction,
+    listenForOAuthAction,
+    rememberOAuthAction,
+} from "./access/oauthPendingAction.js"
 export { resolveDateTime, resolveDay, resolveHour, resolveAge } from "./formatters/dateTime.js"
 export { placeholderImages, resolvePlaceholderImage } from "./media/placeholders.js"
 export { resolveStatusBackground } from "./presentation/gridStatus.js"

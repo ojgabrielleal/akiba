@@ -4,13 +4,22 @@
     import { AuthGuard, CustomModal } from "@/ui/components/public";
     import { SongRequestForm } from "@/ui/widgets/public";
     import { player, toggleAudio, setVolume } from "@/store";
-    import { listenForOAuth, resolvePlaceholderImage } from "@/utils";
+    import {
+        listenForOAuthAction,
+        OAuthAction,
+        resolvePlaceholderImage,
+    } from "@/utils";
 
     $: ({ onair: { data: [air] }, stream } = $page.props);
 
     let modalRef;
 
-    onMount(() => listenForOAuth(() => modalRef.open()));
+    onMount(() =>
+        listenForOAuthAction(
+            OAuthAction.OPEN_SONG_REQUEST,
+            () => modalRef.open(),
+        ),
+    );
 
     $: playerData = {
         program: {
@@ -56,6 +65,7 @@
         <AuthGuard
             title="Entre para pedir sua música"
             description="Use sua conta do Discord para continuar."
+            action={OAuthAction.OPEN_SONG_REQUEST}
         >
             <SongRequestForm {close} />
         </AuthGuard>

@@ -14,7 +14,7 @@
     $: nickname = profile?.nickname || profile?.username || "Perfil";
 
     const syncDiscord = () => {
-        window.open("/oauth/discord/redirect", "_blank");
+        window.location.assign("/oauth/discord/redirect");
     };
 
     const form = useForm({

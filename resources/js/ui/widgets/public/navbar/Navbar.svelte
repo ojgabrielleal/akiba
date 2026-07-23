@@ -1,9 +1,7 @@
 <script>
     import { page, Link } from "@inertiajs/svelte";
-    import { onMount } from "svelte";
     import { fade, fly } from "svelte/transition";
     import { navbar } from "@/data";
-    import { listenForOAuth } from "@/utils";
     import { Button, IconButton, Modal, Tooltip } from "@/ui/components/public";
     import ProfileForm from "../form/ProfileForm.svelte";
 
@@ -21,7 +19,7 @@
     };
 
     const openOAuthLogin = () => {
-        window.open("/oauth/discord/redirect", "_blank");
+        window.location.assign("/oauth/discord/redirect");
     };
 
     const themes = [
@@ -30,7 +28,6 @@
         { name: "night", label: "Modo escuro", icon: "/svg/night.svg" },
     ];
 
-    onMount(() => listenForOAuth(() => {}));
 </script>
 
 <nav aria-label="Navegação principal">
