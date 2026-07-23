@@ -87,7 +87,7 @@
                                         src={itemCategory.icon}
                                         alt=""
                                         aria-hidden="true"
-                                        class="size-3.5 brightness-0"
+                                        class="size-3.5 filter-suspense-aurora"
                                         loading="lazy"
                                     />
                                     {itemCategory.label}
