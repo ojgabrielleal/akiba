@@ -156,13 +156,16 @@
     </div>
 
     {#if roleSelected ? can.update : can.create}
-        <Button
-            type="submit"
-            loading={$form.processing}
-            variant="secondary"
-            shape="pill"
-        >
-            {roleSelected ? "Atualizar" : "Cadastrar"}
-        </Button>
+        <div class="mt-5 pb-16">
+            <Button
+                type="submit"
+                loading={$form.processing}
+                variant="secondary"
+                shape="pill"
+                class="w-full"
+            >
+                {roleSelected ? "Atualizar" : "Cadastrar"}
+            </Button>
+        </div>
     {/if}
 </form>

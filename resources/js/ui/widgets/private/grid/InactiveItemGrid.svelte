@@ -110,10 +110,10 @@
         {/if}
 
         <div class="flex justify-end gap-2">
-            <Button variant="secondary" on:click={close} disabled={deleting}>
+            <Button variant="secondary" class="!text-sm" on:click={close} disabled={deleting}>
                 Cancelar
             </Button>
-            <Button variant="danger" loading={deleting} on:click={() => destroy(close)}>
+            <Button variant="danger" class="!text-sm" loading={deleting} on:click={() => destroy(close)}>
                 Excluir definitivamente
             </Button>
         </div>
