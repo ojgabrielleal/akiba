@@ -173,7 +173,7 @@ Route::prefix('panel')->middleware(['inertia'])->group(function () {
             });
             Route::get('', 'render')->name('panel.administration');
         });
-        Route::prefix('relatorios')->controller(ReportsPageController::class)->group(function () {
+        Route::prefix('reports')->controller(ReportsPageController::class)->group(function () {
             Route::get('', 'render')->name('panel.reports');
         });
         Route::prefix('profile')->controller(ProfilePageController::class)->group(function () {

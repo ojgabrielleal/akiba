@@ -21,6 +21,8 @@ class Onair extends Model
         'icon',
         'allows_song_requests',
         'song_requests_total',
+        'peak_listeners',
+        'peak_listeners_at',
     ];
 
     protected $casts = [
@@ -28,6 +30,8 @@ class Onair extends Model
         'in_air' => 'boolean',
         'phrase' => 'array',
         'song_requests_total' => 'integer',
+        'peak_listeners' => 'integer',
+        'peak_listeners_at' => 'datetime',
     ];
 
     protected $hidden = [

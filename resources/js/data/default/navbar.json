@@ -52,7 +52,7 @@
       "name": "Relatórios",
       "icon": "/svg/logs.svg",
       "permission": "report.module.view",
-      "address": "/panel/relatorios"
+      "address": "/panel/reports"
     }
   ],
   "public": [

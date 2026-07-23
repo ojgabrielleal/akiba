@@ -90,6 +90,10 @@
             button: "size-8",
             icon: "size-4",
         },
+        navbar: {
+            button: "size-[33px]",
+            icon: "size-[16.5px]",
+        },
         lg: {
             button: "size-10",
             icon: "size-5",

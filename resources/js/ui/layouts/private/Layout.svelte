@@ -19,7 +19,7 @@
 <header class="mb-8 lg:mb-20 mt-5 lg:mt-10">
     <Navbar />
 </header>
-<main id="conteudo-principal" class="min-w-0 w-full max-w-full overflow-x-hidden">
+<main id="conteudo-principal" class="min-w-0 w-full max-w-full overflow-x-clip">
     <slot />
 </main>
 <footer>

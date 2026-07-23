@@ -22,6 +22,10 @@ class OnairFilter
                 fn (Builder $query, array $modes) => $query->whereIn('execution_mode', $modes)
             )
             ->when(
+                $filters['with_audience_peak'] ?? false,
+                fn (Builder $query) => $query->where('peak_listeners', '>', 0)
+            )
+            ->when(
                 $filters['with'] ?? null,
                 fn (Builder $query, array|string $relations) => $query->with($relations)
             )

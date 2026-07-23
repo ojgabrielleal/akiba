@@ -28,20 +28,20 @@
     chosenPhrase = generatePhrases();
 </script>
 
-<section class="w-full hidden lg:block mb-15 bg-[url('https://i.ibb.co/Tdhkkyg/3.png'),var(--gradient-blue-ocean-cerulean)] bg-contain bg-right bg-no-repeat">
-    <div class="h-30 container-page flex items-center gap-5 relative">
+<section class="mb-15 hidden w-full bg-[url('https://i.ibb.co/Tdhkkyg/3.png'),var(--gradient-blue-ocean-cerulean)] bg-contain bg-right bg-no-repeat lg:block">
+    <div class="container-page relative flex h-30 min-w-0 items-center gap-4 xl:gap-5">
         <img
             src="/img/defaults/character.webp"
             alt="Avatar"
             class="w-40 h-40 absolute bottom-0"
         />
-        <h2 class="font-noto-sans font-extrabold uppercase italic text-3xl text-suspense-aurora ml-50">
+        <h2 class="ml-44 min-w-0 flex-1 truncate font-noto-sans text-2xl font-extrabold uppercase italic text-suspense-aurora xl:ml-50 xl:text-3xl">
             {chosenPhrase}
         </h2>
-        <div class="flex gap-2 absolute right-0">
+        <div class="flex shrink-0 gap-2">
             {#if can.event.create}
                 <Link
-                    class="w-30 bg-blue-marinho p-2 rounded-md flex justify-center items-center flex-col gap-2 font-noto-sans font-extrabold text-[0.7rem] text-orange-citric text-center uppercase italic"
+                    class="flex w-24 flex-col items-center justify-center gap-2 rounded-md bg-blue-marinho p-2 text-center font-noto-sans text-[0.7rem] font-extrabold uppercase italic text-orange-citric xl:w-30"
                     href="/panel/post"
                 >
                     <img
@@ -55,7 +55,7 @@
             {/if}
             {#if can.activity.create}
                 <Link
-                    class="w-30 bg-blue-marinho p-2 rounded-md flex justify-center items-center flex-col gap-2 font-noto-sans font-extrabold text-[0.7rem] text-orange-citric text-center uppercase italic"
+                    class="flex w-24 flex-col items-center justify-center gap-2 rounded-md bg-blue-marinho p-2 text-center font-noto-sans text-[0.7rem] font-extrabold uppercase italic text-orange-citric xl:w-30"
                     href="/panel/administration"
                 >
                     <img
@@ -69,7 +69,7 @@
             {/if}
             {#if can.repository.create}
                 <Link
-                    class="w-30 bg-blue-marinho p-2 rounded-md flex justify-center items-center flex-col gap-2 font-noto-sans font-extrabold text-[0.7rem] text-orange-citric text-center uppercase italic"
+                    class="flex w-24 flex-col items-center justify-center gap-2 rounded-md bg-blue-marinho p-2 text-center font-noto-sans text-[0.7rem] font-extrabold uppercase italic text-orange-citric xl:w-30"
                     href="/panel/repository"
                 >
                     <img
@@ -83,7 +83,7 @@
             {/if}
             {#if can.locution.start}
                 <Link
-                    class="w-30 bg-blue-marinho p-2 rounded-md flex justify-center items-center flex-col gap-2 font-noto-sans font-extrabold text-[0.7rem] text-orange-citric text-center uppercase italic"
+                    class="flex w-24 flex-col items-center justify-center gap-2 rounded-md bg-blue-marinho p-2 text-center font-noto-sans text-[0.7rem] font-extrabold uppercase italic text-orange-citric xl:w-30"
                     href="/panel/locution"
                 >
                     <img
@@ -97,7 +97,7 @@
             {/if}
             {#if can.post.create}
                 <Link
-                    class="w-30 bg-blue-marinho p-2 rounded-md flex justify-center items-center flex-col gap-2 font-noto-sans font-extrabold text-[0.7rem] text-orange-citric text-center uppercase italic"
+                    class="flex w-24 flex-col items-center justify-center gap-2 rounded-md bg-blue-marinho p-2 text-center font-noto-sans text-[0.7rem] font-extrabold uppercase italic text-orange-citric xl:w-30"
                     href="/panel/post"
                 >
                     <img

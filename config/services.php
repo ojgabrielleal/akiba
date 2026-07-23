@@ -37,6 +37,10 @@ return [
         'metadata' => env('STREAM_METADATA', 'http://cast.radioamc.com.br/api-json/Vkc1d2FrMHdNVUpRVkRBOStS'),
     ],
 
+    'audience' => [
+        'internal_station_name' => env('AUDIENCE_INTERNAL_STATION_NAME', 'Rádio Akiba'),
+    ],
+
     'discord' => [
         'webhook' => env('DISCORD_WEBHOOK_STREAM_NOTIFICATION'),
         'oauth' => [

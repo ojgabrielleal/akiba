@@ -28,6 +28,10 @@ class PostFilter
                 fn (Builder $query, User $author) => $query->authoredBy($author)
             )
             ->when(
+                $filters['module'] ?? null,
+                fn (Builder $query, string $module) => $query->forModule($module)
+            )
+            ->when(
                 $filters['with_count'] ?? null,
                 fn (Builder $query, array|string $relations) => $query->withCount($relations)
             )
@@ -51,7 +55,11 @@ class PostFilter
                 fn (Builder $query, int $limit) => $query->limit($limit)
             );
 
-        if (! $user->hasPermission('post.list') && $user->hasPermission('post.list.own')) {
+        if (
+            ! ($filters['ignore_authorization'] ?? false)
+            && ! $user->hasPermission('post.list')
+            && $user->hasPermission('post.list.own')
+        ) {
             $query->where(function (Builder $query) use ($user) {
                 $query->where('user_id', $user->id)
                     ->orWhereHas(

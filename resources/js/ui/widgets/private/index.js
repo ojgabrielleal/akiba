@@ -1,6 +1,7 @@
 // Carousels
 export { default as ActivityCarousel } from "./carousel/ActivityCarousel.svelte"
 export { default as AudienceCarousel } from "./carousel/AudienceCarousel.svelte";
+export { default as InternalRankingCarousel } from "./carousel/InternalRankingCarousel.svelte";
 export { default as RoleCarousel } from "./carousel/RoleCarousel.svelte";
 
 // Charts

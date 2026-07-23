@@ -28,6 +28,7 @@
         icon="/svg/menu.svg"
         tone="accent"
         surface="transparent"
+        size="lg"
         class="xl:hidden"
         on:click={() => (mobilenavbar = true)}
     />
@@ -41,6 +42,7 @@
                         icon={item.icon}
                         tone="neutral"
                         surface="transparent"
+                        size="navbar"
                         tooltipPosition="bottom"
                     />
                 </li>
