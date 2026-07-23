@@ -1,7 +1,9 @@
 <script>
     import { page, Link } from "@inertiajs/svelte";
+    import { onMount } from "svelte";
     import { fade, fly } from "svelte/transition";
     import { navbar } from "@/data";
+    import { listenForOAuthAction, OAuthAction } from "@/utils";
     import { Button, IconButton, Modal, Tooltip } from "@/ui/components/public";
     import ProfileForm from "../form/ProfileForm.svelte";
 
@@ -27,6 +29,13 @@
         { name: "akiba", label: "Modo Akiba", icon: "/svg/akiba.svg" },
         { name: "night", label: "Modo escuro", icon: "/svg/night.svg" },
     ];
+
+    onMount(() =>
+        listenForOAuthAction(
+            OAuthAction.OPEN_PROFILE,
+            () => profileModalRef.open(),
+        ),
+    );
 
 </script>
 
@@ -154,7 +163,7 @@
                 on:click={closeMobileNavbar}
             ></button>
             <aside
-                class="absolute right-0 top-0 h-dvh w-[min(14rem,75vw)] overflow-hidden bg-suspense-aurora shadow-2xl"
+                class="absolute right-0 top-0 h-dvh w-[min(17rem,86vw)] overflow-hidden bg-suspense-aurora shadow-2xl"
                 transition:fly={{ x: 288, duration: 300 }}
                 aria-label="Navegação mobile"
             >

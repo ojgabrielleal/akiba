@@ -6,6 +6,7 @@
         TextArea,
         TextInput,
     } from "@/ui/components/public";
+    import { OAuthAction, rememberOAuthAction } from "@/utils";
 
     export let profile;
     export let close = () => {};
@@ -14,6 +15,7 @@
     $: nickname = profile?.nickname || profile?.username || "Perfil";
 
     const syncDiscord = () => {
+        rememberOAuthAction(OAuthAction.OPEN_PROFILE);
         window.location.assign("/oauth/discord/redirect");
     };
 

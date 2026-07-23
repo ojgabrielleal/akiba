@@ -1,7 +1,11 @@
 <script>
     import { page } from "@inertiajs/svelte";
     import { onMount } from "svelte";
-    import { AuthGuard, CustomModal } from "@/ui/components/public";
+    import {
+        AdvertisementSlot,
+        AuthGuard,
+        CustomModal,
+    } from "@/ui/components/public";
     import { SongRequestForm } from "@/ui/widgets/public";
     import { player, toggleAudio, setVolume } from "@/store";
     import { locutionIcons, locutionTextures, locutionDecorations } from "@/data";
@@ -73,17 +77,17 @@
 
 <!-- Phrase Section -->
 <section class="w-full bg-contain bg-right bg-no-repeat mt-5 mb-7"  style={`background-image: url('${playerData.phrase.texture}'), var(--gradient-blue-ocean-cerulean);`}>
-    <div class="container-player h-28  relative">
-        <div class="absolute -top-7 left-0 xl:-left-25 z-10">
+    <div class="container-player h-30 relative">
+        <div class="absolute -top-8 left-0 z-10 xl:-left-28">
             <img
                 src={playerData.phrase.decoration.left}
                 alt=""
                 aria-hidden="true"
-                class="w-25"
+                class="w-28"
                 loading="lazy"
             />
         </div>
-        <div class="w-full min-w-0 h-28 pr-32 xl:pr-40 pl-20 xl:pl-0 flex items-center text-suspense-aurora text-3xl font-noto-sans font-extrabold uppercase italic">
+        <div class="w-full min-w-0 h-30 pr-32 xl:pr-40 pl-20 xl:pl-0 flex items-center text-suspense-aurora text-3xl font-noto-sans font-extrabold uppercase italic">
             <span class="block w-full overflow-hidden text-ellipsis text-left whitespace-nowrap leading-9">
                 {#each splitHighlightedText(playerData.phrase.text) as phrasePart}
                     <span class:text-orange-amber={phrasePart.highlighted}>
@@ -92,21 +96,21 @@
                 {/each}
             </span>
         </div>
-        <div class="absolute bottom-0 right-5 xl:-right-15 z-10">
+        <div class="absolute right-4 bottom-0 z-10 xl:-right-20">
             <img
                 src={playerData.phrase.icon}
                 alt=""
                 aria-hidden="true"
-                class="w-35"
+                class="w-40"
                 loading="lazy"
             />
         </div>
-        <div class="absolute -top-6 right-0 xl:-right-25 z-10">
+        <div class="absolute -top-8 right-0 z-10 xl:-right-28">
             <img
                 src={playerData.phrase.decoration.right}
                 alt=""
                 aria-hidden="true"
-                class="w-25"
+                class="w-28"
                 loading="lazy"
             />
         </div>
@@ -353,13 +357,10 @@
     }
 </style>
 
-<section class="container-player">
+<section class="container-player" aria-label="Publicidade">
     <div class="mb-10 grid grid-cols-2 gap-5">
-        <div class="bg-suspense-aurora/10 h-30 rounded-md flex justify-center items-center text-suspense-aurora/40 text-lg font-extrabold uppercase italic">
-            Anúncio
-        </div>
-        <div class="bg-suspense-aurora/10 h-30 rounded-md flex justify-center items-center text-suspense-aurora/40 text-lg font-extrabold uppercase italic">
-            Anúncio
-        </div>
+        {#each Array(2) as _, index}
+            <AdvertisementSlot mirrored={index === 1} />
+        {/each}
     </div>
 </section>

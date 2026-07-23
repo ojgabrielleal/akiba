@@ -79,7 +79,7 @@
                     <button
                         type="button"
                         aria-label={item.name}
-                        class="max-w-full flex-none cursor-pointer lg:border-r-2 lg:border-suspense-aurora/10 lg:px-10 lg:last:border-0"
+                        class="w-60 max-w-full flex-none cursor-pointer lg:box-content lg:border-r-2 lg:border-suspense-aurora/10 lg:px-10 lg:last:border-0"
                         on:click={() => { $form.program = item.uuid; }}
                     >
                         <img
@@ -87,7 +87,7 @@
                             alt=""
                             aria-hidden="true"
                             loading="lazy"
-                            class={["w-full max-w-60 transition duration-300 ease-in-out",
+                            class={["block w-full transition duration-300 ease-in-out",
                                 { "opacity-100 scale-100 drop-shadow-[0_0_20px_rgba(0,255,200,0.3)]": $form.program === item.uuid }, 
                                 { "opacity-50 scale-90": $form.program !== item.uuid }
                             ]}

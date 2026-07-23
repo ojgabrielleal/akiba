@@ -6,6 +6,7 @@ const ACTION_TTL = 5 * 60 * 1000;
 
 export const OAuthAction = Object.freeze({
     OPEN_SONG_REQUEST: "open_song_request",
+    OPEN_PROFILE: "open_profile",
 });
 
 const allowedActions = new Set(Object.values(OAuthAction));

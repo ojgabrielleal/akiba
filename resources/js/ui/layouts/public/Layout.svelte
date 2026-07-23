@@ -9,7 +9,7 @@
 </script>
 
 <FlashToaster />
-<header>
+<header class="bg-blue-night">
     <Navbar />
 </header>
 
