@@ -12,6 +12,7 @@ use App\Http\Controllers\Private\Invokes\DeactivateProgramController;
 use App\Http\Controllers\Private\Invokes\DeactivateRepositoryController;
 use App\Http\Controllers\Private\Invokes\DeactivateTaskController;
 use App\Http\Controllers\Private\Invokes\DeactivateUserController;
+use App\Http\Controllers\Private\Invokes\DestroyInactiveItemController;
 use App\Http\Controllers\Private\Invokes\FinishLocutionController;
 use App\Http\Controllers\Private\Invokes\LoginController;
 
@@ -182,6 +183,8 @@ Route::prefix('panel')->middleware(['inertia'])->group(function () {
             Route::get('', [InactiveItemsPageController::class, 'render'])->name('panel.inactive');
             Route::patch('{type}/{uuid}/reactivate', ReactivateInactiveItemController::class)
                 ->middleware('can:inactive.restore');
+            Route::delete('{type}/{uuid}', DestroyInactiveItemController::class)
+                ->middleware('can:inactive.delete');
         });
         Route::prefix('profile')->controller(ProfilePageController::class)->group(function () {
             Route::patch('{user:uuid}', [ProfileController::class, 'update']);

@@ -8,6 +8,7 @@
         EmptyState,
         GridList,
         IconButton,
+        Modal,
         Section,
     } from "@/ui/components/private";
     import { hasPermission, resolvePlaceholderImage } from "@/utils";
@@ -16,7 +17,11 @@
 
     let selectedType = "all";
     let restoring = null;
+    let deleting = false;
+    let selectedForDeletion = null;
+    let deleteModal;
     const canRestore = hasPermission("inactive.restore");
+    const canDelete = hasPermission("inactive.delete");
 
     const types = [
         { value: "all", label: "Todos" },
@@ -55,7 +60,65 @@
             },
         });
     };
+
+    const confirmDeletion = (item) => {
+        selectedForDeletion = item;
+        deleteModal.open();
+    };
+
+    const cascadeWarning = (type) => ({
+        user: "Também serão excluídos os vínculos de cargos e os programas, conteúdos, podcasts, enquetes, tarefas, atividades e calendários pertencentes a este usuário.",
+        program: "Também serão excluídos os horários, agendamentos, transmissões, picos de audiência e pedidos musicais vinculados a este programa.",
+        post: "Também serão excluídas as reações, referências, categorias e opiniões vinculadas a este conteúdo.",
+        poll: "Também serão excluídas as opções e todos os votos vinculados a esta enquete.",
+    })[type] ?? null;
+
+    const destroy = (close) => {
+        if (!selectedForDeletion || deleting) return;
+
+        deleting = true;
+
+        router.delete(`/panel/inactive/${selectedForDeletion.type}/${selectedForDeletion.uuid}`, {
+            preserveScroll: true,
+            onSuccess: () => {
+                close();
+                selectedForDeletion = null;
+            },
+            onFinish: () => {
+                deleting = false;
+            },
+        });
+    };
 </script>
+
+<Modal bind:this={deleteModal} title="Excluir definitivamente">
+    <div slot="content" let:close class="font-noto-sans">
+        <div class="mb-5 rounded-md border border-red-crimson/30 bg-red-crimson/10 p-4 text-sm text-blue-marinho">
+            <p class="font-extrabold uppercase">Esta ação não pode ser desfeita.</p>
+            {#if selectedForDeletion && cascadeWarning(selectedForDeletion.type)}
+                <p class="mt-2">
+                    {cascadeWarning(selectedForDeletion.type)}
+                </p>
+            {/if}
+        </div>
+
+        {#if selectedForDeletion}
+            <p class="mb-5 text-center text-sm text-blue-marinho">
+                Deseja excluir permanentemente
+                <strong>{selectedForDeletion.title}</strong>?
+            </p>
+        {/if}
+
+        <div class="flex justify-end gap-2">
+            <Button variant="secondary" on:click={close} disabled={deleting}>
+                Cancelar
+            </Button>
+            <Button variant="danger" loading={deleting} on:click={() => destroy(close)}>
+                Excluir definitivamente
+            </Button>
+        </div>
+    </div>
+</Modal>
 
 <Section {title}>
     <div class="mb-6 flex flex-col gap-4">
@@ -101,16 +164,26 @@
                         {/if}
                     </div>
 
-                    {#if canRestore}
-                        <IconButton
-                            icon="/svg/return.svg"
-                            label={`Reativar ${item.title}`}
-                            tone="accent"
-                            surface="dark"
-                            disabled={restoring === item.uuid}
-                            on:click={() => reactivate(item)}
-                        />
-                    {/if}
+                    <div class="flex shrink-0 gap-2">
+                        {#if canRestore}
+                            <IconButton
+                                icon="/svg/return.svg"
+                                label={`Reativar ${item.title}`}
+                                tone="accent"
+                                surface="dark"
+                                disabled={restoring === item.uuid}
+                                on:click={() => reactivate(item)}
+                            />
+                        {/if}
+                        {#if canDelete}
+                            <IconButton
+                                variant="trash"
+                                label={`Excluir definitivamente ${item.title}`}
+                                surface="dark"
+                                on:click={() => confirmDeletion(item)}
+                            />
+                        {/if}
+                    </div>
                 </li>
             {/each}
         </GridList>

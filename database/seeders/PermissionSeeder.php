@@ -36,6 +36,7 @@ class PermissionSeeder extends Seeder
             ['name' => 'report.module.view', 'label' => '[Relatórios] Acesso ao módulo'],
             ['name' => 'inactive.module.view', 'label' => '[Itens desativados] Acesso ao módulo'],
             ['name' => 'inactive.restore', 'label' => '[Itens desativados] Reativar'],
+            ['name' => 'inactive.delete', 'label' => '[Itens desativados] Excluir definitivamente'],
 
             /*
             |--------------------------------------------------------------------------

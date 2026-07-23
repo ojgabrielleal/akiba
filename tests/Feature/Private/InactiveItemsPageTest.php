@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Private;
 
+use App\Models\Onair;
 use App\Models\Permission;
 use App\Models\Post;
 use App\Models\Program;
@@ -86,6 +87,26 @@ class InactiveItemsPageTest extends TestCase
             ->assertForbidden();
 
         $this->assertFalse($program->fresh()->is_active);
+    }
+
+    public function test_user_can_permanently_delete_an_inactive_item(): void
+    {
+        $user = $this->userWithPermissions([
+            'inactive.module.view',
+            'inactive.delete',
+        ]);
+        $program = Program::factory()
+            ->for(User::factory(), 'host')
+            ->create(['is_active' => false]);
+        $onair = Onair::factory()->for($program, 'program')->create();
+
+        $this
+            ->actingAs($user)
+            ->delete("/panel/inactive/program/{$program->uuid}")
+            ->assertRedirect();
+
+        $this->assertModelMissing($program);
+        $this->assertModelMissing($onair);
     }
 
     private function userWithPermissions(array $permissionNames): User

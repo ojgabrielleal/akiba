@@ -42,6 +42,7 @@ class AppServiceProvider extends ServiceProvider
             'report.module.view',
             'inactive.module.view',
             'inactive.restore',
+            'inactive.delete',
             'locution.start',
             'locution.finish',
         ];
