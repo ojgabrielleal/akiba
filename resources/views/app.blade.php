@@ -12,9 +12,6 @@
 </head>
 <body>
     @inertia
-    <audio id="audio">
-        <source src="/api/stream" type="audio/mpeg">
-    </audio>
 
     @production
         <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>

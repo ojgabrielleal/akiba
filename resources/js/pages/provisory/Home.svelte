@@ -1,9 +1,13 @@
 <script>
     import { onMount } from "svelte";
-    import { usePoll } from "@inertiajs/svelte";
+    import { page, usePoll } from "@inertiajs/svelte";
     import { Toaster } from "svelte-hot-french-toast";
     import { Meta } from "@/config";
+    import { syncMediaSessionMetadata } from "@/store";
     import { MainPlayer, MobilePlayer } from "@/ui/widgets/public";
+
+    $: ({ onair: { data: [air] }, stream } = $page.props);
+    $: syncMediaSessionMetadata(air, stream);
 
     usePoll(10 * 1000, {
         only: ["onair", "stream"],

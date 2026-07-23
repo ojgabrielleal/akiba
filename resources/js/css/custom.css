@@ -21,8 +21,7 @@
  }
 
  /* Keep long labels and media from creating page-level horizontal scroll. */
- html,
- body {
+ html, body {
      width: 100%;
      max-width: 100%;
      overflow-x: hidden;
@@ -37,15 +36,12 @@
      overflow-x: hidden;
  }
 
- img,
- video,
- canvas,
- svg {
+ img, video, canvas, svg {
      max-width: 100%;
  }
 
- @media (max-width: 24rem) {
+ @media (max-width: 40rem) {
      .container-page {
-         width: calc(100% - 1.25rem);
+         width: calc(100% - 4rem);
      }
  }

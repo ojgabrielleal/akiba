@@ -1,5 +1,7 @@
 <script>
+    import { page } from "@inertiajs/svelte";
     import { Meta } from "@/config";
+    import { syncMediaSessionMetadata } from "@/store";
     import { Layout } from "@/ui/layouts/public";
     import {
         MainPlayer,
@@ -9,6 +11,9 @@
         PostGrid,
         CalendarGrid,
     } from "@/ui/widgets/public";
+
+    $: ({ onair: { data: [air] }, stream } = $page.props);
+    $: syncMediaSessionMetadata(air, stream);
 </script>
 
 <Meta />

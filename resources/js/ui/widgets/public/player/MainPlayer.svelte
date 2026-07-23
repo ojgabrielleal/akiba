@@ -10,11 +10,11 @@
     $: ({ onair: { data: [air] }, stream } = $page.props);
 
     let modalRef;
-
     onMount(() => listenForOAuth(() => modalRef.open()));
 
     $: playerData = {
         program: {
+            name: air.program.name,
             image: air.program.image,
         },
         host: {

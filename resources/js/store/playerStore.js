@@ -1,77 +1,173 @@
+import { get, writable } from "svelte/store";
 
-import { writable, get } from "svelte/store";
-import axios from "axios";
+const DEFAULT_VOLUME = 0.03;
+const VOLUME_STORAGE_KEY = "akiba-player-volume";
 
-export const player = writable({
-    playing: false,
-    volume: 0.03,
-});
+const clampVolume = (volume) => Math.min(1, Math.max(0, Number(volume)));
 
-let audio = document.getElementById('audio');
+const readStoredVolume = () => {
+    if (typeof localStorage === "undefined") return DEFAULT_VOLUME;
 
-const updateMetadata = async () => {
     try {
-        const { data: response } = await axios.get('/api/stream/metadata');
-        const info = response.data[0];
+        const storedValue = localStorage.getItem(VOLUME_STORAGE_KEY);
+        if (storedValue === null) return DEFAULT_VOLUME;
 
-        if (info) {
-            navigator.mediaSession.metadata = new MediaMetadata({
-                title: info.current_song?.music,
-                artist: info.program.name + " - " + info.host.name,
-                album: "Rede Akiba - O Paraíso dos Otakus",
-                artwork: [
-                    { src: info.current_song?.cover, sizes: '192x192', type: 'image/png' },
-                    { src: info.current_song?.cover, sizes: '512x512', type: 'image/png' }
-                ]
-            });
-        }
-    } catch (e) {
-        console.error("Erro ao buscar metadados do streaming para o media session");
+        const storedVolume = Number(storedValue);
+        return Number.isFinite(storedVolume) ? clampVolume(storedVolume) : DEFAULT_VOLUME;
+    } catch {
+        return DEFAULT_VOLUME;
     }
-}
+};
+
+const initialState = {
+    playing: false,
+    loading: false,
+    volume: readStoredVolume(),
+    muted: false,
+    error: null,
+};
+
+export const player = writable(initialState);
+
+let audio;
+let listenersAttached = false;
+
+const getAudio = () => {
+    if (typeof Audio === "undefined") return null;
+
+    if (!audio) {
+        audio = new Audio("/api/stream");
+        audio.preload = "none";
+    }
+
+    if (audio && !listenersAttached) {
+        audio.addEventListener("pause", handlePause);
+        audio.addEventListener("waiting", handleWaiting);
+        audio.addEventListener("playing", handlePlaying);
+        audio.addEventListener("error", handleError);
+        listenersAttached = true;
+
+        const volume = readStoredVolume();
+        audio.volume = volume;
+        player.update((state) => ({ ...state, volume }));
+    }
+
+    return audio;
+};
+
+const handlePause = () => {
+    player.update((state) => ({ ...state, playing: false, loading: false }));
+};
+
+const handleWaiting = () => {
+    player.update((state) => ({ ...state, loading: true }));
+};
+
+const handlePlaying = () => {
+    player.update((state) => ({ ...state, playing: true, loading: false, error: null }));
+};
+
+const handleError = () => {
+    player.update((state) => ({
+        ...state,
+        playing: false,
+        loading: false,
+        error: "Não foi possível reproduzir a rádio.",
+    }));
+};
 
 const setupMediaSession = () => {
-    navigator.mediaSession.setActionHandler('pause', () => toggleAudio());
-    navigator.mediaSession.setActionHandler('play', () => toggleAudio());
-
-    let interval;
-
-    if (!interval) {
-        updateMetadata();
-        interval = setInterval(updateMetadata, 60 * 1000);
+    if (typeof navigator === "undefined" || !("mediaSession" in navigator)) {
+        return;
     }
-}
 
-export const toggleAudio = async () => {
-    let isPlaying = get(player).playing;
+    navigator.mediaSession.setActionHandler("pause", pauseAudio);
+    navigator.mediaSession.setActionHandler("play", playAudio);
+};
 
-    if (isPlaying) {
+export const syncMediaSessionMetadata = (air, stream) => {
+    if (typeof navigator === "undefined" || !("mediaSession" in navigator) || typeof MediaMetadata === "undefined" || !air || !stream) {
+        return;
+    }
+
+    const cover = stream.current_song?.cover;
+    navigator.mediaSession.metadata = new MediaMetadata({
+        title: stream.current_song?.music || "Rede Akiba",
+        artist: [air.program?.name, air.program?.host?.nickname].filter(Boolean).join(" - "),
+        album: "Rede Akiba - O Paraíso dos Otakus",
+        artwork: cover ? [{ src: cover, sizes: "192x192" }, { src: cover, sizes: "512x512" }] : [],
+    });
+};
+
+export const playAudio = async () => {
+    const element = getAudio();
+    if (!element) return;
+
+    player.update((state) => ({ ...state, loading: true, error: null }));
+
+    try {
+        await element.play();
+        setupMediaSession();
+    } catch {
         player.update((state) => ({
             ...state,
-            playing: false
+            playing: false,
+            loading: false,
+            error: "O navegador bloqueou ou não conseguiu iniciar a rádio.",
         }));
-
-        audio.pause();
-    } else {
-        player.update((state) => ({
-            ...state,
-            playing: true
-        }));
-
-        audio.volume = get(player).volume;
-        await audio.play();
-
-        if('mediaSession' in navigator){
-            setupMediaSession();
-        }
     }
-}
+};
+
+export const pauseAudio = () => {
+    getAudio()?.pause();
+};
+
+export const toggleAudio = () => {
+    return get(player).playing ? pauseAudio() : playAudio();
+};
 
 export const setVolume = (volume) => {
-    audio.volume = volume;
+    const normalizedVolume = clampVolume(volume);
+    const element = getAudio();
+
+    if (element) {
+        element.volume = normalizedVolume;
+        element.muted = false;
+    }
+
+    if (typeof localStorage !== "undefined") {
+        localStorage.setItem(VOLUME_STORAGE_KEY, String());
+    }
 
     player.update((state) => ({
         ...state,
-        volume: volume
+        volume: normalizedVolume,
+        muted: false,
     }));
-}
+};
+
+export const toggleMute = () => {
+    const element = getAudio();
+
+    if (!element) {
+        return;
+    }
+
+    element.muted = !element.muted;
+    player.update((state) => ({ ...state, muted: element.muted }));
+};
+
+export const destroyPlayer = () => {
+    if (audio && listenersAttached) {
+        audio.removeEventListener("pause", handlePause);
+        audio.removeEventListener("waiting", handleWaiting);
+        audio.removeEventListener("playing", handlePlaying);
+        audio.removeEventListener("error", handleError);
+        listenersAttached = false;
+    }
+
+    audio?.pause();
+    audio?.removeAttribute("src");
+    audio?.load();
+    audio = undefined;
+};

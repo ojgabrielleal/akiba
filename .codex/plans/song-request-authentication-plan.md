@@ -1,5 +1,7 @@
 # Plano: autenticação para pedidos musicais
 
+Categoria: plano de implementação.
+
 ## Objetivo
 
 Quando os pedidos musicais estiverem abertos, visitantes não autenticados devem ser convidados a entrar com o Discord antes de acessar o formulário. Visitantes autenticados continuam normalmente para o preenchimento e envio do pedido.
@@ -134,4 +136,3 @@ Como melhoria de experiência, o retorno poderá incluir um indicador para reabr
 4. Criar o estado de login no `SongRequestForm`.
 5. Adicionar os testes de backend.
 6. Executar o build e validar manualmente desktop e mobile.
-
