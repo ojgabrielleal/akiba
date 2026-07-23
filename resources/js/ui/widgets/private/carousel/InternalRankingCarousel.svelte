@@ -65,7 +65,7 @@
                 key: "maior-interacao",
                 title: "Maior interação",
                 name: data.maior_interacao.titulo,
-                image: resolvePlaceholderImage(data.maior_interacao.imagem, "placeholder"),
+                image: resolvePlaceholderImage(data.maior_interacao.capa, "placeholder"),
                 imageAlt: `Imagem da matéria ${data.maior_interacao.titulo}`,
                 imageClass: "object-cover",
                 value: data.maior_interacao.total,

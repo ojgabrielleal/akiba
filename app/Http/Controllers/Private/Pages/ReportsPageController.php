@@ -165,7 +165,7 @@ class ReportsPageController extends Controller
         return [
             'uuid' => $post->uuid,
             'titulo' => $post->title,
-            'imagem' => $post->image,
+            'capa' => $post->cover,
             'total' => $post->reactions_count,
         ];
     }

@@ -15,5 +15,5 @@
     <AudienceCarousel title="Concorrência" />
     <AudienceHistoryChart title="Histórico de audiência" />
     <InternalRankingCarousel title="Ranking interno" />
-    <ProgramHistoryTable title="Histórico de transmissões" />
+    <ProgramHistoryTable title="Histórico de programação" />
 </Layout>
