@@ -39,12 +39,12 @@
     <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div
         transition:fly={{ x: 400, duration: 300 }}
-        class="fixed inset-0 z-100 h-dvh max-h-dvh w-screen bg-black/1 backdrop-blur-xs"
+        class="fixed inset-0 z-100 h-dvh max-h-dvh w-screen overflow-hidden bg-black/1 backdrop-blur-xs"
         role="presentation"
         on:click={close}
     >
         <div
-            class="float-right flex h-dvh max-h-dvh w-[min(24rem,100vw)] flex-col bg-suspense-aurora"
+            class="absolute inset-y-0 right-0 flex h-full max-h-full w-[min(24rem,100vw)] flex-col overflow-hidden bg-suspense-aurora"
             role="dialog"
             aria-modal="true"
             aria-labelledby={titleId}
