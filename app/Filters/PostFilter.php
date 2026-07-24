@@ -40,6 +40,25 @@ class PostFilter
                 fn (Builder $query, array|string $relations) => $query->with($relations)
             )
             ->when(
+                $filters['viewed_since'] ?? null,
+                fn (Builder $query, $viewedSince) => $query
+                    ->whereHas(
+                        'views',
+                        fn (Builder $viewsQuery) => $viewsQuery->where(
+                            'created_at',
+                            '>=',
+                            $viewedSince
+                        )
+                    )
+                    ->withCount([
+                        'views' => fn (Builder $viewsQuery) => $viewsQuery->where(
+                            'created_at',
+                            '>=',
+                            $viewedSince
+                        ),
+                    ])
+            )
+            ->when(
                 $filters['search'] ?? null,
                 fn (Builder $query, string $search) => $query->whereLike(
                     'title',
