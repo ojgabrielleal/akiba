@@ -138,7 +138,7 @@
                     src={resolvePlaceholderImage(playerData.currentSong.cover, "placeholder")}
                     alt=""
                     aria-hidden="true"
-                    class="size-11 shrink-0 rounded-lg object-cover opacity-80"
+                    class="size-11 shrink-0 rounded-lg object-cover opacity-80 transition duration-300 ease-out hover:scale-105 motion-reduce:transform-none motion-reduce:transition-none"
                     loading="lazy"
                 />
                 <div class="min-w-0">
@@ -158,7 +158,7 @@
                     aria-busy={$player.loading}
                     disabled={$player.loading && !$player.playing}
                     class={[
-                        "relative size-16 rounded-full flex items-center justify-center active:scale-95 transition-transform shadow-xl",
+                        "relative size-16 rounded-full flex items-center justify-center shadow-xl transition duration-200 ease-out hover:scale-105 active:scale-95 motion-reduce:transform-none motion-reduce:transition-none",
                         { "bg-orange-citric shadow-orange-citric/20": !$player.playing },
                         { "bg-blue-skywave shadow-blue-skywave/20": $player.playing },
                         { "cursor-wait": $player.loading },
@@ -282,7 +282,7 @@
                         src={resolvePlaceholderImage(playerData.currentSong.cover, "placeholder")}
                         alt=""
                         aria-hidden="true"
-                        class="size-14 shrink-0 rounded-xl object-cover opacity-80"
+                        class="size-14 shrink-0 rounded-xl object-cover opacity-80 transition duration-300 ease-out hover:scale-105 motion-reduce:transform-none motion-reduce:transition-none"
                         loading="lazy"
                     />
                     <div class="min-w-0">
@@ -302,7 +302,7 @@
                         aria-busy={$player.loading}
                         disabled={$player.loading && !$player.playing}
                         class={[
-                            "relative size-18 rounded-full flex items-center justify-center active:scale-95 transition-transform shadow-xl",
+                            "relative size-18 rounded-full flex items-center justify-center shadow-xl transition duration-200 ease-out hover:scale-105 active:scale-95 motion-reduce:transform-none motion-reduce:transition-none",
                             { "bg-orange-citric shadow-orange-citric/20": !$player.playing },
                             { "bg-blue-skywave shadow-blue-skywave/20": $player.playing },
                             { "cursor-wait": $player.loading },

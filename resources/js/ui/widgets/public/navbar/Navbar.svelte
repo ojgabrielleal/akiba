@@ -41,11 +41,11 @@
 
 <nav aria-label="Navegação principal">
     <div class="container-page flex items-center justify-between gap-4 pt-10 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto]">
-        <Link href="/site" class="w-52 shrink-0" aria-label="Página inicial">
+        <Link href="/site" class="group/logo w-52 shrink-0 focus-visible:outline-none" aria-label="Página inicial">
             <img
                 src="/img/brand/logo.webp"
                 alt="Akiba Station"
-                class="w-full"
+                class="w-full transition duration-300 ease-out group-hover/logo:scale-[1.02] group-focus-visible/logo:scale-[1.02] motion-reduce:transform-none motion-reduce:transition-none"
             />
         </Link>
         <ul class="mt-1 hidden w-full min-w-0 items-center justify-center lg:flex lg:justify-self-center">
@@ -96,7 +96,7 @@
                     <button
                         type="button"
                         aria-label={`Editar perfil de ${nickname}`}
-                        class="ml-1 flex size-10 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-full border-2 border-suspense-aurora bg-suspense-aurora shadow"
+                        class="ml-1 flex size-10 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-full border-2 border-suspense-aurora bg-suspense-aurora shadow transition duration-200 ease-out hover:-translate-y-0.5 hover:shadow-lg focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none"
                         on:click={() => profileModalRef.open()}
                     >
                         <img
@@ -124,7 +124,7 @@
                         aria-label={item.label}
                         aria-pressed={theme === item.name}
                         class={[
-                            "flex size-[1.375rem] cursor-pointer items-center justify-center rounded-full transition",
+                            "flex size-[1.375rem] cursor-pointer items-center justify-center rounded-full transition duration-200 ease-out hover:scale-110 active:scale-95 motion-reduce:transform-none motion-reduce:transition-none",
                             { "bg-blue-night": theme === item.name },
                         ]}
                         on:click={() => (theme = item.name)}
@@ -174,7 +174,7 @@
                                 <Link
                                     href={item.address}
                                     aria-label={item.name}
-                                    class="group/item flex min-h-9 items-center gap-2.5 rounded-md px-2 py-1 font-noto-sans text-[0.8125rem] font-extrabold uppercase italic text-blue-night transition hover:bg-orange-citric/10 hover:text-orange-copper"
+                                    class="group/item flex min-h-9 items-center gap-2.5 rounded-md px-2 py-1 font-noto-sans text-[0.8125rem] font-extrabold uppercase italic text-blue-night transition duration-200 hover:translate-x-1 hover:bg-orange-citric/10 hover:text-orange-copper motion-reduce:transform-none motion-reduce:transition-none"
                                     on:click={closeMobileNavbar}
                                 >
                                     <img
@@ -244,7 +244,7 @@
                                         aria-label={item.label}
                                         aria-pressed={theme === item.name}
                                         class={[
-                                            "flex size-6 items-center justify-center rounded-full",
+                                            "flex size-6 items-center justify-center rounded-full transition duration-200 ease-out hover:scale-110 active:scale-95 motion-reduce:transform-none motion-reduce:transition-none",
                                             { "bg-blue-night": theme === item.name },
                                         ]}
                                         on:click={() => (theme = item.name)}

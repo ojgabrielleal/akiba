@@ -22,7 +22,7 @@
                                 src={resolvePlaceholderImage(item.image, "placeholder")}
                                 alt=""
                                 aria-hidden="true"
-                                class="absolute right-0 bottom-0 z-20 h-[12.75rem] w-[55%] max-w-none object-contain object-right-bottom"
+                                class="absolute right-0 bottom-0 z-20 h-[12.75rem] w-[55%] max-w-none origin-bottom-right object-contain object-right-bottom transition duration-300 ease-out group-hover:scale-[1.03] group-focus-visible:scale-[1.03] motion-reduce:transform-none motion-reduce:transition-none"
                             />
                         </article>
                     </Link>

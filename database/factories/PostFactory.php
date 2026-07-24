@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\User;
+use Database\Factories\Concerns\HasFakeImages;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -10,6 +11,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class PostFactory extends Factory
 {
+    use HasFakeImages;
+
     /**
      * Define the model's default state.
      *
@@ -23,7 +26,7 @@ class PostFactory extends Factory
             'image' => '/img/placeholders/avatar.webp',
             'title' => fake()->text(),
             'content' => fake()->paragraph(),
-            'cover' => '/img/placeholders/avatar.webp',
+            'cover' => $this->fakeImageUrl(640, 360),
             'status' => fake()->randomElement(['published', 'revision', 'draft']),
             'module' => 'post',
             'metadata' => null,

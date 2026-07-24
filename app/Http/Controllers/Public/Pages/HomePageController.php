@@ -36,6 +36,17 @@ class HomePageController extends Controller
                     'ignore_authorization' => true,
                 ])
             )->format('featured'),
+            'latestReviews' => PostResource::collection(
+                $this->postFilter->apply(request()->user(), [
+                    'active' => true,
+                    'status' => 'published',
+                    'module' => 'review',
+                    'order_by' => 'created_at',
+                    'order_direction' => 'desc',
+                    'limit' => 5,
+                    'ignore_authorization' => true,
+                ])
+            )->format('featured'),
         ]);
     }
 }

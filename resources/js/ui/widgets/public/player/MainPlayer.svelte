@@ -178,7 +178,7 @@
                     src={resolvePlaceholderImage(playerData.current_song.cover, "placeholder")}
                     alt=""
                     aria-hidden="true"
-                    class="rounded-md"
+                    class="rounded-md transition duration-300 ease-out hover:scale-[1.03] motion-reduce:transform-none motion-reduce:transition-none"
                     loading="lazy"
                 />
             </div>
@@ -279,7 +279,7 @@
                 aria-label={$player.loading ? "Carregando rádio" : $player.playing ? "Pausar radio" : "Tocar radio"}
                 aria-busy={$player.loading}
                 disabled={$player.loading && !$player.playing}
-                class={["cursor-pointer shrink-0 w-14 h-14 rounded-full flex justify-center items-center",
+                class={["cursor-pointer shrink-0 w-14 h-14 rounded-full flex justify-center items-center shadow-lg transition duration-200 ease-out hover:scale-105 active:scale-95 motion-reduce:transform-none motion-reduce:transition-none",
                     { "bg-orange-citric": !$player.playing },
                     { "bg-blue-skywave": $player.playing },
                     { "cursor-wait": $player.loading },
