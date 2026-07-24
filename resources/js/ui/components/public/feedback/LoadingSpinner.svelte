@@ -15,6 +15,7 @@
         accent: "border-orange-citric/25 border-t-orange-citric",
         primary: "border-blue-skywave/25 border-t-blue-skywave",
         light: "border-suspense-aurora/25 border-t-suspense-aurora",
+        dark: "border-black/25 border-t-black",
     };
 
     $: classes = [

@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use Database\Factories\Concerns\HasFakeImages;
+use Database\Factories\Concerns\HasLocutionIcons;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class OnairFactory extends Factory
 {
-    use HasFakeImages;
+    use HasLocutionIcons;
 
     /**
      * Define the model's default state.
@@ -25,7 +25,7 @@ class OnairFactory extends Factory
             'in_air' => true,
             'phrase' => [
                 'text' => fake()->sentence(),
-                'icon' => $this->fakeImageUrl(),
+                'icon' => $this->fakeLocutionIcon(),
                 'decoration' => null,
                 'texture' => null,
             ],

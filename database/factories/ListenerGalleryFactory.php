@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use App\Models\User;
-use Database\Factories\Concerns\HasFakeImages;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -11,8 +10,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class ListenerGalleryFactory extends Factory
 {
-    use HasFakeImages;
-
     /**
      * Define the model's default state.
      *
@@ -22,7 +19,7 @@ class ListenerGalleryFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'image' => $this->fakeImageUrl(),
+            'image' => '/img/placeholders/avatar.webp',
             'caption' => fake()->sentence(),
             'listener_name' => fake()->name(),
         ];

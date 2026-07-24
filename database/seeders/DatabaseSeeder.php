@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             PostSeeder::class,
+            PageViewSeeder::class,
         ]);
     }
 

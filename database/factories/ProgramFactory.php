@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use Database\Factories\Concerns\HasFakeImages;
+use Database\Factories\Concerns\HasLocutionIcons;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class ProgramFactory extends Factory
 {
-    use HasFakeImages;
+    use HasLocutionIcons;
 
     /**
      * Define the model's default state.
@@ -97,19 +97,19 @@ class ProgramFactory extends Factory
         return [
             [
                 'text' => fake()->sentence(),
-                'icon' => $this->fakeImageUrl(),
+                'icon' => $this->fakeLocutionIcon(),
                 'decoration' => 'default',
                 'texture' => null,
             ],
             [
                 'text' => fake()->sentence(),
-                'icon' => $this->fakeImageUrl(),
+                'icon' => $this->fakeLocutionIcon(),
                 'decoration' => 'default',
                 'texture' => null,
             ],
             [
                 'text' => fake()->sentence(),
-                'icon' => $this->fakeImageUrl(),
+                'icon' => $this->fakeLocutionIcon(),
                 'decoration' => 'default',
                 'texture' => null,
             ],

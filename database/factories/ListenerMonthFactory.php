@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use App\Models\OAuthAccount;
-use Database\Factories\Concerns\HasFakeImages;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -11,8 +10,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class ListenerMonthFactory extends Factory
 {
-    use HasFakeImages;
-
     /**
      * Define the model's default state.
      *
@@ -24,13 +21,13 @@ class ListenerMonthFactory extends Factory
             'oauth_account_id' => OAuthAccount::factory(),
             'favorite_program' => [
                 'name' => fake()->name(),
-                'image' => $this->fakeImageUrl(),
+                'image' => '/img/placeholders/avatar.webp',
             ],
             'favorite_music' => [
                 'name' => fake()->name(),
                 'artist' => fake()->name(),
                 'production' => fake()->name(),
-                'image' => $this->fakeImageUrl(),
+                'image' => '/img/placeholders/avatar.webp',
             ],
             'requests_total' => fake()->randomNumber(),
         ];
