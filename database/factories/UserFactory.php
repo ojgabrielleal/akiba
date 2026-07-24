@@ -7,7 +7,6 @@ use App\Models\User;
 use App\Models\UserFavorite;
 use App\Models\UserPreference;
 use App\Models\UserSocial;
-use Database\Factories\Concerns\HasFakeImages;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -15,8 +14,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class UserFactory extends Factory
 {
-    use HasFakeImages;
-
     /**
      * Define the model's default state.
      *

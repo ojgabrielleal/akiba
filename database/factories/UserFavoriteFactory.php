@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use Database\Factories\Concerns\HasFakeImages;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -10,8 +9,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class UserFavoriteFactory extends Factory
 {
-    use HasFakeImages;
-
     /**
      * Define the model's default state.
      *
@@ -21,7 +18,7 @@ class UserFavoriteFactory extends Factory
     {
         return [
             'name' => fake()->sentence(),
-            'image' => $this->fakeImageUrl(),
+            'image' => '/img/placeholders/avatar.webp',
         ];
     }
 }

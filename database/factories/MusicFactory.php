@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use Database\Factories\Concerns\HasFakeImages;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -10,8 +9,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class MusicFactory extends Factory
 {
-    use HasFakeImages;
-
     /**
      * Define the model's default state.
      *
@@ -22,11 +19,11 @@ class MusicFactory extends Factory
         return [
             'type' => fake()->randomElement(['OP', 'ED']),
             'production' => fake()->word(),
-            'image' => $this->fakeImageUrl(),
+            'image' => '/img/placeholders/avatar.webp',
             'artist' => fake()->name(),
             'name' => fake()->name(),
             'in_ranking' => fake()->boolean(),
-            'image_ranking' => $this->fakeImageUrl(),
+            'image_ranking' => '/img/placeholders/avatar.webp',
             'song_requests_total' => fake()->randomDigit(),
         ];
     }

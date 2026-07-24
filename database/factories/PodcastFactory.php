@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use Database\Factories\Concerns\HasFakeImages;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -10,8 +9,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class PodcastFactory extends Factory
 {
-    use HasFakeImages;
-
     /**
      * Define the model's default state.
      *
@@ -21,7 +18,7 @@ class PodcastFactory extends Factory
     {
         return [
             'title' => fake()->word(),
-            'image' => $this->fakeImageUrl(),
+            'image' => '/img/placeholders/avatar.webp',
             'season' => fake()->numberBetween(1, 10),
             'episode' => fake()->numberBetween(1, 100),
             'summary' => fake()->paragraph(),

@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use Database\Factories\Concerns\HasFakeImages;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -10,8 +9,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class PlaylistBattleFactory extends Factory
 {
-    use HasFakeImages;
-
     /**
      * Define the model's default state.
      *
@@ -21,7 +18,7 @@ class PlaylistBattleFactory extends Factory
     {
         return [
             'day' => fake()->randomElement([0, 1, 2, 3, 4, 5, 6]),
-            'image' => $this->fakeImageUrl(),
+            'image' => '/img/placeholders/avatar.webp',
         ];
     }
 }
