@@ -316,7 +316,7 @@
         <button type="button"
             aria-label="Faça seu pedido"
             class={[
-                "cursor-pointer w-full py-2 px-1 border-2 border-suspense-aurora rounded-full text-blue-skywave text-xl text-center font-noto-sans font-extrabold italic uppercase disabled:cursor-not-allowed disabled:border-gray-500 disabled:bg-gray-500/20 disabled:text-gray-500",
+                "cursor-pointer w-full py-2 px-1 border-2 border-suspense-aurora rounded-full text-blue-skywave text-xl text-center font-noto-sans font-extrabold italic uppercase transition-transform duration-200 ease-out hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.99] disabled:cursor-not-allowed disabled:border-gray-500 disabled:bg-gray-500/20 disabled:text-gray-500 disabled:transform-none motion-reduce:transition-none",
                 { "song-request-active": air.allows_song_requests },
             ]}
             disabled={!air.allows_song_requests}

@@ -3,7 +3,7 @@
     import { Meta } from "@/config";
     import { syncMediaSessionMetadata } from "@/store";
     import { Layout } from "@/ui/layouts/public";
-    import { MainPlayer, MobilePlayer } from "@/ui/widgets/public";
+    import { FeaturedGrid, MainPlayer, MobilePlayer } from "@/ui/widgets/public";
 
     $: ({ onair: { data: [air] }, stream } = $page.props);
     $: syncMediaSessionMetadata(air, stream);
@@ -25,5 +25,8 @@
                 <MobilePlayer />
             </div>
         </div>
+    </div>
+    <div class="bg-blue-marinho mt-8 pt-px">
+        <FeaturedGrid />
     </div>
 </Layout>
