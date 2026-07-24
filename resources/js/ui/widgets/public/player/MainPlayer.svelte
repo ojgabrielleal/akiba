@@ -5,6 +5,7 @@
         AdvertisementSlot,
         AuthGuard,
         CustomModal,
+        LoadingSpinner,
     } from "@/ui/components/public";
     import { SongRequestForm } from "@/ui/widgets/public";
     import { player, toggleAudio, setVolume } from "@/store";
@@ -275,20 +276,27 @@
                 </div>
             </div>
             <button type="button"
-                aria-label={$player.playing ? "Pausar radio" : "Tocar radio"}
+                aria-label={$player.loading ? "Carregando rádio" : $player.playing ? "Pausar radio" : "Tocar radio"}
+                aria-busy={$player.loading}
+                disabled={$player.loading && !$player.playing}
                 class={["cursor-pointer shrink-0 w-14 h-14 rounded-full flex justify-center items-center",
                     { "bg-orange-citric": !$player.playing },
                     { "bg-blue-skywave": $player.playing },
+                    { "cursor-wait": $player.loading },
                 ]}
                 on:click={toggleAudio}
             >
-                <img
-                    src={$player.playing ? "/svg/pause.svg" : "/svg/play.svg"}
-                    alt=""
-                    aria-hidden="true"
-                    class="w-5"
-                    loading="lazy"
-                />
+                {#if $player.loading}
+                    <LoadingSpinner size="md" tone="dark" label="Carregando rádio" />
+                {:else}
+                    <img
+                        src={$player.playing ? "/svg/pause.svg" : "/svg/play.svg"}
+                        alt=""
+                        aria-hidden="true"
+                        class="w-5"
+                        loading="lazy"
+                    />
+                {/if}
             </button>
         </div>
         <div class="mx-3 mb-5 flex flex-col gap-2">

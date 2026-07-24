@@ -1,6 +1,7 @@
 <script>
     import { page } from "@inertiajs/svelte";
     import { player, setVolume, toggleAudio } from "@/store";
+    import { LoadingSpinner } from "@/ui/components/private";
 
     $: ({ stream } = $page.props);
     $: streamData = stream ?? {};
@@ -45,16 +46,22 @@
                 <button
                     type="button"
                     class="cursor-pointer grid h-10 w-10 place-items-center rounded-full bg-orange-amber transition hover:brightness-110 focus:outline-none"
-                    aria-label={$player.playing ? "Pausar radio" : "Tocar radio"}
+                    aria-label={$player.loading ? "Carregando rádio" : $player.playing ? "Pausar radio" : "Tocar radio"}
                     aria-pressed={$player.playing}
+                    aria-busy={$player.loading}
+                    disabled={$player.loading && !$player.playing}
                     on:click={toggleAudio}
                 >
-                    <img
-                        src={$player.playing ? "/svg/pause.svg" : "/svg/play.svg"}
-                        alt=""
-                        aria-hidden="true"
-                        class="h-4 w-4"
-                    />
+                    {#if $player.loading}
+                        <LoadingSpinner size="sm" tone="dark" label="Carregando rádio" />
+                    {:else}
+                        <img
+                            src={$player.playing ? "/svg/pause.svg" : "/svg/play.svg"}
+                            alt=""
+                            aria-hidden="true"
+                            class="h-4 w-4"
+                        />
+                    {/if}
                 </button>
                 <div class="group relative flex h-10 w-10 items-center justify-center">
                     <button

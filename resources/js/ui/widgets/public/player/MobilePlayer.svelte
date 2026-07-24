@@ -1,7 +1,7 @@
 <script>
     import { page } from "@inertiajs/svelte";
     import { onMount } from "svelte";
-    import { AuthGuard, CustomModal } from "@/ui/components/public";
+    import { AuthGuard, CustomModal, LoadingSpinner } from "@/ui/components/public";
     import { SongRequestForm } from "@/ui/widgets/public";
     import { player, toggleAudio, setVolume } from "@/store";
     import {
@@ -154,21 +154,28 @@
             <div class="grid grid-cols-[4rem_minmax(0,1fr)] items-center gap-5 mb-6">
                 <button
                     type="button"
-                    aria-label={$player.playing ? "Pausar rádio" : "Tocar rádio"}
+                    aria-label={$player.loading ? "Carregando rádio" : $player.playing ? "Pausar rádio" : "Tocar rádio"}
+                    aria-busy={$player.loading}
+                    disabled={$player.loading && !$player.playing}
                     class={[
                         "relative size-16 rounded-full flex items-center justify-center active:scale-95 transition-transform shadow-xl",
                         { "bg-orange-citric shadow-orange-citric/20": !$player.playing },
                         { "bg-blue-skywave shadow-blue-skywave/20": $player.playing },
+                        { "cursor-wait": $player.loading },
                     ]}
                     on:click={toggleAudio}
                 >
                     <span class="absolute inset-2 rounded-full border border-blue-night/15"></span>
-                    <img
-                        src={$player.playing ? "/svg/pause.svg" : "/svg/play.svg"}
-                        alt=""
-                        aria-hidden="true"
-                        class="relative w-5"
-                    />
+                    {#if $player.loading}
+                        <LoadingSpinner class="relative" size="md" tone="dark" label="Carregando rádio" />
+                    {:else}
+                        <img
+                            src={$player.playing ? "/svg/pause.svg" : "/svg/play.svg"}
+                            alt=""
+                            aria-hidden="true"
+                            class="relative w-5"
+                        />
+                    {/if}
                 </button>
                 <div class="min-w-0 flex-1">
                     <div class="mb-2 flex items-center justify-between">
@@ -291,21 +298,28 @@
                 <div class="mb-7 flex justify-center">
                     <button
                         type="button"
-                        aria-label={$player.playing ? "Pausar rádio" : "Tocar rádio"}
+                        aria-label={$player.loading ? "Carregando rádio" : $player.playing ? "Pausar rádio" : "Tocar rádio"}
+                        aria-busy={$player.loading}
+                        disabled={$player.loading && !$player.playing}
                         class={[
                             "relative size-18 rounded-full flex items-center justify-center active:scale-95 transition-transform shadow-xl",
                             { "bg-orange-citric shadow-orange-citric/20": !$player.playing },
                             { "bg-blue-skywave shadow-blue-skywave/20": $player.playing },
+                            { "cursor-wait": $player.loading },
                         ]}
                         on:click={toggleAudio}
                     >
                         <span class="absolute inset-2 rounded-full border border-blue-night/15"></span>
-                        <img
-                            src={$player.playing ? "/svg/pause.svg" : "/svg/play.svg"}
-                            alt=""
-                            aria-hidden="true"
-                            class="relative w-6"
-                        />
+                        {#if $player.loading}
+                            <LoadingSpinner class="relative" size="lg" tone="dark" label="Carregando rádio" />
+                        {:else}
+                            <img
+                                src={$player.playing ? "/svg/pause.svg" : "/svg/play.svg"}
+                                alt=""
+                                aria-hidden="true"
+                                class="relative w-6"
+                            />
+                        {/if}
                     </button>
                 </div>
 
