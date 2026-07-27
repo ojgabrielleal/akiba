@@ -6,6 +6,7 @@
 
     export let src = null;
     export let oninput = null;
+    export let onchange = null;
     export let required = false;
     export let disabled = false;
 
@@ -60,6 +61,8 @@
     const previewImage = (event) => {
         if (disabled) return;
         const file = event.target.files[0];
+
+        onchange?.(event);
 
         if (file) {
             const reader = new FileReader();

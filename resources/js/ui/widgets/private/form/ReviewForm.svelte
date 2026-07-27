@@ -92,7 +92,7 @@
                 <Preview
                     name="cover"
                     src={$form.cover}
-                    oninput={(event) => ($form.cover = event.target.files[0])}
+                    onchange={(event) => ($form.cover = event.target.files[0])}
                     required={!post}
                 />
             </FormField>
@@ -138,7 +138,7 @@
             <Preview
                 name="image"
                 src={$form.image}
-                oninput={(event) => ($form.image = event.target.files[0])}
+                onchange={(event) => ($form.image = event.target.files[0])}
                 required={!post}
             />
             <ul class="mt-4 ml-5 list-disc font-noto-sans font-light text-orange-citric">
