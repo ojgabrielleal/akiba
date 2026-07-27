@@ -89,7 +89,7 @@
                         </h2>
                         <div class="grid gap-4">
                             {#each (article.references ?? [{ uuid: "source-a", name: "", url: "#" }, { uuid: "source-b", name: "", url: "#" }]) as source}
-                                <a href={source.url} class="min-h-12 rounded-md bg-blue-cerulean px-4 py-3 text-sm font-black text-suspense-aurora" target="_blank" rel="noopener noreferrer" aria-label={source.name || "Fonte de pesquisa"}>
+                                <a href={source.url} class="flex min-h-12 items-center rounded-md bg-blue-cerulean px-4 py-3 text-sm font-black text-suspense-aurora" target="_blank" rel="noopener noreferrer" aria-label={source.name || "Fonte de pesquisa"}>
                                     {source.name}
                                 </a>
                             {/each}
