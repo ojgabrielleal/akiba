@@ -1,5 +1,4 @@
 <script>
-    import { page } from "@inertiajs/svelte";
     import { onMount } from "svelte";
     import {
         AdvertisementSlot,
@@ -16,7 +15,12 @@
         resolvePlaceholderImage,
     } from "@/utils";
 
-    $: ({ onair: { data: [air] }, stream } = $page.props);
+    export let onair = null;
+    export let stream = null;
+    export let oauth = {};
+
+    $: air = onair?.data?.[0] ?? null;
+    $: currentSong = stream?.current_song ?? {};
 
     let modalRef;
 
@@ -29,26 +33,26 @@
 
     $: playerData = {
         program: {
-            name: air.program.name,
-            image: air.program.image,
+            name: air?.program?.name,
+            image: air?.program?.image,
         },
         host: {
-            nickname: air.program.host.nickname,
-            avatar: air.program.host.avatar,
-            gender: air.program.host.gender,
+            nickname: air?.program?.host?.nickname,
+            avatar: air?.program?.host?.avatar,
+            gender: air?.program?.host?.gender,
         },
-        execution_mode: air.execution_mode,
+        execution_mode: air?.execution_mode,
         current_song: {
-            cover: stream.current_song.cover,
-            music: stream.current_song.music,
+            cover: currentSong.cover,
+            music: currentSong.music,
         },
         phrase: {
-            text: air.phrase.text,
-            icon: air.phrase.icon ?? locutionIcons[10].url,
-            texture: air.phrase.texture ?? locutionTextures[0].url,
+            text: air?.phrase?.text,
+            icon: air?.phrase?.icon ?? locutionIcons[10].url,
+            texture: air?.phrase?.texture ?? locutionTextures[0].url,
             decoration: {
-                left: air.phrase.decoration?.left ?? locutionDecorations[0].left,
-                right: air.phrase.decoration?.right ?? locutionDecorations[0].right,
+                left: air?.phrase?.decoration?.left ?? locutionDecorations[0].left,
+                right: air?.phrase?.decoration?.right ?? locutionDecorations[0].right,
             },
         },
     };
@@ -70,13 +74,15 @@
             title="Entre para pedir sua música"
             description="Use sua conta do Discord para continuar."
             action={OAuthAction.OPEN_SONG_REQUEST}
+            {oauth}
         >
-            <SongRequestForm {close} />
+            <SongRequestForm {close} {oauth} />
         </AuthGuard>
     </div>
 </CustomModal>
 
 <!-- Phrase Section -->
+{#if air && stream}
 <section class="w-full bg-contain bg-right bg-no-repeat mt-5 mb-7"  style={`background-image: url('${playerData.phrase.texture}'), var(--gradient-blue-ocean-cerulean);`}>
     <div class="container-player h-30 relative">
         <div class="absolute -top-8 left-0 z-10 xl:-left-28">
@@ -337,6 +343,7 @@
         </button>
     </div>
 </section>
+{/if}
 
 <style>
     .song-request-active {
@@ -365,6 +372,7 @@
     }
 </style>
 
+{#if air && stream}
 <section class="container-player" aria-label="Publicidade">
     <div class="mb-10 grid grid-cols-2 gap-5">
         {#each Array(2) as _, index}
@@ -372,3 +380,4 @@
         {/each}
     </div>
 </section>
+{/if}

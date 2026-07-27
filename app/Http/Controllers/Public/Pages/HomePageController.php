@@ -41,7 +41,7 @@ class HomePageController extends Controller
                     'ignore_authorization' => true,
                 ])
             )->format('featured'),
-            'latestPosts' => PostResource::collection(
+            'posts' => PostResource::collection(
                 $this->postFilter->apply(request()->user(), [
                     'active' => true,
                     'status' => 'published',

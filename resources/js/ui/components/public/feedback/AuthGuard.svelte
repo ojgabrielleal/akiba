@@ -1,15 +1,13 @@
 <script>
-    import { page } from "@inertiajs/svelte";
     import { rememberOAuthAction } from "@/utils";
 
+    export let oauth = {};
     export let title = "Entre para continuar";
     export let description = "Você precisa estar autenticado para acessar este conteúdo.";
     export let buttonLabel = "Entrar com Discord";
     export let color = "#ff8000";
     export let filters = "filter-blue-night";
     export let action = null;
-
-    $:({ oauth } = $page.props);
 
     const authenticate = () => {
         rememberOAuthAction(action);

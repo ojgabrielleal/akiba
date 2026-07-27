@@ -1,18 +1,20 @@
 <script>
-    import { Link, page } from "@inertiajs/svelte";
+    import { Link } from "@inertiajs/svelte";
     import { GridList, Section } from "@/ui/components/public";
     import { resolvePlaceholderImage } from "@/utils";
 
-    $: latestReviews = $page.props.latestReviews?.data ?? [];
+    export let latestReviews = [];
+
+    $: reviews = Array.isArray(latestReviews) ? latestReviews : latestReviews?.data ?? [];
 </script>
 
-{#if latestReviews.length > 0}
+{#if reviews.length > 0}
     <Section title="Últimas reviews" styles="container-page mb-8 pt-2 pb-4 lg:mb-10 lg:pt-4 lg:pb-10">
         <GridList preset="reviews" aria-label="Últimas reviews">
-            {#each latestReviews as review (review.uuid)}
+            {#each reviews as review (review.uuid)}
                 <li class="min-w-0">
                     <Link
-                        href={`review/${review.slug}`}
+                        href={`/review/${review.slug}`}
                         aria-label={`Ler review: ${review.title}`}
                         class="group block rounded-md focus-visible:outline-none"
                     >

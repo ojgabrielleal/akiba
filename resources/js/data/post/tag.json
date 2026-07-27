@@ -5,12 +5,12 @@
     },
     "news": {
         "value": "news",
-        "label": "Notícias",
+        "label": "News",
         "icon": "/svg/news.svg"
     },
     "anime": {
         "value": "anime",
-        "label": "Anime",
+        "label": "Animes",
         "icon": "/svg/anime.svg"
     },
     "events": {
@@ -20,12 +20,12 @@
     },
     "manga": {
         "value": "manga",
-        "label": "Mangá",
+        "label": "Mangás",
         "icon": "/svg/manga.svg"
     },
     "light-novel": {
         "value": "light-novel",
-        "label": "Light Novel",
+        "label": "Light-Novels",
         "icon": "/svg/light-novel.svg"
     },
     "lists": {
@@ -40,12 +40,17 @@
     },
     "tops": {
         "value": "tops",
-        "label": "Top’s",
+        "label": "Tops",
         "icon": "/svg/tops.svg"
+    },
+    "reviews": {
+        "value": "reviews",
+        "label": "Reviews",
+        "icon": "/svg/reviews.svg"
     },
     "first-impression": {
         "value": "first-impression",
-        "label": "1ª Impressão",
+        "label": "Primeiras Impressões",
         "icon": "/svg/first-impression.svg"
     }
 }

@@ -3,14 +3,20 @@
     import { FlashToaster } from "@/ui/components/public";
     import { Footer, Navbar, PlayerBar } from "@/ui/widgets/public";
 
+    export let flash = null;
+    export let oauth = {};
+    export let onair = null;
+    export let stream = null;
+    export let pageUrl = null;
+
     usePoll(10 * 1000, {
         only: ["onair"]
     });
 </script>
 
-<FlashToaster />
+<FlashToaster {flash} />
 <header class="bg-blue-night">
-    <Navbar />
+    <Navbar {oauth} />
 </header>
 
 <main>
@@ -18,4 +24,4 @@
 </main>
 
 <Footer />
-<PlayerBar />
+<PlayerBar {onair} {stream} {pageUrl} />

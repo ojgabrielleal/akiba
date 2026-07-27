@@ -1,17 +1,18 @@
 <script>
-    import { page } from "@inertiajs/svelte";
     import { onDestroy, onMount, tick } from "svelte";
     import { fly } from "svelte/transition";
     import { LoadingSpinner } from "@/ui/components/public";
     import { player, setVolume, toggleAudio } from "@/store";
     import { resolvePlaceholderImage } from "@/utils";
 
+    export let onair = null;
+    export let stream = null;
+    export let pageUrl = null;
+
     let visible = true;
     let observer;
     let mounted = false;
 
-    $: ({ onair, stream } = $page.props);
-    $: pageUrl = $page.url;
     $: air = onair?.data?.[0] ?? null;
     $: currentSong = stream?.current_song ?? {};
     $: program = air?.program ?? {};

@@ -1,23 +1,25 @@
 <script>
-    import { Link, page } from "@inertiajs/svelte";
+    import { Link } from "@inertiajs/svelte";
     import { AdvertisementSlot, Section } from "@/ui/components/public";
 
-    $: events = $page.props.events?.data ?? [];
+    export let events = [];
+
+    $: eventList = Array.isArray(events) ? events : events?.data ?? [];
 
     const resolveEventDate = (event) => event.metadata?.dates ?? "";
     const resolveEventPlace = (event) => event.metadata?.address ?? "";
 </script>
 
-{#if events.length > 0}
+{#if eventList.length > 0}
     <Section title="Calendário de eventos">
         <div class="grid grid-cols-1 gap-x-5 gap-y-2 lg:grid-cols-[minmax(0,1fr)_15rem]">
             <div class="min-w-0">
                 <div class="w-full font-noto-sans text-lg uppercase italic">
                     <ul class="grid gap-2 md:hidden">
-                        {#each events as item (item.uuid)}
+                        {#each eventList as item (item.uuid)}
                             <li class="min-w-0">
                                 <Link
-                                    href={`event/${item.slug}`}
+                                    href={`/evento/${item.slug}`}
                                     aria-label={`Ver evento: ${item.title}`}
                                     class="group grid gap-2 rounded-md font-black transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber motion-reduce:transform-none motion-reduce:transition-none"
                                 >
@@ -55,10 +57,10 @@
                         <div class="px-4 pb-1 text-center text-xl font-black">Local</div>
                     </div>
                     <ul class="hidden gap-2 md:grid">
-                        {#each events as item (item.uuid)}
+                        {#each eventList as item (item.uuid)}
                             <li class="min-w-0">
                                 <Link
-                                    href={`event/${item.slug}`}
+                                    href={`/evento/${item.slug}`}
                                     aria-label={`Ver evento: ${item.title}`}
                                     class="group grid grid-cols-[1.5fr_0.85fr_1fr] gap-2 rounded-md font-black transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber motion-reduce:transform-none motion-reduce:transition-none"
                                 >

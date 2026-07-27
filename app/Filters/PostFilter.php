@@ -32,6 +32,24 @@ class PostFilter
                 fn (Builder $query, string $module) => $query->forModule($module)
             )
             ->when(
+                $filters['except'] ?? null,
+                fn (Builder $query, Post $post) => $query->whereKeyNot($post->getKey())
+            )
+            ->when(
+                $filters['tag'] ?? null,
+                fn (Builder $query, string $tag) => $query->whereHas(
+                    'tags',
+                    fn (Builder $query) => $query->where('name', $tag)
+                )
+            )
+            ->when(
+                $filters['tags'] ?? null,
+                fn (Builder $query, array $tags) => $query->whereHas(
+                    'tags',
+                    fn (Builder $query) => $query->whereIn('name', $tags)
+                )
+            )
+            ->when(
                 $filters['with_count'] ?? null,
                 fn (Builder $query, array|string $relations) => $query->withCount($relations)
             )
@@ -65,9 +83,13 @@ class PostFilter
                     '%'.trim($search).'%'
                 )
             )
-            ->orderBy(
-                $filters['order_by'] ?? 'id',
-                $filters['order_direction'] ?? 'desc'
+            ->when(
+                ($filters['order_by'] ?? null) === 'random',
+                fn (Builder $query) => $query->inRandomOrder(),
+                fn (Builder $query) => $query->orderBy(
+                    $filters['order_by'] ?? 'id',
+                    $filters['order_direction'] ?? 'desc'
+                )
             )
             ->when(
                 $filters['limit'] ?? null,
@@ -90,7 +112,7 @@ class PostFilter
 
         return $query->when(
             $filters['paginate'] ?? null,
-            fn (Builder $query, int $perPage) => $query->paginate($perPage),
+            fn (Builder $query, int $perPage) => $query->paginate($perPage)->withQueryString(),
             fn (Builder $query) => $query->get()
         );
     }

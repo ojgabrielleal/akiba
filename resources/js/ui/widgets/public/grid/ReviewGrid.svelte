@@ -1,22 +1,23 @@
 <script>
     export let title;
     export let variant = "home";
+    export let reviews = [];
 
-    import { page, Link } from "@inertiajs/svelte";
+    import { Link } from "@inertiajs/svelte";
     import { Section } from "@/ui/components/public";
     import { resolvePlaceholderImage } from "@/utils";
 
-    $: ({ reviews } = $page.props);
+    $: reviewList = Array.isArray(reviews) ? reviews : reviews?.data ?? [];
 </script>
 
-{#if variant === "home" && reviews.data.length > 0}
+{#if variant === "home" && reviewList.length > 0}
     <Section {title}>
         <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
-            {#each reviews.data as item}
+            {#each reviewList as item}
                 <li>
                     <Link
                         aria-label={`Ler review ${item.title}`}
-                        href={`review/${item.slug}`}
+                        href={`/review/${item.slug}`}
                         class="aspect-square sm:aspect-auto sm:h-60 bg-orange-citric rounded-t-xl rounded-b-md relative"
                     >
                         <article>

@@ -1,11 +1,15 @@
  /* Container */
+ html {
+     font-size: 16px;
+ }
+
  .container-page {
-     width: min(100% - clamp(2rem, 5vw, 5rem), 81.25rem);
+     width: min(100% - clamp(32px, 5vw, 80px), 1300px);
      margin-inline: auto;
  }
 
  .container-player {
-     width: min(100% - clamp(1rem, 5vw, 4rem), 68.75rem);
+     width: min(100% - clamp(16px, 5vw, 64px), 1100px);
      margin-inline: auto;
  }
 
@@ -42,6 +46,6 @@
 
  @media (max-width: 40rem) {
      .container-page {
-         width: calc(100% - 4rem);
+         width: calc(100% - 64px);
      }
  }

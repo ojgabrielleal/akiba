@@ -1,8 +1,7 @@
 <script>
-    import { page } from "@inertiajs/svelte";
     import toast, { Toaster } from "svelte-hot-french-toast";
 
-    $: flash = $page.props.flash;
+    export let flash = null;
 
     let lastToastId = null;
 

@@ -1,5 +1,4 @@
 <script>
-    import { page } from "@inertiajs/svelte";
     import { onMount } from "svelte";
     import { AuthGuard, CustomModal, LoadingSpinner } from "@/ui/components/public";
     import { SongRequestForm } from "@/ui/widgets/public";
@@ -10,7 +9,12 @@
         resolvePlaceholderImage,
     } from "@/utils";
 
-    $: ({ onair: { data: [air] }, stream } = $page.props);
+    export let onair = null;
+    export let stream = null;
+    export let oauth = {};
+
+    $: air = onair?.data?.[0] ?? null;
+    $: currentSong = stream?.current_song ?? {};
 
     let modalRef;
 
@@ -23,18 +27,18 @@
 
     $: playerData = {
         program: {
-            name: air.program.name,
-            image: air.program.image,
+            name: air?.program?.name,
+            image: air?.program?.image,
         },
         host: {
-            nickname: air.program.host.nickname,
-            avatar: air.program.host.avatar,
-            gender: air.program.host.gender,
+            nickname: air?.program?.host?.nickname,
+            avatar: air?.program?.host?.avatar,
+            gender: air?.program?.host?.gender,
         },
-        executionMode: air.execution_mode,
+        executionMode: air?.execution_mode,
         currentSong: {
-            cover: stream.current_song.cover,
-            music: stream.current_song.music,
+            cover: currentSong.cover,
+            music: currentSong.music,
         },
     };
 
@@ -66,12 +70,14 @@
             title="Entre para pedir sua música"
             description="Use sua conta do Discord para continuar."
             action={OAuthAction.OPEN_SONG_REQUEST}
+            {oauth}
         >
-            <SongRequestForm {close} />
+            <SongRequestForm {close} {oauth} />
         </AuthGuard>
     </div>
 </CustomModal>
 
+{#if air && stream}
 <!-- Phone player -->
 <section class="mt-10 container-page md:hidden">
     <div class="relative w-full max-w-[26rem] mx-auto overflow-hidden rounded-3xl border border-suspense-aurora/10 bg-blue-ocean/25 shadow-2xl">
@@ -214,8 +220,10 @@
         </div>
     </div>
 </section>
+{/if}
 
 <!-- Tablet player -->
+{#if air && stream}
 <section class="container-page hidden md:block">
     <div class="relative w-full max-w-4xl mx-auto overflow-hidden rounded-3xl border border-suspense-aurora/10 bg-blue-ocean/25 shadow-2xl">
         <div class="absolute inset-0 bg-gradient-to-r from-blue-skywave/15 via-transparent to-orange-citric/10"></div>
@@ -360,3 +368,4 @@
         </div>
     </div>
 </section>
+{/if}

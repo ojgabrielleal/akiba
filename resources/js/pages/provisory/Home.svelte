@@ -6,7 +6,8 @@
     import { syncMediaSessionMetadata } from "@/store";
     import { MainPlayer, MobilePlayer } from "@/ui/widgets/public";
 
-    $: ({ onair: { data: [air] }, stream } = $page.props);
+    $: ({ onair, stream, oauth } = $page.props);
+    $: air = onair?.data?.[0] ?? null;
     $: syncMediaSessionMetadata(air, stream);
 
     usePoll(10 * 1000, {
@@ -52,10 +53,10 @@
     </div>
 
     <div class="hidden lg:block w-full">
-        <MainPlayer />
+        <MainPlayer {onair} {stream} {oauth} />
     </div>
     <div class="lg:hidden w-full pb-10">
-        <MobilePlayer />
+        <MobilePlayer {onair} {stream} {oauth} />
     </div>
 </main>
 

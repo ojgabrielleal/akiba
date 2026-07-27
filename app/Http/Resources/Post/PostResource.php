@@ -20,7 +20,9 @@ class PostResource extends JsonResource
                 'model' => $this->model,
                 'uuid' => $this->uuid,
                 'slug' => $this->slug,
+                'href' => $this->href(),
                 'title' => $this->title,
+                'module' => $this->module,
                 'image' => $this->image,
                 'cover' => $this->cover,
                 'views' => $this->views_count,
@@ -32,6 +34,7 @@ class PostResource extends JsonResource
                 'model' => $this->model,
                 'uuid' => $this->uuid,
                 'slug' => $this->slug,
+                'href' => $this->href(),
                 'title' => $this->title,
                 'image' => $this->image,
                 'cover' => $this->cover,
@@ -43,6 +46,7 @@ class PostResource extends JsonResource
         $postData = [
             'uuid' => $this->uuid,
             'slug' => $this->slug,
+            'href' => $this->href(),
             'title' => $this->title,
             'image' => $this->image,
             'cover' => $this->cover,
@@ -73,6 +77,15 @@ class PostResource extends JsonResource
         return [];
     }
 
+    private function href(): string
+    {
+        return match ($this->module) {
+            'review' => "/review/{$this->slug}",
+            'event' => "/evento/{$this->slug}",
+            default => "/materia/{$this->slug}",
+        };
+    }
+
     public function event(): array 
     {
         if($this->module === 'event'){
@@ -90,8 +103,12 @@ class PostResource extends JsonResource
     {
         if($this->module === 'review'){
             return [
-                'reviews' => $this->listReviews($request),
-                'review' => $this->reviewCurrentUser($request),
+                'reviews' => $request->user()
+                    ? $this->listReviews($request)
+                    : PostReviewResource::collection($this->reviews),
+                'review' => $request->user()
+                    ? $this->reviewCurrentUser($request)
+                    : null,
                 'metadata' => $this->metadata,
             ];
         }

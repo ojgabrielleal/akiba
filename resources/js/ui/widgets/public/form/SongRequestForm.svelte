@@ -1,12 +1,11 @@
 <script>
     export let close = () => {};
+    export let oauth = {};
 
     import axios from "axios";
-    import { page, useForm } from "@inertiajs/svelte";
+    import { useForm } from "@inertiajs/svelte";
     import toast from "svelte-hot-french-toast";
     import { debounce, resolvePlaceholderImage } from "@/utils";
-
-    $:({ oauth } = $page.props);
 
     $: form = useForm({
         address: null,

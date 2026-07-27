@@ -34,18 +34,18 @@
                 <p class="mt-4 max-w-md font-noto-sans text-sm font-bold leading-relaxed text-suspense-aurora/75 uppercase italic">
                     Rede Akiba, o paraíso dos otakus.
                 </p>
-                <p class="mt-2 font-noto-sans text-lg font-black text-orange-citric uppercase italic">
+                <p class="mt-2 font-noto-sans text-lg font-black text-orange-amber uppercase italic">
                     ラジオ・ニュース・カルチャー
                 </p>
             </div>
 
             <nav aria-label="Links do rodapé" class="min-w-0">
-                <h2 class="flex items-center gap-2 font-noto-sans text-lg font-black text-orange-citric uppercase italic">
+                <h2 class="flex items-center gap-2 font-noto-sans text-lg font-black text-orange-amber uppercase italic">
                     <img
                         src="/svg/star.svg"
                         alt=""
                         aria-hidden="true"
-                        class="size-5 filter-orange-citric"
+                        class="size-5 filter-orange-amber"
                     />
                     Navegue
                 </h2>
@@ -70,12 +70,12 @@
             </nav>
 
             <div class="min-w-0">
-                <h2 class="flex items-center gap-2 font-noto-sans text-lg font-black text-orange-citric uppercase italic">
+                <h2 class="flex items-center gap-2 font-noto-sans text-lg font-black text-orange-amber uppercase italic">
                     <img
                         src="/svg/onair.svg"
                         alt=""
                         aria-hidden="true"
-                        class="size-5 filter-orange-citric"
+                        class="size-5 filter-orange-amber"
                     />
                     Comunidade
                 </h2>

@@ -1,5 +1,5 @@
 <script>
-    import { page, Link } from "@inertiajs/svelte";
+    import { Link } from "@inertiajs/svelte";
     import { onMount } from "svelte";
     import { fade, fly } from "svelte/transition";
     import { navbar } from "@/data";
@@ -10,11 +10,12 @@
     import { Button, IconButton, Modal, Tooltip } from "@/ui/components/public";
     import ProfileForm from "../form/ProfileForm.svelte";
 
+    export let oauth = {};
+
     let mobilenavbar = false;
     let profileModalRef;
     let selectedTheme = "akiba";
 
-    $: oauth = $page.props.oauth;
     $: profile = oauth?.profile;
     $: avatar = profile?.avatar || "/img/placeholders/avatar.webp";
     $: nickname = profile?.nickname || profile?.username || "Perfil";

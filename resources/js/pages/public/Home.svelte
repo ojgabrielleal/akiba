@@ -6,14 +6,26 @@
     import {
         EventCalendarGrid,
         FeaturedGrid,
-        LatestPostsGrid,
         LatestReviewsGrid,
         LatestPodcastsGrid,
         MainPlayer,
         MobilePlayer,
+        PostListGrid,
     } from "@/ui/widgets/public";
 
-    $: ({ onair: { data: [air] }, stream } = $page.props);
+    $: ({
+        onair,
+        stream,
+        featuredPosts,
+        latestReviews,
+        posts,
+        events,
+        podcasts,
+        flash,
+        oauth,
+    } = $page.props);
+    $: air = onair?.data?.[0] ?? null;
+    $: pageUrl = $page.url;
     $: syncMediaSessionMetadata(air, stream);
 
     usePoll(10 * 1000, {
@@ -22,15 +34,15 @@
 </script>
 
 <Meta />
-<Layout>
+<Layout {flash} {oauth} {onair} {stream} {pageUrl}>
     <h1 class="sr-only">Akiba Station</h1>
     <div class="bg-blue-night pt-px pb-5">
         <div class="mt-0 lg:mt-28" data-main-player>
             <div class="hidden w-full lg:block">
-                <MainPlayer />
+                <MainPlayer {onair} {stream} {oauth} />
             </div>
             <div class="w-full pb-10 lg:hidden">
-                <MobilePlayer />
+                <MobilePlayer {onair} {stream} {oauth} />
             </div>
         </div>
     </div>
@@ -39,16 +51,16 @@
             class="home-featured-reviews-background pt-px"
             style="--featured-background: url('/img/pages/home/backgrounds/featured.webp'); --reviews-background: url('/img/pages/home/backgrounds/reviews.webp');"
         >
-            <FeaturedGrid />
-            <LatestReviewsGrid />
+            <FeaturedGrid {featuredPosts} />
+            <LatestReviewsGrid {latestReviews} />
         </div>
-        <LatestPostsGrid />
-        <EventCalendarGrid />
+        <PostListGrid title="Últimas matérias" {posts} />
+        <EventCalendarGrid {events} />
         <div
             class="home-podcasts-background pt-5"
             style="--podcasts-background: url('/img/pages/home/backgrounds/podcasts.webp');"
         >
-            <LatestPodcastsGrid />
+            <LatestPodcastsGrid {podcasts} />
         </div>
     </div>
 </Layout>
@@ -81,6 +93,17 @@
             background-position: bottom center;
             background-repeat: repeat-x;
             background-size: contain;
+        }
+    }
+
+    @media (min-width: 2001px) {
+        .home-featured-reviews-background {
+            background-repeat:
+                repeat-x,
+                repeat-x;
+            background-size:
+                contain,
+                contain;
         }
     }
 </style>
