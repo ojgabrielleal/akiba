@@ -7,7 +7,7 @@
 </script>
 
 {#if featuredPosts.length > 0}
-    <Section title="Destaques da Akiba">
+    <Section title="Destaques da Akiba" styles="container-page mb-8 pb-2 lg:mb-10 lg:pb-4">
         <ul class="mt-8 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2 sm:gap-x-5 sm:gap-y-8 lg:grid-cols-3 lg:gap-x-6">
             {#each featuredPosts as item (item.uuid)}
                 <li class="min-w-0">

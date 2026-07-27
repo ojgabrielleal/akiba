@@ -3,13 +3,16 @@
     import { onMount } from "svelte";
     import { fade, fly } from "svelte/transition";
     import { navbar } from "@/data";
-    import { listenForOAuthAction, OAuthAction } from "@/utils";
+    import {
+        listenForOAuthAction,
+        OAuthAction,
+    } from "@/utils";
     import { Button, IconButton, Modal, Tooltip } from "@/ui/components/public";
     import ProfileForm from "../form/ProfileForm.svelte";
 
     let mobilenavbar = false;
     let profileModalRef;
-    let theme = "night";
+    let selectedTheme = "akiba";
 
     $: oauth = $page.props.oauth;
     $: profile = oauth?.profile;
@@ -114,6 +117,12 @@
                     class="ml-1"
                     on:click={openOAuthLogin}
                 >
+                    <img
+                        src="/svg/discord.svg"
+                        alt=""
+                        aria-hidden="true"
+                        class="size-4 filter-blue-marinho"
+                    />
                     Entrar
                 </Button>
             {/if}
@@ -122,12 +131,12 @@
                     <button
                         type="button"
                         aria-label={item.label}
-                        aria-pressed={theme === item.name}
+                        aria-pressed={selectedTheme === item.name}
                         class={[
                             "flex size-[1.375rem] cursor-pointer items-center justify-center rounded-full transition duration-200 ease-out hover:scale-110 active:scale-95 motion-reduce:transform-none motion-reduce:transition-none",
-                            { "bg-blue-night": theme === item.name },
+                            { "bg-blue-night": selectedTheme === item.name },
                         ]}
-                        on:click={() => (theme = item.name)}
+                        on:click={() => (selectedTheme = item.name)}
                     >
                         <img
                             src={item.icon}
@@ -135,7 +144,7 @@
                             aria-hidden="true"
                             class={[
                                 "size-[0.8125rem] filter-suspense-aurora",
-                                { "filter-orange-morning": theme === item.name },
+                                { "filter-orange-morning": selectedTheme === item.name },
                             ]}
                         />
                     </button>
@@ -216,6 +225,12 @@
                                     shape="pill"
                                     on:click={openOAuthLogin}
                                 >
+                                    <img
+                                        src="/svg/discord.svg"
+                                        alt=""
+                                        aria-hidden="true"
+                                        class="size-4 filter-blue-marinho"
+                                    />
                                     Entrar
                                 </Button>
                             {/if}
@@ -242,12 +257,12 @@
                                     <button
                                         type="button"
                                         aria-label={item.label}
-                                        aria-pressed={theme === item.name}
+                                        aria-pressed={selectedTheme === item.name}
                                         class={[
                                             "flex size-6 items-center justify-center rounded-full transition duration-200 ease-out hover:scale-110 active:scale-95 motion-reduce:transform-none motion-reduce:transition-none",
-                                            { "bg-blue-night": theme === item.name },
+                                            { "bg-blue-night": selectedTheme === item.name },
                                         ]}
-                                        on:click={() => (theme = item.name)}
+                                        on:click={() => (selectedTheme = item.name)}
                                     >
                                         <img
                                             src={item.icon}
@@ -255,7 +270,7 @@
                                             aria-hidden="true"
                                             class={[
                                                 "size-3 filter-suspense-aurora",
-                                                { "filter-orange-morning": theme === item.name },
+                                                { "filter-orange-morning": selectedTheme === item.name },
                                             ]}
                                         />
                                     </button>

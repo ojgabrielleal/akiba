@@ -4,13 +4,14 @@
     import { resolvePlaceholderImage } from "@/utils";
 
     $: podcasts = $page.props.podcasts?.data ?? [];
+    $: visiblePodcasts = podcasts.slice(0, 3);
 </script>
 
 {#if podcasts.length > 0}
-    <Section title="Últimos podcasts" styles="container-page mb-10 overflow-hidden">
-        <div class="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_16rem]">
-            <ul class="grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-[repeat(3,minmax(0,17.5rem))]">
-                {#each podcasts as podcast (podcast.uuid)}
+    <Section title="Últimos podcasts" styles="container-page mb-10 overflow-hidden pb-10 lg:pb-6">
+        <div class="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-end lg:gap-0 xl:grid-cols-[minmax(0,1fr)_25rem]">
+            <ul class="grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {#each visiblePodcasts as podcast (podcast.uuid)}
                     <li class="min-w-0">
                         <Link
                             href="#"
@@ -22,12 +23,12 @@
                                     src={resolvePlaceholderImage(podcast.image, "placeholder")}
                                     alt=""
                                     aria-hidden="true"
-                                    class="aspect-[6/5] w-full bg-neutral-gray object-cover"
+                                    class="aspect-[4/3] w-full bg-neutral-gray object-cover lg:aspect-[1/1.02]"
                                 />
-                                <h3 class="px-3 py-3 font-noto-sans text-base leading-tight font-black text-blue-night uppercase italic">
+                                <h3 class="px-3 py-2.5 font-noto-sans text-base leading-tight font-black text-blue-night uppercase italic">
                                     <span
-                                        class="block overflow-hidden"
-                                        style="-webkit-line-clamp: 3; -webkit-box-orient: vertical; display: -webkit-box;"
+                                        class="block overflow-hidden lg:min-h-[4.5rem]"
+                                        style="-webkit-line-clamp: 4; -webkit-box-orient: vertical; display: -webkit-box;"
                                     >
                                         {podcast.title}
                                     </span>
@@ -37,7 +38,23 @@
                     </li>
                 {/each}
             </ul>
-            <div class="hidden min-h-64 rounded-md bg-neutral-gray transition duration-300 ease-out hover:scale-[1.02] motion-reduce:transform-none motion-reduce:transition-none lg:block"></div>
+            <div class="pointer-events-none relative hidden min-h-90 overflow-visible lg:block">
+                <img
+                    src="/img/pages/home/characters/podcast-host.webp"
+                    alt=""
+                    aria-hidden="true"
+                    class="podcast-host-character absolute right-0 -bottom-5 h-[126%] w-[126%] object-contain object-right-bottom"
+                    loading="lazy"
+                />
+            </div>
         </div>
     </Section>
 {/if}
+
+<style>
+    .podcast-host-character {
+        filter: drop-shadow(-1rem 1rem 1.35rem rgb(0 0 0 / 0.32));
+        -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 66%, rgb(0 0 0 / 0.85) 76%, rgb(0 0 0 / 0.45) 88%, transparent 100%);
+        mask-image: linear-gradient(to bottom, #000 0%, #000 66%, rgb(0 0 0 / 0.85) 76%, rgb(0 0 0 / 0.45) 88%, transparent 100%);
+    }
+</style>

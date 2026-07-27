@@ -35,10 +35,52 @@
         </div>
     </div>
     <div class="bg-blue-marinho mt-8 pt-px">
-        <FeaturedGrid />
-        <LatestReviewsGrid />
+        <div
+            class="home-featured-reviews-background pt-px"
+            style="--featured-background: url('/img/pages/home/backgrounds/featured.webp'); --reviews-background: url('/img/pages/home/backgrounds/reviews.webp');"
+        >
+            <FeaturedGrid />
+            <LatestReviewsGrid />
+        </div>
         <LatestPostsGrid />
         <EventCalendarGrid />
-        <LatestPodcastsGrid />
+        <div
+            class="home-podcasts-background pt-5"
+            style="--podcasts-background: url('/img/pages/home/backgrounds/podcasts.webp');"
+        >
+            <LatestPodcastsGrid />
+        </div>
     </div>
 </Layout>
+
+<style>
+    .home-featured-reviews-background {
+        background-image: none !important;
+    }
+
+    .home-podcasts-background {
+        background-image: none !important;
+    }
+
+    @media (min-width: 1024px) {
+        .home-featured-reviews-background {
+            background-image: var(--featured-background), var(--reviews-background) !important;
+            background-position:
+                top center,
+                bottom center;
+            background-repeat:
+                no-repeat,
+                no-repeat;
+            background-size:
+                100% auto,
+                100% auto;
+        }
+
+        .home-podcasts-background {
+            background-image: var(--podcasts-background) !important;
+            background-position: bottom center;
+            background-repeat: repeat-x;
+            background-size: contain;
+        }
+    }
+</style>
