@@ -35,7 +35,7 @@ class ReadPageController extends Controller
                     'with' => 'tags',
                     'order_by' => 'random',
                     'tag' => $post->tags->first()?->name,
-                    'limit' => 5,
+                    'limit' => 3,
                     'except' => $post,
                     'ignore_authorization' => true,
                 ])
