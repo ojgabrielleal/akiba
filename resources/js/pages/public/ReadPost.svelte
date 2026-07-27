@@ -15,7 +15,7 @@
     $: relatedLabel = postTags[primaryTag]?.label ?? "Novidades";
     $: relatedIcon = postTags[primaryTag]?.icon ?? "/svg/news.svg";
     $: authorNickname = article.author?.nickname ?? article.author?.name ?? "Neko Kirame";
-    $: authorUsername = article.author?.username ?? article.author?.nickname ?? "ellysonsantosdecastro";
+    $: authorName = article.author?.name ?? "Ellyson Santos de Castro";
     $: reactionCounts = (article.reactions ?? []).reduce((counts, reaction) => {
         counts[reaction.name] = (counts[reaction.name] ?? 0) + 1;
         return counts;
@@ -111,8 +111,8 @@
                                 <p class="font-noto-sans text-[1.65rem] font-black text-suspense-aurora italic">
                                     {authorNickname}
                                 </p>
-                                <p class="mt-1 text-[0.55rem] leading-none font-black text-suspense-aurora italic">
-                                    ({authorUsername})
+                                <p class="mt-1 text-[0.7rem] leading-none font-black text-suspense-aurora italic">
+                                    ({authorName})
                                 </p>
                             </div>
                             <img
