@@ -111,7 +111,7 @@
                                 <p class="font-noto-sans text-[1.65rem] font-black text-suspense-aurora italic">
                                     {authorNickname}
                                 </p>
-                                <p class="mt-1 text-[0.7rem] leading-none font-black text-suspense-aurora italic">
+                                <p class="mt-1 text-[0.8rem] leading-none font-black text-suspense-aurora italic">
                                     ({authorName})
                                 </p>
                             </div>
