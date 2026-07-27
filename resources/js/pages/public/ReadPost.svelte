@@ -106,7 +106,7 @@
                         <h2 class="text-xl leading-none font-normal text-orange-amber">
                             Autor
                         </h2>
-                        <div class="relative h-full min-h-40 overflow-hidden rounded-md bg-blue-cerulean p-3">
+                        <div class="relative h-full min-h-40 overflow-visible rounded-md bg-blue-cerulean p-3">
                             <div class="relative z-10 max-w-[58%] pt-2 leading-none">
                                 <p class="font-noto-sans text-[1.65rem] font-black text-suspense-aurora italic">
                                     {authorNickname}
