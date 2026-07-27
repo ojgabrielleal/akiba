@@ -50,6 +50,7 @@ class PostResource extends JsonResource
             'title' => $this->title,
             'image' => $this->image,
             'cover' => $this->cover,
+            'views' => $this->views_count,
             'author' => UserResource::make($this->author)->format('summary'),
             'references' => PostReferenceResource::collection($this->references),
             'tags' => PostTagResource::collection($this->tags),
