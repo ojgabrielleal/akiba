@@ -52,7 +52,7 @@
                     <div class="mb-2 hidden grid-cols-[1.5fr_0.85fr_1fr] gap-2 text-suspense-aurora/80 md:grid">
                         <div class="px-4 pb-1 text-center text-xl font-black">Evento</div>
                         <div class="px-4 pb-1 text-center text-xl font-black">Data</div>
-                        <div class="px-4 pb-1 text-center text-xl font-black">⌖ Local</div>
+                        <div class="px-4 pb-1 text-center text-xl font-black">Local</div>
                     </div>
                     <ul class="hidden gap-2 md:grid">
                         {#each events as item (item.uuid)}
