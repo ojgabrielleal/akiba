@@ -21,7 +21,7 @@ class ReadPageController extends Controller
             ->with(['author', 'references', 'tags', 'reactions', 'reviews.author'])
             ->firstOrFail();
 
-        return Inertia::render('public/Read', [
+        return Inertia::render('public/ReadPost', [
             'post' => PostResource::make($post),
             'relatedPosts' => PostResource::collection(
                 $this->postFilter->apply(request()->user(), [
