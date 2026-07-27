@@ -35,7 +35,7 @@
 <Layout {flash} {oauth} {onair} {stream} {pageUrl}>
     <section class="bg-blue-night pt-5 pb-10">
         <div class="bg-blue-marinho">
-            <div class="container-page grid gap-8 px-6 py-8 lg:grid-cols-[minmax(0,1fr)_15rem] lg:px-0">
+            <div class="container-page grid gap-8 py-8 lg:grid-cols-[minmax(0,1fr)_15rem]">
             <article class="min-w-0">
                 <h1 class="mb-5 rounded-md bg-orange-amber px-3 py-2 font-noto-sans text-xl font-black leading-tight text-blue-night uppercase italic sm:text-2xl">
                     {article.title ?? "Quem fez esse bagulho se parecer com outro bagulho que parece com esse bagulho? Que doido"}

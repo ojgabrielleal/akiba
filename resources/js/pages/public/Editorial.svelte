@@ -23,7 +23,7 @@
 <Meta meta={{ title: displayTitle }} />
 <Layout {flash} {oauth} {onair} {stream} {pageUrl}>
     <section class="bg-blue-night pt-10">
-        <header class="relative isolate overflow-hidden bg-contain bg-right bg-no-repeat py-5" style="background-image: url('/img/textures/screentone.webp'), var(--gradient-blue-ocean-cerulean);">
+        <header class="relative isolate overflow-hidden bg-cover bg-right bg-no-repeat py-5 lg:bg-contain" style="background-image: url('/img/textures/screentone.webp'), var(--gradient-blue-ocean-cerulean);">
             <div class="container-page relative">
                 <h1 class="text-center font-noto-sans text-6xl font-black italic uppercase leading-none text-orange-citric">
                     {displayTitle}
