@@ -41,7 +41,7 @@
                         aria-label={`Ler matéria: ${post.title}`}
                         class="group grid grid-cols-[8.75rem_1fr] gap-3 rounded-md transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber motion-reduce:transform-none motion-reduce:transition-none sm:grid-cols-[14rem_1fr]"
                     >
-                        <div class="h-21 overflow-hidden rounded-md bg-neutral-gray sm:h-34">
+                        <div class="h-21 overflow-hidden rounded-md sm:h-34">
                             <img
                                 src={resolvePlaceholderImage(post.cover, "placeholder")}
                                 alt=""
