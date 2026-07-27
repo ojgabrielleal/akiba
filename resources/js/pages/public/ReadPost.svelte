@@ -89,14 +89,14 @@
                         </h2>
                         <div class="grid gap-4">
                             {#each (article.references ?? [{ uuid: "source-a", name: "", url: "#" }, { uuid: "source-b", name: "", url: "#" }]) as source}
-                                <a href={source.url} class="min-h-12 rounded-md bg-blue-skywave px-4 py-3 text-sm font-black text-suspense-aurora" target="_blank" rel="noopener noreferrer" aria-label={source.name || "Fonte de pesquisa"}>
+                                <a href={source.url} class="min-h-12 rounded-md bg-blue-cerulean px-4 py-3 text-sm font-black text-suspense-aurora" target="_blank" rel="noopener noreferrer" aria-label={source.name || "Fonte de pesquisa"}>
                                     {source.name}
                                 </a>
                             {/each}
                         </div>
                         <p class="flex items-center justify-end self-end text-right text-xl leading-none font-normal text-orange-amber">
                             Postado:
-                            <span class="ml-2 rounded-sm bg-blue-skywave px-3 py-1 text-xl font-black text-suspense-aurora italic">
+                            <span class="ml-2 rounded-sm bg-blue-cerulean px-3 py-1 text-xl font-black text-suspense-aurora italic">
                                 25/12/24
                             </span>
                         </p>
@@ -106,7 +106,7 @@
                         <h2 class="text-xl leading-none font-normal text-orange-amber">
                             Autor
                         </h2>
-                        <div class="relative h-full min-h-40 overflow-visible rounded-md bg-blue-skywave p-3">
+                        <div class="relative h-full min-h-40 overflow-visible rounded-md bg-blue-cerulean p-3">
                             <div class="relative z-10 max-w-[58%] pt-2 leading-none">
                                 <p class="font-noto-sans text-[1.65rem] font-black text-suspense-aurora italic">
                                     {authorNickname}
