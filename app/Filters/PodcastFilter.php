@@ -24,6 +24,10 @@ class PodcastFilter
             ->orderBy(
                 $filters['order_by'] ?? 'id',
                 $filters['order_direction'] ?? 'desc'
+            )
+            ->when(
+                $filters['limit'] ?? null,
+                fn (Builder $query, int $limit) => $query->limit($limit)
             );
 
         return $query->when(

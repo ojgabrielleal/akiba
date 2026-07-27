@@ -3,6 +3,8 @@
     export let href = null;
     export let alt = "Anúncio";
     export let mirrored = false;
+    let className = "";
+    export { className as class };
 </script>
 
 <svelte:element
@@ -10,7 +12,10 @@
     {href}
     target={href ? "_blank" : undefined}
     rel={href ? "noopener noreferrer sponsored" : undefined}
-    class="group relative block h-32 overflow-hidden border border-blue-skywave/25 bg-blue-ocean/20 [clip-path:polygon(0_0,96%_0,100%_18%,100%_100%,4%_100%,0_82%)]"
+    class={[
+        "group relative block h-32 cursor-pointer overflow-hidden border border-blue-skywave/25 bg-blue-ocean/20 transition duration-300 ease-out hover:scale-[1.02] motion-reduce:transform-none motion-reduce:transition-none [clip-path:polygon(0_0,96%_0,100%_18%,100%_100%,4%_100%,0_82%)]",
+        className,
+    ]}
     aria-label={href ? alt : undefined}
 >
     {#if image}

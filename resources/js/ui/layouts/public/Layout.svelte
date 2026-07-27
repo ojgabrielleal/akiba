@@ -1,7 +1,7 @@
 <script>
     import { usePoll } from "@inertiajs/svelte";
     import { FlashToaster } from "@/ui/components/public";
-    import { Navbar } from "@/ui/widgets/public";
+    import { Footer, Navbar, PlayerBar } from "@/ui/widgets/public";
 
     usePoll(10 * 1000, {
         only: ["onair"]
@@ -17,5 +17,5 @@
     <slot />
 </main>
 
-<footer>
-</footer>
+<Footer />
+<PlayerBar />

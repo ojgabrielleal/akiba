@@ -54,17 +54,17 @@
                     <Link
                         href={item.address}
                         aria-label={item.name}
-                        class="group/item relative flex items-center gap-1 whitespace-nowrap font-noto-sans text-[0.825rem] font-extrabold uppercase italic text-neutral-gray transition-colors hover:text-orange-amber"
+                        class="group/item relative flex items-center gap-1 whitespace-nowrap font-noto-sans text-[0.825rem] font-extrabold uppercase italic text-neutral-gray transition-colors hover:text-orange-citric"
                     >
                         <img
                             src={item.icon}
                             alt=""
                             aria-hidden="true"
-                            class="size-[1.3125rem] filter-neutral-gray transition group-hover/item:filter-orange-amber"
+                            class="size-[1.3125rem] filter-neutral-gray group-hover/item:filter-orange-citric"
                         />
                         {item.name}
                         <span
-                            class="absolute -bottom-2 left-0 h-0.5 w-full origin-left scale-x-0 rounded-full bg-orange-amber transition-transform duration-300 group-hover/item:scale-x-100"
+                            class="absolute -bottom-2 left-0 h-0.5 w-full origin-left scale-x-0 rounded-full bg-orange-citric transition-transform duration-300 group-hover/item:scale-x-100"
                             aria-hidden="true"
                         ></span>
                     </Link>

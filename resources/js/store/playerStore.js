@@ -1,6 +1,7 @@
 import { get, writable } from "svelte/store";
 
 const DEFAULT_VOLUME = 0.03;
+const MIN_PLAY_LOADING_MS = 500;
 const VOLUME_STORAGE_KEY = "akiba-player-volume";
 
 const clampVolume = (volume) => Math.min(1, Math.max(0, Number(volume)));
@@ -31,6 +32,32 @@ export const player = writable(initialState);
 
 let audio;
 let listenersAttached = false;
+let playLoadingTimeout;
+let playLoadingStartedAt = 0;
+
+const clearPlayLoadingTimeout = () => {
+    if (!playLoadingTimeout) return;
+
+    clearTimeout(playLoadingTimeout);
+    playLoadingTimeout = undefined;
+};
+
+const startPlayLoading = () => {
+    clearPlayLoadingTimeout();
+    playLoadingStartedAt = Date.now();
+    player.update((state) => ({ ...state, loading: true, error: null }));
+};
+
+const finishPlayLoading = () => {
+    const remainingTime = Math.max(0, MIN_PLAY_LOADING_MS - (Date.now() - playLoadingStartedAt));
+
+    clearPlayLoadingTimeout();
+
+    playLoadingTimeout = setTimeout(() => {
+        player.update((state) => ({ ...state, loading: false }));
+        playLoadingTimeout = undefined;
+    }, remainingTime);
+};
 
 const getAudio = () => {
     if (typeof Audio === "undefined") return null;
@@ -56,6 +83,7 @@ const getAudio = () => {
 };
 
 const handlePause = () => {
+    clearPlayLoadingTimeout();
     player.update((state) => ({ ...state, playing: false, loading: false }));
 };
 
@@ -64,10 +92,12 @@ const handleWaiting = () => {
 };
 
 const handlePlaying = () => {
-    player.update((state) => ({ ...state, playing: true, loading: false, error: null }));
+    player.update((state) => ({ ...state, playing: true, error: null }));
+    finishPlayLoading();
 };
 
 const handleError = () => {
+    clearPlayLoadingTimeout();
     player.update((state) => ({
         ...state,
         playing: false,
@@ -103,12 +133,13 @@ export const playAudio = async () => {
     const element = getAudio();
     if (!element) return;
 
-    player.update((state) => ({ ...state, loading: true, error: null }));
+    startPlayLoading();
 
     try {
         await element.play();
         setupMediaSession();
     } catch {
+        clearPlayLoadingTimeout();
         player.update((state) => ({
             ...state,
             playing: false,
@@ -158,6 +189,8 @@ export const toggleMute = () => {
 };
 
 export const destroyPlayer = () => {
+    clearPlayLoadingTimeout();
+
     if (audio && listenersAttached) {
         audio.removeEventListener("pause", handlePause);
         audio.removeEventListener("waiting", handleWaiting);

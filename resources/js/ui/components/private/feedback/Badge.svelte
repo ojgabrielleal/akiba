@@ -1,8 +1,8 @@
 <script>
-    export let variant = "light";
-    export let size = "sm";
     let className = "";
     export { className as class };
+    export let variant = "light";
+    export let size = "sm";
 
     const variants = {
         light: "bg-suspense-aurora text-blue-marinho",

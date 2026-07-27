@@ -3,7 +3,15 @@
     import { Meta } from "@/config";
     import { syncMediaSessionMetadata } from "@/store";
     import { Layout } from "@/ui/layouts/public";
-    import { FeaturedGrid, LatestReviewsGrid, MainPlayer, MobilePlayer } from "@/ui/widgets/public";
+    import {
+        EventCalendarGrid,
+        FeaturedGrid,
+        LatestPostsGrid,
+        LatestReviewsGrid,
+        LatestPodcastsGrid,
+        MainPlayer,
+        MobilePlayer,
+    } from "@/ui/widgets/public";
 
     $: ({ onair: { data: [air] }, stream } = $page.props);
     $: syncMediaSessionMetadata(air, stream);
@@ -17,7 +25,7 @@
 <Layout>
     <h1 class="sr-only">Akiba Station</h1>
     <div class="bg-blue-night pt-px pb-5">
-        <div class="mt-0 lg:mt-28">
+        <div class="mt-0 lg:mt-28" data-main-player>
             <div class="hidden w-full lg:block">
                 <MainPlayer />
             </div>
@@ -29,5 +37,8 @@
     <div class="bg-blue-marinho mt-8 pt-px">
         <FeaturedGrid />
         <LatestReviewsGrid />
+        <LatestPostsGrid />
+        <EventCalendarGrid />
+        <LatestPodcastsGrid />
     </div>
 </Layout>

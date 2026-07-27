@@ -27,6 +27,19 @@ class PostResource extends JsonResource
             ];
         }
 
+        if ($this->format === 'home-list') {
+            return [
+                'model' => $this->model,
+                'uuid' => $this->uuid,
+                'slug' => $this->slug,
+                'title' => $this->title,
+                'image' => $this->image,
+                'cover' => $this->cover,
+                'metadata' => $this->metadata,
+                'tags' => PostTagResource::collection($this->tags),
+            ];
+        }
+
         $postData = [
             'uuid' => $this->uuid,
             'slug' => $this->slug,
