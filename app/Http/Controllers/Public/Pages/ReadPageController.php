@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Public\Pages;
 
+use App\Actions\PageView\StorePageViewAction;
 use App\Filters\PostFilter;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Post\PostResource;
@@ -12,6 +13,7 @@ class ReadPageController extends Controller
 {
     public function __construct(
         private PostFilter $postFilter,
+        private StorePageViewAction $storePageViewAction,
     ) {}
 
     public function render(string $slug)
@@ -20,6 +22,8 @@ class ReadPageController extends Controller
             ->where('slug', $slug)
             ->with(['author', 'references', 'tags', 'reactions', 'reviews.author'])
             ->firstOrFail();
+
+        $this->storePageViewAction->execute($post, request());
 
         return Inertia::render('public/ReadPost', [
             'post' => PostResource::make($post),
@@ -31,7 +35,7 @@ class ReadPageController extends Controller
                     'with' => 'tags',
                     'order_by' => 'random',
                     'tag' => $post->tags->first()?->name,
-                    'limit' => 3,
+                    'limit' => 5,
                     'except' => $post,
                     'ignore_authorization' => true,
                 ])
