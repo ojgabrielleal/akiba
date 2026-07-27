@@ -45,7 +45,7 @@
                     src={resolvePlaceholderImage(article.cover, "placeholder")}
                     alt=""
                     aria-hidden="true"
-                    class="mb-5 w-full rounded-md bg-neutral-gray"
+                    class="mb-5 aspect-[16/9] w-full rounded-md bg-neutral-gray object-cover"
                 />
 
                 {#if article.content}
