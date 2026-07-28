@@ -13,15 +13,11 @@ class MarkTaskToReviewController extends Controller
 {
     use HasFlashMessages;
 
-    public function __construct(
-        private MarkTaskToReviewAction $markTaskToReviewAction,
-    ) {}
-
-    public function __invoke(Task $task)
+    public function __invoke(MarkTaskToReviewAction $action, Task $task)
     {
         $this->authorize('markForReview', $task);
 
-        $this->markTaskToReviewAction->execute($task);
+        $action->execute($task);
 
         return $this->flashMessage('complete');
     }

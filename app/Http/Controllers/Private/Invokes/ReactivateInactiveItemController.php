@@ -29,16 +29,12 @@ class ReactivateInactiveItemController extends Controller
         'repository' => Repository::class,
     ];
 
-    public function __construct(
-        private ReactivateInactiveItemAction $reactivateInactiveItemAction,
-    ) {}
-
-    public function __invoke(string $type, string $uuid)
+    public function __invoke(ReactivateInactiveItemAction $action, string $type, string $uuid)
     {
         Gate::authorize('inactive.restore');
 
         $item = $this->resolveItem($type, $uuid);
-        $this->reactivateInactiveItemAction->execute($item);
+        $action->execute($item);
 
         return $this->flashMessage('update', 'Item reativado com sucesso.', '♻️');
     }

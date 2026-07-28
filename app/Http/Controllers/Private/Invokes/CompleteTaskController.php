@@ -13,15 +13,11 @@ class CompleteTaskController extends Controller
 {
     use HasFlashMessages;
 
-    public function __construct(
-        private CompleteTaskAction $completeTaskAction,
-    ) {}
-
-    public function __invoke(Task $task)
+    public function __invoke(CompleteTaskAction $action, Task $task)
     {
         $this->authorize('complete', $task);
 
-        $this->completeTaskAction->execute($task);
+        $action->execute($task);
 
         return $this->flashMessage('complete');
     }

@@ -18,23 +18,34 @@ class StoreRoleAction
     public function execute(array $data): Role
     {
         return DB::transaction(function () use ($data) {
-            $role = Role::create([
-                'label' => $data['label'],
-                'weight' => $data['weight'],
-                'description' => $data['description'],
-                'icon' => $this->image->store('roles', $data['icon']),
-            ]);
-
-            if (!empty($data['permissions'])) {
-                $permissions = Permission::query()
-                    ->whereIn('uuid', $data['permissions'])
-                    ->pluck('id')
-                    ->toArray();
-
-                $role->permissions()->sync($permissions);
-            }
+            $role = $this->storeRole($data);
+            $this->syncPermissions($role, $data['permissions'] ?? []);
 
             return $role;
         });
+    }
+
+    private function storeRole(array $data): Role
+    {
+        return Role::create([
+            'label' => $data['label'],
+            'weight' => $data['weight'],
+            'description' => $data['description'],
+            'icon' => $this->image->store('roles', $data['icon']),
+        ]);
+    }
+
+    private function syncPermissions(Role $role, array $permissionUuids): void
+    {
+        if (empty($permissionUuids)) {
+            return;
+        }
+
+        $permissions = Permission::query()
+            ->whereIn('uuid', $permissionUuids)
+            ->pluck('id')
+            ->toArray();
+
+        $role->permissions()->sync($permissions);
     }
 }

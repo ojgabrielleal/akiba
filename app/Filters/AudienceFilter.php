@@ -3,15 +3,17 @@
 namespace App\Filters;
 
 use App\Models\RadioStation;
+
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class AudienceFilter
 {
-    public function apply(array $filters = []): Collection
+    public function apply(array $filters = []): Collection|LengthAwarePaginator
     {
-        $stations = RadioStation::query()
+        $query = RadioStation::query()
             ->when(
                 $filters['active'] ?? false,
                 fn (Builder $query) => $query->where('is_active', true)
@@ -23,10 +25,15 @@ class AudienceFilter
             ->orderBy(
                 $filters['order_by'] ?? 'id',
                 $filters['order_direction'] ?? 'asc'
-            )
-            ->get();
+            );
 
-        if ($filters['order_by_audience'] ?? false) {
+        $stations = $query->when(
+            $filters['paginate'] ?? null,
+            fn (Builder $query, int $perPage) => $query->paginate($perPage),
+            fn (Builder $query) => $query->get()
+        );
+
+        if (($filters['order_by_audience'] ?? false) && $stations instanceof Collection) {
             return $stations
                 ->sortByDesc(fn (RadioStation $station) => $station->latestAudienceSnapshot?->listeners ?? -1)
                 ->values();
@@ -35,8 +42,10 @@ class AudienceFilter
         return $stations;
     }
 
-    public function history(string $period = 'day'): Collection
+    public function history(array $filters = []): Collection
     {
+        $period = $filters['period'] ?? 'day';
+
         $startsAt = match ($period) {
             'week' => now()->subWeek(),
             'month' => now()->subMonth(),

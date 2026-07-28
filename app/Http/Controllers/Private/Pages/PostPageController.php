@@ -26,17 +26,23 @@ class PostPageController extends Controller
     public function render()
     {
         return Inertia::render($this->render, [
-            'posts' => $this->whenCanViewAny(Post::class,
-                fn () => PostResource::collection(
-                    $this->postFilter->apply(request()->user(), [
-                        'active' => true,
-                        'with_count' => 'views',
-                        'with' => ['author', 'reviews.author'],
-                        'search' => request()->input('search'),
-                        'paginate' => 10,
-                    ])
-                ),
-            ),
+            'posts' => $this->indexPosts(),
         ]);
+    }
+
+    private function indexPosts()
+    {
+        return $this->whenCanViewAny(Post::class,
+            fn () => PostResource::collection(
+                $this->postFilter->apply([
+                    'user' => request()->user(),
+                    'active' => true,
+                    'with_count' => 'views',
+                    'with' => ['author', 'reviews.author'],
+                    'search' => request()->input('search'),
+                    'paginate' => 10,
+                ])
+            ),
+        );
     }
 }

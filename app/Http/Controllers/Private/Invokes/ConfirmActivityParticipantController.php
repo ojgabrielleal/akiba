@@ -15,15 +15,11 @@ class ConfirmActivityParticipantController extends Controller
 {
     use HasFlashMessages;
 
-    public function __construct(
-        private ConfirmActivityParticipantAction $confirmActivityParticipantAction,
-    ) {}
-
-    public function __invoke(Request $request, Activity $activity)
+    public function __invoke(Request $request, ConfirmActivityParticipantAction $action, Activity $activity)
     {
         $this->authorize('confirmParticipation', $activity);
 
-        $this->confirmActivityParticipantAction->execute($activity, $request->user());
+        $action->execute($activity, $request->user());
 
         return $this->flashMessage('save');
     }

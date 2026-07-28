@@ -30,42 +30,57 @@ class MediaPageController extends Controller
     public function render()
     {
         return Inertia::render($this->render, [
-            'polls' => $this->whenCanViewAny(Poll::class,
-                fn () => PollResource::collection(
-                    $this->pollFilter->apply([
-                        'active' => true,
-                        'with_count' => 'votes',
-                        'with' => [
-                            'options' => fn ($query) => $query
-                                ->withCount('votes')
-                                ->with('votes'),
-                            'votes.user',
-                        ],
-                    ])
-                ),
-            ),
-            'latestPoll' => $this->whenCanViewAny(Poll::class,
-                function () {
-                    $poll = $this->pollFilter->apply([
-                        'open' => true,
-                        'with_count' => 'votes',
-                        'with' => [
-                            'options' => fn ($query) => $query
-                                ->withCount('votes')
-                                ->with('votes'),
-                            'votes.user',
-                        ],
-                        'first' => true,
-                    ]);
-
-                    return $poll ? PollResource::make($poll) : null;
-                },
-            ),
-            'listenerGalleries' => $this->whenCanViewAny(ListenerGallery::class,
-                fn () => ListenerGalleryResource::collection(
-                    $this->listenerGalleryFilter->apply(['paginate' => 20])
-                ),
-            ),
+            'polls' => $this->indexPolls(),
+            'latestPoll' => $this->indexLatestPoll(),
+            'listenerGalleries' => $this->indexListenerGalleries(),
         ]);
+    }
+
+    private function indexPolls()
+    {
+        return $this->whenCanViewAny(Poll::class,
+            fn () => PollResource::collection(
+                $this->pollFilter->apply([
+                    'active' => true,
+                    'with_count' => 'votes',
+                    'with' => $this->pollRelations(),
+                ])
+            ),
+        );
+    }
+
+    private function indexLatestPoll()
+    {
+        return $this->whenCanViewAny(Poll::class,
+            function () {
+                $poll = $this->pollFilter->apply([
+                    'open' => true,
+                    'with_count' => 'votes',
+                    'with' => $this->pollRelations(),
+                    'first' => true,
+                ]);
+
+                return $poll ? PollResource::make($poll) : null;
+            },
+        );
+    }
+
+    private function indexListenerGalleries()
+    {
+        return $this->whenCanViewAny(ListenerGallery::class,
+            fn () => ListenerGalleryResource::collection(
+                $this->listenerGalleryFilter->apply(['paginate' => 20])
+            ),
+        );
+    }
+
+    private function pollRelations(): array
+    {
+        return [
+            'options' => fn ($query) => $query
+                ->withCount('votes')
+                ->with('votes'),
+            'votes.user',
+        ];
     }
 }

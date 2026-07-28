@@ -19,59 +19,88 @@ class HomePageController extends Controller
     public function render()
     {
         return Inertia::render('public/Home', [
-            'featuredPosts' => PostResource::collection(
-                $this->postFilter->apply(request()->user(), [
-                    'active' => true,
-                    'status' => 'published',
-                    'viewed_since' => now()->subWeek(),
-                    'order_by' => 'views_count',
-                    'order_direction' => 'desc',
-                    'limit' => 3,
-                    'ignore_authorization' => true,
-                ])
-            )->format('featured'),
-            'latestReviews' => PostResource::collection(
-                $this->postFilter->apply(request()->user(), [
-                    'active' => true,
-                    'status' => 'published',
-                    'module' => 'review',
-                    'order_by' => 'created_at',
-                    'order_direction' => 'desc',
-                    'limit' => 5,
-                    'ignore_authorization' => true,
-                ])
-            )->format('featured'),
-            'posts' => PostResource::collection(
-                $this->postFilter->apply(request()->user(), [
-                    'active' => true,
-                    'status' => 'published',
-                    'module' => 'post',
-                    'with' => 'tags',
-                    'order_by' => 'created_at',
-                    'order_direction' => 'desc',
-                    'limit' => 6,
-                    'ignore_authorization' => true,
-                ])
-            )->format('home-list'),
-            'events' => PostResource::collection(
-                $this->postFilter->apply(request()->user(), [
-                    'active' => true,
-                    'status' => 'published',
-                    'module' => 'event',
-                    'order_by' => 'created_at',
-                    'order_direction' => 'desc',
-                    'limit' => 5,
-                    'ignore_authorization' => true,
-                ])
-            )->format('home-list'),
-            'podcasts' => PodcastResource::collection(
-                $this->podcastFilter->apply([
-                    'active' => true,
-                    'order_by' => 'created_at',
-                    'order_direction' => 'desc',
-                    'limit' => 3,
-                ])
-            ),
+            'featuredPosts' => $this->indexFeaturedPosts(),
+            'latestReviews' => $this->indexLatestReviews(),
+            'posts' => $this->indexPosts(),
+            'events' => $this->indexEvents(),
+            'podcasts' => $this->indexPodcasts(),
         ]);
+    }
+
+    private function indexFeaturedPosts()
+    {
+        return PostResource::collection(
+            $this->postFilter->apply([
+                    'user' => request()->user(),
+                'active' => true,
+                'status' => 'published',
+                'viewed_since' => now()->subWeek(),
+                'order_by' => 'views_count',
+                'order_direction' => 'desc',
+                'limit' => 3,
+                'ignore_authorization' => true,
+            ])
+        )->format('featured');
+    }
+
+    private function indexLatestReviews()
+    {
+        return PostResource::collection(
+            $this->postFilter->apply([
+                    'user' => request()->user(),
+                'active' => true,
+                'status' => 'published',
+                'module' => 'review',
+                'order_by' => 'created_at',
+                'order_direction' => 'desc',
+                'limit' => 5,
+                'ignore_authorization' => true,
+            ])
+        )->format('featured');
+    }
+
+    private function indexPosts()
+    {
+        return PostResource::collection(
+            $this->postFilter->apply([
+                    'user' => request()->user(),
+                'active' => true,
+                'status' => 'published',
+                'module' => 'post',
+                'with' => 'tags',
+                'order_by' => 'created_at',
+                'order_direction' => 'desc',
+                'limit' => 6,
+                'ignore_authorization' => true,
+            ])
+        )->format('home-list');
+    }
+
+    private function indexEvents()
+    {
+        return PostResource::collection(
+            $this->postFilter->apply([
+                    'user' => request()->user(),
+                'active' => true,
+                'status' => 'published',
+                'module' => 'event',
+                'order_by' => 'created_at',
+                'order_direction' => 'desc',
+                'limit' => 5,
+                'ignore_authorization' => true,
+            ])
+        )->format('home-list');
+    }
+
+    private function indexPodcasts()
+    {
+        return PodcastResource::collection(
+            $this->podcastFilter->apply([
+                'active' => true,
+                'order_by' => 'created_at',
+                'order_direction' => 'desc',
+                'limit' => 3,
+            ])
+        );
     }
 }

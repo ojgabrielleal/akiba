@@ -12,13 +12,9 @@ use Illuminate\Http\RedirectResponse;
 
 class SongRequestController extends Controller
 {
-    public function __construct(
-        private StoreSongRequestAction $storeSongRequestAction,
-    ) {}
-
-    public function store(StoreSongRequestRequest $request): RedirectResponse
+    public function store(StoreSongRequestRequest $request, StoreSongRequestAction $action): RedirectResponse
     {
-        $this->storeSongRequestAction->execute(
+        $action->execute(
             $request->validated(),
             $request->attributes->get('oauth_account'),
         );

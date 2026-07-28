@@ -22,44 +22,59 @@ class StoreProgramAction
         $this->image = $image;
     }
 
-    public function execute(User $user, array $data, ?UploadedFile $image = null): Program
+    public function execute(User $user, User $responsible, array $data, ?UploadedFile $image = null): Program
     {
-        return DB::transaction(function () use ($user, $data, $image) {
-            $program = Program::create([
-                'user_id' => $data['access_type'] === 'free' ? $user->id : User::where('uuid', $data['user'])->first()->id,
-                'name' => $data['name'],
-                'image' => $this->image->store('programs', $image),
-                'access_type' => $data['access_type'],
-                'execution_mode' => $data['execution_mode'],
-                'is_default_auto_dj' => filter_var($data['is_default_auto_dj'] ?? false, FILTER_VALIDATE_BOOLEAN),
-                'phrases' => $data['phrases'],
-            ]);
+        return DB::transaction(function () use ($user, $responsible, $data, $image) {
+            $program = $this->storeProgram($responsible, $data, $image);
 
             if ($program->is_default_auto_dj) {
                 $this->clearOtherDefaultAutoDjPrograms($program);
             }
 
-            if (!empty($data['airtimes']) && $data['execution_mode'] === 'live') {
-                $program->programAirtimes()->createMany(collect($data['airtimes']));
-            }
-
-            if (!empty($data['schedules']) && $data['execution_mode'] !== 'live') {
-                $schedules = collect($data['schedules']);
-                $this->ensureSchedulesCanBeScheduled($schedules);
-
-                foreach ($schedules as $schedule) {
-                    $program->schedules()->create([
-                        'user_id' => $user->id,
-                        'action' => 'start_program',
-                        'scheduled_at' => $schedule['scheduled_at'],
-                    ]);
-                }
-            }
+            $this->storeAirtimes($program, $data);
+            $this->storeSchedules($program, $user, $data);
 
             return $program;
         });
     }
 
+    private function storeProgram(User $responsible, array $data, ?UploadedFile $image = null): Program
+    {
+        return Program::create([
+            'user_id' => $responsible->id,
+            'name' => $data['name'],
+            'image' => $this->image->store('programs', $image),
+            'access_type' => $data['access_type'],
+            'execution_mode' => $data['execution_mode'],
+            'is_default_auto_dj' => filter_var($data['is_default_auto_dj'] ?? false, FILTER_VALIDATE_BOOLEAN),
+            'phrases' => $data['phrases'] ?? [],
+        ]);
+    }
+
+    private function storeAirtimes(Program $program, array $data): void
+    {
+        if (! empty($data['airtimes']) && $data['execution_mode'] === 'live') {
+            $program->programAirtimes()->createMany(collect($data['airtimes']));
+        }
+    }
+
+    private function storeSchedules(Program $program, User $user, array $data): void
+    {
+        if (empty($data['schedules']) || $data['execution_mode'] === 'live') {
+            return;
+        }
+
+        $schedules = collect($data['schedules']);
+        $this->ensureSchedulesCanBeScheduled($schedules);
+
+        foreach ($schedules as $schedule) {
+            $program->schedules()->create([
+                'user_id' => $user->id,
+                'action' => 'start_program',
+                'scheduled_at' => $schedule['scheduled_at'],
+            ]);
+        }
+    }
 
     private function clearOtherDefaultAutoDjPrograms(Program $program): void
     {

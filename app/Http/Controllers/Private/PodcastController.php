@@ -27,8 +27,6 @@ class PodcastController extends Controller
 
     public function __construct(
         private PodcastFilter $podcastFilter,
-        private StorePodcastAction $storePodcastAction,
-        private UpdatePodcastAction $updatePodcastAction,
     ) {}
 
     public function show(Podcast $podcast)
@@ -46,9 +44,9 @@ class PodcastController extends Controller
         ]);
     }
 
-    public function store(StorePodcastRequest $request)
+    public function store(StorePodcastRequest $request, StorePodcastAction $action)
     {
-        $this->storePodcastAction->execute(
+        $action->execute(
             $request->user(),
             $request->validated()
         );
@@ -56,9 +54,9 @@ class PodcastController extends Controller
         return $this->flashMessage('save');
     }
 
-    public function update(UpdatePodcastRequest $request, Podcast $podcast)
+    public function update(UpdatePodcastRequest $request, UpdatePodcastAction $action, Podcast $podcast)
     {
-        $this->updatePodcastAction->execute(
+        $action->execute(
             $podcast,
             $request->validated(),
             $request->file('image')

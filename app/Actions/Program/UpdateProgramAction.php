@@ -11,6 +11,7 @@ use App\Services\Process\ImageProcessService;
 use DomainException;
 
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 
 class UpdateProgramAction
 {
@@ -21,71 +22,101 @@ class UpdateProgramAction
         $this->image = $image;
     }
 
-    public function execute(Program $program, User $user, array $data, ?UploadedFile $image = null): Program
+    public function execute(Program $program, User $user, User $responsible, array $data, ?UploadedFile $image = null): Program
     {
-        return $program->getConnection()->transaction(function () use ($program, $user, $data, $image) {
-            $program->fill([
-                'user_id' => $data['access_type'] === 'free' ? $user->id : User::where('uuid', $data['user'])->first()->id,
-                'name' => $data['name'],
-                'image' => $this->image->store('programs', $image, $program->image),
-                'access_type' => $data['access_type'],
-                'execution_mode' => $data['execution_mode'],
-                'is_default_auto_dj' => filter_var($data['is_default_auto_dj'] ?? false, FILTER_VALIDATE_BOOLEAN),
-                'phrases' => $data['phrases'] ?? [],
-            ]);
-
-            if ($program->isDirty()) $program->save();
+        return DB::transaction(function () use ($program, $user, $responsible, $data, $image) {
+            $this->updateProgram($program, $responsible, $data, $image);
 
             if ($program->is_default_auto_dj) {
                 $this->clearOtherDefaultAutoDjPrograms($program);
             }
 
-            if ($program->execution_mode === 'live') {
-                $program->schedules()->where('action', 'start_program')->delete();
-            } else {
-                $program->programAirtimes()->delete();
-            }
-
-            if ($program->execution_mode === 'live') {
-                $airtimes = collect($data['airtimes'] ?? []);
-
-                $uuids = $airtimes->pluck('uuid')->filter()->toArray();
-                $program->programAirtimes()->whereNotIn('uuid', $uuids)->delete();
-
-                foreach ($airtimes as $schedule) {
-                    $program->programAirtimes()->updateOrCreate(
-                        ['uuid' => $schedule['uuid']],
-                        [
-                            'day' => $schedule['day'], 
-                            'hour' => $schedule['hour']
-                        ]
-                    );
-                }
-            }else{
-                $schedules = collect($data['schedules']);
-                $uuids = $schedules->pluck('uuid')->filter()->toArray();
-
-                $this->ensureSchedulesCanBeScheduled($schedules, $uuids);
-
-                $program->schedules()
-                    ->where('action', 'start_program')
-                    ->whereNotIn('uuid', $uuids)
-                    ->delete();
-
-                foreach ($schedules as $schedule) {
-                    $program->schedules()->updateOrCreate(
-                        ['uuid' => $schedule['uuid']],
-                        [
-                            'user_id' => $user->id,
-                            'action' => 'start_program',
-                            'scheduled_at' => $schedule['scheduled_at'],
-                        ]
-                    );
-                }
-            }
+            $this->clearUnavailableExecutionData($program);
+            $this->syncExecutionData($program, $user, $data);
 
             return $program;
         });
+    }
+
+    private function updateProgram(Program $program, User $responsible, array $data, ?UploadedFile $image = null): void
+    {
+        $program->fill([
+            'user_id' => $responsible->id,
+            'name' => $data['name'],
+            'image' => $this->image->store('programs', $image, $program->image),
+            'access_type' => $data['access_type'],
+            'execution_mode' => $data['execution_mode'],
+            'is_default_auto_dj' => filter_var($data['is_default_auto_dj'] ?? false, FILTER_VALIDATE_BOOLEAN),
+            'phrases' => $data['phrases'] ?? [],
+        ]);
+
+        if ($program->isDirty()) {
+            $program->save();
+        }
+    }
+
+    private function clearUnavailableExecutionData(Program $program): void
+    {
+        if ($program->execution_mode === 'live') {
+            $program->schedules()->where('action', 'start_program')->delete();
+
+            return;
+        }
+
+        $program->programAirtimes()->delete();
+    }
+
+    private function syncExecutionData(Program $program, User $user, array $data): void
+    {
+        if ($program->execution_mode === 'live') {
+            $this->syncAirtimes($program, $data);
+
+            return;
+        }
+
+        $this->syncSchedules($program, $user, $data);
+    }
+
+    private function syncAirtimes(Program $program, array $data): void
+    {
+        $airtimes = collect($data['airtimes'] ?? []);
+
+        $uuids = $airtimes->pluck('uuid')->filter()->toArray();
+        $program->programAirtimes()->whereNotIn('uuid', $uuids)->delete();
+
+        foreach ($airtimes as $schedule) {
+            $program->programAirtimes()->updateOrCreate(
+                ['uuid' => $schedule['uuid'] ?? null],
+                [
+                    'day' => $schedule['day'],
+                    'hour' => $schedule['hour'],
+                ]
+            );
+        }
+    }
+
+    private function syncSchedules(Program $program, User $user, array $data): void
+    {
+        $schedules = collect($data['schedules'] ?? []);
+        $uuids = $schedules->pluck('uuid')->filter()->toArray();
+
+        $this->ensureSchedulesCanBeScheduled($schedules, $uuids);
+
+        $program->schedules()
+            ->where('action', 'start_program')
+            ->whereNotIn('uuid', $uuids)
+            ->delete();
+
+        foreach ($schedules as $schedule) {
+            $program->schedules()->updateOrCreate(
+                ['uuid' => $schedule['uuid'] ?? null],
+                [
+                    'user_id' => $user->id,
+                    'action' => 'start_program',
+                    'scheduled_at' => $schedule['scheduled_at'],
+                ]
+            );
+        }
     }
 
     private function clearOtherDefaultAutoDjPrograms(Program $program): void

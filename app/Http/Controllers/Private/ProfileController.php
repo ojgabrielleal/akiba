@@ -15,13 +15,9 @@ class ProfileController extends Controller
 {
     use HasFlashMessages;
 
-    public function __construct(
-        private UpdateProfileAction $updateProfileAction,
-    ) {}
-
-    public function update(UpdateProfileRequest $request, User $user)
+    public function update(UpdateProfileRequest $request, UpdateProfileAction $action, User $user)
     {
-        $this->updateProfileAction->execute(
+        $action->execute(
             $user,
             $request->validated(),
             $request->file('avatar')

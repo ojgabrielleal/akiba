@@ -13,13 +13,9 @@ class ListenerMonthController extends Controller
 {
     use HasFlashMessages;
 
-    public function __construct(
-        private StoreListenerMonthAction $storeListenerMonthAction,
-    ) {}
-
-    public function store(StoreListenerMonthRequest $request)
+    public function store(StoreListenerMonthRequest $request, StoreListenerMonthAction $action)
     {
-        $this->storeListenerMonthAction->execute();
+        $action->execute();
 
         return $this->flashMessage('save');
     }

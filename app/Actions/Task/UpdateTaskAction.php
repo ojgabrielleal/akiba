@@ -9,11 +9,9 @@ use Illuminate\Support\Facades\DB;
 
 class UpdateTaskAction
 {
-    public function execute(Task $task, array $data): Task
+    public function execute(Task $task, User $user, array $data): Task
     {
-        return DB::transaction(function () use ($task, $data) {
-            $user = User::where('uuid', $data['user'])->firstOrFail();
-
+        return DB::transaction(function () use ($task, $user, $data) {
             $task->fill([
                 'user_id' => $user->id,
                 'title' => $data['title'],

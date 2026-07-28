@@ -29,16 +29,12 @@ class DestroyInactiveItemController extends Controller
         'repository' => Repository::class,
     ];
 
-    public function __construct(
-        private DestroyInactiveItemAction $destroyInactiveItemAction,
-    ) {}
-
-    public function __invoke(string $type, string $uuid)
+    public function __invoke(DestroyInactiveItemAction $action, string $type, string $uuid)
     {
         Gate::authorize('inactive.delete');
 
         $item = $this->resolveItem($type, $uuid);
-        $this->destroyInactiveItemAction->execute($item);
+        $action->execute($item);
 
         return $this->flashMessage('delete', 'Item excluído definitivamente.');
     }

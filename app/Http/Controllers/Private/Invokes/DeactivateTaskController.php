@@ -13,15 +13,11 @@ class DeactivateTaskController extends Controller
 {
     use HasFlashMessages;
 
-    public function __construct(
-        private DeactivateTaskAction $deactivateTaskAction,
-    ) {}
-
-    public function __invoke(Task $task)
+    public function __invoke(DeactivateTaskAction $action, Task $task)
     {
         $this->authorize('deactivate', $task);
 
-        $this->deactivateTaskAction->execute($task);
+        $action->execute($task);
 
         return $this->flashMessage('deactivate');
     }

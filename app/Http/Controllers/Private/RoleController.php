@@ -18,45 +18,45 @@ use App\Http\Resources\RoleResource;
 
 use App\Models\Role;
 
+use Inertia\Inertia;
+
 class RoleController extends Controller
 {
     use HasFlashMessages;
 
-    public function __construct(
-        private DestroyRoleAction $destroyRoleAction,
-        private StoreRoleAction $storeRoleAction,
-        private UpdateRoleAction $updateRoleAction,
-    ) {}
+    private $render = 'private/Administration';
 
     public function show(Role $role)
     {
         $this->authorize('view', $role);
 
-        return new RoleResource(
-            $role->loadCount('members')->load('permissions')
-        );
+        return Inertia::render($this->render, [
+            'role' => new RoleResource(
+                $role->loadCount('members')->load('permissions')
+            ),
+        ]);
     }
 
-    public function store(StoreRoleRequest $request)
+    public function store(StoreRoleRequest $request, StoreRoleAction $action)
     {
-        $this->storeRoleAction->execute($request->validated());
+        $action->execute($request->validated());
 
         return $this->flashMessage('save');
     }
 
-    public function update(UpdateRoleRequest $request, Role $role)
+    public function update(UpdateRoleRequest $request, UpdateRoleAction $action, Role $role)
     {
-        $this->updateRoleAction->execute($role, $request->validated());
+        $action->execute($role, $request->validated());
 
         return $this->flashMessage('update');
     }
 
-    public function destroy(Role $role)
+    public function destroy(DestroyRoleAction $action, Role $role)
     {
         $this->authorize('delete', $role);
 
         try {
-            $this->destroyRoleAction->execute($role);
+            $action->execute($role);
         } catch (RoleHasMembersException $exception) {
             return $this->flashMessage('error', $exception->getMessage(), '⛓️');
         }

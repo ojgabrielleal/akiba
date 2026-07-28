@@ -223,7 +223,7 @@ class ProgramTest extends TestCase
 
         $action = new UpdateProgramAction(new ImageProcessService);
 
-        $action->execute($newDefault, $user, [
+        $action->execute($newDefault, $user, $user, [
             'name' => $newDefault->name,
             'user' => $user->uuid,
             'access_type' => 'private',
@@ -286,7 +286,7 @@ class ProgramTest extends TestCase
 
         $action = new UpdateProgramAction(new ImageProcessService);
 
-        $action->execute($program, $user, [
+        $action->execute($program, $user, $user, [
             'name' => $program->name,
             'user' => $user->uuid,
             'access_type' => 'private',

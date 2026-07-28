@@ -13,15 +13,11 @@ class DeactivateProgramController extends Controller
 {
     use HasFlashMessages;
 
-    public function __construct(
-        private DeactivateProgramAction $deactivateProgramAction,
-    ) {}
-
-    public function __invoke(Program $program)
+    public function __invoke(DeactivateProgramAction $action, Program $program)
     {
         $this->authorize('deactivate', $program);
 
-        $this->deactivateProgramAction->execute($program);
+        $action->execute($program);
 
         return $this->flashMessage('deactivate');
     }

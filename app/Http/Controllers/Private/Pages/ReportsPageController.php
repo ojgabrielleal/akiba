@@ -36,32 +36,54 @@ class ReportsPageController extends Controller
     public function render()
     {
         return Inertia::render($this->render, [
-            'audience' => AudienceResource::collection(
-                $this->audienceFilter->apply([
-                    'active' => true,
-                    'with' => 'latestAudienceSnapshot',
-                    'order_by_audience' => true,
-                ])
-            ),
-            'audienceHistory' => fn () => AudienceResource::collection(
-                $this->audienceFilter->history($this->audiencePeriod())
-            )->format('history'),
-            'onair' => OnairResource::collection(
-                $this->onairFilter->apply([
-                    'execution_modes' => ['live', 'scheduled'],
-                    'with' => ['program.host'],
-                    'paginate' => 5,
-                ])
-            ),
-            'ranking_interno' => [
-                'redator_mais_ativo' => $this->redatorMaisAtivo(),
-                'locutor_mais_ativo' => $this->locutorMaisAtivo(),
-                'pedidos_atendidos' => $this->pedidosAtendidos(),
-                'pico_audiencia' => $this->picoAudiencia(),
-                'maior_interacao' => $this->maiorInteracao(),
-                'enquete_mais_votada' => $this->enqueteMaisVotada(),
-            ],
+            'audience' => $this->indexAudience(),
+            'audienceHistory' => fn () => $this->indexAudienceHistory(),
+            'onair' => $this->indexOnair(),
+            'ranking_interno' => $this->indexInternalRanking(),
         ]);
+    }
+
+    private function indexAudience()
+    {
+        return AudienceResource::collection(
+            $this->audienceFilter->apply([
+                'active' => true,
+                'with' => 'latestAudienceSnapshot',
+                'order_by_audience' => true,
+            ])
+        );
+    }
+
+    private function indexAudienceHistory()
+    {
+        return AudienceResource::collection(
+            $this->audienceFilter->history([
+                'period' => $this->audiencePeriod(),
+            ])
+        )->format('history');
+    }
+
+    private function indexOnair()
+    {
+        return OnairResource::collection(
+            $this->onairFilter->apply([
+                'execution_modes' => ['live', 'scheduled'],
+                'with' => ['program.host'],
+                'paginate' => 5,
+            ])
+        );
+    }
+
+    private function indexInternalRanking(): array
+    {
+        return [
+            'redator_mais_ativo' => $this->redatorMaisAtivo(),
+            'locutor_mais_ativo' => $this->locutorMaisAtivo(),
+            'pedidos_atendidos' => $this->pedidosAtendidos(),
+            'pico_audiencia' => $this->picoAudiencia(),
+            'maior_interacao' => $this->maiorInteracao(),
+            'enquete_mais_votada' => $this->enqueteMaisVotada(),
+        ];
     }
 
     private function audiencePeriod(): string
@@ -75,7 +97,8 @@ class ReportsPageController extends Controller
 
     private function redatorMaisAtivo(): ?array
     {
-        $posts = $this->postFilter->apply(request()->user(), [
+        $posts = $this->postFilter->apply([
+                    'user' => request()->user(),
             'module' => 'post',
             'with' => 'author',
             'ignore_authorization' => true,
@@ -150,7 +173,8 @@ class ReportsPageController extends Controller
 
     private function maiorInteracao(): ?array
     {
-        $post = $this->postFilter->apply(request()->user(), [
+        $post = $this->postFilter->apply([
+                    'user' => request()->user(),
             'module' => 'post',
             'with_count' => 'reactions',
             'order_by' => 'reactions_count',

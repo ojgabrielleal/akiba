@@ -32,30 +32,50 @@ class LocutionPageController extends Controller
 
     public function render()
     {
-        $onair = $this->onairFilter->apply([
+        $onair = $this->indexOnair();
+
+        return Inertia::render($this->render, [
+            'programs' => $this->indexPrograms(),
+            'onair' => $this->showOnair($onair),
+            'songRequests' => $this->indexSongRequests($onair?->id),
+        ]);
+    }
+
+    private function indexPrograms()
+    {
+        return $this->whenCanViewAny(Program::class,
+            fn () => ProgramResource::collection(
+                $this->programFilter->apply([
+                    'available_for_locution' => request()->user(),
+                ])
+            ),
+        );
+    }
+
+    private function indexOnair()
+    {
+        return $this->onairFilter->apply([
             'live' => true,
             'with' => 'program.host',
             'first' => true,
         ]);
+    }
 
-        return Inertia::render($this->render, [
-            'programs' => $this->whenCanViewAny(Program::class,
-                fn () => ProgramResource::collection(
-                    $this->programFilter->apply([
-                        'available_for_locution' => request()->user(),
-                    ])
-                ),
+    private function showOnair($onair): ?OnairResource
+    {
+        return $onair ? new OnairResource($onair) : null;
+    }
+
+    private function indexSongRequests(?int $onairId)
+    {
+        return $this->whenCanViewAny(SongRequest::class,
+            fn () => SongRequestResource::collection(
+                $this->songRequestFilter->apply([
+                    'onair_id' => $onairId,
+                    'order_by' => 'created_at',
+                    'order_direction' => 'asc',
+                ])
             ),
-            'onair' => $onair ? new OnairResource($onair) : null,
-            'songRequests' => $this->whenCanViewAny(SongRequest::class,
-                fn () => SongRequestResource::collection(
-                    $this->songRequestFilter->apply([
-                        'onair_id' => $onair?->id,
-                        'order_by' => 'created_at',
-                        'order_direction' => 'asc',
-                    ])
-                ),
-            ),
-        ]);
+        );
     }
 }

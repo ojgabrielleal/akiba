@@ -15,36 +15,37 @@ use App\Http\Resources\User\UserResource;
 
 use App\Models\User;
 
+use Inertia\Inertia;
+
 class UserController extends Controller
 {
     use HasFlashMessages;
 
-    public function __construct(
-        private StoreUserAction $storeUserAction,
-        private UpdateUserAccessAction $updateUserAccessAction,
-    ) {}
+    private $render = 'private/Administration';
 
     public function show(User $user)
     {
         $this->authorize('view', $user);
 
-        return new UserResource($user->load([
-            'roles' => fn ($query) => $query
-                ->withCount('members')
-                ->with('permissions'),
-        ]));
+        return Inertia::render($this->render, [
+            'user' => new UserResource($user->load([
+                'roles' => fn ($query) => $query
+                    ->withCount('members')
+                    ->with('permissions'),
+            ])),
+        ]);
     }
 
-    public function store(StoreUserRequest $request)
+    public function store(StoreUserRequest $request, StoreUserAction $action)
     {
-        $this->storeUserAction->execute($request->validated());
+        $action->execute($request->validated());
 
         return $this->flashMessage('save');
     }
 
-    public function updateAccess(UpdateUserAccessRequest $request, User $user)
+    public function updateAccess(UpdateUserAccessRequest $request, UpdateUserAccessAction $action, User $user)
     {
-        $this->updateUserAccessAction->execute($user, $request->validated());
+        $action->execute($user, $request->validated());
 
         return $this->flashMessage('save');
     }

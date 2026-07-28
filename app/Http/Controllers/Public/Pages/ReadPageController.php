@@ -13,33 +13,43 @@ class ReadPageController extends Controller
 {
     public function __construct(
         private PostFilter $postFilter,
-        private StorePageViewAction $storePageViewAction,
     ) {}
 
-    public function render(string $slug)
+    public function render(StorePageViewAction $action, string $slug)
     {
         $post = Post::query()
             ->where('slug', $slug)
             ->with(['author', 'references', 'tags', 'reactions', 'reviews.author'])
             ->firstOrFail();
 
-        $this->storePageViewAction->execute($post, request());
+        $action->execute($post, request());
 
         return Inertia::render('public/ReadPost', [
-            'post' => PostResource::make($post),
-            'relatedPosts' => PostResource::collection(
-                $this->postFilter->apply(request()->user(), [
-                    'active' => true,
-                    'status' => 'published',
-                    'module' => $post->module,
-                    'with' => 'tags',
-                    'order_by' => 'random',
-                    'tag' => $post->tags->first()?->name,
-                    'limit' => 3,
-                    'except' => $post,
-                    'ignore_authorization' => true,
-                ])
-            )->format('home-list'),
+            'post' => $this->showPost($post),
+            'relatedPosts' => $this->indexRelatedPosts($post),
         ]);
+    }
+
+    private function showPost(Post $post)
+    {
+        return PostResource::make($post);
+    }
+
+    private function indexRelatedPosts(Post $post)
+    {
+        return PostResource::collection(
+            $this->postFilter->apply([
+                    'user' => request()->user(),
+                'active' => true,
+                'status' => 'published',
+                'module' => $post->module,
+                'with' => 'tags',
+                'order_by' => 'random',
+                'tag' => $post->tags->first()?->name,
+                'limit' => 3,
+                'except' => $post,
+                'ignore_authorization' => true,
+            ])
+        )->format('home-list');
     }
 }

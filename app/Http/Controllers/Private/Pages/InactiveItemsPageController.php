@@ -44,19 +44,19 @@ class InactiveItemsPageController extends Controller
     private function inactiveItems(): array
     {
         return collect()
-            ->concat($this->users())
-            ->concat($this->programs())
-            ->concat($this->posts())
-            ->concat($this->podcasts())
-            ->concat($this->polls())
-            ->concat($this->tasks())
-            ->concat($this->repositories())
+            ->concat($this->indexUsers())
+            ->concat($this->indexPrograms())
+            ->concat($this->indexPosts())
+            ->concat($this->indexPodcasts())
+            ->concat($this->indexPolls())
+            ->concat($this->indexTasks())
+            ->concat($this->indexRepositories())
             ->sortBy('title', SORT_NATURAL | SORT_FLAG_CASE)
             ->values()
             ->all();
     }
 
-    private function users(): Collection
+    private function indexUsers(): Collection
     {
         return $this->userFilter->apply(['active' => false])
             ->map(fn (User $user) => $this->item(
@@ -65,7 +65,7 @@ class InactiveItemsPageController extends Controller
             ));
     }
 
-    private function programs(): Collection
+    private function indexPrograms(): Collection
     {
         return $this->programFilter->apply(['active' => false])
             ->map(fn (Program $program) => $this->item(
@@ -74,9 +74,10 @@ class InactiveItemsPageController extends Controller
             ));
     }
 
-    private function posts(): Collection
+    private function indexPosts(): Collection
     {
-        return $this->postFilter->apply(request()->user(), [
+        return $this->postFilter->apply([
+                    'user' => request()->user(),
             'active' => false,
             'ignore_authorization' => true,
         ])->map(fn (Post $post) => $this->item(
@@ -85,7 +86,7 @@ class InactiveItemsPageController extends Controller
         ));
     }
 
-    private function podcasts(): Collection
+    private function indexPodcasts(): Collection
     {
         return $this->podcastFilter->apply(['active' => false])
             ->map(fn (Podcast $podcast) => $this->item(
@@ -94,7 +95,7 @@ class InactiveItemsPageController extends Controller
             ));
     }
 
-    private function polls(): Collection
+    private function indexPolls(): Collection
     {
         return $this->pollFilter->apply(['active' => false])
             ->map(fn (Poll $poll) => $this->item(
@@ -102,7 +103,7 @@ class InactiveItemsPageController extends Controller
             ));
     }
 
-    private function tasks(): Collection
+    private function indexTasks(): Collection
     {
         return $this->taskFilter->apply(['active' => false])
             ->map(fn (Task $task) => $this->item(
@@ -110,7 +111,7 @@ class InactiveItemsPageController extends Controller
             ));
     }
 
-    private function repositories(): Collection
+    private function indexRepositories(): Collection
     {
         return $this->repositoryFilter->apply(['active' => false])
             ->map(fn (Repository $repository) => $this->item(

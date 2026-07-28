@@ -9,11 +9,9 @@ use Illuminate\Support\Facades\DB;
 
 class StoreTaskAction
 {
-    public function execute(array $data): Task
+    public function execute(User $user, array $data): Task
     {
-        return DB::transaction(function () use ($data) {
-            $user = User::where('uuid', $data['user'])->firstOrFail();
-
+        return DB::transaction(function () use ($user, $data) {
             return Task::create([
                 'user_id' => $user->id,
                 'title' => $data['title'],

@@ -45,58 +45,88 @@ class AdministrationPageController extends Controller
     public function render()
     {
         return Inertia::render($this->render, [
-            'roles' => $this->whenCanViewAny(Role::class,
-                fn () => RoleResource::collection(
-                    $this->roleFilter->apply([
-                        'with_count' => 'members',
-                        'with' => 'permissions',
-                    ])
-                ),
-            ),
-            'permissions' => $this->whenCanViewAny(Role::class,
-                fn () => PermissionResource::collection(
-                    $this->permissionFilter->apply()
-                ),
-            ),
-            'activities' => $this->whenCanViewAny(Activity::class,
-                fn () => ActivityResource::collection(
-                    $this->activityFilter->apply([
-                        'not_expired' => true,
-                        'with' => ['author', 'confirmations'],
-                    ])
-                ),
-            ),
-            'calendar' => $this->whenCanViewAny(Calendar::class,
-                fn () => CalendarWeekResource::make(
-                    $this->calendarFilter->apply([
-                        'upcoming' => true,
-                        'with' => ['activity', 'responsible'],
-                    ])
-                ),
-            ),
-            'users' => $this->whenCanViewAny(User::class,
-                fn () => UserResource::collection(
-                    $this->userFilter->apply([
-                        'active' => true,
-                        'virtual_last' => true,
-                        'with' => ['roles'],
-                    ])
-                )->format('summary'),
-            ),
-            'tasks' => $this->whenCanViewAny(Task::class,
-                fn () => TaskResource::collection(
-                    $this->taskFilter->apply([
-                        'active' => true,
-                        'incomplete' => true,
-                        'with' => ['responsible'],
-                        'order_by' => 'dead_line',
-                        'order_direction' => 'asc',
-                        'then_order_by' => 'created_at',
-                        'then_order_direction' => 'desc',
-                        'paginate' => 5,
-                    ])
-                ),
-            ),
+            'roles' => $this->indexRoles(),
+            'permissions' => $this->indexPermissions(),
+            'activities' => $this->indexActivities(),
+            'calendar' => $this->indexCalendar(),
+            'users' => $this->indexUsers(),
+            'tasks' => $this->indexTasks(),
         ]);
+    }
+
+    private function indexRoles()
+    {
+        return $this->whenCanViewAny(Role::class,
+            fn () => RoleResource::collection(
+                $this->roleFilter->apply([
+                    'with_count' => 'members',
+                    'with' => 'permissions',
+                ])
+            ),
+        );
+    }
+
+    private function indexPermissions()
+    {
+        return $this->whenCanViewAny(Role::class,
+            fn () => PermissionResource::collection(
+                $this->permissionFilter->apply()
+            ),
+        );
+    }
+
+    private function indexActivities()
+    {
+        return $this->whenCanViewAny(Activity::class,
+            fn () => ActivityResource::collection(
+                $this->activityFilter->apply([
+                    'not_expired' => true,
+                    'with' => ['author', 'confirmations'],
+                ])
+            ),
+        );
+    }
+
+    private function indexCalendar()
+    {
+        return $this->whenCanViewAny(Calendar::class,
+            fn () => CalendarWeekResource::make(
+                $this->calendarFilter->apply([
+                    'upcoming' => true,
+                    'with' => ['activity', 'responsible'],
+                ])
+            ),
+        );
+    }
+
+    private function indexUsers()
+    {
+        return $this->whenCanViewAny(User::class,
+            fn () => UserResource::collection(
+                $this->userFilter->apply([
+                    'active' => true,
+                    'virtual_last' => true,
+                    'with' => ['roles'],
+                ])
+            )->format('summary'),
+        );
+    }
+
+    private function indexTasks()
+    {
+        return $this->whenCanViewAny(Task::class,
+            fn () => TaskResource::collection(
+                $this->taskFilter->apply([
+                    'active' => true,
+                    'incomplete' => true,
+                    'with' => ['responsible'],
+                    'order_by' => 'dead_line',
+                    'order_direction' => 'asc',
+                    'then_order_by' => 'created_at',
+                    'then_order_direction' => 'desc',
+                    'paginate' => 5,
+                ])
+            ),
+        );
     }
 }

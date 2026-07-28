@@ -11,7 +11,8 @@ class OAuthAccountController extends Controller
 {
     use HasFlashMessages;
 
-    public function update(CompleteOAuthAccountProfileRequest $request, CompleteOAuthAccountProfileAction $action) {
+    public function update(CompleteOAuthAccountProfileRequest $request, CompleteOAuthAccountProfileAction $action)
+    {
         $action->execute(
             $request->attributes->get('oauth_account'),
             $request->validated(),

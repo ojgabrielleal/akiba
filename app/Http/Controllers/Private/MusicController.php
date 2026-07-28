@@ -15,13 +15,9 @@ class MusicController extends Controller
 {
     use HasFlashMessages;
 
-    public function __construct(
-        private UpdateMusicAction $updateMusicAction,
-    ) {}
-
-    public function update(UpdateMusicRequest $request, Music $music)
+    public function update(UpdateMusicRequest $request, UpdateMusicAction $action, Music $music)
     {
-        $this->updateMusicAction->execute(
+        $action->execute(
             $music,
             $request->validated(),
             $request->file('image'),

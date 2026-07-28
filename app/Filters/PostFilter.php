@@ -11,8 +11,9 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class PostFilter
 {
-    public function apply(User $user, array $filters = []): Collection|LengthAwarePaginator
+    public function apply(array $filters = []): Collection|LengthAwarePaginator
     {
+        $user = $filters['user'] ?? null;
 
         $query = Post::query()
             ->when(
@@ -94,26 +95,30 @@ class PostFilter
             ->when(
                 $filters['limit'] ?? null,
                 fn (Builder $query, int $limit) => $query->limit($limit)
+            )
+            ->when(
+                $this->shouldRestrictToOwnPosts($user, $filters),
+                fn (Builder $query) => $query->where(function (Builder $query) use ($user) {
+                    $query->where('user_id', $user->id)
+                        ->orWhereHas(
+                            'reviews',
+                            fn (Builder $query) => $query->where('user_id', $user->id)
+                        );
+                })
             );
-
-        if (
-            ! ($filters['ignore_authorization'] ?? false)
-            && ! $user->hasPermission('post.list')
-            && $user->hasPermission('post.list.own')
-        ) {
-            $query->where(function (Builder $query) use ($user) {
-                $query->where('user_id', $user->id)
-                    ->orWhereHas(
-                        'reviews',
-                        fn (Builder $query) => $query->where('user_id', $user->id)
-                    );
-            });
-        }
 
         return $query->when(
             $filters['paginate'] ?? null,
             fn (Builder $query, int $perPage) => $query->paginate($perPage)->withQueryString(),
             fn (Builder $query) => $query->get()
         );
+    }
+
+    private function shouldRestrictToOwnPosts(?User $user, array $filters): bool
+    {
+        return $user !== null
+            && ! ($filters['ignore_authorization'] ?? false)
+            && ! $user->hasPermission('post.list')
+            && $user->hasPermission('post.list.own');
     }
 }

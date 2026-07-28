@@ -13,15 +13,11 @@ class ToggleSongRequestBoxStatusController extends Controller
 {
     use HasFlashMessages;
 
-    public function __construct(
-        private ToggleSongRequestBoxStatusAction $toggleSongRequestBoxStatusAction,
-    ) {}
-
-    public function __invoke()
+    public function __invoke(ToggleSongRequestBoxStatusAction $action)
     {
         $this->authorize('toggleBoxStatus', SongRequest::class);
 
-        $onair = $this->toggleSongRequestBoxStatusAction->execute();
+        $onair = $action->execute();
 
         if (!$onair) {
             return $this->flashMessage('error');

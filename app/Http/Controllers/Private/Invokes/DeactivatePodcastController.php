@@ -13,15 +13,11 @@ class DeactivatePodcastController extends Controller
 {
     use HasFlashMessages;
 
-    public function __construct(
-        private DeactivatePodcastAction $deactivatePodcastAction,
-    ) {}
-
-    public function __invoke(Podcast $podcast)
+    public function __invoke(DeactivatePodcastAction $action, Podcast $podcast)
     {
         $this->authorize('deactivate', $podcast);
 
-        $this->deactivatePodcastAction->execute($podcast);
+        $action->execute($podcast);
 
         return $this->flashMessage('deactivate');
     }

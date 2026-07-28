@@ -13,15 +13,11 @@ class DeactivatePollController extends Controller
 {
     use HasFlashMessages;
 
-    public function __construct(
-        private DeactivatePollAction $deactivatePollAction,
-    ) {}
-
-    public function __invoke(Poll $poll)
+    public function __invoke(DeactivatePollAction $action, Poll $poll)
     {
         $this->authorize('deactivate', $poll);
 
-        $this->deactivatePollAction->execute($poll);
+        $action->execute($poll);
 
         return $this->flashMessage('deactivate');
     }

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Private;
+use Inertia\Inertia;
 
 use App\Actions\Repository\StoreRepositoryAction;
 use App\Actions\Repository\UpdateRepositoryAction;
@@ -18,29 +19,25 @@ use App\Models\Repository;
 class RepositoryController extends Controller
 {
     use HasFlashMessages;
-
-    public function __construct(
-        private StoreRepositoryAction $storeRepositoryAction,
-        private UpdateRepositoryAction $updateRepositoryAction,
-    ) {}
+    private $render = 'private/Administration';
 
     public function show(Repository $repository)
     {
         $this->authorize('view', $repository);
-
-        return new RepositoryResource($repository);
+        return Inertia::render($this->render, [
+            'repository' => new RepositoryResource($repository)
+        ]);
     }
 
-    public function store(StoreRepositoryRequest $request)
+    public function store(StoreRepositoryRequest $request, StoreRepositoryAction $action)
     {
-        $this->storeRepositoryAction->execute($request->validated(), $request->file('image'));
-
+        $action->execute($request->validated(), $request->file('image'));
         return $this->flashMessage('save');
     }
 
-    public function update(UpdateRepositoryRequest $request, Repository $repository)
+    public function update(UpdateRepositoryRequest $request, UpdateRepositoryAction $action, Repository $repository)
     {
-        $this->updateRepositoryAction->execute(
+        $action->execute(
             $repository,
             $request->validated(),
             $request->file('image')

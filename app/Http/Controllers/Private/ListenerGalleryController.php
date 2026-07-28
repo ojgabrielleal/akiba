@@ -16,26 +16,26 @@ use App\Http\Resources\ListenerGalleryResource;
 
 use App\Models\ListenerGallery;
 
+use Inertia\Inertia;
+
 class ListenerGalleryController extends Controller
 {
     use HasFlashMessages;
 
-    public function __construct(
-        private DestroyListenerGalleryAction $destroyListenerGalleryAction,
-        private StoreListenerGalleryAction $storeListenerGalleryAction,
-        private UpdateListenerGalleryAction $updateListenerGalleryAction,
-    ) {}
+    private $render = 'private/Media';
 
     public function show(ListenerGallery $listenerGallery)
     {
         $this->authorize('view', $listenerGallery);
 
-        return new ListenerGalleryResource($listenerGallery);
+        return Inertia::render($this->render, [
+            'listenerGallery' => new ListenerGalleryResource($listenerGallery),
+        ]);
     }
 
-    public function store(StoreListenerGalleryRequest $request)
+    public function store(StoreListenerGalleryRequest $request, StoreListenerGalleryAction $action)
     {
-        $this->storeListenerGalleryAction->execute(
+        $action->execute(
             $request->user(),
             $request->validated(),
             $request->file('image')
@@ -44,9 +44,9 @@ class ListenerGalleryController extends Controller
         return $this->flashMessage('save');
     }
 
-    public function update(UpdateListenerGalleryRequest $request, ListenerGallery $listenerGallery)
+    public function update(UpdateListenerGalleryRequest $request, UpdateListenerGalleryAction $action, ListenerGallery $listenerGallery)
     {
-        $this->updateListenerGalleryAction->execute(
+        $action->execute(
             $listenerGallery,
             $request->validated(),
             $request->file('image')
@@ -55,11 +55,11 @@ class ListenerGalleryController extends Controller
         return $this->flashMessage('update');
     }
 
-    public function destroy(ListenerGallery $listenerGallery)
+    public function destroy(DestroyListenerGalleryAction $action, ListenerGallery $listenerGallery)
     {
         $this->authorize('delete', $listenerGallery);
 
-        $this->destroyListenerGalleryAction->execute($listenerGallery);
+        $action->execute($listenerGallery);
 
         return $this->flashMessage('delete');
     }

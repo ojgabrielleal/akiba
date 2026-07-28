@@ -19,14 +19,19 @@ class ProfilePageController extends Controller
         $this->authorize('view', $user);
 
         return Inertia::render($this->render, [
-            'profile' => new UserResource($user->load([
-                'favorites',
-                'socials',
-                'preferences',
-                'roles' => fn ($query) => $query
-                    ->withCount('members')
-                    ->with('permissions'),
-            ])),
+            'profile' => $this->indexProfile($user),
         ]);
+    }
+
+    private function indexProfile(User $user): UserResource
+    {
+        return new UserResource($user->load([
+            'favorites',
+            'socials',
+            'preferences',
+            'roles' => fn ($query) => $query
+                ->withCount('members')
+                ->with('permissions'),
+        ]));
     }
 }

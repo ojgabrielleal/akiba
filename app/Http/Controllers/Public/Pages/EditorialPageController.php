@@ -22,19 +22,7 @@ class EditorialPageController extends Controller
             'title' => 'News',
             'categories' => $categories,
             'activeTag' => $tag,
-            'posts' => PostResource::collection(
-                $this->postFilter->apply(request()->user(), [
-                    'active' => true,
-                    'status' => 'published',
-                    'module' => 'post',
-                    'with' => 'tags',
-                    'order_by' => 'random',
-                    'order_direction' => 'desc',
-                    'tag' => $tag,
-                    'paginate' => 10,
-                    'ignore_authorization' => true,
-                ])
-            )->format('home-list'),
+            'posts' => $this->indexNewsPosts($tag),
         ]);
     }
 
@@ -47,20 +35,44 @@ class EditorialPageController extends Controller
             'title' => 'Colunas',
             'categories' => $categories,
             'activeTag' => $tag,
-            'posts' => PostResource::collection(
-                $this->postFilter->apply(request()->user(), [
-                    'active' => true,
-                    'status' => 'published',
-                    'module' => 'post',
-                    'with' => 'tags',
-                    'order_by' => $tag ? 'created_at' : 'random',
-                    'order_direction' => 'desc',
-                    'tag' => $tag,
-                    'tags' => $tag ? null : $categories,
-                    'paginate' => 10,
-                    'ignore_authorization' => true,
-                ])
-            )->format('home-list'),
+            'posts' => $this->indexColumnPosts($categories, $tag),
         ]);
+    }
+
+    private function indexNewsPosts(string $tag)
+    {
+        return PostResource::collection(
+            $this->postFilter->apply([
+                    'user' => request()->user(),
+                'active' => true,
+                'status' => 'published',
+                'module' => 'post',
+                'with' => 'tags',
+                'order_by' => 'random',
+                'order_direction' => 'desc',
+                'tag' => $tag,
+                'paginate' => 10,
+                'ignore_authorization' => true,
+            ])
+        )->format('home-list');
+    }
+
+    private function indexColumnPosts(array $categories, ?string $tag)
+    {
+        return PostResource::collection(
+            $this->postFilter->apply([
+                    'user' => request()->user(),
+                'active' => true,
+                'status' => 'published',
+                'module' => 'post',
+                'with' => 'tags',
+                'order_by' => $tag ? 'created_at' : 'random',
+                'order_direction' => 'desc',
+                'tag' => $tag,
+                'tags' => $tag ? null : $categories,
+                'paginate' => 10,
+                'ignore_authorization' => true,
+            ])
+        )->format('home-list');
     }
 }

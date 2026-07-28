@@ -26,11 +26,16 @@ class RepositoryPageController extends Controller
     public function render()
     {
         return Inertia::render($this->render, [
-            'repositories' => $this->whenCanViewAny(Repository::class,
-                fn () => RepositoryResource::collection(
-                    $this->repositoryFilter->apply(['active' => true])
-                )->format('grouped'),
-            ),
+            'repositories' => $this->indexRepositories(),
         ]);
+    }
+
+    private function indexRepositories()
+    {
+        return $this->whenCanViewAny(Repository::class,
+            fn () => RepositoryResource::collection(
+                $this->repositoryFilter->apply(['active' => true])
+            )->format('grouped'),
+        );
     }
 }

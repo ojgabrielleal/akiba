@@ -21,46 +21,61 @@ class UpdatePostAction
     public function execute(Post $post, array $data, ?UploadedFile $image = null, ?UploadedFile $cover = null): Post
     {
         return DB::transaction(function () use ($post, $data, $image, $cover) {
-            $post->fill([
-                'title' => $data['title'],
-                'status' => $data['status'] ?? "published",
-                'content' => $data['content'] ?? null,
-                'image' => $this->image->store('posts', $image, $post->image),
-                'cover' => $this->image->store('posts', $cover, $post->cover),
-                'module' => $data['module'] ?? $post->module,
-                'metadata' => $data['metadata'] ?? null,
-            ]);
-
-            if($post->isDirty()){
-                $post->save();
-            }
-        
-            if (!empty($data['tags'])) {
-                foreach($data['tags'] as $tag) {
-                    $post->tags()->updateOrCreate(
-                        ['uuid' => $tag['uuid']],
-                        ['name' => $tag['name']]
-                    );
-                }
-            }
-
-            if (!empty($data['references'])) {
-                foreach($data['references'] as $reference) {
-                    $post->references()->updateOrCreate(
-                        ['uuid' => $reference['uuid']],
-                        ['name' => $reference['name'], 'url' => $reference['url']]
-                    );
-                }
-            }
-
-            if (!empty($data['review'])) {
-                $post->reviews()->where('uuid', $data['review']['uuid'])->update([
-                    'status' => $data['review']['status'],
-                    'content' => $data['review']['content']
-                ]);
-            }
+            $this->updatePost($post, $data, $image, $cover);
+            $this->syncTags($post, $data['tags'] ?? []);
+            $this->syncReferences($post, $data['references'] ?? []);
+            $this->updateReview($post, $data['review'] ?? []);
 
             return $post;
         });
+    }
+
+    private function updatePost(Post $post, array $data, ?UploadedFile $image = null, ?UploadedFile $cover = null): void
+    {
+        $post->fill([
+            'title' => $data['title'],
+            'status' => $data['status'] ?? 'published',
+            'content' => $data['content'] ?? null,
+            'image' => $this->image->store('posts', $image, $post->image),
+            'cover' => $this->image->store('posts', $cover, $post->cover),
+            'module' => $data['module'] ?? $post->module,
+            'metadata' => $data['metadata'] ?? null,
+        ]);
+
+        if ($post->isDirty()) {
+            $post->save();
+        }
+    }
+
+    private function syncTags(Post $post, array $tags): void
+    {
+        foreach ($tags as $tag) {
+            $post->tags()->updateOrCreate(
+                ['uuid' => $tag['uuid'] ?? null],
+                ['name' => $tag['name']]
+            );
+        }
+    }
+
+    private function syncReferences(Post $post, array $references): void
+    {
+        foreach ($references as $reference) {
+            $post->references()->updateOrCreate(
+                ['uuid' => $reference['uuid'] ?? null],
+                ['name' => $reference['name'], 'url' => $reference['url']]
+            );
+        }
+    }
+
+    private function updateReview(Post $post, array $review): void
+    {
+        if (empty($review)) {
+            return;
+        }
+
+        $post->reviews()->where('uuid', $review['uuid'])->update([
+            'status' => $review['status'],
+            'content' => $review['content'],
+        ]);
     }
 }

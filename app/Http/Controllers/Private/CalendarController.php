@@ -16,25 +16,25 @@ use App\Http\Resources\Calendar\CalendarResource;
 use App\Models\Calendar;
 use App\Models\User;
 
+use Inertia\Inertia;
+
 class CalendarController extends Controller
 {
     use HasFlashMessages;
 
-    public function __construct(
-        private StoreCalendarAction $storeCalendarAction,
-        private UpdateCalendarAction $updateCalendarAction,
-    ) {}
+    private $render = 'private/Administration';
 
     public function show(Calendar $calendar)
     {
         $this->authorize('view', $calendar);
-
-        return new CalendarResource($calendar->load(['activity', 'responsible']));
+        return Inertia::render($this->render, [
+            'calendarItem' => new CalendarResource($calendar->load(['activity', 'responsible'])),
+        ]);
     }
 
-    public function store(StoreCalendarRequest $request)
+    public function store(StoreCalendarRequest $request, StoreCalendarAction $action)
     {
-        $this->storeCalendarAction->execute(
+        $action->execute(
             User::where('uuid', $request->input('user'))->firstOrFail(),
             $request->validated()
         );
@@ -42,9 +42,9 @@ class CalendarController extends Controller
         return $this->flashMessage('save');
     }
 
-    public function update(UpdateCalendarRequest $request, Calendar $calendar)
+    public function update(UpdateCalendarRequest $request, UpdateCalendarAction $action, Calendar $calendar)
     {
-        $this->updateCalendarAction->execute(
+        $action->execute(
             $calendar,
             User::where('uuid', $request->input('user'))->firstOrFail(),
             $request->validated()

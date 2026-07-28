@@ -11,15 +11,11 @@ class FinishLocutionController extends Controller
 {
     use HasFlashMessages;
 
-    public function __construct(
-        private FinishLocutionAction $finishLocutionAction,
-    ) {}
-
-    public function __invoke()
+    public function __invoke(FinishLocutionAction $action)
     {
         $this->authorize('locution.finish');
 
-        $this->finishLocutionAction->execute();
+        $action->execute();
 
         return $this->flashMessage('finish');
     }

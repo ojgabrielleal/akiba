@@ -15,34 +15,35 @@ use App\Http\Resources\ActivityResource;
 
 use App\Models\Activity;
 
+use Inertia\Inertia;
+
 class ActivityController extends Controller
 {
     use HasFlashMessages;
 
-    public function __construct(
-        private StoreActivityAction $storeActivityAction,
-        private UpdateActivityAction $updateActivityAction,
-    ) {}
+    private $render = 'private/Administration';
 
     public function show(Activity $activity)
     {
         $this->authorize('view', $activity);
-
-        return new ActivityResource(
-            $activity->load(['author', 'confirmations', 'calendar'])
-        );
+        
+        return Inertia::render($this->render, [
+            'activity' => new ActivityResource(
+                $activity->load(['author', 'confirmations', 'calendar'])
+            ),
+        ]);
     }
 
-    public function store(StoreActivityRequest $request)
+    public function store(StoreActivityRequest $request, StoreActivityAction $action)
     {
-        $this->storeActivityAction->execute($request->user(), $request->validated());
+        $action->execute($request->user(), $request->validated());
 
         return $this->flashMessage('save');
     }
 
-    public function update(UpdateActivityRequest $request, Activity $activity)
+    public function update(UpdateActivityRequest $request, UpdateActivityAction $action, Activity $activity)
     {
-        $this->updateActivityAction->execute($activity, $request->user(), $request->validated());
+        $action->execute($activity, $request->user(), $request->validated());
 
         return $this->flashMessage('update');
     }

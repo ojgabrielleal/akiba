@@ -13,15 +13,11 @@ class DeactivateRepositoryController extends Controller
 {
     use HasFlashMessages;
 
-    public function __construct(
-        private DeactivateRepositoryAction $deactivateRepositoryAction,
-    ) {}
-
-    public function __invoke(Repository $repository)
+    public function __invoke(DeactivateRepositoryAction $action, Repository $repository)
     {
         $this->authorize('deactivate', $repository);
 
-        $this->deactivateRepositoryAction->execute($repository);
+        $action->execute($repository);
 
         return $this->flashMessage('deactivate');
     }

@@ -43,7 +43,8 @@ class PostFilterTest extends TestCase
         PageView::factory(5)->for($inactive, 'viewable')->create();
         PageView::factory(5)->for($draft, 'viewable')->create();
 
-        $posts = app(PostFilter::class)->apply($user, [
+        $posts = app(PostFilter::class)->apply([
+            'user' => $user,
             'active' => true,
             'status' => 'published',
             'viewed_since' => now()->subWeek(),

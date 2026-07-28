@@ -13,15 +13,11 @@ class DeactivateUserController extends Controller
 {
     use HasFlashMessages;
 
-    public function __construct(
-        private DeactivateUserAction $deactivateUserAction,
-    ) {}
-
-    public function __invoke(User $user)
+    public function __invoke(DeactivateUserAction $action, User $user)
     {
         $this->authorize('deactivate', $user);
 
-        $this->deactivateUserAction->execute($user);
+        $action->execute($user);
 
         return $this->flashMessage('deactivate');
     }

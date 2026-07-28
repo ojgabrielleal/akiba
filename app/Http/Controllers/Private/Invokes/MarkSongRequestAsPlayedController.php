@@ -13,15 +13,11 @@ class MarkSongRequestAsPlayedController extends Controller
 {
     use HasFlashMessages;
 
-    public function __construct(
-        private MarkSongRequestAsPlayedAction $markSongRequestAsPlayedAction,
-    ) {}
-
-    public function __invoke(SongRequest $songRequest)
+    public function __invoke(MarkSongRequestAsPlayedAction $action, SongRequest $songRequest)
     {
         $this->authorize('markAsPlayed', $songRequest);
 
-        $this->markSongRequestAsPlayedAction->execute($songRequest);
+        $action->execute($songRequest);
 
         return $this->flashMessage('complete');
     }

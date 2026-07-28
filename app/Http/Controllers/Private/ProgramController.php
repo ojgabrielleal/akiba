@@ -12,6 +12,7 @@ use App\Http\Requests\Program\StoreProgramRequest;
 use App\Http\Requests\Program\UpdateProgramRequest;
 
 use App\Models\Program;
+use App\Models\User;
 
 use DomainException;
 
@@ -19,16 +20,12 @@ class ProgramController extends Controller
 {
     use HasFlashMessages;
 
-    public function __construct(
-        private StoreProgramAction $storeProgramAction,
-        private UpdateProgramAction $updateProgramAction,
-    ) {}
-
-    public function store(StoreProgramRequest $request)
+    public function store(StoreProgramRequest $request, StoreProgramAction $action)
     {
         try {
-            $this->storeProgramAction->execute(
+            $action->execute(
                 $request->user(),
+                $this->responsible($request),
                 $request->validated(),
                 $request->file('image')
             );
@@ -39,12 +36,13 @@ class ProgramController extends Controller
         }
     }
 
-    public function update(UpdateProgramRequest $request, Program $program)
+    public function update(UpdateProgramRequest $request, UpdateProgramAction $action, Program $program)
     {
         try {
-            $this->updateProgramAction->execute(
+            $action->execute(
                 $program,
                 $request->user(),
+                $this->responsible($request),
                 $request->validated(),
                 $request->file('image')
             );
@@ -53,5 +51,14 @@ class ProgramController extends Controller
         } catch (DomainException $exception) {
             return $this->flashMessage('error', $exception->getMessage());
         }
+    }
+
+    private function responsible(StoreProgramRequest|UpdateProgramRequest $request): User
+    {
+        if ($request->input('access_type') === 'free') {
+            return $request->user();
+        }
+
+        return User::where('uuid', $request->input('user'))->firstOrFail();
     }
 }

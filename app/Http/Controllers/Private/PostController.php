@@ -27,8 +27,6 @@ class PostController extends Controller
 
     public function __construct(
         private PostFilter $postFilter,
-        private StorePostAction $storePostAction,
-        private UpdatePostAction $updatePostAction,
     ) {}
 
     public function show(Post $post)
@@ -39,7 +37,8 @@ class PostController extends Controller
         return Inertia::render($this->render, [
             'post' => new PostResource($post->load(['tags', 'references', 'author', 'reviews.author'])),
             'posts' => PostResource::collection(
-                $this->postFilter->apply(request()->user(), [
+                $this->postFilter->apply([
+                    'user' => request()->user(),
                     'active' => true,
                     'with_count' => 'views',
                     'with' => ['author', 'reviews.author'],
@@ -50,11 +49,11 @@ class PostController extends Controller
         ]);
     }
 
-    public function store(StorePostRequest $request)
+    public function store(StorePostRequest $request, StorePostAction $action)
     {
-        $this->storePostAction->execute(
+        $action->execute(
             $request->user(),
-            $request->all(),
+            $request->validated(),
             $request->file('image'),
             $request->file('cover')
         );
@@ -62,11 +61,11 @@ class PostController extends Controller
         return $this->flashMessage('save');
     }
 
-    public function update(UpdatePostRequest $request, Post $post)
+    public function update(UpdatePostRequest $request, UpdatePostAction $action, Post $post)
     {
-        $this->updatePostAction->execute(
+        $action->execute(
             $post,
-            $request->all(),
+            $request->validated(),
             $request->file('image'),
             $request->file('cover')
         );

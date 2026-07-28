@@ -13,15 +13,11 @@ class DeactivatePostController extends Controller
 {
     use HasFlashMessages;
 
-    public function __construct(
-        private DeactivatePostAction $deactivatePostAction,
-    ) {}
-
-    public function __invoke(Post $post)
+    public function __invoke(DeactivatePostAction $action, Post $post)
     {
         $this->authorize('deactivate', $post);
 
-        $this->deactivatePostAction->execute($post);
+        $action->execute($post);
 
         return $this->flashMessage('deactivate');
     }

@@ -15,13 +15,9 @@ class StartLocutionController extends Controller
 {
     use HasFlashMessages;
 
-    public function __construct(
-        private StartLocutionAction $startLocutionAction,
-    ) {}
-
-    public function __invoke(StartLocutionRequest $request, Program $program)
+    public function __invoke(StartLocutionRequest $request, StartLocutionAction $action, Program $program)
     {
-        $this->startLocutionAction->execute(
+        $action->execute(
             $request->user(),
             $program,
             $request->all()

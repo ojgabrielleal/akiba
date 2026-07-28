@@ -36,40 +36,62 @@ class RadioPageController extends Controller
     public function render()
     {
         return Inertia::render($this->render, [
-            'users' => $this->whenCanViewAny(User::class,
-                fn () => UserResource::collection(
-                    $this->userFilter->apply()
-                ),
-            ),
-            'programs' => $this->whenCanViewAny(Program::class,
-                fn () => ProgramResource::collection(
-                    $this->programFilter->apply([
-                        'with' => [
-                            'host',
-                            'programAirtimes',
-                            'schedules' => fn ($query) => $query->pendingExecution()->orderBy('scheduled_at'),
-                        ],
-                        'active' => true,
-                    ])
-                )->format('grouped'),
-            ),
-            'ranking' => $this->whenCanViewAny(Music::class,
-                fn () => MusicResource::collection(
-                        $this->musicFilter->apply([
-                        'order_by' => 'song_requests_total',
-                        'order_direction' => 'desc',
-                        'limit' => 3,
-                    ])
-                ),
-            ),
-            'listenerMonth' => $this->whenCanViewAny(ListenerMonth::class,
-                function () { $listenerMonth = ListenerMonth::first();
-                    return [
-                        'current' => $listenerMonth ? new ListenerMonthResource($listenerMonth) : null,
-                        'found' => ListenerMonth::mostActiveListenerOfCurrentMonth(),
-                    ];
-                },
-            ),
+            'users' => $this->indexUsers(),
+            'programs' => $this->indexPrograms(),
+            'ranking' => $this->indexRanking(),
+            'listenerMonth' => $this->indexListenerMonth(),
         ]);
+    }
+
+    private function indexUsers()
+    {
+        return $this->whenCanViewAny(User::class,
+            fn () => UserResource::collection(
+                $this->userFilter->apply()
+            ),
+        );
+    }
+
+    private function indexPrograms()
+    {
+        return $this->whenCanViewAny(Program::class,
+            fn () => ProgramResource::collection(
+                $this->programFilter->apply([
+                    'with' => [
+                        'host',
+                        'programAirtimes',
+                        'schedules' => fn ($query) => $query->pendingExecution()->orderBy('scheduled_at'),
+                    ],
+                    'active' => true,
+                ])
+            )->format('grouped'),
+        );
+    }
+
+    private function indexRanking()
+    {
+        return $this->whenCanViewAny(Music::class,
+            fn () => MusicResource::collection(
+                $this->musicFilter->apply([
+                    'order_by' => 'song_requests_total',
+                    'order_direction' => 'desc',
+                    'limit' => 3,
+                ])
+            ),
+        );
+    }
+
+    private function indexListenerMonth()
+    {
+        return $this->whenCanViewAny(ListenerMonth::class,
+            function () {
+                $listenerMonth = ListenerMonth::first();
+
+                return [
+                    'current' => $listenerMonth ? new ListenerMonthResource($listenerMonth) : null,
+                    'found' => ListenerMonth::mostActiveListenerOfCurrentMonth(),
+                ];
+            },
+        );
     }
 }

@@ -10,13 +10,9 @@ use Illuminate\Http\RedirectResponse;
 
 class StorePostReactionController extends Controller
 {
-    public function __construct(
-        private StorePostReactionAction $storePostReactionAction,
-    ) {}
-
-    public function __invoke(StorePostReactionRequest $request, Post $post): RedirectResponse
+    public function __invoke(StorePostReactionRequest $request, StorePostReactionAction $action, Post $post): RedirectResponse
     {
-        $this->storePostReactionAction->execute(
+        $action->execute(
             $post,
             $request->validated('name'),
         );

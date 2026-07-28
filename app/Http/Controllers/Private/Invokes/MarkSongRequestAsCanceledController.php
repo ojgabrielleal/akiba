@@ -13,15 +13,11 @@ class MarkSongRequestAsCanceledController extends Controller
 {
     use HasFlashMessages;
 
-    public function __construct(
-        private MarkSongRequestAsCanceledAction $markSongRequestAsCanceledAction,
-    ) {}
-
-    public function __invoke(SongRequest $songRequest)
+    public function __invoke(MarkSongRequestAsCanceledAction $action, SongRequest $songRequest)
     {
         $this->authorize('markAsCanceled', $songRequest);
 
-        $this->markSongRequestAsCanceledAction->execute($songRequest);
+        $action->execute($songRequest);
 
         return $this->flashMessage('update');
     }

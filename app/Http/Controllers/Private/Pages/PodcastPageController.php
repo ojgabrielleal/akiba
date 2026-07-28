@@ -26,15 +26,20 @@ class PodcastPageController extends Controller
     public function render()
     {
         return Inertia::render($this->render, [
-            'podcasts' => $this->whenCanViewAny(Podcast::class,
-                fn () => PodcastResource::collection(
-                    $this->podcastFilter->apply([
-                        'active' => true,
-                        'with' => 'author',
-                        'paginate' => 10,
-                    ])
-                ),
-            ),
+            'podcasts' => $this->indexPodcasts(),
         ]);
+    }
+
+    private function indexPodcasts()
+    {
+        return $this->whenCanViewAny(Podcast::class,
+            fn () => PodcastResource::collection(
+                $this->podcastFilter->apply([
+                    'active' => true,
+                    'with' => 'author',
+                    'paginate' => 10,
+                ])
+            ),
+        );
     }
 }

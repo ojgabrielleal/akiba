@@ -13,15 +13,11 @@ class RefreshMusicRankingController extends Controller
 {
     use HasFlashMessages;
 
-    public function __construct(
-        private RefreshMusicRankingAction $refreshMusicRankingAction,
-    ) {}
-
-    public function __invoke()
+    public function __invoke(RefreshMusicRankingAction $action)
     {
         $this->authorize('refreshRanking', Music::class);
 
-        $this->refreshMusicRankingAction->execute();
+        $action->execute();
 
         return $this->flashMessage('update');
     }

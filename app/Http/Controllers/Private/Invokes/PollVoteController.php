@@ -15,11 +15,7 @@ class PollVoteController extends Controller
 {
     use HasFlashMessages;
 
-    public function __construct(
-        private StorePollVoteAction $storePollVoteAction,
-    ) {}
-
-    public function __invoke(Request $request, PollOption $option)
+    public function __invoke(Request $request, StorePollVoteAction $action, PollOption $option)
     {
         $this->authorize('vote', $option);
 
@@ -34,7 +30,7 @@ class PollVoteController extends Controller
             403,
         );
 
-        $this->storePollVoteAction->execute($option, $request->user());
+        $action->execute($option, $request->user());
 
         return $this->flashMessage('save');
     }

@@ -38,49 +38,70 @@ class DashboardPageController extends Controller
     public function render()
     {
         return Inertia::render($this->render, [
-            'activities' => $this->whenCanViewAny(Activity::class,
-                fn () => ActivityResource::collection(
-                    $this->activityFilter->apply([
-                        'not_expired' => true,
-                        'with' => ['author', 'confirmations'],
-                    ])
-                ),
-            ),
-            'tasks' => $this->whenCanViewAny(Task::class,
-                fn () => TaskResource::collection(
-                    $this->taskFilter->apply([
-                        'active' => true,
-                        'incomplete' => true,
-                        'assigned_to' => request()->user(),
-                        'with' => ['responsible'],
-                        'order_by' => 'dead_line',
-                        'order_direction' => 'asc',
-                        'then_order_by' => 'created_at',
-                        'then_order_direction' => 'desc',
-                        'paginate' => 5,
-                    ])
-                ),
-            ),
-            'posts' => $this->whenCanViewAny(Post::class,
-                fn () => PostResource::collection(
-                    $this->postFilter->apply(request()->user(), [
-                        'active' => true,
-                        'status' => 'published',
-                        'authored_by' => request()->user(),
-                        'with_count' => 'views',
-                        'with' => 'author',
-                        'limit' => 5,
-                    ])
-                ),
-            ),
-            'calendar' => $this->whenCanViewAny(Calendar::class,
-                fn () => CalendarWeekResource::make(
-                    $this->calendarFilter->apply([
-                        'upcoming' => true,
-                        'with' => ['activity', 'responsible'],
-                    ])
-                ),
-            ),
+            'activities' => $this->indexActivities(),
+            'tasks' => $this->indexTasks(),
+            'posts' => $this->indexPosts(),
+            'calendar' => $this->indexCalendar(),
         ]);
+    }
+
+    private function indexActivities()
+    {
+        return $this->whenCanViewAny(Activity::class,
+            fn () => ActivityResource::collection(
+                $this->activityFilter->apply([
+                    'not_expired' => true,
+                    'with' => ['author', 'confirmations'],
+                ])
+            ),
+        );
+    }
+
+    private function indexTasks()
+    {
+        return $this->whenCanViewAny(Task::class,
+            fn () => TaskResource::collection(
+                $this->taskFilter->apply([
+                    'active' => true,
+                    'incomplete' => true,
+                    'assigned_to' => request()->user(),
+                    'with' => ['responsible'],
+                    'order_by' => 'dead_line',
+                    'order_direction' => 'asc',
+                    'then_order_by' => 'created_at',
+                    'then_order_direction' => 'desc',
+                    'paginate' => 5,
+                ])
+            ),
+        );
+    }
+
+    private function indexPosts()
+    {
+        return $this->whenCanViewAny(Post::class,
+            fn () => PostResource::collection(
+                $this->postFilter->apply([
+                    'user' => request()->user(),
+                    'active' => true,
+                    'status' => 'published',
+                    'authored_by' => request()->user(),
+                    'with_count' => 'views',
+                    'with' => 'author',
+                    'limit' => 5,
+                ])
+            ),
+        );
+    }
+
+    private function indexCalendar()
+    {
+        return $this->whenCanViewAny(Calendar::class,
+            fn () => CalendarWeekResource::make(
+                $this->calendarFilter->apply([
+                    'upcoming' => true,
+                    'with' => ['activity', 'responsible'],
+                ])
+            ),
+        );
     }
 }

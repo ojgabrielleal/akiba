@@ -17,21 +17,16 @@ class PollController extends Controller
 {
     use HasFlashMessages;
 
-    public function __construct(
-        private StorePollAction $storePollAction,
-        private UpdatePollAction $updatePollAction,
-    ) {}
-
-    public function store(StorePollRequest $request)
+    public function store(StorePollRequest $request, StorePollAction $action)
     {
-        $this->storePollAction->execute($request->user(), $request->validated());
+        $action->execute($request->user(), $request->validated());
 
         return $this->flashMessage('save');
     }
 
-    public function update(UpdatePollRequest $request, Poll $poll)
+    public function update(UpdatePollRequest $request, UpdatePollAction $action, Poll $poll)
     {
-        $this->updatePollAction->execute($poll, $request->validated());
+        $action->execute($poll, $request->validated());
 
         return $this->flashMessage('update');
     }
