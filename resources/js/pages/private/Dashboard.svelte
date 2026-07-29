@@ -1,23 +1,23 @@
 <script>
     import { page } from "@inertiajs/svelte";
-    import { Meta } from "@/config";
-    import { Layout } from "@/ui/layouts/private/";
+    import { Meta } from "@/lib/components/shared";
+    import { Layout } from "@/lib/layouts/private/";
     import {
         WellcomeHero,
         ActivityCarousel,
         TaskList,
         PostGrid,
         CalendarGrid,
-    } from "@/ui/widgets/private";
+    } from "@/lib/widgets/private";
 
-    $: ({ user } = $page.props);
+    $: ({ user, activities, tasks, posts, calendar } = $page.props);
 </script>
 
 <Meta meta={{ title: "Dashboard" } } />
 <Layout>
     <WellcomeHero />
-    <ActivityCarousel title="Avisos e Atividades" />
-    <TaskList title="Minhas Tarefas" />
-    <PostGrid title="Minhas últimas matérias" />
-    <CalendarGrid title="Calendário" />
+    <ActivityCarousel title="Avisos e Atividades" {activities} {user} />
+    <TaskList title="Minhas Tarefas" {tasks} />
+    <PostGrid title="Minhas últimas matérias" {posts} />
+    <CalendarGrid title="Calendário" {calendar} />
 </Layout>

@@ -1,0 +1,230 @@
+<script>
+    import { useForm } from "@inertiajs/svelte";
+
+    import { Button, EmptyState, Modal, Section } from "@/lib/components/private/";
+    import { locutionPermissions, resolvePlaceholderImage } from "@/lib/utils";
+    import { locutionIcons, locutionTextures, locutionDecorations } from "@/lib/constants";
+
+    export let programs = null;
+
+    const can = locutionPermissions();
+    let notificationModalRef;
+
+    $: form = useForm({
+        send_notification: null,
+        program: null,
+        phrase: {
+            text: null,
+            icon: locutionIcons[10].url,
+            decoration: {
+                left: locutionDecorations[0].left,
+                right: locutionDecorations[0].right,
+            },
+            texture: locutionTextures[0].url,
+        },
+        
+    });
+
+    function submit() {
+        notificationModalRef.open();
+    }
+
+    function startLocution(sendNotification) {
+        $form.send_notification = sendNotification;
+
+        $form.post(`/panel/locution/start/${$form.program}`, {
+            preserveScroll: true,
+            onSuccess: () => {
+                notificationModalRef.close();
+                $form.reset();
+            },
+        });
+    }
+</script>
+
+<Modal bind:this={notificationModalRef}>
+    <div slot="content" class="font-noto-sans">
+        <p class="text-sm text-center leading-relaxed text-blue-marinho">
+            Deseja mandar notificações avisando que você entrará
+            <span class="font-extrabold uppercase italic text-red-crimson">ao vivo</span>
+            nas plataformas da Rede Akiba?
+        </p>
+        <div class="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <Button
+                type="button"
+                variant="outline"
+                shape="pill"
+                disabled={$form.processing}
+                on:click={() => startLocution(true)}
+            >
+                Avisar
+            </Button>
+            <Button
+                type="button"
+                variant="accent"
+                shape="pill"
+                disabled={$form.processing}
+                on:click={() => startLocution(false)}
+            >
+                Não avisar
+            </Button>
+        </div>
+    </div>
+</Modal>
+
+<form on:submit|preventDefault={submit}>
+    <Section title="Meus Programas">
+        {#if programs.data.length > 0}
+            <div class="flex flex-wrap justify-center gap-8 sm:gap-15 lg:gap-x-0 lg:gap-y-15">
+                {#each programs.data as item}
+                    <button
+                        type="button"
+                        aria-label={item.name}
+                        class="w-60 max-w-full flex-none cursor-pointer lg:box-content lg:border-r-2 lg:border-suspense-aurora/10 lg:px-10 lg:last:border-0"
+                        on:click={() => { $form.program = item.uuid; }}
+                    >
+                        <img
+                            src={resolvePlaceholderImage(item.image, "program")}
+                            alt=""
+                            aria-hidden="true"
+                            loading="lazy"
+                            class={["block w-full transition duration-300 ease-in-out",
+                                { "opacity-100 scale-100 drop-shadow-[0_0_20px_rgba(0,255,200,0.3)]": $form.program === item.uuid }, 
+                                { "opacity-50 scale-90": $form.program !== item.uuid }
+                            ]}
+                        />
+                    </button>
+                {/each}
+            </div>
+        {:else}
+            <EmptyState
+                title="Nenhum programa disponível"
+                description="Os programas disponíveis para locução aparecerão aqui."
+            />
+        {/if}
+    </Section>
+    <Section title="Personalização do player">
+        <div class="w-full mt-15 rounded-sm hidden lg:flex justify-center bg-contain bg-right bg-no-repeat" style={`background-image: url('${$form.phrase.texture}'), var(--gradient-blue-ocean-cerulean);`}>  
+            <div class="w-8/12 h-25 flex items-center relative">
+                <img
+                    src={$form.phrase.decoration?.left}
+                    alt=""
+                    aria-hidden="true"
+                    class="w-23 absolute left-0"
+                    loading="lazy"
+                />
+                <input 
+                    type="text"
+                    class="w-9/13 h-15 ml-23 bg-blue-ocean/50 border border-blue-skywave font-noto-sans font-extrabold italic uppercase text-xl text-orange-citric rounded-md outline-none pl-4"
+                    placeholder="Digite a frase de locução"
+                    bind:value={$form.phrase.text}
+                >
+                <img
+                    src={$form.phrase.icon}
+                    alt="Icone da locução"
+                    class="w-35 h-35 absolute bottom-0 right-0 "
+                />
+                <img
+                    src={$form.phrase.decoration?.right}
+                    alt=""
+                    aria-hidden="true"
+                    class="w-23 absolute -right-10"
+                    loading="lazy"
+                />
+            </div>
+        </div>
+        <input 
+            type="text"
+            class="w-full block lg:hidden h-15 bg-blue-ocean/50 border border-blue-skywave font-noto-sans font-extrabold italic uppercase text-xl text-orange-citric rounded-md outline-none pl-4"
+            placeholder="Digite a frase de locução"
+            bind:value={$form.phrase.text}
+        >
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mt-5 lg:mt-12">
+            <div class="grid grid-cols-3 gap-3 min-[24rem]:grid-cols-4 sm:grid-cols-5 sm:gap-5 xl:grid-cols-10">
+                {#each locutionDecorations as item}
+                    <button
+                        type="button"
+                        class={["cursor-pointer w-15 h-15 border-2 border-blue-ocean rounded-md disabled:cursor-not-allowed disabled:opacity-50", 
+                            { "border-blue-skywave drop-shadow-[0_0_20px_rgba(0,255,200,0.3)]": $form.phrase.decoration?.left === item.left && $form.phrase.decoration?.right === item.right },
+                            { "border-blue-ocean": !($form.phrase.decoration?.left === item.left && $form.phrase.decoration?.right === item.right) }
+                        ]}
+                        disabled={item.disabled}
+                        on:click={() => { $form.phrase.decoration = { left: item.left, right: item.right } }}
+                    >
+                        <img 
+                            src={item.icon}
+                            alt={item.alt}
+                            aria-hidden="true"
+                            class={["object-contain w-full h-full",
+                                { "hidden": item.disabled },
+                                { "initial": !item.disabled }
+                            ]}
+                        />
+                    </button>
+                {/each}
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                {#each locutionTextures as item}
+                    <button
+                        type="button"
+                        class={["cursor-pointer h-15 border-2 border-blue-ocean rounded-md disabled:cursor-not-allowed disabled:opacity-50", 
+                            { "border-blue-skywave drop-shadow-[0_0_20px_rgba(0,255,200,0.3)]": $form.phrase.texture === item.url },
+                            { "border-blue-ocean": $form.phrase.texture !== item.url }
+                        ]}
+                        disabled={item.disabled}
+                        on:click={() => { $form.phrase.texture = item.url}}
+                    >
+                        <img 
+                            src={item.url}
+                            alt={item.alt}
+                            aria-hidden="true"
+                            class={["object-cover w-full h-full",
+                                { "hidden": item.disabled },
+                                { "initial": !item.disabled }
+                            ]}
+                        />
+                    </button>
+                {/each}
+            </div>
+        </div>
+        <div class="mt-16 grid grid-cols-2 gap-x-3 gap-y-16 min-[24rem]:grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:mt-23 lg:grid-cols-9 lg:gap-y-18">
+            {#each locutionIcons as item, index}
+                <button
+                    type="button"
+                    aria-label={`Icon ${index}`}
+                    class={["cursor-pointer w-full h-7 flex justify-end items-end rounded-sm", 
+                        { "bg-blue-skywave drop-shadow-[0_0_20px_rgba(0,255,200,0.3)]": $form.phrase.icon === item.url },
+                        { "bg-blue-ocean": $form.phrase.icon !== item.url }
+                    ]}
+                    on:click={() => { $form.phrase.icon = item.url; }}
+                >
+                    <img
+                        src={item.url}
+                        alt=""
+                        aria-hidden="true"
+                        class="w-20 aspect-square"
+                        loading="lazy"
+                    />
+                </button>
+            {/each}
+        </div>
+        {#if can.start}
+            <div class="flex justify-center mt-10">
+                <Button
+                    type="submit"
+                    variant="accent"
+                    shape="pill"
+                    loading={$form.processing}
+                >
+                    Iniciar programa
+                    <img 
+                        src="/svg/rewindInverted.svg"
+                        alt=""
+                        aria-hidden="true"
+                        class="w-6 filter-blue-marinho"
+                    />
+                </Button>
+            </div>
+        {/if}
+    </Section>
+</form>

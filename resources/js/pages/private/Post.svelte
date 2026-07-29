@@ -1,12 +1,12 @@
 <script>
     import Cookies from "js-cookie";
     import { router, page } from "@inertiajs/svelte";
-    import { Meta } from "@/config";
-    import { Layout } from "@/ui/layouts/private";
-    import { Section } from "@/ui/components/private";
-    import { PostForm, ReviewForm, EventForm, PostGrid } from "@/ui/widgets/private";
+    import { Meta } from "@/lib/components/shared";
+    import { Layout } from "@/lib/layouts/private";
+    import { Section } from "@/lib/components/private";
+    import { PostForm, ReviewForm, EventForm, PostGrid } from "@/lib/widgets/private";
 
-    $: ({ post } = $page.props);
+    $: ({ post, posts } = $page.props);
     
     let show = post ?? Cookies.get("akiba_post_show_editor");
     $: form = post?.data.module ?? Cookies.get("akiba_post_module");
@@ -55,14 +55,14 @@
     <Section title="Criar" {actions}>
         {#if show}
             {#if form === 'post'}
-                <PostForm />
+                <PostForm {post} />
             {:else if form === 'review'}
-                <ReviewForm />
+                <ReviewForm {post} />
             {:else if form === 'event'}
-                <EventForm />
+                <EventForm {post} />
             {/if}
         {/if}
     </Section>
 
-    <PostGrid title="Todas as matérias, reviews e eventos"/>
+    <PostGrid title="Todas as matérias, reviews e eventos" {posts} />
 </Layout>

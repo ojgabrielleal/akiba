@@ -2,9 +2,9 @@
     import { onMount } from "svelte";
     import { page, usePoll } from "@inertiajs/svelte";
     import { Toaster } from "svelte-hot-french-toast";
-    import { Meta } from "@/config";
-    import { syncMediaSessionMetadata } from "@/store";
-    import { MainPlayer, MobilePlayer } from "@/ui/widgets/public";
+    import { Meta } from "@/lib/components/shared";
+    import { syncMediaSessionMetadata } from "@/lib/stores";
+    import { MainPlayer, MobilePlayer } from "@/lib/widgets/public";
 
     $: ({ onair, stream, oauth } = $page.props);
     $: air = onair?.data?.[0] ?? null;

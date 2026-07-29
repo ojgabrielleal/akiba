@@ -1,8 +1,8 @@
 <script>
     import { page, usePoll } from "@inertiajs/svelte";
-    import { Meta } from "@/config";
-    import { syncMediaSessionMetadata } from "@/store";
-    import { Layout } from "@/ui/layouts/public";
+    import { Meta } from "@/lib/components/shared";
+    import { syncMediaSessionMetadata } from "@/lib/stores";
+    import { Layout } from "@/lib/layouts/public";
     import {
         EventCalendarGrid,
         FeaturedGrid,
@@ -11,7 +11,7 @@
         MainPlayer,
         MobilePlayer,
         PostListGrid,
-    } from "@/ui/widgets/public";
+    } from "@/lib/widgets/public";
 
     $: ({
         onair,

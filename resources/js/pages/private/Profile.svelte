@@ -1,8 +1,8 @@
 <script>
     import { page } from "@inertiajs/svelte";
-    import { Meta } from "@/config";
-    import { Layout } from "@/ui/layouts/private";
-    import { ProfileForm } from "@/ui/widgets/private";
+    import { Meta } from "@/lib/components/shared";
+    import { Layout } from "@/lib/layouts/private";
+    import { ProfileForm } from "@/lib/widgets/private";
 
     $: ({ profile } = $page.props);
 
@@ -12,5 +12,5 @@
 <Meta meta={{ title: titleAdapted } } />
 <Layout>
     <h1 class="sr-only">{titleAdapted}</h1>
-    <ProfileForm />
+    <ProfileForm {profile} />
 </Layout>

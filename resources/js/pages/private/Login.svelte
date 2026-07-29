@@ -1,7 +1,7 @@
 <script>
-    import { Meta } from "@/config";
-    import { FlashToaster } from "@/ui/components/private";
-    import { LoginForm } from "@/ui/widgets/private";
+    import { Meta } from "@/lib/components/shared";
+    import { FlashToaster } from "@/lib/components/private";
+    import { LoginForm } from "@/lib/widgets/private";
 </script>
 
 <FlashToaster />

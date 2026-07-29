@@ -86,7 +86,7 @@ DISCORD_STREAM_WEBHOOK=null
 - `app/Services` - serviços externos e de processamento
 - `database/seeders` - dados iniciais e registros de desenvolvimento
 - `resources/js/pages` - páginas Inertia/Svelte
-- `resources/js/ui` - componentes de UI, layouts e widgets reutilizáveis
+- `resources/js/lib` - layouts, componentes, widgets, stores, utils e constants do frontend
 - `routes/web` - rotas web separadas por contexto
 
 ## Licença

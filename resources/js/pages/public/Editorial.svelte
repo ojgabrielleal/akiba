@@ -1,10 +1,10 @@
 <script>
     import { Link, page } from "@inertiajs/svelte";
-    import { Meta } from "@/config";
-    import { postTags } from "@/data";
-    import { Pagination } from "@/ui/components/public";
-    import { Layout } from "@/ui/layouts/public";
-    import { PostListGrid } from "@/ui/widgets/public";
+    import { Meta } from "@/lib/components/shared";
+    import { postTags } from "@/lib/constants";
+    import { Pagination } from "@/lib/components/public";
+    import { Layout } from "@/lib/layouts/public";
+    import { PostListGrid } from "@/lib/widgets/public";
 
     $: ({ flash, oauth, onair, stream } = $page.props);
     

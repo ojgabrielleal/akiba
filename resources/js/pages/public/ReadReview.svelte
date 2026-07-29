@@ -1,11 +1,11 @@
 <script>
     import { Link, page, router } from "@inertiajs/svelte";
-    import { Meta } from "@/config";
-    import { postReactions } from "@/data";
-    import { AuthGuard, Tooltip } from "@/ui/components/public";
-    import { Layout } from "@/ui/layouts/public";
-    import PostEngagement from "@/ui/widgets/public/read/PostEngagement.svelte";
-    import { resolvePlaceholderImage } from "@/utils";
+    import { Meta } from "@/lib/components/shared";
+    import { postReactions } from "@/lib/constants";
+    import { AuthGuard, Tooltip } from "@/lib/components/public";
+    import { Layout } from "@/lib/layouts/public";
+    import PostEngagement from "@/lib/widgets/public/read/PostEngagement.svelte";
+    import { resolvePlaceholderImage } from "@/lib/utils";
 
     $: ({ flash, oauth, onair, stream, post, comments, relatedPosts } = $page.props);
 

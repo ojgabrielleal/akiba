@@ -1,12 +1,12 @@
 <script>
     import { page, router } from "@inertiajs/svelte";
     import { fade } from "svelte/transition";
-    import { Meta } from "@/config";
-    import { Layout } from "@/ui/layouts/private";
-    import { LocutionForm, SongRequestGrid } from "@/ui/widgets/private";
-    import { resolvePlaceholderImage } from "@/utils";
+    import { Meta } from "@/lib/components/shared";
+    import { Layout } from "@/lib/layouts/private";
+    import { LocutionForm, SongRequestGrid } from "@/lib/widgets/private";
+    import { resolvePlaceholderImage } from "@/lib/utils";
 
-    $: ({ user, onair } = $page.props);
+    $: ({ user, programs, onair, songRequests } = $page.props);
     $: isLocutionFormBlocked = ["live", "playlist", "scheduled"].includes(onair.data.execution_mode);
 
     const redirectToDashboard = () => {
@@ -21,10 +21,10 @@
         class:opacity-50={isLocutionFormBlocked} 
         class:pointer-events-none={isLocutionFormBlocked} 
     >
-        <LocutionForm />
+        <LocutionForm {programs} />
     </div>
     {#if onair.data.execution_mode === "live"}
-        <SongRequestGrid title="Pedidos musicais" />
+        <SongRequestGrid title="Pedidos musicais" {onair} {songRequests} />
     {/if}
 </Layout>
 
