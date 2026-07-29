@@ -27,9 +27,15 @@ class CalendarController extends Controller
     public function show(Calendar $calendar)
     {
         $this->authorize('view', $calendar);
+
         return Inertia::render($this->render, [
-            'calendarItem' => new CalendarResource($calendar->load(['activity', 'responsible'])),
+            'calendarItem' => $this->indexCalendar($calendar),
         ]);
+    }
+
+    private function indexCalendar(Calendar $calendar): CalendarResource
+    {
+        return new CalendarResource($calendar->load(['activity', 'responsible']));
     }
 
     public function store(StoreCalendarRequest $request, StoreCalendarAction $action)

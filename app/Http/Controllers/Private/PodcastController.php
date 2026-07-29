@@ -35,13 +35,23 @@ class PodcastController extends Controller
         $this->authorize('viewAny', Podcast::class);
 
         return Inertia::render($this->render, [
-            'podcast' => new PodcastResource($podcast->load('author')),
-            'podcasts' => PodcastResource::collection($this->podcastFilter->apply([
-                'active' => true,
-                'with' => 'author',
-                'paginate' => 10,
-            ])),
+            'podcast' => $this->indexPodcast($podcast),
+            'podcasts' => $this->indexPodcasts(),
         ]);
+    }
+
+    private function indexPodcast(Podcast $podcast): PodcastResource
+    {
+        return new PodcastResource($podcast->load('author'));
+    }
+
+    private function indexPodcasts()
+    {
+        return PodcastResource::collection($this->podcastFilter->apply([
+            'active' => true,
+            'with' => 'author',
+            'paginate' => 10,
+        ]));
     }
 
     public function store(StorePodcastRequest $request, StorePodcastAction $action)

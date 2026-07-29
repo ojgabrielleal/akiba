@@ -35,18 +35,28 @@ class PostController extends Controller
         $this->authorize('viewAny', Post::class);
 
         return Inertia::render($this->render, [
-            'post' => new PostResource($post->load(['tags', 'references', 'author', 'reviews.author'])),
-            'posts' => PostResource::collection(
-                $this->postFilter->apply([
-                    'user' => request()->user(),
-                    'active' => true,
-                    'with_count' => 'views',
-                    'with' => ['author', 'reviews.author'],
-                    'search' => request()->input('search'),
-                    'paginate' => 10,
-                ])
-            ),
+            'post' => $this->indexPost($post),
+            'posts' => $this->indexPosts(),
         ]);
+    }
+
+    private function indexPost(Post $post): PostResource
+    {
+        return new PostResource($post->load(['tags', 'references', 'author', 'reviews.author']));
+    }
+
+    private function indexPosts()
+    {
+        return PostResource::collection(
+            $this->postFilter->apply([
+                'user' => request()->user(),
+                'active' => true,
+                'with_count' => 'views',
+                'with' => ['author', 'reviews.author'],
+                'search' => request()->input('search'),
+                'paginate' => 10,
+            ])
+        );
     }
 
     public function store(StorePostRequest $request, StorePostAction $action)

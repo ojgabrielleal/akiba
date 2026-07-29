@@ -29,8 +29,13 @@ class ListenerGalleryController extends Controller
         $this->authorize('view', $listenerGallery);
 
         return Inertia::render($this->render, [
-            'listenerGallery' => new ListenerGalleryResource($listenerGallery),
+            'listenerGallery' => $this->indexListenerGallery($listenerGallery),
         ]);
+    }
+
+    private function indexListenerGallery(ListenerGallery $listenerGallery): ListenerGalleryResource
+    {
+        return new ListenerGalleryResource($listenerGallery);
     }
 
     public function store(StoreListenerGalleryRequest $request, StoreListenerGalleryAction $action)

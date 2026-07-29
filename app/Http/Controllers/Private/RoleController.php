@@ -31,10 +31,15 @@ class RoleController extends Controller
         $this->authorize('view', $role);
 
         return Inertia::render($this->render, [
-            'role' => new RoleResource(
-                $role->loadCount('members')->load('permissions')
-            ),
+            'role' => $this->indexRole($role),
         ]);
+    }
+
+    private function indexRole(Role $role): RoleResource
+    {
+        return new RoleResource(
+            $role->loadCount('members')->load('permissions')
+        );
     }
 
     public function store(StoreRoleRequest $request, StoreRoleAction $action)

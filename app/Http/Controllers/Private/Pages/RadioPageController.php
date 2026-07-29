@@ -57,11 +57,7 @@ class RadioPageController extends Controller
         return $this->whenCanViewAny(Program::class,
             fn () => ProgramResource::collection(
                 $this->programFilter->apply([
-                    'with' => [
-                        'host',
-                        'programAirtimes',
-                        'schedules' => fn ($query) => $query->pendingExecution()->orderBy('scheduled_at'),
-                    ],
+                    'with' => $this->programRelations(),
                     'active' => true,
                 ])
             )->format('grouped'),
@@ -93,5 +89,14 @@ class RadioPageController extends Controller
                 ];
             },
         );
+    }
+
+    private function programRelations(): array
+    {
+        return [
+            'host',
+            'programAirtimes',
+            'schedules' => fn ($query) => $query->pendingExecution()->orderBy('scheduled_at'),
+        ];
     }
 }

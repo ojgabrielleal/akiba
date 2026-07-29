@@ -17,20 +17,25 @@ class ReadPageController extends Controller
 
     public function render(StorePageViewAction $action, string $slug)
     {
-        $post = Post::query()
-            ->where('slug', $slug)
-            ->with(['author', 'references', 'tags', 'reactions', 'reviews.author'])
-            ->firstOrFail();
+        $post = $this->getPost($slug);
 
         $action->execute($post, request());
 
         return Inertia::render('public/ReadPost', [
-            'post' => $this->showPost($post),
+            'post' => $this->indexPost($post),
             'relatedPosts' => $this->indexRelatedPosts($post),
         ]);
     }
 
-    private function showPost(Post $post)
+    private function getPost(string $slug): Post
+    {
+        return Post::query()
+            ->where('slug', $slug)
+            ->with(['author', 'references', 'tags', 'reactions', 'reviews.author'])
+            ->firstOrFail();
+    }
+
+    private function indexPost(Post $post)
     {
         return PostResource::make($post);
     }
@@ -39,7 +44,7 @@ class ReadPageController extends Controller
     {
         return PostResource::collection(
             $this->postFilter->apply([
-                    'user' => request()->user(),
+                'user' => request()->user(),
                 'active' => true,
                 'status' => 'published',
                 'module' => $post->module,

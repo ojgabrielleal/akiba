@@ -28,12 +28,22 @@ class UserController extends Controller
         $this->authorize('view', $user);
 
         return Inertia::render($this->render, [
-            'user' => new UserResource($user->load([
-                'roles' => fn ($query) => $query
-                    ->withCount('members')
-                    ->with('permissions'),
-            ])),
+            'user' => $this->indexUser($user),
         ]);
+    }
+
+    private function indexUser(User $user): UserResource
+    {
+        return new UserResource($user->load($this->userRelations()));
+    }
+
+    private function userRelations(): array
+    {
+        return [
+            'roles' => fn ($query) => $query
+                ->withCount('members')
+                ->with('permissions'),
+        ];
     }
 
     public function store(StoreUserRequest $request, StoreUserAction $action)

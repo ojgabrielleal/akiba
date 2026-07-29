@@ -26,12 +26,17 @@ class ActivityController extends Controller
     public function show(Activity $activity)
     {
         $this->authorize('view', $activity);
-        
+
         return Inertia::render($this->render, [
-            'activity' => new ActivityResource(
-                $activity->load(['author', 'confirmations', 'calendar'])
-            ),
+            'activity' => $this->indexActivity($activity),
         ]);
+    }
+
+    private function indexActivity(Activity $activity): ActivityResource
+    {
+        return new ActivityResource(
+            $activity->load(['author', 'confirmations', 'calendar'])
+        );
     }
 
     public function store(StoreActivityRequest $request, StoreActivityAction $action)

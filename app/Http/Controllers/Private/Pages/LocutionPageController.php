@@ -13,6 +13,7 @@ use App\Http\Resources\Onair\OnairResource;
 use App\Http\Resources\Program\ProgramResource;
 use App\Http\Resources\SongRequestResource;
 
+use App\Models\Onair;
 use App\Models\Program;
 use App\Models\SongRequest;
 
@@ -32,12 +33,21 @@ class LocutionPageController extends Controller
 
     public function render()
     {
-        $onair = $this->indexOnair();
+        $onair = $this->getOnair();
 
         return Inertia::render($this->render, [
             'programs' => $this->indexPrograms(),
-            'onair' => $this->showOnair($onair),
-            'songRequests' => $this->indexSongRequests($onair?->id),
+            'onair' => $this->indexOnair($onair),
+            'songRequests' => $this->indexSongRequests($onair),
+        ]);
+    }
+
+    private function getOnair(): ?Onair
+    {
+        return $this->onairFilter->apply([
+            'live' => true,
+            'with' => 'program.host',
+            'first' => true,
         ]);
     }
 
@@ -52,26 +62,17 @@ class LocutionPageController extends Controller
         );
     }
 
-    private function indexOnair()
-    {
-        return $this->onairFilter->apply([
-            'live' => true,
-            'with' => 'program.host',
-            'first' => true,
-        ]);
-    }
-
-    private function showOnair($onair): ?OnairResource
+    private function indexOnair(?Onair $onair): ?OnairResource
     {
         return $onair ? new OnairResource($onair) : null;
     }
 
-    private function indexSongRequests(?int $onairId)
+    private function indexSongRequests(?Onair $onair)
     {
         return $this->whenCanViewAny(SongRequest::class,
             fn () => SongRequestResource::collection(
                 $this->songRequestFilter->apply([
-                    'onair_id' => $onairId,
+                    'onair_id' => $onair?->id,
                     'order_by' => 'created_at',
                     'order_direction' => 'asc',
                 ])

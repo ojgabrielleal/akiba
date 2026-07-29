@@ -14,7 +14,7 @@ class HomeController extends Controller
 {
     private $render = 'provisory/Home';
 
-    public function showOnair()
+    private function indexOnair()
     {
         return OnairResource::collection(
             Onair::live()->with('program.host')->get()
@@ -24,7 +24,7 @@ class HomeController extends Controller
     public function render()
     {
         return Inertia::render($this->render, [
-            'onair' => $this->showOnair(),
+            'onair' => $this->indexOnair(),
         ]);
     }
 }

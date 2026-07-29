@@ -25,13 +25,18 @@ class ProfilePageController extends Controller
 
     private function indexProfile(User $user): UserResource
     {
-        return new UserResource($user->load([
+        return new UserResource($user->load($this->profileRelations()));
+    }
+
+    private function profileRelations(): array
+    {
+        return [
             'favorites',
             'socials',
             'preferences',
             'roles' => fn ($query) => $query
                 ->withCount('members')
                 ->with('permissions'),
-        ]));
+        ];
     }
 }

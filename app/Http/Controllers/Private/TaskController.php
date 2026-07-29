@@ -29,8 +29,13 @@ class TaskController extends Controller
         $this->authorize('view', $task);
 
         return Inertia::render($this->render, [
-            'task' => new TaskResource($task->load(['responsible'])),
+            'task' => $this->indexTask($task),
         ]);
+    }
+
+    private function indexTask(Task $task): TaskResource
+    {
+        return new TaskResource($task->load('responsible'));
     }
 
     public function store(StoreTaskRequest $request, StoreTaskAction $action)
