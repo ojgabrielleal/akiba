@@ -2,15 +2,17 @@
     import { Link, page, router } from "@inertiajs/svelte";
     import { Meta } from "@/config";
     import { postReactions, postTags } from "@/data";
-    import { Tooltip } from "@/ui/components/public";
+    import { AuthGuard, Pagination, Tooltip } from "@/ui/components/public";
     import { Layout } from "@/ui/layouts/public";
     import { resolvePlaceholderImage } from "@/utils";
 
-    $: ({ flash, oauth, onair, stream, post, relatedPosts } = $page.props);
+    $: ({ flash, oauth, onair, stream, post, comments: paginatedComments, relatedPosts } = $page.props);
 
     $: pageUrl = $page.url;
     $: article = post?.data ?? {};
     $: related = relatedPosts?.data ?? [];
+    $: comments = paginatedComments?.data ?? [];
+    $: totalComments = paginatedComments?.meta?.total ?? paginatedComments?.total ?? comments.length;
     $: primaryTag = article.tags?.[0]?.name;
     $: relatedLabel = postTags[primaryTag]?.label ?? "Novidades";
     $: relatedIcon = postTags[primaryTag]?.icon ?? "/svg/news.svg";
@@ -21,12 +23,26 @@
         return counts;
     }, {});
 
+    let comment = "";
+
     const submitReaction = (reaction) => {
         router.post(`/materia/${article.slug}/reaction`, {
             name: reaction.name,
         }, {
             only: ["post"],
             preserveScroll: true,
+        });
+    };
+
+    const submitComment = () => {
+        router.post(`/materia/${article.slug}/comment`, {
+            comment,
+        }, {
+            only: ["comments"],
+            preserveScroll: true,
+            onSuccess: () => {
+                comment = "";
+            },
         });
     };
 </script>
@@ -58,31 +74,37 @@
                     </div>
                 {/if}
 
-                <section class="mt-10 flex flex-wrap items-center justify-center gap-x-5 gap-y-4 py-8 font-noto-sans uppercase">
+                <section class="mt-8 flex min-h-28 flex-wrap items-center justify-center gap-x-5 gap-y-4 py-4 font-noto-sans uppercase">
                     <p class="max-w-44 text-center text-lg leading-tight font-normal text-orange-amber">
                         O que você achou dessa matéria?
                     </p>
-                    <div class="flex flex-wrap items-center justify-center gap-2">
-                        {#each postReactions as reaction}
-                            <Tooltip position="bottom">
-                                <button
-                                    type="button"
-                                    aria-label={reaction.label}
-                                    class="group/reaction relative flex size-21 cursor-pointer items-center justify-center rounded-full transition duration-300 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber motion-reduce:transform-none motion-reduce:transition-none"
-                                    on:click={() => submitReaction(reaction)}
-                                >
-                                    <img src={reaction.image} alt="" aria-hidden="true" class="size-18" />
-                                    <span class="absolute -right-1 -bottom-1 min-w-6 rounded-full bg-blue-skywave px-1.5 py-0.5 text-center font-noto-sans text-xs font-black text-suspense-aurora">
-                                        {reactionCounts[reaction.name] ?? 0}
-                                    </span>
-                                </button>
-                                <span slot="content">{reaction.label}</span>
-                            </Tooltip>
-                        {/each}
-                    </div>
+                    <AuthGuard
+                        {oauth}
+                        buttonLabel="Entre com o Discord para reagir"
+                        compact
+                    >
+                        <div class="flex flex-wrap items-center justify-center gap-2">
+                            {#each postReactions as reaction}
+                                <Tooltip position="bottom">
+                                    <button
+                                        type="button"
+                                        aria-label={reaction.label}
+                                        class="group/reaction relative flex size-21 cursor-pointer items-center justify-center rounded-full transition duration-300 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber motion-reduce:transform-none motion-reduce:transition-none"
+                                        on:click={() => submitReaction(reaction)}
+                                    >
+                                        <img src={reaction.image} alt="" aria-hidden="true" class="size-18" />
+                                        <span class="absolute -right-1 -bottom-1 min-w-6 rounded-full bg-blue-skywave px-1.5 py-0.5 text-center font-noto-sans text-xs font-black text-suspense-aurora">
+                                            {reactionCounts[reaction.name] ?? 0}
+                                        </span>
+                                    </button>
+                                    <span slot="content">{reaction.label}</span>
+                                </Tooltip>
+                            {/each}
+                        </div>
+                    </AuthGuard>
                 </section>
 
-                <footer class="mt-9 grid items-stretch gap-x-4 gap-y-4 font-noto-sans uppercase md:grid-cols-[minmax(0,1fr)_24rem]">
+                <footer class="mt-9 grid items-stretch gap-x-4 gap-y-12 font-noto-sans uppercase md:grid-cols-[minmax(0,1fr)_24rem] md:gap-y-4">
                     <div class="grid grid-rows-[auto_auto_1fr] gap-4">
                         <h2 class="text-center text-xl leading-none font-normal text-orange-amber">
                             Fontes de pesquisa
@@ -125,6 +147,81 @@
                     </div>
 
                 </footer>
+
+                <section class="mt-12 font-noto-sans">
+                    <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
+                        <h2 class="text-xl leading-none font-normal text-orange-amber uppercase">
+                            Comentários
+                        </h2>
+                        <span class="rounded-full bg-blue-cerulean px-3 py-1 text-xs font-black text-suspense-aurora uppercase italic">
+                            {totalComments}
+                        </span>
+                    </div>
+
+                    <AuthGuard
+                        {oauth}
+                        title="Entre para comentar"
+                        description="Use sua conta do Discord para participar da conversa."
+                        buttonLabel="Entrar com Discord"
+                        filters="filter-suspense-aurora"
+                        titleClass="text-suspense-aurora"
+                        descriptionClass="text-suspense-aurora/70"
+                        buttonClass="text-suspense-aurora"
+                    >
+                        <form class="grid gap-3" on:submit|preventDefault={submitComment}>
+                            <textarea
+                                bind:value={comment}
+                                name="comment"
+                                rows="4"
+                                maxlength="1000"
+                                placeholder="Escreva seu comentário..."
+                                class="min-h-28 w-full resize-y rounded-md border-2 border-blue-skywave/30 bg-blue-ocean px-4 py-3 text-sm font-bold text-suspense-aurora placeholder:text-suspense-aurora/45 focus:border-orange-amber focus:outline-none"
+                            ></textarea>
+                            <div class="flex justify-end">
+                                <button
+                                    type="submit"
+                                    class="rounded-full bg-orange-amber px-5 py-2.5 text-sm font-black text-blue-night uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50 motion-reduce:transform-none motion-reduce:transition-none"
+                                    disabled={!comment.trim()}
+                                >
+                                    Comentar
+                                </button>
+                            </div>
+                        </form>
+                    </AuthGuard>
+
+                    <div class="mt-6 grid gap-4">
+                        {#if comments.length}
+                            {#each comments as item}
+                                <article class="rounded-md bg-blue-ocean p-4">
+                                    <div class="mb-3 flex items-center gap-3">
+                                        <img
+                                            src={resolvePlaceholderImage(item.author?.avatar, "avatar")}
+                                            alt=""
+                                            aria-hidden="true"
+                                            class="size-10 rounded-full bg-blue-night object-cover"
+                                        />
+                                        <div class="min-w-0">
+                                            <p class="truncate text-sm font-black text-suspense-aurora uppercase italic">
+                                                {item.author?.name}
+                                            </p>
+                                            <p class="text-xs font-bold text-suspense-aurora/60">
+                                                {item.created_at}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <p class="whitespace-pre-line text-sm font-medium leading-relaxed text-suspense-aurora">
+                                        {item.comment}
+                                    </p>
+                                </article>
+                            {/each}
+                        {:else}
+                            <p class="rounded-md border border-blue-skywave/30 px-4 py-5 text-center text-sm font-bold text-suspense-aurora/70">
+                                Ainda não há comentários por aqui.
+                            </p>
+                        {/if}
+                    </div>
+                    <Pagination pages={paginatedComments} only={["comments"]} loadingLabel="Carregando comentários..." />
+                </section>
             </article>
 
             <aside class="min-w-0">

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Public\Pages;
 use App\Actions\PageView\StorePageViewAction;
 use App\Filters\PostFilter;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Post\PostCommentResource;
 use App\Http\Resources\Post\PostResource;
 use App\Models\Post;
 use Inertia\Inertia;
@@ -23,6 +24,7 @@ class ReadPageController extends Controller
 
         return Inertia::render('public/ReadPost', [
             'post' => $this->indexPost($post),
+            'comments' => $this->indexComments($post),
             'relatedPosts' => $this->indexRelatedPosts($post),
         ]);
     }
@@ -38,6 +40,17 @@ class ReadPageController extends Controller
     private function indexPost(Post $post)
     {
         return PostResource::make($post);
+    }
+
+    private function indexComments(Post $post)
+    {
+        return PostCommentResource::collection(
+            $post->comments()
+                ->with('oauthAccount')
+                ->latest()
+                ->paginate(10)
+                ->withQueryString()
+        );
     }
 
     private function indexRelatedPosts(Post $post)

@@ -14,6 +14,7 @@ class StorePostReactionController extends Controller
     {
         $action->execute(
             $post,
+            $request->attributes->get('oauth_account'),
             $request->validated('name'),
         );
 

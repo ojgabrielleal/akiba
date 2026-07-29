@@ -7,9 +7,9 @@ use App\Models\OAuthAccount;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\PostReaction>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\PostComment>
  */
-class PostReactionFactory extends Factory
+class PostCommentFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -20,7 +20,7 @@ class PostReactionFactory extends Factory
     {
         return [
             'oauth_account_id' => OAuthAccount::factory(),
-            'name' => fake()->randomElement(['angry', 'duvid', 'content', 'happy', 'big-happy']),
+            'comment' => fake()->paragraph(),
         ];
     }
 }

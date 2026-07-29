@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Post;
+use App\Models\PostComment;
 use App\Models\PostReaction;
 use App\Models\PostReference;
 use App\Models\PostReview;
@@ -45,6 +46,7 @@ class PostSeeder extends Seeder
             ->has(PostReference::factory(2), 'references')
             ->has(PostTag::factory(2), 'tags')
             ->has(PostReaction::factory(5), 'reactions')
+            ->has(PostComment::factory(3), 'comments')
             ->create();
     }
 

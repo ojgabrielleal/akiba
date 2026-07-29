@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\External\OAuthAccount\OAuthAccountCallbackController;
 use App\Http\Controllers\Api\External\OAuthAccount\OAuthAccountRedirectController;
 use App\Http\Controllers\Public\OAuthAccountController;
+use App\Http\Controllers\Public\Invokes\StorePostCommentController;
 use App\Http\Controllers\Public\Invokes\StorePostReactionController;
 use App\Http\Controllers\Public\Pages\EditorialPageController;
 use App\Http\Controllers\Public\Pages\HomePageController;
@@ -34,7 +35,12 @@ Route::middleware(['oauth.resolve', 'inertia', 'auth'])->group(function () {
         ->name('post.read');
 
     Route::post('/materia/{post:slug}/reaction', StorePostReactionController::class)
+        ->middleware('oauth')
         ->name('post.reaction.store');
+
+    Route::post('/materia/{post:slug}/comment', StorePostCommentController::class)
+        ->middleware('oauth')
+        ->name('post.comment.store');
 
     Route::get('/review/{slug}', [ReadPageController::class, 'render'])
         ->name('review.read');

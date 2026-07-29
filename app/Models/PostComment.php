@@ -6,16 +6,15 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PostReaction extends Model
+class PostComment extends Model
 {
     use HasFactory, HasUuids;
-
 
     protected $fillable = [
         'uuid',
         'post_id',
         'oauth_account_id',
-        'name',
+        'comment',
     ];
 
     protected $hidden = [
@@ -25,10 +24,6 @@ class PostReaction extends Model
 
     /**
      * Determine the columns that should receive a unique identifier.
-     *
-     * This method specifies that the 'uuid' column should be automatically 
-     * generated as a sortable, unique identifier when the model is created.
-     *
      */
     public function uniqueIds(): array
     {

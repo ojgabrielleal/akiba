@@ -60,4 +60,14 @@ class OAuthAccount extends Model
     {
         return $this->hasMany(ListenerMonth::class, 'oauth_account_id');
     }
+
+    public function postReactions()
+    {
+        return $this->hasMany(PostReaction::class, 'oauth_account_id');
+    }
+
+    public function postComments()
+    {
+        return $this->hasMany(PostComment::class, 'oauth_account_id');
+    }
 }
