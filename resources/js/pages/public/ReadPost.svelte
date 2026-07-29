@@ -175,7 +175,7 @@
                                 rows="4"
                                 maxlength="1000"
                                 placeholder="Escreva seu comentário..."
-                                class="min-h-28 w-full resize-y rounded-md border-2 border-blue-skywave/30 bg-blue-ocean px-4 py-3 text-sm font-bold text-suspense-aurora placeholder:text-suspense-aurora/45 focus:border-orange-amber focus:outline-none"
+                                class="min-h-28 w-full resize-none rounded-md border-2 border-blue-skywave/30 bg-blue-ocean px-4 py-3 text-sm font-bold text-suspense-aurora placeholder:text-suspense-aurora/45 focus:border-orange-amber focus:outline-none"
                             ></textarea>
                             <div class="flex justify-end">
                                 <button
