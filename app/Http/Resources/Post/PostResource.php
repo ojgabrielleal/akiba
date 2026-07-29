@@ -43,6 +43,17 @@ class PostResource extends JsonResource
             ];
         }
 
+        if ($this->format === 'grid') {
+            return [
+                'uuid' => $this->uuid,
+                'title' => $this->title,
+                'status' => $this->status,
+                'module' => $this->module,
+                'views' => $this->views_count,
+                'author' => UserResource::make($this->author)->format('summary'),
+            ];
+        }
+
         $postData = [
             'uuid' => $this->uuid,
             'slug' => $this->slug,
@@ -51,9 +62,11 @@ class PostResource extends JsonResource
             'image' => $this->image,
             'cover' => $this->cover,
             'views' => $this->views_count,
+            'created_at' => $this->created_at?->format('d/m/Y'),
             'author' => UserResource::make($this->author)->format('summary'),
             'references' => PostReferenceResource::collection($this->references),
             'tags' => PostTagResource::collection($this->tags),
+            'reactions' => PostReactionResource::collection($this->reactions),
             'module' => $this->module,
         ];
 
@@ -71,7 +84,6 @@ class PostResource extends JsonResource
             return [
                 'status' => $this->status,
                 'content' => $this->content,
-                'reactions' => PostReactionResource::collection($this->reactions),
             ];
         }
 
@@ -82,7 +94,7 @@ class PostResource extends JsonResource
     {
         return match ($this->module) {
             'review' => "/review/{$this->slug}",
-            'event' => "/evento/{$this->slug}",
+            'event' => "/event/{$this->slug}",
             default => "/materia/{$this->slug}",
         };
     }
@@ -103,6 +115,17 @@ class PostResource extends JsonResource
     public function review(Request $request): array
     {
         if($this->module === 'review'){
+            if ($this->format === 'public-read') {
+                return [
+                    'reviews' => PostReviewResource::collection(
+                        $this->reviews
+                            ->where('status', 'published')
+                            ->values()
+                    ),
+                    'metadata' => $this->metadata,
+                ];
+            }
+
             return [
                 'reviews' => $request->user()
                     ? $this->listReviews($request)

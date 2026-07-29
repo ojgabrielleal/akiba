@@ -55,6 +55,10 @@ class PostSeeder extends Seeder
         Post::factory($count)
             ->review()
             ->for($user, 'author')
+            ->has(PostReference::factory(2), 'references')
+            ->has(PostTag::factory(2), 'tags')
+            ->has(PostReaction::factory(5), 'reactions')
+            ->has(PostComment::factory(3), 'comments')
             ->afterCreating(fn (Post $post) => PostReview::factory(5)
                 ->for($user, 'author')
                 ->create(['post_id' => $post->id]))
@@ -66,6 +70,10 @@ class PostSeeder extends Seeder
         Post::factory($count)
             ->event()
             ->for($user, 'author')
+            ->has(PostReference::factory(2), 'references')
+            ->has(PostTag::factory(2), 'tags')
+            ->has(PostReaction::factory(5), 'reactions')
+            ->has(PostComment::factory(3), 'comments')
             ->create();
     }
 }

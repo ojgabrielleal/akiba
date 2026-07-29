@@ -45,8 +45,11 @@ Route::middleware(['oauth.resolve', 'inertia', 'auth'])->group(function () {
     Route::get('/review/{slug}', [ReadPageController::class, 'render'])
         ->name('review.read');
 
-    Route::get('/evento/{slug}', [ReadPageController::class, 'render'])
+    Route::get('/event/{slug}', [ReadPageController::class, 'render'])
         ->name('event.read');
+
+    Route::get('/evento/{slug}', [ReadPageController::class, 'render'])
+        ->name('event.read.legacy');
 });
 
 Route::prefix("site")->middleware(['oauth.resolve', 'inertia', 'auth'])->group(function () {

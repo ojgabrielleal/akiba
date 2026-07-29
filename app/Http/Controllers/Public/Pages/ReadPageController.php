@@ -22,11 +22,20 @@ class ReadPageController extends Controller
 
         $action->execute($post, request());
 
-        return Inertia::render('public/ReadPost', [
+        return Inertia::render($this->componentFor($post), [
             'post' => $this->indexPost($post),
             'comments' => $this->indexComments($post),
             'relatedPosts' => $this->indexRelatedPosts($post),
         ]);
+    }
+
+    private function componentFor(Post $post): string
+    {
+        return match ($post->module) {
+            'review' => 'public/ReadReview',
+            'event' => 'public/ReadEvent',
+            default => 'public/ReadPost',
+        };
     }
 
     private function getPost(string $slug): Post
@@ -39,7 +48,7 @@ class ReadPageController extends Controller
 
     private function indexPost(Post $post)
     {
-        return PostResource::make($post);
+        return PostResource::make($post)->format('public-read');
     }
 
     private function indexComments(Post $post)

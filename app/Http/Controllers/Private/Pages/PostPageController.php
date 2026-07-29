@@ -38,11 +38,11 @@ class PostPageController extends Controller
                     'user' => request()->user(),
                     'active' => true,
                     'with_count' => 'views',
-                    'with' => ['author', 'reviews.author'],
+                    'with' => 'author',
                     'search' => request()->input('search'),
                     'paginate' => 10,
                 ])
-            ),
+            )->format('grid'),
         );
     }
 }

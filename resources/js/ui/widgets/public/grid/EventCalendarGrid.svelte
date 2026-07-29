@@ -19,7 +19,7 @@
                         {#each eventList as item (item.uuid)}
                             <li class="min-w-0">
                                 <Link
-                                    href={`/evento/${item.slug}`}
+                                    href={`/event/${item.slug}`}
                                     aria-label={`Ver evento: ${item.title}`}
                                     class="group grid gap-2 rounded-md font-black transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber motion-reduce:transform-none motion-reduce:transition-none"
                                 >
@@ -60,7 +60,7 @@
                         {#each eventList as item (item.uuid)}
                             <li class="min-w-0">
                                 <Link
-                                    href={`/evento/${item.slug}`}
+                                    href={`/event/${item.slug}`}
                                     aria-label={`Ver evento: ${item.title}`}
                                     class="group grid grid-cols-[1.5fr_0.85fr_1fr] gap-2 rounded-md font-black transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber motion-reduce:transform-none motion-reduce:transition-none"
                                 >
