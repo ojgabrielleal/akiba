@@ -78,6 +78,53 @@ class PostFilter
                     ])
             )
             ->when(
+                $filters['interacted_since'] ?? null,
+                fn (Builder $query, $interactedSince) => $query
+                    ->where(function (Builder $query) use ($interactedSince) {
+                        $query->whereHas(
+                            'views',
+                            fn (Builder $viewsQuery) => $viewsQuery->where(
+                                'created_at',
+                                '>=',
+                                $interactedSince
+                            )
+                        )
+                            ->orWhereHas(
+                                'likes',
+                                fn (Builder $likesQuery) => $likesQuery->where(
+                                    'created_at',
+                                    '>=',
+                                    $interactedSince
+                                )
+                            )
+                            ->orWhereHas(
+                                'comments',
+                                fn (Builder $commentsQuery) => $commentsQuery->where(
+                                    'created_at',
+                                    '>=',
+                                    $interactedSince
+                                )
+                            );
+                    })
+                    ->withCount([
+                        'views as views_count' => fn (Builder $viewsQuery) => $viewsQuery->where(
+                            'created_at',
+                            '>=',
+                            $interactedSince
+                        ),
+                        'likes as likes_count' => fn (Builder $likesQuery) => $likesQuery->where(
+                            'created_at',
+                            '>=',
+                            $interactedSince
+                        ),
+                        'comments as comments_count' => fn (Builder $commentsQuery) => $commentsQuery->where(
+                            'created_at',
+                            '>=',
+                            $interactedSince
+                        ),
+                    ])
+            )
+            ->when(
                 $filters['search'] ?? null,
                 fn (Builder $query, string $search) => $query->whereLike(
                     'title',
@@ -87,10 +134,7 @@ class PostFilter
             ->when(
                 ($filters['order_by'] ?? null) === 'random',
                 fn (Builder $query) => $query->inRandomOrder(),
-                fn (Builder $query) => $query->orderBy(
-                    $filters['order_by'] ?? 'id',
-                    $filters['order_direction'] ?? 'desc'
-                )
+                fn (Builder $query) => $this->applyOrdering($query, $filters)
             )
             ->when(
                 $filters['limit'] ?? null,
@@ -120,5 +164,23 @@ class PostFilter
             && ! ($filters['ignore_authorization'] ?? false)
             && ! $user->hasPermission('post.list')
             && $user->hasPermission('post.list.own');
+    }
+
+    private function applyOrdering(Builder $query, array $filters): Builder
+    {
+        $orderDirection = $filters['order_direction'] ?? 'desc';
+
+        return match ($filters['order_by'] ?? 'id') {
+            'interactions_count' => $query->orderByRaw(
+                "(views_count + likes_count + comments_count) {$orderDirection}"
+            ),
+            'metadata_year_of_release' => $query->orderByRaw(
+                "CAST(JSON_UNQUOTE(JSON_EXTRACT(metadata, '$.year_of_release')) AS UNSIGNED) {$orderDirection}"
+            ),
+            default => $query->orderBy(
+                $filters['order_by'] ?? 'id',
+                $orderDirection
+            ),
+        };
     }
 }

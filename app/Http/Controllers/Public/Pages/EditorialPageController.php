@@ -39,6 +39,17 @@ class EditorialPageController extends Controller
         ]);
     }
 
+    public function reviews()
+    {
+        $sort = request('sort', 'alphabetical');
+
+        return Inertia::render('public/Reviews', [
+            'title' => 'Reviews',
+            'activeSort' => $sort,
+            'reviews' => $this->indexReviews($sort),
+        ]);
+    }
+
     private function indexNewsPosts(string $tag)
     {
         return PostResource::collection(
@@ -74,5 +85,28 @@ class EditorialPageController extends Controller
                 'ignore_authorization' => true,
             ])
         )->format('home-list');
+    }
+
+    private function indexReviews(string $sort)
+    {
+        [$orderBy, $orderDirection] = match ($sort) {
+            'likes' => ['likes_count', 'desc'],
+            'year' => ['metadata_year_of_release', 'desc'],
+            default => ['title', 'asc'],
+        };
+
+        return PostResource::collection(
+            $this->postFilter->apply([
+                    'user' => request()->user(),
+                'active' => true,
+                'status' => 'published',
+                'module' => 'review',
+                'with_count' => 'likes',
+                'order_by' => $orderBy,
+                'order_direction' => $orderDirection,
+                'paginate' => 15,
+                'ignore_authorization' => true,
+            ])
+        )->format('featured');
     }
 }

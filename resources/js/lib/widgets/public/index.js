@@ -4,9 +4,8 @@ export { default as ProfileForm } from "./form/ProfileForm.svelte"
 
 // Grid
 export { default as FeaturedGrid } from "./grid/FeaturedGrid.svelte"
-export { default as LatestReviewsGrid } from "./grid/LatestReviewsGrid.svelte"
 export { default as PostListGrid } from "./grid/PostListGrid.svelte"
-export { default as ReviewGrid } from "./grid/ReviewGrid.svelte"
+export { default as ReviewListGrid } from "./grid/ReviewListGrid.svelte"
 export { default as CalendarGrid } from "./grid/CalendarGrid.svelte"
 export { default as EventCalendarGrid } from "./grid/EventCalendarGrid.svelte"
 export { default as LatestPodcastsGrid } from "./grid/LatestPodcastsGrid.svelte"

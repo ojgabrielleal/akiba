@@ -66,6 +66,11 @@ class OAuthAccount extends Model
         return $this->hasMany(PostReaction::class, 'oauth_account_id');
     }
 
+    public function postLikes()
+    {
+        return $this->hasMany(PostLike::class, 'oauth_account_id');
+    }
+
     public function postComments()
     {
         return $this->hasMany(PostComment::class, 'oauth_account_id');

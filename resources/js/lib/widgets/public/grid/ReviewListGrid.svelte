@@ -3,15 +3,18 @@
     import { GridList, Section } from "@/lib/components/public";
     import { resolvePlaceholderImage } from "@/lib/utils";
 
-    export let latestReviews = [];
+    export let reviews = [];
+    export let title = null;
+    export let styles = "container-page mb-8 pt-2 pb-4 lg:mb-10 lg:pt-4 lg:pb-10";
+    export let ariaLabel = title ?? "Reviews";
 
-    $: reviews = Array.isArray(latestReviews) ? latestReviews : latestReviews?.data ?? [];
+    $: reviewList = Array.isArray(reviews) ? reviews : reviews?.data ?? [];
 </script>
 
-{#if reviews.length > 0}
-    <Section title="Últimas reviews" styles="container-page mb-8 pt-2 pb-4 lg:mb-10 lg:pt-4 lg:pb-10">
-        <GridList preset="reviews" aria-label="Últimas reviews">
-            {#each reviews as review (review.uuid)}
+{#if reviewList.length > 0}
+    <Section {title} {styles}>
+        <GridList preset="reviews" aria-label={ariaLabel}>
+            {#each reviewList as review (review.uuid)}
                 <li class="min-w-0">
                     <Link
                         href={`/review/${review.slug}`}

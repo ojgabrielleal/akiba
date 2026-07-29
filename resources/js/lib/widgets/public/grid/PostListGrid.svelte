@@ -42,13 +42,17 @@
                         aria-label={`Ler matéria: ${post.title}`}
                         class="group grid grid-cols-[8.75rem_1fr] gap-3 rounded-md transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber motion-reduce:transform-none motion-reduce:transition-none sm:grid-cols-[14rem_1fr]"
                     >
-                        <div class="h-21 overflow-hidden rounded-md sm:h-34">
+                        <div class="relative h-21 overflow-hidden rounded-md sm:h-34">
                             <img
                                 src={resolvePlaceholderImage(post.cover, "placeholder")}
                                 alt=""
                                 aria-hidden="true"
                                 class="h-full w-full rounded-md object-cover"
                             />
+                            <span class="absolute right-1.5 top-1.5 z-10 inline-flex h-5 min-w-11 items-center justify-center gap-1 rounded-sm bg-orange-amber px-1.5 font-noto-sans text-xs leading-none font-black text-suspense-aurora uppercase italic shadow-sm shadow-blue-night/20">
+                                {post.likes_percentage ?? 0}%
+                                <img src="/svg/like.svg" alt="" aria-hidden="true" class="size-3 filter-suspense-aurora" />
+                            </span>
                         </div>
                         <article class="flex min-w-0 flex-col justify-between">
                             <h3 class="line-clamp-3 font-noto-sans text-lg leading-tight font-bold text-suspense-aurora uppercase italic sm:text-xl">

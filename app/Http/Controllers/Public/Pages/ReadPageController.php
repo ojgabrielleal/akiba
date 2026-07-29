@@ -42,7 +42,8 @@ class ReadPageController extends Controller
     {
         return Post::query()
             ->where('slug', $slug)
-            ->with(['author', 'references', 'tags', 'reactions', 'reviews.author'])
+            ->with(['author', 'references', 'tags', 'reactions', 'likes', 'reviews.author'])
+            ->withCount('likes')
             ->firstOrFail();
     }
 

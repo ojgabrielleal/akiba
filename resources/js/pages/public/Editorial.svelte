@@ -15,7 +15,9 @@
     $: activeTag = new URL(pageUrl, "http://akiba.local").searchParams.get("tag") ?? $page.props.activeTag;
 
     const categoryLabel = (name) => postTags[name]?.label ?? name;
-    const categoryHref = (category) => `${pageUrl.split("?")[0]}?tag=${category}`;
+    const categoryHref = (category) => category === "reviews"
+        ? "/reviews"
+        : `${pageUrl.split("?")[0]}?tag=${category}`;
 
     $: displayTitle = activeTag ? categoryLabel(activeTag) : title;
 </script>
@@ -35,33 +37,41 @@
             <ul class="container-page flex flex-wrap items-center justify-center gap-y-3 py-8">
                 {#each categories as category}
                     <li class="flex h-8 items-center border-l border-neutral-gray/35 px-3 first:border-none first:pl-0 xl:px-5">
-                        <Link
-                            href={categoryHref(category)}
-                            only={["posts", "activeTag"]}
-                            preserveScroll
-                            class={[
-                                "group/category relative flex items-center gap-2 whitespace-nowrap rounded-md font-noto-sans text-base font-extrabold uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 hover:text-orange-citric focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber motion-reduce:transform-none motion-reduce:transition-none",
-                                activeTag === category ? "text-orange-citric" : "text-neutral-gray",
-                            ]}
-                        >
-                            <img
-                                src={postTags[category]?.icon}
-                                alt=""
-                                aria-hidden="true"
+                        {#if category === "reviews"}
+                            <Link
+                                href="/reviews"
+                                class="group/category relative flex items-center gap-2 whitespace-nowrap rounded-md font-noto-sans text-base font-extrabold uppercase italic text-neutral-gray transition duration-300 ease-out hover:-translate-y-0.5 hover:text-orange-citric focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber motion-reduce:transform-none motion-reduce:transition-none"
+                            >
+                                <img
+                                    src={postTags[category]?.icon}
+                                    alt=""
+                                    aria-hidden="true"
+                                    class="size-6 filter-neutral-gray group-hover/category:scale-105 group-hover/category:filter-orange-citric group-focus-visible/category:scale-105 group-focus-visible/category:filter-orange-citric motion-reduce:transform-none"
+                                />
+                                {categoryLabel(category)}
+                            </Link>
+                        {:else}
+                            <Link
+                                href={categoryHref(category)}
+                                only={["posts", "activeTag"]}
+                                preserveScroll
                                 class={[
-                                    "size-6 group-hover/category:scale-105 group-hover/category:filter-orange-citric group-focus-visible/category:scale-105 group-focus-visible/category:filter-orange-citric motion-reduce:transform-none",
-                                    activeTag === category ? "filter-orange-citric" : "filter-neutral-gray",
+                                    "group/category relative flex items-center gap-2 whitespace-nowrap rounded-md font-noto-sans text-base font-extrabold uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 hover:text-orange-citric focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber motion-reduce:transform-none motion-reduce:transition-none",
+                                    activeTag === category ? "text-orange-citric" : "text-neutral-gray",
                                 ]}
-                            />
-                            {categoryLabel(category)}
-                            <span
-                                class={[
-                                    "absolute -bottom-2 left-0 h-0.5 w-full origin-left rounded-full bg-orange-citric transition-transform duration-300 ease-out motion-reduce:transition-none",
-                                    activeTag === category ? "scale-x-100" : "scale-x-0 group-hover/category:scale-x-100 group-focus-visible/category:scale-x-100",
-                                ]}
-                                aria-hidden="true"
-                            ></span>
-                        </Link>
+                            >
+                                <img
+                                    src={postTags[category]?.icon}
+                                    alt=""
+                                    aria-hidden="true"
+                                    class={[
+                                        "size-6 group-hover/category:scale-105 group-hover/category:filter-orange-citric group-focus-visible/category:scale-105 group-focus-visible/category:filter-orange-citric motion-reduce:transform-none",
+                                        activeTag === category ? "filter-orange-citric" : "filter-neutral-gray",
+                                    ]}
+                                />
+                                {categoryLabel(category)}
+                            </Link>
+                        {/if}
                     </li>
                 {/each}
             </ul>

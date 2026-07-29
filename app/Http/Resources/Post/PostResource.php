@@ -4,6 +4,7 @@ namespace App\Http\Resources\Post;
 
 use App\Http\Resources\Concerns\HasFormats;
 use App\Http\Resources\User\UserResource;
+use App\Models\OAuthAccount;
 use App\Models\User;
 
 use Illuminate\Http\Request;
@@ -26,6 +27,7 @@ class PostResource extends JsonResource
                 'image' => $this->image,
                 'cover' => $this->cover,
                 'views' => $this->views_count,
+                'likes_percentage' => $this->likesPercentage(),
             ];
         }
 
@@ -39,6 +41,7 @@ class PostResource extends JsonResource
                 'image' => $this->image,
                 'cover' => $this->cover,
                 'metadata' => $this->metadata,
+                'likes_percentage' => $this->likesPercentage(),
                 'tags' => PostTagResource::collection($this->tags),
             ];
         }
@@ -67,6 +70,9 @@ class PostResource extends JsonResource
             'references' => PostReferenceResource::collection($this->references),
             'tags' => PostTagResource::collection($this->tags),
             'reactions' => PostReactionResource::collection($this->reactions),
+            'likes_count' => $this->likesCount(),
+            'likes_percentage' => $this->likesPercentage(),
+            'liked_by_me' => $this->likedByCurrentVisitor($request),
             'module' => $this->module,
         ];
 
@@ -97,6 +103,45 @@ class PostResource extends JsonResource
             'event' => "/event/{$this->slug}",
             default => "/materia/{$this->slug}",
         };
+    }
+
+    private function likesCount(): int
+    {
+        if (isset($this->likes_count)) {
+            return (int) $this->likes_count;
+        }
+
+        if ($this->relationLoaded('likes')) {
+            return $this->likes->count();
+        }
+
+        return 0;
+    }
+
+    private function likesPercentage(): int
+    {
+        $views = (int) ($this->views_count ?? 0);
+
+        if ($views <= 0) {
+            return 0;
+        }
+
+        return (int) round(($this->likesCount() / $views) * 100);
+    }
+
+    private function likedByCurrentVisitor(Request $request): bool
+    {
+        if (!$this->relationLoaded('likes')) {
+            return false;
+        }
+
+        $oauthAccount = $request->attributes->get('oauth_account');
+
+        if ($oauthAccount instanceof OAuthAccount) {
+            return $this->likes->contains('oauth_account_id', $oauthAccount->id);
+        }
+
+        return $this->likes->contains('visitor_token', hash('sha256', $request->session()->getId()));
     }
 
     public function event(): array 

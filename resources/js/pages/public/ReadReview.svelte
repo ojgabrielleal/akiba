@@ -5,6 +5,7 @@
     import { AuthGuard, Tooltip } from "@/lib/components/public";
     import { Layout } from "@/lib/layouts/public";
     import PostEngagement from "@/lib/widgets/public/read/PostEngagement.svelte";
+    import PostLikeButton from "@/lib/widgets/public/read/PostLikeButton.svelte";
     import { resolvePlaceholderImage } from "@/lib/utils";
 
     $: ({ flash, oauth, onair, stream, post, comments, relatedPosts } = $page.props);
@@ -32,20 +33,30 @@
 
 <Meta meta={{ title: review.title }} />
 <Layout {flash} {oauth} {onair} {stream} {pageUrl}>
-    <section class="bg-blue-night pt-5 pb-10">
+    <section class="bg-blue-night pt-5 pb-2">
         <div class="bg-blue-marinho">
-            <div class="container-page grid gap-8 py-8 lg:grid-cols-[minmax(0,1fr)_15rem]">
+            <div class={[
+                "container-page grid gap-8 py-8",
+                related.length ? "lg:grid-cols-[minmax(0,1fr)_15rem]" : "lg:max-w-5xl",
+            ]}>
                 <article class="min-w-0">
-                    <h1 class="mb-5 rounded-md bg-orange-amber px-3 py-2 font-noto-sans text-xl font-black leading-tight text-blue-night uppercase italic sm:text-2xl">
-                        {review.title}
-                    </h1>
+                    <div class="mb-5 rounded-md bg-orange-amber px-3 py-2">
+                        <h1 class="font-noto-sans text-xl font-black leading-tight text-blue-night uppercase italic sm:text-2xl">
+                            {review.title}
+                        </h1>
+                    </div>
 
-                    <img
-                        src={resolvePlaceholderImage(review.cover, "placeholder")}
-                        alt=""
-                        aria-hidden="true"
-                        class="mb-5 h-56 w-full rounded-md bg-neutral-gray object-cover sm:h-72 lg:h-[26rem]"
-                    />
+                    <div class="relative mb-5">
+                        <div class="absolute -left-6 top-3 z-10">
+                            <PostLikeButton post={review} />
+                        </div>
+                        <img
+                            src={resolvePlaceholderImage(review.cover, "placeholder")}
+                            alt=""
+                            aria-hidden="true"
+                            class="h-56 w-full rounded-md bg-neutral-gray object-cover sm:h-72 lg:h-[26rem]"
+                        />
+                    </div>
 
                     {#if review.metadata?.year_of_release}
                         <dl class="mb-6 grid gap-3 font-noto-sans uppercase">
@@ -125,39 +136,42 @@
                         {/if}
                     </section>
 
-                    <section class="mt-8 flex min-h-28 flex-wrap items-center justify-center gap-x-5 gap-y-4 py-4 font-noto-sans uppercase">
-                        <p class="max-w-44 text-center text-lg leading-tight font-normal text-orange-amber">
-                            O que você achou dessas reviews?
-                        </p>
-                        <AuthGuard
-                            {oauth}
-                            buttonLabel="Entre com o Discord para reagir"
-                            compact
-                        >
-                            <div class="flex flex-wrap items-center justify-center gap-2">
-                                {#each postReactions as reaction}
-                                    <Tooltip position="bottom">
-                                        <button
-                                            type="button"
-                                            aria-label={reaction.label}
-                                            class="group/reaction relative flex size-21 cursor-pointer items-center justify-center rounded-full transition duration-300 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber motion-reduce:transform-none motion-reduce:transition-none"
-                                            on:click={() => submitReaction(reaction)}
-                                        >
-                                            <img src={reaction.image} alt="" aria-hidden="true" class="size-18" />
-                                            <span class="absolute -right-1 -bottom-1 min-w-6 rounded-full bg-blue-skywave px-1.5 py-0.5 text-center font-noto-sans text-xs font-black text-suspense-aurora">
-                                                {reactionCounts[reaction.name] ?? 0}
-                                            </span>
-                                        </button>
-                                        <span slot="content">{reaction.label}</span>
-                                    </Tooltip>
-                                {/each}
-                            </div>
-                        </AuthGuard>
+                    <section class="mt-8 grid min-h-28 gap-5 py-4 font-noto-sans uppercase">
+                        <div class="flex flex-wrap items-center justify-center gap-x-5 gap-y-4">
+                            <p class="max-w-44 text-center text-lg leading-tight font-normal text-orange-amber">
+                                O que você achou dessas reviews?
+                            </p>
+                            <AuthGuard
+                                {oauth}
+                                buttonLabel="Entre com o Discord para reagir"
+                                compact
+                            >
+                                <div class="flex flex-wrap items-center justify-center gap-2">
+                                    {#each postReactions as reaction}
+                                        <Tooltip position="bottom">
+                                            <button
+                                                type="button"
+                                                aria-label={reaction.label}
+                                                class="group/reaction relative flex size-21 cursor-pointer items-center justify-center rounded-full transition duration-300 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber motion-reduce:transform-none motion-reduce:transition-none"
+                                                on:click={() => submitReaction(reaction)}
+                                            >
+                                                <img src={reaction.image} alt="" aria-hidden="true" class="size-18" />
+                                                <span class="absolute -right-1 -bottom-1 min-w-6 rounded-full bg-blue-skywave px-1.5 py-0.5 text-center font-noto-sans text-xs font-black text-suspense-aurora">
+                                                    {reactionCounts[reaction.name] ?? 0}
+                                                </span>
+                                            </button>
+                                            <span slot="content">{reaction.label}</span>
+                                        </Tooltip>
+                                    {/each}
+                                </div>
+                            </AuthGuard>
+                        </div>
                     </section>
 
                     <PostEngagement post={review} {oauth} {comments} />
                 </article>
 
+                {#if related.length}
                 <aside class="min-w-0">
                     <h2 class="mb-6 flex flex-col items-center gap-1 font-noto-sans leading-none font-black text-orange-amber uppercase italic">
                         <span class="whitespace-nowrap text-sm text-suspense-aurora">Veja mais:</span>
@@ -181,6 +195,7 @@
                         {/each}
                     </ul>
                 </aside>
+                {/if}
             </div>
         </div>
     </section>

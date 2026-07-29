@@ -6,11 +6,11 @@
     import {
         EventCalendarGrid,
         FeaturedGrid,
-        LatestReviewsGrid,
         LatestPodcastsGrid,
         MainPlayer,
         MobilePlayer,
         PostListGrid,
+        ReviewListGrid,
     } from "@/lib/widgets/public";
 
     $: ({
@@ -52,7 +52,7 @@
             style="--featured-background: url('/img/pages/home/backgrounds/featured.webp'); --reviews-background: url('/img/pages/home/backgrounds/reviews.webp');"
         >
             <FeaturedGrid {featuredPosts} />
-            <LatestReviewsGrid {latestReviews} />
+            <ReviewListGrid title="Últimas reviews" reviews={latestReviews} />
         </div>
         <PostListGrid title="Últimas matérias" {posts} />
         <EventCalendarGrid {events} />

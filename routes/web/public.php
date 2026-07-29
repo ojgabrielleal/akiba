@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\External\OAuthAccount\OAuthAccountRedirectControlle
 use App\Http\Controllers\Public\OAuthAccountController;
 use App\Http\Controllers\Public\Invokes\StorePostCommentController;
 use App\Http\Controllers\Public\Invokes\StorePostReactionController;
+use App\Http\Controllers\Public\Invokes\TogglePostLikeController;
 use App\Http\Controllers\Public\Pages\EditorialPageController;
 use App\Http\Controllers\Public\Pages\HomePageController;
 use App\Http\Controllers\Public\Pages\ReadPageController;
@@ -31,12 +32,18 @@ Route::middleware(['oauth.resolve', 'inertia', 'auth'])->group(function () {
     Route::get('/colunas', [EditorialPageController::class, 'columns'])
         ->name('columns');
 
+    Route::get('/reviews', [EditorialPageController::class, 'reviews'])
+        ->name('reviews');
+
     Route::get('/materia/{slug}', [ReadPageController::class, 'render'])
         ->name('post.read');
 
     Route::post('/materia/{post:slug}/reaction', StorePostReactionController::class)
         ->middleware('oauth')
         ->name('post.reaction.store');
+
+    Route::post('/materia/{post:slug}/like', TogglePostLikeController::class)
+        ->name('post.like.toggle');
 
     Route::post('/materia/{post:slug}/comment', StorePostCommentController::class)
         ->middleware('oauth')
