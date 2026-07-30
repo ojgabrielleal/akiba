@@ -22,6 +22,10 @@ class ProgramFilter
                 fn (Builder $query, $user) => $query->availableForLocution($user)
             )
             ->when(
+                $filters['execution_mode'] ?? null,
+                fn (Builder $query, string $executionMode) => $query->where('execution_mode', $executionMode)
+            )
+            ->when(
                 $filters['with'] ?? null,
                 fn (Builder $query, array|string $relations) => $query->with($relations)
             )
@@ -32,7 +36,7 @@ class ProgramFilter
 
         return $query->when(
             $filters['paginate'] ?? null,
-            fn (Builder $query, int $perPage) => $query->paginate($perPage),
+            fn (Builder $query, int $perPage) => $query->paginate($perPage)->withQueryString(),
             fn (Builder $query) => $query->get()
         );
     }

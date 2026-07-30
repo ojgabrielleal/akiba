@@ -215,7 +215,7 @@
         min-width: 1px;
         flex: 1;
         position: relative;
-        background: rgba(39, 55, 82, 0.18);
+        background: rgba(39, 55, 82, 0.36);
         transform-origin: bottom;
         transition: height 74ms ease-out;
     }
@@ -226,6 +226,6 @@
         inset-inline: 0;
         top: -0.35rem;
         height: 1px;
-        background: rgba(86, 104, 132, 0.16);
+        background: rgba(86, 104, 132, 0.32);
     }
 </style>

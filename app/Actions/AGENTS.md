@@ -1,13 +1,28 @@
-#### Action Rules
+# Regras De Actions
 
-1. Keep actions organized by scope folder, following the current `app/Actions` structure.
+Escopo: tudo em `app/Actions`.
 
-2. Name each action by operation and module, such as `StorePodcast` or `UpdateUser`.
+## Regra Principal
 
-3. Wrap writes and chained operations in `DB::transaction`.
+Actions concentram fluxos de escrita e operacoes de dominio chamadas por controllers, jobs ou outros servicos.
 
-4. Pass data and known models through method parameters; avoid re-querying models the caller already has.
+## Estrutura
 
-5. Move extra work, lookups, or side effects into private methods inside the action.
+- Mantenha actions organizadas por pasta de escopo, seguindo a estrutura atual de `app/Actions`.
+- Nomeie cada action pela operacao e modulo, como `StorePodcast` ou `UpdateUser`.
 
-6. Keep imports ordered as Laravel defaults/facades, exceptions, models, then services.
+## Responsabilidades
+
+- Use actions para criacao, atualizacao, exclusao e operacoes encadeadas de dominio.
+- Envolva escritas e operacoes encadeadas em `DB::transaction`.
+- Passe dados e models ja conhecidos por parametros de metodo; evite consultar novamente models que o chamador ja possui.
+- Mova trabalho extra, buscas auxiliares ou efeitos colaterais para metodos privados dentro da action.
+
+## Organizacao Interna
+
+- Mantenha imports ordenados como defaults/facades do Laravel, exceptions, models e depois services.
+
+## Finalizacao
+
+- Nao coloque validacao de payload em actions; isso pertence a `app/Http/Requests`.
+- Nao coloque composicao de query de pagina em actions; isso pertence a `app/Filters`.

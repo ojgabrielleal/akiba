@@ -1,11 +1,25 @@
-#### Filter Rules
+# Regras De Filters
 
-1. Keep filters in the root of `app/Filters`.
+Escopo: tudo em `app/Filters`.
 
-2. Name filters after the model plus `Filter`, such as `UserFilter` or `CalendarFilter`.
+## Regra Principal
 
-3. Filter entry points must receive `array $filters = []`.
+Filters concentram composicao de queries para listagens, buscas, ordenacao e filtros de tela.
 
-4. Build queries with Eloquent `when`, apply default ordering, and return pagination only when requested; otherwise return the collection.
+## Estrutura
 
-5. Keep filters focused on query composition for their corresponding model.
+- Mantenha filters na raiz de `app/Filters`.
+- Nomeie filters pelo model seguido de `Filter`, como `UserFilter` ou `CalendarFilter`.
+
+## Responsabilidades
+
+- Os pontos de entrada dos filters devem receber `array $filters = []`.
+- Monte queries com `when` do Eloquent.
+- Aplique ordenacao padrao quando fizer sentido.
+- Retorne paginacao somente quando solicitada; caso contrario, retorne a collection.
+- Mantenha filters focados na composicao de query do model correspondente.
+
+## Finalizacao
+
+- Nao coloque regras de escrita em filters.
+- Nao coloque formato de resposta em filters; isso pertence a resources ou controllers.

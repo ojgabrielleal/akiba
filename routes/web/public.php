@@ -11,6 +11,7 @@ use App\Http\Controllers\Public\Invokes\StorePostReactionController;
 use App\Http\Controllers\Public\Invokes\TogglePostLikeController;
 use App\Http\Controllers\Public\Pages\EditorialPageController;
 use App\Http\Controllers\Public\Pages\HomePageController;
+use App\Http\Controllers\Public\Pages\RadioPageController;
 use App\Http\Controllers\Public\Pages\ReadPageController;
 use App\Http\Controllers\Public\Pages\TeamPageController;
 
@@ -38,6 +39,9 @@ Route::middleware(['oauth.resolve', 'inertia', 'auth'])->group(function () {
 
     Route::get('/equipe', [TeamPageController::class, 'render'])
         ->name('team');
+
+    Route::get('/radio', [RadioPageController::class, 'render'])
+        ->name('radio');
 
     Route::get('/materia/{slug}', [ReadPageController::class, 'render'])
         ->name('post.read');

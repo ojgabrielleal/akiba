@@ -4,6 +4,17 @@ const DEFAULT_VOLUME = 0.03;
 const MIN_PLAY_LOADING_MS = 500;
 const WAVE_BAR_COUNT = 140;
 const DEFAULT_WAVE_LEVELS = Array.from({ length: WAVE_BAR_COUNT }, () => 0.2);
+const MIN_WAVE_LEVEL = 0.02;
+const MAX_WAVE_LEVEL = 1;
+const FREQUENCY_GAIN = 2.85;
+const WAVE_ATTACK = 0.72;
+const WAVE_RELEASE = 0.14;
+const BASS_END = 0.22;
+const MID_END = 0.62;
+const BOOM_ATTACK = 5.8;
+const BOOM_THRESHOLD = 0.028;
+const BOOM_DECAY = 0.84;
+const ENERGY_FOLLOW = 0.035;
 const createFallbackWaveLevels = () =>
     Array.from({ length: WAVE_BAR_COUNT }, (_, index) => {
         const phase = (Date.now() / 180) + index * 0.85;
@@ -33,6 +44,10 @@ let waveFrame;
 let listenersAttached = false;
 let playLoadingTimeout;
 let playLoadingStartedAt = 0;
+let smoothedWaveLevels = [...DEFAULT_WAVE_LEVELS];
+let previousEnergy = 0;
+let boomPulse = 0;
+let averageEnergy = 0.18;
 
 const clearPlayLoadingTimeout = () => {
     if (!playLoadingTimeout) return;
@@ -80,8 +95,8 @@ const ensureAudioAnalyser = () => {
 
         if (!analyser) {
             analyser = audioContext.createAnalyser();
-            analyser.fftSize = 128;
-            analyser.smoothingTimeConstant = 0.78;
+            analyser.fftSize = 512;
+            analyser.smoothingTimeConstant = 0.64;
             frequencyData = new Uint8Array(analyser.frequencyBinCount);
         }
 
@@ -103,6 +118,10 @@ const stopWaveAnalysis = () => {
         waveFrame = undefined;
     }
 
+    smoothedWaveLevels = [...DEFAULT_WAVE_LEVELS];
+    previousEnergy = 0;
+    boomPulse = 0;
+    averageEnergy = 0.18;
     player.update((state) => ({ ...state, waveLevels: DEFAULT_WAVE_LEVELS }));
 };
 
@@ -124,14 +143,42 @@ const startWaveAnalysis = () => {
             return;
         }
 
-        const bucketSize = Math.max(1, Math.floor(frequencyData.length / WAVE_BAR_COUNT));
-        const waveLevels = Array.from({ length: WAVE_BAR_COUNT }, (_, index) => {
-            const start = index * bucketSize;
-            const end = Math.min(frequencyData.length, start + bucketSize);
-            const bucket = frequencyData.slice(start, end);
-            const average = bucket.reduce((sum, value) => sum + value, 0) / Math.max(1, bucket.length);
+        const bassEndBin = Math.max(1, Math.floor(frequencyData.length * BASS_END));
+        const midEndBin = Math.max(bassEndBin + 1, Math.floor(frequencyData.length * MID_END));
+        const bassEnergy = averageFrequency(frequencyData.subarray(0, bassEndBin)) / 255;
+        const midEnergy = averageFrequency(frequencyData.subarray(bassEndBin, midEndBin)) / 255;
+        const trebleEnergy = averageFrequency(frequencyData.subarray(midEndBin)) / 255;
+        const fullEnergy = averageFrequency(frequencyData) / 255;
+        const currentEnergy = (bassEnergy * 0.7) + (fullEnergy * 0.3);
+        averageEnergy = (averageEnergy * (1 - ENERGY_FOLLOW)) + (currentEnergy * ENERGY_FOLLOW);
 
-            return Math.max(0.12, Math.min(1, average / 180));
+        const relativeEnergy = currentEnergy / Math.max(0.04, averageEnergy);
+        const relativePreviousEnergy = previousEnergy / Math.max(0.04, averageEnergy);
+        const energyAttack = Math.max(0, relativeEnergy - relativePreviousEnergy);
+
+        previousEnergy = (previousEnergy * 0.82) + (currentEnergy * 0.18);
+        boomPulse = Math.max(boomPulse * BOOM_DECAY, energyAttack > BOOM_THRESHOLD ? Math.min(1, energyAttack * BOOM_ATTACK) : 0);
+
+        const bassLevel = resolveRelativeLevel(bassEnergy, averageEnergy, 0.72, 0.82);
+        const midLevel = resolveRelativeLevel(midEnergy, averageEnergy, 0.8, 0.62);
+        const trebleLevel = resolveRelativeLevel(trebleEnergy, averageEnergy, 0.86, 0.42);
+        const phase = performance.now() / 1000;
+        const waveLevels = Array.from({ length: WAVE_BAR_COUNT }, (_, index) => {
+            const position = index / Math.max(1, WAVE_BAR_COUNT - 1);
+            const mirroredPosition = 1 - Math.abs((position * 2) - 1);
+            const waveShape = resolveMusicalWaveShape(position, mirroredPosition, phase, bassLevel, midLevel, trebleLevel);
+            const boomShape = Math.sin(mirroredPosition * Math.PI) ** 2.2;
+            const boomLift = boomPulse * boomShape * 0.92;
+            const target = Math.min(
+                MAX_WAVE_LEVEL,
+                (waveShape + boomLift) * FREQUENCY_GAIN,
+            );
+            const motion = target > smoothedWaveLevels[index] ? WAVE_ATTACK : WAVE_RELEASE;
+
+            smoothedWaveLevels[index] =
+                (smoothedWaveLevels[index] * (1 - motion)) + (target * motion);
+
+            return Math.max(MIN_WAVE_LEVEL, Math.min(MAX_WAVE_LEVEL, smoothedWaveLevels[index]));
         });
 
         player.update((state) => ({ ...state, waveLevels }));
@@ -142,6 +189,24 @@ const startWaveAnalysis = () => {
         readLevels();
     }
 };
+
+const averageFrequency = (bucket) =>
+    bucket.reduce((sum, value) => sum + value, 0) / Math.max(1, bucket.length);
+
+const resolveRelativeLevel = (energy, baseline, threshold, gain) =>
+    Math.min(1, Math.max(0, (energy / Math.max(0.04, baseline)) - threshold) * gain);
+
+const resolveMusicalWaveShape = (position, mirroredPosition, phase, bassLevel, midLevel, trebleLevel) => {
+    const centerEnvelope = Math.sin(mirroredPosition * Math.PI) ** 0.95;
+    const bassWave = smoothPulse(position, 1.75, phase * 0.34, 1.55) * bassLevel * 0.42;
+    const midWave = smoothPulse(position, 3.35, phase * -0.48, 1.9) * midLevel * 0.28;
+    const trebleWave = smoothPulse(position, 6.8, phase * 0.7, 2.35) * trebleLevel * 0.16;
+
+    return (0.012 + bassWave + midWave + trebleWave) * centerEnvelope;
+};
+
+const smoothPulse = (position, frequency, phase, power) =>
+    ((Math.sin(((position * frequency) + phase) * Math.PI * 2) + 1) / 2) ** power;
 
 const startFallbackWave = () => {
     const animateFallback = () => {

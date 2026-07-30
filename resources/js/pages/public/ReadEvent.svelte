@@ -4,8 +4,7 @@
     import { postReactions } from "@/lib/constants";
     import { AuthGuard, Tooltip } from "@/lib/components/public";
     import { Layout } from "@/lib/layouts/public";
-    import PostEngagement from "@/lib/widgets/public/read/PostEngagement.svelte";
-    import PostLikeButton from "@/lib/widgets/public/read/PostLikeButton.svelte";
+    import { PostEngagement, PostLikeButton } from "@/lib/widgets/public";
     import { resolvePlaceholderImage } from "@/lib/utils";
 
     $: ({ flash, oauth, onair, stream, post, comments, relatedPosts } = $page.props);

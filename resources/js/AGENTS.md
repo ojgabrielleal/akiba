@@ -125,6 +125,9 @@ resources/js/
 - Excecoes a `$page.props` fora de paginas/layouts devem ser componentes globais/transversais bem justificados, como `Meta`, `FlashToaster` ou helpers de permissao/autenticacao.
 - Use `lib/stores` apenas para estado client-side compartilhado; nao use stores como espelho de props do backend.
 - Antes de criar algo novo, procure um componente ou widget parecido.
+- Ao desmembrar um widget grande, extraia somente partes com responsabilidade real, como uma area visual/interativa propria, uma lista, um perfil, um formulario interno ou uma secao complexa. Evite criar wrappers finos que apenas encapsulam outro componente sem regra, estado, markup relevante ou reducao clara de duplicacao.
+- Componentes internos extraidos de um widget devem ficar perto dele e nao precisam ser exportados no `index.js` publico quando forem detalhes de implementacao daquele widget.
+- Se um arquivo em uma pasta generica for desmembrado em multiplos arquivos do mesmo escopo, crie uma subpasta com o nome/base do widget dentro da pasta original e mova todos os arquivos relacionados para ela. Exemplo: `widgets/public/grid/PostListGrid.svelte` ao virar varios arquivos deve ficar em `widgets/public/grid/PostListGrid/PostListGrid.svelte`, junto com seus componentes internos.
 - Componentes reutilizaveis devem aceitar extensao visual com `class` quando fizer sentido.
 - Inputs e botoes reutilizaveis devem repassar `{...$$restProps}` quando apropriado.
 - Variantes visuais devem ficar em mapas internos, como `variants`, `sizes` ou `shapes`, com fallback padrao.
@@ -149,6 +152,8 @@ resources/js/
 
 ## Estilo
 
+- Siga mobile-first: construa primeiro a experiencia mobile como base e use breakpoints (`sm:`, `md:`, `lg:` etc.) para ampliar layout, densidade e composicao em telas maiores.
+- Evite criar uma segunda versao mobile separada quando o mesmo componente puder ser responsivo com classes e estrutura adaptavel. Crie componentes separados por viewport somente quando a experiencia, interacao ou markup forem realmente diferentes.
 - Use tokens existentes do Tailwind em `css/app.css`.
 - Novas cores, gradientes ou filtros devem ser adicionados em `css/app.css` antes de uso.
 - Use `font-noto-sans`.

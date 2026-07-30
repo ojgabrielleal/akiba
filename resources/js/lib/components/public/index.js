@@ -16,6 +16,7 @@ export { default as TextInput } from "./forms/TextInput.svelte"
 
 export { default as GridList } from "./layout/GridList.svelte"
 export { default as AdvertisementSlot } from "./layout/AdvertisementSlot.svelte"
+export { default as EditorialTitle } from "./layout/EditorialTitle.svelte"
 export { default as PageHeader } from "./layout/PageHeader.svelte"
 export { default as Section } from "./layout/Section.svelte"
 export { default as SectionDivider } from "./layout/SectionDivider.svelte"

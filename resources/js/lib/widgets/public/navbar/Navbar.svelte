@@ -9,6 +9,7 @@
     } from "@/lib/utils";
     import { Button, IconButton, Modal, Tooltip } from "@/lib/components/public";
     import ProfileForm from "../form/ProfileForm.svelte";
+    import ThemeSwitcher from "./ThemeSwitcher.svelte";
 
     export let oauth = {};
 
@@ -127,30 +128,12 @@
                     Entrar
                 </Button>
             {/if}
-            <div class="ml-1 flex h-[1.625rem] items-center rounded-full bg-blue-skywave p-0.5" aria-label="Selecionar tema">
-                {#each themes as item}
-                    <button
-                        type="button"
-                        aria-label={item.label}
-                        aria-pressed={selectedTheme === item.name}
-                        class={[
-                            "flex size-[1.375rem] cursor-pointer items-center justify-center rounded-full transition duration-200 ease-out hover:scale-110 active:scale-95 motion-reduce:transform-none motion-reduce:transition-none",
-                            { "bg-blue-night": selectedTheme === item.name },
-                        ]}
-                        on:click={() => (selectedTheme = item.name)}
-                    >
-                        <img
-                            src={item.icon}
-                            alt=""
-                            aria-hidden="true"
-                            class={[
-                                "size-[0.8125rem] filter-suspense-aurora",
-                                { "filter-orange-morning": selectedTheme === item.name },
-                            ]}
-                        />
-                    </button>
-                {/each}
-            </div>
+            <ThemeSwitcher
+                class="ml-1"
+                {themes}
+                {selectedTheme}
+                on:select={(event) => (selectedTheme = event.detail)}
+            />
         </div>
         <IconButton
             label="Abrir menu de navegação"
@@ -253,30 +236,12 @@
                                     />
                                 </div>
                             {/if}
-                            <div class="flex h-7 shrink-0 items-center rounded-full bg-blue-skywave p-0.5">
-                                {#each themes as item}
-                                    <button
-                                        type="button"
-                                        aria-label={item.label}
-                                        aria-pressed={selectedTheme === item.name}
-                                        class={[
-                                            "flex size-6 items-center justify-center rounded-full transition duration-200 ease-out hover:scale-110 active:scale-95 motion-reduce:transform-none motion-reduce:transition-none",
-                                            { "bg-blue-night": selectedTheme === item.name },
-                                        ]}
-                                        on:click={() => (selectedTheme = item.name)}
-                                    >
-                                        <img
-                                            src={item.icon}
-                                            alt=""
-                                            aria-hidden="true"
-                                            class={[
-                                                "size-3 filter-suspense-aurora",
-                                                { "filter-orange-morning": selectedTheme === item.name },
-                                            ]}
-                                        />
-                                    </button>
-                                {/each}
-                            </div>
+                            <ThemeSwitcher
+                                size="md"
+                                {themes}
+                                {selectedTheme}
+                                on:select={(event) => (selectedTheme = event.detail)}
+                            />
                         </div>
                     </div>
                 </div>

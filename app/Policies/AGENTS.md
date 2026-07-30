@@ -1,30 +1,32 @@
-#### Policy Organization Rules
+# Regras De Policies
 
-1. Policies must stay in the root of `app/Policies`.
+Escopo: tudo em `app/Policies`.
 
-2. Each policy must be named after the model it protects, followed by `Policy`.
-    - Example: `PostPolicy`, `ProgramPolicy`, `UserPolicy`.
+## Regra Principal
 
-3. Policies must import the protected model and `App\Models\User` with `use` statements before the class declaration.
+Policies concentram autorizacao por model ou acao, mantendo regras finas e previsiveis.
 
-4. Authorization methods must return `bool`.
+## Estrutura
 
-5. Standard CRUD policy methods must follow Laravel naming.
-    - `viewAny(User $user): bool`
-    - `view(User $user, Model $model): bool`
-    - `create(User $user): bool`
-    - `update(User $user, Model $model): bool`
-    - `delete(User $user, Model $model): bool`
+- Policies devem ficar na raiz de `app/Policies`.
+- Cada policy deve ser nomeada pelo model protegido, seguida de `Policy`.
+- Exemplos: `PostPolicy`, `ProgramPolicy`, `UserPolicy`.
+- Policies devem importar o model protegido e `App\Models\User` com `use` antes da declaracao da classe.
 
-6. Non-CRUD permissions must use explicit method names that describe the action.
-    - Examples: `deactivate`, `approve`, `vote`, `refreshRanking`, `toggleBoxStatus`.
+## Responsabilidades
 
-7. Permission checks must go through the user permission helper.
-    - Example: `$user->hasPermission('post.create')`.
+- Metodos de autorizacao devem retornar `bool`.
+- Metodos CRUD padrao devem seguir a nomenclatura do Laravel.
+- Exemplos: `viewAny(User $user): bool`, `view(User $user, Model $model): bool`, `create(User $user): bool`, `update(User $user, Model $model): bool`, `delete(User $user, Model $model): bool`.
+- Permissoes nao CRUD devem usar nomes explicitos que descrevem a acao.
+- Exemplos: `deactivate`, `approve`, `vote`, `refreshRanking`, `toggleBoxStatus`.
+- Checks de permissao devem passar pelo helper de permissoes do usuario.
+- Exemplo: `$user->hasPermission('post.create')`.
+- Chaves de permissao devem seguir o padrao modulo-acao ja usado no projeto.
+- Exemplos: `post.list`, `program.update`, `poll.vote`.
 
-8. Permission keys must follow the module-action pattern already used in the project.
-    - Examples: `post.list`, `program.update`, `poll.vote`.
+## Finalizacao
 
-9. Keep policies thin.
-    - Do not load extra services or run database operations inside policies.
-    - If a rule grows beyond a simple permission check, move domain logic elsewhere and keep the policy focused on authorization.
+- Mantenha policies finas.
+- Nao carregue services extras nem execute operacoes de banco dentro de policies.
+- Se uma regra crescer alem de um check simples de permissao, mova a logica de dominio para outro lugar e mantenha a policy focada em autorizacao.

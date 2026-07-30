@@ -1,36 +1,39 @@
-#### Request Organization Rules
+# Regras De Requests
 
-1. Request classes must stay in scope folders inside `app/Http/Requests`.
-    - Examples: `Post/StorePostRequest.php`, `Program/UpdateProgramRequest.php`.
+Escopo: tudo em `app/Http/Requests`.
 
-2. Shared request behavior must stay in `LoggedWebRequest`.
+## Regra Principal
 
-3. Web form requests must extend `LoggedWebRequest`.
+Requests concentram autorizacao, validacao e normalizacao de payloads de entrada.
 
-4. Request class names must describe the operation and module.
-    - Examples: `StorePostRequest`, `UpdateProgramRequest`, `AuthLoginRequest`.
+## Estrutura
 
-5. Each concrete request must define `authorize(): bool`.
+- Classes de request devem ficar em pastas de escopo dentro de `app/Http/Requests`.
+- Exemplos: `Post/StorePostRequest.php`, `Program/UpdateProgramRequest.php`.
+- Comportamento compartilhado de requests deve ficar em `LoggedWebRequest`.
+- Requests de formularios web devem estender `LoggedWebRequest`.
+- Nomes de request devem descrever a operacao e o modulo, como `StorePostRequest`, `UpdateProgramRequest` ou `AuthLoginRequest`.
 
-6. Authorization must use Laravel policies through `$this->user()?->can(...)` when the request is tied to a protected model.
-    - Example: `$this->user()?->can('create', Post::class) ?? false`.
-    - Example: `$this->user()?->can('update', $this->route('post')) ?? false`.
+## Responsabilidades
 
-7. Public or authentication requests that do not require a model policy may return `true` from `authorize()`.
+- Cada request concreta deve definir `authorize(): bool`.
+- Autorizacao deve usar policies do Laravel via `$this->user()?->can(...)` quando o request estiver ligado a um model protegido.
+- Exemplo: `$this->user()?->can('create', Post::class) ?? false`.
+- Exemplo: `$this->user()?->can('update', $this->route('post')) ?? false`.
+- Requests publicas ou de autenticacao que nao exigem policy de model podem retornar `true` em `authorize()`.
+- Cada request concreta deve definir `rules(): array`.
+- Regras de validacao devem ficar dentro do request, nao nos controllers.
+- Use `prepareForValidation()` quando dados de entrada precisarem ser normalizados antes das regras.
 
-8. Each concrete request must define `rules(): array`.
+## Validacao
 
-9. Validation rules must stay inside the request class, not inside controllers.
+- Mantenha regras explicitas e proximas do formato do payload.
+- Arrays aninhados devem validar campos internos com dot notation.
+- Exemplos: `references.*.name`, `tags.*.uuid`, `metadata.address`.
+- Use `required_if`, `required_unless`, `required_with` e regras nullable para modelar comportamento condicional de formulario.
 
-10. Use `prepareForValidation()` when incoming data needs to be normalized before rules run.
-    - Example: merging a route model value into request data before validation.
+## Finalizacao
 
-11. Keep request rules explicit and close to the payload shape.
-    - Nested arrays should validate their nested fields with dot notation.
-    - Examples: `references.*.name`, `tags.*.uuid`, `metadata.address`.
-
-12. Use `required_if`, `required_unless`, `required_with`, and nullable rules to model conditional form behavior.
-
-13. `LoggedWebRequest` must keep validation and authorization logging centralized.
-    - Do not duplicate failed validation logging in concrete requests.
-    - Keep sensitive fields out of logs through `safeInputForLog()`.
+- `LoggedWebRequest` deve manter logs de validacao e autorizacao centralizados.
+- Nao duplique logs de falha de validacao em requests concretos.
+- Mantenha campos sensiveis fora dos logs por meio de `safeInputForLog()`.

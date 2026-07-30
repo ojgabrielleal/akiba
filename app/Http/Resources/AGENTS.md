@@ -1,36 +1,41 @@
-#### Resource Organization Rules
+# Regras De Resources
 
-1. Resources must stay in `app/Http/Resources`.
+Escopo: tudo em `app/Http/Resources`.
 
-2. Resources with multiple related classes may use scope folders.
-    - Examples: `Post`, `User`, `Poll`, `Program`, `Calendar`, `Onair`.
+## Regra Principal
 
-3. Resource classes must be named after the model or payload they transform, followed by `Resource`.
-    - Examples: `PostResource`, `UserResource`, `ProgramAirtimeResource`.
+Resources concentram formato de resposta e apresentacao dos dados enviados para API ou Inertia.
 
-4. Resource classes must extend `JsonResource`.
+## Estrutura
 
-5. Resource collections that support presentation variants must use the `HasFormats` concern.
+- Resources devem ficar em `app/Http/Resources`.
+- Resources com multiplas classes relacionadas podem usar pastas de escopo.
+- Exemplos: `Post`, `User`, `Poll`, `Program`, `Calendar`, `Onair`.
+- Classes de resource devem ser nomeadas pelo model ou payload transformado, seguidas de `Resource`.
+- Exemplos: `PostResource`, `UserResource`, `ProgramAirtimeResource`.
+- Resources devem estender `JsonResource`.
 
-6. Use `format(?string $format)` for alternate resource shapes.
-    - Examples: `summary`, `featured`, `home-list`, `grouped`, `history`.
+## Formatos
 
-7. Collection formatting must go through `FormattableResourceCollection`.
-    - Do not duplicate collection-format handling in individual resources.
+- Resource collections que suportam variantes de apresentacao devem usar a concern `HasFormats`.
+- Use `format(?string $format)` para formatos alternativos.
+- Exemplos: `summary`, `featured`, `home-list`, `grouped`, `history`.
+- Formatacao de collection deve passar por `FormattableResourceCollection`.
+- Nao duplique tratamento de formato de collection em resources individuais.
 
-8. `toArray(Request $request): array` must return the default resource shape.
+## Organizacao Interna
 
-9. Format-specific shapes should be handled at the top of `toArray()`.
-    - Example: return early when `$this->format === 'summary'`.
+- `toArray(Request $request): array` deve retornar o formato padrao do resource.
+- Formatos especificos devem ser tratados no topo de `toArray()`.
+- Exemplo: retorne cedo quando `$this->format === 'summary'`.
+- Use resources aninhados para relacionamentos.
+- Exemplos: `UserResource::make($this->author)`, `PostTagResource::collection($this->tags)`.
+- Use `whenLoaded()` quando uma relation so deve ser serializada se tiver sido eager-loaded.
+- Use pequenos metodos privados para fragmentos reutilizaveis ou condicionais de payload.
+- Exemplos: builders de URL, payload de review do usuario atual, saida agrupada de collection.
 
-10. Use nested resources for relationships.
-    - Examples: `UserResource::make($this->author)`, `PostTagResource::collection($this->tags)`.
+## Finalizacao
 
-11. Use `whenLoaded()` when a relation should only be serialized if it was eager-loaded.
-
-12. Use small private methods for reusable or conditional payload fragments.
-    - Examples: URL builders, current-user review payloads, grouped collection output.
-
-13. Keep resources focused on response shape and presentation formatting.
-    - Do not perform write operations in resources.
-    - Avoid database queries in resources; eager-load relationships in controllers or filters.
+- Mantenha resources focados em formato de resposta e apresentacao.
+- Nao execute operacoes de escrita em resources.
+- Evite queries de banco em resources; eager-load relationships em controllers ou filters.

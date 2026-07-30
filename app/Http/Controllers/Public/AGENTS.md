@@ -1,23 +1,41 @@
-#### Controller Rules
+# Regras De Controllers Publicos
 
-1. Keep page renderers in `/Pages`, non-CRUD handlers in `/Invokes`, and module CRUD controllers in the folder root.
+Escopo: tudo em `app/Http/Controllers/Public`.
 
-2. `store`, `update`, and `delete` work must go through `app/Actions`, injected as method parameters.
+## Regra Principal
 
-3. Validated input must use `app/Http/Requests`, injected as method parameters.
+Controllers publicos orquestram paginas e interacoes abertas ao usuario, mantendo queries, resources e actions separados por responsabilidade.
 
-4. Keep method parameters ordered as request, action, then route-bound model.
+## Estrutura
 
-5. Page controllers must render through a `render` method and gather props through private methods such as `indexPosts`; page queries should use constructor-injected filters.
+- Mantenha renderizadores de pagina em `/Pages`.
+- Mantenha handlers nao CRUD em `/Invokes`.
+- Mantenha controllers CRUD de modulo na raiz da pasta do modulo.
 
-6. Keep `render` as the first behavior method. When a page needs a shared model/query result, fetch it with a private `get*` method placed immediately after `render`, then pass that result into the prop methods that need it.
+## Responsabilidades
 
-7. Use `index*` private methods to build page props/resources. Do not use `show*` as a prop helper; reserve `show` methods for controller actions that return `InertiaRender`.
+- `store`, `update` e `delete` devem passar por `app/Actions`, injetadas como parametros de metodo.
+- Input validado deve usar `app/Http/Requests`, injetados como parametros de metodo.
+- Mantenha parametros de metodo na ordem: request, action e depois model vindo da rota.
+- Metodos `show` devem retornar `InertiaRender` com a prop correspondente e quaisquer props de pagina que a UI ainda precise.
 
-8. Keep simple relation arrays or strings directly in the corresponding `with`/`load`. Create private `*Relations` methods only when the relation set has query callbacks, chained relation logic, or is shared by multiple queries in the same scope.
+## Paginas Inertia
 
-9. Import dependencies with `use` statements before the class, ordered as Laravel defaults, exceptions, models, requests, resources, actions, then services.
+- Page controllers devem renderizar por um metodo `render`.
+- Props devem ser montadas por metodos privados como `indexPosts`.
+- Queries de pagina devem usar filters injetados pelo construtor.
+- Mantenha `render` como primeiro metodo de comportamento.
+- Quando uma pagina precisar de um model/query compartilhado, busque com um metodo privado `get*` logo apos `render` e passe o resultado para os metodos de props que precisam dele.
+- Use metodos privados `index*` para montar props/resources de pagina.
+- Nao use `show*` como helper de prop; reserve `show` para actions de controller que retornam `InertiaRender`.
 
-10. Private controllers must authorize each method; when a FormRequest validates the method, put authorization in the request.
+## Organizacao Interna
 
-11. `show` methods must return `InertiaRender` with the corresponding prop and any page props the UI still needs.
+- Mantenha arrays ou strings simples de relations diretamente no `with`/`load` correspondente.
+- Crie metodos privados `*Relations` somente quando o conjunto de relations tiver callbacks de query, logica encadeada ou for compartilhado por multiplas queries no mesmo escopo.
+- Importe dependencias com `use` antes da classe, ordenadas como defaults do Laravel, exceptions, models, requests, resources, actions e depois services.
+
+## Finalizacao
+
+- Nao coloque regra privada ou administrativa em controllers publicos.
+- Nao coloque validacao inline no controller; use FormRequests.
