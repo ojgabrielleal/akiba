@@ -66,7 +66,7 @@
         </ol>
 
         {#if remaining.length > 0}
-            <ol class="mt-10 grid grid-cols-1 gap-x-15 gap-y-8 md:grid-cols-2 lg:grid-cols-3 lg:gap-y-15" start="4">
+            <ol class="mt-10 grid grid-cols-1 gap-x-15 gap-y-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-y-10" start="4">
                 {#each remaining as music, index}
                     <li class={["flex justify-center", index === 6 ? "lg:col-start-2" : ""]}>
                         <div class="relative w-full rounded-md bg-gradient-blue-cerulean-glow py-4 pl-12 pr-4 font-noto-sans text-suspense-aurora">
@@ -77,11 +77,11 @@
                             <h3 class="line-clamp-2 min-h-9 text-base font-black italic uppercase leading-5">
                                 {music.name}
                             </h3>
-                            <p class="mt-3 text-xs font-normal uppercase">
+                            <p class="mt-3 truncate text-xs font-normal uppercase">
                                 Cantor / Banda:
                                 {music.artist}
                             </p>
-                            <p class="mt-1 text-xs font-normal uppercase">
+                            <p class="mt-1 truncate text-xs font-normal uppercase">
                                 Anime:
                                 {music.production}
                             </p>
