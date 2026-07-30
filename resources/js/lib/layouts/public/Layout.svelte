@@ -24,4 +24,4 @@
 </main>
 
 <Footer />
-<PlayerBar {onair} {stream} {pageUrl} />
+<PlayerBar {onair} {stream} {pageUrl} {oauth} />

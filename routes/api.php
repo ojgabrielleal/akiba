@@ -15,6 +15,7 @@ Route::get('/user', function (Request $request) {
 Route::prefix('anime-themes')->group(function () {
     Route::controller(AnimeThemesController::class)->group(function () {
         Route::get('search', 'search');
+        Route::get('anime/search', 'searchAnime');
     });
 });
 

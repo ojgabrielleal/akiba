@@ -2,35 +2,34 @@ import { get, writable } from "svelte/store";
 
 const DEFAULT_VOLUME = 0.03;
 const MIN_PLAY_LOADING_MS = 500;
-const VOLUME_STORAGE_KEY = "akiba-player-volume";
+const WAVE_BAR_COUNT = 140;
+const DEFAULT_WAVE_LEVELS = Array.from({ length: WAVE_BAR_COUNT }, () => 0.2);
+const createFallbackWaveLevels = () =>
+    Array.from({ length: WAVE_BAR_COUNT }, (_, index) => {
+        const phase = (Date.now() / 180) + index * 0.85;
+
+        return 0.18 + Math.abs(Math.sin(phase)) * 0.62;
+    });
 
 const clampVolume = (volume) => Math.min(1, Math.max(0, Number(volume)));
-
-const readStoredVolume = () => {
-    if (typeof localStorage === "undefined") return DEFAULT_VOLUME;
-
-    try {
-        const storedValue = localStorage.getItem(VOLUME_STORAGE_KEY);
-        if (storedValue === null) return DEFAULT_VOLUME;
-
-        const storedVolume = Number(storedValue);
-        return Number.isFinite(storedVolume) ? clampVolume(storedVolume) : DEFAULT_VOLUME;
-    } catch {
-        return DEFAULT_VOLUME;
-    }
-};
 
 const initialState = {
     playing: false,
     loading: false,
-    volume: readStoredVolume(),
+    volume: DEFAULT_VOLUME,
     muted: false,
     error: null,
+    waveLevels: DEFAULT_WAVE_LEVELS,
 };
 
 export const player = writable(initialState);
 
 let audio;
+let audioContext;
+let audioSource;
+let analyser;
+let frequencyData;
+let waveFrame;
 let listenersAttached = false;
 let playLoadingTimeout;
 let playLoadingStartedAt = 0;
@@ -59,11 +58,109 @@ const finishPlayLoading = () => {
     }, remainingTime);
 };
 
+const resolveAudioContext = () => {
+    if (typeof window === "undefined") return null;
+
+    const AudioContextConstructor = window.AudioContext || window.webkitAudioContext;
+
+    return AudioContextConstructor ? new AudioContextConstructor() : null;
+};
+
+const ensureAudioAnalyser = () => {
+    try {
+        const element = getAudio();
+
+        if (!element) return null;
+
+        if (!audioContext) {
+            audioContext = resolveAudioContext();
+        }
+
+        if (!audioContext) return null;
+
+        if (!analyser) {
+            analyser = audioContext.createAnalyser();
+            analyser.fftSize = 128;
+            analyser.smoothingTimeConstant = 0.78;
+            frequencyData = new Uint8Array(analyser.frequencyBinCount);
+        }
+
+        if (!audioSource) {
+            audioSource = audioContext.createMediaElementSource(element);
+            audioSource.connect(analyser);
+            analyser.connect(audioContext.destination);
+        }
+
+        return analyser;
+    } catch {
+        return null;
+    }
+};
+
+const stopWaveAnalysis = () => {
+    if (waveFrame) {
+        cancelAnimationFrame(waveFrame);
+        waveFrame = undefined;
+    }
+
+    player.update((state) => ({ ...state, waveLevels: DEFAULT_WAVE_LEVELS }));
+};
+
+const startWaveAnalysis = () => {
+    const activeAnalyser = ensureAudioAnalyser();
+
+    if (!activeAnalyser || !frequencyData) {
+        startFallbackWave();
+        return;
+    }
+
+    const readLevels = () => {
+        activeAnalyser.getByteFrequencyData(frequencyData);
+        const hasSignal = frequencyData.some((value) => value > 0);
+
+        if (!hasSignal) {
+            player.update((state) => ({ ...state, waveLevels: createFallbackWaveLevels() }));
+            waveFrame = requestAnimationFrame(readLevels);
+            return;
+        }
+
+        const bucketSize = Math.max(1, Math.floor(frequencyData.length / WAVE_BAR_COUNT));
+        const waveLevels = Array.from({ length: WAVE_BAR_COUNT }, (_, index) => {
+            const start = index * bucketSize;
+            const end = Math.min(frequencyData.length, start + bucketSize);
+            const bucket = frequencyData.slice(start, end);
+            const average = bucket.reduce((sum, value) => sum + value, 0) / Math.max(1, bucket.length);
+
+            return Math.max(0.12, Math.min(1, average / 180));
+        });
+
+        player.update((state) => ({ ...state, waveLevels }));
+        waveFrame = requestAnimationFrame(readLevels);
+    };
+
+    if (!waveFrame) {
+        readLevels();
+    }
+};
+
+const startFallbackWave = () => {
+    const animateFallback = () => {
+        player.update((state) => ({ ...state, waveLevels: createFallbackWaveLevels() }));
+        waveFrame = requestAnimationFrame(animateFallback);
+    };
+
+    if (!waveFrame) {
+        animateFallback();
+    }
+};
+
 const getAudio = () => {
     if (typeof Audio === "undefined") return null;
 
     if (!audio) {
-        audio = new Audio("/api/stream");
+        audio = new Audio();
+        audio.crossOrigin = "anonymous";
+        audio.src = "/api/stream";
         audio.preload = "none";
     }
 
@@ -74,9 +171,8 @@ const getAudio = () => {
         audio.addEventListener("error", handleError);
         listenersAttached = true;
 
-        const volume = readStoredVolume();
-        audio.volume = volume;
-        player.update((state) => ({ ...state, volume }));
+        audio.volume = DEFAULT_VOLUME;
+        player.update((state) => ({ ...state, volume: DEFAULT_VOLUME }));
     }
 
     return audio;
@@ -84,6 +180,7 @@ const getAudio = () => {
 
 const handlePause = () => {
     clearPlayLoadingTimeout();
+    stopWaveAnalysis();
     player.update((state) => ({ ...state, playing: false, loading: false }));
 };
 
@@ -93,11 +190,13 @@ const handleWaiting = () => {
 
 const handlePlaying = () => {
     player.update((state) => ({ ...state, playing: true, error: null }));
+    startWaveAnalysis();
     finishPlayLoading();
 };
 
 const handleError = () => {
     clearPlayLoadingTimeout();
+    stopWaveAnalysis();
     player.update((state) => ({
         ...state,
         playing: false,
@@ -136,10 +235,18 @@ export const playAudio = async () => {
     startPlayLoading();
 
     try {
+        ensureAudioAnalyser();
+        try {
+            await audioContext?.resume();
+        } catch {
+            audioContext = undefined;
+        }
+
         await element.play();
         setupMediaSession();
     } catch {
         clearPlayLoadingTimeout();
+        stopWaveAnalysis();
         player.update((state) => ({
             ...state,
             playing: false,
@@ -166,10 +273,6 @@ export const setVolume = (volume) => {
         element.muted = false;
     }
 
-    if (typeof localStorage !== "undefined") {
-        localStorage.setItem(VOLUME_STORAGE_KEY, String());
-    }
-
     player.update((state) => ({
         ...state,
         volume: normalizedVolume,
@@ -190,6 +293,7 @@ export const toggleMute = () => {
 
 export const destroyPlayer = () => {
     clearPlayLoadingTimeout();
+    stopWaveAnalysis();
 
     if (audio && listenersAttached) {
         audio.removeEventListener("pause", handlePause);
@@ -203,4 +307,9 @@ export const destroyPlayer = () => {
     audio?.removeAttribute("src");
     audio?.load();
     audio = undefined;
+    audioContext?.close();
+    audioContext = undefined;
+    audioSource = undefined;
+    analyser = undefined;
+    frequencyData = undefined;
 };

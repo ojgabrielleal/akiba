@@ -21,4 +21,12 @@ class AnimeThemesController extends Controller
 
         return response()->json($data);
     }
+
+    public function searchAnime(Request $request)
+    {
+        $query = $request->string('query')->toString();
+        $data = $this->animeThemeService->searchAnime($query);
+
+        return response()->json($data);
+    }
 }

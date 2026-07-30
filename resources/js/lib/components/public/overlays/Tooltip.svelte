@@ -1,5 +1,7 @@
 <script>
     export let position = "top";
+    let className = "";
+    export { className as class };
 
     const positions = {
         top: {
@@ -23,7 +25,7 @@
     $: tooltipPosition = positions[position] ?? positions.top;
 </script>
 
-<div class="group/tooltip relative inline-flex">
+<div class={["group/tooltip relative inline-flex", className]}>
     <slot />
     <div class={[
         "pointer-events-none absolute z-50 hidden whitespace-nowrap rounded-md border border-suspense-aurora/10 bg-blue-ocean px-2 py-1 font-noto-sans text-[10px] text-suspense-aurora opacity-0 shadow-xl transition-all group-hover/tooltip:visible group-hover/tooltip:opacity-100 group-focus-within/tooltip:visible group-focus-within/tooltip:opacity-100 lg:block",

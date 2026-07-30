@@ -1,17 +1,25 @@
 <script>
     import { onDestroy, onMount, tick } from "svelte";
     import { fly } from "svelte/transition";
-    import { LoadingSpinner } from "@/lib/components/public";
+    import { AuthGuard, CustomModal, LoadingSpinner } from "@/lib/components/public";
     import { player, setVolume, toggleAudio } from "@/lib/stores";
+    import { SongRequestForm } from "@/lib/widgets/public";
+    import {
+        listenForOAuthAction,
+        OAuthAction,
+    } from "@/lib/utils";
     import { resolvePlaceholderImage } from "@/lib/utils";
 
     export let onair = null;
     export let stream = null;
     export let pageUrl = null;
+    export let oauth = {};
 
     let visible = true;
     let observer;
     let mounted = false;
+    let modalRef;
+    let stopListeningForOAuthAction = () => {};
 
     $: air = onair?.data?.[0] ?? null;
     $: currentSong = stream?.current_song ?? {};
@@ -47,27 +55,59 @@
     onMount(() => {
         mounted = true;
         observeMainPlayer();
+        stopListeningForOAuthAction = listenForOAuthAction(
+            OAuthAction.OPEN_SONG_REQUEST,
+            () => modalRef.open(),
+        );
     });
 
     onDestroy(() => {
         observer?.disconnect();
+        stopListeningForOAuthAction();
     });
 </script>
 
 {#if canRender && visible}
+    <CustomModal bind:this={modalRef}>
+        <div slot="content" let:close>
+            <AuthGuard
+                title="Entre para pedir sua música"
+                description="Use sua conta do Discord para continuar."
+                action={OAuthAction.OPEN_SONG_REQUEST}
+                {oauth}
+            >
+                <SongRequestForm {close} {oauth} />
+            </AuthGuard>
+        </div>
+    </CustomModal>
+
     <aside
         class="fixed inset-x-0 bottom-0 z-60 border-t border-blue-skywave/20 bg-blue-night/95 backdrop-blur-md"
         transition:fly={{ y: 88, duration: 240 }}
     >
-        <div class="container-page grid min-h-18 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 py-2 lg:grid-cols-[auto_minmax(0,1fr)_auto_auto]">
+        {#if $player.playing && !$player.loading}
+            <div
+                class="player-wave pointer-events-none absolute inset-x-0 top-3 bottom-0 hidden items-end sm:flex"
+                aria-hidden="true"
+            >
+                {#each $player.waveLevels as level}
+                    <span
+                        class="player-wave__bar"
+                            style={`height: ${Math.round(12 + level * 58)}%;`}
+                    ></span>
+                {/each}
+            </div>
+        {/if}
+
+        <div class="container-page relative grid min-h-18 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 py-2 lg:grid-cols-[auto_minmax(0,1fr)_auto_auto_auto]">
             <img
                 src={resolvePlaceholderImage(currentSong.cover, "placeholder")}
                 alt=""
                 aria-hidden="true"
-                class="size-12 rounded-md object-cover"
+                class="relative z-10 size-12 rounded-md object-cover"
             />
 
-            <div class="min-w-0 font-noto-sans uppercase italic">
+            <div class="relative z-10 min-w-0 font-noto-sans uppercase italic">
                 <p class="text-[0.65rem] font-black tracking-[0.12em] text-orange-amber">
                     Tocando agora
                 </p>
@@ -79,7 +119,26 @@
                 </p>
             </div>
 
-            <div class="group/volume relative hidden py-3 lg:block">
+            <button
+                type="button"
+                aria-label="Faça seu pedido"
+                disabled={!air.allows_song_requests}
+                class={[
+                    "relative z-10 hidden size-11 cursor-pointer items-center justify-center rounded-full transition duration-200 ease-out hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber active:scale-95 disabled:cursor-not-allowed disabled:bg-suspense-aurora/20 disabled:opacity-45 motion-reduce:transform-none motion-reduce:transition-none lg:flex",
+                    { "bg-orange-citric": air.allows_song_requests },
+                    { "bg-suspense-aurora/20": !air.allows_song_requests },
+                ]}
+                on:click={() => modalRef.open()}
+            >
+                <img
+                    src="/svg/telegram.svg"
+                    alt=""
+                    aria-hidden="true"
+                    class="size-5 brightness-0"
+                />
+            </button>
+
+            <div class="group/volume relative z-10 hidden py-3 lg:block">
                 <button
                     type="button"
                     aria-label={`Volume ${Math.round($player.volume * 100)}%`}
@@ -97,7 +156,7 @@
                         class="size-5 brightness-0"
                     />
                 </button>
-                <div class="absolute right-0 bottom-full hidden w-44 pb-3 group-hover/volume:block group-focus-within/volume:block">
+                <div class="absolute top-1/2 right-full z-30 hidden w-44 -translate-y-1/2 pr-3 group-hover/volume:block group-focus-within/volume:block">
                     <div class="rounded-md border border-blue-skywave/20 bg-blue-night px-3 py-2 shadow-lg shadow-blue-night/40">
                         <div class="mb-2 flex items-center justify-between font-noto-sans text-[0.65rem] font-black uppercase">
                             <span class="text-suspense-aurora/45">Volume</span>
@@ -124,6 +183,7 @@
                 aria-busy={$player.loading}
                 disabled={$player.loading && !$player.playing}
                 class={[
+                    "relative z-10",
                     "flex size-11 cursor-pointer items-center justify-center rounded-full transition duration-200 ease-out hover:scale-105 active:scale-95 motion-reduce:transform-none motion-reduce:transition-none",
                     { "bg-orange-citric": !$player.playing },
                     { "bg-blue-skywave": $player.playing },
@@ -145,3 +205,27 @@
         </div>
     </aside>
 {/if}
+
+<style>
+    .player-wave {
+        gap: 1px;
+    }
+
+    .player-wave__bar {
+        min-width: 1px;
+        flex: 1;
+        position: relative;
+        background: rgba(39, 55, 82, 0.18);
+        transform-origin: bottom;
+        transition: height 74ms ease-out;
+    }
+
+    .player-wave__bar::after {
+        content: "";
+        position: absolute;
+        inset-inline: 0;
+        top: -0.35rem;
+        height: 1px;
+        background: rgba(86, 104, 132, 0.16);
+    }
+</style>

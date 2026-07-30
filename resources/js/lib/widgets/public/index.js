@@ -18,5 +18,8 @@ export { default as PlayerBar } from "./player/PlayerBar.svelte"
 // Navbar
 export { default as Navbar } from "./navbar/Navbar.svelte"
 
+// Team
+export { default as TeamDirectory } from "./team/TeamDirectory.svelte"
+
 // Footer
 export { default as Footer } from "./footer/Footer.svelte"

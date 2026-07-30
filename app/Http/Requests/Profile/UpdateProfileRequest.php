@@ -39,6 +39,13 @@ class UpdateProfileRequest extends LoggedWebRequest
             'favorites.*.uuid' => 'required_with:favorites|string',
             'favorites.*.name' => 'nullable|string|max:255',
             'favorites.*.image' => 'nullable|string',
+            'top_animes' => 'nullable|array|size:3',
+            'top_animes.*.position' => 'required_with:top_animes|integer|between:1,3|distinct',
+            'top_animes.*.anime_theme_list_id' => 'nullable|string|max:255',
+            'top_animes.*.slug' => 'nullable|string|max:255',
+            'top_animes.*.name' => 'nullable|string|max:255',
+            'top_animes.*.image' => 'nullable|string|max:2048',
+            'top_animes.*.metadata' => 'nullable|array',
         ];
     }
 }

@@ -41,6 +41,31 @@ class UserResource extends JsonResource
             ];
         }
 
+        if ($this->format === 'team') {
+            return [
+                'uuid' => $this->uuid,
+                'name' => $this->name,
+                'nickname' => $this->nickname,
+                'avatar' => $this->avatar,
+                'birth_date' => $this->birth_date?->format('Y-m-d'),
+                'city' => $this->city,
+                'state' => $this->state,
+                'country' => $this->country,
+                'bibliography' => $this->bibliography,
+                'roles' => RoleResource::collection($this->whenLoaded('roles')),
+                'socials' => UserSocialResource::collection($this->whenLoaded('socials')),
+                'preferences' => [
+                    'likes' => UserPreferenceResource::collection($this->whenLoaded('preferences', fn () => $this->preferences
+                        ->filter(fn ($item) => $item->is_like)
+                        ->values())),
+                    'unlikes' => UserPreferenceResource::collection($this->whenLoaded('preferences', fn () => $this->preferences
+                        ->filter(fn ($item) => !$item->is_like)
+                        ->values())),
+                ],
+                'top_animes' => UserTopAnimeResource::collection($this->whenLoaded('topAnimes')),
+            ];
+        }
+
         return [
             'uuid' => $this->uuid,
             'is_virtual' => $this->is_virtual,
@@ -54,6 +79,7 @@ class UserResource extends JsonResource
             'country' => $this->country,
             'bibliography' => $this->bibliography,
             'favorites' => UserFavoriteResource::collection($this->favorites),
+            'top_animes' => UserTopAnimeResource::collection($this->whenLoaded('topAnimes')),
             'socials' => UserSocialResource::collection($this->socials),
             'preferences' => [
                 'likes' => UserPreferenceResource::collection($this->preferences->filter(function ($item) {

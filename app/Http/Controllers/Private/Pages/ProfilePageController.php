@@ -32,6 +32,7 @@ class ProfilePageController extends Controller
     {
         return [
             'favorites',
+            'topAnimes',
             'socials',
             'preferences',
             'roles' => fn ($query) => $query

@@ -1,0 +1,32 @@
+[
+  {
+    "name": "Instagram",
+    "key": "instagram",
+    "icon": "/svg/instagram.svg"
+  },
+  {
+    "name": "X",
+    "key": "x",
+    "icon": "/svg/x.svg"
+  },
+  {
+    "name": "Threads",
+    "key": "threads",
+    "icon": "/svg/threads.svg"
+  },
+  {
+    "name": "MyAnimeList",
+    "key": "myanimelist",
+    "icon": "/svg/myanimelist.svg"
+  },
+  {
+    "name": "Facebook",
+    "key": "facebook",
+    "icon": "/svg/facebook.svg"
+  },
+  {
+    "name": "YouTube",
+    "key": "youtube",
+    "icon": "/svg/youtube.svg"
+  }
+]

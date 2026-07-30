@@ -12,6 +12,7 @@ use App\Http\Controllers\Public\Invokes\TogglePostLikeController;
 use App\Http\Controllers\Public\Pages\EditorialPageController;
 use App\Http\Controllers\Public\Pages\HomePageController;
 use App\Http\Controllers\Public\Pages\ReadPageController;
+use App\Http\Controllers\Public\Pages\TeamPageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +35,9 @@ Route::middleware(['oauth.resolve', 'inertia', 'auth'])->group(function () {
 
     Route::get('/reviews', [EditorialPageController::class, 'reviews'])
         ->name('reviews');
+
+    Route::get('/equipe', [TeamPageController::class, 'render'])
+        ->name('team');
 
     Route::get('/materia/{slug}', [ReadPageController::class, 'render'])
         ->name('post.read');

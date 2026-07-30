@@ -71,6 +71,27 @@ class UpdateProfileAction
                 }
             }
 
+            if (!empty($data['top_animes'])) {
+                foreach ($data['top_animes'] as $anime) {
+                    if (blank($anime['name'] ?? null)) {
+                        $user->topAnimes()->where('position', $anime['position'])->delete();
+
+                        continue;
+                    }
+
+                    $user->topAnimes()->updateOrCreate(
+                        ['position' => $anime['position']],
+                        [
+                            'anime_theme_list_id' => $anime['anime_theme_list_id'] ?? null,
+                            'slug' => $anime['slug'] ?? null,
+                            'name' => $anime['name'],
+                            'image' => $anime['image'] ?? null,
+                            'metadata' => $anime['metadata'] ?? null,
+                        ],
+                    );
+                }
+            }
+
             return $user;
         });
     }

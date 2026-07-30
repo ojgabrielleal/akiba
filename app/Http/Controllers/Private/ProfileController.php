@@ -25,4 +25,5 @@ class ProfileController extends Controller
 
         return $this->flashMessage('update');
     }
+
 }

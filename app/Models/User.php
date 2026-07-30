@@ -101,6 +101,11 @@ class User extends Authenticatable
         return $this->hasMany(UserFavorite::class, 'user_id');
     }
 
+    public function topAnimes()
+    {
+        return $this->hasMany(UserTopAnime::class, 'user_id')->orderBy('position');
+    }
+
     public function socials()
     {
         return $this->hasMany(UserSocial::class, 'user_id');
