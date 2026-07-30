@@ -9,7 +9,7 @@ export { default as ReviewListGrid } from "./grid/ReviewListGrid.svelte"
 export { default as CalendarGrid } from "./grid/CalendarGrid.svelte"
 export { default as EventCalendarGrid } from "./grid/EventCalendarGrid.svelte"
 export { default as LatestPodcastsGrid } from "./grid/LatestPodcastsGrid.svelte"
-export { default as RadioListenerWeekGrid } from "./grid/RadioListenerWeekGrid.svelte"
+export { default as RadioListenerMonthGrid } from "./grid/RadioListenerMonthGrid.svelte"
 export { default as RadioProgramGrid } from "./grid/RadioProgramGrid.svelte"
 export { default as RadioRankingGrid } from "./grid/RadioRankingGrid.svelte"
 

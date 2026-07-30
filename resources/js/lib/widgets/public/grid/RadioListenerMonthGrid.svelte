@@ -8,7 +8,7 @@
 </script>
 
 <section class="bg-blue-night">
-    <EditorialTitle title="Ouvinte da semana" compact />
+    <EditorialTitle title="Ouvinte do mês" compact />
 
     <div class="container-page py-12">
         {#if listener}

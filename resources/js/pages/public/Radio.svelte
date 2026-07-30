@@ -4,7 +4,7 @@
     import { Meta } from "@/lib/components/shared";
     import { EditorialTitle } from "@/lib/components/public";
     import { Layout } from "@/lib/layouts/public";
-    import { RadioListenerWeekGrid, RadioProgramGrid, RadioRankingGrid } from "@/lib/widgets/public";
+    import { RadioListenerMonthGrid, RadioProgramGrid, RadioRankingGrid } from "@/lib/widgets/public";
 
     $: ({
         flash,
@@ -34,7 +34,7 @@
     <div class="bg-blue-night pt-10">
         <RadioProgramGrid {programs} {activeProgramMode} />
         <RadioRankingGrid {ranking} />
-        <RadioListenerWeekGrid {listenerMonth} />
+        <RadioListenerMonthGrid {listenerMonth} />
 
         <section class="bg-blue-marinho pb-8">
             <EditorialTitle title="Sobre nós" compact />
