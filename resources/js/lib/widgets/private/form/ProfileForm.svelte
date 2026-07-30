@@ -395,7 +395,7 @@
         </div>
     </Section>
 
-    <Section title="Meu Top3">
+    <Section title="Meu Top 3">
         <div class="rounded-xl border border-suspense-aurora/10 bg-blue-ocean/25 p-5 sm:p-6">
             <div class="grid grid-cols-1 gap-6 xl:grid-cols-[22rem_1fr]">
                 <div class="min-w-0">
@@ -468,7 +468,7 @@
                     {:else}
                         <div class="mt-4 flex h-77 items-center justify-center rounded-lg border border-dashed border-suspense-aurora/20 bg-blue-marinho/35 px-6 text-center">
                             <p class="font-noto-sans text-sm font-extrabold uppercase italic text-suspense-aurora/55">
-                                Busque um anime para selecionar seu Top3
+                                Busque um anime para selecionar seu Top 3
                             </p>
                         </div>
                     {/if}

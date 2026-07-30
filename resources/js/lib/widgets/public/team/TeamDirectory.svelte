@@ -305,7 +305,7 @@
                 {#if selectedMember.topAnimes.length > 0}
                     <section class="flex h-full min-w-0 flex-col md:col-span-2 lg:col-span-1">
                         <h3 class="mb-1 min-h-8 text-center font-noto-sans text-lg font-black uppercase italic text-orange-citric">
-                            Meu Top3
+                            Meu Top 3
                         </h3>
                         <div class="grid h-36 min-h-36 max-h-36 grid-cols-3 gap-3 sm:gap-4">
                             {#each selectedMember.topAnimes as anime}
