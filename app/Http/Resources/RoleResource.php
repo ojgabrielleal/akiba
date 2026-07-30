@@ -19,6 +19,7 @@ class RoleResource extends JsonResource
         return [
             'uuid' => $this->uuid,
             'label' => $this->label,
+            'public_label' => $this->public_label,
             'name' => $this->name,
             'description' => $this->description,
             'icon' => $this->icon,

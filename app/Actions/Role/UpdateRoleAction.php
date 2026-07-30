@@ -29,6 +29,7 @@ class UpdateRoleAction
     {
         $role->fill([
             'label' => $data['label'],
+            'public_label' => filled($data['public_label'] ?? null) ? $data['public_label'] : $data['label'],
             'weight' => $data['weight'],
             'description' => $data['description'],
             'icon' => $this->image->store('roles', $data['icon'] ?? null, $role->icon),

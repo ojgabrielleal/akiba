@@ -23,6 +23,7 @@ class UpdateRoleRequest extends LoggedWebRequest
     {
         return [
             'label' => 'required|string|max:255',
+            'public_label' => 'nullable|string|max:255',
             'weight' => 'required|integer',
             'description' => 'nullable|string',
             'icon' => 'nullable|image|mimes:png,jpg,jpeg,webp|max:1024',

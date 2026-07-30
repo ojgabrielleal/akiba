@@ -3,34 +3,7 @@
 
     export let members = [];
 
-    const roleCategories = {
-        administrator: "Administradores",
-        developer: "Web & Arte",
-        locutioner: "Locutores",
-        marketing: "Web & Arte",
-        podcaster: "Podcasters",
-        social_media: "Social Media",
-        writer: "Colunistas",
-    };
-    const allMembersRole = "Todos";
-
-    const fallbackMember = {
-        name: "Takashi",
-        fullName: "Antônio Medeiros Lopes",
-        role: "Administrador - Podcaster - Colunista",
-        location: "Pelotas - RS",
-        age: "25 anos",
-        avatar: "/img/locution/characters/takashi-komuro.webp",
-        cover: "/img/locution/characters/takashi-komuro.webp",
-        categories: ["Administradores", "Podcasters", "Colunistas"],
-        favoriteGenres: ["Isekai / Tensei", "Ecchi / Harém", "Aventura Fantasia"],
-        dislikedGenres: ["Musical / Idol", "Shounen / Porradaria", "Shoujo / Romance"],
-        socials: {
-            instagram: "#",
-        },
-        topAnimes: [],
-        bio: "Perfil em atualização.",
-    };
+    const allMembersRole = { key: "all", label: "Todos" };
 
     let activeRole = null;
     let selectedIndex = 0;
@@ -38,13 +11,13 @@
 
     $: teamMembers = normalizeMembers(members?.data ?? members);
     $: roles = [allMembersRole, ...resolveRoles(teamMembers)];
-    $: if (!activeRole || !roles.includes(activeRole)) {
+    $: if (!activeRole || !roles.some((role) => role.key === activeRole.key)) {
         activeRole = roles[0] ?? null;
         selectedIndex = 0;
     }
     $: filteredMembers =
-        activeRole && activeRole !== allMembersRole
-            ? teamMembers.filter((member) => member.categories.includes(activeRole))
+        activeRole && activeRole.key !== allMembersRole.key
+            ? teamMembers.filter((member) => member.categories.some((role) => role.key === activeRole.key))
             : teamMembers;
     $: selectedMember = filteredMembers[selectedIndex] ?? filteredMembers[0] ?? teamMembers[0];
     $: carouselMembers = resolveCarouselMembers(filteredMembers, carouselStart);
@@ -55,8 +28,11 @@
             .map((member) => {
                 const memberRoles = member.roles ?? [];
                 const categories = memberRoles
-                    .map((role) => roleCategories[role.name])
-                    .filter(Boolean);
+                    .map((role) => ({
+                        key: role.name ?? role.label,
+                        label: resolveRoleLabel(role),
+                    }))
+                    .filter((role) => role.key && role.label);
                 const socials = Object.fromEntries(
                     (member.socials ?? [])
                         .filter((social) => social.url)
@@ -71,7 +47,7 @@
                     age: formatAge(member.birth_date),
                     avatar: member.avatar || "/img/placeholders/avatar.webp",
                     cover: member.avatar || "/img/placeholders/avatar.webp",
-                    categories: categories.length ? categories : ["Administradores"],
+                    categories,
                     favoriteGenres: (member.preferences?.likes ?? []).map((item) => item.content).filter(Boolean),
                     dislikedGenres: (member.preferences?.unlikes ?? []).map((item) => item.content).filter(Boolean),
                     socials,
@@ -80,12 +56,20 @@
                 };
             });
 
-        return normalized.length ? normalized : [fallbackMember];
+        return normalized;
     };
 
+    const resolveRoleLabel = (role) =>
+        role.public_label || role.label;
+
     const resolveRoles = (items = []) =>
-        [...new Set(items.flatMap((member) => member.categories))]
-            .sort((first, second) => first.localeCompare(second, "pt-BR"));
+        Array.from(
+            items
+                .flatMap((member) => member.categories)
+                .reduce((rolesByKey, role) => rolesByKey.set(role.key, role), new Map())
+                .values()
+        )
+            .sort((first, second) => first.label.localeCompare(second.label, "pt-BR"));
 
     const resolveCarouselMembers = (items = [], start = 0) => {
         if (items.length <= 7) return items;
@@ -121,6 +105,8 @@
     };
 
     const moveSelection = (direction) => {
+        if (!filteredMembers.length) return;
+
         if (filteredMembers.length > 7) {
             carouselStart = (carouselStart + direction + filteredMembers.length) % filteredMembers.length;
             selectedIndex = carouselStart;
@@ -141,7 +127,7 @@
     >
         <div class="container-page relative">
             <h1 class="text-center font-noto-sans text-4xl font-black uppercase italic leading-none text-orange-citric sm:text-5xl md:text-6xl">
-                Equipe Rede Akiba
+                Equipe
             </h1>
         </div>
     </header>
@@ -149,19 +135,19 @@
     <nav aria-label="Filtros da equipe">
         <div class="container-page overflow-x-auto">
             <ul class="flex min-w-max items-center justify-center gap-y-3 py-8">
-                {#each roles as role}
+                {#each roles as role (role.key)}
                     <li class="flex h-8 items-center border-l border-neutral-gray/35 px-3 first:border-none first:pl-0 xl:px-5">
                         <button
                             type="button"
                             class={[
                                 "shrink-0 cursor-pointer rounded-md font-noto-sans text-base font-extrabold uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 hover:text-orange-citric focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber motion-reduce:transform-none motion-reduce:transition-none",
-                                activeRole === role
+                                activeRole?.key === role.key
                                     ? "text-orange-citric"
                                     : "text-neutral-gray",
                             ]}
                             on:click={() => selectRole(role)}
                         >
-                            {role}
+                            {role.label}
                         </button>
                     </li>
                 {/each}
@@ -171,6 +157,7 @@
 
     <div class="bg-blue-marinho pb-8 md:pb-10">
     <div class="container-page pt-12 md:pt-16">
+        {#if selectedMember}
         <div class="grid grid-cols-[2rem_minmax(0,1fr)_2rem] items-center gap-1 sm:grid-cols-[2.5rem_minmax(0,1fr)_2.5rem] md:grid-cols-[3rem_minmax(0,1fr)_3rem] md:gap-4">
             <button
                 type="button"
@@ -233,7 +220,7 @@
                     aria-hidden="true"
                     class="absolute bottom-0 left-0 hidden h-48 w-auto max-w-[11rem] object-contain object-left-bottom drop-shadow-[0_0.35rem_0.45rem_rgba(0,0,20,0.45)] md:block"
                 />
-                <div class="min-h-32 px-5 py-6 md:ml-52 md:px-8">
+                <div class="min-h-32 px-5 py-6 md:ml-36 md:px-8">
                     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                         <div class="mt-1">
                             <h2 class="font-noto-sans text-3xl font-black uppercase italic text-suspense-aurora sm:text-4xl md:text-5xl">
@@ -249,6 +236,8 @@
                                 {#if socialIcon}
                                     <a
                                         href={address}
+                                        target="_blank"
+                                        rel="noreferrer"
                                         aria-label={socialIcon.name}
                                         class="flex size-11 items-center justify-center transition hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric motion-reduce:transform-none"
                                     >
@@ -345,6 +334,7 @@
                 {/if}
             </div>
         </article>
+        {/if}
     </div>
     </div>
 </section>

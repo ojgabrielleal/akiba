@@ -16,6 +16,7 @@ class Role extends Model
     protected $fillable = [
         'uuid',
         'label',
+        'public_label',
         'name',
         'description',
         'icon',

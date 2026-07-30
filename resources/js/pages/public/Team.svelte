@@ -8,7 +8,7 @@
     $: pageUrl = $page.url;
 </script>
 
-<Meta meta={{ title: "Equipe Rede Akiba" }} />
+<Meta meta={{ title: "Equipe" }} />
 <Layout {flash} {oauth} {onair} {stream} {pageUrl}>
     <TeamDirectory {members} />
 </Layout>

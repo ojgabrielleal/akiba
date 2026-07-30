@@ -52,6 +52,7 @@
     $: form = useForm({
         _method: roleSelected ? "PATCH" : "POST",
         label: roleSelected?.label ?? null,
+        public_label: roleSelected?.public_label ?? null,
         weight: roleSelected?.weight ?? null,
         description: roleSelected?.description ?? null,
         icon: null,
@@ -99,6 +100,23 @@
             bind:value={$form.label}
             error={$form.errors.label}
             required
+        />
+    </FormField>
+
+    <FormField
+        for="public_label"
+        label="Nome público"
+        help="Texto exibido nos filtros da página de equipe. Se ficar vazio, usa o nome."
+        error={$form.errors.public_label}
+        spacing="compact"
+    >
+        <TextInput
+            variant="offcanvas"
+            type="text"
+            name="public_label"
+            id="public_label"
+            bind:value={$form.public_label}
+            error={$form.errors.public_label}
         />
     </FormField>
 
