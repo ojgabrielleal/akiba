@@ -7,12 +7,15 @@ use App\Http\Controllers\Api\External\OAuthAccount\OAuthAccountCallbackControlle
 use App\Http\Controllers\Api\External\OAuthAccount\OAuthAccountRedirectController;
 use App\Http\Controllers\Public\FormSubmissionController;
 use App\Http\Controllers\Public\OAuthAccountController;
+use App\Http\Controllers\Private\Invokes\PollVoteController;
 use App\Http\Controllers\Public\Invokes\StorePostCommentController;
+use App\Http\Controllers\Public\Invokes\StorePublicVisitorHeartbeatController;
 use App\Http\Controllers\Public\Invokes\StorePostReactionController;
 use App\Http\Controllers\Public\Invokes\TogglePostLikeController;
 use App\Http\Controllers\Public\Pages\EditorialPageController;
 use App\Http\Controllers\Public\Pages\ContactPageController;
 use App\Http\Controllers\Public\Pages\HomePageController;
+use App\Http\Controllers\Public\Pages\MediaPageController;
 use App\Http\Controllers\Public\Pages\RadioPageController;
 use App\Http\Controllers\Public\Pages\ReadPageController;
 use App\Http\Controllers\Public\Pages\TeamPageController;
@@ -28,6 +31,10 @@ Route::get('/oauth/{provider}/redirect', OAuthAccountRedirectController::class)
 
 Route::get('/oauth/{provider}/callback', OAuthAccountCallbackController::class)
     ->name('oauth.callback');
+
+Route::post('/online-visitors/heartbeat', StorePublicVisitorHeartbeatController::class)
+    ->middleware('oauth.resolve')
+    ->name('online-visitors.heartbeat');
 
 Route::middleware(['oauth.resolve', 'inertia'])->group(function () {
     Route::get('/contato', [ContactPageController::class, 'render'])
@@ -53,6 +60,9 @@ Route::middleware(['oauth.resolve', 'inertia', 'auth'])->group(function () {
     Route::get('/radio', [RadioPageController::class, 'render'])
         ->name('radio');
 
+    Route::get('/midias', [MediaPageController::class, 'render'])
+        ->name('media');
+
     Route::get('/materia/{slug}', [ReadPageController::class, 'render'])
         ->name('post.read');
 
@@ -66,6 +76,9 @@ Route::middleware(['oauth.resolve', 'inertia', 'auth'])->group(function () {
     Route::post('/materia/{post:slug}/comment', StorePostCommentController::class)
         ->middleware('oauth')
         ->name('post.comment.store');
+
+    Route::post('/poll/option/{option:uuid}/vote', [PollVoteController::class, '__invoke'])
+        ->name('poll.option.vote');
 
     Route::get('/review/{slug}', [ReadPageController::class, 'render'])
         ->name('review.read');

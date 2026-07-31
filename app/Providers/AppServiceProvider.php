@@ -43,6 +43,8 @@ class AppServiceProvider extends ServiceProvider
             'inactive.module.view',
             'inactive.restore',
             'inactive.delete',
+            'form.submission.list',
+            'form.submission.review',
             'locution.start',
             'locution.finish',
         ];

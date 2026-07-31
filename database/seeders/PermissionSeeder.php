@@ -74,6 +74,14 @@ class PermissionSeeder extends Seeder
 
             /*
             |--------------------------------------------------------------------------
+            | Formulários recebidos
+            |--------------------------------------------------------------------------
+            */
+            ['name' => 'form.submission.list', 'label' => '[Formulários] Listar recebidos'],
+            ['name' => 'form.submission.review', 'label' => '[Formulários] Aprovar/Reprovar recebidos'],
+
+            /*
+            |--------------------------------------------------------------------------
             | Posts
             |--------------------------------------------------------------------------
             */

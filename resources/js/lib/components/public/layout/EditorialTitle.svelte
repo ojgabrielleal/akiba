@@ -5,6 +5,7 @@
     export let compact = false;
     export let listLabel = null;
     export let phrase = null;
+    export let padding = "py-6 sm:py-8";
 </script>
 
 <div class={className}>
@@ -24,16 +25,18 @@
 
     {#if phrase}
         <div class="bg-blue-night">
-            <p class="container-page flex min-h-20 items-center justify-center py-6 text-center font-noto-sans text-sm font-extrabold italic uppercase text-neutral-gray sm:min-h-24 sm:py-8">
+            <p class={["container-page flex min-h-20 items-center justify-center text-center font-noto-sans text-sm font-extrabold italic uppercase text-neutral-gray sm:min-h-24", padding]}>
                 {phrase}
             </p>
         </div>
     {:else if $$slots.default}
         <nav class="bg-blue-night" aria-label={listLabel ?? title}>
-            <ul class="editorial-title-list container-page flex flex-wrap items-center justify-center gap-y-3 py-6 sm:py-8">
+            <ul class={["editorial-title-list container-page flex flex-wrap items-center justify-center gap-y-3", padding]}>
                 <slot />
             </ul>
         </nav>
+    {:else if padding}
+        <div class={["bg-blue-night", padding]}></div>
     {/if}
 </div>
 

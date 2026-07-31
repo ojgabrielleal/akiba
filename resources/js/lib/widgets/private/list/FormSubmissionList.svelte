@@ -1,6 +1,7 @@
 <script>
     import { router } from "@inertiajs/svelte";
-    import { Button, EmptyState, Modal, Section } from "@/lib/components/private";
+    import { Button, EmptyState, Modal, Pagination, Section } from "@/lib/components/private";
+    import { hasPermission } from "@/lib/utils";
 
     export let title;
     export let submissions = null;
@@ -8,6 +9,8 @@
     let modalRef;
     let selectedSubmission = null;
     let reviewingSubmission = null;
+
+    $: canReview = hasPermission("form.submission.review");
 
     const fieldLabels = {
         role: "Cargo",
@@ -99,7 +102,7 @@
                         Recebido em {selectedSubmission.created_at}
                     </p>
 
-                    {#if selectedSubmission.status === "pending"}
+                    {#if selectedSubmission.status === "pending" && canReview}
                         <div class="flex shrink-0 gap-2 overflow-visible">
                             <Button
                                 variant="success"
@@ -181,5 +184,10 @@
                 description="As inscrições e outros contatos aparecerão aqui."
             />
         {/if}
+        <Pagination
+            pages={submissions}
+            only={["formSubmissions"]}
+            loadingLabel="Carregando formulários..."
+        />
     </Section>
 {/if}

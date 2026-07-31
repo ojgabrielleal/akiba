@@ -9,6 +9,12 @@ Este projeto usa Laravel no backend e Svelte no frontend, integrados via Inertia
 - Banco de dados: MySQL 8.
 - Ferramentas auxiliares: Composer, Artisan, Node/NPM, phpMyAdmin.
 
+## Regras Gerais
+
+- Nao execute comandos automaticamente. Quando algum comando for necessario, informe o comando para o usuario executar manualmente.
+- Nao rode `./run.sh npm run build` automaticamente apos alteracoes. O usuario prefere rodar o build manualmente.
+- Nao suba o ambiente Docker automaticamente. Quando os containers forem necessarios, peca para o usuario executar `./run.sh up`.
+
 ## Ambiente de Execucao
 
 O projeto roda via Docker. Para executar o projeto e ter acesso aos comandos de PHP e Node, primeiro levante os containers:

@@ -1,6 +1,8 @@
 <script>
+    import { onMount } from "svelte";
     import { usePoll } from "@inertiajs/svelte";
     import { FlashToaster } from "@/lib/components/public";
+    import { startPublicPresenceHeartbeat } from "@/lib/stores/publicPresence";
     import { Footer, Navbar, PlayerBar } from "@/lib/widgets/public";
 
     export let flash = null;
@@ -12,6 +14,8 @@
     usePoll(10 * 1000, {
         only: ["onair"]
     });
+
+    onMount(() => startPublicPresenceHeartbeat());
 </script>
 
 <FlashToaster {flash} />

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Private\Pages;
 
 use App\Filters\ActivityFilter;
 use App\Filters\CalendarFilter;
+use App\Filters\FormSubmissionFilter;
 use App\Filters\PermissionFilter;
 use App\Filters\RoleFilter;
 use App\Filters\TaskFilter;
@@ -22,12 +23,12 @@ use App\Http\Resources\User\UserResource;
 
 use App\Models\Activity;
 use App\Models\Calendar;
-use App\Models\FormSubmission;
 use App\Models\Role;
 use App\Models\Task;
 use App\Models\User;
 
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Gate;
 
 class AdministrationPageController extends Controller
 {
@@ -38,6 +39,7 @@ class AdministrationPageController extends Controller
     public function __construct(
         private ActivityFilter $activityFilter,
         private CalendarFilter $calendarFilter,
+        private FormSubmissionFilter $formSubmissionFilter,
         private PermissionFilter $permissionFilter,
         private RoleFilter $roleFilter,
         private TaskFilter $taskFilter,
@@ -135,13 +137,18 @@ class AdministrationPageController extends Controller
 
     private function indexFormSubmissions()
     {
+        if (! Gate::allows('form.submission.list')) {
+            return null;
+        }
+
         return FormSubmissionResource::collection(
-            FormSubmission::query()
-                ->with('reviewer')
-                ->orderByRaw("case status when 'pending' then 0 when 'approved' then 1 else 2 end")
-                ->latest()
-                ->limit(10)
-                ->get()
+            $this->formSubmissionFilter->apply([
+                'with' => ['reviewer'],
+                'status_order' => true,
+                'order_by' => 'created_at',
+                'order_direction' => 'desc',
+                'paginate' => 10,
+            ])
         );
     }
 }

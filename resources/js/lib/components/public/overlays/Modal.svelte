@@ -63,7 +63,7 @@
             tabindex="-1"
             transition:fly={{ y: 12, duration: 220 }}
         >
-            <header class="flex min-h-14 items-center justify-between gap-4 border-b border-blue-night/10 px-5 py-3">
+            <header class="flex min-h-14 items-center justify-between gap-4 border-b border-blue-night/10 bg-suspense-aurora px-5 py-3">
                 {#if title}
                     <h2 class="font-noto-sans text-base font-extrabold uppercase italic text-blue-night">
                         {title}
@@ -86,7 +86,7 @@
                 </button>
             </header>
 
-            <div class="max-h-[min(75dvh,40rem)] overflow-y-auto p-5">
+            <div class="max-h-[min(75dvh,40rem)] overflow-y-auto bg-suspense-aurora p-5">
                 <slot {close} />
             </div>
         </div>

@@ -2,24 +2,27 @@
 
 namespace App\Filters;
 
-use App\Models\ListenerGallery;
-
+use App\Models\FormSubmission;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-class ListenerGalleryFilter
+class FormSubmissionFilter
 {
     public function apply(array $filters = []): Collection|LengthAwarePaginator
     {
-        $query = ListenerGallery::query()
+        $query = FormSubmission::query()
+            ->when(
+                $filters['with'] ?? null,
+                fn (Builder $query, array|string $relations) => $query->with($relations)
+            )
+            ->when(
+                $filters['status_order'] ?? false,
+                fn (Builder $query) => $query->orderByRaw("case status when 'pending' then 0 when 'approved' then 1 else 2 end")
+            )
             ->orderBy(
                 $filters['order_by'] ?? 'id',
                 $filters['order_direction'] ?? 'desc'
-            )
-            ->when(
-                $filters['limit'] ?? null,
-                fn (Builder $query, int $limit) => $query->limit($limit),
             );
 
         return $query->when(

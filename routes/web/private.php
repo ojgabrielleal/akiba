@@ -177,8 +177,10 @@ Route::prefix('panel')->middleware(['inertia'])->group(function () {
                 Route::patch('{task:uuid}/deactivate', [DeactivateTaskController::class, '__invoke']);
             });
             Route::prefix('form-submission')->group(function () {
-                Route::patch('{formSubmission:uuid}/approve', [ApproveFormSubmissionController::class, '__invoke']);
-                Route::patch('{formSubmission:uuid}/reject', [RejectFormSubmissionController::class, '__invoke']);
+                Route::patch('{formSubmission:uuid}/approve', [ApproveFormSubmissionController::class, '__invoke'])
+                    ->middleware('can:form.submission.review');
+                Route::patch('{formSubmission:uuid}/reject', [RejectFormSubmissionController::class, '__invoke'])
+                    ->middleware('can:form.submission.review');
             });
             Route::get('', 'render')->name('panel.administration');
         });
