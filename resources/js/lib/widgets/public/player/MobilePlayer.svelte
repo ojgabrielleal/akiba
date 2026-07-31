@@ -13,8 +13,9 @@
     export let stream = null;
     export let oauth = {};
 
-    $: air = onair?.data?.[0] ?? null;
+    $: air = onair?.data?.[0] ?? {};
     $: currentSong = stream?.current_song ?? {};
+    $: canRender = Boolean(onair?.data?.[0]);
 
     let modalRef;
 
@@ -77,7 +78,7 @@
     </div>
 </CustomModal>
 
-{#if air && stream}
+{#if canRender}
 <!-- Phone player -->
 <section class="mt-10 container-page md:hidden">
     <div class="relative w-full max-w-[26rem] mx-auto overflow-hidden rounded-3xl border border-suspense-aurora/10 bg-blue-ocean/25 shadow-2xl">
@@ -209,12 +210,12 @@
             <button
                 type="button"
                 class="w-full py-3 px-5 rounded-full border border-suspense-aurora/30 text-blue-skywave text-base text-center font-noto-sans font-extrabold italic uppercase active:scale-[0.98] transition-transform disabled:cursor-not-allowed disabled:border-gray-500 disabled:bg-gray-500/20 disabled:text-gray-500 disabled:active:scale-100"
-                disabled={!air.allows_song_requests}
+                disabled={!air?.allows_song_requests}
                 on:click={() => modalRef.open()}
             >
                 Faça seu <strong class={[
-                    { "text-orange-citric": air.allows_song_requests },
-                    { "text-gray-500": !air.allows_song_requests },
+                    { "text-orange-citric": air?.allows_song_requests },
+                    { "text-gray-500": !air?.allows_song_requests },
                 ]}>pedido</strong>
             </button>
         </div>
@@ -223,7 +224,7 @@
 {/if}
 
 <!-- Tablet player -->
-{#if air && stream}
+{#if canRender}
 <section class="container-page hidden md:block">
     <div class="relative w-full max-w-4xl mx-auto overflow-hidden rounded-3xl border border-suspense-aurora/10 bg-blue-ocean/25 shadow-2xl">
         <div class="absolute inset-0 bg-gradient-to-r from-blue-skywave/15 via-transparent to-orange-citric/10"></div>
@@ -356,12 +357,12 @@
                 <button
                     type="button"
                     class="w-full py-3 px-5 rounded-full border border-suspense-aurora/30 text-blue-skywave text-base text-center font-noto-sans font-extrabold italic uppercase active:scale-[0.98] transition-transform disabled:cursor-not-allowed disabled:border-gray-500 disabled:bg-gray-500/20 disabled:text-gray-500 disabled:active:scale-100"
-                    disabled={!air.allows_song_requests}
+                    disabled={!air?.allows_song_requests}
                     on:click={() => modalRef.open()}
                 >
                     Faça seu <strong class={[
-                        { "text-orange-citric": air.allows_song_requests },
-                        { "text-gray-500": !air.allows_song_requests },
+                        { "text-orange-citric": air?.allows_song_requests },
+                        { "text-gray-500": !air?.allows_song_requests },
                     ]}>pedido</strong>
                 </button>
             </div>

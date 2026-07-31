@@ -21,11 +21,11 @@
     let modalRef;
     let stopListeningForOAuthAction = () => {};
 
-    $: air = onair?.data?.[0] ?? null;
+    $: air = onair?.data?.[0] ?? {};
     $: currentSong = stream?.current_song ?? {};
     $: program = air?.program ?? {};
     $: host = program?.host ?? {};
-    $: canRender = Boolean(air && stream);
+    $: canRender = Boolean(onair?.data?.[0]);
 
     const observeMainPlayer = async () => {
         await tick();
@@ -93,7 +93,7 @@
                 {#each $player.waveLevels as level}
                     <span
                         class="player-wave__bar"
-                            style={`height: ${Math.round(12 + level * 58)}%;`}
+                            style={`height: ${Math.round(8 + level * 82)}%;`}
                     ></span>
                 {/each}
             </div>
@@ -122,11 +122,11 @@
             <button
                 type="button"
                 aria-label="Faça seu pedido"
-                disabled={!air.allows_song_requests}
+                disabled={!air?.allows_song_requests}
                 class={[
                     "relative z-10 hidden size-11 cursor-pointer items-center justify-center rounded-full transition duration-200 ease-out hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber active:scale-95 disabled:cursor-not-allowed disabled:bg-suspense-aurora/20 disabled:opacity-45 motion-reduce:transform-none motion-reduce:transition-none lg:flex",
-                    { "bg-orange-citric": air.allows_song_requests },
-                    { "bg-suspense-aurora/20": !air.allows_song_requests },
+                    { "bg-orange-citric": air?.allows_song_requests },
+                    { "bg-suspense-aurora/20": !air?.allows_song_requests },
                 ]}
                 on:click={() => modalRef.open()}
             >

@@ -5,11 +5,13 @@ use Illuminate\Support\Facades\Route;
 // Public controllers
 use App\Http\Controllers\Api\External\OAuthAccount\OAuthAccountCallbackController;
 use App\Http\Controllers\Api\External\OAuthAccount\OAuthAccountRedirectController;
+use App\Http\Controllers\Public\FormSubmissionController;
 use App\Http\Controllers\Public\OAuthAccountController;
 use App\Http\Controllers\Public\Invokes\StorePostCommentController;
 use App\Http\Controllers\Public\Invokes\StorePostReactionController;
 use App\Http\Controllers\Public\Invokes\TogglePostLikeController;
 use App\Http\Controllers\Public\Pages\EditorialPageController;
+use App\Http\Controllers\Public\Pages\ContactPageController;
 use App\Http\Controllers\Public\Pages\HomePageController;
 use App\Http\Controllers\Public\Pages\RadioPageController;
 use App\Http\Controllers\Public\Pages\ReadPageController;
@@ -26,6 +28,14 @@ Route::get('/oauth/{provider}/redirect', OAuthAccountRedirectController::class)
 
 Route::get('/oauth/{provider}/callback', OAuthAccountCallbackController::class)
     ->name('oauth.callback');
+
+Route::middleware(['oauth.resolve', 'inertia'])->group(function () {
+    Route::get('/contato', [ContactPageController::class, 'render'])
+        ->name('contact');
+
+    Route::post('/form-submissions', [FormSubmissionController::class, 'store'])
+        ->name('form-submissions.store');
+});
 
 Route::middleware(['oauth.resolve', 'inertia', 'auth'])->group(function () {
     Route::get('/news', [EditorialPageController::class, 'news'])

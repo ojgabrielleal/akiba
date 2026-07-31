@@ -1,5 +1,6 @@
 <script>
     export let title = "";
+    export let size = "sm";
 
     import { fade } from "svelte/transition";
     import { onMount, onDestroy } from "svelte";
@@ -30,6 +31,12 @@
     const block = (event) => {
         event.stopPropagation();
     };
+
+    const sizes = {
+        sm: "max-w-sm",
+        md: "max-w-xl",
+        lg: "max-w-3xl",
+    };
 </script>
 
 {#if visible}
@@ -42,7 +49,7 @@
         on:click={close}
     >
         <div
-            class="my-auto w-full min-w-0 max-w-sm overflow-hidden rounded-md bg-suspense-aurora"
+            class={["my-auto w-full min-w-0 rounded-t-2xl rounded-b-md border-0 bg-suspense-aurora shadow-none outline-none ring-0 focus:outline-none focus:ring-0", sizes[size] ?? sizes.sm]}
             role="dialog"
             aria-modal="true"
             aria-labelledby={titleId}
@@ -51,7 +58,7 @@
             on:click={block}
         >
             {#if title}
-                <div class="grid grid-cols-[1.5rem_1fr_1.5rem] items-center bg-blue-skywave p-4">
+                <div class="grid grid-cols-[1.5rem_1fr_1.5rem] items-center rounded-t-md bg-blue-marinho p-4">
                     <span aria-hidden="true"></span>
                     <h2 id={titleId} class="text-center text-suspense-aurora font-bold italic uppercase">
                         {title}
@@ -72,7 +79,7 @@
                     </button>
                 </div>
             {/if}
-            <div class="max-h-[calc(100dvh-5rem)] overflow-y-auto p-4 sm:p-6">
+            <div class="max-h-[calc(100dvh-5rem)] overflow-x-hidden overflow-y-auto p-4 sm:p-6">
                 <slot name="content" {close} />
             </div>
         </div>

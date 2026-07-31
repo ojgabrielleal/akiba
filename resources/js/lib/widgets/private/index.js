@@ -9,6 +9,7 @@ export { default as AudienceHistoryChart } from "./chart/AudienceHistoryChart.sv
 
 // Lists
 export { default as TaskList } from "./list/TaskList.svelte"
+export { default as FormSubmissionList } from "./list/FormSubmissionList.svelte"
 
 // Forms
 export { default as LoginForm } from './form/LoginForm.svelte'

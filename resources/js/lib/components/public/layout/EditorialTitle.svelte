@@ -4,6 +4,7 @@
     export let title;
     export let compact = false;
     export let listLabel = null;
+    export let phrase = null;
 </script>
 
 <div class={className}>
@@ -21,7 +22,13 @@
         </div>
     </header>
 
-    {#if $$slots.default}
+    {#if phrase}
+        <div class="bg-blue-night">
+            <p class="container-page flex min-h-20 items-center justify-center py-6 text-center font-noto-sans text-sm font-extrabold italic uppercase text-neutral-gray sm:min-h-24 sm:py-8">
+                {phrase}
+            </p>
+        </div>
+    {:else if $$slots.default}
         <nav class="bg-blue-night" aria-label={listLabel ?? title}>
             <ul class="editorial-title-list container-page flex flex-wrap items-center justify-center gap-y-3 py-6 sm:py-8">
                 <slot />

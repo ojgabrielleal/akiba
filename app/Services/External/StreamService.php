@@ -16,7 +16,7 @@ class StreamService
 
             if (!$url) {
                 Log::warning('Radio API error: STREAM_METADATA is not configured in .env');
-                return null;
+                return $this->fallbackData();
             }
 
             $response = Http::timeout(5)->withOptions([
@@ -25,14 +25,14 @@ class StreamService
             
             if ($response->failed()) {
                 Log::warning('Radio API returned error status: ' . $response->status());
-                return null;
+                return $this->fallbackData();
             }
 
             $data = $response->json();
 
-            if (!isset($data['status'])) {
+            if (!is_array($data)) {
                 Log::warning('Radio API returned unexpected data format');
-                return null;
+                return $this->fallbackData();
             }
 
             return [
@@ -46,7 +46,20 @@ class StreamService
             ];
         } catch (\Throwable $e) {
             Log::error('Radio API error: ' . $e->getMessage());
-            return null;
+            return $this->fallbackData();
         }
+    }
+
+    protected function fallbackData(): array
+    {
+        return [
+            'status' => 'Offline',
+            'listeners' => 0,
+            'bitrate' => 'N/A',
+            'current_song' => [
+                'music' => null,
+                'cover' => null,
+            ],
+        ];
     }
 }

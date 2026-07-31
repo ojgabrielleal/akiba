@@ -19,8 +19,9 @@
     export let stream = null;
     export let oauth = {};
 
-    $: air = onair?.data?.[0] ?? null;
+    $: air = onair?.data?.[0] ?? {};
     $: currentSong = stream?.current_song ?? {};
+    $: canRender = Boolean(onair?.data?.[0]);
 
     let modalRef;
 
@@ -82,7 +83,7 @@
 </CustomModal>
 
 <!-- Phrase Section -->
-{#if air && stream}
+{#if canRender}
 <section class="w-full bg-contain bg-right bg-no-repeat mt-5 mb-7"  style={`background-image: url('${playerData.phrase.texture}'), var(--gradient-blue-ocean-cerulean);`}>
     <div class="container-player h-30 relative">
         <div class="absolute -top-8 left-0 z-10 xl:-left-28">
@@ -331,14 +332,14 @@
             aria-label="Faça seu pedido"
             class={[
                 "cursor-pointer w-full py-2 px-1 border-2 border-suspense-aurora rounded-full text-blue-skywave text-xl text-center font-noto-sans font-extrabold italic uppercase transition-transform duration-200 ease-out hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.99] disabled:cursor-not-allowed disabled:border-gray-500 disabled:bg-gray-500/20 disabled:text-gray-500 disabled:transform-none motion-reduce:transition-none",
-                { "song-request-active": air.allows_song_requests },
+                { "song-request-active": air?.allows_song_requests },
             ]}
-            disabled={!air.allows_song_requests}
+            disabled={!air?.allows_song_requests}
             on:click={() => modalRef.open()}
         >
             & Faça seu <strong class={[
-                { "text-orange-citric": air.allows_song_requests },
-                { "text-gray-500": !air.allows_song_requests },
+                { "text-orange-citric": air?.allows_song_requests },
+                { "text-gray-500": !air?.allows_song_requests },
             ]}>Pedido</strong>
         </button>
     </div>
@@ -372,7 +373,7 @@
     }
 </style>
 
-{#if air && stream}
+{#if canRender}
 <section class="container-player" aria-label="Publicidade">
     <div class="mb-10 grid grid-cols-2 gap-5">
         {#each Array(2) as _, index}

@@ -6,15 +6,15 @@ const WAVE_BAR_COUNT = 140;
 const DEFAULT_WAVE_LEVELS = Array.from({ length: WAVE_BAR_COUNT }, () => 0.2);
 const MIN_WAVE_LEVEL = 0.02;
 const MAX_WAVE_LEVEL = 1;
-const FREQUENCY_GAIN = 2.85;
-const WAVE_ATTACK = 0.72;
-const WAVE_RELEASE = 0.14;
-const BASS_END = 0.22;
+const FREQUENCY_GAIN = 4.65;
+const WAVE_ATTACK = 0.88;
+const WAVE_RELEASE = 0.18;
+const BASS_END = 0.28;
 const MID_END = 0.62;
-const BOOM_ATTACK = 5.8;
-const BOOM_THRESHOLD = 0.028;
-const BOOM_DECAY = 0.84;
-const ENERGY_FOLLOW = 0.035;
+const BOOM_ATTACK = 9.5;
+const BOOM_THRESHOLD = 0.012;
+const BOOM_DECAY = 0.9;
+const ENERGY_FOLLOW = 0.02;
 const createFallbackWaveLevels = () =>
     Array.from({ length: WAVE_BAR_COUNT }, (_, index) => {
         const phase = (Date.now() / 180) + index * 0.85;
@@ -149,7 +149,7 @@ const startWaveAnalysis = () => {
         const midEnergy = averageFrequency(frequencyData.subarray(bassEndBin, midEndBin)) / 255;
         const trebleEnergy = averageFrequency(frequencyData.subarray(midEndBin)) / 255;
         const fullEnergy = averageFrequency(frequencyData) / 255;
-        const currentEnergy = (bassEnergy * 0.7) + (fullEnergy * 0.3);
+        const currentEnergy = (bassEnergy * 0.84) + (fullEnergy * 0.16);
         averageEnergy = (averageEnergy * (1 - ENERGY_FOLLOW)) + (currentEnergy * ENERGY_FOLLOW);
 
         const relativeEnergy = currentEnergy / Math.max(0.04, averageEnergy);
@@ -159,16 +159,16 @@ const startWaveAnalysis = () => {
         previousEnergy = (previousEnergy * 0.82) + (currentEnergy * 0.18);
         boomPulse = Math.max(boomPulse * BOOM_DECAY, energyAttack > BOOM_THRESHOLD ? Math.min(1, energyAttack * BOOM_ATTACK) : 0);
 
-        const bassLevel = resolveRelativeLevel(bassEnergy, averageEnergy, 0.72, 0.82);
-        const midLevel = resolveRelativeLevel(midEnergy, averageEnergy, 0.8, 0.62);
-        const trebleLevel = resolveRelativeLevel(trebleEnergy, averageEnergy, 0.86, 0.42);
+        const bassLevel = resolveRelativeLevel(bassEnergy, averageEnergy, 0.46, 1.45);
+        const midLevel = resolveRelativeLevel(midEnergy, averageEnergy, 0.64, 0.82);
+        const trebleLevel = resolveRelativeLevel(trebleEnergy, averageEnergy, 0.74, 0.48);
         const phase = performance.now() / 1000;
         const waveLevels = Array.from({ length: WAVE_BAR_COUNT }, (_, index) => {
             const position = index / Math.max(1, WAVE_BAR_COUNT - 1);
             const mirroredPosition = 1 - Math.abs((position * 2) - 1);
             const waveShape = resolveMusicalWaveShape(position, mirroredPosition, phase, bassLevel, midLevel, trebleLevel);
             const boomShape = Math.sin(mirroredPosition * Math.PI) ** 2.2;
-            const boomLift = boomPulse * boomShape * 0.92;
+            const boomLift = boomPulse * boomShape * 1.18;
             const target = Math.min(
                 MAX_WAVE_LEVEL,
                 (waveShape + boomLift) * FREQUENCY_GAIN,
@@ -198,9 +198,9 @@ const resolveRelativeLevel = (energy, baseline, threshold, gain) =>
 
 const resolveMusicalWaveShape = (position, mirroredPosition, phase, bassLevel, midLevel, trebleLevel) => {
     const centerEnvelope = Math.sin(mirroredPosition * Math.PI) ** 0.95;
-    const bassWave = smoothPulse(position, 1.75, phase * 0.34, 1.55) * bassLevel * 0.42;
-    const midWave = smoothPulse(position, 3.35, phase * -0.48, 1.9) * midLevel * 0.28;
-    const trebleWave = smoothPulse(position, 6.8, phase * 0.7, 2.35) * trebleLevel * 0.16;
+    const bassWave = smoothPulse(position, 1.75, phase * 0.38, 1.3) * bassLevel * 0.58;
+    const midWave = smoothPulse(position, 3.35, phase * -0.52, 1.75) * midLevel * 0.3;
+    const trebleWave = smoothPulse(position, 6.8, phase * 0.76, 2.2) * trebleLevel * 0.16;
 
     return (0.012 + bassWave + midWave + trebleWave) * centerEnvelope;
 };

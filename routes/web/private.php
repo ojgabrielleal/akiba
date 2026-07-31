@@ -4,6 +4,7 @@ use App\Http\Controllers\Private\ActivityController;
 
 use App\Http\Controllers\Private\CalendarController;
 use App\Http\Controllers\Private\Invokes\CompleteTaskController;
+use App\Http\Controllers\Private\Invokes\ApproveFormSubmissionController;
 use App\Http\Controllers\Private\Invokes\ConfirmActivityParticipantController;
 use App\Http\Controllers\Private\Invokes\DeactivatePodcastController;
 use App\Http\Controllers\Private\Invokes\DeactivatePollController;
@@ -22,6 +23,7 @@ use App\Http\Controllers\Private\Invokes\MarkSongRequestAsPlayedController;
 use App\Http\Controllers\Private\Invokes\MarkTaskToReviewController;
 use App\Http\Controllers\Private\Invokes\PollVoteController;
 use App\Http\Controllers\Private\Invokes\ReactivateInactiveItemController;
+use App\Http\Controllers\Private\Invokes\RejectFormSubmissionController;
 use App\Http\Controllers\Private\Invokes\RefreshMusicRankingController;
 use App\Http\Controllers\Private\Invokes\StartLocutionController;
 use App\Http\Controllers\Private\Invokes\ToggleSongRequestBoxStatusController;
@@ -173,6 +175,10 @@ Route::prefix('panel')->middleware(['inertia'])->group(function () {
                 Route::patch('{task:uuid}', [TaskController::class, 'update']);
                 Route::patch('{task:uuid}/complete', [CompleteTaskController::class, '__invoke']);
                 Route::patch('{task:uuid}/deactivate', [DeactivateTaskController::class, '__invoke']);
+            });
+            Route::prefix('form-submission')->group(function () {
+                Route::patch('{formSubmission:uuid}/approve', [ApproveFormSubmissionController::class, '__invoke']);
+                Route::patch('{formSubmission:uuid}/reject', [RejectFormSubmissionController::class, '__invoke']);
             });
             Route::get('', 'render')->name('panel.administration');
         });

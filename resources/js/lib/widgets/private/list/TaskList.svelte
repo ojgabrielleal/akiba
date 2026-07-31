@@ -78,14 +78,14 @@
                                 {task.description}
                             </div>
                         </div>
-                        <div class="flex w-full shrink-0 items-center justify-end gap-2 md:w-auto">
+                        <div class="flex w-full shrink-0 flex-col gap-2 sm:flex-row sm:items-stretch sm:justify-end md:w-auto">
                             {#if task.status === 'pending'}
                                 <div class={["grid w-full shrink-0 overflow-hidden rounded-md bg-blue-night",
-                                    { "md:w-52 grid-cols-[1fr_1fr]": task.is_overdue },
-                                    { "md:w-20 grid-cols-1": !task.is_overdue && variant === "administration" },
-                                    { "md:w-30 grid-cols-[1fr_2.5rem]": !task.is_overdue && variant !== "administration" },
+                                    { "grid-cols-1 sm:grid-cols-[1fr_1fr] sm:w-52": task.is_overdue },
+                                    { "grid-cols-1 sm:w-20": !task.is_overdue && variant === "administration" },
+                                    { "grid-cols-[1fr_2.5rem] sm:w-30": !task.is_overdue && variant !== "administration" },
                                 ]}>
-                                <div class="flex min-w-0 flex-col gap-1 justify-center bg-suspense-aurora p-1 font-noto-sans text-blue-night">
+                                <div class="flex min-h-10 min-w-0 flex-col gap-1 justify-center bg-suspense-aurora p-1 font-noto-sans text-blue-night">
                                     <span class="text-[0.8rem] text-center font-extrabold uppercase leading-none">
                                         Faltam
                                     </span>
@@ -99,11 +99,11 @@
                                     </div>
                                 </div>
                                 {#if task.is_overdue}
-                                    <div class="flex items-center justify-center bg-blue-night px-3 font-noto-sans font-extrabold italic uppercase text-orange-amber text-[0.8rem] text-center leading-5">
+                                    <div class="flex min-h-10 items-center justify-center bg-blue-night px-3 font-noto-sans font-extrabold italic uppercase text-orange-amber text-[0.8rem] text-center leading-5">
                                         {variant === "administration" ? "Tarefa não concluída" : "Você tem 1 strike"}
                                     </div>
                                 {:else if variant !== "administration"}
-                                    <div class="flex items-center justify-center bg-blue-night px-3">
+                                    <div class="flex min-h-10 items-center justify-center bg-blue-night px-3">
                                         {#if can.review}
                                             <IconButton
                                                 variant="verify"
@@ -133,7 +133,7 @@
                                 {/if}
                             {/if}
                             {#if variant === "administration" && (can.deactivate || can.update)}
-                                <div class="flex shrink-0 flex-col gap-1">
+                                <div class="flex shrink-0 gap-1 sm:flex-col">
                                     {#if can.deactivate}
                                         <IconButton
                                             variant="trash"

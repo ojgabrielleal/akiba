@@ -14,6 +14,7 @@ use App\Http\Controllers\Controller;
 
 use App\Http\Resources\ActivityResource;
 use App\Http\Resources\Calendar\CalendarWeekResource;
+use App\Http\Resources\FormSubmissionResource;
 use App\Http\Resources\PermissionResource;
 use App\Http\Resources\RoleResource;
 use App\Http\Resources\TaskResource;
@@ -21,6 +22,7 @@ use App\Http\Resources\User\UserResource;
 
 use App\Models\Activity;
 use App\Models\Calendar;
+use App\Models\FormSubmission;
 use App\Models\Role;
 use App\Models\Task;
 use App\Models\User;
@@ -51,6 +53,7 @@ class AdministrationPageController extends Controller
             'calendar' => $this->indexCalendar(),
             'users' => $this->indexUsers(),
             'tasks' => $this->indexTasks(),
+            'formSubmissions' => $this->indexFormSubmissions(),
         ]);
     }
 
@@ -127,6 +130,18 @@ class AdministrationPageController extends Controller
                     'paginate' => 5,
                 ])
             ),
+        );
+    }
+
+    private function indexFormSubmissions()
+    {
+        return FormSubmissionResource::collection(
+            FormSubmission::query()
+                ->with('reviewer')
+                ->orderByRaw("case status when 'pending' then 0 when 'approved' then 1 else 2 end")
+                ->latest()
+                ->limit(10)
+                ->get()
         );
     }
 }
