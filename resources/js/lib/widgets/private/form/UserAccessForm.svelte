@@ -24,7 +24,7 @@
 </script>
 
 <form class="flex min-h-full flex-col" on:submit|preventDefault={submit}>
-    <div class="min-h-0 flex-1">
+    <div class="min-h-0 flex-1 pb-24">
         <FormField for="password" label="Nova senha" help="Essa senha será criptografada para proteção" error={$form.errors.password} spacing="compact">
             <TextInput
                 variant="offcanvas"
@@ -55,7 +55,7 @@
         </div>
     </div>
     {#if can.update}
-        <div class="sticky bottom-0 -mx-4 border-t border-neutral-gray/15 bg-suspense-aurora px-4 py-4 sm:-mx-8 sm:px-8">
+        <div class="fixed right-0 bottom-0 z-110 w-[min(24rem,100vw)] border-t border-neutral-gray/15 bg-suspense-aurora px-4 py-4 shadow-[0_-0.5rem_1rem_rgba(0,0,0,0.08)] sm:px-8">
             <Button
                 type="submit"
                 loading={$form.processing}
