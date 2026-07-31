@@ -25,7 +25,7 @@
     "src": "_vendor-CFBDMfBM.css"
   },
   "resources/js/app.js": {
-    "file": "assets/app-IS2kF6vL.js",
+    "file": "assets/app-C6opLbHH.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
@@ -41,7 +41,7 @@
     ]
   },
   "resources/js/css/app.css": {
-    "file": "assets/app-DIF-x0FK.css",
+    "file": "assets/app-CeYxeEiB.css",
     "name": "app",
     "names": [
       "app.css"
