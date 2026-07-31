@@ -55,15 +55,13 @@
         </div>
     </div>
     {#if can.update}
-        <div class="border-t border-neutral-gray/15 pt-4">
-            <Button
-                type="submit"
-                loading={$form.processing}
-                variant="secondary"
-                shape="pill"
-            >
-                Atualizar
-            </Button>
-        </div>
+        <Button
+            type="submit"
+            loading={$form.processing}
+            variant="secondary"
+            shape="pill"
+        >
+            Atualizar
+        </Button>
     {/if}
 </form>
