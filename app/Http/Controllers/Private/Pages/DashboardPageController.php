@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Private\Pages;
 
-use App\Actions\OnlineVisitors\ListPublicVisitorsAction;
 use App\Filters\ActivityFilter;
 use App\Filters\CalendarFilter;
 use App\Filters\PostFilter;
@@ -34,7 +33,6 @@ class DashboardPageController extends Controller
         private CalendarFilter $calendarFilter,
         private PostFilter $postFilter,
         private TaskFilter $taskFilter,
-        private ListPublicVisitorsAction $listPublicVisitorsAction,
     ) {}
 
     public function render()
@@ -44,7 +42,6 @@ class DashboardPageController extends Controller
             'tasks' => $this->indexTasks(),
             'posts' => $this->indexPosts(),
             'calendar' => $this->indexCalendar(),
-            'online' => $this->listPublicVisitorsAction->execute(),
         ]);
     }
 

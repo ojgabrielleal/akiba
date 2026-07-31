@@ -9,7 +9,6 @@ use App\Http\Controllers\Public\FormSubmissionController;
 use App\Http\Controllers\Public\OAuthAccountController;
 use App\Http\Controllers\Private\Invokes\PollVoteController;
 use App\Http\Controllers\Public\Invokes\StorePostCommentController;
-use App\Http\Controllers\Public\Invokes\StorePublicVisitorHeartbeatController;
 use App\Http\Controllers\Public\Invokes\StorePostReactionController;
 use App\Http\Controllers\Public\Invokes\TogglePostLikeController;
 use App\Http\Controllers\Public\Pages\EditorialPageController;
@@ -31,10 +30,6 @@ Route::get('/oauth/{provider}/redirect', OAuthAccountRedirectController::class)
 
 Route::get('/oauth/{provider}/callback', OAuthAccountCallbackController::class)
     ->name('oauth.callback');
-
-Route::post('/online-visitors/heartbeat', StorePublicVisitorHeartbeatController::class)
-    ->middleware('oauth.resolve')
-    ->name('online-visitors.heartbeat');
 
 Route::middleware(['oauth.resolve', 'inertia'])->group(function () {
     Route::get('/contato', [ContactPageController::class, 'render'])

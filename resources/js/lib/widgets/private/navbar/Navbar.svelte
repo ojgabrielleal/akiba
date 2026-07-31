@@ -4,7 +4,6 @@
     import { hasPermission, resolvePlaceholderImage } from "@/lib/utils";
     import { navbar } from "@/lib/constants";
     import { IconButton } from "@/lib/components/private";
-    import PresenceTab from "./PresenceTab.svelte";
 
     $: ({ user } = $page.props);
 
@@ -53,7 +52,10 @@
     </ul>
     <div class="hidden w-60 justify-end xl:flex">
         <div class="flex items-center gap-4">
-            <PresenceTab />
+            <span class="flex items-center gap-1 text-sm font-noto-sans text-green-500">
+                Online
+                <span class="w-3 h-3 rounded-full bg-green-500"></span>
+            </span>
             <div class="relative group/avatar">
                 <button
                     type="button"

@@ -6,7 +6,7 @@
 
     // Polling for updates in audience, audience history, song requests and stream status every 60 seconds
     usePoll(60 * 1000, {
-        only: ["songRequests", "audience", "audienceHistory", "stream", "online"],
+        only: ["songRequests", "audience", "audienceHistory", "stream"],
     });
 
     // Set background color on mount
