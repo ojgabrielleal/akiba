@@ -200,7 +200,7 @@
             </div>
         </div>
     {/if}
-    {#if $form.access_type === "private"}
+    {#if $form.access_type === "private" || $form.execution_mode === "auto_dj"}
         <FormField for="user" label="Locutor" error={$form.errors.user}>
             <SelectInput
                 variant="offcanvas"

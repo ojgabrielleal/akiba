@@ -55,10 +55,6 @@ class ProgramController extends Controller
 
     private function responsible(StoreProgramRequest|UpdateProgramRequest $request): User
     {
-        if ($request->input('execution_mode') === 'auto_dj') {
-            return $request->user();
-        }
-
         if ($request->input('access_type') === 'free') {
             return $request->user();
         }

@@ -24,7 +24,7 @@ class StoreProgramRequest extends LoggedWebRequest
     public function rules(): array
     {
         return [
-            'user' => 'required_if:access_type,private|nullable|exists:users,uuid',
+            'user' => 'required_if:access_type,private|required_if:execution_mode,auto_dj|nullable|exists:users,uuid',
             'name' => 'required|string|max:255',
             'image' => 'required|image',
             'access_type' => 'required_unless:execution_mode,auto_dj|nullable|in:free,private',
