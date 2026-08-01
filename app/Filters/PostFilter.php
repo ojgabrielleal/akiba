@@ -149,7 +149,10 @@ class PostFilter
 
                     $query->whereLike('title', $term)
                         ->orWhereLike('slug', $slugTerm)
-                        ->orWhereLike('content', $term)
+                        ->when(
+                            $tokens->count() > 1,
+                            fn (Builder $query) => $query->orWhereLike('content', $term)
+                        )
                         ->orWhere(function (Builder $query) use ($tokens) {
                             $tokens->each(fn (string $token) => $query->where(function (Builder $query) use ($token) {
                                 $tokenTerm = "%{$token}%";
