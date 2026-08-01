@@ -64,7 +64,7 @@
     <h1 class="sr-only">Mídias</h1>
     <main>
         <div class="bg-blue-night pt-10">
-            <EditorialTitle title="Super conteúdos" compact padding="py-6" />
+            <EditorialTitle title="Super conteúdos" compact padding="py-6" spacer />
         </div>
 
         {#if eventList.length > 0}

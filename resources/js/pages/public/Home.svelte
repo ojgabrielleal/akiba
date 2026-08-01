@@ -26,6 +26,8 @@
     } = $page.props);
     $: air = onair?.data?.[0] ?? null;
     $: pageUrl = $page.url;
+    $: featuredPostList = Array.isArray(featuredPosts) ? featuredPosts : featuredPosts?.data ?? [];
+    $: hasFeaturedPosts = featuredPostList.length > 0;
     $: syncMediaSessionMetadata(air, stream);
 
     usePoll(10 * 1000, {
@@ -48,11 +50,13 @@
     </div>
     <div class="bg-blue-marinho mt-8 pt-px">
         <div
-            class="home-featured-reviews-background pt-px"
-            style="--featured-background: url('/img/pages/home/backgrounds/featured.webp'); --reviews-background: url('/img/pages/home/backgrounds/reviews.webp');"
+            class={["home-featured-reviews-background pt-px", hasFeaturedPosts && "has-featured-posts"]}
+            style="--featured-background: url('/img/pages/home/backgrounds/featured.webp'); --featured-mobile-background: url('/img/pages/home/backgrounds/featured-mobile.webp'); --reviews-background: url('/img/pages/home/backgrounds/reviews.webp');"
         >
             <FeaturedGrid {featuredPosts} />
-            <ReviewListGrid title="Últimas reviews" reviews={latestReviews} />
+            <div class="home-reviews-mobile-background">
+                <ReviewListGrid title="Últimas reviews" reviews={latestReviews} />
+            </div>
         </div>
         <PostListGrid title="Últimas matérias" {posts} />
         <EventCalendarGrid {events} />
@@ -70,12 +74,35 @@
         background-image: none !important;
     }
 
+    .home-featured-reviews-background.has-featured-posts {
+        background-image: var(--featured-mobile-background) !important;
+        background-position: top center;
+        background-repeat: no-repeat;
+        background-size: contain;
+    }
+
     .home-podcasts-background {
-        background-image: none !important;
+        background-image: var(--podcasts-background) !important;
+        background-position: bottom center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+
+    .home-reviews-mobile-background {
+        background-image: var(--reviews-background) !important;
+        background-position: bottom center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+
+    @media (min-width: 600px) {
+        .home-featured-reviews-background.has-featured-posts {
+            background-size: cover;
+        }
     }
 
     @media (min-width: 1024px) {
-        .home-featured-reviews-background {
+        .home-featured-reviews-background.has-featured-posts {
             background-image: var(--featured-background), var(--reviews-background) !important;
             background-position:
                 top center,
@@ -93,6 +120,10 @@
             background-position: bottom center;
             background-repeat: repeat-x;
             background-size: contain;
+        }
+
+        .home-reviews-mobile-background {
+            background-image: none !important;
         }
     }
 

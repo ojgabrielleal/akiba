@@ -6,6 +6,7 @@
     export let listLabel = null;
     export let phrase = null;
     export let padding = "py-6 sm:py-8";
+    export let spacer = false;
 </script>
 
 <div class={className}>
@@ -35,7 +36,7 @@
                 <slot />
             </ul>
         </nav>
-    {:else if padding}
+    {:else if spacer && padding}
         <div class={["bg-blue-night", padding]}></div>
     {/if}
 </div>

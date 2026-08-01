@@ -25,7 +25,7 @@
 
 <section
     class="radio-ranking-background bg-blue-marinho"
-    style="--ranking-background: url('/img/pages/radio/backgrounds/music-ranking.webp');"
+    style="--ranking-background: url('/img/pages/radio/backgrounds/music-ranking.webp'); --ranking-mobile-background: url('/img/pages/radio/backgrounds/music-ranking-mobile.webp');"
 >
     <EditorialTitle title="Akiba Ranking" compact />
 
@@ -95,7 +95,10 @@
 
 <style>
     .radio-ranking-background {
-        background-image: none;
+        background-image: var(--ranking-mobile-background);
+        background-position: center top;
+        background-repeat: no-repeat;
+        background-size: cover;
     }
 
     @media (min-width: 1024px) {
