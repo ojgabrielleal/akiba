@@ -1,6 +1,4 @@
 <script>
-    import { onMount, tick } from "svelte";
-
     import { EditorialTitle } from "@/lib/components/public";
 
     import TeamMemberCarousel from "./TeamMemberCarousel.svelte";
@@ -13,14 +11,21 @@
     let activeRole = null;
     let selectedIndex = 0;
     let selectedMemberUuid = null;
+    let selectedMemberSlug = resolveMemberSlug();
     let carouselStart = 0;
-    let appliedMemberHash = null;
 
     $: teamMembers = normalizeMembers(members?.data ?? members);
     $: roles = [allMembersRole, ...resolveRoles(teamMembers)];
     $: if (!activeRole || !roles.some((role) => role.key === activeRole.key)) {
         activeRole = roles[0] ?? null;
-        selectedIndex = 0;
+    }
+    $: targetMember = selectedMemberSlug
+        ? teamMembers.find((member) => member.slug === selectedMemberSlug)
+        : null;
+    $: if (targetMember && selectedMemberUuid !== targetMember.uuid) {
+        activeRole = allMembersRole;
+        selectedMemberUuid = targetMember.uuid;
+        carouselStart = Math.max(teamMembers.findIndex((member) => member.uuid === targetMember.uuid), 0);
     }
     $: filteredMembers =
         activeRole && activeRole.key !== allMembersRole.key
@@ -55,6 +60,7 @@
 
                 return {
                     uuid: member.uuid,
+                    slug: member.slug,
                     name: member.nickname ?? member.name,
                     fullName: member.name,
                     role: memberRoles.map((role) => role.label).join(" - ") || "Equipe Rede Akiba",
@@ -110,32 +116,29 @@
     const selectRole = (role) => {
         activeRole = role;
         selectedMemberUuid = null;
+        selectedMemberSlug = null;
         carouselStart = 0;
     };
 
     const selectMember = (member) => {
         selectedMemberUuid = member.uuid;
+        selectedMemberSlug = member.slug;
+        updateMemberQuery(member);
     };
 
-    const selectMemberFromHash = async () => {
+    function resolveMemberSlug() {
         if (typeof window === "undefined") return;
 
-        const hash = window.location.hash.replace("#membro-", "");
-        if (!hash || hash === appliedMemberHash) return;
+        return new URL(window.location.href).searchParams.get("member");
+    }
 
-        const memberIndex = teamMembers.findIndex((member) => member.uuid === hash);
-        if (memberIndex < 0) return;
+    const updateMemberQuery = (member) => {
+        if (!member?.slug || typeof window === "undefined") return;
 
-        activeRole = allMembersRole;
-        selectedMemberUuid = hash;
-        carouselStart = teamMembers.length > 7 ? memberIndex : 0;
-        appliedMemberHash = hash;
+        const url = new URL(window.location.href);
+        url.searchParams.set("member", member.slug);
 
-        await tick();
-        document.getElementById(`membro-${hash}`)?.scrollIntoView({
-            behavior: "smooth",
-            block: "start",
-        });
+        window.history.replaceState(window.history.state, "", `${url.pathname}${url.search}`);
     };
 
     const moveSelection = (direction) => {
@@ -144,6 +147,7 @@
         if (filteredMembers.length > 7) {
             carouselStart = (carouselStart + direction + filteredMembers.length) % filteredMembers.length;
             selectedMemberUuid = filteredMembers[carouselStart].uuid;
+            updateMemberQuery(filteredMembers[carouselStart]);
 
             return;
         }
@@ -153,17 +157,9 @@
             filteredMembers.length;
 
         selectedMemberUuid = filteredMembers[nextIndex].uuid;
+        updateMemberQuery(filteredMembers[nextIndex]);
     };
 
-    $: if (teamMembers.length > 0) {
-        selectMemberFromHash();
-    }
-
-    onMount(() => {
-        window.addEventListener("hashchange", selectMemberFromHash);
-
-        return () => window.removeEventListener("hashchange", selectMemberFromHash);
-    });
 </script>
 
 <section class="bg-blue-night pt-10 text-suspense-aurora">
@@ -197,7 +193,7 @@
             on:select={(event) => selectMember(event.detail)}
         />
 
-        <div id={`membro-${selectedMember.uuid}`} class="scroll-mt-8">
+        <div>
             <TeamMemberProfile member={selectedMember} />
         </div>
         {/if}

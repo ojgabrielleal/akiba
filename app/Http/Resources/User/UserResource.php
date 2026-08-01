@@ -22,6 +22,7 @@ class UserResource extends JsonResource
         if ($this->format === 'summary') {
             return [
                 'uuid' => $this->uuid,
+                'slug' => $this->slug,
                 'is_virtual' => $this->is_virtual,
                 'name' => $this->name,
                 'nickname' => $this->nickname,
@@ -44,6 +45,7 @@ class UserResource extends JsonResource
         if ($this->format === 'team') {
             return [
                 'uuid' => $this->uuid,
+                'slug' => $this->slug,
                 'name' => $this->name,
                 'nickname' => $this->nickname,
                 'avatar' => $this->avatar,
@@ -68,6 +70,7 @@ class UserResource extends JsonResource
 
         return [
             'uuid' => $this->uuid,
+            'slug' => $this->slug,
             'is_virtual' => $this->is_virtual,
             'name' => $this->name,
             'nickname' => $this->nickname,
