@@ -108,12 +108,14 @@
 
                             <article class="pt-5 text-suspense-aurora">
                                 <div class="mb-4 flex items-center gap-3">
-                                    <img
-                                        src={resolvePlaceholderImage(selectedReview.author?.avatar, "avatar", selectedReview.author?.gender)}
-                                        alt=""
-                                        aria-hidden="true"
-                                        class="size-12 rounded-full bg-blue-night object-cover"
-                                    />
+                                    <div class="size-12 overflow-hidden rounded-full bg-blue-night">
+                                        <img
+                                            src={resolvePlaceholderImage(selectedReview.author?.avatar, "avatar", selectedReview.author?.gender)}
+                                            alt=""
+                                            aria-hidden="true"
+                                            class="h-full w-full scale-[1.65] object-cover object-top"
+                                        />
+                                    </div>
                                     <div class="min-w-0">
                                         <p class="truncate text-base font-black uppercase italic">
                                             {selectedReview.author?.nickname ?? selectedReview.author?.name}

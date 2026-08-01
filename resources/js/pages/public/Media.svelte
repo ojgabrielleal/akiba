@@ -95,7 +95,7 @@
         <ListenerGalleryGrid {listenerGallery} styles="container-page mb-12" />
 
         {#if poll}
-            <Section title="Enquetes" styles="container-page mb-12">
+            <Section title="Enquetes" styles="container-page mt-10 mb-12">
                 <div class="grid gap-3">
                     <form
                         on:submit|preventDefault={submitMainVote}

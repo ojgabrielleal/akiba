@@ -33,6 +33,13 @@ class PostFilter
                 fn (Builder $query, string $module) => $query->forModule($module)
             )
             ->when(
+                $filters['event_date_from'] ?? null,
+                fn (Builder $query, $date) => $query->whereRaw(
+                    "JSON_UNQUOTE(JSON_EXTRACT(metadata, '$.event_date')) >= ?",
+                    [$date]
+                )
+            )
+            ->when(
                 $filters['except'] ?? null,
                 fn (Builder $query, Post $post) => $query->whereKeyNot($post->getKey())
             )
@@ -176,6 +183,9 @@ class PostFilter
             ),
             'metadata_year_of_release' => $query->orderByRaw(
                 "CAST(JSON_UNQUOTE(JSON_EXTRACT(metadata, '$.year_of_release')) AS UNSIGNED) {$orderDirection}"
+            ),
+            'metadata_event_date' => $query->orderByRaw(
+                "JSON_UNQUOTE(JSON_EXTRACT(metadata, '$.event_date')) {$orderDirection}"
             ),
             default => $query->orderBy(
                 $filters['order_by'] ?? 'id',

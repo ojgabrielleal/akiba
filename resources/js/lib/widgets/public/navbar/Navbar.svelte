@@ -116,7 +116,7 @@
                 <Button
                     size="sm"
                     shape="pill"
-                    class="ml-1"
+                    class="ml-1 transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 motion-reduce:transform-none motion-reduce:transition-none"
                     on:click={openOAuthLogin}
                 >
                     <img
@@ -207,6 +207,7 @@
                                 <Button
                                     size="sm"
                                     shape="pill"
+                                    class="transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 motion-reduce:transform-none motion-reduce:transition-none"
                                     on:click={openOAuthLogin}
                                 >
                                     <img

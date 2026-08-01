@@ -52,6 +52,7 @@ class PostFactory extends Factory
             'module' => 'event',
             'metadata' => [
                 'dates' => fake()->date(),
+                'event_date' => fake()->dateTimeBetween('now', '+6 months')->format('Y-m-d'),
                 'address' => fake()->address(),
             ],
         ]);

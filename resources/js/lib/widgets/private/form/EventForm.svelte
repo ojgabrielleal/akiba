@@ -40,6 +40,7 @@
         content: post?.data.content ?? null,
         metadata: {
             dates: post?.data.metadata?.dates ?? null,
+            event_date: post?.data.metadata?.event_date ?? null,
             address: post?.data.metadata?.address ?? null,
         },
         tags: normalizeTags(post?.data.tags),
@@ -74,7 +75,18 @@
                     error={$form.errors.title}
                 />
             </FormField>
-            <div class="grid grid-cols-1 lg:grid-cols-2 lg:gap-5 mb-8">
+            <div class="mb-8 grid grid-cols-1 gap-5 lg:grid-cols-[0.7fr_1.15fr_1.15fr]">
+                <FormField for="event_date" label="Dia do evento" labelVariant="editorial" spacing="lg" error={$form.errors["metadata.event_date"]} class="lg:mb-0">
+                    <TextInput
+                        id="event_date"
+                        type="date"
+                        name="metadata[event_date]"
+                        variant="editorial"
+                        required={!post}
+                        bind:value={$form.metadata.event_date}
+                        error={$form.errors["metadata.event_date"]}
+                    />
+                </FormField>
                 <FormField for="dates" label="Datas" labelVariant="editorial" spacing="lg" error={$form.errors["metadata.dates"]} class="lg:mb-0">
                     <TextInput
                         id="dates"
@@ -87,7 +99,7 @@
                         error={$form.errors["metadata.dates"]}
                     />
                 </FormField>
-                <FormField for="address" label="Locais" labelVariant="editorial" spacing="none" error={$form.errors["metadata.address"]}>
+                <FormField for="address" label="Locais" labelVariant="editorial" spacing="lg" error={$form.errors["metadata.address"]} class="lg:mb-0">
                     <TextInput
                         id="address"
                         type="text"

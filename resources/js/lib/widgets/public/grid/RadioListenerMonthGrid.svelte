@@ -1,5 +1,5 @@
 <script>
-    import { EditorialTitle } from "@/lib/components/public";
+    import { EditorialTitle, Tooltip } from "@/lib/components/public";
     import { resolveAge, resolvePlaceholderImage } from "@/lib/utils";
 
     export let listenerMonth = null;
@@ -48,11 +48,14 @@
                             </div>
                         </div>
                         <div class="relative flex h-55 flex-col items-center justify-center rounded-md bg-blue-marinho text-center font-noto-sans font-medium uppercase text-orange-amber">
-                            <img
-                                src={resolvePlaceholderImage(listener.favorite_music.image, "placeholder")}
-                                class="size-30 rounded-md object-cover"
-                                alt={listener.favorite_music.production}
-                            />
+                            <Tooltip position="top">
+                                <img
+                                    src={resolvePlaceholderImage(listener.favorite_music.image, "placeholder")}
+                                    class="size-30 rounded-md object-cover"
+                                    alt={listener.favorite_music.production}
+                                />
+                                <span slot="content">{listener.favorite_music.production}</span>
+                            </Tooltip>
                             <div class="absolute bottom-1 left-1/2 w-full -translate-x-1/2">
                                 Anime favorito
                             </div>

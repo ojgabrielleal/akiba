@@ -86,8 +86,9 @@ class HomePageController extends Controller
                 'active' => true,
                 'status' => 'published',
                 'module' => 'event',
-                'order_by' => 'created_at',
-                'order_direction' => 'desc',
+                'event_date_from' => now()->toDateString(),
+                'order_by' => 'metadata_event_date',
+                'order_direction' => 'asc',
                 'limit' => 5,
                 'ignore_authorization' => true,
             ])
