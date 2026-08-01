@@ -12,6 +12,7 @@
 
     let activeRole = null;
     let selectedIndex = 0;
+    let selectedMemberUuid = null;
     let carouselStart = 0;
     let appliedMemberHash = null;
 
@@ -25,6 +26,13 @@
         activeRole && activeRole.key !== allMembersRole.key
             ? teamMembers.filter((member) => member.categories.some((role) => role.key === activeRole.key))
             : teamMembers;
+    $: if (filteredMembers.length > 0 && !filteredMembers.some((member) => member.uuid === selectedMemberUuid)) {
+        selectedMemberUuid = filteredMembers[0].uuid;
+    }
+    $: selectedIndex = Math.max(
+        filteredMembers.findIndex((member) => member.uuid === selectedMemberUuid),
+        0,
+    );
     $: selectedMember = filteredMembers[selectedIndex] ?? filteredMembers[0] ?? teamMembers[0];
     $: carouselMembers = resolveCarouselMembers(filteredMembers, carouselStart);
 
@@ -101,12 +109,12 @@
 
     const selectRole = (role) => {
         activeRole = role;
-        selectedIndex = 0;
+        selectedMemberUuid = null;
         carouselStart = 0;
     };
 
     const selectMember = (member) => {
-        selectedIndex = filteredMembers.indexOf(member);
+        selectedMemberUuid = member.uuid;
     };
 
     const selectMemberFromHash = async () => {
@@ -119,7 +127,7 @@
         if (memberIndex < 0) return;
 
         activeRole = allMembersRole;
-        selectedIndex = memberIndex;
+        selectedMemberUuid = hash;
         carouselStart = teamMembers.length > 7 ? memberIndex : 0;
         appliedMemberHash = hash;
 
@@ -135,14 +143,16 @@
 
         if (filteredMembers.length > 7) {
             carouselStart = (carouselStart + direction + filteredMembers.length) % filteredMembers.length;
-            selectedIndex = carouselStart;
+            selectedMemberUuid = filteredMembers[carouselStart].uuid;
 
             return;
         }
 
-        selectedIndex =
+        const nextIndex =
             (selectedIndex + direction + filteredMembers.length) %
             filteredMembers.length;
+
+        selectedMemberUuid = filteredMembers[nextIndex].uuid;
     };
 
     $: if (teamMembers.length > 0) {
