@@ -1,6 +1,7 @@
 <script>
     import { Link } from "@inertiajs/svelte";
     import { AdvertisementSlot, Section } from "@/lib/components/public";
+    import { resolvePlaceholderImage } from "@/lib/utils";
 
     export let events = [];
 
@@ -11,41 +12,37 @@
 </script>
 
 {#if eventList.length > 0}
-    <Section title="Calendário de eventos">
-        <div class="grid grid-cols-1 gap-x-5 gap-y-2 lg:grid-cols-[minmax(0,1fr)_15rem]">
+    <Section styles="container-page mb-10">
+        <div class="mb-5 flex items-center gap-3 after:h-px after:min-w-10 after:flex-1 after:bg-orange-amber after:content-[''] sm:gap-4">
+            <h2 class="whitespace-nowrap font-noto-sans text-[1.3rem] font-black text-orange-amber uppercase italic">
+                <span class="md:hidden">Eventos</span>
+                <span class="hidden md:inline">Calendário de eventos</span>
+            </h2>
+        </div>
+        <div class="grid grid-cols-1 gap-x-5 gap-y-5 lg:grid-cols-[minmax(0,1fr)_15rem]">
             <div class="min-w-0">
                 <div class="w-full font-noto-sans text-lg uppercase italic">
-                    <ul class="grid gap-2 md:hidden">
+                    <ul class="grid grid-cols-1 gap-8 md:hidden">
                         {#each eventList as item (item.uuid)}
                             <li class="min-w-0">
                                 <Link
                                     href={`/event/${item.slug}`}
                                     aria-label={`Ver evento: ${item.title}`}
-                                    class="group grid gap-2 rounded-md font-black transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber motion-reduce:transform-none motion-reduce:transition-none"
+                                    class="group block overflow-hidden rounded-md bg-blue-ocean font-black transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber motion-reduce:transform-none motion-reduce:transition-none"
                                 >
-                                    <div class="min-w-0 rounded-md bg-orange-morning px-4 py-2.5 text-center text-lg leading-tight text-blue-night">
-                                        <h3>
+                                    <div class="relative aspect-[16/9] overflow-hidden bg-neutral-gray">
+                                        <img
+                                            src={resolvePlaceholderImage(item.cover || item.image, "placeholder")}
+                                            alt=""
+                                            aria-hidden="true"
+                                            class="h-full w-full object-cover transition duration-300 ease-out group-hover:scale-[1.03] group-focus-visible:scale-[1.03] motion-reduce:transform-none motion-reduce:transition-none"
+                                        />
+                                    </div>
+                                    <article class="min-h-[6rem] px-3 py-5">
+                                        <h3 class="line-clamp-3 font-noto-sans text-lg leading-tight font-bold text-suspense-aurora uppercase italic">
                                             {item.title}
                                         </h3>
-                                    </div>
-                                    <dl class="grid gap-2 text-center text-suspense-aurora">
-                                        <div class="min-w-0 rounded-md bg-blue-ocean px-3 py-2">
-                                            <dt class="mb-1 text-[0.65rem] leading-none tracking-[0.12em] text-blue-skywave">
-                                                Data
-                                            </dt>
-                                            <dd class="truncate text-base leading-tight">
-                                                {resolveEventDate(item)}
-                                            </dd>
-                                        </div>
-                                        <div class="min-w-0 rounded-md bg-blue-ocean px-3 py-2">
-                                            <dt class="mb-1 text-[0.65rem] leading-none tracking-[0.12em] text-blue-skywave">
-                                                Local
-                                            </dt>
-                                            <dd class="truncate text-base leading-tight">
-                                                {resolveEventPlace(item)}
-                                            </dd>
-                                        </div>
-                                    </dl>
+                                    </article>
                                 </Link>
                             </li>
                         {/each}
@@ -85,8 +82,8 @@
                     </ul>
                 </div>
             </div>
-            <div class="hidden self-end overflow-hidden rounded-md transition duration-300 ease-out hover:scale-[1.02] motion-reduce:transform-none motion-reduce:transition-none lg:block lg:h-[calc(100%-2.875rem)]">
-                <AdvertisementSlot class="h-full" />
+            <div class="self-end overflow-hidden rounded-md transition duration-300 ease-out hover:scale-[1.02] motion-reduce:transform-none motion-reduce:transition-none lg:h-[calc(100%-2.875rem)]">
+                <AdvertisementSlot class="h-20 lg:h-full" />
             </div>
         </div>
     </Section>
