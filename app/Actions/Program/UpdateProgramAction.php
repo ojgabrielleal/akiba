@@ -44,7 +44,7 @@ class UpdateProgramAction
             'user_id' => $responsible->id,
             'name' => $data['name'],
             'image' => $this->image->store('programs', $image, $program->image),
-            'access_type' => $data['access_type'],
+            'access_type' => $data['execution_mode'] === 'auto_dj' ? null : $data['access_type'],
             'execution_mode' => $data['execution_mode'],
             'is_default_auto_dj' => filter_var($data['is_default_auto_dj'] ?? false, FILTER_VALIDATE_BOOLEAN),
             'phrases' => $data['phrases'] ?? [],

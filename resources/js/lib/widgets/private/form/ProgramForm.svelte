@@ -142,7 +142,7 @@
             on:change={(event) => {
                 $form.access_type = null;
                 $form.is_default_auto_dj = false;
-                if(event.target.value !== "live") $form.access_type = 'private';
+                if(event.target.value !== "live" && event.target.value !== "auto_dj") $form.access_type = 'private';
             }}
             required
         >

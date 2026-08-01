@@ -25,7 +25,7 @@ class UpdateProgramRequest extends LoggedWebRequest
             'user' => 'required_if:access_type,private|nullable|exists:users,uuid',
             'name' => 'required|string|max:255',
             'image' => 'nullable',
-            'access_type' => 'required|in:free,private',
+            'access_type' => 'required_unless:execution_mode,auto_dj|nullable|in:free,private',
             'execution_mode' => 'required|in:live,scheduled,playlist,auto_dj',
             'is_default_auto_dj' => 'nullable|boolean',
             'airtimes' => 'nullable|array',
