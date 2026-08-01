@@ -145,7 +145,7 @@ class SearchPageController extends Controller
                 'uuid' => $member['uuid'],
                 'type' => 'Equipe',
                 'title' => $member['nickname'] ?? $member['name'],
-                'href' => '/equipe',
+                'href' => "/equipe#membro-{$member['uuid']}",
                 'image' => $member['avatar'],
                 'description' => $member['highest_role']['label'] ?? null,
             ])

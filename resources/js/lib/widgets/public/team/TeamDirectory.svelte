@@ -1,4 +1,6 @@
 <script>
+    import { onMount, tick } from "svelte";
+
     import { EditorialTitle } from "@/lib/components/public";
 
     import TeamMemberCarousel from "./TeamMemberCarousel.svelte";
@@ -11,6 +13,7 @@
     let activeRole = null;
     let selectedIndex = 0;
     let carouselStart = 0;
+    let appliedMemberHash = null;
 
     $: teamMembers = normalizeMembers(members?.data ?? members);
     $: roles = [allMembersRole, ...resolveRoles(teamMembers)];
@@ -43,6 +46,7 @@
                 );
 
                 return {
+                    uuid: member.uuid,
                     name: member.nickname ?? member.name,
                     fullName: member.name,
                     role: memberRoles.map((role) => role.label).join(" - ") || "Equipe Rede Akiba",
@@ -105,6 +109,27 @@
         selectedIndex = filteredMembers.indexOf(member);
     };
 
+    const selectMemberFromHash = async () => {
+        if (typeof window === "undefined") return;
+
+        const hash = window.location.hash.replace("#membro-", "");
+        if (!hash || hash === appliedMemberHash) return;
+
+        const memberIndex = teamMembers.findIndex((member) => member.uuid === hash);
+        if (memberIndex < 0) return;
+
+        activeRole = allMembersRole;
+        selectedIndex = memberIndex;
+        carouselStart = teamMembers.length > 7 ? memberIndex : 0;
+        appliedMemberHash = hash;
+
+        await tick();
+        document.getElementById(`membro-${hash}`)?.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+        });
+    };
+
     const moveSelection = (direction) => {
         if (!filteredMembers.length) return;
 
@@ -119,6 +144,16 @@
             (selectedIndex + direction + filteredMembers.length) %
             filteredMembers.length;
     };
+
+    $: if (teamMembers.length > 0) {
+        selectMemberFromHash();
+    }
+
+    onMount(() => {
+        window.addEventListener("hashchange", selectMemberFromHash);
+
+        return () => window.removeEventListener("hashchange", selectMemberFromHash);
+    });
 </script>
 
 <section class="bg-blue-night pt-10 text-suspense-aurora">
@@ -152,7 +187,9 @@
             on:select={(event) => selectMember(event.detail)}
         />
 
-        <TeamMemberProfile member={selectedMember} />
+        <div id={`membro-${selectedMember.uuid}`} class="scroll-mt-8">
+            <TeamMemberProfile member={selectedMember} />
+        </div>
         {/if}
     </div>
     </div>
