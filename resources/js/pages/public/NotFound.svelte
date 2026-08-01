@@ -40,7 +40,7 @@
     robots: "noindex, follow",
 }} />
 
-<Layout {flash} {oauth} {onair} {stream} {pageUrl}>
+<Layout {flash} {oauth} {onair} {stream} {pageUrl} showPlayerBar>
     <section class="relative isolate overflow-hidden bg-blue-night text-suspense-aurora">
         <div class="absolute inset-0 opacity-[0.12]" style="background-image: url('/img/textures/stars.webp');" aria-hidden="true"></div>
         <div class="absolute inset-0 bg-[radial-gradient(circle_at_74%_44%,rgba(0,145,255,0.38)_0%,rgba(0,32,128,0.2)_28%,rgba(0,0,20,0.96)_62%),linear-gradient(110deg,rgba(0,0,20,0.98)_0%,rgba(0,0,54,0.88)_54%,rgba(0,32,128,0.56)_100%)]" aria-hidden="true"></div>

@@ -8,6 +8,7 @@
     export let onair = null;
     export let stream = null;
     export let pageUrl = null;
+    export let showPlayerBar = false;
 
     usePoll(10 * 1000, {
         only: ["onair"]
@@ -24,4 +25,4 @@
 </main>
 
 <Footer />
-<PlayerBar {onair} {stream} {pageUrl} {oauth} />
+<PlayerBar {onair} {stream} {pageUrl} {oauth} forceRender={showPlayerBar} />
