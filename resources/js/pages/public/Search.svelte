@@ -86,8 +86,8 @@
                         {/if}
 
                         {#each extraSections.filter((section) => section.items.length > 0) as section (section.key)}
-                            <section class="mt-10">
-                                <h2 class="mb-5 font-noto-sans text-xl font-black uppercase italic text-orange-amber">
+                            <section class="mt-8">
+                                <h2 class="mb-3 font-noto-sans text-xl font-black uppercase italic text-orange-amber">
                                     {section.title}
                                 </h2>
                                 <ul class="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -97,7 +97,10 @@
                                                 href={item.href}
                                                 class="group flex min-h-20 gap-3 rounded-md bg-blue-ocean p-3 transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber motion-reduce:transform-none motion-reduce:transition-none"
                                             >
-                                                <div class="flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-md bg-blue-night">
+                                                <div class={[
+                                                    "flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-md",
+                                                    section.key === "team" ? "bg-transparent" : "bg-blue-night",
+                                                ]}>
                                                     {#if item.image}
                                                         <img src={item.image} alt="" aria-hidden="true" class="h-full w-full object-cover" />
                                                     {:else}
