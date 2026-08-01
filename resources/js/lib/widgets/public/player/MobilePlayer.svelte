@@ -69,7 +69,7 @@
     <div slot="content" let:close>
         <AuthGuard
             title="Entre para pedir sua música"
-            description="Use sua conta do Discord para continuar."
+            description="Use sua conta para continuar."
             action={OAuthAction.OPEN_SONG_REQUEST}
             {oauth}
         >

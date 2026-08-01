@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 // Public controllers
 use App\Http\Controllers\Api\External\OAuthAccount\OAuthAccountCallbackController;
+use App\Http\Controllers\Api\External\OAuthAccount\OAuthAccountLogoutController;
 use App\Http\Controllers\Api\External\OAuthAccount\OAuthAccountRedirectController;
 use App\Http\Controllers\Public\FormSubmissionController;
 use App\Http\Controllers\Public\OAuthAccountController;
@@ -31,6 +32,10 @@ Route::get('/oauth/{provider}/redirect', OAuthAccountRedirectController::class)
 
 Route::get('/oauth/{provider}/callback', OAuthAccountCallbackController::class)
     ->name('oauth.callback');
+
+Route::post('/oauth/logout', OAuthAccountLogoutController::class)
+    ->middleware('oauth.resolve')
+    ->name('oauth.logout');
 
 Route::middleware(['oauth.resolve', 'inertia'])->group(function () {
     Route::get('/contato', [ContactPageController::class, 'render'])

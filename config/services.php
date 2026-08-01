@@ -50,6 +50,14 @@ return [
         ],
     ],
 
+    'google' => [
+        'oauth' => [
+            'client_id' => env('GOOGLE_CLIENT_ID'),
+            'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+            'redirect_uri' => env('GOOGLE_REDIRECT_URI'),
+        ],
+    ],
+
     'onesignal' => [
         'app_id' => env('ONESIGNAL_APP_ID'),
         'api_key' => env('ONESIGNAL_REST_API_KEY'),

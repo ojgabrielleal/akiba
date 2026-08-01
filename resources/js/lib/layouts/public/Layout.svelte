@@ -1,6 +1,6 @@
 <script>
     import { usePoll } from "@inertiajs/svelte";
-    import { FlashToaster } from "@/lib/components/public";
+    import { CookieConsent, FlashToaster, ProfileIncompleteNotice } from "@/lib/components/public";
     import { Footer, Navbar, PlayerBar } from "@/lib/widgets/public";
 
     export let flash = null;
@@ -25,3 +25,7 @@
 
 <Footer />
 <PlayerBar {onair} {stream} {pageUrl} {oauth} />
+{#if oauth?.authenticated && !oauth?.profile_completed}
+    <ProfileIncompleteNotice />
+{/if}
+<CookieConsent />

@@ -74,7 +74,7 @@
                         </p>
                         <AuthGuard
                             {oauth}
-                            buttonLabel="Entre com o Discord para reagir"
+                            buttonLabel="Entrar"
                             compact
                         >
                             <div class="flex flex-wrap items-center justify-center gap-2">

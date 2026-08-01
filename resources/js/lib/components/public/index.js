@@ -3,8 +3,10 @@ export { default as IconButton } from "./actions/IconButton.svelte"
 
 export { default as Badge } from "./feedback/Badge.svelte"
 export { default as AuthGuard } from "./feedback/AuthGuard.svelte"
+export { default as CookieConsent } from "./feedback/CookieConsent.svelte"
 export { default as FlashToaster } from "./feedback/FlashToaster.svelte"
 export { default as LoadingSpinner } from "./feedback/LoadingSpinner.svelte"
+export { default as ProfileIncompleteNotice } from "./feedback/ProfileIncompleteNotice.svelte"
 export { default as StatusMessage } from "./feedback/StatusMessage.svelte"
 
 export { default as CheckboxInput } from "./forms/CheckboxInput.svelte"

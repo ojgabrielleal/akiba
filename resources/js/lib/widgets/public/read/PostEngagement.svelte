@@ -92,12 +92,13 @@
     <AuthGuard
         {oauth}
         title="Entre para comentar"
-        description="Use sua conta do Discord para participar da conversa."
-        buttonLabel="Entrar com Discord"
+        description="Use sua conta para participar da conversa."
+        buttonLabel="Entrar"
         filters="filter-suspense-aurora"
         titleClass="text-suspense-aurora"
         descriptionClass="text-suspense-aurora/70"
         buttonClass="text-suspense-aurora"
+        providersLayout="inline"
     >
         <form class="grid gap-3" on:submit|preventDefault={submitComment}>
             <textarea

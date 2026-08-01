@@ -64,7 +64,19 @@
     onDestroy(() => {
         observer?.disconnect();
         stopListeningForOAuthAction();
+
+        if (typeof window !== "undefined") {
+            window.dispatchEvent(new CustomEvent("akiba:player-bar-visibility", {
+                detail: { visible: false },
+            }));
+        }
     });
+
+    $: if (mounted && typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("akiba:player-bar-visibility", {
+            detail: { visible: canRender && visible },
+        }));
+    }
 </script>
 
 {#if canRender && visible}
@@ -72,7 +84,7 @@
         <div slot="content" let:close>
             <AuthGuard
                 title="Entre para pedir sua música"
-                description="Use sua conta do Discord para continuar."
+                description="Use sua conta para continuar."
                 action={OAuthAction.OPEN_SONG_REQUEST}
                 {oauth}
             >

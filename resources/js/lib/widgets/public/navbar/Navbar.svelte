@@ -15,6 +15,7 @@
 
     let mobilenavbar = false;
     let profileModalRef;
+    let loginModalRef;
     let searchQuery = "";
     let selectedTheme = "akiba";
 
@@ -27,8 +28,24 @@
     };
 
     const openOAuthLogin = () => {
-        window.location.assign("/oauth/discord/redirect");
+        closeMobileNavbar();
+        loginModalRef.open();
     };
+
+    const loginProviders = [
+        {
+            name: "google",
+            label: "Entrar com Google",
+            icon: "/svg/google.svg",
+            class: "border border-blue-night/10 bg-neutral-white text-blue-night shadow-sm hover:bg-neutral-white hover:brightness-95",
+        },
+        {
+            name: "discord",
+            label: "Entrar com Discord",
+            icon: "/svg/discord.svg",
+            class: "bg-[#5865f2] text-neutral-white hover:brightness-110",
+        },
+    ];
 
     const submitSearch = () => {
         const normalizedQuery = searchQuery.trim();
@@ -140,7 +157,7 @@
                     on:click={openOAuthLogin}
                 >
                     <img
-                        src="/svg/discord.svg"
+                        src="/svg/profile.svg"
                         alt=""
                         aria-hidden="true"
                         class="size-4 filter-blue-marinho"
@@ -250,7 +267,7 @@
                                     on:click={openOAuthLogin}
                                 >
                                     <img
-                                        src="/svg/discord.svg"
+                                        src="/svg/profile.svg"
                                         alt=""
                                         aria-hidden="true"
                                         class="size-4 filter-blue-marinho"
@@ -294,5 +311,34 @@
             {profile}
             close={() => profileModalRef.close()}
         />
+    </Modal>
+{/if}
+
+{#if !oauth?.authenticated}
+    <Modal
+        bind:this={loginModalRef}
+        title="Escolha uma opção"
+        label="Escolha uma opção de login"
+        size="sm"
+    >
+        <div class="grid gap-3">
+            {#each loginProviders as provider}
+                <a
+                    href={`/oauth/${provider.name}/redirect`}
+                    class={[
+                        "flex min-h-12 items-center justify-center gap-3 rounded-md px-5 py-2.5 text-center font-noto-sans text-sm font-extrabold uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none",
+                        provider.class,
+                    ]}
+                >
+                    <img
+                        src={provider.icon}
+                        alt=""
+                        aria-hidden="true"
+                        class="h-4 w-4"
+                    />
+                    {provider.label}
+                </a>
+            {/each}
+        </div>
     </Modal>
 {/if}

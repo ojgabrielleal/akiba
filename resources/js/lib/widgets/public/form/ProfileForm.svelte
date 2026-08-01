@@ -1,5 +1,5 @@
 <script>
-    import { useForm } from "@inertiajs/svelte";
+    import { router, useForm } from "@inertiajs/svelte";
     import {
         Button,
         FormField,
@@ -14,9 +14,13 @@
     $: avatar = profile?.avatar || "/img/placeholders/avatar.webp";
     $: nickname = profile?.nickname || profile?.username || "Perfil";
 
-    const syncDiscord = () => {
+    $: provider = profile?.provider || "google";
+    $: providerIcon = provider === "discord" ? "/svg/discord.svg" : "/svg/google.svg";
+    $: providerIconClass = "filter-suspense-aurora";
+
+    const syncProvider = () => {
         rememberOAuthAction(OAuthAction.OPEN_PROFILE);
-        window.location.assign("/oauth/discord/redirect");
+        window.location.assign(`/oauth/${provider}/redirect`);
     };
 
     const form = useForm({
@@ -30,6 +34,12 @@
         $form.patch("/site/profile", {
             preserveScroll: true,
             onSuccess: close,
+        });
+    };
+
+    const logout = () => {
+        router.post("/oauth/logout", {}, {
+            preserveScroll: false,
         });
     };
 </script>
@@ -57,13 +67,13 @@
             size="sm"
             shape="pill"
             class="ml-auto shrink-0"
-            on:click={syncDiscord}
+            on:click={syncProvider}
         >
             <img
-                src="/svg/discord.svg"
+                src={providerIcon}
                 alt=""
                 aria-hidden="true"
-                class="size-4 filter-suspense-aurora"
+                class={["size-4", providerIconClass]}
             />
             Ressincronizar
         </Button>
@@ -146,7 +156,21 @@
         </FormField>
     </div>
 
-    <div class="flex justify-end pt-2">
+    <div class="flex flex-wrap justify-end gap-2 pt-2">
+        <Button
+            type="button"
+            variant="outline"
+            shape="pill"
+            on:click={logout}
+        >
+            <img
+                src="/svg/logout.svg"
+                alt=""
+                aria-hidden="true"
+                class="size-4 filter-orange-citric"
+            />
+            Sair
+        </Button>
         <Button
             type="submit"
             shape="pill"

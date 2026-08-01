@@ -101,3 +101,13 @@ export const listenForOAuthAction = (action, listener) => {
         if (actionListeners.size === 0) listeners.delete(action);
     };
 };
+
+export const dispatchOAuthAction = (action) => {
+    if (!allowedActions.has(action)) return;
+
+    const actionListeners = listeners.get(action);
+
+    if (!actionListeners?.size) return;
+
+    actionListeners.forEach((listener) => listener());
+};
