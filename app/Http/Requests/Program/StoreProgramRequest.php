@@ -32,7 +32,7 @@ class StoreProgramRequest extends LoggedWebRequest
             'is_default_auto_dj' => 'nullable|boolean',
             'airtimes' => 'nullable|array',
             'airtimes.*.day' => 'required_with:airtimes|integer|min:0|max:6',
-            'airtimes.*.hour' => 'required_with:airtimes|date_format:H:i:s',
+            'airtimes.*.hour' => 'required_with:airtimes|date_format:H:i,H:i:s',
             'schedules' => 'nullable|array',
             'schedules.*.scheduled_at' => 'required_with:schedules|date',
             'phrases' => 'nullable|array',
