@@ -61,7 +61,7 @@ class SongRequestTest extends TestCase
         $this->assertTrue($songRequest->music->is($music));
     }
 
-    public function testOAuthAccountRelationship(): void
+    public function testRequesterRelationship(): void
     {
         $oauthAccount = OAuthAccount::factory()->create();
         $user = User::factory()->create();
@@ -70,11 +70,11 @@ class SongRequestTest extends TestCase
         $music = Music::factory()->create();
 
         $songRequest = SongRequest::factory()
-            ->for($oauthAccount, 'oauthAccount')
+            ->for($oauthAccount, 'requester')
             ->for($onair, 'onair')
             ->for($music, 'music')
             ->create();
 
-        $this->assertTrue($songRequest->oauthAccount->is($oauthAccount));
+        $this->assertTrue($songRequest->requester->is($oauthAccount));
     }
 }

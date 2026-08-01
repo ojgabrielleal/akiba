@@ -48,8 +48,8 @@ class ListenerMonthTest extends TestCase
         SongRequest::factory(5)
             ->for($onair, 'onair')
             ->for($music, 'music')
+            ->for($oauthAccount, 'requester')
             ->create([
-                'oauth_account_id' => $oauthAccount->id,
                 'was_reproduced' => true,
             ]);
 

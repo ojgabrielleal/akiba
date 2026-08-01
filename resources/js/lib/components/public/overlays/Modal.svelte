@@ -12,9 +12,9 @@
     let previousBodyOverflow = "";
 
     const sizes = {
-        sm: "max-w-sm",
-        md: "max-w-md",
-        lg: "max-w-xl",
+        sm: "lg:w-104",
+        md: "lg:w-120",
+        lg: "lg:w-160",
     };
 
     export const open = async () => {
@@ -49,44 +49,35 @@
 
 {#if visible}
     <div
-        class="fixed inset-0 z-150 flex items-center justify-center bg-blue-night/65 p-4 backdrop-blur-sm"
+        class="fixed inset-0 z-100 flex h-screen w-screen items-center justify-center bg-black/40 p-9 backdrop-blur-xs"
         role="presentation"
         transition:fade={{ duration: 180 }}
         on:click={handleBackdrop}
     >
         <div
             bind:this={panel}
-            class={["w-full overflow-hidden rounded-xl bg-suspense-aurora shadow-2xl", sizes[size] ?? sizes.md]}
+            class={["relative w-full rounded-t-xl rounded-b-xl bg-suspense-aurora shadow-2xl", sizes[size] ?? sizes.md]}
             role="dialog"
             aria-modal="true"
             aria-label={label}
             tabindex="-1"
             transition:fly={{ y: 12, duration: 220 }}
         >
-            <header class="flex min-h-14 items-center justify-between gap-4 border-b border-blue-night/10 bg-suspense-aurora px-5 py-3">
-                {#if title}
-                    <h2 class="font-noto-sans text-base font-extrabold uppercase italic text-blue-night">
-                        {title}
-                    </h2>
-                {:else}
-                    <span></span>
-                {/if}
-                <button
-                    type="button"
-                    aria-label="Fechar"
-                    class="flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-full transition hover:bg-blue-night/5 active:scale-95"
-                    on:click={close}
-                >
-                    <img
-                        src="/svg/close.svg"
-                        alt=""
-                        aria-hidden="true"
-                        class="size-4 filter-blue-marinho"
-                    />
-                </button>
-            </header>
+            <button
+                type="button"
+                aria-label="Fechar"
+                class="absolute -top-8 -right-5 z-10 flex h-6 w-6 cursor-pointer items-center justify-center rounded-full bg-suspense-aurora shadow-lg transition hover:-translate-y-0.5 hover:bg-neutral-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none"
+                on:click={close}
+            >
+                <img
+                    src="/svg/close.svg"
+                    alt=""
+                    aria-hidden="true"
+                    class="w-3 filter-blue-marinho"
+                />
+            </button>
 
-            <div class="max-h-[min(75dvh,40rem)] overflow-y-auto bg-suspense-aurora p-5">
+            <div class="max-h-[70vh] w-full overflow-y-auto p-5 lg:max-h-[90vh]">
                 <slot {close} />
             </div>
         </div>

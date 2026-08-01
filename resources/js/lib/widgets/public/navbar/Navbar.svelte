@@ -32,18 +32,29 @@
         loginModalRef.open();
     };
 
+    const openProfile = () => {
+        closeMobileNavbar();
+
+        if (oauth?.is_member) {
+            router.visit("/panel");
+            return;
+        }
+
+        profileModalRef?.open();
+    };
+
     const loginProviders = [
         {
             name: "google",
             label: "Entrar com Google",
             icon: "/svg/google.svg",
-            class: "border border-blue-night/10 bg-neutral-white text-blue-night shadow-sm hover:bg-neutral-white hover:brightness-95",
+            class: "border border-blue-night/10 bg-neutral-white text-blue-night shadow-sm hover:bg-neutral-white hover:shadow-md",
         },
         {
             name: "discord",
             label: "Entrar com Discord",
             icon: "/svg/discord.svg",
-            class: "bg-[#5865f2] text-neutral-white hover:brightness-110",
+            class: "bg-[#5865f2] text-neutral-white shadow-[0_0.75rem_1.5rem_rgba(88,101,242,0.28)] hover:brightness-110",
         },
     ];
 
@@ -60,10 +71,12 @@
         { name: "night", label: "Modo escuro", icon: "/svg/night.svg" },
     ];
 
+    const providerIconStyle = (provider) => `mask-image: url('${provider.icon}'); -webkit-mask-image: url('${provider.icon}');`;
+
     onMount(() =>
         listenForOAuthAction(
             OAuthAction.OPEN_PROFILE,
-            () => profileModalRef.open(),
+            openProfile,
         ),
     );
 
@@ -139,7 +152,7 @@
                         type="button"
                         aria-label={`Editar perfil de ${nickname}`}
                         class="ml-1 flex size-10 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-full border-2 border-suspense-aurora bg-suspense-aurora shadow transition duration-200 ease-out hover:-translate-y-0.5 hover:shadow-lg focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none"
-                        on:click={() => profileModalRef.open()}
+                        on:click={openProfile}
                     >
                         <img
                             src={avatar}
@@ -243,10 +256,7 @@
                                 <button
                                     type="button"
                                     class="flex min-w-0 items-center gap-2 text-left"
-                                    on:click={() => {
-                                        closeMobileNavbar();
-                                        profileModalRef.open();
-                                    }}
+                                    on:click={openProfile}
                                 >
                                     <div class="size-8 shrink-0 overflow-hidden rounded-full border-2 border-blue-night/10">
                                         <img
@@ -300,10 +310,9 @@
     {/if}
 </nav>
 
-{#if oauth?.authenticated}
+{#if oauth?.is_oauth}
     <Modal
         bind:this={profileModalRef}
-        title="Meu perfil"
         label={`Perfil de ${nickname}`}
         size="md"
     >
@@ -317,28 +326,42 @@
 {#if !oauth?.authenticated}
     <Modal
         bind:this={loginModalRef}
-        title="Escolha uma opção"
         label="Escolha uma opção de login"
         size="sm"
     >
-        <div class="grid gap-3">
-            {#each loginProviders as provider}
-                <a
-                    href={`/oauth/${provider.name}/redirect`}
-                    class={[
-                        "flex min-h-12 items-center justify-center gap-3 rounded-md px-5 py-2.5 text-center font-noto-sans text-sm font-extrabold uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none",
-                        provider.class,
-                    ]}
-                >
-                    <img
-                        src={provider.icon}
-                        alt=""
-                        aria-hidden="true"
-                        class="h-4 w-4"
-                    />
-                    {provider.label}
-                </a>
-            {/each}
+        <div class="px-1 py-2 text-center">
+            <div class="mb-5 flex flex-col items-center font-noto-sans">
+                <span class="mb-3 flex size-8 items-center justify-center text-blue-night">
+                    <span
+                        class="block size-7 bg-current [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain] [-webkit-mask-repeat:no-repeat] [-webkit-mask-position:center] [-webkit-mask-size:contain]"
+                        style="mask-image: url('/svg/profile.svg'); -webkit-mask-image: url('/svg/profile.svg');"
+                    ></span>
+                </span>
+                <p class="text-base font-extrabold uppercase italic text-blue-night">
+                    Entre para continuar
+                </p>
+                <p class="mx-auto mt-1 max-w-64 text-sm font-normal leading-snug text-blue-night/70">
+                    Use sua conta para comentar, reagir, pedir músicas e participar da Akiba.
+                </p>
+            </div>
+            <div class="grid gap-3">
+                {#each loginProviders as provider}
+                    <a
+                        href={`/oauth/${provider.name}/redirect`}
+                        class={[
+                            "group/provider relative flex min-h-[3.25rem] items-center justify-center gap-3 overflow-hidden rounded-md px-5 py-3 text-center font-noto-sans text-sm font-extrabold uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none",
+                            provider.class,
+                        ]}
+                    >
+                        <span
+                            aria-hidden="true"
+                            class="block size-4 shrink-0 bg-current transition group-hover/provider:scale-110 [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain] [-webkit-mask-repeat:no-repeat] [-webkit-mask-position:center] [-webkit-mask-size:contain]"
+                            style={providerIconStyle(provider)}
+                        ></span>
+                        <span class="relative">{provider.label}</span>
+                    </a>
+                {/each}
+            </div>
         </div>
     </Modal>
 {/if}

@@ -6,6 +6,7 @@ use App\Actions\Post\TogglePostLikeAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Post\TogglePostLikeRequest;
 use App\Models\Post;
+use App\Support\AuthenticatedMember;
 use Illuminate\Http\RedirectResponse;
 
 class TogglePostLikeController extends Controller
@@ -14,7 +15,7 @@ class TogglePostLikeController extends Controller
     {
         $action->execute(
             $post,
-            $request->attributes->get('oauth_account'),
+            AuthenticatedMember::fromRequest($request),
             hash('sha256', $request->session()->getId()),
         );
 

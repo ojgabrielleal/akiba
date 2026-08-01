@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class SongRequest extends Model
 {
@@ -16,14 +17,16 @@ class SongRequest extends Model
         'was_canceled',
         'onair_id',
         'music_id',
-        'oauth_account_id',
+        'requester_type',
+        'requester_id',
         'message',
     ];
 
     protected $hidden = [
         'onair_id',
         'music_id',
-        'oauth_account_id',
+        'requester_type',
+        'requester_id',
     ];
 
     protected $casts = [
@@ -59,8 +62,9 @@ class SongRequest extends Model
         return $this->belongsTo(Music::class, 'music_id');
     }
 
-    public function oauthAccount()
+    public function requester(): MorphTo
     {
-        return $this->belongsTo(OAuthAccount::class, 'oauth_account_id');
+        return $this->morphTo();
     }
+
 }

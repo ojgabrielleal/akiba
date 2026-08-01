@@ -13,13 +13,13 @@
             label: "Entrar com Google",
             icon: "/svg/google.svg",
             iconClass: "",
-            class: "border border-blue-night/10 bg-neutral-white text-blue-night shadow-sm hover:bg-neutral-white hover:brightness-95",
+            class: "border border-blue-night/10 bg-neutral-white text-blue-night shadow-sm hover:bg-neutral-white hover:shadow-md",
         },
         {
             name: "discord",
             label: "Entrar com Discord",
             icon: "/svg/discord.svg",
-            class: "bg-[#5865f2] text-neutral-white hover:brightness-110",
+            class: "bg-[#5865f2] text-neutral-white shadow-[0_0.75rem_1.5rem_rgba(88,101,242,0.28)] hover:brightness-110",
         },
     ];
     export let containerClass = "";
@@ -43,6 +43,8 @@
     const authenticate = () => {
         rememberOAuthAction(action);
     };
+
+    const providerIconStyle = (provider) => `mask-image: url('${provider.icon}'); -webkit-mask-image: url('${provider.icon}');`;
 </script>
 
 {#if oauth.authenticated}
@@ -84,29 +86,43 @@
 
             <Modal
                 bind:this={providerModalRef}
-                title="Escolha uma opção"
                 label="Escolha uma opção de login"
                 size="sm"
             >
-                <div class="grid gap-3">
-                    {#each loginProviders as provider}
-                        <a
-                            href={`/oauth/${provider.name}/redirect`}
-                            class={[
-                                "flex min-h-12 items-center justify-center gap-3 rounded-md px-5 py-2.5 text-center font-noto-sans text-sm font-extrabold uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none",
-                                provider.class,
-                            ]}
-                            on:click={authenticate}
-                        >
-                            <img
-                                src={provider.icon}
-                                alt=""
-                                aria-hidden="true"
-                                class={["h-4 w-4", provider.iconClass ?? (provider.name === "discord" ? filters : "")]}
-                            />
-                            {provider.label}
-                        </a>
-                    {/each}
+                <div class="px-1 py-2 text-center">
+                    <div class="mb-5 flex flex-col items-center font-noto-sans">
+                        <span class="mb-3 flex size-8 items-center justify-center text-blue-night">
+                            <span
+                                class="block size-7 bg-current [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain] [-webkit-mask-repeat:no-repeat] [-webkit-mask-position:center] [-webkit-mask-size:contain]"
+                                style="mask-image: url('/svg/profile.svg'); -webkit-mask-image: url('/svg/profile.svg');"
+                            ></span>
+                        </span>
+                        <p class="text-base font-extrabold uppercase italic text-blue-night">
+                            Entre para continuar
+                        </p>
+                        <p class="mx-auto mt-1 max-w-64 text-sm font-normal leading-snug text-blue-night/70">
+                            Use sua conta para comentar, reagir, pedir músicas e participar da Akiba.
+                        </p>
+                    </div>
+                    <div class="grid gap-3">
+                        {#each loginProviders as provider}
+                            <a
+                                href={`/oauth/${provider.name}/redirect`}
+                                class={[
+                                    "group/provider relative flex min-h-[3.25rem] items-center justify-center gap-3 overflow-hidden rounded-md px-5 py-3 text-center font-noto-sans text-sm font-extrabold uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none",
+                                    provider.class,
+                                ]}
+                                on:click={authenticate}
+                            >
+                                <span
+                                    aria-hidden="true"
+                                    class="block size-4 shrink-0 bg-current transition group-hover/provider:scale-110 [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain] [-webkit-mask-repeat:no-repeat] [-webkit-mask-position:center] [-webkit-mask-size:contain]"
+                                    style={providerIconStyle(provider)}
+                                ></span>
+                                <span class="relative">{provider.label}</span>
+                            </a>
+                        {/each}
+                    </div>
                 </div>
             </Modal>
         {:else}
@@ -125,12 +141,11 @@
                         ]}
                         on:click={authenticate}
                     >
-                        <img
-                            src={provider.icon}
-                            alt=""
+                        <span
                             aria-hidden="true"
-                            class={["h-4 w-4", provider.iconClass ?? (provider.name === "discord" ? filters : "")]}
-                        />
+                            class="block size-4 shrink-0 bg-current [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain] [-webkit-mask-repeat:no-repeat] [-webkit-mask-position:center] [-webkit-mask-size:contain]"
+                            style={providerIconStyle(provider)}
+                        ></span>
                         {provider.label}
                     </a>
                 {/each}

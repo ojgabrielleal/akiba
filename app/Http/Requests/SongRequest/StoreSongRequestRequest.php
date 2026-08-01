@@ -3,6 +3,7 @@
 namespace App\Http\Requests\SongRequest;
 
 use App\Http\Requests\LoggedWebRequest;
+use App\Models\OAuthAccount;
 
 class StoreSongRequestRequest extends LoggedWebRequest
 {
@@ -22,7 +23,8 @@ class StoreSongRequestRequest extends LoggedWebRequest
     public function rules(): array
     {
         $oauthAccount = $this->attributes->get('oauth_account');
-        $profileIncomplete = $oauthAccount?->profile_completed_at === null;
+        $profileIncomplete = $oauthAccount instanceof OAuthAccount
+            && $oauthAccount->profile_completed_at === null;
 
         return [
             'address' => [$profileIncomplete ? 'required' : 'nullable', 'string', 'max:255'],

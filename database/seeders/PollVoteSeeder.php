@@ -52,7 +52,7 @@ class PollVoteSeeder extends Seeder
                 $users->each(fn (User $user) => PollVote::factory()
                     ->for($poll)
                     ->for($poll->options->random(), 'option')
-                    ->for($user)
+                    ->for($user, 'voter')
                     ->create());
             });
     }

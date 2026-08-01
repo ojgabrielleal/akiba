@@ -4,8 +4,8 @@ namespace App\Http\Resources\Post;
 
 use App\Http\Resources\Concerns\HasFormats;
 use App\Http\Resources\User\UserResource;
-use App\Models\OAuthAccount;
 use App\Models\User;
+use App\Support\AuthenticatedMember;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -135,10 +135,13 @@ class PostResource extends JsonResource
             return false;
         }
 
-        $oauthAccount = $request->attributes->get('oauth_account');
+        $liker = AuthenticatedMember::fromRequest($request);
 
-        if ($oauthAccount instanceof OAuthAccount) {
-            return $this->likes->contains('oauth_account_id', $oauthAccount->id);
+        if ($liker) {
+            return $this->likes->contains(
+                fn ($like) => $like->liker_type === $liker->getMorphClass()
+                    && $like->liker_id === $liker->getKey()
+            );
         }
 
         return $this->likes->contains('visitor_token', hash('sha256', $request->session()->getId()));

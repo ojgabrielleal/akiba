@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Carbon\Carbon;
 
+use App\Models\OAuthAccount;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -64,15 +65,16 @@ class ListenerMonth extends Model
 
         $listener = DB::selectOne('
             SELECT
-                song_requests.oauth_account_id AS oauth_account_id,
+                song_requests.requester_id AS oauth_account_id,
                 COUNT(*) AS requests_total
             FROM song_requests
             WHERE song_requests.created_at BETWEEN ? AND ?
-                AND song_requests.oauth_account_id IS NOT NULL
-            GROUP BY song_requests.oauth_account_id
+                AND song_requests.requester_type = ?
+                AND song_requests.requester_id IS NOT NULL
+            GROUP BY song_requests.requester_id
             ORDER BY requests_total DESC
             LIMIT 1
-        ', [$startOfMonth, $endOfMonth]);
+        ', [$startOfMonth, $endOfMonth, OAuthAccount::class]);
 
         if (!$listener) {
             return null;
@@ -87,13 +89,14 @@ class ListenerMonth extends Model
             JOIN onairs ON song_requests.onair_id = onairs.id
             JOIN programs ON onairs.program_id = programs.id 
             WHERE song_requests.created_at BETWEEN ? AND ? 
-                AND song_requests.oauth_account_id = ?
+                AND song_requests.requester_type = ?
+                AND song_requests.requester_id = ?
             GROUP BY
                 programs.name,
                 programs.image 
             ORDER BY requests_total DESC
             LIMIT 1
-        ', [$startOfMonth, $endOfMonth, $listener->oauth_account_id]);
+        ', [$startOfMonth, $endOfMonth, OAuthAccount::class, $listener->oauth_account_id]);
 
         $music = DB::selectOne('
             SELECT 
@@ -105,7 +108,8 @@ class ListenerMonth extends Model
             FROM song_requests
             JOIN music ON song_requests.music_id = music.id 
             WHERE song_requests.created_at BETWEEN ? AND ? 
-                AND song_requests.oauth_account_id = ?
+                AND song_requests.requester_type = ?
+                AND song_requests.requester_id = ?
             GROUP BY 
                 music.name, 
                 music.artist,
@@ -113,7 +117,7 @@ class ListenerMonth extends Model
                 music.image
             ORDER BY requests_total DESC
             LIMIT 1
-        ', [$startOfMonth, $endOfMonth, $listener->oauth_account_id]);
+        ', [$startOfMonth, $endOfMonth, OAuthAccount::class, $listener->oauth_account_id]);
 
         return (object) [
             'oauth_account_id' => $listener->oauth_account_id,

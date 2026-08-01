@@ -56,7 +56,7 @@ class ReadPageController extends Controller
     {
         return PostCommentResource::collection(
             $post->comments()
-                ->with('oauthAccount')
+                ->with('author')
                 ->latest()
                 ->paginate(10)
                 ->withQueryString()

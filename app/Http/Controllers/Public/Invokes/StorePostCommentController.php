@@ -6,6 +6,7 @@ use App\Actions\Post\StorePostCommentAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Post\StorePostCommentRequest;
 use App\Models\Post;
+use App\Support\AuthenticatedMember;
 
 use Illuminate\Http\RedirectResponse;
 
@@ -15,7 +16,7 @@ class StorePostCommentController extends Controller
     {
         $action->execute(
             $post,
-            $request->attributes->get('oauth_account'),
+            AuthenticatedMember::fromRequest($request),
             $request->validated(),
         );
 

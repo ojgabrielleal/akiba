@@ -113,7 +113,7 @@
 </script>
 
 <form on:submit|preventDefault={submit}>
-    {#if !oauth.profile_completed}
+    {#if oauth.is_oauth && !oauth.profile_completed}
         <div class="mb-3 grid grid-cols-1 gap-3">
             <div>
                 <label for="address" class="text-md text-gray-700 font-noto-sans block mb-1">

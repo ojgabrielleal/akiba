@@ -2,19 +2,21 @@
 
 namespace App\Actions\Post;
 
-use App\Models\OAuthAccount;
 use App\Models\Post;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
 class TogglePostLikeAction
 {
-    public function execute(Post $post, ?OAuthAccount $oauthAccount, string $visitorToken): bool
+    public function execute(Post $post, ?Model $liker, string $visitorToken): bool
     {
-        return DB::transaction(function () use ($post, $oauthAccount, $visitorToken) {
+        return DB::transaction(function () use ($post, $liker, $visitorToken) {
             $query = $post->likes();
 
-            if ($oauthAccount) {
-                $query->where('oauth_account_id', $oauthAccount->id);
+            if ($liker) {
+                $query
+                    ->where('liker_type', $liker->getMorphClass())
+                    ->where('liker_id', $liker->getKey());
             } else {
                 $query->where('visitor_token', $visitorToken);
             }
@@ -27,10 +29,15 @@ class TogglePostLikeAction
                 return false;
             }
 
-            $post->likes()->create([
-                'oauth_account_id' => $oauthAccount?->id,
-                'visitor_token' => $oauthAccount ? null : $visitorToken,
+            $like = $post->likes()->make([
+                'visitor_token' => $liker ? null : $visitorToken,
             ]);
+
+            if ($liker) {
+                $like->liker()->associate($liker);
+            }
+
+            $like->save();
 
             return true;
         });

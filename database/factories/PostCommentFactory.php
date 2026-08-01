@@ -19,7 +19,8 @@ class PostCommentFactory extends Factory
     public function definition(): array
     {
         return [
-            'oauth_account_id' => OAuthAccount::factory(),
+            'author_type' => OAuthAccount::class,
+            'author_id' => OAuthAccount::factory(),
             'comment' => fake()->paragraph(),
         ];
     }

@@ -35,7 +35,7 @@
     <ul class="hidden flex-1 justify-center xl:flex">
         {#each navbar.private as item}
             {#if hasPermission(item.permission)}
-                <li class="px-5 first:pl-0 border-l first:border-none border-neutral-gray/50 group/item">
+                <li class="border-l border-neutral-gray/50 px-5 first:border-none group/item">
                     <IconButton
                         href={item.address}
                         label={item.name}
@@ -50,7 +50,7 @@
             {/if}
         {/each}
     </ul>
-    <div class="hidden w-60 justify-end xl:flex">
+    <div class="hidden w-35 justify-end xl:flex">
         <div class="flex items-center gap-4">
             <span class="flex items-center gap-1 text-sm font-noto-sans text-green-500">
                 Online

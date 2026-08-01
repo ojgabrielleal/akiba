@@ -70,7 +70,7 @@
             {#if can.repository.create}
                 <Link
                     class="flex w-24 flex-col items-center justify-center gap-2 rounded-md bg-blue-marinho p-2 text-center font-noto-sans text-[0.7rem] font-extrabold uppercase italic text-orange-citric xl:w-30"
-                    href="/panel/repository"
+                    href="/panel/marketing"
                 >
                     <img
                         src="/svg/download.svg"

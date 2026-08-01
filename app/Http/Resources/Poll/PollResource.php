@@ -2,7 +2,7 @@
 
 namespace App\Http\Resources\Poll;
 
-use App\Models\OAuthAccount;
+use App\Support\AuthenticatedMember;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -37,24 +37,13 @@ class PollResource extends JsonResource
 
     private function hasVoteFrom(Request $request): bool
     {
-        $user = $request->user();
-        $oauthAccount = $this->oauthAccount($request);
+        $voter = AuthenticatedMember::fromRequest($request);
 
-        if (!$user && !$oauthAccount) return false;
+        if (!$voter) return false;
 
         return $this->votes->contains(
-            fn ($vote) => ($user && $vote->user_id === $user->id) || ($oauthAccount && $vote->oauth_id === $oauthAccount->id)
+            fn ($vote) => $vote->voter_type === $voter->getMorphClass()
+                && $vote->voter_id === $voter->getKey()
         );
-    }
-
-    private function oauthAccount(Request $request): ?OAuthAccount
-    {
-        $oauthAccount = $request->attributes->get('oauth_account');
-        if ($oauthAccount instanceof OAuthAccount) return $oauthAccount;
-
-        $oauthToken = $request->cookie('akiba_oauth_token');
-        if (!$oauthToken) return null;
-
-        return OAuthAccount::where('account_token_hash', hash('sha256', $oauthToken))->first();
     }
 }

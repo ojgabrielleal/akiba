@@ -7,6 +7,7 @@ use App\Actions\SongRequest\StoreSongRequestAction;
 use App\Http\Controllers\Controller;
 
 use App\Http\Requests\SongRequest\StoreSongRequestRequest;
+use App\Support\AuthenticatedMember;
 
 use Illuminate\Http\RedirectResponse;
 
@@ -16,7 +17,7 @@ class SongRequestController extends Controller
     {
         $action->execute(
             $request->validated(),
-            $request->attributes->get('oauth_account'),
+            AuthenticatedMember::fromRequest($request),
         );
 
         return back(303);

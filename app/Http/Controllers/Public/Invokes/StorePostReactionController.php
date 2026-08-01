@@ -6,6 +6,7 @@ use App\Actions\Post\StorePostReactionAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Post\StorePostReactionRequest;
 use App\Models\Post;
+use App\Support\AuthenticatedMember;
 use Illuminate\Http\RedirectResponse;
 
 class StorePostReactionController extends Controller
@@ -14,7 +15,7 @@ class StorePostReactionController extends Controller
     {
         $action->execute(
             $post,
-            $request->attributes->get('oauth_account'),
+            AuthenticatedMember::fromRequest($request),
             $request->validated('name'),
         );
 

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class PollVote extends Model
 {
@@ -14,15 +15,15 @@ class PollVote extends Model
         'uuid',
         'poll_id',
         'poll_option_id',
-        'oauth_id',
-        'user_id',
+        'voter_type',
+        'voter_id',
     ];
 
     protected $hidden = [
         'poll_id',
         'poll_option_id',
-        'oauth_id',
-        'user_id',
+        'voter_type',
+        'voter_id',
     ];
 
     /**
@@ -46,13 +47,8 @@ class PollVote extends Model
         return $this->belongsTo(PollOption::class, 'poll_option_id');
     }
 
-    public function oauthAccount()
+    public function voter(): MorphTo
     {
-        return $this->belongsTo(OAuthAccount::class, 'oauth_id');
-    }
-
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->morphTo();
     }
 }

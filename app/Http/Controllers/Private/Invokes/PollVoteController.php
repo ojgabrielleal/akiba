@@ -8,6 +8,7 @@ use App\Http\Controllers\Concerns\HasFlashMessages;
 use App\Http\Controllers\Controller;
 
 use App\Models\PollOption;
+use App\Support\AuthenticatedMember;
 
 use Illuminate\Http\Request;
 
@@ -17,7 +18,13 @@ class PollVoteController extends Controller
 
     public function __invoke(Request $request, StorePollVoteAction $action, PollOption $option)
     {
-        $this->authorize('vote', $option);
+        $voter = AuthenticatedMember::fromRequest($request);
+
+        abort_unless($voter, 403);
+
+        if ($request->user()) {
+            $this->authorize('vote', $option);
+        }
 
         abort_unless(
             $option->poll()
@@ -30,7 +37,7 @@ class PollVoteController extends Controller
             403,
         );
 
-        $action->execute($option, $request->user());
+        $action->execute($option, $voter);
 
         return $this->flashMessage('save');
     }

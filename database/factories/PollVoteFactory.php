@@ -24,7 +24,8 @@ class PollVoteFactory extends Factory
             'poll_option_id' => fn (array $attributes) => PollOption::factory()
                 ->create(['poll_id' => $attributes['poll_id']])
                 ->id,
-            'user_id' => User::factory(),
+            'voter_type' => User::class,
+            'voter_id' => User::factory(),
         ];
     }
 }

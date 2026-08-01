@@ -13,7 +13,7 @@ class EnsureOAuthAccountAuthenticated
 {
     public function handle(Request $request, Closure $next, string $provider = 'discord'): Response
     {
-        if (!$request->attributes->get('oauth_account')) {
+        if (!$request->user() && !$request->attributes->get('member_user') && !$request->attributes->get('oauth_account')) {
             return Inertia::location(route('oauth.redirect', ['provider' => $provider]));
         }
 

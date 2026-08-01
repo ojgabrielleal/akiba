@@ -26,6 +26,10 @@
             },
         });
     };
+
+    const fallbackAvatar = (event, gender = null) => {
+        event.currentTarget.src = resolvePlaceholderImage(null, "avatar", gender);
+    };
 </script>
 
 <footer class="mt-9 grid items-stretch gap-x-4 gap-y-12 font-noto-sans uppercase md:grid-cols-[minmax(0,1fr)_24rem] md:gap-y-4">
@@ -127,10 +131,11 @@
                 <article class="rounded-md bg-blue-ocean p-4">
                     <div class="mb-3 flex items-center gap-3">
                         <img
-                            src={resolvePlaceholderImage(item.author?.avatar, "avatar")}
+                            src={resolvePlaceholderImage(item.author?.avatar, "avatar", item.author?.gender)}
                             alt=""
                             aria-hidden="true"
                             class="size-10 rounded-full bg-blue-night object-cover"
+                            on:error={(event) => fallbackAvatar(event, item.author?.gender)}
                         />
                         <div class="min-w-0">
                             <p class="truncate text-sm font-black text-suspense-aurora uppercase italic">

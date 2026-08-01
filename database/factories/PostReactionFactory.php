@@ -19,7 +19,8 @@ class PostReactionFactory extends Factory
     public function definition(): array
     {
         return [
-            'oauth_account_id' => OAuthAccount::factory(),
+            'reactor_type' => OAuthAccount::class,
+            'reactor_id' => OAuthAccount::factory(),
             'name' => fake()->randomElement(['angry', 'duvid', 'content', 'happy', 'big-happy']),
         ];
     }

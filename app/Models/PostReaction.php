@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class PostReaction extends Model
 {
@@ -14,13 +15,15 @@ class PostReaction extends Model
     protected $fillable = [
         'uuid',
         'post_id',
-        'oauth_account_id',
+        'reactor_type',
+        'reactor_id',
         'name',
     ];
 
     protected $hidden = [
         'post_id',
-        'oauth_account_id',
+        'reactor_type',
+        'reactor_id',
     ];
 
     /**
@@ -40,8 +43,8 @@ class PostReaction extends Model
         return $this->belongsTo(Post::class, 'post_id');
     }
 
-    public function oauthAccount()
+    public function reactor(): MorphTo
     {
-        return $this->belongsTo(OAuthAccount::class, 'oauth_account_id');
+        return $this->morphTo();
     }
 }

@@ -7,23 +7,30 @@ use App\Models\OAuthAccount;
 use App\Models\Onair;
 use App\Models\SongRequest;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
 class StoreSongRequestAction
 {
-    public function execute(array $data, OAuthAccount $oauthAccount): SongRequest
+    public function execute(array $data, Model $requester): SongRequest
     {
-        return DB::transaction(function () use ($data, $oauthAccount) {
+        return DB::transaction(function () use ($data, $requester) {
             $onair = $this->acceptingSongRequestsOnair();
             $music = $this->music($data['music']);
 
-            $this->completeOAuthAccountProfile($oauthAccount, $data);
+            if ($requester instanceof OAuthAccount) {
+                $this->completeOAuthAccountProfile($requester, $data);
+            }
 
-            return $onair->songRequests()->create([
-                'oauth_account_id' => $oauthAccount->id,
+            $songRequest = $onair->songRequests()->make([
                 'music_id' => $music->id,
                 'message' => $data['message'],
             ]);
+
+            $songRequest->requester()->associate($requester);
+            $songRequest->save();
+
+            return $songRequest;
         });
     }
 

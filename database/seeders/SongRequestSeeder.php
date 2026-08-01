@@ -32,7 +32,7 @@ class SongRequestSeeder extends Seeder
             SongRequest::factory(5)
                 ->for($onair, 'onair')
                 ->for($music, 'music')
-                ->for($oauthAccount, 'oauthAccount')
+                ->for($oauthAccount, 'requester')
                 ->create();
         });
     }

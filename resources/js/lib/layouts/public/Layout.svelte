@@ -25,7 +25,7 @@
 
 <Footer />
 <PlayerBar {onair} {stream} {pageUrl} {oauth} />
-{#if oauth?.authenticated && !oauth?.profile_completed}
+{#if oauth?.is_oauth && !oauth?.profile_completed}
     <ProfileIncompleteNotice />
 {/if}
 <CookieConsent />

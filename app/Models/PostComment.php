@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class PostComment extends Model
 {
@@ -13,13 +14,15 @@ class PostComment extends Model
     protected $fillable = [
         'uuid',
         'post_id',
-        'oauth_account_id',
+        'author_type',
+        'author_id',
         'comment',
     ];
 
     protected $hidden = [
         'post_id',
-        'oauth_account_id',
+        'author_type',
+        'author_id',
     ];
 
     /**
@@ -35,8 +38,8 @@ class PostComment extends Model
         return $this->belongsTo(Post::class, 'post_id');
     }
 
-    public function oauthAccount()
+    public function author(): MorphTo
     {
-        return $this->belongsTo(OAuthAccount::class, 'oauth_account_id');
+        return $this->morphTo();
     }
 }

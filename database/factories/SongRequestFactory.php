@@ -20,7 +20,8 @@ class SongRequestFactory extends Factory
         return [
             'was_reproduced' => false,
             'was_canceled' => false,
-            'oauth_account_id' => OAuthAccount::factory(),
+            'requester_type' => OAuthAccount::class,
+            'requester_id' => OAuthAccount::factory(),
             'message' => fake()->sentence(),
         ];
     }

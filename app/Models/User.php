@@ -37,11 +37,13 @@ class User extends Authenticatable
         'state',
         'country',
         'bibliography',
+        'account_token_hash',
     ];
 
     protected $hidden = [
         'password',
         'remember_token',
+        'account_token_hash',
     ];
 
     protected $casts = [
@@ -173,6 +175,26 @@ class User extends Authenticatable
 
     public function pollVotes()
     {
-        return $this->hasMany(PollVote::class, 'user_id');
+        return $this->morphMany(PollVote::class, 'voter');
+    }
+
+    public function songRequests()
+    {
+        return $this->morphMany(SongRequest::class, 'requester');
+    }
+
+    public function postReactions()
+    {
+        return $this->morphMany(PostReaction::class, 'reactor');
+    }
+
+    public function postLikes()
+    {
+        return $this->morphMany(PostLike::class, 'liker');
+    }
+
+    public function postComments()
+    {
+        return $this->morphMany(PostComment::class, 'author');
     }
 }

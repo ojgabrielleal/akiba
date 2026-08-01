@@ -3,6 +3,7 @@
 namespace App\Http\Middleware\OAuth;
 
 use App\Models\OAuthAccount;
+use App\Models\User;
 
 use Closure;
 use Illuminate\Http\Request;
@@ -16,7 +17,9 @@ class ResolveOAuthAccount
     public function handle(Request $request, Closure $next): Response
     {
         $oauthToken = $request->cookie('akiba_oauth_token');
+
         $oauthAccount = null;
+        $user = $request->user();
 
         if ($oauthToken) {
             $oauthAccount = OAuthAccount::query()
@@ -28,10 +31,32 @@ class ResolveOAuthAccount
             }
         }
 
+        if (!$user && $userToken = $request->cookie('akiba_user_token')) {
+            $user = User::query()
+                ->where('account_token_hash', hash('sha256', $userToken))
+                ->first();
+
+            if ($user) {
+                $request->attributes->set('member_user', $user);
+            }
+        }
+
         Inertia::share('oauth', [
-            'authenticated' => $oauthAccount instanceof OAuthAccount,
-            'profile_completed' => $oauthAccount?->profile_completed_at !== null,
-            'profile' => $oauthAccount ? [
+            'type' => $user ? 'member' : ($oauthAccount ? 'oauth' : null),
+            'authenticated' => $user !== null || $oauthAccount instanceof OAuthAccount,
+            'is_member' => $user !== null,
+            'is_oauth' => $user === null && $oauthAccount instanceof OAuthAccount,
+            'profile_completed' => $user !== null || $oauthAccount?->profile_completed_at !== null,
+            'profile' => $user ? [
+                'uuid' => $user->uuid,
+                'provider' => 'internal',
+                'username' => $user->name,
+                'nickname' => $user->nickname,
+                'avatar' => $user->avatar,
+                'birth_date' => $user->birth_date?->format('Y-m-d'),
+                'address' => null,
+                'bio' => $user->bibliography,
+            ] : ($oauthAccount ? [
                 'uuid' => $oauthAccount->uuid,
                 'provider' => $oauthAccount->provider,
                 'username' => $oauthAccount->username,
@@ -40,7 +65,7 @@ class ResolveOAuthAccount
                 'birth_date' => $oauthAccount->birth_date?->format('Y-m-d'),
                 'address' => $oauthAccount->address,
                 'bio' => $oauthAccount->bio,
-            ] : null,
+            ] : null),
         ]);
 
         return $next($request);

@@ -22,7 +22,8 @@ class PostLikeFactory extends Factory
     {
         return [
             'post_id' => Post::factory(),
-            'oauth_account_id' => null,
+            'liker_type' => null,
+            'liker_id' => null,
             'visitor_token' => hash('sha256', Str::uuid()->toString()),
         ];
     }
@@ -30,7 +31,8 @@ class PostLikeFactory extends Factory
     public function withOAuthAccount(): static
     {
         return $this->state(fn () => [
-            'oauth_account_id' => OAuthAccount::factory(),
+            'liker_type' => OAuthAccount::class,
+            'liker_id' => OAuthAccount::factory(),
             'visitor_token' => null,
         ]);
     }

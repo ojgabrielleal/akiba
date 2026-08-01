@@ -48,12 +48,12 @@ class OAuthAccount extends Model
      */
     public function pollVotes()
     {
-        return $this->hasMany(PollVote::class, 'oauth_id');
+        return $this->morphMany(PollVote::class, 'voter');
     }
 
     public function songRequests()
     {
-        return $this->hasMany(SongRequest::class, 'oauth_account_id');
+        return $this->morphMany(SongRequest::class, 'requester');
     }
 
     public function listenerMonths()
@@ -63,16 +63,16 @@ class OAuthAccount extends Model
 
     public function postReactions()
     {
-        return $this->hasMany(PostReaction::class, 'oauth_account_id');
+        return $this->morphMany(PostReaction::class, 'reactor');
     }
 
     public function postLikes()
     {
-        return $this->hasMany(PostLike::class, 'oauth_account_id');
+        return $this->morphMany(PostLike::class, 'liker');
     }
 
     public function postComments()
     {
-        return $this->hasMany(PostComment::class, 'oauth_account_id');
+        return $this->morphMany(PostComment::class, 'author');
     }
 }
