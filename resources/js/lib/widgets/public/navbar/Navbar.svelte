@@ -1,5 +1,5 @@
 <script>
-    import { Link } from "@inertiajs/svelte";
+    import { Link, router } from "@inertiajs/svelte";
     import { onMount } from "svelte";
     import { fade, fly } from "svelte/transition";
     import { navbar } from "@/lib/constants";
@@ -15,6 +15,7 @@
 
     let mobilenavbar = false;
     let profileModalRef;
+    let searchQuery = "";
     let selectedTheme = "akiba";
 
     $: profile = oauth?.profile;
@@ -27,6 +28,13 @@
 
     const openOAuthLogin = () => {
         window.location.assign("/oauth/discord/redirect");
+    };
+
+    const submitSearch = () => {
+        const normalizedQuery = searchQuery.trim();
+
+        closeMobileNavbar();
+        router.get("/buscar", normalizedQuery ? { q: normalizedQuery } : {});
     };
 
     const themes = [
@@ -78,7 +86,16 @@
         </ul>
 
         <div class="hidden shrink-0 items-center justify-end gap-2 lg:flex">
-            {#if false}
+            <form class="flex items-center" on:submit|preventDefault={submitSearch}>
+                <label for="desktop-global-search" class="sr-only">Buscar</label>
+                <input
+                    id="desktop-global-search"
+                    type="search"
+                    name="q"
+                    class="h-9 w-0 rounded-full border-0 bg-suspense-aurora/10 px-0 font-noto-sans text-sm text-suspense-aurora outline-none transition-all duration-300 placeholder:text-suspense-aurora/45 focus:w-56 focus:border focus:border-orange-citric focus:px-4"
+                    placeholder="Buscar"
+                    bind:value={searchQuery}
+                />
                 <IconButton
                     label="Buscar"
                     icon="/svg/search.svg"
@@ -86,7 +103,10 @@
                     surface="transparent"
                     size="sm"
                     tooltipPosition="bottom"
+                    type="submit"
                 />
+            </form>
+            {#if false}
                 <IconButton
                     label="Notificações"
                     icon="/svg/bell.svg"
@@ -182,6 +202,25 @@
                         {/each}
                     </ul>
                     <div class="border-t border-blue-night/10 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+                        <form class="mb-3 flex items-center gap-2" on:submit|preventDefault={submitSearch}>
+                            <label for="mobile-global-search" class="sr-only">Buscar</label>
+                            <input
+                                id="mobile-global-search"
+                                type="search"
+                                name="q"
+                                class="h-10 min-w-0 flex-1 rounded-full border border-blue-night/10 bg-neutral-white px-4 font-noto-sans text-sm text-blue-night outline-none transition focus:border-orange-citric"
+                                placeholder="Buscar"
+                                bind:value={searchQuery}
+                            />
+                            <IconButton
+                                label="Buscar"
+                                icon="/svg/search.svg"
+                                tone="dark"
+                                surface="transparent"
+                                size="sm"
+                                type="submit"
+                            />
+                        </form>
                         <div class="flex items-center justify-between gap-2">
                             {#if oauth?.authenticated}
                                 <button
@@ -221,13 +260,6 @@
                             {/if}
                             {#if false}
                                 <div class="flex gap-1">
-                                    <IconButton
-                                        label="Buscar"
-                                        icon="/svg/search.svg"
-                                        tone="dark"
-                                        surface="transparent"
-                                        size="sm"
-                                    />
                                     <IconButton
                                         label="Notificações"
                                         icon="/svg/bell.svg"

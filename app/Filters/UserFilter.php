@@ -22,12 +22,21 @@ class UserFilter
                 fn (Builder $query) => $query->where('is_virtual', $filters['is_virtual'])
             )
             ->when(
+                $filters['has_roles'] ?? false,
+                fn (Builder $query) => $query->whereHas('roles')
+            )
+            ->when(
                 $filters['with'] ?? null,
                 fn (Builder $query, array|string $relations) => $query->with($relations)
             )
             ->when(
                 $filters['search'] ?? null,
-                fn (Builder $query, string $search) => $query->whereLike('name', '%'.trim($search).'%')
+                fn (Builder $query, string $search) => $query->where(function (Builder $query) use ($search) {
+                    $term = '%'.trim($search).'%';
+
+                    $query->whereLike('name', $term)
+                        ->orWhereLike('nickname', $term);
+                })
             )
             ->when(
                 $filters['virtual_last'] ?? false,
@@ -36,6 +45,10 @@ class UserFilter
             ->orderBy(
                 $filters['order_by'] ?? 'id',
                 $filters['order_direction'] ?? 'desc'
+            )
+            ->when(
+                $filters['limit'] ?? null,
+                fn (Builder $query, int $limit) => $query->limit($limit)
             );
 
         return $query->when(

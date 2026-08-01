@@ -17,6 +17,7 @@ use App\Http\Controllers\Public\Pages\HomePageController;
 use App\Http\Controllers\Public\Pages\MediaPageController;
 use App\Http\Controllers\Public\Pages\RadioPageController;
 use App\Http\Controllers\Public\Pages\ReadPageController;
+use App\Http\Controllers\Public\Pages\SearchPageController;
 use App\Http\Controllers\Public\Pages\TeamPageController;
 
 /*
@@ -57,6 +58,9 @@ Route::middleware(['oauth.resolve', 'inertia', 'auth'])->group(function () {
 
     Route::get('/midias', [MediaPageController::class, 'render'])
         ->name('media');
+
+    Route::get('/buscar', [SearchPageController::class, 'render'])
+        ->name('search');
 
     Route::get('/materia/{slug}', [ReadPageController::class, 'render'])
         ->name('post.read');

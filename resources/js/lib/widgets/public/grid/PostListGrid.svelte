@@ -15,7 +15,7 @@
     $: resolvedPosts = Array.isArray(posts) ? posts : posts?.data ?? [];
     $: postList = resolvedPosts.length > 0 ? resolvedPosts : fallbackPosts;
 
-    const postHref = (post) => post.placeholder ? "#" : `${baseHref}/${post.slug}`;
+    const postHref = (post) => post.placeholder ? "#" : post.href ?? `${baseHref}/${post.slug}`;
 </script>
 
 {#if postList.length > 0}

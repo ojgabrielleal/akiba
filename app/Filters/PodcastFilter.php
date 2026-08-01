@@ -21,6 +21,15 @@ class PodcastFilter
                 $filters['with'] ?? null,
                 fn (Builder $query, array|string $relations) => $query->with($relations)
             )
+            ->when(
+                $filters['search'] ?? null,
+                fn (Builder $query, string $search) => $query->where(function (Builder $query) use ($search) {
+                    $term = '%'.trim($search).'%';
+
+                    $query->whereLike('title', $term)
+                        ->orWhereLike('summary', $term);
+                })
+            )
             ->orderBy(
                 $filters['order_by'] ?? 'id',
                 $filters['order_direction'] ?? 'desc'

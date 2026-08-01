@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Str;
 
 class PostFilter
 {
@@ -133,10 +134,29 @@ class PostFilter
             )
             ->when(
                 $filters['search'] ?? null,
-                fn (Builder $query, string $search) => $query->whereLike(
-                    'title',
-                    '%'.trim($search).'%'
-                )
+                fn (Builder $query, string $search) => $query->where(function (Builder $query) use ($search) {
+                    $normalizedSearch = trim($search);
+                    $term = "%{$normalizedSearch}%";
+                    $slugTerm = '%'.Str::slug($normalizedSearch).'%';
+                    $tokens = Str::of($normalizedSearch)
+                        ->lower()
+                        ->replaceMatches('/[^\pL\pN]+/u', ' ')
+                        ->explode(' ')
+                        ->map(fn (string $token) => trim($token))
+                        ->filter(fn (string $token) => Str::length($token) >= 3)
+                        ->take(6)
+                        ->values();
+
+                    $query->whereLike('title', $term)
+                        ->orWhereLike('slug', $slugTerm)
+                        ->orWhereLike('content', $term)
+                        ->orWhere(function (Builder $query) use ($tokens) {
+                            $tokens->each(fn (string $token) => $query
+                                ->orWhereLike('title', "%{$token}%")
+                                ->orWhereLike('slug', "%{$token}%")
+                                ->orWhereLike('content', "%{$token}%"));
+                        });
+                })
             )
             ->when(
                 ($filters['order_by'] ?? null) === 'random',
