@@ -28,16 +28,8 @@ class ProgramFilter
             ->when(
                 $filters['public_schedule'] ?? false,
                 fn (Builder $query) => $query->where(function (Builder $query) {
-                    $query->where('access_type', 'free')
-                        ->orWhere(function (Builder $query) {
-                            $query->where(function (Builder $query) {
-                                $query->where('access_type', 'private')
-                                    ->orWhereNull('access_type');
-                            })->where(function (Builder $query) {
-                                $query->whereHas('programAirtimes')
-                                    ->orWhereHas('schedules', fn (Builder $query) => $query->pendingExecution());
-                            });
-                        });
+                    $query->where('access_type', 'private')
+                        ->whereHas('programAirtimes');
                 })
             )
             ->when(

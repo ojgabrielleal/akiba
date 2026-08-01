@@ -88,13 +88,7 @@
                                     loading="lazy"
                                 />
                             </div>
-                            {#if activeProgramMode === "live" && item.access_type === "free"}
-                                <dl class="w-full rounded-md py-2 px-4 bg-suspense-aurora flex justify-center mb-2">
-                                    <dd class="block text-blue-marinho text-sm font-noto-sans italic uppercase font-extrabold">
-                                        A qualquer momento
-                                    </dd>
-                                </dl>
-                            {:else if item.airtimes.length > 0}
+                            {#if item.airtimes.length > 0}
                                 {#each item.airtimes as schedule}
                                     <dl class="w-full rounded-md py-2 px-4 bg-suspense-aurora flex justify-between mb-2">
                                         <dt class="block text-blue-marinho text-sm font-noto-sans italic uppercase font-extrabold">
