@@ -14,7 +14,6 @@
     export let stream = null;
     export let pageUrl = null;
     export let oauth = {};
-    export let forceRender = false;
 
     let visible = true;
     let observer;
@@ -26,7 +25,7 @@
     $: currentSong = stream?.current_song ?? {};
     $: program = air?.program ?? {};
     $: host = program?.host ?? {};
-    $: canRender = forceRender || Boolean(onair?.data?.[0]);
+    $: canRender = Boolean(onair?.data?.[0]);
 
     const observeMainPlayer = async () => {
         await tick();

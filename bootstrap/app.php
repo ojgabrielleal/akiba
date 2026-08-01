@@ -1,5 +1,8 @@
 <?php
 
+use App\Filters\OnairFilter;
+use App\Http\Resources\Onair\OnairResource;
+use App\Services\External\StreamService;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -37,6 +40,15 @@ return Application::configure(basePath: dirname(__DIR__))
                 return null;
             }
 
-            return Inertia::render('public/NotFound')->toResponse($request)->setStatusCode(404);
+            return Inertia::render('public/NotFound', [
+                'onair' => fn () => OnairResource::collection(
+                    app(OnairFilter::class)->apply([
+                        'live' => true,
+                        'with' => 'program.host',
+                    ])
+                ),
+                'stream' => fn () => (new StreamService)->data(),
+                'flash' => fn () => session('flash'),
+            ])->toResponse($request)->setStatusCode(404);
         });
     })->create();
