@@ -41,6 +41,7 @@ class RadioPageController extends Controller
                 ],
                 'active' => true,
                 'execution_mode' => $this->resolveProgramMode($request),
+                'public_schedule' => $this->resolveProgramMode($request) === 'live',
                 'paginate' => 8,
             ])
         );
