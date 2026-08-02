@@ -108,12 +108,12 @@
 
                             <article class="pt-5 text-suspense-aurora">
                                 <div class="mb-4 flex items-center gap-3">
-                                    <div class="size-12 overflow-hidden rounded-full bg-blue-night">
+                                    <div class="size-14 shrink-0 overflow-hidden rounded-full border-2 border-suspense-aurora bg-suspense-aurora shadow-md shadow-blue-night/30">
                                         <img
                                             src={resolvePlaceholderImage(selectedReview.author?.avatar, "avatar", selectedReview.author?.gender)}
                                             alt=""
                                             aria-hidden="true"
-                                            class="h-full w-full scale-[1.65] object-cover object-top"
+                                            class="h-full w-full scale-125 object-cover object-top"
                                         />
                                     </div>
                                     <div class="min-w-0">

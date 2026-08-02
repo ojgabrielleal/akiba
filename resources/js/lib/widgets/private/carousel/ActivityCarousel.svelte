@@ -68,11 +68,11 @@
                         <div class="flex gap-1 absolute bottom-3 left-4">
                             {#each item.confirmations.slice(0, 5) as conf}
                                 <Tooltip>
-                                    <div class="w-8 h-8 rounded-full overflow-hidden bg-suspense-aurora">
+                                    <div class="size-10 overflow-hidden rounded-full border-2 border-suspense-aurora bg-suspense-aurora shadow">
                                         <img
                                             src={resolvePlaceholderImage(conf.avatar, "avatar", conf.gender)}
                                             alt={conf.nickname}
-                                            class="w-full h-full object-cover object-top scale-200"
+                                            class="h-full w-full object-cover object-top scale-125"
                                             loading="lazy"
                                         />
                                     </div>

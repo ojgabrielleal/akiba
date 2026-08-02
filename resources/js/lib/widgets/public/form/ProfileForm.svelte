@@ -46,11 +46,11 @@
 
 <form class="space-y-4" on:submit|preventDefault={submit}>
     <div class="mb-5 flex items-center gap-4">
-        <div class="size-16 shrink-0 overflow-hidden rounded-full border-2 border-blue-skywave/20 bg-neutral-white">
+        <div class="size-16 shrink-0 overflow-hidden rounded-full border-2 border-suspense-aurora bg-suspense-aurora shadow">
             <img
                 src={avatar}
                 alt={nickname}
-                class="h-full w-full object-cover object-top"
+                class="h-full w-full object-cover object-top scale-125"
             />
         </div>
         <div class="min-w-0">

@@ -50,7 +50,7 @@
             {/if}
         {/each}
     </ul>
-    <div class="hidden w-35 justify-end xl:flex">
+    <div class="hidden w-40 justify-end xl:flex">
         <div class="flex items-center gap-4">
             <span class="flex items-center gap-1 text-sm font-noto-sans text-green-500">
                 Online
@@ -60,12 +60,12 @@
                 <button
                     type="button"
                     aria-label="Abrir menu do usuario"
-                    class="bg-suspense-aurora w-10 h-10 rounded-full flex items-center justify-center overflow-hidden"
+                    class="flex size-12 items-center justify-center overflow-hidden rounded-full border-2 border-suspense-aurora bg-suspense-aurora shadow-md shadow-blue-night/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-suspense-aurora"
                 >
                     <img
                         src={resolvePlaceholderImage(user.avatar, "avatar", user.gender)}
                         alt={user.nickname}
-                        class="w-full h-full object-cover object-top scale-200 "
+                        class="h-full w-full object-cover object-top scale-125"
                     />
                 </button>
                 <div class="absolute right-0 top-full pt-3 invisible opacity-0 translate-y-1 group-hover/avatar:visible group-hover/avatar:opacity-100 group-hover/avatar:translate-y-0 group-focus-within/avatar:visible group-focus-within/avatar:opacity-100 group-focus-within/avatar:translate-y-0 transition-all duration-200 z-50">
@@ -133,11 +133,11 @@
                         class="min-w-0 flex items-center gap-3 group/profile"
                         on:click={() => (mobilenavbar = false)}
                     >
-                        <div class="bg-suspense-aurora w-7 h-7 rounded-full flex items-center justify-center overflow-hidden shadow shrink-0">
+                        <div class="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-suspense-aurora bg-suspense-aurora shadow">
                             <img
                                 src={resolvePlaceholderImage(user.avatar, "avatar", user.gender)}
                                 alt={user.nickname}
-                                class="w-full h-full object-cover object-top scale-200"
+                                class="h-full w-full object-cover object-top scale-125"
                             />
                         </div>
                         <div class="min-w-0">

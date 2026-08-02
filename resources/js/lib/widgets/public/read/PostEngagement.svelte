@@ -130,13 +130,15 @@
             {#each commentList as item}
                 <article class="rounded-md bg-blue-ocean p-4">
                     <div class="mb-3 flex items-center gap-3">
-                        <img
-                            src={resolvePlaceholderImage(item.author?.avatar, "avatar", item.author?.gender)}
-                            alt=""
-                            aria-hidden="true"
-                            class="size-10 rounded-full bg-blue-night object-cover"
-                            on:error={(event) => fallbackAvatar(event, item.author?.gender)}
-                        />
+                        <div class="size-12 shrink-0 overflow-hidden rounded-full border-2 border-suspense-aurora bg-suspense-aurora shadow">
+                            <img
+                                src={resolvePlaceholderImage(item.author?.avatar, "avatar", item.author?.gender)}
+                                alt=""
+                                aria-hidden="true"
+                                class="h-full w-full object-cover object-top scale-125"
+                                on:error={(event) => fallbackAvatar(event, item.author?.gender)}
+                            />
+                        </div>
                         <div class="min-w-0">
                             <p class="truncate text-sm font-black text-suspense-aurora uppercase italic">
                                 {item.author?.name}

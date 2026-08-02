@@ -63,16 +63,18 @@
                         <tr class="whitespace-nowrap border-t border-suspense-aurora/35 font-noto-sans text-sm font-semibold uppercase text-suspense-aurora">
                             <td class="px-3 py-3 align-middle">
                                 <div class="flex items-center gap-3">
-                                    <img
-                                        src={resolvePlaceholderImage(
-                                            item.program.host.avatar,
-                                            "avatar",
-                                            item.program.host.gender,
-                                        )}
-                                        alt={`Avatar de ${item.program.host.nickname}`}
-                                        class="size-9 shrink-0 rounded-full bg-suspense-aurora object-cover object-top"
-                                        loading="lazy"
-                                    />
+                                    <div class="size-10 shrink-0 overflow-hidden rounded-full border-2 border-suspense-aurora bg-suspense-aurora shadow">
+                                        <img
+                                            src={resolvePlaceholderImage(
+                                                item.program.host.avatar,
+                                                "avatar",
+                                                item.program.host.gender,
+                                            )}
+                                            alt={`Avatar de ${item.program.host.nickname}`}
+                                            class="h-full w-full object-cover object-top scale-125"
+                                            loading="lazy"
+                                        />
+                                    </div>
                                     <span class="max-w-28 truncate">
                                         {item.program.host.nickname}
                                     </span>

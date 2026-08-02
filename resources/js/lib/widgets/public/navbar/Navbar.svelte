@@ -151,13 +151,13 @@
                     <button
                         type="button"
                         aria-label={`Editar perfil de ${nickname}`}
-                        class="ml-1 flex size-10 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-full border-2 border-suspense-aurora bg-suspense-aurora shadow transition duration-200 ease-out hover:-translate-y-0.5 hover:shadow-lg focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none"
+                        class="ml-1 flex size-12 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-full border-2 border-suspense-aurora bg-suspense-aurora shadow-md shadow-blue-night/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-suspense-aurora"
                         on:click={openProfile}
                     >
                         <img
                             src={avatar}
                             alt={nickname}
-                            class="h-full w-full object-cover object-top"
+                            class="h-full w-full object-cover object-top scale-125"
                         />
                     </button>
                     <span slot="content">Editar perfil</span>
@@ -258,11 +258,11 @@
                                     class="flex min-w-0 items-center gap-2 text-left"
                                     on:click={openProfile}
                                 >
-                                    <div class="size-8 shrink-0 overflow-hidden rounded-full border-2 border-blue-night/10">
+                                    <div class="size-10 shrink-0 overflow-hidden rounded-full border-2 border-suspense-aurora bg-suspense-aurora shadow">
                                         <img
                                             src={avatar}
                                             alt={nickname}
-                                            class="h-full w-full object-cover object-top"
+                                            class="h-full w-full object-cover object-top scale-125"
                                         />
                                     </div>
                                     <span class="min-w-0 truncate font-noto-sans text-xs font-extrabold text-blue-night">
