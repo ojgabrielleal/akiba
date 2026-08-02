@@ -8,9 +8,3 @@ export {
     toggleAudio,
     toggleMute,
 } from "./playerStore.js";
-
-export {
-    sendPublicPresenceHeartbeat,
-    startPublicPresence,
-    stopPublicPresence,
-} from "./publicPresenceStore.js";

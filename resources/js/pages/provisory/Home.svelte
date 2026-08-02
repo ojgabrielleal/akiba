@@ -3,7 +3,7 @@
     import { page, usePoll } from "@inertiajs/svelte";
     import { Toaster } from "svelte-hot-french-toast";
     import { Meta } from "@/lib/components/shared";
-    import { startPublicPresence, stopPublicPresence, syncMediaSessionMetadata } from "@/lib/stores";
+    import { syncMediaSessionMetadata } from "@/lib/stores";
     import { MainPlayer, MobilePlayer } from "@/lib/widgets/public";
 
     $: ({ onair, stream, oauth } = $page.props);
@@ -16,10 +16,6 @@
 
     onMount(() => {
         document.body.style.backgroundColor = "var(--color-blue-night)";
-
-        startPublicPresence(oauth);
-
-        return stopPublicPresence;
     });
 </script>
 
