@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Services\Process\PublicVisitorPresenceService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Throwable;
 
 class PublicVisitorPresenceController extends Controller
 {
@@ -22,8 +23,12 @@ class PublicVisitorPresenceController extends Controller
             'identity' => ['nullable', 'array'],
         ]);
 
-        $presence->heartbeat($request, $data);
+        try {
+            $presence->heartbeat($request, $data);
+        } catch (Throwable $exception) {
+            report($exception);
+        }
 
-        return response()->json(['ok' => true]);
+        return response()->json(null, 204);
     }
 }
