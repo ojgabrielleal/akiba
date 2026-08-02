@@ -7,15 +7,17 @@
         AudienceHistoryChart,
         InternalRankingCarousel,
         ProgramHistoryTable,
+        PublicVisitorsGrid,
     } from "@/lib/widgets/private";
 
-    $: ({ audience, audienceHistory, onair, ranking_interno: ranking } = $page.props);
+    $: ({ audience, audienceHistory, onair, publicVisitors, ranking_interno: ranking } = $page.props);
 </script>
 
 <Meta meta={{ title: "Relatórios" } } />
 <Layout>
     <h1 class="sr-only">Relatórios</h1>
     <AudienceCarousel title="Concorrência" {audience} />
+    <PublicVisitorsGrid title="Visitantes online" presence={publicVisitors} />
     <AudienceHistoryChart title="Histórico de audiência" history={audienceHistory?.data ?? null} />
     <InternalRankingCarousel title="Ranking interno" {ranking} />
     <ProgramHistoryTable title="Histórico de programação" {onair} />

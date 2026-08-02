@@ -1,6 +1,8 @@
 <script>
     import { usePoll } from "@inertiajs/svelte";
+    import { onMount } from "svelte";
     import { CookieConsent, FlashToaster, ProfileIncompleteNotice } from "@/lib/components/public";
+    import { startPublicPresence, stopPublicPresence } from "@/lib/stores";
     import { Footer, Navbar, PlayerBar } from "@/lib/widgets/public";
 
     export let flash = null;
@@ -11,6 +13,12 @@
 
     usePoll(10 * 1000, {
         only: ["onair"]
+    });
+
+    onMount(() => {
+        startPublicPresence(oauth);
+
+        return stopPublicPresence;
     });
 </script>
 

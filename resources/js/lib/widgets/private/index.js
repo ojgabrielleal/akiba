@@ -48,6 +48,7 @@ export { default as UserGrid } from "./grid/UserGrid.svelte"
 export { default as RapidAccessGrid } from "./grid/RapidAccessGrid.svelte"
 export { default as StreamMetricsGrid } from './grid/StreamMetricsGrid.svelte';
 export { default as TaskGrid } from "./grid/TaskGrid.svelte";
+export { default as PublicVisitorsGrid } from "./grid/PublicVisitorsGrid.svelte";
 
 // Hero
 export { default as WellcomeHero } from './hero/WellcomeHero.svelte';

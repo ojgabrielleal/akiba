@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware\Auth;
 
+use App\Services\Process\PublicVisitorPresenceService;
 use Closure;
 use Illuminate\Http\Request;
 
@@ -11,6 +12,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ShareAuthenticatedUserMiddleware
 {
+    public function __construct(private PublicVisitorPresenceService $publicVisitorPresence) {}
+
     public function handle(Request $request, Closure $next): Response
     {
         Inertia::share('user', function () use ($request) {
@@ -32,6 +35,8 @@ class ShareAuthenticatedUserMiddleware
                     ->values(),
             ];
         });
+
+        Inertia::share('publicVisitors', fn () => $this->publicVisitorPresence->summary());
 
         return $next($request);
     }

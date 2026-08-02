@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\External\OAuthAccount\OAuthAccountLogoutController;
 use App\Http\Controllers\Api\External\OAuthAccount\OAuthAccountRedirectController;
 use App\Http\Controllers\Public\FormSubmissionController;
 use App\Http\Controllers\Public\OAuthAccountController;
+use App\Http\Controllers\Public\PublicVisitorPresenceController;
 use App\Http\Controllers\Private\Invokes\PollVoteController;
 use App\Http\Controllers\Public\Invokes\StorePostCommentController;
 use App\Http\Controllers\Public\Invokes\StorePostReactionController;
@@ -36,6 +37,10 @@ Route::get('/oauth/{provider}/callback', OAuthAccountCallbackController::class)
 Route::post('/oauth/logout', OAuthAccountLogoutController::class)
     ->middleware('oauth.resolve')
     ->name('oauth.logout');
+
+Route::post('/public-presence/heartbeat', [PublicVisitorPresenceController::class, 'heartbeat'])
+    ->middleware('oauth.resolve')
+    ->name('public-presence.heartbeat');
 
 Route::middleware(['oauth.resolve', 'inertia'])->group(function () {
     Route::get('/contato', [ContactPageController::class, 'render'])
