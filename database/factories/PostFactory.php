@@ -46,6 +46,17 @@ class PostFactory extends Factory
         ]);
     }
 
+    public function forModule(string $module): static
+    {
+        return match ($module) {
+            'event' => $this->event(),
+            'review' => $this->review(),
+            default => $this->state(fn (array $attributes) => [
+                'module' => $module,
+            ]),
+        };
+    }
+
     public function event(): static
     {
         return $this->state(fn (array $attributes) => [

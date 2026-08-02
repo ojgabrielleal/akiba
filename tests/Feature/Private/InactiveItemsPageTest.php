@@ -56,6 +56,35 @@ class InactiveItemsPageTest extends TestCase
             );
     }
 
+    public function test_guest_is_redirected_from_inactive_items_page(): void
+    {
+        $this
+            ->get('/panel/inactive')
+            ->assertRedirect('/panel');
+    }
+
+    public function test_inactive_items_page_requires_permission(): void
+    {
+        $this
+            ->actingAs(User::factory()->create())
+            ->get('/panel/inactive')
+            ->assertForbidden();
+    }
+
+    public function test_inactive_items_page_renders_expected_component(): void
+    {
+        $user = $this->userWithPermissions(['inactive.module.view']);
+
+        $this
+            ->actingAs($user)
+            ->get('/panel/inactive')
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->component('private/InactiveItems', false)
+                ->has('inactive_items')
+            );
+    }
+
     public function test_user_can_reactivate_an_inactive_item(): void
     {
         $user = $this->userWithPermissions([

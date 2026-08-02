@@ -130,7 +130,7 @@ Route::prefix('panel')->middleware(['inertia'])->group(function () {
             Route::get('', 'render')->name('panel.marketing');
         });
 
-        Route::prefix('media')->controller(MediaPageController::class)->group(function () {
+        Route::prefix('media')->middleware('can:media.module.view')->controller(MediaPageController::class)->group(function () {
             Route::prefix('listener-gallery')->group(function () {
                 Route::post('', [ListenerGalleryController::class, 'store']);
                 Route::get('{listenerGallery:uuid}', [ListenerGalleryController::class, 'show']);
@@ -184,7 +184,7 @@ Route::prefix('panel')->middleware(['inertia'])->group(function () {
             });
             Route::get('', 'render')->name('panel.administration');
         });
-        Route::prefix('reports')->controller(ReportsPageController::class)->group(function () {
+        Route::prefix('reports')->middleware('can:report.module.view')->controller(ReportsPageController::class)->group(function () {
             Route::get('', 'render')->name('panel.reports');
         });
         Route::prefix('inactive')->middleware('can:inactive.module.view')->group(function () {

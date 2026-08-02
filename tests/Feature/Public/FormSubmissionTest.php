@@ -35,4 +35,42 @@ class FormSubmissionTest extends TestCase
             'status' => 'pending',
         ]);
     }
+
+    public function test_it_validates_required_fields(): void
+    {
+        $response = $this->from('/contato')->post('/form-submissions', [
+            'form_type' => 'invalid',
+            'name' => '',
+            'contact' => '',
+            'payload' => [],
+        ]);
+
+        $response
+            ->assertRedirect('/contato')
+            ->assertSessionHasErrors([
+                'form_type',
+                'name',
+                'contact',
+            ]);
+
+        $this->assertDatabaseCount('form_submissions', 0);
+    }
+
+    public function test_it_validates_recruitment_age_range(): void
+    {
+        $response = $this->from('/contato')->post('/form-submissions', [
+            'form_type' => 'recruitment',
+            'name' => 'Akiba Tester',
+            'contact' => 'tester@example.com',
+            'payload' => [
+                'age' => 9,
+            ],
+        ]);
+
+        $response
+            ->assertRedirect('/contato')
+            ->assertSessionHasErrors(['payload.age']);
+
+        $this->assertDatabaseCount('form_submissions', 0);
+    }
 }

@@ -32,7 +32,7 @@ class ProgramAirtimeTest extends TestCase
         $this->assertTrue($schedule->program->is($program));
     }
 
-    public function testResourceReturnsOriginalMidnightFormat(): void
+    public function testResourceReturnsMidnightHourMinuteFormat(): void
     {
         $programAirtime = ProgramAirtime::factory()->make([
             'hour' => '00:00:00',
@@ -40,10 +40,10 @@ class ProgramAirtimeTest extends TestCase
 
         $resource = ProgramAirtimeResource::make($programAirtime)->resolve();
 
-        $this->assertSame('00:00:00', $resource['hour']);
+        $this->assertSame('00:00', $resource['hour']);
     }
 
-    public function testResourceReturnsOriginalNoonFormat(): void
+    public function testResourceReturnsNoonHourMinuteFormat(): void
     {
         $programAirtime = ProgramAirtime::factory()->make([
             'hour' => '12:00:00',
@@ -51,6 +51,6 @@ class ProgramAirtimeTest extends TestCase
 
         $resource = ProgramAirtimeResource::make($programAirtime)->resolve();
 
-        $this->assertSame('12:00:00', $resource['hour']);
+        $this->assertSame('12:00', $resource['hour']);
     }
 }

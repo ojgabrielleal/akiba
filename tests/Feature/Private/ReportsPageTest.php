@@ -10,6 +10,8 @@ use App\Models\PollVote;
 use App\Models\Post;
 use App\Models\PostReaction;
 use App\Models\Program;
+use App\Models\Permission;
+use App\Models\Role;
 use App\Models\SongRequest;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -28,7 +30,7 @@ class ReportsPageTest extends TestCase
 
     public function test_reports_page_exposes_the_internal_ranking(): void
     {
-        $authenticatedUser = User::factory()->create();
+        $authenticatedUser = $this->userWithPermissions(['report.module.view']);
 
         $writer = User::factory()->create();
         Post::factory(3)->for($writer, 'author')->create();
@@ -101,7 +103,7 @@ class ReportsPageTest extends TestCase
     public function test_internal_ranking_is_null_when_there_is_no_data(): void
     {
         $this
-            ->actingAs(User::factory()->create())
+            ->actingAs($this->userWithPermissions(['report.module.view']))
             ->get('/panel/reports')
             ->assertOk()
             ->assertInertia(fn ($page) => $page
@@ -112,5 +114,47 @@ class ReportsPageTest extends TestCase
                 ->where('ranking_interno.maior_interacao', null)
                 ->where('ranking_interno.enquete_mais_votada', null)
             );
+    }
+
+    public function test_guest_is_redirected_from_reports_page(): void
+    {
+        $this
+            ->get('/panel/reports')
+            ->assertRedirect('/panel');
+    }
+
+    public function test_reports_page_requires_permission(): void
+    {
+        $this
+            ->actingAs(User::factory()->create())
+            ->get('/panel/reports')
+            ->assertForbidden();
+    }
+
+    public function test_reports_page_renders_expected_component_for_authorized_user(): void
+    {
+        $this
+            ->actingAs($this->userWithPermissions(['report.module.view']))
+            ->get('/panel/reports')
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->component('private/Reports', false)
+                ->has('audience')
+                ->has('onair')
+                ->has('ranking_interno')
+            );
+    }
+
+    private function userWithPermissions(array $permissionNames): User
+    {
+        $role = Role::factory()->create();
+        $permissions = collect($permissionNames)
+            ->map(fn (string $name) => Permission::factory()->create(['name' => $name]));
+        $role->permissions()->attach($permissions);
+
+        $user = User::factory()->create();
+        $user->roles()->attach($role);
+
+        return $user;
     }
 }

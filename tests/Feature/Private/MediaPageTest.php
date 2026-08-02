@@ -16,7 +16,10 @@ class MediaPageTest extends TestCase
 
     public function testMediaPageRendersWhenThereIsNoLatestValidPoll(): void
     {
-        $user = $this->userWithPermission('poll.list');
+        $user = $this->userWithPermissions([
+            'media.module.view',
+            'poll.list',
+        ]);
 
         Poll::factory()
             ->has(PollOption::factory(4), 'options')
@@ -30,19 +33,51 @@ class MediaPageTest extends TestCase
             ->get('/panel/media')
             ->assertOk()
             ->assertInertia(fn ($page) => $page
-                ->component('private/Media')
+                ->component('private/Media', false)
                 ->where('latestPoll', null)
             );
     }
 
-    private function userWithPermission(string $permissionName): User
+    public function test_guest_is_redirected_from_media_page(): void
     {
-        $permission = Permission::factory()->create([
-            'name' => $permissionName,
+        $this
+            ->get('/panel/media')
+            ->assertRedirect('/panel');
+    }
+
+    public function test_media_page_requires_permission(): void
+    {
+        $this
+            ->actingAs(User::factory()->create())
+            ->get('/panel/media')
+            ->assertForbidden();
+    }
+
+    public function test_media_page_renders_expected_component_for_authorized_user(): void
+    {
+        $user = $this->userWithPermissions([
+            'media.module.view',
+            'poll.list',
+            'listener.gallery.list',
         ]);
 
+        $this
+            ->actingAs($user)
+            ->get('/panel/media')
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->component('private/Media', false)
+                ->has('polls')
+                ->has('listenerGalleries')
+            );
+    }
+
+    private function userWithPermissions(array $permissionNames): User
+    {
         $role = Role::factory()->create();
-        $role->permissions()->attach($permission);
+        $permissions = collect($permissionNames)
+            ->map(fn (string $name) => Permission::factory()->create(['name' => $name]));
+        $role->permissions()->attach($permissions);
 
         $user = User::factory()->create();
         $user->roles()->attach($role);

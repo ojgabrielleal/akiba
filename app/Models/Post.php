@@ -137,6 +137,11 @@ class Post extends Model
         return $this->hasMany(PostReview::class, 'post_id');
     }
 
+    public function postReviews()
+    {
+        return $this->reviews();
+    }
+
     public function author()
     {
         return $this->belongsTo(User::class, 'user_id');

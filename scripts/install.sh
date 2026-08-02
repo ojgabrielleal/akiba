@@ -22,10 +22,6 @@ if [ ! -f ".env" ]; then
     cp .env.example .env
 fi
 
-if [ ! -f ".env.testing" ]; then
-    cp .env.testing.example .env.testing
-fi
-
 sed -i \
     -e "s|^APP_URL=.*|APP_URL=$APP_URL|" \
     -e "s|^DB_HOST=.*|DB_HOST=$DB_HOST|" \
