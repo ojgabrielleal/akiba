@@ -1,0 +1,70 @@
+{
+  "_chart-CjW8w0Fn.js": {
+    "file": "assets/chart-CjW8w0Fn.js",
+    "name": "chart",
+    "imports": [
+      "_rolldown-runtime-QTnfLwEv.js"
+    ]
+  },
+  "_rolldown-runtime-QTnfLwEv.js": {
+    "file": "assets/rolldown-runtime-QTnfLwEv.js",
+    "name": "rolldown-runtime"
+  },
+  "_vendor-BdGeBfEs.js": {
+    "file": "assets/vendor-BdGeBfEs.js",
+    "name": "vendor",
+    "imports": [
+      "_rolldown-runtime-QTnfLwEv.js"
+    ],
+    "css": [
+      "assets/vendor-CFBDMfBM.css"
+    ]
+  },
+  "_vendor-CFBDMfBM.css": {
+    "file": "assets/vendor-CFBDMfBM.css",
+    "src": "_vendor-CFBDMfBM.css"
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-BLp8LuaO.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true,
+    "imports": [
+      "_rolldown-runtime-QTnfLwEv.js",
+      "_vendor-BdGeBfEs.js"
+    ],
+    "dynamicImports": [
+      "_chart-CjW8w0Fn.js"
+    ],
+    "css": [
+      "assets/app-DNkfyUii.css"
+    ]
+  },
+  "resources/js/css/app.css": {
+    "file": "assets/app-BgarDRBb.css",
+    "name": "app",
+    "names": [
+      "app.css"
+    ],
+    "src": "resources/js/css/app.css",
+    "isEntry": true
+  },
+  "resources/js/css/custom.css": {
+    "file": "assets/custom-CIDmEtp_.css",
+    "name": "custom",
+    "names": [
+      "custom.css"
+    ],
+    "src": "resources/js/css/custom.css",
+    "isEntry": true
+  },
+  "resources/js/css/quill.css": {
+    "file": "assets/quill-Bnx8Dnrg.css",
+    "name": "quill",
+    "names": [
+      "quill.css"
+    ],
+    "src": "resources/js/css/quill.css",
+    "isEntry": true
+  }
+}
