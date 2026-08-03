@@ -14,6 +14,16 @@ Requests validam entrada do usuário e podem concentrar a autorização da opera
 app/Http/Requests
 ```
 
+Requests devem ficar em pastas de escopo quando pertencem a um módulo:
+
+```txt
+app/Http/Requests/Post/StorePostRequest.php
+app/Http/Requests/Program/UpdateProgramRequest.php
+app/Http/Requests/Login/AuthLoginRequest.php
+```
+
+Formulários web devem estender `LoggedWebRequest` quando seguem o padrão do painel/site.
+
 ## Arquitetura do Arquivo
 
 ```txt
@@ -43,6 +53,7 @@ Ele cuida de:
 - tipos de dados;
 - validação condicional;
 - validação de arrays;
+- normalização com `prepareForValidation()`;
 - mensagens e nomes amigáveis quando necessário.
 
 Depois do request, o controller deve usar apenas `$request->validated()`.
@@ -107,6 +118,23 @@ public function authorize(): bool
 }
 ```
 
+Requests públicos ou de autenticação que não exigem policy de model podem retornar `true` em `authorize()`.
+
+## Normalização
+
+Use `prepareForValidation()` quando o payload precisa ser ajustado antes das regras:
+
+```php
+protected function prepareForValidation(): void
+{
+    $this->merge([
+        'email' => strtolower((string) $this->input('email')),
+    ]);
+}
+```
+
+Não duplique logs de falha de validação em requests concretos; comportamento compartilhado deve ficar em `LoggedWebRequest`.
+
 Quando a regra depende de um model da rota:
 
 ```php
@@ -123,10 +151,13 @@ public function authorize(): bool
 - Colocar regra de negócio longa dentro de `rules()`.
 - Aceitar arrays sem validar os campos internos.
 - Fazer query pesada dentro de `authorize()`.
+- Colocar dados sensíveis em logs de validação.
 
 ## Checklist
 
 - O controller usa `$request->validated()`?
+- O request concreto define `authorize(): bool`?
+- O request concreto define `rules(): array`?
 - A autorização está em `authorize()` quando depende da entrada?
 - Regras condicionais ficam explícitas?
 - Campos de arrays usam validação para os filhos?

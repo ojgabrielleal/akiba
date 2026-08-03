@@ -108,11 +108,13 @@ Dentro do `<script>`, prefira esta ordem:
 
 1. imports externos;
 2. imports internos com alias `@/`;
-3. leitura de props com `$page.props`;
-4. estados locais com `let`;
-5. declarações reativas `$:`;
-6. funções de evento;
-7. arrays de actions, menus ou tabs.
+3. props com `export let`, quando existirem;
+4. constantes, mapas e configurações locais;
+5. leitura de props com `$page.props`;
+6. estado local com `let`;
+7. declarações reativas `$:`;
+8. helpers puros;
+9. handlers/actions que disparam navegação, submit, router ou alteram estado.
 
 Isso facilita bater o olho e entender o que a página recebe, o que ela controla e quais eventos dispara.
 
@@ -256,6 +258,8 @@ import { PostForm, PostGrid } from "@/lib/widgets/private";
 
 Ao criar componente ou widget novo que será importado de fora da pasta, exporte no `index.js` correspondente.
 
+Use `shared` somente quando o mesmo componente, layout ou widget for usado de verdade por mais de um contexto. Se o uso for exclusivo do painel ou do site público, mantenha em `private` ou `public`.
+
 ## O Que Evitar
 
 - Duplicar regra de permissão que já veio do backend.
@@ -264,6 +268,8 @@ Ao criar componente ou widget novo que será importado de fora da pasta, exporte
 - Criar widget que serve para tudo e fica difícil de manter.
 - Usar estado global quando estado local resolve.
 - Importar arquivo profundo quando já existe export no `index.js`.
+- Criar `server/`, `lib/server/` ou qualquer lógica server-only dentro de `resources/js`.
+- Colocar secrets, acesso a banco ou SDK privado no frontend.
 
 ## Checklist
 

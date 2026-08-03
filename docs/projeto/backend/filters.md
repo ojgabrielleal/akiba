@@ -32,7 +32,7 @@ imports
 
 class NomeFilter
 {
-    apply(array $filters)
+    apply(array $filters = [])
 
     métodos privados para filtros específicos
 
@@ -56,6 +56,8 @@ Ele pode cuidar de:
 
 O controller decide quais parâmetros passar. O filter decide como esses parâmetros viram query.
 
+Filters devem usar `when()` do Eloquent para manter condicionais claras e aplicar ordenação padrão quando fizer sentido.
+
 ## Exemplo de Uso
 
 ```php
@@ -74,7 +76,7 @@ $this->postFilter->apply([
 ```php
 class PostFilter
 {
-    public function apply(array $filters)
+public function apply(array $filters)
     {
         $query = Post::query();
 
@@ -95,6 +97,12 @@ class PostFilter
         return $query->where('title', 'like', "%{$search}%");
     }
 }
+```
+
+No projeto, prefira a assinatura:
+
+```php
+public function apply(array $filters = [])
 ```
 
 ## Parâmetros Comuns
@@ -127,6 +135,8 @@ Crie um filter quando:
 - Fazer validação de request no filter.
 - Usar nomes de parâmetros que só fazem sentido em uma tela e confundem outras.
 - Duplicar a mesma query em vários controllers.
+- Formatar resposta no filter; isso pertence a resource ou controller.
+- Fazer escrita no filter.
 
 ## Checklist
 

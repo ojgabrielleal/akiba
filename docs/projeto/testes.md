@@ -91,6 +91,10 @@ $user = User::factory()->create();
 $post = Post::factory()->for($user, 'author')->create();
 ```
 
+Não dependa de ordem de execução, dados preexistentes ou seeders globais, a menos que o próprio teste execute o seeder necessário.
+
+O ambiente de teste local usa MySQL via `phpunit.xml`, apontando para o banco local `akiba`. Considere que testes com `RefreshDatabase` podem destruir e recriar o schema local.
+
 ## Permissões nos Testes
 
 Quando a rota exige permissão, crie role e permissions:
@@ -140,3 +144,4 @@ Para um arquivo específico:
 - Banco usa `RefreshDatabase` quando necessário?
 - Factories criam dados válidos?
 - Cenário de guest e usuário sem permissão foi testado quando a rota é protegida?
+- Teste evita depender de seeder global sem chamar explicitamente?

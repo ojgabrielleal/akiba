@@ -75,6 +75,19 @@ Prefira props explícitas:
 
 Evite componente que depende de `$page.props` se ele pode receber os dados da página ou widget.
 
+Componentes reutilizáveis devem aceitar extensão visual com `class` quando fizer sentido, e inputs/botões devem repassar `{...$$restProps}` quando apropriado.
+
+Variantes visuais devem ficar em mapas internos:
+
+```js
+const variants = {
+    primary: "...",
+    secondary: "...",
+};
+```
+
+Sempre mantenha fallback padrão para variante, tamanho ou formato.
+
 ## Eventos
 
 Para ação externa, o componente pode receber callback ou disparar evento.
@@ -189,6 +202,10 @@ Extraia para widget quando:
 - o bloco tem ações de domínio;
 - o bloco tem vários componentes internos;
 - a mesma parte aparece em mais de uma tela do módulo.
+
+Ao desmembrar um widget grande, extraia partes com responsabilidade real. Evite wrappers finos que só embrulham outro componente sem reduzir complexidade.
+
+Componentes internos de um widget podem ficar perto dele e não precisam ser exportados no `index.js` público quando forem detalhe de implementação.
 
 ## Nome de Arquivo
 

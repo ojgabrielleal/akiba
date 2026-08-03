@@ -174,6 +174,22 @@ Dentro do arquivo, mantenha a ordem:
 7. métodos públicos na ordem das rotas
 8. métodos privados usados pelos métodos públicos
 
+Em controllers privados, quando um método recebe mais de uma dependência, mantenha a ordem dos parâmetros:
+
+```txt
+request
+action
+model vindo da rota
+```
+
+Exemplo:
+
+```php
+public function update(UpdatePostRequest $request, UpdatePostAction $action, Post $post)
+```
+
+Page controllers devem manter `render()` como primeiro método de comportamento. Helpers de props devem usar nomes como `indexPosts()`, `indexUsers()` ou `indexPermissions()`. Reserve `show()` para actions públicas do controller que realmente exibem um recurso.
+
 Exemplo de imports agrupados:
 
 ```php
@@ -212,6 +228,7 @@ Use nomes que mostrem a intenção:
 - Retornar model Eloquent cru para o frontend.
 - Misturar renderização de página e regra de negócio no mesmo método.
 - Repetir regras de permissão que deveriam estar em policy.
+- Usar `show*` como helper interno de prop em page controller privado.
 
 ## Checklist
 

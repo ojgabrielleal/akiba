@@ -105,6 +105,21 @@ featured      destaque da home
 public-read   leitura pública completa
 ```
 
+Quando uma collection precisa suportar formato, use o padrão do projeto:
+
+```txt
+HasFormats
+FormattableResourceCollection
+```
+
+Exemplo:
+
+```php
+PostResource::collection($posts)->format('grid')
+```
+
+Não duplique tratamento de formato de collection dentro de cada resource individual.
+
 ## Relações
 
 Quando o resource usa uma relação, carregue essa relação antes no controller ou filter:
@@ -119,6 +134,12 @@ return new PostResource($post->load(['tags', 'references', 'author']));
 
 Isso evita consultas extras e deixa claro o contrato de dados da tela.
 
+Quando uma relação só deve aparecer se já foi carregada, prefira `whenLoaded()`:
+
+```php
+'tags' => PostTagResource::collection($this->whenLoaded('tags')),
+```
+
 ## O Que Evitar
 
 - Retornar model cru para Inertia.
@@ -126,6 +147,8 @@ Isso evita consultas extras e deixa claro o contrato de dados da tela.
 - Expor campos internos sem necessidade.
 - Formatar a mesma estrutura manualmente em vários controllers.
 - Criar formatos demais sem diferença real entre eles.
+- Executar queries de banco dentro do resource.
+- Fazer escrita ou alterar estado dentro do resource.
 
 ## Checklist
 
