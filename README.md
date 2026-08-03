@@ -71,9 +71,9 @@ Atalhos principais no Windows:
 O projeto inclui variáveis de ambiente extras para integrações com stream e Discord:
 
 ```env
-DISCORD_STREAM_WEBHOOK=null
+DISCORD_WEBHOOK_STREAM_NOTIFICATION=null
 ```
-- `DISCORD_STREAM_WEBHOOK`: Defina esse valor quando quiser enviar notificações da stream por webhook.
+- `DISCORD_WEBHOOK_STREAM_NOTIFICATION`: Defina esse valor quando quiser enviar notificações da stream por webhook.
 
 ## Estrutura do Projeto
 
@@ -88,6 +88,23 @@ DISCORD_STREAM_WEBHOOK=null
 - `resources/js/pages` - páginas Inertia/Svelte
 - `resources/js/lib` - layouts, componentes, widgets, stores, utils e constants do frontend
 - `routes/web` - rotas web separadas por contexto
+
+## Planejamento e Documentação
+
+A documentação do projeto fica em `docs/` e é publicada localmente com VitePress. Comece pelo site em `http://localhost:5174/` ou pelo arquivo `docs/projeto/index.md`.
+
+Também é possível navegar a documentação com VitePress:
+
+```bash
+./run.sh npm run docs:dev
+```
+
+Outros comandos disponíveis:
+
+```bash
+./run.sh npm run docs:build
+./run.sh npm run docs:preview
+```
 
 ## Licença
 

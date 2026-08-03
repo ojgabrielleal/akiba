@@ -123,6 +123,8 @@ When opening a pull request:
 5. Follow the project's code standards.
 6. Fill in the PR checklist.
 
+Planning documentation lives in `docs/planejamento`. Update it when a pull request changes behavior, permissions, routes, modules, operational flows, business rules, architecture, or development process. If documentation is not needed, explain why in the pull request.
+
 Example:
 
 ```markdown

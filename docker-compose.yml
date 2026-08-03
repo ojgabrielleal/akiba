@@ -26,6 +26,18 @@ services:
     command: npm run dev -- --host 0.0.0.0
     container_name: akiba_node 
 
+  docs:
+    image: node:22
+    working_dir: /app
+    volumes:
+      - .:/app
+    ports:
+      - "5174:5174"
+    networks:
+      - akiba_network
+    command: npm run docs:dev -- --host 0.0.0.0 --port 5174
+    container_name: akiba_docs
+
   mysql: 
     image: mysql:8
     ports: 

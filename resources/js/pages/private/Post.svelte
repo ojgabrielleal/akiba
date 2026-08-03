@@ -4,7 +4,7 @@
     import { Meta } from "@/lib/components/shared";
     import { Layout } from "@/lib/layouts/private";
     import { Section } from "@/lib/components/private";
-    import { AnimeNewsFeedList, PostForm, ReviewForm, EventForm, PostGrid } from "@/lib/widgets/private";
+    import { AnimeNewsFeedGrid, PostForm, ReviewForm, EventForm, PostGrid } from "@/lib/widgets/private";
 
     $: ({ post, posts, newsFeedSources, selectedNewsFeedSource, newsFeedPosts } = $page.props);
     
@@ -115,7 +115,7 @@
     </Section>
 
     {#if contentView === "feed" && canViewNewsFeed}
-        <AnimeNewsFeedList
+        <AnimeNewsFeedGrid
             title="Feed externo de notícias"
             actions={gridActions}
             sources={newsFeedSources}

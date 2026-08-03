@@ -1,0 +1,29 @@
+import{_ as s,o as e,c as n,a2 as t}from"./chunks/framework.CHeM0PsO.js";const h=JSON.parse('{"title":"Estrutura Geral","description":"","frontmatter":{"status":"ativo","tipo":"guia","atualizado_em":"2026-08-03T00:00:00.000Z"},"headers":[],"relativePath":"projeto/estrutura-geral.md","filePath":"projeto/estrutura-geral.md","lastUpdated":null}'),p={name:"projeto/estrutura-geral.md"};function o(r,a,i,l,c,d){return e(),n("div",null,[...a[0]||(a[0]=[t(`<h1 id="estrutura-geral" tabindex="-1">Estrutura Geral <a class="header-anchor" href="#estrutura-geral" aria-label="Permalink to &quot;Estrutura Geral&quot;">​</a></h1><h2 id="raiz-do-projeto" tabindex="-1">Raiz do Projeto <a class="header-anchor" href="#raiz-do-projeto" aria-label="Permalink to &quot;Raiz do Projeto&quot;">​</a></h2><div class="language-txt vp-adaptive-theme"><button title="Copy Code" class="copy"></button><span class="lang">txt</span><pre class="shiki shiki-themes github-light github-dark vp-code" tabindex="0"><code><span class="line"><span>app/              Backend Laravel</span></span>
+<span class="line"><span>database/         Estrutura e dados iniciais do banco</span></span>
+<span class="line"><span>docs/             Documentação VitePress</span></span>
+<span class="line"><span>resources/js/     Interface Svelte/Inertia</span></span>
+<span class="line"><span>routes/           Rotas HTTP</span></span></code></pre></div><h2 id="backend" tabindex="-1">Backend <a class="header-anchor" href="#backend" aria-label="Permalink to &quot;Backend&quot;">​</a></h2><div class="language-txt vp-adaptive-theme"><button title="Copy Code" class="copy"></button><span class="lang">txt</span><pre class="shiki shiki-themes github-light github-dark vp-code" tabindex="0"><code><span class="line"><span>app/Actions       Regras de negócio e mudanças de estado</span></span>
+<span class="line"><span>app/Filters       Consultas reutilizáveis e filtros de listagem</span></span>
+<span class="line"><span>app/Http          Controllers, requests, resources e middleware</span></span>
+<span class="line"><span>app/Models        Models Eloquent e relacionamentos</span></span>
+<span class="line"><span>app/Policies      Regras de autorização</span></span>
+<span class="line"><span>app/Services      Integrações externas e processos reutilizáveis</span></span>
+<span class="line"><span>app/Support       Helpers e objetos de suporte do domínio</span></span></code></pre></div><h2 id="frontend" tabindex="-1">Frontend <a class="header-anchor" href="#frontend" aria-label="Permalink to &quot;Frontend&quot;">​</a></h2><div class="language-txt vp-adaptive-theme"><button title="Copy Code" class="copy"></button><span class="lang">txt</span><pre class="shiki shiki-themes github-light github-dark vp-code" tabindex="0"><code><span class="line"><span>resources/js/pages        Páginas Inertia renderizadas por controllers</span></span>
+<span class="line"><span>resources/js/lib/layouts  Layouts públicos e privados</span></span>
+<span class="line"><span>resources/js/lib/widgets  Blocos grandes de interface por domínio</span></span>
+<span class="line"><span>resources/js/lib/components Componentes menores e compartilháveis</span></span>
+<span class="line"><span>resources/js/lib/stores   Estados compartilhados</span></span>
+<span class="line"><span>resources/js/lib/utils    Funções auxiliares</span></span>
+<span class="line"><span>resources/js/lib/constants Constantes do frontend</span></span></code></pre></div><h2 id="rotas" tabindex="-1">Rotas <a class="header-anchor" href="#rotas" aria-label="Permalink to &quot;Rotas&quot;">​</a></h2><div class="language-txt vp-adaptive-theme"><button title="Copy Code" class="copy"></button><span class="lang">txt</span><pre class="shiki shiki-themes github-light github-dark vp-code" tabindex="0"><code><span class="line"><span>routes/web        Rotas web separadas por contexto</span></span>
+<span class="line"><span>routes/web/private.php   Painel privado</span></span>
+<span class="line"><span>routes/web/public.php    Área pública</span></span>
+<span class="line"><span>routes/web/provisory.php Rotas provisórias</span></span></code></pre></div><h2 id="banco" tabindex="-1">Banco <a class="header-anchor" href="#banco" aria-label="Permalink to &quot;Banco&quot;">​</a></h2><div class="language-txt vp-adaptive-theme"><button title="Copy Code" class="copy"></button><span class="lang">txt</span><pre class="shiki shiki-themes github-light github-dark vp-code" tabindex="0"><code><span class="line"><span>database/migrations  Criação e alteração de tabelas</span></span>
+<span class="line"><span>database/seeders     Dados iniciais e dados de desenvolvimento</span></span>
+<span class="line"><span>database/factories   Fábricas para testes e seeds</span></span></code></pre></div><h2 id="como-encontrar-uma-feature" tabindex="-1">Como Encontrar uma Feature <a class="header-anchor" href="#como-encontrar-uma-feature" aria-label="Permalink to &quot;Como Encontrar uma Feature&quot;">​</a></h2><p>Se você quer entender “postagens”, por exemplo, procure por:</p><div class="language-txt vp-adaptive-theme"><button title="Copy Code" class="copy"></button><span class="lang">txt</span><pre class="shiki shiki-themes github-light github-dark vp-code" tabindex="0"><code><span class="line"><span>app/Http/Controllers/Private/PostController.php</span></span>
+<span class="line"><span>app/Http/Controllers/Private/Pages/PostPageController.php</span></span>
+<span class="line"><span>app/Actions/Post</span></span>
+<span class="line"><span>app/Filters/PostFilter.php</span></span>
+<span class="line"><span>app/Models/Post.php</span></span>
+<span class="line"><span>app/Http/Resources/Post</span></span>
+<span class="line"><span>resources/js/pages/private/Post.svelte</span></span>
+<span class="line"><span>resources/js/lib/widgets/private</span></span></code></pre></div>`,14)])])}const b=s(p,[["render",o]]);export{h as __pageData,b as default};

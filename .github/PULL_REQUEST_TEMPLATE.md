@@ -17,4 +17,6 @@ Explain the reason for this change.
 
 - [ ] My code follows the project style
 - [ ] I have tested my changes
+- [ ] I checked whether `docs/planejamento` needs updates
+- [ ] Documentation was updated or I explained why it is not needed
 - [ ] No breaking changes (or they are documented)
