@@ -2,6 +2,7 @@
     export let pages;
     export let loadingLabel = "Carregando...";
     export let only = [];
+    export let pageName = "page";
 
     import { router } from "@inertiajs/svelte";
     import LoadingSpinner from "../feedback/LoadingSpinner.svelte";
@@ -42,9 +43,9 @@
         const url = new URL(window.location.href);
 
         if (page <= 1) {
-            url.searchParams.delete("page");
+            url.searchParams.delete(pageName);
         } else {
-            url.searchParams.set("page", String(page));
+            url.searchParams.set(pageName, String(page));
         }
 
         return `${url.pathname}${url.search}${url.hash}`;

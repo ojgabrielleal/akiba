@@ -7,6 +7,7 @@
 
     export let title;
     export let posts = null;
+    export let actions = [];
 
     const can = postPermissions();
 
@@ -23,7 +24,7 @@
 </script>
 
 {#if posts}
-    <Section {title}>
+    <Section {title} {actions}>
         {#if posts.data.length > 0}
         <GridList preset="content">
             {#each posts.data as item}

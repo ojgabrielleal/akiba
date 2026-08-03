@@ -13,6 +13,7 @@
     import { postTags } from "@/lib/constants";
 
     export let post = null;
+    export let draft = null;
 
     const can = postPermissions();
 
@@ -30,17 +31,25 @@
         ];
     }
 
+    $: draftKey = draft ? `${draft.title ?? ""}|${draft.references?.[0]?.url ?? ""}` : "";
+
     $: form = useForm({
         _method: post ? "PATCH" : "POST",
         module: "post",
         status: post?.data.status ?? null,
         image: post?.data.image ?? null,
-        title: post?.data.title ?? null,
+        title: post?.data.title ?? draft?.title ?? null,
         cover: post?.data.cover ?? null,
-        content: post?.data.content ?? null,
+        content: post?.data.content ?? draft?.content ?? null,
         tags: normalizeTags(post?.data.tags),
-        references: normalizeReferences(post?.data.references),
+        references: normalizeReferences(post?.data.references ?? draft?.references),
     });
+
+    $: if (!post && draftKey && $form.title !== draft?.title) {
+        $form.title = draft?.title ?? null;
+        $form.content = draft?.content ?? null;
+        $form.references = normalizeReferences(draft?.references);
+    }
 
     function submit(event) {
         let url = post ? `/panel/post/${post.data.uuid}` : "/panel/post";

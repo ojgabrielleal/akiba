@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Post\PostResource;
 
 use App\Models\Post;
+use App\Services\External\AnimeNewsFeedService;
 
 use Inertia\Inertia;
 
@@ -21,12 +22,16 @@ class PostPageController extends Controller
 
     public function __construct(
         private PostFilter $postFilter,
+        private AnimeNewsFeedService $newsFeed,
     ) {}
 
     public function render()
     {
         return Inertia::render($this->render, [
             'posts' => $this->indexPosts(),
+            'newsFeedSources' => $this->indexNewsFeedSources(),
+            'selectedNewsFeedSource' => request()->input('source'),
+            'newsFeedPosts' => $this->indexNewsFeedPosts(),
         ]);
     }
 
@@ -43,6 +48,28 @@ class PostPageController extends Controller
                     'paginate' => 10,
                 ])
             )->format('grid'),
+        );
+    }
+
+    private function indexNewsFeedSources()
+    {
+        if (! request()->user()->hasPermission('post.feed.view')) {
+            return null;
+        }
+
+        return $this->newsFeed->sources();
+    }
+
+    private function indexNewsFeedPosts()
+    {
+        if (! request()->user()->hasPermission('post.feed.view')) {
+            return null;
+        }
+
+        return $this->newsFeed->paginate(
+            request()->input('source'),
+            6,
+            (int) request()->input('feed_page', 1),
         );
     }
 }

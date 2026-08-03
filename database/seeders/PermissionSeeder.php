@@ -94,6 +94,7 @@ class PermissionSeeder extends Seeder
             ['name' => 'post.review.opinion.list', 'label' => '[Posts] Listar opiniões de reviews'],
             ['name' => 'post.publish', 'label' => '[Posts] Publicar post (imediatamente)'],
             ['name' => 'post.approve', 'label' => '[Posts] Aprovar post'],
+            ['name' => 'post.feed.view', 'label' => '[Posts] Visualizar feeds externos'],
 
             /*
             |--------------------------------------------------------------------------
