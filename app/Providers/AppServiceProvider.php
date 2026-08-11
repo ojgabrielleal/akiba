@@ -3,8 +3,11 @@
 namespace App\Providers;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+use SocialiteProviders\Discord\Provider as DiscordProvider;
+use SocialiteProviders\Manager\SocialiteWasCalled;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,6 +24,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Event::listen(function (SocialiteWasCalled $event) {
+            $event->extendSocialite('discord', DiscordProvider::class);
+        });
+
         $this->registerPermissions();
     }
 
@@ -40,9 +47,9 @@ class AppServiceProvider extends ServiceProvider
             'media.module.view',
             'administration.module.view',
             'report.module.view',
-            'inactive.module.view',
-            'inactive.restore',
-            'inactive.delete',
+            'trash.module.view',
+            'trash.restore',
+            'trash.delete',
             'form.submission.list',
             'form.submission.review',
             'locution.start',

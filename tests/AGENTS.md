@@ -15,14 +15,14 @@ Estas instrucoes valem para arquivos dentro de `tests/`.
 ## Organizacao
 
 - Use `tests/Feature` para fluxos HTTP, paginas Inertia, comandos Artisan, autorizacao, validacao, persistencia e integracoes entre camadas.
-- Use `tests/Unit` para regras isoladas, models, filtros, actions e services que nao precisam do kernel HTTP completo.
+- Use `tests/Unit` para regras isoladas, models, services, processing e integracoes simples que nao precisam do kernel HTTP completo.
 - Mantenha a estrutura de pastas alinhada ao dominio testado, por exemplo:
   - `tests/Feature/Private`
   - `tests/Feature/Public`
   - `tests/Feature/Console`
   - `tests/Unit/Models`
-  - `tests/Unit/Actions`
   - `tests/Unit/Services`
+  - `tests/Unit/Processing`
 
 ## Banco De Dados
 
@@ -42,6 +42,8 @@ Estas instrucoes valem para arquivos dentro de `tests/`.
   - `Queue::fake()`
   - `Event::fake()`
   - `Http::fake()`
+- Para Socialite, prefira mockar o contrato/facade do Socialite no teste de feature em vez de chamar provider real.
+- Para Web Push, teste persistencia e selecao de inscricoes; nao envie push real na suite.
 - Ao usar fake, tambem faca asserts sobre o efeito esperado, como envio, nao envio, arquivo criado ou job despachado.
 
 ## Feature Tests

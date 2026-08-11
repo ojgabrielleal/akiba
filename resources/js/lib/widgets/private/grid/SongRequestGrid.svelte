@@ -1,15 +1,22 @@
 <script>
-    import { onMount } from "svelte";
+    import { page } from "@inertiajs/svelte";
     import { router } from "@inertiajs/svelte";
 
     import { EmptyState, IconButton, Section } from "@/lib/components/private/";
-    import { resolvePlaceholderImage, songRequestPermissions } from "@/lib/utils";
+    import {
+        requestPushNotificationSubscription,
+        resolvePushNotificationPermission,
+        resolvePlaceholderImage,
+        songRequestPermissions,
+    } from "@/lib/utils";
 
     export let title;
     export let onair = null;
     export let songRequests = null;
 
     const can = songRequestPermissions();
+    
+    $: vapidPublicKey = $page.props.push?.vapid_public_key;
 
     $: actions = [
         {
@@ -18,8 +25,8 @@
             background: "bg-blue-skywave",
             textColor: "text-suspense-aurora",
             filter: "filter-suspense-aurora",
-            permission: notificationPermission === "default",
-            onClick: () => syncNotificationPermission(true),
+            permission: Boolean(vapidPublicKey) && resolvePushNotificationPermission() === "default",
+            onClick: () => requestPushNotificationSubscription(vapidPublicKey),
         },
         {
             title: "Encerrar programa",
@@ -60,51 +67,6 @@
         router.patch(`/panel/locution/finish`);
     }
 
-    // -------------- Notificações de PEDIDOS para os locutores --------------
-
-    let mounted = false;
-    let songRequestLength = 0;
-    let notificationPermission = "unsupported";
-
-    async function syncNotificationPermission(shouldRequest = false) {
-        if (!("Notification" in window)) {
-            notificationPermission = "unsupported";
-            return;
-        }
-
-        notificationPermission = shouldRequest
-            ? await Notification.requestPermission()
-            : Notification.permission;
-    }
-
-    function notifyNewSongRequest(songRequest) {
-        if (!("Notification" in window) || Notification.permission !== "granted") {
-            return;
-        }
-
-        new Notification(`Novo Pedido DJ ${songRequest.name}`, {
-            body: `O ouvinte ${songRequest.name} pediu uma música, Vá ver!`,
-            icon: "/img/notifications/songRequestNotification.webp",
-        });
-    }
-
-    function watchNewSongRequests() {
-        const currentLength = songRequests.data.length;
-
-        if (mounted && currentLength > songRequestLength) {
-            notifyNewSongRequest(songRequests.data[0]);
-        }
-
-        songRequestLength = currentLength;
-    }
-
-    onMount(async () => {
-        mounted = true;
-        songRequestLength = songRequests.data.length;
-        syncNotificationPermission();
-    });
-
-    $: songRequests, watchNewSongRequests();
 </script>
 
 {#if can.list}

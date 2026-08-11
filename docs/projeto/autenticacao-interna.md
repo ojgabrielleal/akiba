@@ -141,7 +141,7 @@ Exemplo de permissão:
 report.module.view
 post.create
 locution.start
-inactive.restore
+trash.restore
 ```
 
 ## Interface Relacionada

@@ -42,5 +42,6 @@ Models representam persistencia, casts, scopes, relationships e atributos simple
 ## Finalizacao
 
 - Mantenha models focados em persistencia, casts, scopes, relationships e atributos simples.
-- Fluxos de negocio pertencem a `app/Actions`.
-- Composicao de query para paginas pertence a `app/Filters`.
+- Fluxos de negocio pertencem a `app/Services`.
+- Composicao de query para paginas pertence ao service do escopo correspondente, normalmente em metodo `filter()`.
+- Processamento reutilizavel que nao e regra de negocio direta pertence a `app/Processing`.

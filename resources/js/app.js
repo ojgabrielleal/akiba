@@ -2,6 +2,12 @@ import "./bootstrap";
 import { createInertiaApp } from "@inertiajs/svelte";
 import { mount } from "svelte";
 
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+        navigator.serviceWorker.register("/push-worker.js").catch(() => {});
+    });
+}
+
 createInertiaApp({
     progress: {
         color: "#0091ff",

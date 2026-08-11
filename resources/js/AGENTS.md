@@ -101,6 +101,7 @@ resources/js/
 - `lib/utils/`: helpers puros de frontend, separados por dominio.
 - `lib/constants/`: constantes e opcoes estaticas usadas pela UI, como listas de select, tags, preferencias e configuracoes fixas.
 - `css/`: estilos globais, tokens e temas.
+- Web Push usa `public/push-worker.js` e helpers em `lib/utils/push`. Nao coloque logica de inscricao push diretamente em widgets.
 
 ## Paginas Inertia
 
@@ -123,6 +124,7 @@ resources/js/
 - Components pequenos nao devem ler `$page.props`; recebem props explicitas.
 - Layouts podem ler `$page.props` quando o dado for global ou transversal, como `user`, `flash`, `oauth`, navbar, player, tema ou estado de menu.
 - Excecoes a `$page.props` fora de paginas/layouts devem ser componentes globais/transversais bem justificados, como `Meta`, `FlashToaster` ou helpers de permissao/autenticacao.
+- Props globais tecnicas, como `push.vapid_public_key`, devem ser lidas no ponto de uso e repassadas para helpers de `lib/utils`; nao espalhe chamadas diretas a APIs do browser pelo componente.
 - Use `lib/stores` apenas para estado client-side compartilhado; nao use stores como espelho de props do backend.
 - Antes de criar algo novo, procure um componente ou widget parecido.
 - Ao desmembrar um widget grande, extraia somente partes com responsabilidade real, como uma area visual/interativa propria, uma lista, um perfil, um formulario interno ou uma secao complexa. Evite criar wrappers finos que apenas encapsulam outro componente sem regra, estado, markup relevante ou reducao clara de duplicacao.
@@ -132,6 +134,7 @@ resources/js/
 - Inputs e botoes reutilizaveis devem repassar `{...$$restProps}` quando apropriado.
 - Variantes visuais devem ficar em mapas internos, como `variants`, `sizes` ou `shapes`, com fallback padrao.
 - Ao criar componente/widget reutilizavel, atualize o `index.js` do diretorio quando existir.
+- Quando um comportamento de browser precisar ser reutilizado, como Web Push, permissao de notificacao, service worker, storage ou eventos globais, crie um helper em `lib/utils` e deixe o componente com uma chamada de alto nivel.
 
 ## Organizacao Interna Svelte
 
@@ -149,6 +152,7 @@ resources/js/
 - Use `const` para valores que nao sao reatribuidos no componente, incluindo mapas, opcoes e permissao local (`const can = ...Permissions()`). Use `let` somente para estado que muda por interacao, lifecycle ou reatividade.
 - Evite declarar props depois de imports internos ou misturadas com estado local.
 - Em paginas Inertia, apos os imports, leia `$page.props` em um bloco reativo unico sempre que possivel.
+- Evite estado local quando o valor puder ser resolvido por util centralizado. Exemplo: use `resolvePushNotificationPermission()` em vez de manter `notificationPermission` no widget.
 
 ## Estilo
 
@@ -167,3 +171,4 @@ resources/js/
 
 - Nao altere fora de `resources/js` sem necessidade explicita da tarefa.
 - Nao coloque dado sensivel, segredo, acesso a banco ou logica server-only em `resources/js`.
+- Nunca exponha chaves privadas no frontend. Para Web Push, somente `VAPID_PUBLIC_KEY` pode chegar ao browser.

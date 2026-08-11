@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 // Provisory controllers
 use App\Http\Controllers\Provisory\HomeController;
-use App\Http\Controllers\Public\SongRequestController;
+use App\Http\Controllers\Public\PlayerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,6 +16,6 @@ Route::prefix("")->middleware(['oauth.resolve', 'inertia'])->group(function () {
         Route::get('', 'render')->name('home');
     });
 
-    Route::post('song-request', [SongRequestController::class, 'store'])
+    Route::post('song-request', [PlayerController::class, 'storeSongRequest'])
         ->middleware('oauth');
 });

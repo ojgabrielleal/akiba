@@ -43,20 +43,22 @@ Frontend
 
 | Arquivo | O que faz |
 | --- | --- |
-| `config/oauth.php` | Mapeia cada provider para um service e uma action. |
-| `config/services.php` | Guarda credenciais e redirect URI de Discord e Google. |
+| `config/services.php` | Guarda credenciais e redirect URI de Discord e Google no formato usado pelo Socialite. |
+| `AppServiceProvider.php` | Registra o provider comunitário do Discord no Socialite. |
 | `.env` | Define IDs, secrets e callbacks reais do ambiente. |
 
 Exemplo:
 
 ```php
 'discord' => [
-    'service' => DiscordOAuthAccountService::class,
-    'action' => DiscordOAuthAccountAction::class,
+    'client_id' => env('DISCORD_CLIENT_ID'),
+    'client_secret' => env('DISCORD_CLIENT_SECRET'),
+    'redirect' => env('DISCORD_REDIRECT_URI'),
 ],
 'google' => [
-    'service' => GoogleOAuthAccountService::class,
-    'action' => GoogleOAuthAccountAction::class,
+    'client_id' => env('GOOGLE_CLIENT_ID'),
+    'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+    'redirect' => env('GOOGLE_REDIRECT_URI'),
 ],
 ```
 
@@ -100,21 +102,14 @@ GET /oauth/{provider}/redirect
 | Arquivo | O que faz |
 | --- | --- |
 | `routes/web/public.php` | Declara a rota `oauth.redirect`. |
-| `OAuthAccountRedirectController.php` | Resolve provider no config e redireciona para a URL externa. |
-| `DiscordOAuthAccountService.php` | Monta URL de autorização do Discord. |
-| `GoogleOAuthAccountService.php` | Monta URL de autorização do Google. |
+| `OAuthAccountRedirectController.php` | Valida provider permitido e redireciona via Socialite. |
 
 Fluxo:
 
 ```txt
 GET /oauth/discord/redirect
   -> OAuthAccountRedirectController
-     -> config("oauth.providers.discord")
-     -> DiscordOAuthAccountService::authorizationUrl()
-        -> cria state
-        -> salva state na sessão
-        -> monta URL externa
-     -> redirect()->away(...)
+     -> Socialite::driver('discord')->redirect()
 ```
 
 ## Etapa 4: Callback do Provider
@@ -128,25 +123,16 @@ GET /oauth/{provider}/callback
 | Arquivo | O que faz |
 | --- | --- |
 | `routes/web/public.php` | Declara a rota `oauth.callback`. |
-| `OAuthAccountCallbackController.php` | Orquestra troca de code, busca usuário externo e chama action do provider. |
-| `DiscordOAuthAccountService.php` | Troca `code` por token e busca usuário Discord. |
-| `GoogleOAuthAccountService.php` | Troca `code` por token e busca usuário Google. |
-| `DiscordOAuthAccountAction.php` | Cria/atualiza `OAuthAccount` do Discord e grava cookie. |
-| `GoogleOAuthAccountAction.php` | Cria/atualiza `OAuthAccount` do Google e grava cookie. |
+| `OAuthAccountCallbackController.php` | Busca usuário externo via Socialite e chama o service local. |
+| `OAuthAccountService.php` | Cria/atualiza `OAuthAccount` e grava cookie local. |
 
 Fluxo:
 
 ```txt
 GET /oauth/discord/callback
   -> OAuthAccountCallbackController
-     -> config("oauth.providers.discord")
-     -> service::exchangeCodeForToken($request)
-        -> valida code
-        -> valida state da sessão
-        -> troca code por access_token
-     -> service::getUser($accessToken)
-        -> busca dados do usuário no provider
-     -> action::execute($providerUser, $request)
+     -> Socialite::driver('discord')->user()
+     -> OAuthAccountService::storeFromProvider($provider, $providerUser, $request)
         -> updateOrCreate OAuthAccount
         -> gera token local
         -> salva hash no banco
@@ -159,8 +145,7 @@ GET /oauth/discord/callback
 | Arquivo | O que faz |
 | --- | --- |
 | `app/Models/OAuthAccount.php` | Model da conta OAuth local. |
-| `DiscordOAuthAccountAction.php` | Normaliza usuário Discord e salva conta local. |
-| `GoogleOAuthAccountAction.php` | Normaliza usuário Google e salva conta local. |
+| `OAuthAccountService.php` | Normaliza usuário do provider, salva conta local e cria cookie. |
 
 Campos importantes:
 
@@ -319,14 +304,12 @@ POST /oauth/logout
 
 | Responsabilidade | Arquivos |
 | --- | --- |
-| Configurar providers | `config/oauth.php`, `config/services.php`, `.env` |
+| Configurar providers | `config/services.php`, `.env` |
 | Declarar rotas | `routes/web/public.php` |
 | Redirecionar para provider | `OAuthAccountRedirectController.php` |
 | Receber callback | `OAuthAccountCallbackController.php` |
-| Falar com Discord | `DiscordOAuthAccountService.php` |
-| Falar com Google | `GoogleOAuthAccountService.php` |
-| Criar conta Discord | `DiscordOAuthAccountAction.php` |
-| Criar conta Google | `GoogleOAuthAccountAction.php` |
+| Falar com provider externo | Laravel Socialite |
+| Criar conta OAuth local | `OAuthAccountService.php` |
 | Resolver cookie | `ResolveOAuthAccount.php` |
 | Exigir autenticação pública | `EnsureOAuthAccountAuthenticated.php` |
 | Completar perfil | `OAuthAccountController.php`, `CompleteOAuthAccountProfileRequest.php`, `CompleteOAuthAccountProfileAction.php` |
@@ -334,10 +317,11 @@ POST /oauth/logout
 
 ## Checklist
 
-- Provider foi registrado em `config/oauth.php`?
+- Provider foi permitido nos controllers OAuth?
+- Provider Discord foi registrado em `AppServiceProvider`?
 - Credenciais existem em `config/services.php` e `.env`?
 - Callback configurado no provider externo bate com `*_REDIRECT_URI`?
-- `state` é validado no callback?
+- Socialite está instalado e com autoload atualizado?
 - Cookie OAuth salva token, banco salva hash?
 - Rotas públicas que precisam da prop `oauth` usam `oauth.resolve`?
 - Ações públicas protegidas usam `oauth`?

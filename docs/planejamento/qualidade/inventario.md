@@ -40,7 +40,7 @@ atualizado_em: 2026-08-03
 - [midias](../modulos/midias)
 - [administracao](../modulos/administracao)
 - [relatorios](../modulos/relatorios)
-- [itens-desativados](../modulos/itens-desativados)
+- [lixeira](../modulos/lixeira)
 
 ## Cobertura Inicial
 

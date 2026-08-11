@@ -52,7 +52,7 @@ Arquivos relacionados:
 ```txt
 app/Filters/OnairFilter.php
 app/Http/Resources/Onair/OnairResource.php
-app/Services/External/StreamService.php
+app/Integrations/StreamService.php
 resources/js/lib/widgets/public/player
 resources/js/lib/widgets/private/grid/StreamMetricsGrid.svelte
 ```

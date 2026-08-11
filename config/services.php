@@ -43,25 +43,21 @@ return [
 
     'discord' => [
         'webhook' => env('DISCORD_WEBHOOK_STREAM_NOTIFICATION'),
-        'oauth' => [
-            'client_id' => env('DISCORD_CLIENT_ID'),
-            'client_secret' => env('DISCORD_CLIENT_SECRET'),
-            'redirect_uri' => env('DISCORD_REDIRECT_URI'),
-        ],
+        'client_id' => env('DISCORD_CLIENT_ID'),
+        'client_secret' => env('DISCORD_CLIENT_SECRET'),
+        'redirect' => env('DISCORD_REDIRECT_URI'),
     ],
 
     'google' => [
-        'oauth' => [
-            'client_id' => env('GOOGLE_CLIENT_ID'),
-            'client_secret' => env('GOOGLE_CLIENT_SECRET'),
-            'redirect_uri' => env('GOOGLE_REDIRECT_URI'),
-        ],
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect' => env('GOOGLE_REDIRECT_URI'),
     ],
 
-    'onesignal' => [
-        'app_id' => env('ONESIGNAL_APP_ID'),
-        'api_key' => env('ONESIGNAL_REST_API_KEY'),
-        'verify_ssl' => env('ONESIGNAL_VERIFY_SSL', true),
+    'webpush' => [
+        'public_key' => env('VAPID_PUBLIC_KEY'),
+        'private_key' => env('VAPID_PRIVATE_KEY'),
+        'subject' => env('VAPID_SUBJECT', env('APP_URL')),
     ],
 
 ];

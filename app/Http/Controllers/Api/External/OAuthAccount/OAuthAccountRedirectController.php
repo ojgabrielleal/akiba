@@ -3,16 +3,19 @@
 namespace App\Http\Controllers\Api\External\OAuthAccount;
 
 use App\Http\Controllers\Controller;
-
 use Illuminate\Http\RedirectResponse;
+use Laravel\Socialite\Facades\Socialite;
 
 class OAuthAccountRedirectController extends Controller
 {
     public function __invoke(string $provider): RedirectResponse
     {
-        $oauthProvider = config("oauth.providers.$provider");
-        abort_unless($oauthProvider, 404);
+        abort_unless($this->isSupportedProvider($provider), 404);
+        return Socialite::driver($provider)->redirect();
+    }
 
-        return redirect()->away(app($oauthProvider['service'])->authorizationUrl());
+    private function isSupportedProvider(string $provider): bool
+    {
+        return in_array($provider, ['discord', 'google'], true);
     }
 }

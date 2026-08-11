@@ -118,6 +118,11 @@ class User extends Authenticatable
         return $this->hasMany(UserPreference::class, 'user_id');
     }
 
+    public function pushSubscriptions()
+    {
+        return $this->hasMany(PushSubscription::class);
+    }
+
     public function roles()
     {
         return $this->belongsToMany(Role::class, 'roles_pivot', 'user_id', 'role_id');

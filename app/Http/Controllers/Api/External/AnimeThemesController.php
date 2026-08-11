@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\External;
 
 use App\Http\Controllers\Controller;
 
-use App\Services\External\AnimeThemeService;
+use App\Integrations\AnimeThemeService;
 
 use Illuminate\Http\Request;
 

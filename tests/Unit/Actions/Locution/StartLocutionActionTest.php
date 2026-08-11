@@ -1,8 +1,8 @@
 <?php
 
-namespace Tests\Unit\Actions\Locution;
+namespace Tests\Unit\Services\Locution;
 
-use App\Actions\Locution\StartLocutionAction;
+use App\Services\LocutionService;
 use App\Models\Onair;
 use App\Models\Program;
 use App\Models\ProgramSchedule;
@@ -10,7 +10,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class StartLocutionActionTest extends TestCase
+class LocutionServiceTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -48,7 +48,7 @@ class StartLocutionActionTest extends TestCase
                 'status' => 'pending',
             ]);
 
-        app(StartLocutionAction::class)->execute($user, $liveProgram, [
+        app(LocutionService::class)->start($user, $liveProgram, [
             'phrase' => [
                 'text' => 'Starting live now',
                 'icon' => '/img/icon.webp',

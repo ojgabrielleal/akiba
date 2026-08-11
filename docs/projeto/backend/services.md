@@ -11,8 +11,8 @@ Services encapsulam integrações externas ou processos internos reutilizáveis.
 ## Onde Ficam
 
 ```txt
-app/Services/External
-app/Services/Process
+app/Integrations
+app/Processing
 ```
 
 ## Tipos
@@ -35,7 +35,7 @@ Não use service para autorização, validação de request, response HTTP, flas
 Arquivo:
 
 ```txt
-app/Services/External/AnimeNewsFeedService.php
+app/Integrations/AnimeNewsFeedService.php
 ```
 
 O que faz:
@@ -95,7 +95,7 @@ Cuidados:
 Arquivo:
 
 ```txt
-app/Services/External/AnimeThemeService.php
+app/Integrations/AnimeThemeService.php
 ```
 
 O que faz:
@@ -148,7 +148,7 @@ Cuidados:
 Arquivo:
 
 ```txt
-app/Services/External/AudienceService.php
+app/Integrations/AudienceService.php
 ```
 
 O que faz:
@@ -169,7 +169,7 @@ Arquivos relacionados:
 
 ```txt
 app/Models/RadioStation.php
-app/Services/Process/AudienceCollectorService.php
+app/Processing/AudienceCollectorProcess.php
 app/Console/Commands/Schedules/CollectAudience.php
 tests/Unit/Services/AudienceServiceTest.php
 ```
@@ -179,7 +179,7 @@ Fluxo:
 ```txt
 php artisan audience:collect
   -> CollectAudience
-     -> AudienceCollectorService::collect()
+     -> AudienceCollectorProcess::collect()
         -> AudienceService::get($radioStation)
         -> RadioAudienceSnapshot
 ```
@@ -195,7 +195,7 @@ Cuidados:
 Arquivo:
 
 ```txt
-app/Services/External/DiscordWebhookService.php
+app/Integrations/DiscordWebhookService.php
 ```
 
 O que faz:
@@ -242,67 +242,70 @@ Cuidados:
 - se a URL não estiver configurada, o método retorna sem enviar;
 - payload de produção deve evitar dados sensíveis.
 
-### OneSignalService
+### PushNotificationService
 
 Arquivo:
 
 ```txt
-app/Services/External/OneSignalService.php
+app/Services/PushNotificationService.php
 ```
 
 O que faz:
 
-- envia push notification pelo OneSignal;
-- monta título, mensagem e URL;
-- envia para o segmento `All`;
-- registra erro quando a API falha;
-- só envia em produção.
+- registra inscrições Web Push de usuários internos;
+- envia push para um usuário específico;
+- envia push para todos quando não houver usuário alvo;
+- remove inscrições expiradas.
 
 Serviço externo usado:
 
 ```txt
-https://api.onesignal.com
+Web Push nativo
 ```
 
 Configuração:
 
 ```txt
 config/services.php
-services.onesignal.app_id
-services.onesignal.api_key
-ONESIGNAL_APP_ID
-ONESIGNAL_REST_API_KEY
+services.webpush.public_key
+services.webpush.private_key
+services.webpush.subject
+VAPID_PUBLIC_KEY
+VAPID_PRIVATE_KEY
+VAPID_SUBJECT
 ```
 
 Arquivos relacionados:
 
 ```txt
-app/Actions/Locution/StartLocutionAction.php
-app/Http/Controllers/Private/Invokes/StartLocutionController.php
+app/Models/PushSubscription.php
+app/Http/Controllers/Private/PushSubscriptionController.php
+app/Services/SongRequestService.php
 routes/web/private.php
+public/push-worker.js
 ```
 
 Fluxo:
 
 ```txt
-POST /panel/locution/start/{program}
-  -> StartLocutionController
-     -> StartLocutionAction
-        -> OneSignalService::sendPush()
+POST /song-request
+  -> PlayerController::storeSongRequest()
+     -> SongRequestService::store()
+        -> PushNotificationService::sendToUserOrAll()
 ```
 
 Cuidados:
 
-- não enviar push em ambiente local;
-- conferir credenciais antes de publicar;
-- mensagens precisam ser curtas e seguras para público geral.
+- sem chaves VAPID configuradas o envio é ignorado;
+- inscrições expiradas devem ser removidas;
+- mensagens devem ser curtas e seguras para notificações de sistema.
 
 ### StreamService
 
 Arquivo:
 
 ```txt
-app/Services/External/StreamService.php
+app/Integrations/StreamService.php
 ```
 
 O que faz:
@@ -360,48 +363,55 @@ Cuidados:
 - logs ajudam a identificar URL ausente ou resposta inválida;
 - a estrutura retornada deve continuar compatível com widgets do player.
 
-### DiscordOAuthAccountService
+### OAuth via Socialite
 
 Arquivo:
 
 ```txt
-app/Services/External/OAuthAccount/DiscordOAuthAccountService.php
+app/Services/OAuthAccountService.php
 ```
 
 O que faz:
 
-- monta URL de autorização do Discord;
-- salva `state` na sessão;
-- troca `code` por token;
-- busca dados do usuário autenticado;
-- valida `state` para reduzir risco de CSRF no OAuth.
+- completa perfil OAuth público;
+- normaliza usuário retornado pelo Socialite;
+- cria ou atualiza `OAuthAccount`;
+- gera token local e grava apenas o hash no banco;
+- cria cookie `akiba_oauth_token`.
 
 Serviço externo usado:
 
 ```txt
-Discord OAuth2
+Laravel Socialite
+socialiteproviders/discord
 ```
 
 Configuração:
 
 ```txt
-services.discord.oauth.client_id
-services.discord.oauth.client_secret
-services.discord.oauth.redirect_uri
+services.discord.client_id
+services.discord.client_secret
+services.discord.redirect
+services.google.client_id
+services.google.client_secret
+services.google.redirect
 DISCORD_CLIENT_ID
 DISCORD_CLIENT_SECRET
 DISCORD_REDIRECT_URI
+GOOGLE_CLIENT_ID
+GOOGLE_CLIENT_SECRET
+GOOGLE_REDIRECT_URI
 ```
 
 Arquivos relacionados:
 
 ```txt
-app/Actions/OAuthAccount/Providers/DiscordOAuthAccountAction.php
 app/Http/Controllers/Api/External/OAuthAccount/OAuthAccountRedirectController.php
 app/Http/Controllers/Api/External/OAuthAccount/OAuthAccountCallbackController.php
 app/Http/Middleware/OAuth/ResolveOAuthAccount.php
 app/Http/Middleware/OAuth/EnsureOAuthAccountAuthenticated.php
 routes/web/public.php
+app/Providers/AppServiceProvider.php
 ```
 
 Rotas:
@@ -412,57 +422,12 @@ GET /oauth/{provider}/callback
 POST /oauth/logout
 ```
 
-### GoogleOAuthAccountService
+### AudienceCollectorProcess
 
 Arquivo:
 
 ```txt
-app/Services/External/OAuthAccount/GoogleOAuthAccountService.php
-```
-
-O que faz:
-
-- monta URL de autorização do Google;
-- salva `state` na sessão;
-- troca `code` por token;
-- busca dados do usuário;
-- usa escopos `openid email profile`.
-
-Serviço externo usado:
-
-```txt
-Google OAuth2
-```
-
-Configuração:
-
-```txt
-services.google.oauth.client_id
-services.google.oauth.client_secret
-services.google.oauth.redirect_uri
-GOOGLE_CLIENT_ID
-GOOGLE_CLIENT_SECRET
-GOOGLE_REDIRECT_URI
-```
-
-Arquivos relacionados:
-
-```txt
-app/Actions/OAuthAccount/Providers/GoogleOAuthAccountAction.php
-app/Http/Controllers/Api/External/OAuthAccount/OAuthAccountRedirectController.php
-app/Http/Controllers/Api/External/OAuthAccount/OAuthAccountCallbackController.php
-app/Http/Middleware/OAuth/ResolveOAuthAccount.php
-routes/web/public.php
-```
-
-## Services de Processo
-
-### AudienceCollectorService
-
-Arquivo:
-
-```txt
-app/Services/Process/AudienceCollectorService.php
+app/Processing/AudienceCollectorProcess.php
 ```
 
 O que faz:
@@ -486,7 +451,7 @@ app/Console/Commands/Schedules/CollectAudience.php
 app/Models/RadioStation.php
 app/Models/RadioAudienceSnapshot.php
 app/Models/Onair.php
-tests/Unit/Services/AudienceCollectorServiceTest.php
+tests/Unit/Services/AudienceCollectorProcessTest.php
 ```
 
 Comando:
@@ -495,12 +460,12 @@ Comando:
 ./run.sh artisan audience:collect
 ```
 
-### ImageProcessService
+### ImageProcess
 
 Arquivo:
 
 ```txt
-app/Services/Process/ImageProcessService.php
+app/Processing/ImageProcess.php
 ```
 
 O que faz:
@@ -538,7 +503,7 @@ app/Actions/ListenerGallery/UpdateListenerGalleryAction.php
 app/Actions/ListenerGallery/DestroyListenerGalleryAction.php
 app/Actions/Profile/UpdateProfileAction.php
 app/Actions/Profile/UpdateUserAction.php
-tests/Unit/Services/ImageProcessServiceTest.php
+tests/Unit/Services/ImageProcessTest.php
 ```
 
 Cuidados:

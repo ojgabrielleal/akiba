@@ -3,7 +3,7 @@
 namespace Tests\Unit\Services;
 
 use App\Models\RadioStation;
-use App\Services\External\AudienceService;
+use App\Integrations\AudienceService;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 

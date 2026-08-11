@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands\Schedules;
 
-use App\Services\Process\AudienceCollectorService;
+use App\Processing\AudienceCollectorProcess;
 use Illuminate\Console\Command;
 
 class CollectAudience extends Command
@@ -10,10 +10,12 @@ class CollectAudience extends Command
     protected $signature = 'audience:collect';
     protected $description = 'Collect and store the current audience of active radio stations.';
 
-    public function handle(AudienceCollectorService $audienceCollectorService): int
+    public function handle(AudienceCollectorProcess $audienceCollectorProcess): int
     {
-        $audienceCollectorService->collect();
+        $audienceCollectorProcess->collect();
+
         $this->info('Radio audience collected successfully.');
+
         return self::SUCCESS;
     }
 }

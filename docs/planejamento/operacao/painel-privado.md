@@ -32,7 +32,7 @@ Sempre que for acompanhar tarefas, publicar conteudos, operar radio, gerenciar u
 ## Cuidados
 
 - Permissoes controlam o que aparece no menu e o que pode ser feito.
-- Nem todo usuario deve ter acesso a administracao, relatorios ou itens desativados.
+- Nem todo usuario deve ter acesso a administracao, relatorios ou lixeira.
 - Tarefas atrasadas ou em revisao devem ser tratadas como prioridade operacional.
 
 ## Referencias

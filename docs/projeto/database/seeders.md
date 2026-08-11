@@ -87,7 +87,7 @@ post.create
 post.feed.view
 locution.start
 report.module.view
-inactive.restore
+trash.restore
 ```
 
 Arquivos relacionados:

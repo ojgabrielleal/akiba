@@ -2,14 +2,14 @@
 
 namespace Tests\Unit\Filters;
 
-use App\Filters\PostFilter;
+use App\Services\PostService;
 use App\Models\PageView;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class PostFilterTest extends TestCase
+class PostServiceTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -43,7 +43,7 @@ class PostFilterTest extends TestCase
         PageView::factory(5)->for($inactive, 'viewable')->create();
         PageView::factory(5)->for($draft, 'viewable')->create();
 
-        $posts = app(PostFilter::class)->apply([
+        $posts = app(PostService::class)->filter([
             'user' => $user,
             'active' => true,
             'status' => 'published',

@@ -55,10 +55,10 @@
       "address": "/panel/reports"
     },
     {
-      "name": "Itens desativados",
+      "name": "Lixeira",
       "icon": "/svg/trash.svg",
-      "permission": "inactive.module.view",
-      "address": "/panel/inactive"
+      "permission": "trash.module.view",
+      "address": "/panel/trash"
     }
   ],
   "public": [

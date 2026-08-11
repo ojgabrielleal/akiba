@@ -59,7 +59,7 @@ Use `docs:dev` para escrever com atualização automática, `docs:build` para va
 - [midias](./modulos/midias)
 - [administracao](./modulos/administracao)
 - [relatorios](./modulos/relatorios)
-- [itens-desativados](./modulos/itens-desativados)
+- [lixeira](./modulos/lixeira)
 
 ## Como Usar
 

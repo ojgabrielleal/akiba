@@ -1,15 +1,15 @@
 <?php
 
-namespace Tests\Unit\Actions\Locution;
+namespace Tests\Unit\Services\Locution;
 
-use App\Actions\Locution\FinishLocutionAction;
+use App\Services\LocutionService;
 use App\Models\Onair;
 use App\Models\Program;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class FinishLocutionActionTest extends TestCase
+class LocutionServiceTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -38,7 +38,7 @@ class FinishLocutionActionTest extends TestCase
             ->asDefault()
             ->create();
 
-        app(FinishLocutionAction::class)->execute();
+        app(LocutionService::class)->finish();
 
         $onair = Onair::live()->first();
 

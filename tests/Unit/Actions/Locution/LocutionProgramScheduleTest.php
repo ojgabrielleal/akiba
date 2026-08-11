@@ -1,15 +1,13 @@
 <?php
 
-namespace Tests\Unit\Actions\Locution;
+namespace Tests\Unit\Services\Locution;
 
-use App\Actions\Locution\FinishLocutionAction;
-use App\Actions\Locution\StartLocutionAction;
+use App\Services\LocutionService;
 use App\Models\Onair;
 use App\Models\Program;
 use App\Models\ProgramSchedule;
 use App\Models\User;
-use App\Services\External\DiscordWebhookService;
-use App\Services\External\OneSignalService;
+use App\Integrations\DiscordWebhookService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -35,9 +33,9 @@ class LocutionProgramScheduleTest extends TestCase
             'status' => 'completed',
         ]);
 
-        $startAction = new StartLocutionAction(new DiscordWebhookService, new OneSignalService);
+        $startService = new LocutionService(new DiscordWebhookService);
 
-        $startAction->execute($user, $program, [
+        $startService->start($user, $program, [
             'phrase' => [
                 'text' => 'Ao vivo',
                 'icon' => null,
@@ -49,7 +47,7 @@ class LocutionProgramScheduleTest extends TestCase
 
         $this->assertSame('completed', $completedSchedule->refresh()->status);
 
-        (new FinishLocutionAction)->execute();
+        app(LocutionService::class)->finish();
 
         $this->assertSame('completed', $completedSchedule->refresh()->status);
     }

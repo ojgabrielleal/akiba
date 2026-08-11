@@ -17,28 +17,25 @@ class ResolveOAuthAccount
     public function handle(Request $request, Closure $next): Response
     {
         $oauthToken = $request->cookie('akiba_oauth_token');
+        $userToken = $request->cookie('akiba_user_token');
 
-        $oauthAccount = null;
         $user = $request->user();
+        $oauthAccount = null;
 
         if ($oauthToken) {
             $oauthAccount = OAuthAccount::query()
                 ->where('account_token_hash', hash('sha256', $oauthToken))
                 ->first();
 
-            if ($oauthAccount) {
-                $request->attributes->set('oauth_account', $oauthAccount);
-            }
+            if ($oauthAccount) $request->attributes->set('oauth_account', $oauthAccount);
         }
 
-        if (!$user && $userToken = $request->cookie('akiba_user_token')) {
+        if (!$user && $userToken) {
             $user = User::query()
                 ->where('account_token_hash', hash('sha256', $userToken))
                 ->first();
 
-            if ($user) {
-                $request->attributes->set('member_user', $user);
-            }
+            if ($user) $request->attributes->set('member_user', $user);
         }
 
         Inertia::share('oauth', [

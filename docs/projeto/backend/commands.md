@@ -111,7 +111,7 @@ a cada 10 minutos
 
 O que faz:
 
-- chama `AudienceCollectorService`;
+- chama `AudienceCollectorProcess`;
 - percorre rádios ativas;
 - coleta audiência via endpoint externo;
 - salva snapshots;
@@ -120,8 +120,8 @@ O que faz:
 Arquivos envolvidos:
 
 ```txt
-app/Services/Process/AudienceCollectorService.php
-app/Services/External/AudienceService.php
+app/Processing/AudienceCollectorProcess.php
+app/Integrations/AudienceService.php
 app/Models/RadioStation.php
 app/Models/RadioAudienceSnapshot.php
 app/Models/Onair.php
@@ -131,7 +131,7 @@ Testes relacionados:
 
 ```txt
 tests/Feature/Console/CollectAudienceTest.php
-tests/Unit/Services/AudienceCollectorServiceTest.php
+tests/Unit/Services/AudienceCollectorProcessTest.php
 tests/Unit/Services/AudienceServiceTest.php
 ```
 

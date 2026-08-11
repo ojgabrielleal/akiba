@@ -11,7 +11,6 @@ class OAuthAccountLogoutController extends Controller
     public function __invoke(): RedirectResponse
     {
         Cookie::queue(Cookie::forget('akiba_oauth_token'));
-
         return redirect()->route('home');
     }
 }

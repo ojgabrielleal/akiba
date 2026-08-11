@@ -2,28 +2,42 @@
 
 namespace App\Http\Controllers\Private;
 
-use App\Actions\Repository\StoreRepositoryAction;
-use App\Actions\Repository\UpdateRepositoryAction;
+use App\Services\RepositoryService;
 
-use App\Http\Controllers\Concerns\HasFlashMessages;
+use App\Http\Controllers\Concerns\ResolvesAuthorizedProps;
 use App\Http\Controllers\Controller;
-
-use App\Http\Requests\Repository\StoreRepositoryRequest;
-use App\Http\Requests\Repository\UpdateRepositoryRequest;
 
 use App\Http\Resources\RepositoryResource;
 
 use App\Models\Repository;
 
 use Inertia\Inertia;
+use App\Http\Controllers\Concerns\HasFlashMessages;
+use App\Http\Requests\Repository\StoreRepositoryRequest;
+use App\Http\Requests\Repository\UpdateRepositoryRequest;
 
 class RepositoryController extends Controller
 {
     use HasFlashMessages;
 
-    private $render = 'private/Administration';
+    use ResolvesAuthorizedProps;
 
-    public function show(Repository $repository)
+    private $render = 'private/Marketing';
+
+    public function __construct(
+        private RepositoryService $repositoryFilter,
+    ) {}
+
+    private function indexRepositories()
+    {
+        return $this->whenCanViewAny(Repository::class,
+            fn () => RepositoryResource::collection(
+                $this->repositoryFilter->filter(['active' => true])
+            )->format('grouped'),
+        );
+    }
+
+    public function showRepository(Repository $repository)
     {
         $this->authorize('view', $repository);
 
@@ -32,26 +46,38 @@ class RepositoryController extends Controller
         ]);
     }
 
+    public function storeRepository(StoreRepositoryRequest $request, RepositoryService $service)
+    {
+        $service->store($request->validated(), $request->file('image'));
+
+        return $this->flashMessage('save');
+    }
+
+    public function updateRepository(UpdateRepositoryRequest $request, RepositoryService $service, Repository $repository)
+    {
+        $service->update($repository, $request->validated(), $request->file('image'));
+
+        return $this->flashMessage('update');
+    }
+
+    public function deactivateRepository(RepositoryService $service, Repository $repository)
+    {
+        $this->authorize('deactivate', $repository);
+
+        $service->deactivate($repository);
+
+        return $this->flashMessage('deactivate');
+    }
+
     private function indexRepository(Repository $repository): RepositoryResource
     {
         return new RepositoryResource($repository);
     }
 
-    public function store(StoreRepositoryRequest $request, StoreRepositoryAction $action)
+    public function render()
     {
-        $action->execute($request->validated(), $request->file('image'));
-
-        return $this->flashMessage('save');
-    }
-
-    public function update(UpdateRepositoryRequest $request, UpdateRepositoryAction $action, Repository $repository)
-    {
-        $action->execute(
-            $repository,
-            $request->validated(),
-            $request->file('image')
-        );
-
-        return $this->flashMessage('update');
+        return Inertia::render($this->render, [
+            'repositories' => $this->indexRepositories(),
+        ]);
     }
 }

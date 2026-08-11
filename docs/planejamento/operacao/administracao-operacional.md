@@ -62,5 +62,5 @@ Para controlar usuarios, cargos, permissoes, calendario, atividades, tarefas e f
 
 - [administracao](../modulos/administracao)
 - [painel-privado](./painel-privado)
-- [itens-desativados](../modulos/itens-desativados)
+- [lixeira](../modulos/lixeira)
 

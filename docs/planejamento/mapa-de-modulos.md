@@ -19,7 +19,7 @@ atualizado_em: 2026-08-03
 | Midias | `/panel/media` | `private/Media` | `MediaPageController` | [midias](./modulos/midias) |
 | Administracao | `/panel/administration` | `private/Administration` | `AdministrationPageController` | [administracao](./modulos/administracao) |
 | Relatorios | `/panel/reports` | `private/Reports` | `ReportsPageController` | [relatorios](./modulos/relatorios) |
-| Itens desativados | `/panel/inactive` | `private/InactiveItems` | `InactiveItemsPageController` | [itens-desativados](./modulos/itens-desativados) |
+| Lixeira | `/panel/trash` | `private/Trash` | `TrashController` | [lixeira](./modulos/lixeira) |
 
 ## Padrao de Planejamento por Modulo
 
@@ -32,4 +32,3 @@ Cada modulo deve manter:
 - pendencias;
 - riscos;
 - referencias para outros modulos.
-

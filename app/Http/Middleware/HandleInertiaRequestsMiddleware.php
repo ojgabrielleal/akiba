@@ -2,9 +2,9 @@
 
 namespace App\Http\Middleware;
 
-use App\Filters\OnairFilter;
+use App\Services\OnairService;
 use App\Http\Resources\Onair\OnairResource;
-use App\Services\External\StreamService;
+use App\Integrations\StreamService;
 
 use Illuminate\Http\Request;
 
@@ -34,13 +34,16 @@ class HandleInertiaRequestsMiddleware extends Middleware
     {
         return array_merge(parent::share($request), [
             'onair' => fn () => OnairResource::collection(
-                app(OnairFilter::class)->apply([
+                app(OnairService::class)->filter([
                     'live' => true,
                     'with' => 'program.host',
                 ])
             ),
             'stream' => fn () => (new StreamService)->data(),
             'flash' => fn () => session('flash'),
+            'push' => [
+                'vapid_public_key' => config('services.webpush.public_key'),
+            ],
         ]);
     }
 }

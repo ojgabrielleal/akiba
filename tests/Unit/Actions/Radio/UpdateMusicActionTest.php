@@ -1,14 +1,14 @@
 <?php
 
-namespace Tests\Unit\Actions\Radio;
+namespace Tests\Unit\Services\Radio;
 
-use App\Actions\Music\UpdateMusicAction;
+use App\Services\MusicService;
 use App\Models\Music;
-use App\Services\Process\ImageProcessService;
+use App\Processing\ImageProcess;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class UpdateMusicActionTest extends TestCase
+class MusicServiceTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -22,9 +22,9 @@ class UpdateMusicActionTest extends TestCase
             'image' => '/storage/images/musics/old.webp',
         ]);
 
-        $action = new UpdateMusicAction(new ImageProcessService());
+        $service = new MusicService(new ImageProcess());
 
-        $action->execute($music, [
+        $service->update($music, [
             'type' => 'ED',
             'production' => 'New Anime',
             'artist' => 'New Artist',

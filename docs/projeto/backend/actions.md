@@ -65,7 +65,7 @@ O controller chama a action. A action não deve conhecer detalhes de Inertia, fl
 class StorePostAction
 {
     public function __construct(
-        private ImageProcessService $image,
+        private ImageProcess $image,
     ) {}
 
     public function execute(User $user, array $data, ?UploadedFile $image = null): Post

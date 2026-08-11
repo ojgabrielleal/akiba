@@ -8,7 +8,7 @@ use App\Http\Resources\Onair\OnairStreamResource;
 
 use App\Models\Onair;
 
-use App\Services\External\StreamService;
+use App\Integrations\StreamService;
 
 class StreamController extends Controller
 {

@@ -13,7 +13,6 @@ Esta página lista as configurações importantes do projeto e onde elas são us
 ```txt
 .env
 config/services.php
-config/oauth.php
 config/database.php
 config/session.php
 config/filesystems.php
@@ -40,7 +39,7 @@ services.stream.metadata
 Usado por:
 
 ```txt
-app/Services/External/StreamService.php
+app/Integrations/StreamService.php
 app/Http/Controllers/Api/StreamController.php
 app/Http/Middleware/HandleInertiaRequestsMiddleware.php
 routes/api.php
@@ -72,8 +71,8 @@ services.audience.internal_station_name
 Usado por:
 
 ```txt
-app/Services/External/AudienceService.php
-app/Services/Process/AudienceCollectorService.php
+app/Integrations/AudienceService.php
+app/Processing/AudienceCollectorProcess.php
 app/Console/Commands/Schedules/CollectAudience.php
 database/seeders/RadioStationSeeder.php
 ```
@@ -101,7 +100,7 @@ services.discord.webhook
 Usado por:
 
 ```txt
-app/Services/External/DiscordWebhookService.php
+app/Integrations/DiscordWebhookService.php
 app/Actions/Locution/StartLocutionAction.php
 ```
 
@@ -124,15 +123,18 @@ DISCORD_REDIRECT_URI=
 Config:
 
 ```txt
-services.discord.oauth
-config/oauth.php
+services.discord.client_id
+services.discord.client_secret
+services.discord.redirect
 ```
 
 Usado por:
 
 ```txt
-app/Services/External/OAuthAccount/DiscordOAuthAccountService.php
-app/Actions/OAuthAccount/Providers/DiscordOAuthAccountAction.php
+Laravel Socialite
+socialiteproviders/discord
+app/Services/OAuthAccountService.php
+app/Providers/AppServiceProvider.php
 routes/web/public.php
 ```
 
@@ -149,45 +151,48 @@ GOOGLE_REDIRECT_URI=
 Config:
 
 ```txt
-services.google.oauth
-config/oauth.php
+services.google.client_id
+services.google.client_secret
+services.google.redirect
 ```
 
 Usado por:
 
 ```txt
-app/Services/External/OAuthAccount/GoogleOAuthAccountService.php
-app/Actions/OAuthAccount/Providers/GoogleOAuthAccountAction.php
+Laravel Socialite
+app/Services/OAuthAccountService.php
 routes/web/public.php
 ```
 
-## OneSignal
+## Web Push
 
 Variáveis:
 
 ```ini
-ONESIGNAL_APP_ID=
-ONESIGNAL_REST_API_KEY=
-ONESIGNAL_VERIFY_SSL=true
+VAPID_PUBLIC_KEY=
+VAPID_PRIVATE_KEY=
+VAPID_SUBJECT=
 ```
 
 Config:
 
 ```txt
-services.onesignal
+services.webpush
 ```
 
 Usado por:
 
 ```txt
-app/Services/External/OneSignalService.php
-app/Actions/Locution/StartLocutionAction.php
+app/Services/PushNotificationService.php
+app/Http/Controllers/Private/PushSubscriptionController.php
+public/push-worker.js
 ```
 
 Observações:
 
-- só envia em produção;
-- usado para push notification de programa ao vivo.
+- `VAPID_PUBLIC_KEY` é compartilhada com o navegador;
+- `VAPID_PRIVATE_KEY` fica apenas no backend;
+- usado para notificar o locutor atual quando chega pedido musical.
 
 ## Banco de Dados
 
@@ -236,10 +241,10 @@ Arquivos:
 
 ```txt
 config/filesystems.php
-app/Services/Process/ImageProcessService.php
+app/Processing/ImageProcess.php
 ```
 
-O `ImageProcessService` salva no disco `public` e retorna caminho em:
+O `ImageProcess` salva no disco `public` e retorna caminho em:
 
 ```txt
 /storage/images/...

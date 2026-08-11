@@ -2,14 +2,14 @@
 
 namespace Tests\Unit\Models;
 
-use App\Actions\Program\UpdateProgramAction;
+use App\Services\ProgramService;
 use App\Models\Onair;
 
 use App\Models\Program;
 use App\Models\ProgramAirtime;
 use App\Models\ProgramSchedule;
 use App\Models\User;
-use App\Services\Process\ImageProcessService;
+use App\Processing\ImageProcess;
 use Database\Seeders\ProgramSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -221,9 +221,9 @@ class ProgramTest extends TestCase
             ->withAutoDJ()
             ->create();
 
-        $action = new UpdateProgramAction(new ImageProcessService);
+        $service = new ProgramService(new ImageProcess);
 
-        $action->execute($newDefault, $user, $user, [
+        $service->update($newDefault, $user, $user, [
             'name' => $newDefault->name,
             'user' => $user->uuid,
             'access_type' => 'private',
@@ -284,9 +284,9 @@ class ProgramTest extends TestCase
             'status' => 'pending',
         ]);
 
-        $action = new UpdateProgramAction(new ImageProcessService);
+        $service = new ProgramService(new ImageProcess);
 
-        $action->execute($program, $user, $user, [
+        $service->update($program, $user, $user, [
             'name' => $program->name,
             'user' => $user->uuid,
             'access_type' => 'private',

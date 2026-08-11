@@ -382,7 +382,7 @@ Use a policy no controller com `$this->authorize(...)` ou no request dentro de `
 
 Services encapsulam integracoes externas ou processos reutilizaveis.
 
-Use `Services/External` para APIs, webhooks, streams e provedores externos. Use `Services/Process` para processamento interno reutilizavel, como imagem, audiencia ou rotinas.
+Use `Integrations` para APIs, webhooks, streams e provedores externos. Use `Processing` para processamento interno reutilizavel, como imagem, audiencia ou rotinas.
 
 Arquitetura esperada:
 

@@ -19,7 +19,7 @@ atualizado_em: 2026-08-03
 1. [operacao/painel-privado](../operacao/painel-privado)
 2. [operacao/administracao-operacional](../operacao/administracao-operacional)
 3. [administracao](../modulos/administracao)
-4. [itens-desativados](../modulos/itens-desativados)
+4. [lixeira](../modulos/lixeira)
 5. [planejamento-operacional](../planejamento-operacional)
 
 ## Para Radio e Locucao

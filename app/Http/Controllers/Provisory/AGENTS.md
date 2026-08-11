@@ -8,24 +8,24 @@ Controllers provisorios devem seguir o mesmo padrao de orquestracao dos controll
 
 ## Estrutura
 
-- Mantenha renderizadores de pagina em `/Pages`.
-- Mantenha handlers nao CRUD em `/Invokes`.
-- Mantenha controllers CRUD de modulo na raiz da pasta do modulo.
+- Controllers provisorios ficam direto em `app/Http/Controllers/Provisory`.
+- Nao crie pastas `Pages` ou `Invokes`.
+- Nao use sufixo `Page`.
+- Ao promover uma tela provisoria para definitiva, mova o controller para `Public` ou `Private` e preserve a assinatura dos metodos.
 
 ## Responsabilidades
 
-- `store`, `update` e `delete` devem passar por `app/Actions`, injetadas como parametros de metodo.
+- Acoes de negocio devem passar por `app/Services`.
 - Input validado deve usar `app/Http/Requests`, injetados como parametros de metodo.
-- Mantenha parametros de metodo na ordem: request, action e depois model vindo da rota.
+- Mantenha parametros de metodo na ordem: request, service e depois model vindo da rota, quando todos existirem.
 - Metodos `show` devem retornar `InertiaRender` com a prop correspondente e quaisquer props de pagina que a UI ainda precise.
 
 ## Paginas Inertia
 
-- Page controllers devem renderizar por um metodo `render`.
+- Controllers que renderizam pagina devem ter um metodo `render`.
+- O metodo `render` deve ser a ultima funcao do controller.
 - Props devem ser montadas por metodos privados como `indexPosts`.
-- Queries de pagina devem usar filters injetados pelo construtor.
-- Mantenha `render` como primeiro metodo de comportamento.
-- Quando uma pagina precisar de um model/query compartilhado, busque com um metodo privado `get*` logo apos `render` e passe o resultado para os metodos de props que precisam dele.
+- Queries de pagina devem usar o service do escopo correspondente, normalmente pelo metodo `filter()`.
 - Use metodos privados `index*` para montar props/resources de pagina.
 - Nao use `show*` como helper de prop; reserve `show` para actions de controller que retornam `InertiaRender`.
 
@@ -33,7 +33,8 @@ Controllers provisorios devem seguir o mesmo padrao de orquestracao dos controll
 
 - Mantenha arrays ou strings simples de relations diretamente no `with`/`load` correspondente.
 - Crie metodos privados `*Relations` somente quando o conjunto de relations tiver callbacks de query, logica encadeada ou for compartilhado por multiplas queries no mesmo escopo.
-- Importe dependencias com `use` antes da classe, ordenadas como defaults do Laravel, exceptions, models, requests, resources, actions e depois services.
+- Atributos e construtor devem aparecer logo apos abertura da classe e `use` de traits.
+- Importe dependencias com `use` antes da classe, mantendo agrupamento legivel entre controller base, models, requests, resources, services, facades e Inertia.
 
 ## Finalizacao
 

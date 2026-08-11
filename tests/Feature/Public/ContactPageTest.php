@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Public;
 
-use App\Http\Controllers\Public\Pages\ContactPageController;
+use App\Http\Controllers\Public\ContactController;
 use Inertia\Response;
 use ReflectionClass;
 use Tests\TestCase;
@@ -11,7 +11,7 @@ class ContactPageTest extends TestCase
 {
     public function test_contact_page_controller_returns_expected_inertia_component(): void
     {
-        $response = (new ContactPageController)->render();
+        $response = (new ContactController)->render();
 
         $this->assertInstanceOf(Response::class, $response);
         $this->assertSame('public/Contact', $this->componentName($response));

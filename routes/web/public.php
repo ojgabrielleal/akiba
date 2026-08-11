@@ -6,20 +6,15 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\External\OAuthAccount\OAuthAccountCallbackController;
 use App\Http\Controllers\Api\External\OAuthAccount\OAuthAccountLogoutController;
 use App\Http\Controllers\Api\External\OAuthAccount\OAuthAccountRedirectController;
-use App\Http\Controllers\Public\FormSubmissionController;
-use App\Http\Controllers\Public\OAuthAccountController;
-use App\Http\Controllers\Private\Invokes\PollVoteController;
-use App\Http\Controllers\Public\Invokes\StorePostCommentController;
-use App\Http\Controllers\Public\Invokes\StorePostReactionController;
-use App\Http\Controllers\Public\Invokes\TogglePostLikeController;
-use App\Http\Controllers\Public\Pages\EditorialPageController;
-use App\Http\Controllers\Public\Pages\ContactPageController;
-use App\Http\Controllers\Public\Pages\HomePageController;
-use App\Http\Controllers\Public\Pages\MediaPageController;
-use App\Http\Controllers\Public\Pages\RadioPageController;
-use App\Http\Controllers\Public\Pages\ReadPageController;
-use App\Http\Controllers\Public\Pages\SearchPageController;
-use App\Http\Controllers\Public\Pages\TeamPageController;
+use App\Http\Controllers\Public\EditorialController;
+use App\Http\Controllers\Public\ContactController;
+use App\Http\Controllers\Public\HomeController;
+use App\Http\Controllers\Public\MediaController;
+use App\Http\Controllers\Public\PlayerController;
+use App\Http\Controllers\Public\RadioController;
+use App\Http\Controllers\Public\ReadController;
+use App\Http\Controllers\Public\SearchController;
+use App\Http\Controllers\Public\TeamController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,68 +33,72 @@ Route::post('/oauth/logout', OAuthAccountLogoutController::class)
     ->name('oauth.logout');
 
 Route::middleware(['oauth.resolve', 'inertia'])->group(function () {
-    Route::get('/contato', [ContactPageController::class, 'render'])
+    Route::get('/contato', [ContactController::class, 'render'])
         ->name('contact');
 
-    Route::post('/form-submissions', [FormSubmissionController::class, 'store'])
+    Route::post('/form-submissions', [ContactController::class, 'storeFormSubmission'])
         ->name('form-submissions.store');
+
+    Route::post('/song-request', [PlayerController::class, 'storeSongRequest'])
+        ->middleware('oauth')
+        ->name('player.song-request.store');
 });
 
 Route::middleware(['oauth.resolve', 'inertia', 'auth'])->group(function () {
-    Route::get('/news', [EditorialPageController::class, 'news'])
+    Route::get('/news', [EditorialController::class, 'news'])
         ->name('news');
 
-    Route::get('/colunas', [EditorialPageController::class, 'columns'])
+    Route::get('/colunas', [EditorialController::class, 'columns'])
         ->name('columns');
 
-    Route::get('/reviews', [EditorialPageController::class, 'reviews'])
+    Route::get('/reviews', [EditorialController::class, 'reviews'])
         ->name('reviews');
 
-    Route::get('/equipe', [TeamPageController::class, 'render'])
+    Route::get('/equipe', [TeamController::class, 'render'])
         ->name('team');
 
-    Route::get('/radio', [RadioPageController::class, 'render'])
+    Route::get('/radio', [RadioController::class, 'render'])
         ->name('radio');
 
-    Route::get('/midias', [MediaPageController::class, 'render'])
+    Route::get('/midias', [MediaController::class, 'render'])
         ->name('media');
 
-    Route::get('/buscar', [SearchPageController::class, 'render'])
+    Route::get('/buscar', [SearchController::class, 'render'])
         ->name('search');
 
-    Route::get('/materia/{slug}', [ReadPageController::class, 'render'])
+    Route::get('/materia/{slug}', [ReadController::class, 'render'])
         ->name('post.read');
 
-    Route::post('/materia/{post:slug}/reaction', StorePostReactionController::class)
+    Route::post('/materia/{post:slug}/reaction', [ReadController::class, 'storeReaction'])
         ->middleware('oauth')
         ->name('post.reaction.store');
 
-    Route::post('/materia/{post:slug}/like', TogglePostLikeController::class)
+    Route::post('/materia/{post:slug}/like', [ReadController::class, 'toggleLike'])
         ->name('post.like.toggle');
 
-    Route::post('/materia/{post:slug}/comment', StorePostCommentController::class)
+    Route::post('/materia/{post:slug}/comment', [ReadController::class, 'storeComment'])
         ->middleware('oauth')
         ->name('post.comment.store');
 
-    Route::post('/poll/option/{option:uuid}/vote', [PollVoteController::class, '__invoke'])
+    Route::post('/poll/option/{option:uuid}/vote', [MediaController::class, 'votePollOption'])
         ->name('poll.option.vote');
 
-    Route::get('/review/{slug}', [ReadPageController::class, 'render'])
+    Route::get('/review/{slug}', [ReadController::class, 'render'])
         ->name('review.read');
 
-    Route::get('/event/{slug}', [ReadPageController::class, 'render'])
+    Route::get('/event/{slug}', [ReadController::class, 'render'])
         ->name('event.read');
 
-    Route::get('/evento/{slug}', [ReadPageController::class, 'render'])
+    Route::get('/evento/{slug}', [ReadController::class, 'render'])
         ->name('event.read.legacy');
 });
 
 Route::prefix("site")->middleware(['oauth.resolve', 'inertia', 'auth'])->group(function () {
-    Route::controller(HomePageController::class)->group(function () {
+    Route::controller(HomeController::class)->group(function () {
         Route::get('', 'render')->name('home');
     });
 
-    Route::patch('profile', [OAuthAccountController::class, 'update'])
+    Route::patch('profile', [HomeController::class, 'updateOAuthAccountProfile'])
         ->middleware('oauth')
         ->name('oauth.profile.update');
 });
