@@ -11,6 +11,7 @@ use App\Http\Controllers\Public\ContactController;
 use App\Http\Controllers\Public\HomeController;
 use App\Http\Controllers\Public\MediaController;
 use App\Http\Controllers\Public\PlayerController;
+use App\Http\Controllers\Public\PushNotificationController;
 use App\Http\Controllers\Public\RadioController;
 use App\Http\Controllers\Public\ReadController;
 use App\Http\Controllers\Public\SearchController;
@@ -32,7 +33,10 @@ Route::post('/oauth/logout', OAuthAccountLogoutController::class)
     ->middleware('oauth.resolve')
     ->name('oauth.logout');
 
-Route::middleware(['oauth.resolve', 'inertia'])->group(function () {
+Route::post('/push-notification', [PushNotificationController::class, 'storePushNotification'])
+    ->name('push-notification.store');
+
+Route::middleware(['oauth.resolve', 'inertia', 'auth'])->group(function () {
     Route::get('/contato', [ContactController::class, 'render'])
         ->name('contact');
 
@@ -44,7 +48,7 @@ Route::middleware(['oauth.resolve', 'inertia'])->group(function () {
         ->name('player.song-request.store');
 });
 
-Route::middleware(['oauth.resolve', 'inertia', 'auth'])->group(function () {
+Route::middleware(['oauth.resolve', 'inertia'])->group(function () {
     Route::get('/news', [EditorialController::class, 'news'])
         ->name('news');
 
@@ -95,11 +99,19 @@ Route::middleware(['oauth.resolve', 'inertia', 'auth'])->group(function () {
 
 Route::prefix("site")->middleware(['oauth.resolve', 'inertia', 'auth'])->group(function () {
     Route::controller(HomeController::class)->group(function () {
-        Route::get('', 'render')->name('home');
+        Route::get('', 'render');
     });
 
     Route::patch('profile', [HomeController::class, 'updateOAuthAccountProfile'])
         ->middleware('oauth')
         ->name('oauth.profile.update');
+});
+
+Route::prefix("site")->middleware(['oauth.resolve', 'inertia'])->group(function () {
+    Route::patch('member-profile', [HomeController::class, 'updateMemberProfile'])
+        ->name('member.profile.update');
+
+    Route::post('member-logout', [HomeController::class, 'logoutMemberProfile'])
+        ->name('member.profile.logout');
 });
         

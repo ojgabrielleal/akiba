@@ -11,8 +11,8 @@ Este projeto usa Laravel no backend e Svelte no frontend, integrados via Inertia
 
 ## Regras Gerais
 
-- Nao rode `./run.sh npm run build` automaticamente apos alteracoes. O usuario prefere rodar o build manualmente.
-- Nao suba o ambiente Docker automaticamente. Quando os containers forem necessarios, peca para o usuario executar `./run.sh up`.
+- Nao rode `docker compose exec node npm run build` automaticamente apos alteracoes. O usuario prefere rodar o build manualmente.
+- Nao suba o ambiente Docker automaticamente. Quando os containers forem necessarios, peca para o usuario executar `docker compose up -d`.
 
 ## Arquitetura Atual
 
@@ -26,32 +26,33 @@ Este projeto usa Laravel no backend e Svelte no frontend, integrados via Inertia
 
 ## Ambiente de Execucao
 
-O projeto roda via Docker. Para executar o projeto e ter acesso aos comandos de PHP e Node, primeiro levante os containers:
+O projeto roda via Docker Compose. Para executar o projeto e ter acesso aos comandos de PHP e Node, primeiro levante os containers:
 
 ```bash
-./run.sh up
+docker compose up -d
 ```
 
-Use o wrapper `run.sh` para os comandos comuns do projeto:
+Use `docker compose exec` para os comandos comuns do projeto:
 
 ```bash
-./run.sh up
-./run.sh npm <comando>
-./run.sh node <comando>
-./run.sh artisan <comando>
-./run.sh composer <comando>
+docker compose up -d
+docker compose down
+docker compose exec app php artisan <comando>
+docker compose exec app composer <comando>
+docker compose exec node npm <comando>
+docker compose exec node node <comando>
 ```
 
 Exemplos:
 
 ```bash
-./run.sh npm run build
-./run.sh artisan test
-./run.sh composer install
-./run.sh node --version
+docker compose exec node npm run build
+docker compose exec app php artisan test
+docker compose exec app composer install
+docker compose exec node node --version
 ```
 
-Caso seja necessario executar algo que nao esteja coberto por esses atalhos, use os comandos padrao do Docker/Docker Compose.
+Caso seja necessario executar algo que nao esteja coberto por esses comandos, use os comandos padrao do Docker/Docker Compose.
 
 ## Containers Docker
 
@@ -59,6 +60,7 @@ Os containers definidos para o projeto sao:
 
 - `akiba_app`: container da aplicacao Laravel/PHP. Executa `php artisan serve` na porta `8000`.
 - `akiba_node`: container Node.js 22. Executa o servidor Vite na porta `5173`.
+- `akiba_docs`: container Node.js 22. Executa o VitePress na porta `5174`.
 - `akiba_mysql`: container MySQL 8, exposto na porta `3306`.
 - `akiba_phpmyadmin`: container phpMyAdmin, exposto na porta `8081`.
 

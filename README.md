@@ -12,7 +12,7 @@ Rede Akiba ( Akiba V2 ) é uma aplicação Laravel para gerenciar uma plataforma
 ## Stack
 
 - **Backend:** PHP 8.2, Laravel 12
-- **Frontend:** Javascriot, Inertia, Svelte, Tailwind
+- **Frontend:** JavaScript, Inertia, Svelte, Tailwind
 - **Banco de dados:** MySQL
 
 ## Principais Recursos
@@ -31,39 +31,57 @@ Rede Akiba ( Akiba V2 ) é uma aplicação Laravel para gerenciar uma plataforma
 ## Requisitos
 
 - Docker
+- Docker Compose
 
 ## Instalação
 
-Clone o repositório e rode a instalação usando Docker
+Clone o repositório, copie o arquivo de ambiente e suba os containers:
 
 ```bash
-./run.sh install
+cp .env.example .env
+docker compose up -d --build
 ```
 
-No Windows:
-
-```powershell
-.\scripts\run.ps1 install
-```
-
-Atalhos principais no Linux/macOS:
+Instale as dependências dentro dos containers:
 
 ```bash
-./run.sh up
-./run.sh down
-./run.sh artisan migrate
-./run.sh npm install
-./run.sh laravel sh
+docker compose exec app composer install
+docker compose exec node npm install
 ```
 
-Atalhos principais no Windows:
+Prepare a aplicação:
 
-```powershell
-.\scripts\run.ps1 server up
-.\scripts\run.ps1 server down
-.\scripts\run.ps1 laravel php artisan migrate
-.\scripts\run.ps1 node npm install
-.\scripts\run.ps1 shell node
+```bash
+docker compose exec app php artisan key:generate
+docker compose exec app php artisan migrate --seed
+```
+
+## Comandos Docker
+
+Subir e parar o ambiente:
+
+```bash
+docker compose up -d
+docker compose down
+```
+
+Comandos Laravel/PHP:
+
+```bash
+docker compose exec app php artisan migrate
+docker compose exec app php artisan test
+docker compose exec app composer install
+docker compose exec app sh
+```
+
+Comandos Node/NPM:
+
+```bash
+docker compose exec node npm install
+docker compose exec node npm run dev
+docker compose exec node npm run build
+docker compose exec node node --version
+docker compose exec node sh
 ```
 
 ## Variáveis de ambiente
@@ -77,7 +95,9 @@ DISCORD_WEBHOOK_STREAM_NOTIFICATION=null
 
 ## Estrutura do Projeto
 
-- `app/Actions` - casos de uso da aplicação agrupados por domínio
+- `app/Services` - regras de negócio e operações de domínio
+- `app/Integrations` - clientes para serviços externos, APIs, webhooks e streams
+- `app/Processing` - processamento interno reutilizável que não é regra de negócio direta
 - `app/Http/Controllers` - controllers públicos, privados, de API e provisórios
 - `app/Http/Requests` - validação de formulários
 - `app/Http/Resources` - formatação de respostas de API/resources
@@ -96,14 +116,14 @@ A documentação do projeto fica em `docs/` e é publicada localmente com VitePr
 Também é possível navegar a documentação com VitePress:
 
 ```bash
-./run.sh npm run docs:dev
+docker compose up -d docs
 ```
 
 Outros comandos disponíveis:
 
 ```bash
-./run.sh npm run docs:build
-./run.sh npm run docs:preview
+docker compose exec node npm run docs:build
+docker compose exec node npm run docs:preview
 ```
 
 ## Licença

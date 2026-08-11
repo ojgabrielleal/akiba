@@ -9,7 +9,7 @@ use App\Http\Controllers\Private\MediaController;
 use App\Http\Controllers\Private\PodcastController;
 use App\Http\Controllers\Private\PostController;
 use App\Http\Controllers\Private\ProfileController;
-use App\Http\Controllers\Private\PushSubscriptionController;
+use App\Http\Controllers\Private\PushNotificationController;
 use App\Http\Controllers\Private\RadioController;
 use App\Http\Controllers\Private\ReportsController;
 use App\Http\Controllers\Private\RepositoryController;
@@ -28,8 +28,8 @@ Route::prefix('panel')->middleware(['inertia'])->group(function () {
 
     Route::middleware(['auth', 'authenticated.user'])->group(function () {
         Route::post('logout', [LoginController::class, 'logoutUser'])->name('logout');
-        Route::post('push-subscription', [PushSubscriptionController::class, 'storePushSubscription']);
-        Route::delete('push-subscription', [PushSubscriptionController::class, 'destroyPushSubscription']);
+        Route::post('push-notification', [PushNotificationController::class, 'storePushNotification']);
+        Route::delete('push-notification', [PushNotificationController::class, 'destroyPushNotification']);
 
         Route::prefix('dashboard')->controller(DashboardController::class)->group(function () {
             Route::get('', 'render')->name('panel.dashboard');

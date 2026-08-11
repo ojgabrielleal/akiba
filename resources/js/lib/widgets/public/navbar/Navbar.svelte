@@ -1,13 +1,19 @@
 <script>
-    import { Link, router } from "@inertiajs/svelte";
+    import { Link, page, router } from "@inertiajs/svelte";
     import { onMount } from "svelte";
     import { fade, fly } from "svelte/transition";
     import { navbar } from "@/lib/constants";
     import {
+        listPushNotifications,
+        markPushNotificationAsRead,
+        markPushNotificationsAsRead,
         listenForOAuthAction,
         OAuthAction,
+        requestPushNotificationSubscription,
+        resolvePushNotificationPermission,
     } from "@/lib/utils";
     import { Button, IconButton, Modal, Tooltip } from "@/lib/components/public";
+    import NotificationPanel from "./NotificationPanel.svelte";
     import ProfileForm from "../form/ProfileForm.svelte";
     import ThemeSwitcher from "./ThemeSwitcher.svelte";
 
@@ -16,27 +22,44 @@
     let mobilenavbar = false;
     let profileModalRef;
     let loginModalRef;
+    let notifications = [];
+    let notificationPanelOpen = false;
+    let notificationPermission = "unsupported";
     let searchQuery = "";
     let selectedTheme = "akiba";
 
     $: profile = oauth?.profile;
     $: avatar = profile?.avatar || "/img/placeholders/avatar.webp";
     $: nickname = profile?.nickname || profile?.username || "Perfil";
+    $: vapidPublicKey = $page.props.push?.vapid_public_key;
+    $: canRequestPushNotifications = Boolean(vapidPublicKey);
+    $: hasActiveNotifications = notificationPermission === "granted";
+    $: hasUnreadNotifications = notifications.length > 0;
+    $: canOpenProfile = oauth?.is_oauth || (oauth?.is_member && oauth?.can_view_profile && oauth?.can_update_profile);
 
     const closeMobileNavbar = () => {
         mobilenavbar = false;
     };
 
+    const closeNotificationPanel = () => {
+        notificationPanelOpen = false;
+    };
+
+    const loadNotifications = async () => {
+        notifications = await listPushNotifications();
+    };
+
     const openOAuthLogin = () => {
         closeMobileNavbar();
+        closeNotificationPanel();
         loginModalRef.open();
     };
 
     const openProfile = () => {
         closeMobileNavbar();
+        closeNotificationPanel();
 
-        if (oauth?.is_member) {
-            router.visit("/panel");
+        if (oauth?.is_member && !oauth?.can_view_profile) {
             return;
         }
 
@@ -65,6 +88,54 @@
         router.get("/buscar", normalizedQuery ? { q: normalizedQuery } : {});
     };
 
+    const requestNotifications = async () => {
+        const permission = await requestPushNotificationSubscription(vapidPublicKey);
+
+        notificationPermission = permission;
+
+        if (permission === "granted") {
+            await loadNotifications();
+        }
+    };
+
+    const handleNotificationClick = async () => {
+        closeMobileNavbar();
+
+        notificationPermission = resolvePushNotificationPermission();
+
+        if (notificationPermission === "granted") {
+            await loadNotifications();
+            notificationPanelOpen = !notificationPanelOpen;
+            return;
+        }
+
+        closeNotificationPanel();
+        await requestNotifications();
+    };
+
+    const markNotificationAsRead = async (event) => {
+        await markPushNotificationAsRead(event.detail.id);
+        await loadNotifications();
+    };
+
+    const markAllNotificationsAsRead = async () => {
+        await markPushNotificationsAsRead(notifications.map((notification) => notification.id));
+        await loadNotifications();
+        closeNotificationPanel();
+    };
+
+    const handleServiceWorkerMessage = (event) => {
+        if (event.data?.type === "akiba:push-notification-received") {
+            loadNotifications();
+        }
+    };
+
+    const handleVisibilityChange = () => {
+        if (document.visibilityState === "visible" && notificationPermission === "granted") {
+            loadNotifications();
+        }
+    };
+
     const themes = [
         { name: "light", label: "Modo claro", icon: "/svg/dawn.svg" },
         { name: "akiba", label: "Modo Akiba", icon: "/svg/akiba.svg" },
@@ -73,12 +144,35 @@
 
     const providerIconStyle = (provider) => `mask-image: url('${provider.icon}'); -webkit-mask-image: url('${provider.icon}');`;
 
-    onMount(() =>
-        listenForOAuthAction(
+    onMount(() => {
+        notificationPermission = resolvePushNotificationPermission();
+
+        if (notificationPermission === "granted") {
+            loadNotifications();
+        }
+
+        navigator.serviceWorker?.addEventListener("message", handleServiceWorkerMessage);
+        window.addEventListener("focus", loadNotifications);
+        document.addEventListener("visibilitychange", handleVisibilityChange);
+        const notificationInterval = window.setInterval(() => {
+            if (notificationPermission === "granted") {
+                loadNotifications();
+            }
+        }, 5000);
+
+        const stopOAuthListener = listenForOAuthAction(
             OAuthAction.OPEN_PROFILE,
             openProfile,
-        ),
-    );
+        );
+
+        return () => {
+            navigator.serviceWorker?.removeEventListener("message", handleServiceWorkerMessage);
+            window.removeEventListener("focus", loadNotifications);
+            document.removeEventListener("visibilitychange", handleVisibilityChange);
+            window.clearInterval(notificationInterval);
+            stopOAuthListener?.();
+        };
+    });
 
 </script>
 
@@ -136,17 +230,54 @@
                     type="submit"
                 />
             </form>
-            {#if false}
-                <IconButton
-                    label="Notificações"
-                    icon="/svg/bell.svg"
-                    tone="light"
-                    surface="transparent"
-                    size="sm"
-                    tooltipPosition="bottom"
-                />
+            {#if canRequestPushNotifications}
+                <div class="relative" on:click|stopPropagation>
+                    {#if hasActiveNotifications}
+                        <button
+                            type="button"
+                            class="relative flex size-8 cursor-pointer items-center justify-center rounded-full bg-transparent transition hover:brightness-110 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber"
+                            aria-label="Notificações"
+                            on:click={handleNotificationClick}
+                        >
+                            <img
+                                src="/svg/bell.svg"
+                                alt=""
+                                aria-hidden="true"
+                                class="size-4 filter-suspense-aurora"
+                            />
+                            {#if hasUnreadNotifications}
+                                <span class="absolute right-1 top-1 size-2.5 rounded-full bg-orange-citric ring-2 ring-blue-night"></span>
+                            {/if}
+                        </button>
+                    {:else}
+                        <Tooltip position="bottom">
+                            <button
+                                type="button"
+                                class="relative flex size-8 cursor-pointer items-center justify-center rounded-full bg-transparent transition hover:brightness-110 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber"
+                                aria-label="Ativar notificações"
+                                on:click={handleNotificationClick}
+                            >
+                                <img
+                                    src="/svg/bell.svg"
+                                    alt=""
+                                    aria-hidden="true"
+                                    class="size-4 filter-suspense-aurora"
+                                />
+                            </button>
+                            <span slot="content">Ativar notificações</span>
+                        </Tooltip>
+                    {/if}
+                    <NotificationPanel
+                        class="absolute right-0 top-11 hidden lg:block"
+                        open={notificationPanelOpen}
+                        {notifications}
+                        on:close={closeNotificationPanel}
+                        on:markRead={markNotificationAsRead}
+                        on:markAllRead={markAllNotificationsAsRead}
+                    />
+                </div>
             {/if}
-            {#if oauth?.authenticated}
+            {#if oauth?.authenticated && canOpenProfile}
                 <Tooltip position="bottom">
                     <button
                         type="button"
@@ -162,6 +293,17 @@
                     </button>
                     <span slot="content">Editar perfil</span>
                 </Tooltip>
+            {:else if oauth?.authenticated}
+                <div
+                    class="ml-1 flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-suspense-aurora bg-suspense-aurora shadow-md shadow-blue-night/30"
+                    aria-label={nickname}
+                >
+                    <img
+                        src={avatar}
+                        alt={nickname}
+                        class="h-full w-full object-cover object-top scale-125"
+                    />
+                </div>
             {:else}
                 <Button
                     size="sm"
@@ -252,7 +394,7 @@
                             />
                         </form>
                         <div class="flex items-center justify-between gap-2">
-                            {#if oauth?.authenticated}
+                            {#if oauth?.authenticated && canOpenProfile}
                                 <button
                                     type="button"
                                     class="flex min-w-0 items-center gap-2 text-left"
@@ -269,6 +411,19 @@
                                         {nickname}
                                     </span>
                                 </button>
+                            {:else if oauth?.authenticated}
+                                <div class="flex min-w-0 items-center gap-2 text-left">
+                                    <div class="size-10 shrink-0 overflow-hidden rounded-full border-2 border-suspense-aurora bg-suspense-aurora shadow">
+                                        <img
+                                            src={avatar}
+                                            alt={nickname}
+                                            class="h-full w-full object-cover object-top scale-125"
+                                        />
+                                    </div>
+                                    <span class="min-w-0 truncate font-noto-sans text-xs font-extrabold text-blue-night">
+                                        {nickname}
+                                    </span>
+                                </div>
                             {:else}
                                 <Button
                                     size="sm"
@@ -285,15 +440,43 @@
                                     Entrar
                                 </Button>
                             {/if}
-                            {#if false}
-                                <div class="flex gap-1">
-                                    <IconButton
-                                        label="Notificações"
-                                        icon="/svg/bell.svg"
-                                        tone="dark"
-                                        surface="transparent"
-                                        size="sm"
-                                    />
+                            {#if canRequestPushNotifications}
+                                <div class="flex gap-1" on:click|stopPropagation>
+                                    {#if hasActiveNotifications}
+                                        <button
+                                            type="button"
+                                            class="relative flex size-8 cursor-pointer items-center justify-center rounded-full bg-transparent transition hover:brightness-110 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber"
+                                            aria-label="Notificações"
+                                            on:click={handleNotificationClick}
+                                        >
+                                            <img
+                                                src="/svg/bell.svg"
+                                                alt=""
+                                                aria-hidden="true"
+                                                class="size-4 filter-blue-marinho"
+                                            />
+                                            {#if hasUnreadNotifications}
+                                                <span class="absolute right-1 top-1 size-2.5 rounded-full bg-orange-citric ring-2 ring-suspense-aurora"></span>
+                                            {/if}
+                                        </button>
+                                    {:else}
+                                        <Tooltip position="top">
+                                            <button
+                                                type="button"
+                                                class="relative flex size-8 cursor-pointer items-center justify-center rounded-full bg-transparent transition hover:brightness-110 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber"
+                                                aria-label="Ativar notificações"
+                                                on:click={handleNotificationClick}
+                                            >
+                                                <img
+                                                    src="/svg/bell.svg"
+                                                    alt=""
+                                                    aria-hidden="true"
+                                                    class="size-4 filter-blue-marinho"
+                                                />
+                                            </button>
+                                            <span slot="content">Ativar notificações</span>
+                                        </Tooltip>
+                                    {/if}
                                 </div>
                             {/if}
                             <ThemeSwitcher
@@ -310,14 +493,24 @@
     {/if}
 </nav>
 
-{#if oauth?.is_oauth}
+<NotificationPanel
+    class="fixed right-4 top-20 lg:hidden"
+    open={notificationPanelOpen}
+    {notifications}
+    on:close={closeNotificationPanel}
+    on:markRead={markNotificationAsRead}
+    on:markAllRead={markAllNotificationsAsRead}
+/>
+
+{#if canOpenProfile}
     <Modal
         bind:this={profileModalRef}
         label={`Perfil de ${nickname}`}
-        size="md"
+        size="sm"
     >
         <ProfileForm
             {profile}
+            internal={oauth?.is_member}
             close={() => profileModalRef.close()}
         />
     </Modal>

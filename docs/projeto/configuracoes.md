@@ -1,7 +1,7 @@
 ---
 status: ativo
 tipo: guia-config
-atualizado_em: 2026-08-03
+atualizado_em: 2026-08-11
 ---
 
 # Configuracoes e ENV
@@ -223,7 +223,7 @@ Arquivos:
 
 ```txt
 config/session.php
-app/Http/Controllers/Private/Invokes/LoginController.php
+app/Http/Controllers/Private/LoginController.php
 app/Actions/OAuthAccount/Providers
 app/Http/Middleware/OAuth/ResolveOAuthAccount.php
 ```

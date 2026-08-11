@@ -47,7 +47,40 @@
     const providerIconStyle = (provider) => `mask-image: url('${provider.icon}'); -webkit-mask-image: url('${provider.icon}');`;
 </script>
 
-{#if oauth.authenticated}
+{#if oauth.is_member && !oauth.member_session_authenticated}
+    <div class={["flex flex-col items-center text-center font-noto-sans", compact ? "" : "py-7", containerClass]}>
+        {#if !compact}
+            <img
+                src="/svg/profile.svg"
+                alt=""
+                aria-hidden="true"
+                class={["mb-3 h-8 w-8", filters]}
+            />
+            <p class={["text-base font-extrabold uppercase italic", titleClass]}>
+                Login do painel necessário
+            </p>
+            <p class={["mt-1 text-sm", descriptionClass]}>
+                Sua conta interna foi reconhecida, mas a sessão do painel não está ativa.
+            </p>
+        {/if}
+
+        <a
+            href="/panel"
+            class={[
+                "mt-5 flex min-h-12 items-center justify-center gap-3 rounded-md bg-orange-citric px-5 py-2.5 text-center font-noto-sans text-sm font-extrabold uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 hover:brightness-105 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none",
+                buttonClass,
+            ]}
+        >
+            <img
+                src="/svg/profile.svg"
+                alt=""
+                aria-hidden="true"
+                class={["h-4 w-4", filters]}
+            />
+            Entrar no painel
+        </a>
+    </div>
+{:else if oauth.authenticated}
     <slot />
 {:else}
     <div class={["flex flex-col items-center text-center font-noto-sans", compact ? "" : "py-7", containerClass]}>

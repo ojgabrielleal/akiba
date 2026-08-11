@@ -9,8 +9,13 @@ use App\Http\Resources\PodcastResource;
 use App\Http\Resources\Post\PostResource;
 use Inertia\Inertia;
 use App\Services\OAuthAccountService;
+use App\Services\ProfileService;
 use App\Http\Controllers\Concerns\HasFlashMessages;
 use App\Http\Requests\OAuthAccount\CompleteOAuthAccountProfileRequest;
+use App\Http\Requests\Profile\UpdatePublicMemberProfileRequest;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
 
 class HomeController extends Controller
 {
@@ -106,6 +111,34 @@ class HomeController extends Controller
         $service->update($request->attributes->get('oauth_account'), $request->validated());
 
         return $this->flashMessage('save', 'Perfil salvo com sucesso.');
+    }
+
+    public function updateMemberProfile(UpdatePublicMemberProfileRequest $request, ProfileService $service)
+    {
+        $user = $request->user() ?? $request->attributes->get('member_user');
+
+        $service->updatePublicMemberProfile($user, $request->validated(), $request->file('avatar'));
+
+        return $this->flashMessage('save', 'Perfil salvo com sucesso.');
+    }
+
+    public function logoutMemberProfile(Request $request)
+    {
+        $user = $request->user() ?? $request->attributes->get('member_user');
+
+        $user?->update([
+            'account_token_hash' => null,
+        ]);
+
+        if ($request->user()) {
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+        }
+
+        Cookie::queue(Cookie::forget('akiba_user_token'));
+
+        return redirect('/site');
     }
 
     public function render()

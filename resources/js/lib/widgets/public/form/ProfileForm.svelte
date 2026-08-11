@@ -10,6 +10,7 @@
 
     export let profile;
     export let close = () => {};
+    export let internal = false;
 
     $: avatar = profile?.avatar || "/img/placeholders/avatar.webp";
     $: nickname = profile?.nickname || profile?.username || "Perfil";
@@ -17,6 +18,8 @@
     $: provider = profile?.provider || "google";
     $: providerIcon = provider === "discord" ? "/svg/discord.svg" : "/svg/google.svg";
     $: providerIconClass = "filter-suspense-aurora";
+    $: endpoint = internal ? "/site/member-profile" : "/site/profile";
+    const avatarSizeClass = "size-18";
 
     const syncProvider = () => {
         rememberOAuthAction(OAuthAction.OPEN_PROFILE);
@@ -24,21 +27,48 @@
     };
 
     const form = useForm({
+        _method: "PATCH",
+        avatar: null,
         nickname: profile?.nickname ?? "",
         birth_date: profile?.birth_date ?? "",
         address: profile?.address ?? "",
+        city: profile?.city ?? "",
+        state: profile?.state ?? "",
+        country: profile?.country ?? "",
         bio: profile?.bio ?? "",
     });
 
+    let avatarPreview = avatar;
+    $: if (!$form.avatar) avatarPreview = avatar;
+
     const submit = () => {
-        $form.patch("/site/profile", {
+        if (internal) {
+            $form.post(endpoint, {
+                preserveScroll: true,
+                forceFormData: true,
+                onSuccess: close,
+            });
+
+            return;
+        }
+
+        $form.patch(endpoint, {
             preserveScroll: true,
             onSuccess: close,
         });
     };
 
+    const changeAvatar = (event) => {
+        if (!internal) return;
+
+        $form.avatar = event.target.files?.[0] ?? null;
+        avatarPreview = $form.avatar instanceof File
+            ? URL.createObjectURL($form.avatar)
+            : avatar;
+    };
+
     const logout = () => {
-        router.post("/oauth/logout", {}, {
+        router.post(internal ? "/site/member-logout" : "/oauth/logout", {}, {
             preserveScroll: false,
         });
     };
@@ -46,37 +76,69 @@
 
 <form class="space-y-4" on:submit|preventDefault={submit}>
     <div class="mb-5 flex items-center gap-4">
-        <div class="size-16 shrink-0 overflow-hidden rounded-full border-2 border-suspense-aurora bg-suspense-aurora shadow">
-            <img
-                src={avatar}
-                alt={nickname}
-                class="h-full w-full object-cover object-top scale-125"
-            />
-        </div>
+        {#if internal}
+            <label
+                for="member-avatar"
+                class={[
+                    "group/avatar relative shrink-0 cursor-pointer overflow-hidden rounded-full border-2 border-suspense-aurora bg-suspense-aurora shadow focus-within:ring-2 focus-within:ring-orange-amber",
+                    avatarSizeClass,
+                ]}
+            >
+                <img
+                    src={avatarPreview}
+                    alt={nickname}
+                    class="h-full w-full object-cover object-top scale-125"
+                />
+                <span class="absolute inset-0 grid place-items-center bg-blue-night/55 text-[0.6rem] font-black uppercase italic text-suspense-aurora opacity-0 transition group-hover/avatar:opacity-100 group-focus-within/avatar:opacity-100">
+                    Alterar
+                </span>
+                <input
+                    id="member-avatar"
+                    name="avatar"
+                    type="file"
+                    accept="image/*"
+                    class="sr-only"
+                    on:change={changeAvatar}
+                />
+            </label>
+        {:else}
+            <div class={[
+                "shrink-0 overflow-hidden rounded-full border-2 border-suspense-aurora bg-suspense-aurora shadow",
+                avatarSizeClass,
+            ]}>
+                <img
+                    src={avatar}
+                    alt={nickname}
+                    class="h-full w-full object-cover object-top scale-125"
+                />
+            </div>
+        {/if}
         <div class="min-w-0">
             <p class="truncate font-noto-sans text-lg font-extrabold text-blue-night">
                 {nickname}
             </p>
             <p class="truncate font-noto-sans text-xs text-blue-night/50">
-                @{profile?.username}
+                {internal ? "Membro interno Akiba" : `@${profile?.username}`}
             </p>
         </div>
-        <Button
-            type="button"
-            variant="secondary"
-            size="sm"
-            shape="pill"
-            class="ml-auto shrink-0"
-            on:click={syncProvider}
-        >
-            <img
-                src={providerIcon}
-                alt=""
-                aria-hidden="true"
-                class={["size-4", providerIconClass]}
-            />
-            Ressincronizar
-        </Button>
+        {#if !internal}
+            <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                shape="pill"
+                class="ml-auto shrink-0"
+                on:click={syncProvider}
+            >
+                <img
+                    src={providerIcon}
+                    alt=""
+                    aria-hidden="true"
+                    class={["size-4", providerIconClass]}
+                />
+                Ressincronizar
+            </Button>
+        {/if}
     </div>
 
     <div class="grid gap-4">
@@ -117,24 +179,82 @@
             />
         </FormField>
 
-        <FormField
-            for="oauth-address"
-            label="Cidade e estado"
-            labelVariant="dark"
-            spacing="none"
-            error={$form.errors.address}
-            required
-        >
-            <TextInput
-                id="oauth-address"
-                name="address"
-                variant="profile"
-                bind:value={$form.address}
-                error={$form.errors.address}
-                placeholder="Ex.: Salto - SP"
+        {#if internal}
+            <div class="grid gap-4 sm:grid-cols-2">
+                <FormField
+                    for="member-city"
+                    label="Cidade"
+                    labelVariant="dark"
+                    spacing="none"
+                    error={$form.errors.city}
+                    required
+                >
+                    <TextInput
+                        id="member-city"
+                        name="city"
+                        variant="profile"
+                        bind:value={$form.city}
+                        error={$form.errors.city}
+                        required
+                    />
+                </FormField>
+
+                <FormField
+                    for="member-state"
+                    label="Estado"
+                    labelVariant="dark"
+                    spacing="none"
+                    error={$form.errors.state}
+                    required
+                >
+                    <TextInput
+                        id="member-state"
+                        name="state"
+                        variant="profile"
+                        bind:value={$form.state}
+                        error={$form.errors.state}
+                        required
+                    />
+                </FormField>
+            </div>
+
+            <FormField
+                for="member-country"
+                label="País"
+                labelVariant="dark"
+                spacing="none"
+                error={$form.errors.country}
                 required
-            />
-        </FormField>
+            >
+                <TextInput
+                    id="member-country"
+                    name="country"
+                    variant="profile"
+                    bind:value={$form.country}
+                    error={$form.errors.country}
+                    required
+                />
+            </FormField>
+        {:else}
+            <FormField
+                for="oauth-address"
+                label="Cidade e estado"
+                labelVariant="dark"
+                spacing="none"
+                error={$form.errors.address}
+                required
+            >
+                <TextInput
+                    id="oauth-address"
+                    name="address"
+                    variant="profile"
+                    bind:value={$form.address}
+                    error={$form.errors.address}
+                    placeholder="Ex.: Salto - SP"
+                    required
+                />
+            </FormField>
+        {/if}
 
         <FormField
             for="oauth-bio"

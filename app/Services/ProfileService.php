@@ -94,6 +94,27 @@ class ProfileService
         });
     }
 
+    public function updatePublicMemberProfile(User $user, array $data, ?UploadedFile $avatar = null): User
+    {
+        return DB::transaction(function () use ($user, $data, $avatar) {
+            $user->fill([
+                'avatar' => $this->image->store('users', $avatar, $user->avatar),
+                'nickname' => $data['nickname'],
+                'birth_date' => $data['birth_date'],
+                'city' => $data['city'],
+                'state' => $data['state'],
+                'country' => $data['country'],
+                'bibliography' => $data['bio'] ?? null,
+            ]);
+
+            if ($user->isDirty()) {
+                $user->save();
+            }
+
+            return $user;
+        });
+    }
+
     public function updateUser(User $user, array $data): User
     {
         return DB::transaction(function () use ($user, $data,) {

@@ -143,6 +143,13 @@ class LocutionService
     private function startSendNotifications(User $user, Program $program): void
     {
         $this->discord->sendStreamNotificationHook($user, $program);
+
+        app(PushNotificationService::class)->sendToUserOrAll(null, [
+            'title' => "{$program->name} entrou no ar",
+            'body' => "{$user->name} está ao vivo na Akiba. Vem sintonizar com a gente.",
+            'url' => url('/site'),
+            'icon' => url('/favicon.ico'),
+        ]);
     }
 
     public function toggleSongRequestBoxStatus(): ?Onair

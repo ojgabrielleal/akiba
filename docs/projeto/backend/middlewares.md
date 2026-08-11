@@ -1,7 +1,7 @@
 ---
 status: ativo
 tipo: guia-backend
-atualizado_em: 2026-08-03
+atualizado_em: 2026-08-11
 ---
 
 # Middlewares
@@ -108,7 +108,24 @@ O que faz:
 - lê cookies `akiba_oauth_token` e `akiba_user_token`;
 - resolve conta OAuth ou usuário interno;
 - adiciona `oauth_account` ou `member_user` nos atributos da request;
-- compartilha prop global `oauth` no Inertia.
+- compartilha prop global `oauth` no Inertia;
+- diferencia membro interno reconhecido por cookie de membro com sessão ativa do painel por meio de `member_session_authenticated`.
+
+Campos importantes da prop `oauth`:
+
+```txt
+type
+authenticated
+is_member
+member_session_authenticated
+is_oauth
+profile_completed
+can_view_profile
+can_update_profile
+profile
+```
+
+Quando `is_member` é verdadeiro e `member_session_authenticated` é falso, o site sabe que existe um token interno válido, mas a sessão Laravel do painel não está ativa. Nesses casos o `AuthGuard` deve pedir login no painel.
 
 Arquivos relacionados:
 

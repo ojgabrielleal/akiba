@@ -10,11 +10,19 @@ use Minishlink\WebPush\WebPush;
 
 class PushNotificationService
 {
-    public function store(User $user, array $data): PushSubscription
+    public function store(?User $user, array $data): PushSubscription
     {
+        $data = validator($data, [
+            'endpoint' => ['required', 'string'],
+            'keys' => ['required', 'array'],
+            'keys.p256dh' => ['required', 'string'],
+            'keys.auth' => ['required', 'string'],
+            'content_encoding' => ['nullable', 'string', 'in:aesgcm,aes128gcm'],
+        ])->validate();
+
         return PushSubscription::query()->updateOrCreate(
             [
-                'user_id' => $user->id,
+                'user_id' => $user?->id,
                 'endpoint' => $data['endpoint'],
             ],
             [
@@ -23,6 +31,20 @@ class PushNotificationService
                 'content_encoding' => $data['content_encoding'] ?? 'aes128gcm',
             ],
         );
+    }
+
+    public function storeWithActivationNotification(?User $user, array $data, string $url = '/'): PushSubscription
+    {
+        $subscription = $this->store($user, $data);
+
+        $this->sendToSubscription($subscription, [
+            'title' => 'Bem vindo(a) ao clube!!!!',
+            'body' => 'Obrigado por ativar as notificações da Akiba. Qualquer novidade você será avisado!',
+            'icon' => '/favicon.ico',
+            'url' => $url,
+        ]);
+
+        return $subscription;
     }
 
     public function destroy(User $user, string $endpoint): void
@@ -38,7 +60,18 @@ class PushNotificationService
             ->when($user, fn ($query) => $query->whereBelongsTo($user))
             ->get();
 
-        $this->sendToSubscriptions($subscriptions, $payload);
+        $this->sendToSubscriptions($subscriptions, [
+            'audience' => $user ? 'user' : 'all',
+            ...$payload,
+        ]);
+    }
+
+    public function sendToSubscription(PushSubscription $subscription, array $payload): void
+    {
+        $this->sendToSubscriptions(collect([$subscription]), [
+            'audience' => 'user',
+            ...$payload,
+        ]);
     }
 
     private function sendToSubscriptions(Collection $subscriptions, array $payload): void

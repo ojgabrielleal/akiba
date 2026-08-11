@@ -19,7 +19,8 @@ class ResolveOAuthAccount
         $oauthToken = $request->cookie('akiba_oauth_token');
         $userToken = $request->cookie('akiba_user_token');
 
-        $user = $request->user();
+        $authenticatedUser = $request->user();
+        $user = $authenticatedUser;
         $oauthAccount = null;
 
         if ($oauthToken) {
@@ -42,8 +43,11 @@ class ResolveOAuthAccount
             'type' => $user ? 'member' : ($oauthAccount ? 'oauth' : null),
             'authenticated' => $user !== null || $oauthAccount instanceof OAuthAccount,
             'is_member' => $user !== null,
+            'member_session_authenticated' => $authenticatedUser !== null,
             'is_oauth' => $user === null && $oauthAccount instanceof OAuthAccount,
             'profile_completed' => $user !== null || $oauthAccount?->profile_completed_at !== null,
+            'can_view_profile' => $user?->hasPermission('user.view.own') ?? true,
+            'can_update_profile' => $user?->hasPermission('user.update.own') ?? true,
             'profile' => $user ? [
                 'uuid' => $user->uuid,
                 'provider' => 'internal',
@@ -51,7 +55,10 @@ class ResolveOAuthAccount
                 'nickname' => $user->nickname,
                 'avatar' => $user->avatar,
                 'birth_date' => $user->birth_date?->format('Y-m-d'),
-                'address' => null,
+                'address' => collect([$user->city, $user->state])->filter()->join(' - '),
+                'city' => $user->city,
+                'state' => $user->state,
+                'country' => $user->country,
                 'bio' => $user->bibliography,
             ] : ($oauthAccount ? [
                 'uuid' => $oauthAccount->uuid,

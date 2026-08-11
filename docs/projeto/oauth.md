@@ -1,7 +1,7 @@
 ---
 status: ativo
 tipo: guia-auth
-atualizado_em: 2026-08-03
+atualizado_em: 2026-08-11
 ---
 
 # OAuth para Site Publico
@@ -190,7 +190,10 @@ Request pública
      -> lê akiba_oauth_token
      -> hash(token)
      -> busca OAuthAccount.account_token_hash
+     -> lê akiba_user_token quando não há sessão do painel
+     -> busca User.account_token_hash
      -> request.attributes.oauth_account = conta
+     -> request.attributes.member_user = usuário interno
      -> Inertia::share('oauth', ...)
   -> Controller da página
   -> Svelte recebe $page.props.oauth
@@ -202,10 +205,15 @@ Prop compartilhada:
 type
 authenticated
 is_member
+member_session_authenticated
 is_oauth
 profile_completed
+can_view_profile
+can_update_profile
 profile
 ```
+
+`is_member` indica que um usuário interno foi reconhecido no site público. `member_session_authenticated` indica que a sessão Laravel do painel também está ativa. Quando `is_member = true` e `member_session_authenticated = false`, o `AuthGuard` pede login no painel para ações que dependem da sessão interna.
 
 ## Etapa 7: Proteger Ações Públicas
 
@@ -249,9 +257,9 @@ PATCH /site/profile
 
 | Arquivo | O que faz |
 | --- | --- |
-| `OAuthAccountController.php` | Recebe request e chama action. |
+| `HomeController.php` | Recebe request e chama service. |
 | `CompleteOAuthAccountProfileRequest.php` | Valida campos e garante que existe `oauth_account`. |
-| `CompleteOAuthAccountProfileAction.php` | Atualiza perfil e define `profile_completed_at`. |
+| `OAuthAccountService.php` | Atualiza perfil e define `profile_completed_at`. |
 | `ProfileForm.svelte` | Formulário público de perfil. |
 | `ProfileIncompleteNotice.svelte` | Avisa quando perfil OAuth está incompleto. |
 
@@ -272,12 +280,45 @@ PATCH /site/profile
   -> oauth.resolve
   -> oauth
   -> CompleteOAuthAccountProfileRequest
-  -> OAuthAccountController::update()
-  -> CompleteOAuthAccountProfileAction::execute()
+  -> HomeController::updateOAuthAccountProfile()
+  -> OAuthAccountService::update()
   -> flash message
 ```
 
-## Etapa 9: Logout OAuth
+## Etapa 9: Perfil Público de Membro Interno
+
+Rotas:
+
+```txt
+PATCH /site/member-profile
+POST /site/member-logout
+```
+
+| Arquivo | O que faz |
+| --- | --- |
+| `HomeController.php` | Atualiza perfil público do membro interno e executa logout público. |
+| `UpdatePublicMemberProfileRequest.php` | Valida campos e exige `user.view.own` e `user.update.own`. |
+| `ProfileService.php` | Salva avatar e campos separados de localização em `users`. |
+| `ProfileForm.svelte` | Reaproveita o formulário público com modo interno. |
+| `Navbar.svelte` | Abre modal de perfil para membro interno com permissão. |
+
+Campos:
+
+```txt
+avatar
+nickname
+birth_date
+city
+state
+country
+bio -> users.bibliography
+```
+
+O formulário interno usa `forceFormData` para permitir upload de avatar. O formulário OAuth continua usando `address` único.
+
+O botão `Sair` do membro interno chama `POST /site/member-logout`, remove o cookie `akiba_user_token`, limpa `users.account_token_hash` e encerra a sessão Laravel quando ela existir.
+
+## Etapa 10: Logout OAuth
 
 Rota:
 
@@ -312,7 +353,8 @@ POST /oauth/logout
 | Criar conta OAuth local | `OAuthAccountService.php` |
 | Resolver cookie | `ResolveOAuthAccount.php` |
 | Exigir autenticação pública | `EnsureOAuthAccountAuthenticated.php` |
-| Completar perfil | `OAuthAccountController.php`, `CompleteOAuthAccountProfileRequest.php`, `CompleteOAuthAccountProfileAction.php` |
+| Completar perfil OAuth | `HomeController.php`, `CompleteOAuthAccountProfileRequest.php`, `OAuthAccountService.php` |
+| Perfil público de membro interno | `HomeController.php`, `UpdatePublicMemberProfileRequest.php`, `ProfileService.php` |
 | Interface pública | `Navbar.svelte`, `ProfileForm.svelte`, `ProfileIncompleteNotice.svelte` |
 
 ## Checklist

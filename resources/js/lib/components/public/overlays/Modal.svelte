@@ -49,7 +49,7 @@
 
 {#if visible}
     <div
-        class="fixed inset-0 z-100 flex h-screen w-screen items-center justify-center bg-black/40 p-9 backdrop-blur-xs"
+        class="fixed inset-0 z-[200] flex h-screen w-screen items-center justify-center bg-black/40 p-9 backdrop-blur-xs"
         role="presentation"
         transition:fade={{ duration: 180 }}
         on:click={handleBackdrop}

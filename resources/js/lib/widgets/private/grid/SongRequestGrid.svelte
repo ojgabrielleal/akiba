@@ -26,7 +26,7 @@
             textColor: "text-suspense-aurora",
             filter: "filter-suspense-aurora",
             permission: Boolean(vapidPublicKey) && resolvePushNotificationPermission() === "default",
-            onClick: () => requestPushNotificationSubscription(vapidPublicKey),
+            onClick: () => requestPushNotificationSubscription(vapidPublicKey, "/panel/push-notification"),
         },
         {
             title: "Encerrar programa",
