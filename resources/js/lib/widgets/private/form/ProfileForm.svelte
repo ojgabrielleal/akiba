@@ -191,7 +191,7 @@
 
                 <div class="flex min-w-0 flex-col">
                     <div class="mb-6">
-                        <p class="font-noto-sans text-xs font-extrabold uppercase tracking-[0.2em] text-orange-citric">
+                        <p class="font-noto-sans text-xs font-extrabold uppercase tracking-[0.2em] text-orange-morning">
                             Perfil da equipe
                         </p>
                         <h2 class="truncate font-noto-sans text-3xl font-black uppercase italic text-suspense-aurora sm:text-4xl">

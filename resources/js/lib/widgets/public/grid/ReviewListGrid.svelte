@@ -21,7 +21,7 @@
                         aria-label={`Ler review: ${review.title}`}
                         class="group block rounded-md focus-visible:outline-none"
                     >
-                        <article class="overflow-hidden rounded-md bg-orange-amber transition duration-300 ease-out group-hover:-translate-y-1 group-hover:shadow-lg group-hover:shadow-blue-skywave/10 group-focus-visible:-translate-y-1 group-focus-visible:ring-2 group-focus-visible:ring-orange-amber motion-reduce:transform-none motion-reduce:transition-none">
+                        <article class="overflow-hidden rounded-md bg-orange-citric transition duration-300 ease-out group-hover:-translate-y-1 group-hover:shadow-lg group-hover:shadow-blue-skywave/10 group-focus-visible:-translate-y-1 group-focus-visible:ring-2 group-focus-visible:ring-orange-citric motion-reduce:transform-none motion-reduce:transition-none">
                             <img
                                 src={resolvePlaceholderImage(review.cover, "placeholder")}
                                 alt={review.title}

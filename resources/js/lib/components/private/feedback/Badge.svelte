@@ -8,7 +8,7 @@
         light: "bg-suspense-aurora text-blue-marinho",
         primary: "bg-blue-skywave text-suspense-aurora",
         dark: "bg-blue-marinho text-suspense-aurora",
-        accent: "bg-orange-citric text-blue-marinho",
+        accent: "bg-orange-amber text-blue-marinho",
         success: "bg-green-forest text-suspense-aurora",
         danger: "bg-red-crimson text-suspense-aurora",
         review: "bg-purple-mystic text-suspense-aurora",

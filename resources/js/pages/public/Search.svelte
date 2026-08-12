@@ -25,7 +25,7 @@
     $: extraCount = extraSections.reduce((total, section) => total + section.items.length, 0);
     $: resultCount = (editorialResults?.meta?.total ?? editorialResults?.data?.length ?? 0) + extraCount;
     $: hasSearched = searchedQuery.trim().length > 0;
-    $: title = hasSearched ? `Procurar por "${searchedQuery}"` : "Procurar";
+    $: title = hasSearched ? `Buscar por "${searchedQuery}"` : "Buscar";
 
     const submitSearch = () => {
         const normalizedQuery = (query ?? "").trim();
@@ -46,10 +46,7 @@
     <section class="bg-blue-night pt-10">
         <div class="container-page pb-10">
             <div class="max-w-3xl">
-                <h1 class="font-noto-sans text-3xl font-black uppercase italic leading-tight text-suspense-aurora sm:text-4xl">
-                    Procurar
-                </h1>
-                <form class="mt-4 flex flex-col gap-2 sm:flex-row" on:submit|preventDefault={submitSearch}>
+                <form class="flex flex-col gap-2 sm:flex-row" on:submit|preventDefault={submitSearch}>
                     <TextInput
                         id="global-search"
                         type="search"
@@ -67,7 +64,7 @@
             </div>
         </div>
 
-        <div class="min-h-[28rem] bg-blue-marinho py-10">
+        <div class="min-h-[28rem] bg-blue-night pt-1 pb-10">
             <div class="container-page">
                 {#if hasSearched}
                     <div class="mb-5 font-noto-sans text-sm font-bold uppercase italic text-neutral-gray">
@@ -95,7 +92,7 @@
                                         <li>
                                             <Link
                                                 href={item.href}
-                                                class="group flex min-h-20 gap-3 rounded-md bg-blue-ocean p-3 transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber motion-reduce:transform-none motion-reduce:transition-none"
+                                                class="group flex min-h-20 gap-3 rounded-md bg-blue-ocean p-3 transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric motion-reduce:transform-none motion-reduce:transition-none"
                                             >
                                                 <div class={[
                                                     "flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-md",
@@ -108,7 +105,7 @@
                                                     {/if}
                                                 </div>
                                                 <article class="min-w-0">
-                                                    <div class="mb-1 font-noto-sans text-xs font-black uppercase italic text-orange-citric">
+                                                    <div class="mb-1 font-noto-sans text-xs font-black uppercase italic text-orange-morning">
                                                         {item.type}
                                                     </div>
                                                     <h3 class="line-clamp-1 font-noto-sans text-base font-black uppercase italic leading-tight text-suspense-aurora group-hover:text-orange-citric">
@@ -131,6 +128,20 @@
                             Nenhum resultado encontrado para "{searchedQuery}".
                         </div>
                     {/if}
+                {:else}
+                    <div class="flex max-w-2xl items-start gap-4 font-noto-sans">
+                        <div class="flex size-13 shrink-0 items-center justify-center rounded-md border border-orange-morning/35 bg-orange-morning/10">
+                            <img src="/svg/search.svg" alt="" aria-hidden="true" class="size-6 filter-orange-morning" />
+                        </div>
+                        <div>
+                            <p class="text-xl font-black uppercase italic leading-tight text-orange-morning">
+                                O que vamos garimpar hoje?
+                            </p>
+                            <p class="mt-2 max-w-xl text-sm font-bold leading-relaxed text-suspense-aurora/70">
+                                Procure por matérias, reviews, podcasts, programas ou integrantes da equipe.
+                            </p>
+                        </div>
+                    </div>
                 {/if}
             </div>
         </div>

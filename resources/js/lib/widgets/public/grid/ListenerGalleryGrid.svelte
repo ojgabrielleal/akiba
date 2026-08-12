@@ -14,7 +14,7 @@
         <div class="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-5">
             {#each items as item (item.uuid)}
                 <article class="group overflow-hidden rounded-md transition duration-300 ease-out hover:-translate-y-0.5 hover:shadow-xl focus-within:-translate-y-0.5 motion-reduce:transform-none motion-reduce:transition-none">
-                    <Link href={item.image} aria-label={`Abrir foto de ${item.listener_name ?? "ouvinte"}`} class="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber">
+                    <Link href={item.image} aria-label={`Abrir foto de ${item.listener_name ?? "ouvinte"}`} class="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric">
                         <div class="aspect-[4/4.25]">
                             {#if item.image && item.image !== defaultPlaceholder}
                                 <img

@@ -64,7 +64,7 @@
                         {/if}
                     </button>
                     <div class="flex min-w-0 flex-1 flex-col gap-3 p-4">
-                        <div class="flex flex-wrap items-center gap-2 font-noto-sans text-xs font-black uppercase italic text-orange-citric">
+                        <div class="flex flex-wrap items-center gap-2 font-noto-sans text-xs font-black uppercase italic text-orange-morning">
                             <span>{item.source.name}</span>
                             <span class="text-suspense-aurora/70">{item.source.language}</span>
                             {#if item.published_at}
@@ -80,7 +80,7 @@
                         <div class="mt-auto flex flex-wrap gap-2">
                             <Button size="sm" variant="secondary" shape="pill" on:click={() => createPost(item)}>Criar matéria</Button>
                             <a
-                                class="inline-flex items-center rounded-full px-3 py-1 font-noto-sans text-sm font-extrabold uppercase italic text-orange-citric underline-offset-4 hover:underline"
+                                class="inline-flex items-center rounded-full px-3 py-1 font-noto-sans text-sm font-extrabold uppercase italic text-orange-morning underline-offset-4 hover:underline"
                                 href={item.url}
                                 target="_blank"
                                 rel="noreferrer"

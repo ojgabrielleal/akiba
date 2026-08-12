@@ -161,6 +161,8 @@ resources/js/
 - Use tokens existentes do Tailwind em `css/app.css`.
 - Novas cores, gradientes ou filtros devem ser adicionados em `css/app.css` antes de uso.
 - Use `font-noto-sans`.
+- Use `orange-citric` em botoes, elementos clicaveis, itens/cards clicaveis e seus estados de hover/focus/active. Elementos nao clicaveis devem usar `orange-amber` ou `orange-morning`: se a cor precisar ficar proxima de `orange-citric`, use `orange-morning`; caso contrario, use `orange-amber`.
+- Indicadores de likes que forem apenas exibicao/metrica, como contadores ou porcentagens em cards, podem usar `orange-amber`. Acoes de like clicaveis continuam usando `orange-citric`.
 - Hover/focus de item clicavel deve usar `orange-citric` no texto, indicador e icone quando houver.
 - Prefira componentes existentes como `Section`, `GridList`, `Surface`, `Badge`, `Button`, `IconButton`, `Modal`, `Tooltip` e inputs existentes.
 - Cards/listas clicaveis com texto devem usar `transition duration-300 ease-out`, leve `hover:-translate-y-0.5`, foco acessivel com ring e suporte a `motion-reduce`.

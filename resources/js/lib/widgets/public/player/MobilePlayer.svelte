@@ -83,7 +83,7 @@
 <section class="mt-10 container-page md:hidden">
     <div class="relative w-full max-w-[26rem] mx-auto overflow-hidden rounded-3xl border border-suspense-aurora/10 bg-blue-ocean/25 shadow-2xl">
         <div class="absolute inset-x-0 top-0 h-72 bg-gradient-to-b from-blue-skywave/20 via-blue-ocean/10 to-transparent"></div>
-        <div class="absolute -top-16 -right-16 size-52 rounded-full bg-orange-citric/10 blur-3xl"></div>
+        <div class="absolute -top-16 -right-16 size-52 rounded-full bg-orange-morning/10 blur-3xl"></div>
 
         <div class="relative p-5">
             <div class="flex items-center justify-between gap-3 mb-3">
@@ -189,7 +189,7 @@
                         <label for="mobile-player-volume" class="text-suspense-aurora/50 text-[10px] font-noto-sans font-extrabold uppercase">
                             Volume
                         </label>
-                        <span class="text-orange-citric text-[10px] font-noto-sans font-extrabold">
+                        <span class="text-orange-morning text-[10px] font-noto-sans font-extrabold">
                             {Math.round($player.volume * 100)}%
                         </span>
                     </div>
@@ -227,7 +227,7 @@
 {#if canRender}
 <section class="container-page hidden md:block">
     <div class="relative w-full max-w-4xl mx-auto overflow-hidden rounded-3xl border border-suspense-aurora/10 bg-blue-ocean/25 shadow-2xl">
-        <div class="absolute inset-0 bg-gradient-to-r from-blue-skywave/15 via-transparent to-orange-citric/10"></div>
+        <div class="absolute inset-0 bg-gradient-to-r from-blue-skywave/15 via-transparent to-orange-morning/10"></div>
 
         <div class="relative grid grid-cols-[minmax(0,1.25fr)_minmax(17rem,0.75fr)] gap-8 p-7">
             <div class="min-w-0">
@@ -337,7 +337,7 @@
                         <label for="tablet-player-volume" class="text-suspense-aurora/50 text-[10px] font-noto-sans font-extrabold uppercase">
                             Volume
                         </label>
-                        <span class="text-orange-citric text-[10px] font-noto-sans font-extrabold">
+                        <span class="text-orange-morning text-[10px] font-noto-sans font-extrabold">
                             {Math.round($player.volume * 100)}%
                         </span>
                     </div>

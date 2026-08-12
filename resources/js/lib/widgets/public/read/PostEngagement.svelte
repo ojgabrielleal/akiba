@@ -116,7 +116,7 @@
             <div class="flex justify-end">
                 <button
                     type="submit"
-                    class="rounded-full bg-orange-amber px-5 py-2.5 text-sm font-black text-blue-night uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50 motion-reduce:transform-none motion-reduce:transition-none"
+                    class="rounded-full bg-orange-citric px-5 py-2.5 text-sm font-black text-blue-night uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50 motion-reduce:transform-none motion-reduce:transition-none"
                     disabled={!comment.trim()}
                 >
                     Comentar

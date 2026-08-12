@@ -69,7 +69,7 @@
                             src={item.icon ?? "/svg/dots.svg"}
                             alt=""
                             aria-hidden="true"
-                            class="h-11 w-11 object-contain filter-orange-citric"
+                            class="h-11 w-11 object-contain filter-orange-morning"
                             loading="lazy"
                         />
                     </div>

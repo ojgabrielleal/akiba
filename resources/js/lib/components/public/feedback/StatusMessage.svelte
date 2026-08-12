@@ -8,7 +8,7 @@
     const variants = {
         info: "border-blue-skywave/40 bg-blue-skywave/10 text-blue-skywave",
         success: "border-green-mint/40 bg-green-mint/10 text-green-mint",
-        warning: "border-orange-citric/40 bg-orange-citric/10 text-orange-citric",
+        warning: "border-orange-amber/40 bg-orange-morning/10 text-orange-morning",
         danger: "border-red-crimson/40 bg-red-crimson/10 text-red-crimson",
     };
 

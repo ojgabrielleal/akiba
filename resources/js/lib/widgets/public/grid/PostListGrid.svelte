@@ -40,7 +40,7 @@
                     <Link
                         href={postHref(post)}
                         aria-label={`Ler matéria: ${post.title}`}
-                        class="group block overflow-hidden rounded-md bg-blue-ocean transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber motion-reduce:transform-none motion-reduce:transition-none sm:grid sm:grid-cols-[14rem_1fr] sm:gap-3 sm:bg-transparent"
+                        class="group block overflow-hidden rounded-md bg-blue-ocean transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric motion-reduce:transform-none motion-reduce:transition-none sm:grid sm:grid-cols-[14rem_1fr] sm:gap-3 sm:bg-transparent"
                     >
                         <div class="relative aspect-[16/9] overflow-hidden bg-neutral-gray sm:h-34 sm:aspect-auto sm:rounded-md">
                             <img

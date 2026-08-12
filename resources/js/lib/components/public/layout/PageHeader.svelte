@@ -20,7 +20,7 @@
     };
 
     const tones = {
-        accent: "text-orange-citric",
+        accent: "text-orange-morning",
         primary: "text-blue-skywave",
         light: "text-suspense-aurora",
     };

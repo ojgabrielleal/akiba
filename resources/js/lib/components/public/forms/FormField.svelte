@@ -12,7 +12,7 @@
 
     const variants = {
         default: "text-suspense-aurora/75",
-        accent: "font-extrabold uppercase italic text-orange-citric",
+        accent: "font-extrabold uppercase italic text-orange-morning",
         primary: "font-extrabold uppercase italic text-blue-skywave",
         compact: "text-[0.65rem] uppercase italic text-suspense-aurora/70",
         dark: "font-semibold text-blue-night/70",
@@ -37,7 +37,7 @@
     <label for={forId} class={labelClasses}>
         {label}
         {#if required}
-            <span class="text-orange-citric" aria-hidden="true">*</span>
+            <span class="text-orange-morning" aria-hidden="true">*</span>
         {/if}
     </label>
     <slot />

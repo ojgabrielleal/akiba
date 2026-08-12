@@ -114,7 +114,7 @@
                                         {"bg-neutral-gray text-blue-marinho": opinion.status === 'not_created'},
                                         {"bg-blue-ocean text-suspense-aurora": opinion.status === 'published'},
                                         {"bg-green-forest text-blue-marinho": opinion.status === 'draft'},
-                                        {"bg-orange-citric text-blue-marinho": opinion.status === 'revision'},
+                                        {"bg-orange-amber text-blue-marinho": opinion.status === 'revision'},
                                         {"text-suspense-aurora": $form.review.uuid === opinion.uuid},
                                     ]}
                                     on:click={() => $form.review = normalizeReview(opinion)}
@@ -147,7 +147,7 @@
                 onchange={(event) => ($form.image = event.target.files[0])}
                 required={!post}
             />
-            <ul class="mt-4 ml-5 list-disc font-noto-sans font-light text-orange-citric">
+            <ul class="mt-4 ml-5 list-disc font-noto-sans font-light text-orange-morning">
                 <li>
                     <strong>Tamanho:</strong> 708x827
                 </li>

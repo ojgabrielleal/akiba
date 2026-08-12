@@ -92,7 +92,7 @@
                 <div class="mt-5 flex flex-wrap gap-3">
                     <Link
                         href="/site"
-                        class="inline-flex min-h-9 min-w-34 items-center justify-center rounded-full bg-orange-citric px-5 py-1.5 font-noto-sans text-sm font-extrabold uppercase italic text-blue-night transition duration-300 ease-out hover:-translate-y-0.5 hover:brightness-110 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber motion-reduce:transform-none motion-reduce:transition-none"
+                        class="inline-flex min-h-9 min-w-34 items-center justify-center rounded-full bg-orange-citric px-5 py-1.5 font-noto-sans text-sm font-extrabold uppercase italic text-blue-night transition duration-300 ease-out hover:-translate-y-0.5 hover:brightness-110 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric motion-reduce:transform-none motion-reduce:transition-none"
                     >
                         Voltar com a derrota
                     </Link>

@@ -31,7 +31,7 @@
                     {#if category === "reviews"}
                         <Link
                             href="/reviews"
-                            class="group/category relative flex items-center gap-2 whitespace-nowrap rounded-md font-noto-sans text-base font-extrabold uppercase italic text-neutral-gray transition duration-300 ease-out hover:-translate-y-0.5 hover:text-orange-citric focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber motion-reduce:transform-none motion-reduce:transition-none"
+                            class="group/category relative flex items-center gap-2 whitespace-nowrap rounded-md font-noto-sans text-base font-extrabold uppercase italic text-neutral-gray transition duration-300 ease-out hover:-translate-y-0.5 hover:text-orange-citric focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric motion-reduce:transform-none motion-reduce:transition-none"
                         >
                             <img
                                 src={postTags[category]?.icon}
@@ -47,7 +47,7 @@
                             only={["posts", "activeTag"]}
                             preserveScroll
                             class={[
-                                "group/category relative flex items-center gap-2 whitespace-nowrap rounded-md font-noto-sans text-base font-extrabold uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 hover:text-orange-citric focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber motion-reduce:transform-none motion-reduce:transition-none",
+                                "group/category relative flex items-center gap-2 whitespace-nowrap rounded-md font-noto-sans text-base font-extrabold uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 hover:text-orange-citric focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric motion-reduce:transform-none motion-reduce:transition-none",
                                 activeTag === category ? "text-orange-citric" : "text-neutral-gray",
                             ]}
                         >

@@ -52,13 +52,13 @@
         role="status"
         aria-label="Aviso sobre cookies e dados"
     >
-        <div class="rounded-md border border-dashed border-orange-citric/35 bg-blue-night/95 p-4 shadow-2xl backdrop-blur-md">
+    <div class="rounded-md border border-dashed border-orange-morning/35 bg-blue-night/95 p-4 shadow-2xl backdrop-blur-md">
             <p class="text-sm leading-snug text-suspense-aurora/75">
                 Usamos cookies e dados essenciais para manter sua sessão, lembrar preferências e melhorar a experiência na Akiba.
             </p>
             <button
                 type="button"
-                class="mt-3 inline-flex min-h-9 cursor-pointer items-center justify-center rounded-full bg-orange-citric px-4 py-2 font-noto-sans text-xs font-extrabold uppercase italic text-blue-night transition duration-300 ease-out hover:-translate-y-0.5 hover:brightness-105 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none"
+                class="mt-3 inline-flex min-h-9 cursor-pointer items-center justify-center rounded-full bg-orange-citric px-4 py-2 font-noto-sans text-xs font-extrabold uppercase italic text-blue-night transition duration-300 ease-out hover:-translate-y-0.5 hover:brightness-105 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none"
                 on:click={accept}
             >
                 Entendi

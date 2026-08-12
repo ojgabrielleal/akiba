@@ -52,7 +52,7 @@
             </h2>
             <button
                 type="button"
-                class="cursor-pointer text-xs font-extrabold text-orange-citric transition hover:text-orange-amber focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber"
+                class="cursor-pointer text-xs font-extrabold text-orange-citric transition hover:text-orange-citric focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric"
                 on:click={markAllAsRead}
             >
                 Marcar todas como lidas
@@ -68,7 +68,7 @@
                         <span class="min-w-0">
                             <a
                                 href={notification.url}
-                                class="block min-w-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber"
+                                class="block min-w-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric"
                             >
                                 <span class="block truncate text-sm font-extrabold text-suspense-aurora hover:text-orange-citric">
                                     {notification.title}
@@ -83,7 +83,7 @@
                         </span>
                         <button
                             type="button"
-                            class="mt-1 flex size-8 cursor-pointer items-center justify-center rounded-md border border-suspense-aurora/10 text-orange-citric transition hover:border-orange-citric/60 hover:bg-orange-citric/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber"
+                            class="mt-1 flex size-8 cursor-pointer items-center justify-center rounded-md border border-suspense-aurora/10 text-orange-citric transition hover:border-orange-citric/60 hover:bg-orange-citric/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric"
                             aria-label="Marcar notificação como lida"
                             on:click={() => markAsRead(notification)}
                         >

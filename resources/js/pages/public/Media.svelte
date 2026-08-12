@@ -71,7 +71,7 @@
             <Section title="Eventos" styles="container-page mt-10 mb-12">
                 <div class="grid grid-cols-2 gap-3 lg:grid-cols-4">
                     {#each eventList as item (item.uuid)}
-                        <Link href={item.href} class="group overflow-hidden rounded-md bg-orange-amber text-blue-night transition duration-300 ease-out hover:-translate-y-0.5 hover:shadow-xl focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber motion-reduce:transform-none motion-reduce:transition-none">
+                        <Link href={item.href} class="group overflow-hidden rounded-md bg-orange-citric text-blue-night transition duration-300 ease-out hover:-translate-y-0.5 hover:shadow-xl focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric motion-reduce:transform-none motion-reduce:transition-none">
                             <div class="aspect-[16/9] bg-neutral-gray">
                                 <img
                                     src={resolvePlaceholderImage(item.cover || item.image, "placeholder")}
@@ -170,7 +170,7 @@
                                 <button
                                     type="button"
                                     class={[
-                                        "min-h-20 cursor-pointer rounded-md bg-blue-ocean px-4 py-4 text-left font-noto-sans text-base font-extrabold uppercase italic leading-tight text-suspense-aurora transition duration-300 ease-out hover:-translate-y-0.5 hover:bg-blue-cerulean focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber motion-reduce:transform-none motion-reduce:transition-none",
+                                        "min-h-20 cursor-pointer rounded-md bg-blue-ocean px-4 py-4 text-left font-noto-sans text-base font-extrabold uppercase italic leading-tight text-suspense-aurora transition duration-300 ease-out hover:-translate-y-0.5 hover:bg-blue-cerulean focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric motion-reduce:transform-none motion-reduce:transition-none",
                                         item.has_voted && "pointer-events-none opacity-50",
                                     ]}
                                     disabled={item.has_voted}

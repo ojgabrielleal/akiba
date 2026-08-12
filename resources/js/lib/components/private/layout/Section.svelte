@@ -20,8 +20,8 @@
     $: classes = ["container-page mb-10", className];
     $: visibleActions = actions.filter((action) => action.permission);
     $: hasActions = visibleActions.length > 0;
-    $: titleColor = hasActions ? "text-orange-citric" : "text-orange-amber";
-    $: lineColor = hasActions ? "bg-orange-citric" : "bg-orange-amber";
+    $: titleColor = hasActions ? "text-orange-morning" : "text-orange-amber";
+    $: lineColor = hasActions ? "bg-orange-morning" : "bg-orange-amber";
 </script>
 
 <section {...$$restProps} class={classes}>

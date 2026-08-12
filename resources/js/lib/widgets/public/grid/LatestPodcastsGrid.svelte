@@ -20,7 +20,7 @@
                             aria-label={`Ouvir podcast: ${podcast.title}`}
                             class="group block rounded-md focus-visible:outline-none"
                         >
-                            <article class="overflow-hidden rounded-md bg-orange-amber transition duration-300 ease-out group-hover:-translate-y-0.5 group-focus-visible:-translate-y-0.5 group-focus-visible:ring-2 group-focus-visible:ring-orange-amber motion-reduce:transform-none motion-reduce:transition-none">
+                            <article class="overflow-hidden rounded-md bg-orange-citric transition duration-300 ease-out group-hover:-translate-y-0.5 group-focus-visible:-translate-y-0.5 group-focus-visible:ring-2 group-focus-visible:ring-orange-citric motion-reduce:transform-none motion-reduce:transition-none">
                                 <img
                                     src={resolvePlaceholderImage(podcast.image, "placeholder")}
                                     alt=""

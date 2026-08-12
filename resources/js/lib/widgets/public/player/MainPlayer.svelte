@@ -276,7 +276,7 @@
                     Dê o
                 </div>
                 <div class={["font-noto-sans font-extrabold uppercase italic",
-                    { "text-orange-citric text-[3.9rem] -mt-6": !$player.playing },
+                    { "text-orange-morning text-[3.9rem] -mt-6": !$player.playing },
                     { "text-blue-skywave text-[3.1rem] -mt-5": $player.playing },
                 ]}>
                     {$player.playing ? "Pause" : "Play"}
@@ -311,7 +311,7 @@
                 <span class="text-[10px] text-suspense-aurora/40 font-extrabold uppercase">
                     Volume
                 </span>
-                <span class="text-[10px] text-orange-citric font-extrabold">
+                <span class="text-[10px] text-orange-morning font-extrabold">
                     {Math.round($player.volume * 100)}%
                 </span>
             </div>

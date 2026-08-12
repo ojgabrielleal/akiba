@@ -108,7 +108,7 @@
                 required={!post}
                 onchange={(event) => ($form.image = event.target.files[0])}
             />
-            <ul class="mt-4 ml-5 list-disc font-noto-sans font-light text-orange-citric">
+            <ul class="mt-4 ml-5 list-disc font-noto-sans font-light text-orange-morning">
                 <li>
                     <strong>Tamanho:</strong> 708x827
                 </li>

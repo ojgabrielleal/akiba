@@ -80,7 +80,7 @@
             <label
                 for="member-avatar"
                 class={[
-                    "group/avatar relative shrink-0 cursor-pointer overflow-hidden rounded-full border-2 border-suspense-aurora bg-suspense-aurora shadow focus-within:ring-2 focus-within:ring-orange-amber",
+                    "group/avatar relative shrink-0 cursor-pointer overflow-hidden rounded-full border-2 border-suspense-aurora bg-suspense-aurora shadow focus-within:ring-2 focus-within:ring-orange-citric",
                     avatarSizeClass,
                 ]}
             >
@@ -287,7 +287,7 @@
                 src="/svg/logout.svg"
                 alt=""
                 aria-hidden="true"
-                class="size-4 filter-orange-citric"
+                class="size-4 filter-orange-morning"
             />
             Sair
         </Button>

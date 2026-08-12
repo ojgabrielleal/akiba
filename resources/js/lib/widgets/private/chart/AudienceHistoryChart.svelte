@@ -211,7 +211,7 @@
             <div class="relative h-64 min-w-0 w-full overflow-hidden rounded-lg border border-blue-skywave/50 bg-blue-ocean/45 p-2 sm:h-80 sm:p-3 xl:h-auto xl:min-h-80 xl:w-auto">
                 <canvas class="block max-w-full" bind:this={canvas} aria-label="Gráfico do histórico de audiência"></canvas>
                 {#if loading}
-                    <div class="absolute inset-0 flex items-center justify-center rounded-lg bg-blue-marinho/65 text-sm font-extrabold uppercase italic text-orange-citric">
+                    <div class="absolute inset-0 flex items-center justify-center rounded-lg bg-blue-marinho/65 text-sm font-extrabold uppercase italic text-orange-morning">
                         Atualizando…
                     </div>
                 {/if}

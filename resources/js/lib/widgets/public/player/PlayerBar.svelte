@@ -136,7 +136,7 @@
                 aria-label="Faça seu pedido"
                 disabled={!air?.allows_song_requests}
                 class={[
-                    "relative z-10 hidden size-11 cursor-pointer items-center justify-center rounded-full transition duration-200 ease-out hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber active:scale-95 disabled:cursor-not-allowed disabled:bg-suspense-aurora/20 disabled:opacity-45 motion-reduce:transform-none motion-reduce:transition-none lg:flex",
+                    "relative z-10 hidden size-11 cursor-pointer items-center justify-center rounded-full transition duration-200 ease-out hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric active:scale-95 disabled:cursor-not-allowed disabled:bg-suspense-aurora/20 disabled:opacity-45 motion-reduce:transform-none motion-reduce:transition-none lg:flex",
                     { "bg-orange-citric": air?.allows_song_requests },
                     { "bg-suspense-aurora/20": !air?.allows_song_requests },
                 ]}
@@ -155,7 +155,7 @@
                     type="button"
                     aria-label={`Volume ${Math.round($player.volume * 100)}%`}
                     class={[
-                        "flex size-11 cursor-pointer items-center justify-center rounded-full transition duration-200 ease-out hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber active:scale-95 motion-reduce:transform-none motion-reduce:transition-none",
+                        "flex size-11 cursor-pointer items-center justify-center rounded-full transition duration-200 ease-out hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric active:scale-95 motion-reduce:transform-none motion-reduce:transition-none",
                         { "bg-orange-citric": !$player.playing },
                         { "bg-blue-skywave": $player.playing },
                         { "cursor-wait": $player.loading },
@@ -172,7 +172,7 @@
                     <div class="rounded-md border border-blue-skywave/20 bg-blue-night px-3 py-2 shadow-lg shadow-blue-night/40">
                         <div class="mb-2 flex items-center justify-between font-noto-sans text-[0.65rem] font-black uppercase">
                             <span class="text-suspense-aurora/45">Volume</span>
-                            <span class="text-orange-citric">{Math.round($player.volume * 100)}%</span>
+                            <span class="text-orange-morning">{Math.round($player.volume * 100)}%</span>
                         </div>
                         <input
                             id="player-bar-volume"

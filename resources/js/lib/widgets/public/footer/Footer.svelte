@@ -54,7 +54,7 @@
                         <li class="min-w-0">
                             <Link
                                 href={item.address}
-                                class="group/item flex min-h-8 items-center gap-2 rounded-md font-noto-sans text-sm font-extrabold text-suspense-aurora/70 uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 hover:text-orange-citric focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber motion-reduce:transform-none motion-reduce:transition-none"
+                                class="group/item flex min-h-8 items-center gap-2 rounded-md font-noto-sans text-sm font-extrabold text-suspense-aurora/70 uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 hover:text-orange-citric focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric motion-reduce:transform-none motion-reduce:transition-none"
                             >
                                 <img
                                     src={item.icon}
@@ -87,7 +87,7 @@
                                 aria-label={item.name}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                class="flex size-10 items-center justify-center rounded-md bg-blue-ocean transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber motion-reduce:transform-none motion-reduce:transition-none"
+                                class="flex size-10 items-center justify-center rounded-md bg-blue-ocean transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric motion-reduce:transform-none motion-reduce:transition-none"
                             >
                                 <img
                                     src={item.icon}

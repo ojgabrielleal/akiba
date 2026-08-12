@@ -18,7 +18,7 @@
         style="background-image: url('/img/textures/screentone.webp'), var(--gradient-blue-ocean-cerulean);"
     >
         <div class="container-page relative">
-            <h1 class="break-words text-center font-noto-sans text-4xl font-black italic uppercase leading-none text-orange-citric sm:text-5xl lg:text-6xl">
+            <h1 class="break-words text-center font-noto-sans text-4xl font-black italic uppercase leading-none text-orange-morning sm:text-5xl lg:text-6xl">
                 {title}
             </h1>
         </div>

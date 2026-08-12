@@ -235,7 +235,7 @@
                     {#if hasActiveNotifications}
                         <button
                             type="button"
-                            class="relative flex size-8 cursor-pointer items-center justify-center rounded-full bg-transparent transition hover:brightness-110 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber"
+                            class="relative flex size-8 cursor-pointer items-center justify-center rounded-full bg-transparent transition hover:brightness-110 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric"
                             aria-label="Notificações"
                             on:click={handleNotificationClick}
                         >
@@ -246,14 +246,14 @@
                                 class="size-4 filter-suspense-aurora"
                             />
                             {#if hasUnreadNotifications}
-                                <span class="absolute right-1 top-1 size-2.5 rounded-full bg-orange-citric ring-2 ring-blue-night"></span>
+                                <span class="absolute right-1 top-1 size-2.5 rounded-full bg-orange-morning ring-2 ring-blue-night"></span>
                             {/if}
                         </button>
                     {:else}
                         <Tooltip position="bottom">
                             <button
                                 type="button"
-                                class="relative flex size-8 cursor-pointer items-center justify-center rounded-full bg-transparent transition hover:brightness-110 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber"
+                                class="relative flex size-8 cursor-pointer items-center justify-center rounded-full bg-transparent transition hover:brightness-110 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric"
                                 aria-label="Ativar notificações"
                                 on:click={handleNotificationClick}
                             >
@@ -327,15 +327,46 @@
                 on:select={(event) => (selectedTheme = event.detail)}
             />
         </div>
-        <IconButton
-            label="Abrir menu de navegação"
-            icon="/svg/menu.svg"
-            tone="light"
-            surface="transparent"
-            size="md"
-            class="lg:hidden"
-            on:click={() => (mobilenavbar = true)}
-        />
+        <div class="flex shrink-0 items-center gap-1 lg:hidden">
+            {#if canRequestPushNotifications}
+                <div class="relative" on:click|stopPropagation>
+                    {#if hasActiveNotifications}
+                        <IconButton
+                            label="Notificações"
+                            icon="/svg/bell.svg"
+                            tone="light"
+                            surface="transparent"
+                            size="md"
+                            iconClass="!size-4"
+                            tooltipPosition="bottom"
+                            on:click={handleNotificationClick}
+                        />
+                        {#if hasUnreadNotifications}
+                            <span class="pointer-events-none absolute right-2 top-2 size-2.5 rounded-full bg-orange-morning ring-2 ring-blue-night"></span>
+                        {/if}
+                    {:else}
+                        <IconButton
+                            label="Ativar notificações"
+                            icon="/svg/bell.svg"
+                            tone="light"
+                            surface="transparent"
+                            size="md"
+                            iconClass="!size-4"
+                            tooltipPosition="bottom"
+                            on:click={handleNotificationClick}
+                        />
+                    {/if}
+                </div>
+            {/if}
+            <IconButton
+                label="Abrir menu de navegação"
+                icon="/svg/menu.svg"
+                tone="light"
+                surface="transparent"
+                size="md"
+                on:click={() => (mobilenavbar = true)}
+            />
+        </div>
     </div>
 
     {#if mobilenavbar}
@@ -440,45 +471,6 @@
                                     Entrar
                                 </Button>
                             {/if}
-                            {#if canRequestPushNotifications}
-                                <div class="flex gap-1" on:click|stopPropagation>
-                                    {#if hasActiveNotifications}
-                                        <button
-                                            type="button"
-                                            class="relative flex size-8 cursor-pointer items-center justify-center rounded-full bg-transparent transition hover:brightness-110 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber"
-                                            aria-label="Notificações"
-                                            on:click={handleNotificationClick}
-                                        >
-                                            <img
-                                                src="/svg/bell.svg"
-                                                alt=""
-                                                aria-hidden="true"
-                                                class="size-4 filter-blue-marinho"
-                                            />
-                                            {#if hasUnreadNotifications}
-                                                <span class="absolute right-1 top-1 size-2.5 rounded-full bg-orange-citric ring-2 ring-suspense-aurora"></span>
-                                            {/if}
-                                        </button>
-                                    {:else}
-                                        <Tooltip position="top">
-                                            <button
-                                                type="button"
-                                                class="relative flex size-8 cursor-pointer items-center justify-center rounded-full bg-transparent transition hover:brightness-110 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber"
-                                                aria-label="Ativar notificações"
-                                                on:click={handleNotificationClick}
-                                            >
-                                                <img
-                                                    src="/svg/bell.svg"
-                                                    alt=""
-                                                    aria-hidden="true"
-                                                    class="size-4 filter-blue-marinho"
-                                                />
-                                            </button>
-                                            <span slot="content">Ativar notificações</span>
-                                        </Tooltip>
-                                    {/if}
-                                </div>
-                            {/if}
                             <ThemeSwitcher
                                 size="md"
                                 {themes}
@@ -542,7 +534,7 @@
                     <a
                         href={`/oauth/${provider.name}/redirect`}
                         class={[
-                            "group/provider relative flex min-h-[3.25rem] items-center justify-center gap-3 overflow-hidden rounded-md px-5 py-3 text-center font-noto-sans text-sm font-extrabold uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none",
+                            "group/provider relative flex min-h-[3.25rem] items-center justify-center gap-3 overflow-hidden rounded-md px-5 py-3 text-center font-noto-sans text-sm font-extrabold uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none",
                             provider.class,
                         ]}
                     >

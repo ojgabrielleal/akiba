@@ -115,7 +115,7 @@
                 />
                 <input 
                     type="text"
-                    class="w-9/13 h-15 ml-23 bg-blue-ocean/50 border border-blue-skywave font-noto-sans font-extrabold italic uppercase text-xl text-orange-citric rounded-md outline-none pl-4"
+                    class="w-9/13 h-15 ml-23 bg-blue-ocean/50 border border-blue-skywave font-noto-sans font-extrabold italic uppercase text-xl text-orange-morning rounded-md outline-none pl-4"
                     placeholder="Digite a frase de locução"
                     bind:value={$form.phrase.text}
                 >
@@ -135,7 +135,7 @@
         </div>
         <input 
             type="text"
-            class="w-full block lg:hidden h-15 bg-blue-ocean/50 border border-blue-skywave font-noto-sans font-extrabold italic uppercase text-xl text-orange-citric rounded-md outline-none pl-4"
+            class="w-full block lg:hidden h-15 bg-blue-ocean/50 border border-blue-skywave font-noto-sans font-extrabold italic uppercase text-xl text-orange-morning rounded-md outline-none pl-4"
             placeholder="Digite a frase de locução"
             bind:value={$form.phrase.text}
         >

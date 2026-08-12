@@ -5,7 +5,7 @@
     export let size = "sm";
 
     const variants = {
-        accent: "bg-orange-citric text-blue-night",
+        accent: "bg-orange-amber text-blue-night",
         primary: "bg-blue-skywave text-suspense-aurora",
         ocean: "bg-blue-ocean text-suspense-aurora",
         light: "bg-suspense-aurora text-blue-night",

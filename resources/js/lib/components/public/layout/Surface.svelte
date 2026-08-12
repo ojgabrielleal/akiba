@@ -11,7 +11,7 @@
         night: "bg-blue-night text-suspense-aurora",
         glass: "border border-suspense-aurora/10 bg-blue-ocean/25 text-suspense-aurora shadow-xl",
         light: "bg-suspense-aurora text-blue-night",
-        accent: "bg-orange-citric text-blue-night",
+        accent: "bg-orange-amber text-blue-night",
         muted: "bg-neutral-gray text-blue-night",
     };
 

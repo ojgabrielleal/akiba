@@ -33,7 +33,7 @@
             style="background-image: radial-gradient(circle, var(--color-blue-skywave) 1px, transparent 1px); background-size: 9px 9px;"
         ></div>
         <div class={[
-            "absolute top-0 h-full w-24 skew-x-[-18deg] bg-orange-citric/10",
+            "absolute top-0 h-full w-24 skew-x-[-18deg] bg-orange-morning/10",
             mirrored ? "-left-8" : "-right-8",
         ]}></div>
         <div class={[
@@ -44,8 +44,8 @@
         </div>
 
         <div class="absolute top-3 left-4 flex items-center gap-1.5">
-            <span class="h-px w-8 bg-orange-citric"></span>
-            <span class="font-noto-sans text-[0.55rem] font-extrabold tracking-[0.2em] text-orange-citric uppercase">
+            <span class="h-px w-8 bg-orange-morning"></span>
+            <span class="font-noto-sans text-[0.55rem] font-extrabold tracking-[0.2em] text-orange-morning uppercase">
                 Akiba Anúncios
             </span>
         </div>
@@ -67,7 +67,7 @@
                     アキバで宣伝しよう！
                 </p>
                 <p class="text-xl font-black text-suspense-aurora">
-                    Anuncie <span class="text-orange-citric">aqui!</span>
+                    Anuncie <span class="text-orange-morning">aqui!</span>
                 </p>
             </div>
         </div>

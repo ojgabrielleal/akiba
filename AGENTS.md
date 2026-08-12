@@ -13,6 +13,8 @@ Este projeto usa Laravel no backend e Svelte no frontend, integrados via Inertia
 
 - Nao rode `docker compose exec node npm run build` automaticamente apos alteracoes. O usuario prefere rodar o build manualmente.
 - Nao suba o ambiente Docker automaticamente. Quando os containers forem necessarios, peca para o usuario executar `docker compose up -d`.
+- No frontend, use `orange-citric` em botoes, elementos clicaveis, itens/cards clicaveis e seus estados de hover/focus/active. Elementos nao clicaveis devem usar `orange-amber` ou `orange-morning`: se a cor precisar ficar proxima de `orange-citric`, use `orange-morning`; caso contrario, use `orange-amber`.
+- Indicadores de likes que forem apenas exibicao/metrica, como contadores ou porcentagens em cards, podem usar `orange-amber`. Acoes de like clicaveis continuam usando `orange-citric`.
 
 ## Arquitetura Atual
 

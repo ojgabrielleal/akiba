@@ -28,7 +28,7 @@
                                 <Link
                                     href={`/event/${item.slug}`}
                                     aria-label={`Ver evento: ${item.title}`}
-                                    class="group block overflow-hidden rounded-md bg-blue-ocean font-black transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber motion-reduce:transform-none motion-reduce:transition-none"
+                                    class="group block overflow-hidden rounded-md bg-blue-ocean font-black transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric motion-reduce:transform-none motion-reduce:transition-none"
                                 >
                                     <div class="relative aspect-[16/9] overflow-hidden bg-neutral-gray">
                                         <img
@@ -59,9 +59,9 @@
                                 <Link
                                     href={`/event/${item.slug}`}
                                     aria-label={`Ver evento: ${item.title}`}
-                                    class="group grid grid-cols-[1.5fr_0.85fr_1fr] gap-2 rounded-md font-black transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber motion-reduce:transform-none motion-reduce:transition-none"
+                                    class="group grid grid-cols-[1.5fr_0.85fr_1fr] gap-2 rounded-md font-black transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric motion-reduce:transform-none motion-reduce:transition-none"
                                 >
-                                    <div class="min-w-0 rounded-md bg-orange-morning px-5 py-2.5 text-center text-lg text-blue-night">
+                                    <div class="min-w-0 rounded-md bg-orange-citric px-5 py-2.5 text-center text-lg text-blue-night">
                                         <span class="block truncate">
                                             {item.title}
                                         </span>
