@@ -37,6 +37,7 @@
 <svelte:window on:keydown={handleKeydown} on:click={close} />
 
 {#if open}
+    <!-- svelte-ignore a11y_no_noninteractive_element_interactions, a11y_click_events_have_key_events -->
     <aside
         class={[
             "z-120 w-[min(25rem,calc(100vw-2rem))] overflow-hidden rounded-lg border border-suspense-aurora/10 bg-blue-night/95 font-noto-sans text-suspense-aurora shadow-2xl shadow-black/45 backdrop-blur-md",
