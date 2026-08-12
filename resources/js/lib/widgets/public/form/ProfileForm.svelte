@@ -5,6 +5,7 @@
         FormField,
         TextArea,
         TextInput,
+        Tooltip,
     } from "@/lib/components/public";
     import { OAuthAction, rememberOAuthAction } from "@/lib/utils";
 
@@ -75,7 +76,7 @@
 </script>
 
 <form class="space-y-4" on:submit|preventDefault={submit}>
-    <div class="mb-5 flex items-center gap-4">
+    <div class="mb-5 flex items-center gap-3 sm:gap-4">
         {#if internal}
             <label
                 for="member-avatar"
@@ -113,12 +114,12 @@
                 />
             </div>
         {/if}
-        <div class="min-w-0">
+        <div class="min-w-0 flex-1">
             <p class="truncate font-noto-sans text-lg font-extrabold text-blue-night">
                 {nickname}
             </p>
             <p class="truncate font-noto-sans text-xs text-blue-night/50">
-                {internal ? "Membro interno Akiba" : `@${profile?.username}`}
+                {internal ? "Membro interno" : `@${profile?.username}`}
             </p>
         </div>
         {#if !internal}
@@ -127,7 +128,7 @@
                 variant="secondary"
                 size="sm"
                 shape="pill"
-                class="ml-auto shrink-0"
+                class="shrink-0"
                 on:click={syncProvider}
             >
                 <img
@@ -139,6 +140,22 @@
                 Ressincronizar
             </Button>
         {/if}
+        <Tooltip position="left">
+            <button
+                type="button"
+                class="group/logout flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full bg-transparent transition hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none"
+                aria-label="Sair da conta"
+                on:click={logout}
+            >
+                <img
+                    src="/svg/logout.svg"
+                    alt=""
+                    aria-hidden="true"
+                    class="mr-[0.1rem] size-4 filter-neutral-gray transition group-hover/logout:filter-orange-citric group-focus-visible/logout:filter-orange-citric"
+                />
+            </button>
+            <span slot="content">Sair da conta</span>
+        </Tooltip>
     </div>
 
     <div class="grid gap-4">
@@ -277,20 +294,6 @@
     </div>
 
     <div class="flex flex-wrap justify-end gap-2 pt-2">
-        <Button
-            type="button"
-            variant="outline"
-            shape="pill"
-            on:click={logout}
-        >
-            <img
-                src="/svg/logout.svg"
-                alt=""
-                aria-hidden="true"
-                class="size-4 filter-orange-morning"
-            />
-            Sair
-        </Button>
         <Button
             type="submit"
             shape="pill"
