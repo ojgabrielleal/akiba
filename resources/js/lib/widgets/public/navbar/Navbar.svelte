@@ -177,7 +177,7 @@
 </script>
 
 <nav aria-label="Navegação principal">
-    <div class="container-page flex items-center justify-between gap-4 pt-10 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto]">
+    <div class="container-page flex items-center justify-between gap-4 pt-10 pb-6 md:pb-8 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:pb-0">
         <Link href="/site" class="group/logo w-52 shrink-0 focus-visible:outline-none" aria-label="Página inicial">
             <img
                 src="/img/brand/logo.webp"
