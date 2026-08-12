@@ -15,6 +15,7 @@
     export let songRequests = null;
 
     const can = songRequestPermissions();
+    let notificationPermission = resolvePushNotificationPermission();
     
     $: vapidPublicKey = $page.props.push?.vapid_public_key;
 
@@ -25,8 +26,8 @@
             background: "bg-blue-skywave",
             textColor: "text-suspense-aurora",
             filter: "filter-suspense-aurora",
-            permission: Boolean(vapidPublicKey) && resolvePushNotificationPermission() === "default",
-            onClick: () => requestPushNotificationSubscription(vapidPublicKey, "/panel/push-notification"),
+            permission: Boolean(vapidPublicKey) && notificationPermission === "default",
+            onClick: () => requestNotifications(),
         },
         {
             title: "Encerrar programa",
@@ -49,6 +50,10 @@
         router.patch("/panel/locution/song-request/box/toggle", {}, {
             preserveScroll: true,
         });
+    }
+
+    async function requestNotifications() {
+        notificationPermission = await requestPushNotificationSubscription(vapidPublicKey, "/panel/push-notification");
     }
 
     function markToReproduced(songrequest) {
@@ -91,18 +96,20 @@
                             {item.name}
                         </span>
                     </div>
-                    <div class="w-full mt-1 flex gap-1.5 text-suspense-aurora text-[1rem] font-noto-sans font-light">
-                        <img
-                            src="/svg/location.svg"
-                            alt=""
-                            aria-hidden="true"
-                            class="w-5 filter-suspense-aurora"
-                            loading="lazy"
-                        />
-                        <span class="truncate">
-                            {item.address}
-                        </span>
-                    </div>
+                    {#if item.address}
+                        <div class="w-full mt-1 flex gap-1.5 text-suspense-aurora text-[1rem] font-noto-sans font-light">
+                            <img
+                                src="/svg/location.svg"
+                                alt=""
+                                aria-hidden="true"
+                                class="w-5 filter-suspense-aurora"
+                                loading="lazy"
+                            />
+                            <span class="truncate">
+                                {item.address}
+                            </span>
+                        </div>
+                    {/if}
                     <div class="flex items-center justify-center w-full mt-5 mb-5">
                         <div class="relative w-full">
                             <div class="absolute left-0 w-2/5 h-[0.1rem] bg-orange-amber rounded-full top-1/2 -translate-y-1/2"></div>

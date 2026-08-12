@@ -57,7 +57,7 @@ class PushNotificationService
     public function sendToUserOrAll(?User $user, array $payload): void
     {
         $subscriptions = PushSubscription::query()
-            ->when($user, fn ($query) => $query->whereBelongsTo($user))
+            ->when($user, fn ($query) => $query->where('user_id', $user->id))
             ->get();
 
         $this->sendToSubscriptions($subscriptions, [

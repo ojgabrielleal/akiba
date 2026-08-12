@@ -3,7 +3,7 @@ self.addEventListener("push", (event) => {
     const title = data.title ?? "Akiba";
 
     event.waitUntil(Promise.all([
-        data.audience === "all" ? storeNotification({ ...data, title }).then(notifyClients) : Promise.resolve(),
+        storeNotification({ ...data, title }).then(notifyClients),
         self.registration.showNotification(title, {
             body: data.body,
             icon: data.icon ?? "/favicon.ico",

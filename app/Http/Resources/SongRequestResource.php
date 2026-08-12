@@ -23,7 +23,9 @@ class SongRequestResource extends JsonResource
             'was_reproduced' => $this->was_reproduced,
             'was_canceled' => $this->was_canceled,
             'name' => $this->requesterName($requester),
-            'address' => $requester instanceof OAuthAccount ? $requester->address : null,
+            'avatar' => $requester?->avatar,
+            'gender' => $requester instanceof User ? $requester->gender : null,
+            'address' => $this->requesterAddress($requester),
             'message' => $this->message ?? 'Ouvinte não deixou mensagem',
             'music' => MusicResource::make($this->music),
             'created_at' => $this->created_at->setTimezone('America/Sao_Paulo')->format('H:i'),
@@ -37,5 +39,16 @@ class SongRequestResource extends JsonResource
         }
 
         return $requester?->nickname;
+    }
+
+    private function requesterAddress(User|OAuthAccount|null $requester): ?string
+    {
+        if ($requester instanceof User) {
+            return collect([$requester->city, $requester->state])
+                ->filter()
+                ->join(' - ') ?: null;
+        }
+
+        return $requester?->address;
     }
 }
