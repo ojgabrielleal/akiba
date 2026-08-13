@@ -1,125 +1,166 @@
 <script>
-    import { Link } from "@inertiajs/svelte";
-
-    import { EditorialTitle, GridList, Pagination } from "@/lib/components/public";
-    import { resolveDateTime, resolveDay, resolveHour, resolvePlaceholderImage } from "@/lib/utils";
+    import { EditorialTitle, GridList } from "@/lib/components/public";
+    import { resolveDay, resolveHour, resolvePlaceholderImage } from "@/lib/utils";
 
     export let programs = null;
-    export let activeProgramMode = "live";
 
-    const filters = [
-        { title: "Ao vivo", executionMode: "live", icon: "/svg/onair.svg" },
-        { title: "Gravados", executionMode: "scheduled", icon: "/svg/bestAvaliable.svg" },
-        { title: "Automáticos", executionMode: "playlist", icon: "/svg/disc.svg" },
+    const weekDays = [
+        { day: 1, label: "Segunda-feira" },
+        { day: 2, label: "Terça-feira" },
+        { day: 3, label: "Quarta-feira" },
+        { day: 4, label: "Quinta-feira" },
+        { day: 5, label: "Sexta-feira" },
+        { day: 6, label: "Sábado" },
+        { day: 0, label: "Domingo" },
     ];
 
+    const brazilTimeZones = [
+        { name: "BRT", region: "Brasília", offset: 0, featured: true },
+        { name: "AMT", region: "Amazonas", offset: -1 },
+        { name: "ACT", region: "Acre", offset: -2 },
+    ];
+
+    let activeDay = 1;
+
     $: selectedPrograms = programs?.data ?? [];
+    $: dayPrograms = resolveProgramsByDay(selectedPrograms, activeDay);
 
-    function filterHref(executionMode) {
-        return executionMode === "live"
-            ? "/radio"
-            : `/radio?program_mode=${executionMode}`;
+    function resolveProgramsByDay(items, day) {
+        return items
+            .flatMap((program) =>
+                (program.airtimes ?? [])
+                    .filter((schedule) => Number(schedule.day) === day)
+                    .map((schedule) => ({ ...program, schedule }))
+            )
+            .sort((first, second) => String(first.schedule.hour).localeCompare(String(second.schedule.hour)));
     }
 
-    function resolveScheduledDate(dateTime) {
-        return resolveDateTime(dateTime).split(" - ")[0] ?? "";
+    function resolveScheduleTimeZones(schedule) {
+        return brazilTimeZones.map((timezone) => {
+            const converted = convertScheduleTime(schedule.day, schedule.hour, timezone.offset);
+
+            return {
+                ...timezone,
+                ...converted,
+            };
+        });
     }
 
-    function resolveScheduledHour(dateTime) {
-        return resolveDateTime(dateTime).split(" - ")[1] ?? "";
+    function convertScheduleTime(day, hour, offset) {
+        const [hours = "0", minutes = "0"] = String(hour).split(":");
+        const totalMinutes = (Number(hours) * 60) + Number(minutes) + (offset * 60);
+        const dayOffset = Math.floor(totalMinutes / 1440);
+        const normalizedMinutes = ((totalMinutes % 1440) + 1440) % 1440;
+        const convertedDay = (Number(day) + dayOffset + 7) % 7;
+        const convertedHours = Math.floor(normalizedMinutes / 60);
+        const convertedMinutes = normalizedMinutes % 60;
+
+        return {
+            day: convertedDay,
+            hour: `${String(convertedHours).padStart(2, "0")}:${String(convertedMinutes).padStart(2, "0")}`,
+            shiftedDay: convertedDay !== Number(day),
+        };
     }
 </script>
 
 <section class="bg-blue-marinho">
-    <EditorialTitle title="Programação" listLabel="Filtrar programas por formato">
-        {#each filters as item}
+    <EditorialTitle title="Programação" listLabel="Filtrar programação por dia">
+        {#each weekDays as item}
             <li class="flex h-8 items-center border-l border-neutral-gray/35 px-3 first:border-none first:pl-0 xl:px-5">
-                <Link
-                    href={filterHref(item.executionMode)}
-                    only={["programs", "activeProgramMode"]}
-                    preserveScroll
+                <button
+                    type="button"
                     class={[
-                        "group/item flex cursor-pointer items-center gap-1 whitespace-nowrap rounded-md font-noto-sans text-base font-extrabold uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 hover:text-orange-citric focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric motion-reduce:transform-none motion-reduce:transition-none",
-                        activeProgramMode === item.executionMode ? "text-orange-citric" : "text-neutral-gray",
+                        "cursor-pointer whitespace-nowrap rounded-md font-noto-sans text-base font-extrabold uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 hover:text-orange-citric focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric motion-reduce:transform-none motion-reduce:transition-none",
+                        activeDay === item.day ? "text-orange-citric" : "text-neutral-gray",
                     ]}
+                    on:click={() => (activeDay = item.day)}
                 >
-                    <img
-                        src={item.icon}
-                        alt=""
-                        aria-hidden="true"
-                        class={[
-                            "size-6 group-hover/item:scale-105 group-hover/item:filter-orange-citric group-focus-visible/item:scale-105 group-focus-visible/item:filter-orange-citric motion-reduce:transform-none",
-                            activeProgramMode === item.executionMode ? "filter-orange-citric" : "filter-neutral-gray",
-                        ]}
-                        loading="lazy"
-                    />
-                    {item.title}
-                </Link>
+                    {item.label}
+                </button>
             </li>
         {/each}
     </EditorialTitle>
 
     <div class="container-page py-12">
-        {#if selectedPrograms.length > 0}
+        {#if dayPrograms.length > 0}
             <GridList preset="wide">
-                {#each selectedPrograms as item}
+                {#each dayPrograms as item (`${activeDay}-${item.uuid}-${item.schedule.uuid}`)}
                     <li>
                         <article class="w-full">
-                        <div>
-                            <img
-                                class="w-40 mb-3"
-                                src={resolvePlaceholderImage(item.image, "program")}
-                                alt={item.name}
-                                loading="lazy"
-                            />
-                            <div class="w-full h-13 flex items-center rounded-md px-3 bg-suspense-aurora relative mb-2">
-                                <div class="w-36 min-w-0 flex items-center gap-1 text-blue-ocean text-sm font-noto-sans font-extrabold italic uppercase">
-                                    <span class="shrink-0 not-italic font-normal text-[0.7rem]">
-                                        Com:
-                                    </span>
-                                    <span class="block min-w-0 flex-1 truncate">
-                                        {item.host.nickname}
-                                    </span>
-                                </div>
+                            <div>
                                 <img
-                                    class="w-36 aspect-square absolute right-0 bottom-0 object-cover object-top"
-                                    src={resolvePlaceholderImage(item.host.avatar, "avatar", item.host.gender)}
-                                    alt={item.host.nickname}
+                                    class="w-40 mb-3"
+                                    src={resolvePlaceholderImage(item.image, "program")}
+                                    alt={item.name}
                                     loading="lazy"
                                 />
+                                <div class="w-full h-13 flex items-center rounded-md px-3 bg-suspense-aurora relative mb-2">
+                                    <div class="w-36 min-w-0 flex items-center gap-1 text-blue-ocean text-sm font-noto-sans font-extrabold italic uppercase">
+                                        <span class="shrink-0 not-italic font-normal text-[0.7rem]">
+                                            Com:
+                                        </span>
+                                        <span class="block min-w-0 flex-1 truncate">
+                                            {item.host.nickname}
+                                        </span>
+                                    </div>
+                                    <img
+                                        class="w-36 aspect-square absolute right-0 bottom-0 object-cover object-top"
+                                        src={resolvePlaceholderImage(item.host.avatar, "avatar", item.host.gender)}
+                                        alt={item.host.nickname}
+                                        loading="lazy"
+                                    />
+                                </div>
+                                <dl class="w-full rounded-md bg-suspense-aurora px-4 py-3 mb-2">
+                                    <dt class="mb-3 flex items-center justify-between gap-3 font-noto-sans italic uppercase text-blue-marinho">
+                                        <span class="text-sm font-extrabold">
+                                            {resolveDay(item.schedule.day)}
+                                        </span>
+                                        <span class="rounded-md bg-orange-amber px-2 py-1 text-xs font-black text-blue-night">
+                                            Horários BR
+                                        </span>
+                                    </dt>
+                                    <dd class="grid gap-2">
+                                        {#each resolveScheduleTimeZones(item.schedule) as timezone}
+                                            {#if timezone.featured}
+                                                <div class="rounded-md bg-blue-marinho px-3 py-2 font-noto-sans italic uppercase text-suspense-aurora">
+                                                    <div class="flex items-center justify-between gap-3">
+                                                        <span class="text-xs font-black text-orange-amber">
+                                                            {timezone.name} · {timezone.region}
+                                                        </span>
+                                                        <span class="text-lg font-black leading-none">
+                                                            {resolveHour(timezone.hour)}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            {:else}
+                                                <div class="flex items-center justify-between gap-3 border-t border-blue-marinho/10 pt-2 font-noto-sans text-xs italic uppercase text-blue-marinho">
+                                                    <span class="font-black">
+                                                        {timezone.name}
+                                                        <span class="font-extrabold normal-case not-italic text-blue-marinho/65">
+                                                            {timezone.region}
+                                                        </span>
+                                                    </span>
+                                                    <span class="text-right font-extrabold">
+                                                        {resolveHour(timezone.hour)}
+                                                        {#if timezone.shiftedDay}
+                                                            <span class="ml-1 text-[0.65rem] font-black text-orange-amber">
+                                                                {resolveDay(timezone.day, "short")}
+                                                            </span>
+                                                        {/if}
+                                                    </span>
+                                                </div>
+                                            {/if}
+                                        {/each}
+                                    </dd>
+                                </dl>
                             </div>
-                            {#if item.airtimes.length > 0}
-                                {#each item.airtimes as schedule}
-                                    <dl class="w-full rounded-md py-2 px-4 bg-suspense-aurora flex justify-between mb-2">
-                                        <dt class="block text-blue-marinho text-sm font-noto-sans italic uppercase font-extrabold">
-                                            {resolveDay(schedule.day)}
-                                        </dt>
-                                        <dd class="block text-blue-marinho text-sm font-noto-sans italic uppercase font-extrabold">
-                                            {resolveHour(schedule.hour)}
-                                        </dd>
-                                    </dl>
-                                {/each}
-                            {:else}
-                                {#each item.schedules as schedule}
-                                    <dl class="w-full rounded-md py-2 px-4 bg-suspense-aurora flex justify-between mb-2">
-                                        <dt class="block text-blue-marinho text-sm font-noto-sans italic uppercase font-extrabold">
-                                            {resolveScheduledDate(schedule.scheduled_at)}
-                                        </dt>
-                                        <dd class="block text-blue-marinho text-sm font-noto-sans italic uppercase font-extrabold">
-                                            {resolveScheduledHour(schedule.scheduled_at)}
-                                        </dd>
-                                    </dl>
-                                {/each}
-                            {/if}
-                        </div>
                         </article>
                     </li>
                 {/each}
             </GridList>
-            <Pagination pages={programs} only={["programs", "activeProgramMode"]} loadingLabel="Carregando programação..." />
         {:else}
             <p class="text-center font-noto-sans text-lg font-extrabold italic uppercase text-neutral-gray">
-                Nenhum programa encontrado neste formato.
+                Nenhum programa encontrado neste dia.
             </p>
         {/if}
     </div>

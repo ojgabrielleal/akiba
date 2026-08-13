@@ -15,6 +15,7 @@
     const fieldLabels = {
         role: "Cargo",
         nickname: "Nick",
+        whatsapp: "WhatsApp",
         age: "Idade",
         portfolio: "Trabalhos",
         interview_time: "Horário da pré-entrevista",

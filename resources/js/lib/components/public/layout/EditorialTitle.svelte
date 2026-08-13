@@ -6,6 +6,8 @@
     export let listLabel = null;
     export let phrase = null;
     export let padding = "py-6 sm:py-8";
+    export let phrasePadding = "py-5";
+    export let phraseMinHeight = "min-h-20 sm:min-h-24";
     export let spacer = false;
 </script>
 
@@ -26,7 +28,7 @@
 
     {#if phrase}
         <div class="bg-blue-night">
-            <p class={["container-page flex min-h-20 items-center justify-center text-center font-noto-sans text-sm font-extrabold italic uppercase text-neutral-gray sm:min-h-24", padding]}>
+            <p class={["container-page flex items-center justify-center text-center font-noto-sans text-sm font-extrabold italic uppercase text-neutral-gray", phraseMinHeight, phrasePadding]}>
                 {phrase}
             </p>
         </div>

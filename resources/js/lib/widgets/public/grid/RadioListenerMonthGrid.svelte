@@ -10,7 +10,7 @@
 <section class="bg-blue-night">
     <EditorialTitle title="Ouvinte do mês" compact />
 
-    <div class="container-page py-12">
+    <div class="container-page pt-12 pb-20">
         {#if listener}
             <div class="grid grid-cols-1 gap-5 lg:grid-cols-[18rem_1fr]">
                 <img

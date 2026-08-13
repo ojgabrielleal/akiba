@@ -29,7 +29,7 @@
 >
     <EditorialTitle title="Akiba Ranking" compact />
 
-    <div class="container-page py-12 lg:py-24">
+    <div class="container-page pt-12 pb-20 lg:pt-24 lg:pb-20">
         <ol class="grid grid-cols-1 gap-5 lg:grid-cols-2 lg:gap-15">
             {#each rankingCards as card, index}
                 {#if songs[index]}

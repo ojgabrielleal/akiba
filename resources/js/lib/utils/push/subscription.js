@@ -60,9 +60,14 @@ export const listPushNotifications = async () => {
     database.close();
 
     return notifications
+        .filter((notification) => isGlobalPushNotification(notification))
         .filter((notification) => !notification.read_at)
         .sort((first, second) => new Date(second.created_at) - new Date(first.created_at))
         .slice(0, 10);
+};
+
+const isGlobalPushNotification = (notification) => {
+    return notification.audience === "all";
 };
 
 export const markPushNotificationAsRead = async (notificationId) => {

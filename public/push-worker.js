@@ -35,30 +35,34 @@ const openNotificationDatabase = () => new Promise((resolve, reject) => {
 
 const storeNotification = async (notification) => {
     const database = await openNotificationDatabase();
+    const storedNotification = {
+        title: notification.title ?? "Akiba",
+        body: notification.body ?? "",
+        audience: notification.audience ?? null,
+        icon: notification.icon ?? "/favicon.ico",
+        icon_type: notification.icon_type ?? "icon",
+        banner: notification.banner ?? notification.image ?? null,
+        url: notification.url ?? "/",
+        created_at: new Date().toISOString(),
+        read_at: null,
+    };
 
     await new Promise((resolve, reject) => {
         const transaction = database.transaction("notifications", "readwrite");
         const store = transaction.objectStore("notifications");
 
-        store.add({
-            title: notification.title ?? "Akiba",
-            body: notification.body ?? "",
-            icon: notification.icon ?? "/favicon.ico",
-            icon_type: notification.icon_type ?? "icon",
-            banner: notification.banner ?? notification.image ?? null,
-            url: notification.url ?? "/",
-            created_at: new Date().toISOString(),
-            read_at: null,
-        });
+        store.add(storedNotification);
 
         transaction.oncomplete = resolve;
         transaction.onerror = () => reject(transaction.error);
     });
 
     database.close();
+
+    return storedNotification;
 };
 
-const notifyClients = async () => {
+const notifyClients = async (notification) => {
     const clients = await self.clients.matchAll({
         type: "window",
         includeUncontrolled: true,
@@ -67,6 +71,7 @@ const notifyClients = async () => {
     clients.forEach((client) => {
         client.postMessage({
             type: "akiba:push-notification-received",
+            notification,
         });
     });
 };

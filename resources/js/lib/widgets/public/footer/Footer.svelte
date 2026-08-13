@@ -3,7 +3,14 @@
     import { navbar } from "@/lib/constants";
 
     const socials = [
+        { name: "Instagram", icon: "/svg/instagram.svg", href: "https://www.instagram.com/redeakiba/" },
+        { name: "Facebook", icon: "/svg/facebook.svg", href: "https://www.facebook.com/RedeAkiba" },
+        { name: "X / Twitter", icon: "/svg/x.svg", href: "https://x.com/RedeAkiba" },
         { name: "Discord", icon: "/svg/discord.svg", href: "https://discord.akiba.com.br" },
+        { name: "YouTube", icon: "/svg/youtube.svg", href: "https://www.youtube.com/@RedeAkiba" },
+        { name: "Apple Podcasts", icon: "/svg/apple-podcasts.svg", href: "https://podcasts.apple.com/us/podcast/akibacast/id1508240222" },
+        { name: "Spotify", icon: "/svg/spotify.svg", href: "https://open.spotify.com/show/21MR4fnrOnKW7gNGYiWx37" },
+        { name: "Amazon Music", icon: "/svg/amazon-music.svg", iconClass: "w-7", href: "https://music.amazon.com.au/podcasts/fafe997e-b911-4a8e-8e38-dbbc6b285d83/akibacast" },
     ];
 
     const signals = ["オンエア", "アニメ", "音楽", "レビュー", "イベント"];
@@ -79,7 +86,7 @@
                     />
                     Comunidade
                 </h2>
-                <ul class="mt-4 flex gap-3">
+                <ul class="mt-4 flex flex-wrap gap-3">
                     {#each socials as item}
                         <li>
                             <a
@@ -93,7 +100,7 @@
                                     src={item.icon}
                                     alt=""
                                     aria-hidden="true"
-                                    class="size-5 filter-suspense-aurora"
+                                    class={item.iconClass ?? "size-5 filter-suspense-aurora"}
                                 />
                             </a>
                         </li>

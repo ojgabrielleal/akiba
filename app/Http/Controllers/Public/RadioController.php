@@ -25,13 +25,12 @@ class RadioController extends Controller
             $this->programFilter->filter([
                 'with' => [
                     'host',
-                    'programAirtimes',
+                    'programAirtimes' => fn ($query) => $query->orderBy('day')->orderBy('hour'),
                     'schedules' => fn ($query) => $query->pendingExecution()->orderBy('scheduled_at'),
                 ],
                 'active' => true,
-                'execution_mode' => $this->resolveProgramMode($request),
-                'public_schedule' => $this->resolveProgramMode($request) === 'live',
-                'paginate' => 8,
+                'execution_mode' => 'live',
+                'public_schedule' => true,
             ])
         );
     }
@@ -56,20 +55,10 @@ class RadioController extends Controller
         ];
     }
 
-    private function resolveProgramMode(Request $request): string
-    {
-        $mode = $request->query('program_mode', 'live');
-
-        return in_array($mode, ['live', 'scheduled', 'playlist'], true)
-            ? $mode
-            : 'live';
-    }
-
     public function render(Request $request)
     {
         return Inertia::render('public/Radio', [
             'programs' => $this->indexPrograms($request),
-            'activeProgramMode' => $this->resolveProgramMode($request),
             'ranking' => $this->indexRanking(),
             'listenerMonth' => $this->indexListenerMonth(),
             'about' => null,

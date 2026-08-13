@@ -12,7 +12,6 @@
         onair,
         stream,
         programs,
-        activeProgramMode,
         ranking,
         listenerMonth,
         about,
@@ -32,7 +31,7 @@
 <Layout {flash} {oauth} {onair} {stream} {pageUrl}>
     <h1 class="sr-only">Rádio</h1>
     <div class="bg-blue-night pt-10">
-        <RadioProgramGrid {programs} {activeProgramMode} />
+        <RadioProgramGrid {programs} />
         <RadioRankingGrid {ranking} />
         <RadioListenerMonthGrid {listenerMonth} />
 

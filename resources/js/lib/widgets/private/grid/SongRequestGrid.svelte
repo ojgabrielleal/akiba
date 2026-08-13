@@ -1,6 +1,7 @@
 <script>
     import { page } from "@inertiajs/svelte";
     import { router } from "@inertiajs/svelte";
+    import { onDestroy, onMount } from "svelte";
 
     import { EmptyState, IconButton, Section } from "@/lib/components/private/";
     import {
@@ -16,6 +17,7 @@
 
     const can = songRequestPermissions();
     let notificationPermission = resolvePushNotificationPermission();
+    let refreshQueued = false;
     
     $: vapidPublicKey = $page.props.push?.vapid_public_key;
 
@@ -56,6 +58,35 @@
         notificationPermission = await requestPushNotificationSubscription(vapidPublicKey, "/panel/push-notification");
     }
 
+    function refreshSongRequests() {
+        if (refreshQueued) {
+            return;
+        }
+
+        refreshQueued = true;
+
+        router.reload({
+            only: ["songRequests"],
+            preserveScroll: true,
+            preserveState: true,
+            onFinish: () => {
+                refreshQueued = false;
+            },
+        });
+    }
+
+    function handlePushNotificationReceived(event) {
+        const notification = event.data?.notification;
+
+        if (
+            event.data?.type === "akiba:push-notification-received" &&
+            notification?.audience === "user" &&
+            notification?.url === "/panel/locution"
+        ) {
+            refreshSongRequests();
+        }
+    }
+
     function markToReproduced(songrequest) {
         router.patch(`/panel/locution/song-request/${songrequest}/played`, {}, {
             preserveScroll: true,
@@ -71,6 +102,14 @@
     function requestFinishlocution() {
         router.patch(`/panel/locution/finish`);
     }
+
+    onMount(() => {
+        navigator.serviceWorker?.addEventListener("message", handlePushNotificationReceived);
+    });
+
+    onDestroy(() => {
+        navigator.serviceWorker?.removeEventListener("message", handlePushNotificationReceived);
+    });
 
 </script>
 
