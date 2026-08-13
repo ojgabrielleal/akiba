@@ -15,6 +15,7 @@
     ];
 
     const brazilTimeZones = [
+        { name: "FNT", region: "Fernando de Noronha", offset: 1 },
         { name: "BRT", region: "Brasília", offset: 0, featured: true },
         { name: "AMT", region: "Amazonas", offset: -1 },
         { name: "ACT", region: "Acre", offset: -2 },
