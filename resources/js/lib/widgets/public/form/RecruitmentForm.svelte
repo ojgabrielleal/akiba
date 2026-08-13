@@ -41,6 +41,10 @@
             },
         });
     };
+
+    const normalizePhone = (event) => {
+        $form.payload.whatsapp = event.target.value.replace(/[^\d()+\-\s]/g, "");
+    };
 </script>
 
 <form class="grid gap-4" on:submit|preventDefault={submit}>
@@ -66,7 +70,20 @@
 
     <div class={fieldClass}>
         <label class={labelClass} for="whatsapp">Coloca um whatsapp ai pra gente</label>
-        <TextInput id="whatsapp" class={inputClass} type="tel" bind:value={$form.payload.whatsapp} error={$form.errors["payload.whatsapp"] ?? $form.errors.contact} required />
+        <TextInput
+            id="whatsapp"
+            class={inputClass}
+            type="tel"
+            inputmode="tel"
+            autocomplete="tel"
+            placeholder="(11) 99999-9999"
+            pattern="[\d()+\-\s]{10,20}"
+            maxlength="20"
+            bind:value={$form.payload.whatsapp}
+            error={$form.errors["payload.whatsapp"] ?? $form.errors.contact}
+            on:input={normalizePhone}
+            required
+        />
     </div>
 
     <div class={fieldClass}>
