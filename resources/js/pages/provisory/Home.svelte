@@ -2,20 +2,45 @@
     import { onMount } from "svelte";
     import { page, usePoll } from "@inertiajs/svelte";
     import { Toaster } from "svelte-hot-french-toast";
+    import { Modal } from "@/lib/components/public";
     import { Meta } from "@/lib/components/shared";
     import { syncMediaSessionMetadata } from "@/lib/stores";
-    import { MainPlayer, MobilePlayer } from "@/lib/widgets/public";
+    import {
+        listenForOAuthAction,
+        OAuthAction,
+    } from "@/lib/utils";
+    import { MainPlayer, MobilePlayer, ProfileForm } from "@/lib/widgets/public";
 
     $: ({ onair, stream, oauth } = $page.props);
     $: air = onair?.data?.[0] ?? null;
+    $: profile = oauth?.profile;
+    $: nickname = profile?.nickname || profile?.username || "Perfil";
+    $: canOpenProfile = oauth?.is_oauth || (oauth?.is_member && oauth?.can_view_profile && oauth?.can_update_profile);
     $: syncMediaSessionMetadata(air, stream);
+
+    let profileModalRef;
 
     usePoll(10 * 1000, {
         only: ["onair", "stream"],
     });
 
+    const openProfile = () => {
+        if (!canOpenProfile) return;
+
+        profileModalRef?.open();
+    };
+
     onMount(() => {
         document.body.style.backgroundColor = "var(--color-blue-night)";
+
+        const stopOAuthListener = listenForOAuthAction(
+            OAuthAction.OPEN_PROFILE,
+            openProfile,
+        );
+
+        return () => {
+            stopOAuthListener?.();
+        };
     });
 </script>
 
@@ -78,3 +103,17 @@
         {/each}
     </div>
 </footer>
+
+{#if canOpenProfile}
+    <Modal
+        bind:this={profileModalRef}
+        label={`Perfil de ${nickname}`}
+        size="sm"
+    >
+        <ProfileForm
+            {profile}
+            internal={oauth?.is_member}
+            close={() => profileModalRef.close()}
+        />
+    </Modal>
+{/if}

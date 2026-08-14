@@ -7,20 +7,18 @@
         listPushNotifications,
         markPushNotificationAsRead,
         markPushNotificationsAsRead,
-        listenForOAuthAction,
         OAuthAction,
         requestPushNotificationSubscription,
         resolvePushNotificationPermission,
+        dispatchOAuthAction,
     } from "@/lib/utils";
     import { Button, IconButton, Modal, Tooltip } from "@/lib/components/public";
     import NotificationPanel from "./NotificationPanel.svelte";
-    import ProfileForm from "../form/ProfileForm.svelte";
     import ThemeSwitcher from "./ThemeSwitcher.svelte";
 
     export let oauth = {};
 
     let mobilenavbar = false;
-    let profileModalRef;
     let loginModalRef;
     let notifications = [];
     let notificationPanelOpen = false;
@@ -55,7 +53,7 @@
         loginModalRef.open();
     };
 
-    const openProfile = () => {
+    const requestProfile = () => {
         closeMobileNavbar();
         closeNotificationPanel();
 
@@ -63,7 +61,7 @@
             return;
         }
 
-        profileModalRef?.open();
+        dispatchOAuthAction(OAuthAction.OPEN_PROFILE);
     };
 
     const loginProviders = [
@@ -162,17 +160,11 @@
             }
         }, 5000);
 
-        const stopOAuthListener = listenForOAuthAction(
-            OAuthAction.OPEN_PROFILE,
-            openProfile,
-        );
-
         return () => {
             navigator.serviceWorker?.removeEventListener("message", handleServiceWorkerMessage);
             window.removeEventListener("focus", loadNotifications);
             document.removeEventListener("visibilitychange", handleVisibilityChange);
             window.clearInterval(notificationInterval);
-            stopOAuthListener?.();
         };
     });
 
@@ -285,7 +277,7 @@
                         type="button"
                         aria-label={`Editar perfil de ${nickname}`}
                         class="ml-1 flex size-12 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-full border-2 border-suspense-aurora bg-suspense-aurora shadow-md shadow-blue-night/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-suspense-aurora"
-                        on:click={openProfile}
+                        on:click={requestProfile}
                     >
                         <img
                             src={avatar}
@@ -431,7 +423,7 @@
                                 <button
                                     type="button"
                                     class="flex min-w-0 items-center gap-2 text-left"
-                                    on:click={openProfile}
+                                    on:click={requestProfile}
                                 >
                                     <div class="size-10 shrink-0 overflow-hidden rounded-full border-2 border-suspense-aurora bg-suspense-aurora shadow">
                                         <img
@@ -495,20 +487,6 @@
     on:markRead={markNotificationAsRead}
     on:markAllRead={markAllNotificationsAsRead}
 />
-
-{#if canOpenProfile}
-    <Modal
-        bind:this={profileModalRef}
-        label={`Perfil de ${nickname}`}
-        size="sm"
-    >
-        <ProfileForm
-            {profile}
-            internal={oauth?.is_member}
-            close={() => profileModalRef.close()}
-        />
-    </Modal>
-{/if}
 
 {#if !oauth?.authenticated}
     <Modal
