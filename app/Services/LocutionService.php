@@ -66,19 +66,26 @@ class LocutionService
     private function finishStartAutoDj(Program $auto): void
     {
         $auto->onair()->create([
+            'in_air' => true,
             'execution_mode' => 'auto_dj',
             'phrase' => $this->finishRandomPhrase($auto),
+            'allows_song_requests' => false,
         ]);
     }
 
     private function finishRandomPhrase(Program $auto): array
     {
-        $selected = collect($auto->phrases)->random();
+        $phrases = collect($auto->phrases)->filter();
+        $selected = $phrases->isNotEmpty() ? $phrases->random() : [];
 
         return [
-            'text' => $selected['text'],
-            'icon' => $selected['icon'],
-            'decoration' => $selected['decoration'],
+            'text' => $selected['text'] ?? 'Rede Akiba no automático',
+            'icon' => $selected['icon'] ?? '/img/locution/characters/tanjiro.webp',
+            'decoration' => $selected['decoration'] ?? [
+                'left' => '/img/player/decorations/music-left.webp',
+                'right' => '/img/player/decorations/music-right.webp',
+            ],
+            'texture' => $selected['texture'] ?? '/img/textures/music-bars.webp',
         ];
     }
 
