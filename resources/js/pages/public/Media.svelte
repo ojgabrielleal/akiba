@@ -108,9 +108,9 @@
                         <h2 class="text-center font-noto-sans text-xl font-extrabold uppercase italic text-orange-morning lg:text-2xl">
                             {poll.question}
                         </h2>
-                        <div class="mt-5 mb-10 flex flex-col justify-center gap-5 lg:my-13 lg:flex-row lg:gap-20">
+                        <div class="mt-5 mb-10 flex flex-col justify-center gap-5 lg:my-13 lg:flex-row lg:gap-8">
                             {#each poll.options as option (option.uuid)}
-                                <div class="flex w-full justify-center gap-2 text-center lg:min-w-40 lg:flex-1">
+                                <div class="flex w-full gap-2 lg:w-44">
                                     <input
                                         id={option.uuid}
                                         bind:group={mainSelectedOption}
@@ -120,11 +120,17 @@
                                         class="mt-2 h-5 w-5 shrink-0 cursor-pointer"
                                     />
                                     <div class="min-w-0">
-                                        <label for={option.uuid} title={option.option} class="fonto-noto-sans block max-w-full break-words text-center text-xl font-bold uppercase italic leading-tight text-suspense-aurora">
+                                        <label for={option.uuid} title={option.option} class="fonto-noto-sans block max-w-full break-words text-lg font-bold uppercase italic leading-5 text-suspense-aurora">
                                             {option.option}
                                         </label>
-                                        <div class="relative mt-1 flex h-3 w-30 select-none items-center rounded-full bg-black px-2">
-                                            <div class="h-1 rounded-sm bg-orange-500" style={`width: ${optionPercent(poll, option)}%`}></div>
+                                        <div class="relative mt-1 flex h-3.5 min-w-30 w-full select-none items-center rounded-full bg-black px-2">
+                                            <div
+                                                class={[
+                                                    "h-1.5 rounded-sm bg-orange-500",
+                                                    optionPercent(poll, option) > 0 ? "min-w-8" : "",
+                                                ]}
+                                                style={`width: ${optionPercent(poll, option)}%`}
+                                            ></div>
                                         </div>
                                     </div>
                                 </div>
@@ -212,8 +218,14 @@
                                 />
                                 <span class="min-w-0 text-center">
                                     <span class="block break-words font-noto-sans text-base font-extrabold uppercase italic leading-tight">{option.option}</span>
-                                    <span class="mt-2 flex h-2 overflow-hidden rounded-full bg-blue-night/15">
-                                        <span class="rounded-full bg-orange-citric" style={`width: ${optionPercent(selectedPoll, option)}%`}></span>
+                                    <span class="mt-2 flex h-2 min-w-30 overflow-hidden rounded-full bg-blue-night/15">
+                                        <span
+                                            class={[
+                                                "rounded-full bg-orange-citric",
+                                                optionPercent(selectedPoll, option) > 0 ? "min-w-8" : "",
+                                            ]}
+                                            style={`width: ${optionPercent(selectedPoll, option)}%`}
+                                        ></span>
                                     </span>
                                     <span class="mt-1 block text-right font-noto-sans text-[0.65rem] font-extrabold uppercase italic text-blue-ocean">
                                         {option.votes} votos

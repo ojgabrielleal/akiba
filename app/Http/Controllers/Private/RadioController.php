@@ -155,7 +155,13 @@ class RadioController extends Controller
 
     private function responsible(StoreProgramRequest|UpdateProgramRequest $request): User
     {
-        if ($request->input('access_type') === 'free') {
+        $requiresResponsible = in_array($request->input('execution_mode'), ['auto_dj', 'scheduled', 'playlist'], true)
+            || (
+                $request->input('execution_mode') === 'live'
+                && $request->input('access_type') === 'private'
+            );
+
+        if (! $requiresResponsible) {
             return $request->user();
         }
 

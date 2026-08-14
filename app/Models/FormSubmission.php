@@ -36,4 +36,9 @@ class FormSubmission extends Model
     {
         return $this->belongsTo(User::class, 'reviewed_by');
     }
+
+    public function comments()
+    {
+        return $this->hasMany(FormSubmissionComment::class);
+    }
 }

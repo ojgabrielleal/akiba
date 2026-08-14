@@ -37,6 +37,14 @@
     });
 
     function submit() {
+        if ($form.execution_mode !== "live" && $form.execution_mode !== "auto_dj") {
+            $form.access_type = "private";
+        }
+
+        if ($form.execution_mode === "auto_dj") {
+            $form.access_type = null;
+        }
+
         let url = programSelected
             ? `/panel/radio/program/${programSelected.uuid}`
             : "/panel/radio/program";
@@ -110,7 +118,7 @@
 </Modal>
 
 <form on:submit|preventDefault={submit}>
-    <FormField for="image" label="Imagem" error={$form.errors.image}>
+    <FormField for="image" label="" error={$form.errors.image}>
         <Preview
             size="compact"
             tone="muted"
@@ -175,33 +183,34 @@
         </div>
     {/if}
     {#if $form.execution_mode === "live"}
-        <div class="mb-4">
-            <div class="text-md text-gray-700 font-noto-sans mb-2">
-                Este programa estará disponível a todos?
+        <FormField for="access-type-free" label="Este programa estará disponível a todos?" error={$form.errors.access_type}>
+            <div class={["rounded-md border p-3",
+                $form.errors.access_type ? "border-red-crimson" : "border-gray-300",
+            ]}>
+                <div class="mb-1">
+                    <RadioInput
+                        id="access-type-free"
+                        name="access_type"
+                        value="free"
+                        label="Sim"
+                        bind:group={$form.access_type}
+                        error={$form.errors.access_type}
+                    />
+                </div>
+                <div>
+                    <RadioInput
+                        id="access-type-private"
+                        name="access_type"
+                        value="private"
+                        label="Não"
+                        bind:group={$form.access_type}
+                        error={$form.errors.access_type}
+                    />
+                </div>
             </div>
-            <div class="mb-1">
-                <RadioInput
-                    id="open"
-                    name="free"
-                    value="free"
-                    label="Sim"
-                    bind:group={$form.access_type}
-                    error={$form.errors.access_type}
-                />
-            </div>
-            <div>
-                <RadioInput
-                    id="close"
-                    name="private"
-                    value="private"
-                    label="Não"
-                    bind:group={$form.access_type}
-                    error={$form.errors.access_type}
-                />
-            </div>
-        </div>
+        </FormField>
     {/if}
-    {#if $form.access_type === "private" || $form.execution_mode === "auto_dj"}
+    {#if ($form.execution_mode === "live" && $form.access_type === "private") || $form.execution_mode === "scheduled" || $form.execution_mode === "playlist" || $form.execution_mode === "auto_dj"}
         <FormField for="user" label="Locutor" error={$form.errors.user}>
             <SelectInput
                 variant="offcanvas"
@@ -224,6 +233,11 @@
     {/if}
     {#if $form.execution_mode !== "live"}
         <SectionDivider tone="ocean">Frases</SectionDivider>
+        {#if $form.errors.phrases}
+            <div class="mb-2 font-noto-sans text-sm text-red-crimson">
+                {$form.errors.phrases}
+            </div>
+        {/if}
         <button
             type="button"
             class="cursor-pointer mb-2 flex items-center gap-[0.2rem] text-blue-ocean text-md font-noto-sans"
@@ -298,8 +312,13 @@
             {/each}
         {/if}
     {/if}
-    {#if $form.execution_mode !== "live" && $form.execution_mode !== "auto_dj"}
+    {#if $form.execution_mode !== "live"}
         <SectionDivider tone="ocean">Agendamentos</SectionDivider>
+        {#if $form.errors.schedules}
+            <div class="mb-2 font-noto-sans text-sm text-red-crimson">
+                {$form.errors.schedules}
+            </div>
+        {/if}
         <button
             type="button"
             class="cursor-pointer mb-2 flex items-center gap-[0.2rem] text-blue-ocean text-md font-noto-sans"
@@ -325,6 +344,7 @@
                             name={`schedules[${index}][scheduled_at]`}
                             bind:value={schedule.scheduled_at}
                             error={$form.errors[`schedules.${index}.scheduled_at`]}
+                            required
                         />
                     </FormField>
                     <button

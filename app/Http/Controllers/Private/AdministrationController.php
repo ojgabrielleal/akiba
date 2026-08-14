@@ -41,6 +41,7 @@ use App\Http\Requests\Task\StoreTaskRequest;
 use App\Http\Requests\Task\UpdateTaskRequest;
 use App\Http\Requests\User\StoreUserRequest;
 use App\Http\Requests\User\UpdateUserAccessRequest;
+use App\Http\Requests\FormSubmission\StoreFormSubmissionCommentRequest;
 use App\Http\Resources\Calendar\CalendarResource;
 use App\Http\Resources\RepositoryResource;
 use App\Models\FormSubmission;
@@ -149,7 +150,7 @@ class AdministrationController extends Controller
 
         return FormSubmissionResource::collection(
             $this->formSubmissionFilter->filter([
-                'with' => ['reviewer'],
+                'with' => ['reviewer', 'comments.user'],
                 'status_order' => true,
                 'order_by' => 'created_at',
                 'order_direction' => 'desc',
@@ -325,6 +326,22 @@ class AdministrationController extends Controller
         $service->review($formSubmission, auth()->user(), 'rejected');
 
         return $this->flashMessage('update');
+    }
+
+    public function commentFormSubmission(StoreFormSubmissionCommentRequest $request, FormSubmission $formSubmission, FormSubmissionService $service)
+    {
+        $service->comment($formSubmission, $request->user(), $request->validated('comment'));
+
+        return $this->flashMessage('save', 'Comentário salvo.');
+    }
+
+    public function destroyFormSubmission(FormSubmission $formSubmission, FormSubmissionService $service)
+    {
+        Gate::authorize('form.submission.review');
+
+        $service->destroy($formSubmission);
+
+        return $this->flashMessage('delete');
     }
 
     public function showRepository(Repository $repository)

@@ -21,6 +21,7 @@ class FormSubmissionResource extends JsonResource
             'created_at' => $this->created_at?->format('d/m/Y H:i'),
             'reviewed_at' => $this->reviewed_at?->format('d/m/Y H:i'),
             'reviewer' => UserResource::make($this->whenLoaded('reviewer')),
+            'comments' => FormSubmissionCommentResource::collection($this->whenLoaded('comments')),
         ];
     }
 }

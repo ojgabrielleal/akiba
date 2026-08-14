@@ -81,7 +81,7 @@ class MediaController extends Controller
             'options' => fn ($query) => $query
                 ->withCount('votes')
                 ->with('votes'),
-            'votes.user',
+            'votes.voter',
         ];
     }
 

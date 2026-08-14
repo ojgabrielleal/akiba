@@ -45,6 +45,12 @@
             onFinish: () => voting = false,
         });
     }
+
+    function optionPercent(option) {
+        if (!latestPoll.data.total_votes) return 0;
+
+        return (option.votes / latestPoll.data.total_votes) * 100;
+    }
 </script>
 
 <Offcanvas bind:this={offcanvasRef} title={offcanvasTitle}>
@@ -61,9 +67,9 @@
                     <h2 class="text-center text-orange-morning text-xl lg:text-2xl font-noto-sans font-extrabold uppercase italic">
                         {latestPoll.data.question}
                     </h2>
-                    <div class="flex flex-col lg:flex-row gap-5 lg:gap-20 justify-center mt-5 mb-10 lg:my-13">
+                    <div class="flex flex-col lg:flex-row gap-5 lg:gap-8 justify-center mt-5 mb-10 lg:my-13">
                         {#each latestPoll.data.options as item}
-                            <div class="w-full lg:w-40 flex gap-2">
+                            <div class="w-full lg:w-44 flex gap-2">
                                 <input
                                     id={item.uuid}
                                     name="option"
@@ -72,11 +78,17 @@
                                     class="shrink-0 w-5 h-5 mt-2"
                                 />
                                 <div class="min-w-0">
-                                    <label for={item.uuid} title={item.option} class="block max-w-full truncate fonto-noto-sans font-bold text-suspense-aurora text-xl uppercase italic">
+                                    <label for={item.uuid} title={item.option} class="block max-w-full fonto-noto-sans font-bold text-suspense-aurora text-lg leading-5 uppercase italic">
                                         {item.option}
                                     </label>
-                                    <div class="relative flex items-center w-30 h-3 bg-black rounded-full px-2 select-none mt-1">
-                                        <div class="h-1 bg-orange-500 rounded-sm" style={`width: ${latestPoll.data.total_votes ? (item.votes / latestPoll.data.total_votes) * 100 : 0}%`}></div>
+                                    <div class="relative flex items-center min-w-30 w-full h-3.5 bg-black rounded-full px-2 select-none mt-1">
+                                        <div
+                                            class={[
+                                                "h-1.5 bg-orange-500 rounded-sm",
+                                                optionPercent(item) > 0 ? "min-w-8" : "",
+                                            ]}
+                                            style={`width: ${optionPercent(item)}%`}
+                                        ></div>
                                     </div>
                                 </div>
                             </div>

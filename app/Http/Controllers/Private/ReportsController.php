@@ -119,7 +119,7 @@ class ReportsController extends Controller
         ]);
 
         $ranking = $transmissoes
-            ->filter(fn (Onair $onair) => $onair->program?->host !== null)
+            ->filter(fn (Onair $onair) => $onair->program?->host !== null && ! $onair->program->host->is_virtual)
             ->groupBy(fn (Onair $onair) => $onair->program->user_id)
             ->sortByDesc(fn ($onair) => $onair->count())
             ->first();

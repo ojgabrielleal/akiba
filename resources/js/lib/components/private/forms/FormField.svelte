@@ -33,9 +33,11 @@
 </script>
 
 <div class={classes}>
-    <label for={forId} class={labelClasses}>
-        {label}
-    </label>
+    {#if label}
+        <label for={forId} class={labelClasses}>
+            {label}
+        </label>
+    {/if}
     <slot />
     {#if error}
         <div id={`${forId}-error`} class="mt-1 font-noto-sans text-sm text-red-crimson">

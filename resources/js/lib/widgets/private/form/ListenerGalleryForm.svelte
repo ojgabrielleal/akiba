@@ -33,7 +33,7 @@
 </script>
 
 <form on:submit|preventDefault={submit}>
-    <FormField for="image" label="Imagem" error={$form.errors.image}>
+    <FormField for="image" label="" error={$form.errors.image}>
         <Preview
             size="profile"
             tone="muted"

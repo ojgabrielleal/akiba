@@ -11,7 +11,7 @@
 
     $: form = useForm({
         _method: fileSelected ? 'PATCH' : 'POST',
-        image: fileSelected?.image,
+        image: null,
         name: fileSelected?.name,
         type: fileSelected?.type ?? fileType,
         url: fileSelected?.url,
@@ -35,13 +35,13 @@
 </script>
 
 <form on:submit|preventDefault={submit}>
-    <FormField for="image" label="Imagem" error={$form.errors.image}>
+    <FormField for="image" label="" error={$form.errors.image}>
         <Preview
             size="compact"
             tone="muted"
             color="muted"
             name="image"
-            src={$form.image}
+            src={$form.image ?? fileSelected?.image}
             oninput={(event) => ($form.image = event.target.files[0])}
             required={!fileSelected}
             error={$form.errors.image}

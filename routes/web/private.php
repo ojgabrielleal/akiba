@@ -145,6 +145,10 @@ Route::prefix('panel')->middleware(['inertia'])->group(function () {
                     ->middleware('can:form.submission.review');
                 Route::patch('{formSubmission:uuid}/reject', 'rejectFormSubmission')
                     ->middleware('can:form.submission.review');
+                Route::post('{formSubmission:uuid}/comment', 'commentFormSubmission')
+                    ->middleware('can:form.submission.review');
+                Route::delete('{formSubmission:uuid}', 'destroyFormSubmission')
+                    ->middleware('can:form.submission.review');
             });
             Route::get('', 'render')->name('panel.administration');
         });

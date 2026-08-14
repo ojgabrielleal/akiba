@@ -29,4 +29,21 @@ class StoreListenerGalleryRequest extends LoggedWebRequest
             'listener_name' => 'nullable|string|max:255',
         ];
     }
+
+    /**
+     * Get custom validation messages.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'image.required' => 'Selecione uma imagem.',
+            'image.image' => 'O arquivo precisa ser uma imagem.',
+            'caption.string' => 'A legenda precisa ser um texto.',
+            'caption.max' => 'A legenda deve ter no máximo 255 caracteres.',
+            'listener_name.string' => 'O nome do ouvinte precisa ser um texto.',
+            'listener_name.max' => 'O nome do ouvinte deve ter no máximo 255 caracteres.',
+        ];
+    }
 }

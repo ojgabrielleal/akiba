@@ -21,6 +21,21 @@ class FormSubmissionService
         return $formSubmission;
     }
 
+    public function comment(FormSubmission $formSubmission, User $user, string $comment): FormSubmission
+    {
+        $formSubmission->comments()->create([
+            'user_id' => $user->id,
+            'comment' => $comment,
+        ]);
+
+        return $formSubmission;
+    }
+
+    public function destroy(FormSubmission $formSubmission): void
+    {
+        $formSubmission->delete();
+    }
+
     public function store(array $data): FormSubmission
     {
         return FormSubmission::create([
