@@ -106,9 +106,9 @@
                 {#if related.length}
                     <h2 class="mb-6 flex flex-col items-center gap-1 font-noto-sans leading-none font-black text-orange-amber uppercase italic">
                         <span class="whitespace-nowrap text-sm text-suspense-aurora">Veja mais:</span>
-                        <span class="mt-1 flex items-center justify-center gap-2 text-2xl">
-                            <img src={relatedIcon} alt="" aria-hidden="true" class="size-8 filter-orange-amber" />
-                            <span class="whitespace-nowrap">{relatedLabel}</span>
+                        <span class="mx-auto mt-1 flex w-fit max-w-full items-center justify-center gap-1.5 text-center text-2xl leading-tight">
+                            <img src={relatedIcon} alt="" aria-hidden="true" class="size-8 shrink-0 filter-orange-amber" />
+                            <span class="min-w-0 max-w-44 break-words text-center">{relatedLabel}</span>
                         </span>
                     </h2>
                     <ul class="grid gap-5">

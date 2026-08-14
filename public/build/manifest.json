@@ -25,7 +25,7 @@
     ]
   },
   "resources/js/app.js": {
-    "file": "assets/app-D3TgQPZh.js",
+    "file": "assets/app-DKIHNedJ.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
@@ -37,11 +37,11 @@
       "_chart-CjW8w0Fn.js"
     ],
     "css": [
-      "assets/app-DNkfyUii.css"
+      "assets/app-BLyFJ5G9.css"
     ]
   },
   "resources/js/css/app.css": {
-    "file": "assets/app-C5B9aAV2.css",
+    "file": "assets/app-BpM-EXHr.css",
     "name": "app",
     "names": [
       "app.css"

@@ -98,7 +98,9 @@
         }
     };
 
-    const handleNotificationClick = async () => {
+    const handleNotificationClick = async (event = null) => {
+        event?.stopPropagation();
+
         closeMobileNavbar();
 
         notificationPermission = resolvePushNotificationPermission();
@@ -231,7 +233,7 @@
                 />
             </form>
             {#if canRequestPushNotifications}
-                <div class="relative" on:click|stopPropagation>
+                <div class="relative">
                     {#if hasActiveNotifications}
                         <button
                             type="button"
@@ -329,7 +331,7 @@
         </div>
         <div class="flex shrink-0 items-center gap-1 lg:hidden">
             {#if canRequestPushNotifications}
-                <div class="relative" on:click|stopPropagation>
+                <div class="relative">
                     {#if hasActiveNotifications}
                         <IconButton
                             label="Notificações"
