@@ -1,5 +1,9 @@
 <script>
-    import { rememberOAuthAction } from "@/lib/utils";
+    import {
+        dispatchOAuthAction,
+        OAuthAction,
+        rememberOAuthAction,
+    } from "@/lib/utils";
     import Modal from "../overlays/Modal.svelte";
 
     export let oauth = {};
@@ -27,14 +31,44 @@
     export let descriptionClass = "text-blue-night/60";
     export let buttonClass = "text-blue-night";
     export let action = null;
+    export let intent = null;
     export let compact = false;
     export let providersLayout = "list";
 
     let providerModalRef;
 
+    const intentMessages = {
+        comment: {
+            title: "Complete seu perfil para comentar",
+            description: "Finalize seus dados para participar da conversa na Akiba.",
+            button: "Completar perfil",
+        },
+        react: {
+            title: "Complete seu perfil para reagir",
+            description: "Finalize seus dados para registrar sua reação.",
+            button: "Completar perfil",
+        },
+        song_request: {
+            title: "Complete seu perfil para pedir música",
+            description: "Finalize seus dados para enviar seu pedido musical.",
+            button: "Completar perfil",
+        },
+        vote: {
+            title: "Complete seu perfil para votar",
+            description: "Finalize seus dados para confirmar seu voto.",
+            button: "Completar perfil",
+        },
+    };
+
     $: loginProviders = providers.length === 1 && buttonLabel
         ? [{ ...providers[0], label: buttonLabel }]
         : providers;
+    $: resolvedIntent = intent ?? (action === OAuthAction.OPEN_SONG_REQUEST ? "song_request" : null);
+    $: incompleteMessage = intentMessages[resolvedIntent] ?? {
+        title: "Complete seu perfil",
+        description: "Finalize seus dados para continuar essa ação na Akiba.",
+        button: "Completar perfil",
+    };
 
     const openProviderModal = () => {
         providerModalRef.open();
@@ -42,6 +76,11 @@
 
     const authenticate = () => {
         rememberOAuthAction(action);
+    };
+
+    const completeProfile = () => {
+        rememberOAuthAction(action);
+        dispatchOAuthAction(OAuthAction.OPEN_PROFILE);
     };
 
     const providerIconStyle = (provider) => `mask-image: url('${provider.icon}'); -webkit-mask-image: url('${provider.icon}');`;
@@ -81,7 +120,47 @@
         </a>
     </div>
 {:else if oauth.authenticated}
-    <slot />
+    {#if oauth.is_oauth && !oauth.profile_completed}
+        <div class={["flex flex-col items-center text-center font-noto-sans", compact ? "" : "py-7", containerClass]}>
+            {#if !compact}
+                <span class="mb-3 flex size-10 items-center justify-center rounded-full bg-orange-amber text-blue-night shadow-[0_0.5rem_1.25rem_rgba(255,168,35,0.28)]">
+                    <img
+                        src="/svg/profile.svg"
+                        alt=""
+                        aria-hidden="true"
+                        class="size-5 filter-blue-night"
+                    />
+                </span>
+                <p class={["text-base font-extrabold uppercase italic", titleClass]}>
+                    {incompleteMessage.title}
+                </p>
+                <p class={["mt-1 text-sm", descriptionClass]}>
+                    {incompleteMessage.description}
+                </p>
+            {/if}
+
+            <button
+                type="button"
+                class={[
+                    compact
+                        ? "flex cursor-pointer items-center gap-2 rounded-full bg-orange-citric px-5 py-2.5 text-sm font-extrabold uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 hover:brightness-105 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none"
+                        : "mt-5 flex min-h-12 cursor-pointer items-center justify-center gap-3 rounded-md bg-orange-citric px-5 py-2.5 text-center font-noto-sans text-sm font-extrabold uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 hover:brightness-105 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none",
+                    buttonClass,
+                ]}
+                on:click={completeProfile}
+            >
+                <img
+                    src="/svg/profile.svg"
+                    alt=""
+                    aria-hidden="true"
+                    class={["h-4 w-4", filters]}
+                />
+                {incompleteMessage.button}
+            </button>
+        </div>
+    {:else}
+        <slot />
+    {/if}
 {:else}
     <div class={["flex flex-col items-center text-center font-noto-sans", compact ? "" : "py-7", containerClass]}>
         {#if !compact}

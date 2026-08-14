@@ -50,14 +50,34 @@ const readPendingOAuthAction = () => {
     return null;
 };
 
+export const consumePendingOAuthAction = () => {
+    const action = readPendingOAuthAction();
+
+    if (action) clearPendingOAuthAction();
+
+    return action;
+};
+
 const resolvePendingOAuthAction = () => {
     resolveScheduled = false;
 
-    if (!get(page).props.oauth?.authenticated) return;
+    const oauth = get(page).props.oauth;
+
+    if (!oauth?.authenticated) return;
 
     const action = readPendingOAuthAction();
 
     if (!action) return;
+
+    if (oauth.is_oauth && !oauth.profile_completed) {
+        const profileListeners = listeners.get(OAuthAction.OPEN_PROFILE);
+
+        if (profileListeners?.size) {
+            profileListeners.forEach((listener) => listener());
+        }
+
+        return;
+    }
 
     const actionListeners = listeners.get(action);
 

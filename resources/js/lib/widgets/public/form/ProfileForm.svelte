@@ -7,7 +7,12 @@
         TextInput,
         Tooltip,
     } from "@/lib/components/public";
-    import { OAuthAction, rememberOAuthAction } from "@/lib/utils";
+    import {
+        consumePendingOAuthAction,
+        dispatchOAuthAction,
+        OAuthAction,
+        rememberOAuthAction,
+    } from "@/lib/utils";
 
     export let profile;
     export let close = () => {};
@@ -25,6 +30,16 @@
     const syncProvider = () => {
         rememberOAuthAction(OAuthAction.OPEN_PROFILE);
         window.location.assign(`/oauth/${provider}/redirect`);
+    };
+
+    const closeAndResumePendingAction = () => {
+        close();
+
+        const pendingAction = consumePendingOAuthAction();
+
+        if (pendingAction && pendingAction !== OAuthAction.OPEN_PROFILE) {
+            setTimeout(() => dispatchOAuthAction(pendingAction));
+        }
     };
 
     const form = useForm({
@@ -47,7 +62,7 @@
             $form.post(endpoint, {
                 preserveScroll: true,
                 forceFormData: true,
-                onSuccess: close,
+                onSuccess: closeAndResumePendingAction,
             });
 
             return;
@@ -55,7 +70,7 @@
 
         $form.patch(endpoint, {
             preserveScroll: true,
-            onSuccess: close,
+            onSuccess: closeAndResumePendingAction,
         });
     };
 

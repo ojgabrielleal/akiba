@@ -102,6 +102,7 @@
                     title="Entre para pedir sua música"
                     description="Use sua conta para continuar."
                     action={OAuthAction.OPEN_SONG_REQUEST}
+                    intent="song_request"
                     {oauth}
                 >
                     <SongRequestForm {close} {oauth} />

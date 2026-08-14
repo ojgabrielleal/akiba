@@ -1,6 +1,7 @@
 export * from "./access/permissions.js"
 export {
     OAuthAction,
+    consumePendingOAuthAction,
     dispatchOAuthAction,
     listenForOAuthAction,
     rememberOAuthAction,

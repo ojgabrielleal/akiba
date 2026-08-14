@@ -1,7 +1,7 @@
 <script>
     import { onMount } from "svelte";
     import { usePoll } from "@inertiajs/svelte";
-    import { CookieConsent, FlashToaster, ProfileIncompleteNotice } from "@/lib/components/public";
+    import { CookieConsent, FlashToaster } from "@/lib/components/public";
     import { startAutoplay } from "@/lib/stores";
     import { Footer, Navbar, PlayerBar } from "@/lib/widgets/public";
 
@@ -29,7 +29,4 @@
 
 <Footer />
 <PlayerBar {onair} {stream} {pageUrl} {oauth} />
-{#if oauth?.is_oauth && !oauth?.profile_completed}
-    <ProfileIncompleteNotice />
-{/if}
 <CookieConsent />

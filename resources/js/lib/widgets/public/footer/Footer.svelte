@@ -28,7 +28,7 @@
                     />
                 </Link>
                 <p class="mt-4 max-w-md font-noto-sans text-sm font-bold leading-relaxed text-suspense-aurora/75 uppercase italic">
-                    Rede Akiba, o paraíso dos otakus.
+                    Rede Akiba - O Paraíso dos Otakus
                 </p>
                 <p class="mt-2 font-noto-sans text-lg font-black text-orange-amber uppercase italic">
                     ラジオ・ニュース・カルチャー
