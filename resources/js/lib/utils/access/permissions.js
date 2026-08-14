@@ -145,6 +145,6 @@ export const quickAccessPermissions = () => ({
         start: hasPermission("locution.start"),
     },
     event: {
-        create: hasPermission("event.create"),
+        create: hasPermission("post.create"),
     },
 });

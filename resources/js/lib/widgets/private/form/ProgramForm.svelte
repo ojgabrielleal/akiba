@@ -110,7 +110,7 @@
 </Modal>
 
 <form on:submit|preventDefault={submit}>
-    <div class="mb-4 px-5">
+    <FormField for="image" label="Imagem" error={$form.errors.image}>
         <Preview
             size="compact"
             tone="muted"
@@ -119,8 +119,9 @@
             src={$form.image}
             oninput={(event) => ($form.image = event.target.files[0])}
             required={!programSelected}
+            error={$form.errors.image}
         />
-    </div>
+    </FormField>
     <FormField for="name" label="Programa" error={$form.errors.name}>
         <TextInput
             variant="offcanvas"
@@ -268,15 +269,16 @@
                                 />
                             {/if}
                         </button>
-                        <FormField for={`phrase-${index}`} label="Frase" spacing="sm">
-                            <TextInput
-                                variant="offcanvas"
-                                id={`phrase-${index}`}
-                                name={`phrases[${index}][phrase]`}
-                                bind:value={phrase.text}
-                                required
-                            />
-                        </FormField>
+                    <FormField for={`phrase-${index}`} label="Frase" spacing="sm" error={$form.errors[`phrases.${index}.phrase`] ?? $form.errors[`phrases.${index}.text`]}>
+                        <TextInput
+                            variant="offcanvas"
+                            id={`phrase-${index}`}
+                            name={`phrases[${index}][phrase]`}
+                            bind:value={phrase.text}
+                            error={$form.errors[`phrases.${index}.phrase`] ?? $form.errors[`phrases.${index}.text`]}
+                            required
+                        />
+                    </FormField>
                     </div>
                     <button
                         type="button"
@@ -315,13 +317,14 @@
         {#if $form.schedules}
             {#each $form.schedules as schedule, index}
                 <div class="mb-4 border border-gray-400 p-4 rounded-md">
-                    <FormField for={`scheduled-at-${index}`} label="Agendado para" spacing="sm">
+                    <FormField for={`scheduled-at-${index}`} label="Agendado para" spacing="sm" error={$form.errors[`schedules.${index}.scheduled_at`]}>
                         <TextInput
                             variant="offcanvas"
                             id={`scheduled-at-${index}`}
                             type="datetime-local"
                             name={`schedules[${index}][scheduled_at]`}
                             bind:value={schedule.scheduled_at}
+                            error={$form.errors[`schedules.${index}.scheduled_at`]}
                         />
                     </FormField>
                     <button
@@ -360,12 +363,13 @@
         {#if $form.airtimes}
             {#each $form.airtimes as schedule, index}
                 <div class="mb-4 border border-gray-400 p-4 rounded-md">
-                    <FormField for={`day-${index}`} label="Dia da semana" spacing="sm">
+                    <FormField for={`day-${index}`} label="Dia da semana" spacing="sm" error={$form.errors[`airtimes.${index}.day`]}>
                         <SelectInput
                             variant="offcanvas"
                             id={`day-${index}`}
                             name={`airtimes[${index}][day]`}
                             bind:value={schedule.day}
+                            error={$form.errors[`airtimes.${index}.day`]}
                         >
                             <option value={0}>
                                 Domingo
@@ -390,13 +394,14 @@
                             </option>
                         </SelectInput>
                     </FormField>
-                    <FormField for={`hour-${index}`} label="Horário" spacing="sm">
+                    <FormField for={`hour-${index}`} label="Horário" spacing="sm" error={$form.errors[`airtimes.${index}.hour`]}>
                         <TextInput
                             variant="offcanvas"
                             id={`hour-${index}`}
                             type="time"
                             name={`airtimes[${index}][hour]`}
                             bind:value={schedule.hour}
+                            error={$form.errors[`airtimes.${index}.hour`]}
                         />
                     </FormField>
                     <button

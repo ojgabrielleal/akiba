@@ -76,7 +76,7 @@ class LocutionController extends Controller
 
     public function startLocution(StartLocutionRequest $request, LocutionService $service, Program $program)
     {
-        $service->start($request->user(), $program, $request->all());
+        $service->start($request->user(), $program, $request->validated());
 
         return $this->flashMessage('start');
     }

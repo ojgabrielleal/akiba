@@ -23,6 +23,7 @@
         {value}
         type="radio"
         class={classes}
+        aria-describedby={error ? `${id}-error` : undefined}
         bind:group
     />
     <label for={id} class={labelClasses}>

@@ -2,6 +2,7 @@
     import { onMount } from "svelte";
     import { usePoll } from "@inertiajs/svelte";
     import { FlashToaster } from "@/lib/components/private";
+    import { pauseAudio } from "@/lib/stores";
     import { Navbar, StreamMetricsGrid } from "@/lib/widgets/private";
 
     // Polling for updates in audience, audience history, song requests and stream status every 60 seconds
@@ -12,6 +13,7 @@
     // Set background color on mount
     onMount(() => {
         document.body.style.backgroundColor = "var(--color-blue-marinho)";
+        pauseAudio();
     });
 </script>
 

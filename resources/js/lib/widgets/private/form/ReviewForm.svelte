@@ -30,6 +30,16 @@
         ];
     }
 
+    function normalizeReview(review = {}) {
+        return {
+            uuid: null,
+            content: null,
+            status: null,
+            author: null,
+            ...review,
+        };
+    }
+
     $: form = useForm({
         _method: post ? "PATCH" : "POST",
         module: "review",
@@ -40,7 +50,7 @@
             date_of_release: post?.data.metadata?.date_of_release ?? post?.data.metadata?.year_of_release ?? null,
             sinopse: post?.data.metadata?.sinopse ?? null,
         },
-        review: post?.data.review ?? { uuid: null, content: null, status: null, author: null },
+        review: normalizeReview(post?.data.review),
         tags: normalizeTags(post?.data.tags),
         references: normalizeReferences(post?.data.references),
     });
@@ -59,7 +69,7 @@
     }
 </script>
 
-<form on:submit|preventDefault={submit}>
+<form novalidate on:submit|preventDefault={submit}>
     <div class="lg:px-40">
         <div class="mb-8">
             <div class="grid grid-cols-1 lg:grid-cols-[1fr_13rem] lg:gap-5">
@@ -92,6 +102,7 @@
                     name="sinopse"
                     required={!post}
                     bind:value={$form.metadata.sinopse}
+                    error={$form.errors["metadata.sinopse"]}
                 />
             </FormField>
             <FormField for="cover" label="Capa" labelVariant="editorial" spacing="lg" error={$form.errors.cover}>
@@ -100,12 +111,13 @@
                     src={$form.cover}
                     onchange={(event) => ($form.cover = event.target.files[0])}
                     required={!post}
+                    error={$form.errors.cover}
                 />
             </FormField>
             <FormField for="content" label="Escreva" labelVariant="editorial" spacing="none" error={$form.errors["review.content"]}>
                 {#if post?.data.reviews?.length}
                     <div class="mb-3 flex flex-wrap gap-2">
-                        {#each post.data.reviews as opinion}
+                        {#each post.data.reviews as opinion (opinion.uuid ?? opinion.author.uuid)}
                             <Tooltip>
                                 <button
                                     type="button"
@@ -132,21 +144,22 @@
                     name="content"
                     required
                     bind:value={$form.review.content}
+                    error={$form.errors["review.content"]}
                 />
             </FormField>
         </div>
     </div>
     <div class="grid grid-cols-1 lg:grid-cols-[18rem_1fr] gap-5">
         <div class="mb-3">
-            <div class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans mb-2">
-                Imagem em destaque
-            </div>
-            <Preview
-                name="image"
-                src={$form.image}
-                onchange={(event) => ($form.image = event.target.files[0])}
-                required={!post}
-            />
+            <FormField for="image" label="Imagem em destaque" labelVariant="editorial" spacing="sm" error={$form.errors.image}>
+                <Preview
+                    name="image"
+                    src={$form.image}
+                    onchange={(event) => ($form.image = event.target.files[0])}
+                    required={!post}
+                    error={$form.errors.image}
+                />
+            </FormField>
             <ul class="mt-4 ml-5 list-disc font-noto-sans font-light text-orange-morning">
                 <li>
                     <strong>Tamanho:</strong> 708x827

@@ -10,6 +10,7 @@
     let visible = false;
     let panel;
     let previousBodyOverflow = "";
+    let previousDocumentOverflow = "";
 
     const sizes = {
         sm: "lg:w-104",
@@ -19,7 +20,9 @@
 
     export const open = async () => {
         previousBodyOverflow = document.body.style.overflow;
+        previousDocumentOverflow = document.documentElement.style.overflow;
         document.body.style.overflow = "hidden";
+        document.documentElement.style.overflow = "hidden";
         visible = true;
         await tick();
         panel?.focus();
@@ -28,6 +31,7 @@
     export const close = () => {
         visible = false;
         document.body.style.overflow = previousBodyOverflow;
+        document.documentElement.style.overflow = previousDocumentOverflow;
     };
 
     const handleBackdrop = (event) => {
@@ -41,6 +45,7 @@
     onDestroy(() => {
         if (typeof document !== "undefined") {
             document.body.style.overflow = previousBodyOverflow;
+            document.documentElement.style.overflow = previousDocumentOverflow;
         }
     });
 </script>

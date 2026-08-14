@@ -97,7 +97,7 @@ class PostService
 
         return Post::create([
             'user_id' => $user->id,
-            'title' => $data['title'],
+            'title' => $data['title'] ?? 'Rascunho sem título',
             'status' => $data['status'] ?? 'published',
             'content' => $data['content'] ?? null,
             'image' => $this->image->store('posts', $image),
@@ -109,6 +109,10 @@ class PostService
 
     private function storeStoreTags(Post $post, array $tags): void
     {
+        $tags = collect($tags)
+            ->filter(fn (array $tag) => filled($tag['name'] ?? null))
+            ->all();
+
         if (! empty($tags)) {
             $post->tags()->createMany($tags);
         }
@@ -116,6 +120,10 @@ class PostService
 
     private function storeStoreReferences(Post $post, array $references): void
     {
+        $references = collect($references)
+            ->filter(fn (array $reference) => filled($reference['name'] ?? null) && filled($reference['url'] ?? null))
+            ->all();
+
         if (! empty($references)) {
             $post->references()->createMany($references);
         }
@@ -130,7 +138,7 @@ class PostService
         $post->reviews()->create([
             'user_id' => $user->id,
             'status' => $review['status'],
-            'content' => $review['content'],
+            'content' => $review['content'] ?? '',
         ]);
     }
 
@@ -169,15 +177,15 @@ class PostService
         });
     }
 
-    public function update(Post $post, array $data, ?UploadedFile $image = null, ?UploadedFile $cover = null): Post
+    public function update(Post $post, User $user, array $data, ?UploadedFile $image = null, ?UploadedFile $cover = null): Post
     {
         $wasPublished = $post->status === 'published';
 
-        $post = DB::transaction(function () use ($post, $data, $image, $cover) {
+        $post = DB::transaction(function () use ($post, $user, $data, $image, $cover) {
             $this->updateUpdatePost($post, $data, $image, $cover);
             $this->updateSyncTags($post, $data['tags'] ?? []);
             $this->updateSyncReferences($post, $data['references'] ?? []);
-            $this->updateUpdateReview($post, $data['review'] ?? []);
+            $this->updateUpdateReview($post, $user, $data['review'] ?? []);
 
             return $post;
         });
@@ -224,7 +232,7 @@ class PostService
         $metadata = $this->normalizeMetadata($data, $module);
 
         $post->fill([
-            'title' => $data['title'],
+            'title' => $data['title'] ?? $post->title,
             'status' => $data['status'] ?? 'published',
             'content' => $data['content'] ?? null,
             'image' => $this->image->store('posts', $image, $post->image),
@@ -241,6 +249,10 @@ class PostService
     private function updateSyncTags(Post $post, array $tags): void
     {
         foreach ($tags as $tag) {
+            if (! filled($tag['name'] ?? null)) {
+                continue;
+            }
+
             $post->tags()->updateOrCreate(
                 ['uuid' => $tag['uuid'] ?? null],
                 ['name' => $tag['name']]
@@ -251,6 +263,10 @@ class PostService
     private function updateSyncReferences(Post $post, array $references): void
     {
         foreach ($references as $reference) {
+            if (! filled($reference['name'] ?? null) || ! filled($reference['url'] ?? null)) {
+                continue;
+            }
+
             $post->references()->updateOrCreate(
                 ['uuid' => $reference['uuid'] ?? null],
                 ['name' => $reference['name'], 'url' => $reference['url']]
@@ -258,16 +274,26 @@ class PostService
         }
     }
 
-    private function updateUpdateReview(Post $post, array $review): void
+    private function updateUpdateReview(Post $post, User $user, array $review): void
     {
         if (empty($review)) {
             return;
         }
 
-        $post->reviews()->where('uuid', $review['uuid'])->update([
+        $attributes = filled($review['uuid'] ?? null)
+            ? ['uuid' => $review['uuid']]
+            : ['user_id' => $user->id];
+
+        $values = [
             'status' => $review['status'],
-            'content' => $review['content'],
-        ]);
+            'content' => $review['content'] ?? '',
+        ];
+
+        if (! filled($review['uuid'] ?? null)) {
+            $values['user_id'] = $user->id;
+        }
+
+        $post->reviews()->updateOrCreate($attributes, $values);
     }
 
     private function normalizeMetadata(array $data, ?string $module = null): ?array

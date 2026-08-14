@@ -53,7 +53,14 @@ class LocutionService
         SongRequest::where('onair_id', $onair->id)
             ->where('was_reproduced', false)
             ->where('was_canceled', false)
+            ->where('type', 'music')
             ->update(['was_canceled' => true]);
+
+        SongRequest::where('onair_id', $onair->id)
+            ->where('was_read', false)
+            ->where('was_dismissed', false)
+            ->where('type', 'message')
+            ->update(['was_dismissed' => true]);
     }
 
     private function finishStartAutoDj(Program $auto): void
@@ -78,8 +85,12 @@ class LocutionService
     public function markSongRequestAsCanceled(SongRequest $songRequest): SongRequest
     {
         return DB::transaction(function () use ($songRequest) {
-            $songRequest->update(['was_canceled' => true]);
-            $songRequest->onair()->decrement('song_requests_total');
+            if ($songRequest->type === 'message') {
+                $songRequest->update(['was_dismissed' => true]);
+            } else {
+                $songRequest->update(['was_canceled' => true]);
+                $songRequest->onair()->decrement('song_requests_total');
+            }
 
             return $songRequest;
         });
@@ -88,8 +99,12 @@ class LocutionService
     public function markSongRequestAsPlayed(SongRequest $songRequest): SongRequest
     {
         return DB::transaction(function () use ($songRequest) {
-            $songRequest->update(['was_reproduced' => true]);
-            $songRequest->onair()->increment('song_requests_total');
+            if ($songRequest->type === 'message') {
+                $songRequest->update(['was_read' => true]);
+            } else {
+                $songRequest->update(['was_reproduced' => true]);
+                $songRequest->onair()->increment('song_requests_total');
+            }
 
             return $songRequest;
         });
@@ -103,7 +118,7 @@ class LocutionService
             $this->startStartProgram($program, $data);
         });
 
-        if ($data['send_notification']) {
+        if (filter_var($data['send_notification'], FILTER_VALIDATE_BOOLEAN)) {
             $this->startSendNotifications($user, $program);
         }
     }

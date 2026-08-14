@@ -65,7 +65,7 @@
     }
 </script>
 
-<form on:submit|preventDefault={submit}>
+<form novalidate on:submit|preventDefault={submit}>
     <div class="lg:px-40">
         <div class="mb-8">
             <FormField for="title" label="Título" error={$form.errors.title} labelVariant="editorial" spacing="lg">
@@ -85,6 +85,7 @@
                     src={$form.cover}
                     onchange={(event) => ($form.cover = event.target.files[0])}
                     required={!post}
+                    error={$form.errors.cover}
                 />
             </FormField>
             <FormField for="content" label="Escreva" error={$form.errors.content} labelVariant="editorial" spacing="none" >
@@ -92,22 +93,23 @@
                     name="content"
                     required
                     bind:value={$form.content}
+                    error={$form.errors.content}
                 />
             </FormField>
         </div>
     </div>
     <div class="grid grid-cols-1 lg:grid-cols-[18rem_1fr] gap-5">
         <div class="block">
-            <div class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block mb-1">
-                Imagem em destaque
-            </div>
-            <Preview
-                name="image"
-                size="featured"
-                src={$form.image}
-                required={!post}
-                onchange={(event) => ($form.image = event.target.files[0])}
-            />
+            <FormField for="image" label="Imagem em destaque" labelVariant="editorial" spacing="sm" error={$form.errors.image}>
+                <Preview
+                    name="image"
+                    size="featured"
+                    src={$form.image}
+                    required={!post}
+                    error={$form.errors.image}
+                    onchange={(event) => ($form.image = event.target.files[0])}
+                />
+            </FormField>
             <ul class="mt-4 ml-5 list-disc font-noto-sans font-light text-orange-morning">
                 <li>
                     <strong>Tamanho:</strong> 708x827

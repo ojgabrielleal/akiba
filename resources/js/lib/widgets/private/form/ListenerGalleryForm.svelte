@@ -33,7 +33,7 @@
 </script>
 
 <form on:submit|preventDefault={submit}>
-    <div class="mb-4">
+    <FormField for="image" label="Imagem" error={$form.errors.image}>
         <Preview
             size="profile"
             tone="muted"
@@ -42,8 +42,9 @@
             src={gallerySelected?.image}
             oninput={(event) => ($form.image = event.target.files[0])}
             required={!gallerySelected}
+            error={$form.errors.image}
         />
-    </div>
+    </FormField>
     <FormField for="listener_name" label="Nome do ouvinte" error={$form.errors.listener_name}>
         <TextInput
             variant="offcanvas"

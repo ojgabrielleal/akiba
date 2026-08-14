@@ -104,13 +104,15 @@
     <h1 class="sr-only">Posts</h1>
     <Section id="post-editor" title="Criar" {actions}>
         {#if show}
-            {#if form === 'post'}
-                <PostForm {post} {draft} />
-            {:else if form === 'review'}
-                <ReviewForm {post} />
-            {:else if form === 'event'}
-                <EventForm {post} />
-            {/if}
+            {#key post?.data?.uuid ?? form}
+                {#if form === 'post'}
+                    <PostForm {post} {draft} />
+                {:else if form === 'review'}
+                    <ReviewForm {post} />
+                {:else if form === 'event'}
+                    <EventForm {post} />
+                {/if}
+            {/key}
         {/if}
     </Section>
 

@@ -9,6 +9,7 @@
     export let onchange = null;
     export let required = false;
     export let disabled = false;
+    export let error = null;
 
     const sizes = {
         default: {
@@ -55,8 +56,9 @@
     $: selectedTone = tones[tone] ?? tones.default;
     $: selectedColor = colors[color] ?? colors.default;
 
-    $: placeholderCSS = `${selectedSize.frame} ${selectedTone} ${selectedColor} w-full flex items-center justify-center overflow-hidden font-noto-sans text-7xl font-extrabold italic uppercase`;
-    $: previewCSS = `${selectedSize.image} ${selectedTone} w-full object-top object-contain`;
+    $: errorClass = error ? "border border-red-crimson" : "";
+    $: placeholderCSS = `${selectedSize.frame} ${selectedTone} ${errorClass} ${selectedColor} w-full flex items-center justify-center overflow-hidden font-noto-sans text-7xl font-extrabold italic uppercase`;
+    $: previewCSS = `${selectedSize.image} ${selectedTone} ${errorClass} w-full object-top object-contain`;
 
     const previewImage = (event) => {
         if (disabled) return;
@@ -99,6 +101,8 @@
         {name}
         {required}
         {disabled}
+        aria-invalid={error ? "true" : undefined}
+        aria-describedby={error ? `${name}-error` : undefined}
         on:input={oninput}
         on:change={previewImage}
     />

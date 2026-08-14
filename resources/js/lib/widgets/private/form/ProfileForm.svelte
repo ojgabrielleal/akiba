@@ -178,6 +178,7 @@
                             tone="muted"
                             color="muted"
                             src={resolvePlaceholderImage($form.avatar, "avatar", $form.gender)}
+                            error={$form.errors.avatar}
                             oninput={(event) => ($form.avatar = event.target.files[0])}
                         />
                         <Badge variant="accent" size="sm" class="absolute bottom-5 left-5">
@@ -359,6 +360,7 @@
                             name={`preferences[likes][${index}][content]`}
                             variant="profile"
                             bind:value={preference.content}
+                            error={$form.errors[`preferences.likes.${index}.content`]}
                         >
                             <option value="">Escolha</option>
                             {#each userPreferences as option}
@@ -383,6 +385,7 @@
                             name={`preferences[unlikes][${index}][content]`}
                             variant="profile"
                             bind:value={preference.content}
+                            error={$form.errors[`preferences.unlikes.${index}.content`]}
                         >
                             <option value="">Escolha</option>
                             {#each userPreferences as option}

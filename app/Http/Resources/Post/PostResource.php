@@ -49,10 +49,22 @@ class PostResource extends JsonResource
         if ($this->format === 'grid') {
             return [
                 'uuid' => $this->uuid,
+                'slug' => $this->slug,
+                'href' => $this->href(),
                 'title' => $this->title,
                 'status' => $this->status,
                 'module' => $this->module,
                 'views' => $this->views_count,
+                'review_status_counts' => $this->module === 'review'
+                    ? [
+                        'draft' => (int) ($this->review_draft_count ?? 0),
+                        'revision' => (int) ($this->review_revision_count ?? 0),
+                        'published' => (int) ($this->review_published_count ?? 0),
+                    ]
+                    : null,
+                'review_status' => $this->module === 'review'
+                    ? $this->reviews->first(fn ($review) => $review->user_id === $request->user()?->id)?->status
+                    : null,
                 'author' => UserResource::make($this->author)->format('summary'),
             ];
         }
@@ -207,16 +219,18 @@ class PostResource extends JsonResource
         }
 
         $user = $request->user();
-        $opinions = PostReviewResource::collection($this->reviews)->resolve();
+        $opinions = collect(PostReviewResource::collection($this->reviews)->resolve())
+            ->unique(fn ($opinion) => $opinion['author']['uuid'])
+            ->values();
 
-        $userOpinion = collect($opinions)->first(
+        $userOpinion = $opinions->first(
             fn ($opinion) => $opinion['author']['uuid'] === $user->uuid
         );
 
         if (!$userOpinion) {
             return [
                 $this->reviewGhostUser($user),
-                ...$opinions,
+                ...$opinions->all(),
             ];
         }
 

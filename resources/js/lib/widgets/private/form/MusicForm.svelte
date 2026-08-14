@@ -39,22 +39,28 @@
 
 <form on:submit|preventDefault={submit}>
     <div class="mb-4 grid grid-cols-1 gap-4 px-5 sm:grid-cols-2">
-        <Preview
-            size="compact"
-            tone="muted"
-            color="muted"
-            name="image"
-            src={$form.image ?? musicSelected?.image}
-            oninput={(event) => ($form.image = event.target.files[0])}
-        />
-        <Preview
-            size="compact"
-            tone="muted"
-            color="muted"
-            name="image_ranking"
-            src={$form.image_ranking ?? musicSelected?.ranking?.image}
-            oninput={(event) => ($form.image_ranking = event.target.files[0])}
-        />
+        <FormField for="image" label="Imagem" error={$form.errors.image}>
+            <Preview
+                size="compact"
+                tone="muted"
+                color="muted"
+                name="image"
+                src={$form.image ?? musicSelected?.image}
+                error={$form.errors.image}
+                oninput={(event) => ($form.image = event.target.files[0])}
+            />
+        </FormField>
+        <FormField for="image_ranking" label="Imagem do ranking" error={$form.errors.image_ranking}>
+            <Preview
+                size="compact"
+                tone="muted"
+                color="muted"
+                name="image_ranking"
+                src={$form.image_ranking ?? musicSelected?.ranking?.image}
+                error={$form.errors.image_ranking}
+                oninput={(event) => ($form.image_ranking = event.target.files[0])}
+            />
+        </FormField>
     </div>
     <FormField for="music-name" label="Música" error={$form.errors.name}>
         <TextInput

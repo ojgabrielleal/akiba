@@ -58,6 +58,12 @@
         notificationPermission = await requestPushNotificationSubscription(vapidPublicKey, "/panel/push-notification");
     }
 
+    async function ensurePanelNotificationsSubscription() {
+        if (vapidPublicKey && notificationPermission === "granted") {
+            await requestPushNotificationSubscription(vapidPublicKey, "/panel/push-notification?silent=1");
+        }
+    }
+
     function refreshSongRequests() {
         if (refreshQueued) {
             return;
@@ -77,11 +83,14 @@
 
     function handlePushNotificationReceived(event) {
         const notification = event.data?.notification;
+        const notificationPath = notification?.url
+            ? new URL(notification.url, window.location.origin).pathname
+            : null;
 
         if (
             event.data?.type === "akiba:push-notification-received" &&
             notification?.audience === "user" &&
-            notification?.url === "/panel/locution"
+            notificationPath === "/panel/locution"
         ) {
             refreshSongRequests();
         }
@@ -103,7 +112,22 @@
         router.patch(`/panel/locution/finish`);
     }
 
+    function isFinished(item) {
+        return item.type === "message"
+            ? item.was_read || item.was_dismissed
+            : item.was_reproduced || item.was_canceled;
+    }
+
+    function isSuccess(item) {
+        return item.type === "message" ? item.was_read : item.was_reproduced;
+    }
+
+    function isRejected(item) {
+        return item.type === "message" ? item.was_dismissed : item.was_canceled;
+    }
+
     onMount(() => {
+        ensurePanelNotificationsSubscription();
         navigator.serviceWorker?.addEventListener("message", handlePushNotificationReceived);
     });
 
@@ -119,9 +143,9 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
                 {#each songRequests.data as item}
                 <article class={["relative w-full rounded-md p-3",
-                    { "bg-gradient-green-pine-mint": item.was_reproduced },
-                    { "bg-gradient-red-blood-crimson": item.was_canceled },
-                    { "bg-gradient-blue-ocean-skywave": !item.was_reproduced && !item.was_canceled },
+                    { "bg-gradient-green-pine-mint": isSuccess(item) },
+                    { "bg-gradient-red-blood-crimson": isRejected(item) },
+                    { "bg-gradient-blue-ocean-skywave": !isFinished(item) },
                 ]}>
                     <div class="flex w-full min-w-0 items-center gap-1.5 font-noto-sans text-[1.2rem] font-extrabold italic text-suspense-aurora">
                         <img
@@ -149,22 +173,22 @@
                             </span>
                         </div>
                     {/if}
-                    <div class="flex items-center justify-center w-full mt-5 mb-5">
-                        <div class="relative w-full">
-                            <div class="absolute left-0 w-2/5 h-[0.1rem] bg-orange-amber rounded-full top-1/2 -translate-y-1/2"></div>
-                            <div class="absolute inset-0 flex items-center justify-center">
-                                <img
-                                    src="/svg/music.svg"
-                                    alt=""
-                                    aria-hidden="true"
-                                    class="w-6 filter-orange-amber"
-                                    loading="lazy"
-                                />
-                            </div>
-                            <div class="absolute right-0 w-2/5 h-[0.1rem] bg-orange-amber rounded-full top-1/2 -translate-y-1/2"></div>
-                        </div>
-                    </div>
                     {#if item.music}
+                        <div class="flex items-center justify-center w-full mt-5 mb-5">
+                            <div class="relative w-full">
+                                <div class="absolute left-0 w-2/5 h-[0.1rem] bg-orange-amber rounded-full top-1/2 -translate-y-1/2"></div>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <img
+                                        src="/svg/music.svg"
+                                        alt=""
+                                        aria-hidden="true"
+                                        class="w-6 rotate-180 filter-orange-amber"
+                                        loading="lazy"
+                                    />
+                                </div>
+                                <div class="absolute right-0 w-2/5 h-[0.1rem] bg-orange-amber rounded-full top-1/2 -translate-y-1/2"></div>
+                            </div>
+                        </div>
                         <div class="flex items-center gap-3 min-w-0">
                             <img
                                 src={resolvePlaceholderImage(item.music.image, "placeholder")}
@@ -192,10 +216,6 @@
                                     {item.music.name}
                                 </div>
                             </div>
-                        </div>
-                    {:else}
-                        <div class="text-suspense-aurora/60 text-sm font-noto-sans italic">
-                            Música não disponível
                         </div>
                     {/if}
                     <div class="flex items-center justify-center w-full mt-5 mb-5">
@@ -227,12 +247,12 @@
                         {item.created_at}
                     </div>
                     <div class="absolute bottom-2 right-3">
-                        {#if !item.was_reproduced && !item.was_canceled}
+                        {#if !isFinished(item)}
                             <div class="flex gap-1">
                                 {#if can.cancel}
                                     <IconButton
                                         variant="close"
-                                        label="Marcar como cancelado"
+                                        label={item.type === "message" ? "Dispensar recado" : "Marcar como cancelado"}
                                         size="sm"
                                         surface="default"
                                         tone="danger"
@@ -242,7 +262,7 @@
                                 {#if can.reproduce}
                                     <IconButton
                                         variant="verify"
-                                        label="Marcar como atendido"
+                                        label={item.type === "message" ? "Marcar como lido" : "Marcar como atendido"}
                                         size="sm"
                                         surface="default"
                                         tone="accent"

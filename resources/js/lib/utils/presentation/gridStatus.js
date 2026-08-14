@@ -6,8 +6,8 @@ export const resolveStatusBackground = (item, options = {}) => {
     }
 
     const statusBackground = {
-        draft: "bg-orange-amber",
-        revision: "bg-green-mint",
+        draft: "bg-green-mint",
+        revision: "bg-orange-amber",
         published: "bg-blue-cerulean",
     }[item.status];
 

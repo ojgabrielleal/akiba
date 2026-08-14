@@ -37,8 +37,13 @@ class PostController extends Controller
                 $this->postFilter->filter([
                 'user' => request()->user(),
                     'active' => true,
-                    'with_count' => 'views',
-                    'with' => 'author',
+                    'with_count' => [
+                        'views',
+                        'reviews as review_draft_count' => fn ($query) => $query->where('status', 'draft'),
+                        'reviews as review_revision_count' => fn ($query) => $query->where('status', 'revision'),
+                        'reviews as review_published_count' => fn ($query) => $query->where('status', 'published'),
+                    ],
+                    'with' => ['author', 'reviews'],
                     'search' => request()->input('search'),
                     'paginate' => 10,
                 ])
@@ -95,6 +100,7 @@ class PostController extends Controller
     {
         $service->update(
             $post,
+            $request->user(),
             $request->validated(),
             $request->file('image'),
             $request->file('cover')
@@ -123,12 +129,17 @@ class PostController extends Controller
             $this->postFilter->filter([
                 'user' => request()->user(),
                 'active' => true,
-                'with_count' => 'views',
+                'with_count' => [
+                    'views',
+                    'reviews as review_draft_count' => fn ($query) => $query->where('status', 'draft'),
+                    'reviews as review_revision_count' => fn ($query) => $query->where('status', 'revision'),
+                    'reviews as review_published_count' => fn ($query) => $query->where('status', 'published'),
+                ],
                 'with' => ['author', 'reviews.author'],
                 'search' => request()->input('search'),
                 'paginate' => 10,
             ])
-        );
+        )->format('grid');
     }
 
     public function render()

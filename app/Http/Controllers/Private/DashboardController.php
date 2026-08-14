@@ -77,7 +77,6 @@ class DashboardController extends Controller
                 $this->postFilter->filter([
                 'user' => request()->user(),
                     'active' => true,
-                    'status' => 'published',
                     'authored_by' => request()->user(),
                     'with_count' => 'views',
                     'with' => 'author',

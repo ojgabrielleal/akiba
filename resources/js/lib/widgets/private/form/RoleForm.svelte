@@ -88,6 +88,7 @@
             src={roleSelected?.icon}
             oninput={(event) => ($form.icon = event.target.files[0])}
             required={!roleSelected}
+            error={$form.errors.icon}
         />
     </FormField>
 

@@ -13,8 +13,11 @@ class SongRequest extends Model
 
     protected $fillable = [
         'uuid',
+        'type',
         'was_reproduced',
         'was_canceled',
+        'was_read',
+        'was_dismissed',
         'onair_id',
         'music_id',
         'requester_type',
@@ -30,8 +33,11 @@ class SongRequest extends Model
     ];
 
     protected $casts = [
+        'type' => 'string',
         'was_reproduced' => 'boolean',
-        'was_canceled' => 'boolean'
+        'was_canceled' => 'boolean',
+        'was_read' => 'boolean',
+        'was_dismissed' => 'boolean',
     ];
 
     /**

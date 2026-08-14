@@ -11,7 +11,11 @@ class PushNotificationController extends Controller
 {
     public function storePushNotification(Request $request, PushNotificationService $service): Response
     {
-        $service->storeWithActivationNotification($request->user(), $request->all(), '/panel');
+        if ($request->boolean('silent')) {
+            $service->store($request->user(), $request->all());
+        } else {
+            $service->storeWithActivationNotification($request->user(), $request->all(), '/panel');
+        }
 
         return response()->noContent();
     }

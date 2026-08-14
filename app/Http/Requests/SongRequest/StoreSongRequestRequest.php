@@ -29,14 +29,14 @@ class StoreSongRequestRequest extends LoggedWebRequest
         return [
             'address' => [$profileIncomplete ? 'required' : 'nullable', 'string', 'max:255'],
             'birth_date' => [$profileIncomplete ? 'required' : 'nullable', 'date', 'before:today'],
-            'anime' => 'required|string',
-            'music' => 'required|array',
-            'music.production' => 'required|string',
-            'music.type' => 'required|string',
-            'music.artist' => 'required|string',
-            'music.name' => 'required|string',
+            'anime' => 'nullable|string',
+            'music' => 'nullable|array',
+            'music.production' => 'required_with:music|string',
+            'music.type' => 'required_with:music|string',
+            'music.artist' => 'required_with:music|string',
+            'music.name' => 'required_with:music|string',
             'music.image' => 'nullable|string',
-            'message' => 'nullable|string',
+            'message' => 'required_without:music|nullable|string',
         ];
     }
 }

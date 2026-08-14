@@ -12,7 +12,7 @@ class PostPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasPermission('post.list');
+        return $user->hasAnyPermission(['post.list', 'post.list.own']);
     }
 
     /**
@@ -20,7 +20,8 @@ class PostPolicy
      */
     public function view(User $user, Post $post): bool
     {
-        return $user->hasPermission('post.view');
+        return $user->hasPermission('post.view')
+            || ($post->user_id === $user->id && $user->hasPermission('post.list.own'));
     }
 
     /**
@@ -36,7 +37,8 @@ class PostPolicy
      */
     public function update(User $user, Post $post): bool
     {
-        return $user->hasPermission('post.update');
+        return $user->hasPermission('post.update')
+            || ($post->user_id === $user->id && $user->hasPermission('post.list.own'));
     }
 
     /**

@@ -4,14 +4,30 @@
     import { onDestroy } from "svelte";
 
     let visible = false;
+    let previousBodyOverflow = "";
+    let previousDocumentOverflow = "";
+    let scrollLocked = false;
 
     $: if (typeof document !== "undefined") {
-        document.body.style.overflow = visible ? "hidden" : "auto";
+        if (visible && !scrollLocked) {
+            previousBodyOverflow = document.body.style.overflow;
+            previousDocumentOverflow = document.documentElement.style.overflow;
+            document.body.style.overflow = "hidden";
+            document.documentElement.style.overflow = "hidden";
+            scrollLocked = true;
+        }
+
+        if (!visible && scrollLocked) {
+            document.body.style.overflow = previousBodyOverflow;
+            document.documentElement.style.overflow = previousDocumentOverflow;
+            scrollLocked = false;
+        }
     }
 
     onDestroy(() => {
-        if (typeof document !== "undefined") {
-            document.body.style.overflow = "auto";
+        if (typeof document !== "undefined" && scrollLocked) {
+            document.body.style.overflow = previousBodyOverflow;
+            document.documentElement.style.overflow = previousDocumentOverflow;
         }
     });
 

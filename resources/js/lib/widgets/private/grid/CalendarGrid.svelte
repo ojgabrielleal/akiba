@@ -45,7 +45,7 @@
         <div class="min-w-[70rem] lg:min-w-0">
             <GridList preset="calendar" class="mb-9" aria-label="Legenda do calendário">
                 {#each calendarTags as item}
-                    <li class={`flex min-h-8 items-center justify-center rounded-md px-2 py-1 font-noto-sans text-lg font-extrabold uppercase italic ${item.color} ${item.textcolor}`} aria-hidden={!item.label}>
+                    <li class={`flex min-h-8 items-center justify-center rounded-md px-2 py-1 font-noto-sans text-base font-extrabold uppercase italic ${item.color} ${item.textcolor}`} aria-hidden={!item.label}>
                         {item.label}
                     </li>
                 {/each}
@@ -57,7 +57,7 @@
                             {day}
                         </h3>
                         {#each events as item}
-                            <article class={["flex w-full flex-col rounded-md px-3 pt-4 pb-2",
+                            <article class={["flex w-full flex-col rounded-md px-3 pt-3 pb-2",
                                 { "bg-blue-skywave": item.type === "show" && !item.activity },
                                 { "bg-purple-mystic": item.type === "live" && !item.activity },
                                 { "bg-red-crimson": item.type === "video" && !item.activity },
@@ -70,7 +70,7 @@
                                 ]}>
                                     {resolveHour(item.hour)}
                                 </time>
-                                <h4 class={["my-5 w-full flex-1 break-words px-2 text-center font-noto-sans text-2xl font-extrabold italic leading-tight",
+                                <h4 class={["my-4 w-full flex-1 break-words px-2 text-center font-noto-sans text-[1.375rem] font-extrabold italic leading-tight",
                                     { "text-blue-night": item.activity },
                                     { "text-suspense-aurora": !item.activity },
                                 ]}>

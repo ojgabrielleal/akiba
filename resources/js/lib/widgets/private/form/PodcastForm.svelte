@@ -45,16 +45,15 @@
 <Section title={podcast ? "Atualizar Podcast" : "Adicionar Podcast"}>
     <form on:submit|preventDefault={submit}>
         <div class="grid grid-cols-1 xl:grid-cols-[18rem_1fr] gap-8 mb-8">
-            <div>
-                <div class="text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans block mb-1">
-                    Capa
-                </div>
+            <FormField for="image" label="Capa" labelVariant="editorial" spacing="sm" error={$form.errors.image}>
                 <Preview
+                    name="image"
                     src={$form.image}
                     oninput={(event) => ($form.image = event.target.files[0])}
                     required={!podcast}
+                    error={$form.errors.image}
                 />
-            </div>
+            </FormField>
             <div class="flex flex-col gap-5">
                 <div class="grid grid-cols-1 xl:grid-cols-[9rem_9rem_1fr] gap-5">
                     <FormField for="season" label="Temporada" labelVariant="editorial" spacing="none" error={$form.errors.season}>
@@ -96,6 +95,7 @@
                         height="7.5rem"
                         name="summary"
                         bind:value={$form.summary}
+                        error={$form.errors.summary}
                         required
                     />
                 </FormField>
@@ -107,6 +107,7 @@
                     height="25rem"
                     name="description"
                     bind:value={$form.description}
+                    error={$form.errors.description}
                     required
                 />
             </FormField>

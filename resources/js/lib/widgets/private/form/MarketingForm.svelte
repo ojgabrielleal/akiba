@@ -35,7 +35,7 @@
 </script>
 
 <form on:submit|preventDefault={submit}>
-    <div class="mb-4">
+    <FormField for="image" label="Imagem" error={$form.errors.image}>
         <Preview
             size="compact"
             tone="muted"
@@ -44,8 +44,9 @@
             src={$form.image}
             oninput={(event) => ($form.image = event.target.files[0])}
             required={!fileSelected}
+            error={$form.errors.image}
         />
-    </div>
+    </FormField>
     <FormField for="name" label="Nome do arquivo" error={$form.errors.name}>
         <TextInput
             variant="offcanvas"

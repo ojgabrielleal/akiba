@@ -18,15 +18,16 @@ class SongRequestService
     {
         $songRequest = DB::transaction(function () use ($data, $requester) {
             $onair = $this->storeAcceptingSongRequestsOnair();
-            $music = $this->storeMusic($data['music']);
+            $music = isset($data['music']) ? $this->storeMusic($data['music']) : null;
 
             if ($requester instanceof OAuthAccount) {
                 $this->storeCompleteOAuthAccountProfile($requester, $data);
             }
 
             $songRequest = $onair->songRequests()->make([
-                'music_id' => $music->id,
-                'message' => $data['message'],
+                'type' => $music ? 'music' : 'message',
+                'music_id' => $music?->id,
+                'message' => $data['message'] ?? null,
             ]);
 
             $songRequest->requester()->associate($requester);
@@ -86,9 +87,11 @@ class SongRequestService
         app(PushNotificationService::class)->sendToUserOrAll(
             $songRequest->onair?->program?->host,
             [
-                'title' => 'Novo pedido musical',
-                'body' => "{$this->storeRequesterName($songRequest)} pediu {$songRequest->music?->name}.",
-                'url' => route('panel.locution'),
+                'title' => $songRequest->music ? 'Novo pedido chegou!' : 'Novo recado chegou!',
+                'body' => $songRequest->music
+                    ? "Ouvinte {$this->storeRequesterName($songRequest)} fez um pedido de música neste momento."
+                    : "{$this->storeRequesterName($songRequest)} mandou um recado.",
+                'url' => '/panel/locution',
                 'icon' => '/img/notifications/songRequestNotification.webp',
             ],
         );

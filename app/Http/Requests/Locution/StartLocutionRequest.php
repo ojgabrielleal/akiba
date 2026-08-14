@@ -24,6 +24,7 @@ class StartLocutionRequest extends LoggedWebRequest
         return [
             'phrase' => 'required',
             'program' => 'required',
+            'send_notification' => 'required|boolean',
         ];
     }
 }

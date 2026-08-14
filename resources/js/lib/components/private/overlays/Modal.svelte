@@ -3,20 +3,34 @@
     export let size = "sm";
 
     import { fade } from "svelte/transition";
-    import { onMount, onDestroy } from "svelte";
+    import { onDestroy } from "svelte";
 
     let visible = false;
     let titleId = title ? `modal-title-${Math.random().toString(36).slice(2)}` : undefined;
+    let previousBodyOverflow = "";
+    let previousDocumentOverflow = "";
+    let scrollLocked = false;
     
-    onMount(()=>{
-        if (typeof document !== "undefined"){
-            document.body.style.overflow = visible ? "hidden" : "auto";
+    $: if (typeof document !== "undefined") {
+        if (visible && !scrollLocked) {
+            previousBodyOverflow = document.body.style.overflow;
+            previousDocumentOverflow = document.documentElement.style.overflow;
+            document.body.style.overflow = "hidden";
+            document.documentElement.style.overflow = "hidden";
+            scrollLocked = true;
         }
-    });
+
+        if (!visible && scrollLocked) {
+            document.body.style.overflow = previousBodyOverflow;
+            document.documentElement.style.overflow = previousDocumentOverflow;
+            scrollLocked = false;
+        }
+    }
 
     onDestroy(() => {
-        if (typeof document !== "undefined") {
-            document.body.style.overflow = "auto";
+        if (typeof document !== "undefined" && scrollLocked) {
+            document.body.style.overflow = previousBodyOverflow;
+            document.documentElement.style.overflow = previousDocumentOverflow;
         }
     });
 
@@ -49,7 +63,7 @@
         on:click={close}
     >
         <div
-            class={["my-auto w-full min-w-0 rounded-t-2xl rounded-b-md border-0 bg-suspense-aurora shadow-none outline-none ring-0 focus:outline-none focus:ring-0", sizes[size] ?? sizes.sm]}
+            class={["my-auto w-full min-w-0 rounded-2xl border-0 bg-suspense-aurora shadow-none outline-none ring-0 focus:outline-none focus:ring-0", sizes[size] ?? sizes.sm]}
             role="dialog"
             aria-modal="true"
             aria-labelledby={titleId}

@@ -8,6 +8,7 @@
     export let value = null;
     export let required = false;
     export let disabled = false;
+    export let error = null;
 
     let quill;
     let editor;
@@ -52,6 +53,7 @@
 </script>
 
 <div class={["rounded-md overflow-hidden bg-blue-ocean", 
+    { "border border-red-crimson": error },
     {'opacity-70 cursor-not-allowed': isDisabled}
 ]}>
     <div bind:this={editor} class="p-3" style="min-height: {height};"></div>
@@ -61,6 +63,8 @@
     {required}
     class="sr-only"
     disabled={isDisabled}
+    aria-invalid={error ? "true" : undefined}
+    aria-describedby={error ? `${name}-error` : undefined}
     bind:this={textarea}
 >
 </textarea>

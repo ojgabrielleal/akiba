@@ -54,6 +54,7 @@
                 type="button"
                 variant="outline"
                 shape="pill"
+                class="h-11 w-full border-2"
                 disabled={$form.processing}
                 on:click={() => startLocution(true)}
             >
@@ -63,6 +64,7 @@
                 type="button"
                 variant="accent"
                 shape="pill"
+                class="h-11 w-full"
                 disabled={$form.processing}
                 on:click={() => startLocution(false)}
             >
@@ -89,7 +91,7 @@
                             aria-hidden="true"
                             loading="lazy"
                             class={["block w-full transition duration-300 ease-in-out",
-                                { "opacity-100 scale-100 drop-shadow-[0_0_20px_rgba(0,255,200,0.3)]": $form.program === item.uuid }, 
+                                { "opacity-100 scale-100": $form.program === item.uuid }, 
                                 { "opacity-50 scale-90": $form.program !== item.uuid }
                             ]}
                         />
@@ -192,10 +194,7 @@
                 <button
                     type="button"
                     aria-label={`Icon ${index}`}
-                    class={["cursor-pointer w-full h-7 flex justify-end items-end rounded-sm", 
-                        { "bg-blue-skywave drop-shadow-[0_0_20px_rgba(0,255,200,0.3)]": $form.phrase.icon === item.url },
-                        { "bg-blue-ocean": $form.phrase.icon !== item.url }
-                    ]}
+                    class="w-full h-7 flex cursor-pointer items-end justify-end rounded-sm bg-blue-ocean"
                     on:click={() => { $form.phrase.icon = item.url; }}
                 >
                     <img

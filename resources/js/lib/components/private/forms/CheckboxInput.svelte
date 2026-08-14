@@ -7,9 +7,11 @@
     export let value = null;
     export let checked = false;
     export let group = undefined;
+    export let error = null;
 
     $: classes = [
-        "size-4 shrink-0 cursor-pointer border-gray-300 text-blue-skywave focus:ring-blue-skywave",
+        "size-4 shrink-0 cursor-pointer text-blue-skywave focus:ring-blue-skywave",
+        error ? "border border-red-crimson" : "border-gray-300",
         className,
     ];
 
@@ -34,6 +36,8 @@
             class={classes}
             type="checkbox"
             checked={isGroupChecked}
+            aria-invalid={error ? "true" : undefined}
+            aria-describedby={error ? `${id}-error` : undefined}
             on:change={updateGroup}
         />
     {:else}
@@ -42,6 +46,8 @@
             {id}
             class={classes}
             type="checkbox"
+            aria-invalid={error ? "true" : undefined}
+            aria-describedby={error ? `${id}-error` : undefined}
             bind:checked
         />
     {/if}

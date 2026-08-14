@@ -39,46 +39,18 @@
             {chosenPhrase}
         </h2>
         <div class="flex shrink-0 gap-2">
-            {#if can.event.create}
+            {#if can.post.create}
                 <Link
                     class="flex w-24 flex-col items-center justify-center gap-2 rounded-md bg-blue-marinho p-2 text-center font-noto-sans text-[0.7rem] font-extrabold uppercase italic text-orange-citric xl:w-30"
                     href="/panel/post"
                 >
                     <img
-                        src="/svg/events.svg"
+                        src="/svg/materials.svg"
                         alt=""
                         aria-hidden="true"
                         class="w-6 filter-orange-citric"
                     />
-                    Criar evento
-                </Link>
-            {/if}
-            {#if can.activity.create}
-                <Link
-                    class="flex w-24 flex-col items-center justify-center gap-2 rounded-md bg-blue-marinho p-2 text-center font-noto-sans text-[0.7rem] font-extrabold uppercase italic text-orange-citric xl:w-30"
-                    href="/panel/administration"
-                >
-                    <img
-                        src="/svg/alerts.svg"
-                        alt=""
-                        aria-hidden="true"
-                        class="w-6 filter-orange-citric"
-                    />
-                    Adicionar avisos
-                </Link>
-            {/if}
-            {#if can.repository.create}
-                <Link
-                    class="flex w-24 flex-col items-center justify-center gap-2 rounded-md bg-blue-marinho p-2 text-center font-noto-sans text-[0.7rem] font-extrabold uppercase italic text-orange-citric xl:w-30"
-                    href="/panel/marketing"
-                >
-                    <img
-                        src="/svg/download.svg"
-                        alt=""
-                        aria-hidden="true"
-                        class="w-6 filter-orange-citric"
-                    />
-                    Upar arquivos
+                    Criar matéria
                 </Link>
             {/if}
             {#if can.locution.start}
@@ -95,18 +67,46 @@
                     Locutar
                 </Link>
             {/if}
-            {#if can.post.create}
+            {#if can.activity.create}
+                <Link
+                    class="flex w-24 flex-col items-center justify-center gap-2 rounded-md bg-blue-marinho p-2 text-center font-noto-sans text-[0.7rem] font-extrabold uppercase italic text-orange-citric xl:w-30"
+                    href="/panel/administration"
+                >
+                    <img
+                        src="/svg/alerts.svg"
+                        alt=""
+                        aria-hidden="true"
+                        class="w-6 filter-orange-citric"
+                    />
+                    Adicionar aviso
+                </Link>
+            {/if}
+            {#if can.event.create}
                 <Link
                     class="flex w-24 flex-col items-center justify-center gap-2 rounded-md bg-blue-marinho p-2 text-center font-noto-sans text-[0.7rem] font-extrabold uppercase italic text-orange-citric xl:w-30"
                     href="/panel/post"
                 >
                     <img
-                        src="/svg/materials.svg"
+                        src="/svg/events.svg"
                         alt=""
                         aria-hidden="true"
                         class="w-6 filter-orange-citric"
                     />
-                    Criar matéria
+                    Criar evento
+                </Link>
+            {/if}
+            {#if can.repository.create}
+                <Link
+                    class="flex w-24 flex-col items-center justify-center gap-2 rounded-md bg-blue-marinho p-2 text-center font-noto-sans text-[0.7rem] font-extrabold uppercase italic text-orange-citric xl:w-30"
+                    href="/panel/marketing"
+                >
+                    <img
+                        src="/svg/download.svg"
+                        alt=""
+                        aria-hidden="true"
+                        class="w-6 filter-orange-citric"
+                    />
+                    Upar arquivo
                 </Link>
             {/if}
         </div>

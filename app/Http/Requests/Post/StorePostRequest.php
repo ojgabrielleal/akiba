@@ -8,6 +8,18 @@ use App\Models\Post;
 
 class StorePostRequest extends LoggedWebRequest
 {
+    private function isDraft(): bool
+    {
+        return $this->input('module') === 'review'
+            ? $this->input('review.status') === 'draft'
+            : $this->input('status') === 'draft';
+    }
+
+    private function requiredUnlessDraft(): string
+    {
+        return $this->isDraft() ? 'nullable' : 'required';
+    }
+
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -23,27 +35,29 @@ class StorePostRequest extends LoggedWebRequest
      */
     public function rules(): array
     {
+        $requiredUnlessDraft = $this->requiredUnlessDraft();
+
         return [
             'module' => 'required|in:post,review,event',
             'status' => 'required_unless:module,review|nullable|string',
-            'title' => 'required',
-            'image' => 'required',
-            'cover' => 'required',
-            'references' => 'required|array',
-            'references.*.name' => 'required|string|max:255',
-            'references.*.url' => 'required|url|max:255',
-            'tags' => 'required|array',
-            'tags.*.name' => 'required|string|max:255',
-            'content' => 'required_unless:module,review|nullable|string',
-            'metadata' => 'required_unless:module,post|nullable|array',
-            'metadata.dates' => 'required_if:module,event|string',
-            'metadata.event_date' => 'required_if:module,event|date',
-            'metadata.address' => 'required_if:module,event|string',
-            'metadata.date_of_release' => 'required_if:module,review|date',
-            'metadata.sinopse' => 'required_if:module,review|string',
+            'title' => "{$requiredUnlessDraft}|string",
+            'image' => $requiredUnlessDraft,
+            'cover' => $requiredUnlessDraft,
+            'references' => "{$requiredUnlessDraft}|array",
+            'references.*.name' => "{$requiredUnlessDraft}|string|max:255",
+            'references.*.url' => "{$requiredUnlessDraft}|url|max:255",
+            'tags' => "{$requiredUnlessDraft}|array",
+            'tags.*.name' => "{$requiredUnlessDraft}|string|max:255",
+            'content' => $this->isDraft() ? 'nullable|string' : 'required_unless:module,review|nullable|string',
+            'metadata' => $this->isDraft() ? 'nullable|array' : 'required_unless:module,post|nullable|array',
+            'metadata.dates' => $this->isDraft() ? 'nullable|string' : 'required_if:module,event|string',
+            'metadata.event_date' => $this->isDraft() ? 'nullable|date' : 'required_if:module,event|date',
+            'metadata.address' => $this->isDraft() ? 'nullable|string' : 'required_if:module,event|string',
+            'metadata.date_of_release' => $this->isDraft() ? 'nullable|date' : 'required_if:module,review|date',
+            'metadata.sinopse' => $this->isDraft() ? 'nullable|string' : 'required_if:module,review|string',
             'review' => 'required_if:module,review|nullable|array',
             'review.status' => 'required_if:module,review|string',
-            'review.content' => 'required_if:module,review|string',
+            'review.content' => $this->isDraft() ? 'nullable|string' : 'required_if:module,review|string',
         ];
     }
 }
