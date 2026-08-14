@@ -20,16 +20,21 @@ class PushNotificationService
             'content_encoding' => ['nullable', 'string', 'in:aesgcm,aes128gcm'],
         ])->validate();
 
+        $values = [
+            'public_key' => $data['keys']['p256dh'],
+            'auth_token' => $data['keys']['auth'],
+            'content_encoding' => $data['content_encoding'] ?? 'aes128gcm',
+        ];
+
+        if ($user) {
+            $values['user_id'] = $user->id;
+        }
+
         return PushSubscription::query()->updateOrCreate(
             [
-                'user_id' => $user?->id,
                 'endpoint' => $data['endpoint'],
             ],
-            [
-                'public_key' => $data['keys']['p256dh'],
-                'auth_token' => $data['keys']['auth'],
-                'content_encoding' => $data['content_encoding'] ?? 'aes128gcm',
-            ],
+            $values,
         );
     }
 
@@ -58,7 +63,9 @@ class PushNotificationService
     {
         $subscriptions = PushSubscription::query()
             ->when($user, fn ($query) => $query->where('user_id', $user->id))
-            ->get();
+            ->get()
+            ->unique('endpoint')
+            ->values();
 
         $this->sendToSubscriptions($subscriptions, [
             'audience' => $user ? 'user' : 'all',
