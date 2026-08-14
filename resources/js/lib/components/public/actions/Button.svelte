@@ -1,4 +1,6 @@
 <script>
+    import { publicAnimations } from "@/lib/constants";
+
     let className;
     export { className as class };
     export let type = "button";
@@ -32,7 +34,8 @@
     };
 
     $: classes = [
-        "inline-flex cursor-pointer items-center justify-center gap-2 font-noto-sans font-extrabold uppercase italic transition disabled:cursor-not-allowed disabled:opacity-50",
+        "inline-flex cursor-pointer items-center justify-center gap-2 font-noto-sans font-extrabold uppercase italic disabled:cursor-not-allowed disabled:opacity-50",
+        publicAnimations.buttonInteractive,
         variants[variant] ?? variants.primary,
         sizes[size] ?? sizes.md,
         shapes[shape] ?? shapes.rounded,

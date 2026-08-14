@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Post\PostCommentResource;
 use App\Http\Resources\Post\PostResource;
 use App\Models\Post;
+use App\Models\PostComment;
 use Inertia\Inertia;
 use App\Http\Requests\Post\StorePostCommentRequest;
 use App\Http\Requests\Post\StorePostReactionRequest;
@@ -48,10 +49,23 @@ class ReadController extends Controller
     {
         return PostCommentResource::collection(
             $post->comments()
-                ->with('author')
+                ->whereNull('parent_id')
+                ->with(['author', 'replies.author'])
                 ->latest()
                 ->paginate(10)
                 ->withQueryString()
+        );
+    }
+
+    private function ensureCommentAuthor(PostComment $comment): void
+    {
+        $author = AuthenticatedMember::fromRequest(request());
+
+        abort_unless(
+            $author
+                && $comment->author_type === $author->getMorphClass()
+                && (int) $comment->author_id === (int) $author->getKey(),
+            403
         );
     }
 
@@ -89,7 +103,42 @@ class ReadController extends Controller
 
     public function storeComment(StorePostCommentRequest $request, PostService $service, Post $post): RedirectResponse
     {
-        $service->storeComment($post, AuthenticatedMember::fromRequest($request), $request->validated());
+        $data = $request->validated();
+
+        if ($parentUuid = $data['parent_uuid'] ?? null) {
+            $data['parent_id'] = $post->comments()
+                ->whereNull('parent_id')
+                ->where('uuid', $parentUuid)
+                ->value('id');
+
+            abort_unless($data['parent_id'], 404);
+        }
+
+        unset($data['parent_uuid']);
+
+        $service->storeComment($post, AuthenticatedMember::fromRequest($request), $data);
+
+        return back(303);
+    }
+
+    public function updateComment(StorePostCommentRequest $request, PostService $service, Post $post, PostComment $comment): RedirectResponse
+    {
+        abort_unless($comment->post_id === $post->id, 404);
+
+        $this->ensureCommentAuthor($comment);
+
+        $service->updateComment($comment, $request->safe()->only('comment'));
+
+        return back(303);
+    }
+
+    public function deleteComment(Post $post, PostComment $comment, PostService $service): RedirectResponse
+    {
+        abort_unless($comment->post_id === $post->id, 404);
+
+        $this->ensureCommentAuthor($comment);
+
+        $service->deleteComment($comment);
 
         return back(303);
     }

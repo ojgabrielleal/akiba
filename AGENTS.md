@@ -16,6 +16,7 @@ Este projeto usa Laravel no backend e Svelte no frontend, integrados via Inertia
 - No frontend, use `orange-citric` em botoes, elementos clicaveis, itens/cards clicaveis e seus estados de hover/focus/active. Elementos nao clicaveis devem usar `orange-amber` ou `orange-morning`: se a cor precisar ficar proxima de `orange-citric`, use `orange-morning`; caso contrario, use `orange-amber`.
 - Quando um botao tiver icone junto com texto, use o icone em `w-6` por padrao, mantendo alinhamento central e espacamento consistente.
 - Indicadores de likes que forem apenas exibicao/metrica, como contadores ou porcentagens em cards, podem usar `orange-amber`. Acoes de like clicaveis continuam usando `orange-citric`.
+- Na interface publica, use os padroes de animacao de `publicAnimations` em `resources/js/lib/constants/public/animation.js`: `cardInteractive` para cards/itens clicaveis, `imageZoom` para imagens dentro de cards com container `overflow-hidden`, `buttonInteractive` para botoes com texto e `iconButtonInteractive` para botoes de icone. Prefira movimentos sutis (`-translate-y-0.5`, `scale-[1.03]`) e mantenha `motion-reduce`.
 
 ## Arquitetura Atual
 

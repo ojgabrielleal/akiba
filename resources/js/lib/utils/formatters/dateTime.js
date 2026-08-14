@@ -71,6 +71,21 @@ export const resolveDateTime = (dateTime) => {
     return `${date} - ${resolveHour(hour)}`;
 };
 
+export const resolveDate = (date) => {
+    if (!date) {
+        return "";
+    }
+
+    const value = String(date);
+    const [year, month, day] = value.split("-");
+
+    if (!year || !month || !day) {
+        return value;
+    }
+
+    return `${day}/${month}/${year}`;
+};
+
 export const resolveAge = (birthDate) => {
     if (!birthDate) {
         return "";

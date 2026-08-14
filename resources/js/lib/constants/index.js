@@ -7,3 +7,4 @@ export { default as postReactions } from "./post/reaction.json";
 export { default as socialIcons } from "./team/social.json";
 export { default as userPreferences } from "./user/preference.json";
 export { default as navbar } from "./default/navbar.json";
+export { publicAnimations } from "./public/animation";

@@ -1,5 +1,6 @@
 <script>
     import { Link } from "@inertiajs/svelte";
+    import { publicAnimations } from "@/lib/constants";
     import { Section } from "@/lib/components/public";
 
     export let listenerGallery = [];
@@ -13,14 +14,14 @@
     <Section title="Galeria do ouvinte" {styles}>
         <div class="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-5">
             {#each items as item (item.uuid)}
-                <article class="group overflow-hidden rounded-md transition duration-300 ease-out hover:-translate-y-0.5 hover:shadow-xl focus-within:-translate-y-0.5 motion-reduce:transform-none motion-reduce:transition-none">
+                <article class={["group overflow-hidden rounded-md", publicAnimations.cardInteractive]}>
                     <Link href={item.image} aria-label={`Abrir foto de ${item.listener_name ?? "ouvinte"}`} class="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric">
-                        <div class="aspect-[4/4.25]">
+                        <div class="aspect-[4/4.25] overflow-hidden">
                             {#if item.image && item.image !== defaultPlaceholder}
                                 <img
                                     src={item.image}
                                     alt={item.caption || item.listener_name || "Foto da galeria do ouvinte"}
-                                    class="h-full w-full object-cover transition duration-300 group-hover:scale-105 motion-reduce:transform-none motion-reduce:transition-none"
+                                    class={["h-full w-full object-cover", publicAnimations.imageZoom]}
                                     loading="lazy"
                                 />
                             {/if}

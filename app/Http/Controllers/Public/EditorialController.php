@@ -39,17 +39,6 @@ class EditorialController extends Controller
         ]);
     }
 
-    public function reviews()
-    {
-        $sort = request('sort', 'alphabetical');
-
-        return Inertia::render('public/Reviews', [
-            'title' => 'Reviews',
-            'activeSort' => $sort,
-            'reviews' => $this->indexReviews($sort),
-        ]);
-    }
-
     private function indexNewsPosts(string $tag)
     {
         return PostResource::collection(
@@ -70,43 +59,22 @@ class EditorialController extends Controller
 
     private function indexColumnPosts(array $categories, ?string $tag)
     {
+        $isReviewCategory = $tag === 'reviews';
+
         return PostResource::collection(
             $this->postFilter->filter([
                 'user' => request()->user(),
                 'active' => true,
                 'status' => 'published',
-                'module' => 'post',
+                'module' => $isReviewCategory ? 'review' : 'post',
                 'with' => 'tags',
-                'order_by' => $tag ? 'created_at' : 'random',
+                'order_by' => $isReviewCategory ? 'metadata_date_of_release' : ($tag ? 'created_at' : 'random'),
                 'order_direction' => 'desc',
-                'tag' => $tag,
+                'tag' => $isReviewCategory ? null : $tag,
                 'tags' => $tag ? null : $categories,
                 'paginate' => 10,
                 'ignore_authorization' => true,
             ])
         )->format('home-list');
-    }
-
-    private function indexReviews(string $sort)
-    {
-        [$orderBy, $orderDirection] = match ($sort) {
-            'likes' => ['likes_count', 'desc'],
-            'year' => ['metadata_year_of_release', 'desc'],
-            default => ['title', 'asc'],
-        };
-
-        return PostResource::collection(
-            $this->postFilter->filter([
-                'user' => request()->user(),
-                'active' => true,
-                'status' => 'published',
-                'module' => 'review',
-                'with_count' => 'likes',
-                'order_by' => $orderBy,
-                'order_direction' => $orderDirection,
-                'paginate' => 15,
-                'ignore_authorization' => true,
-            ])
-        )->format('featured');
     }
 }

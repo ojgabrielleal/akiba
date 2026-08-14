@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
 class Post extends Model
@@ -45,6 +46,15 @@ class Post extends Model
                 'title' => $value,
                 'slug' => Str::slug($value),
             ],
+        );
+    }
+
+    protected function reviewReleaseDate(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->module === 'review' && ($this->metadata['date_of_release'] ?? $this->metadata['year_of_release'] ?? null)
+                ? Carbon::parse($this->metadata['date_of_release'] ?? $this->metadata['year_of_release'])
+                : null,
         );
     }
 

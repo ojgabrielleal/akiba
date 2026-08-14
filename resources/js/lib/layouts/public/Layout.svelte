@@ -1,6 +1,8 @@
 <script>
+    import { onMount } from "svelte";
     import { usePoll } from "@inertiajs/svelte";
     import { CookieConsent, FlashToaster, ProfileIncompleteNotice } from "@/lib/components/public";
+    import { startAutoplay } from "@/lib/stores";
     import { Footer, Navbar, PlayerBar } from "@/lib/widgets/public";
 
     export let flash = null;
@@ -13,6 +15,7 @@
         only: ["onair"]
     });
 
+    onMount(() => startAutoplay());
 </script>
 
 <FlashToaster {flash} />

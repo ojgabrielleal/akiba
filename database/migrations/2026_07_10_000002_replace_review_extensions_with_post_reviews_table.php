@@ -38,7 +38,7 @@ return new class extends Migration
             $table->id();
             $table->uuid('uuid')->unique();
             $table->foreignId('post_id')->nullable()->constrained('posts')->cascadeOnDelete();
-            $table->integer('year_of_release')->nullable();
+            $table->date('year_of_release')->nullable();
             $table->longText('sinopse');
             $table->timestamps();
         });

@@ -40,7 +40,7 @@ class PostFactory extends Factory
             'content' => null,
             'status' => 'published',
             'metadata' => [
-                'year_of_release' => fake()->year(),
+                'date_of_release' => fake()->date(),
                 'sinopse' => fake()->paragraph(),
             ],
         ]);

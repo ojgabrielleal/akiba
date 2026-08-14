@@ -55,9 +55,6 @@ Route::middleware(['oauth.resolve', 'inertia'])->group(function () {
     Route::get('/colunas', [EditorialController::class, 'columns'])
         ->name('columns');
 
-    Route::get('/reviews', [EditorialController::class, 'reviews'])
-        ->name('reviews');
-
     Route::get('/equipe', [TeamController::class, 'render'])
         ->name('team');
 
@@ -83,6 +80,14 @@ Route::middleware(['oauth.resolve', 'inertia'])->group(function () {
     Route::post('/materia/{post:slug}/comment', [ReadController::class, 'storeComment'])
         ->middleware('oauth')
         ->name('post.comment.store');
+
+    Route::patch('/materia/{post:slug}/comment/{comment}', [ReadController::class, 'updateComment'])
+        ->middleware('oauth')
+        ->name('post.comment.update');
+
+    Route::delete('/materia/{post:slug}/comment/{comment}', [ReadController::class, 'deleteComment'])
+        ->middleware('oauth')
+        ->name('post.comment.delete');
 
     Route::post('/poll/option/{option:uuid}/vote', [MediaController::class, 'votePollOption'])
         ->name('poll.option.vote');

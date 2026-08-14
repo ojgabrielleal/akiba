@@ -27,7 +27,7 @@
                                 class="absolute right-0 bottom-0 z-20 h-[12.75rem] w-[55%] max-w-none origin-bottom-right object-contain object-right-bottom transition duration-300 ease-out group-hover:scale-[1.03] group-focus-visible:scale-[1.03] motion-reduce:transform-none motion-reduce:transition-none"
                             />
                             <span class="absolute right-3 bottom-3 z-30 inline-flex h-5 min-w-11 items-center justify-center gap-1 rounded-sm bg-orange-amber px-1.5 font-noto-sans text-xs leading-none font-black text-suspense-aurora uppercase italic shadow-sm shadow-blue-night/20">
-                                {item.likes_percentage ?? 0}%
+                                {item.likes_count ?? 0}
                                 <img src="/svg/like.svg" alt="" aria-hidden="true" class="size-3 filter-suspense-aurora" />
                             </span>
                         </article>

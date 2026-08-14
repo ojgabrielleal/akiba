@@ -1,7 +1,11 @@
 import { get, writable } from "svelte/store";
 
 const DEFAULT_VOLUME = 0.03;
+const AUTOPLAY_VOLUME = 0.05;
+const MANUAL_PLAY_VOLUME = 0.2;
 const MIN_PLAY_LOADING_MS = 500;
+const AUTOPLAY_RETRY_MS = 2500;
+const AUTOPLAY_INTERACTION_EVENTS = ["pointerdown", "touchstart", "keydown", "click"];
 const WAVE_BAR_COUNT = 140;
 const DEFAULT_WAVE_LEVELS = Array.from({ length: WAVE_BAR_COUNT }, () => 0.2);
 const MIN_WAVE_LEVEL = 0.02;
@@ -44,6 +48,9 @@ let waveFrame;
 let listenersAttached = false;
 let playLoadingTimeout;
 let playLoadingStartedAt = 0;
+let autoplayRetryInterval;
+let autoplayEnabled = false;
+let autoplayAttempting = false;
 let smoothedWaveLevels = [...DEFAULT_WAVE_LEVELS];
 let previousEnergy = 0;
 let boomPulse = 0;
@@ -54,6 +61,22 @@ const clearPlayLoadingTimeout = () => {
 
     clearTimeout(playLoadingTimeout);
     playLoadingTimeout = undefined;
+};
+
+const stopAutoplay = () => {
+    autoplayEnabled = false;
+    autoplayAttempting = false;
+
+    if (autoplayRetryInterval) {
+        clearInterval(autoplayRetryInterval);
+        autoplayRetryInterval = undefined;
+    }
+
+    if (typeof window === "undefined") return;
+
+    AUTOPLAY_INTERACTION_EVENTS.forEach((eventName) => {
+        window.removeEventListener(eventName, handleAutoplayInteraction, true);
+    });
 };
 
 const startPlayLoading = () => {
@@ -254,6 +277,7 @@ const handleWaiting = () => {
 };
 
 const handlePlaying = () => {
+    stopAutoplay();
     player.update((state) => ({ ...state, playing: true, error: null }));
     startWaveAnalysis();
     finishPlayLoading();
@@ -293,11 +317,14 @@ export const syncMediaSessionMetadata = (air, stream) => {
     });
 };
 
-export const playAudio = async () => {
+export const playAudio = async ({ silent = false } = {}) => {
     const element = getAudio();
     if (!element) return;
 
-    startPlayLoading();
+    if (!silent) {
+        setVolume(MANUAL_PLAY_VOLUME);
+        startPlayLoading();
+    }
 
     try {
         ensureAudioAnalyser();
@@ -310,18 +337,22 @@ export const playAudio = async () => {
         await element.play();
         setupMediaSession();
     } catch {
-        clearPlayLoadingTimeout();
+        if (!silent) {
+            clearPlayLoadingTimeout();
+        }
+
         stopWaveAnalysis();
         player.update((state) => ({
             ...state,
             playing: false,
             loading: false,
-            error: "O navegador bloqueou ou não conseguiu iniciar a rádio.",
+            error: silent ? state.error : "O navegador bloqueou ou não conseguiu iniciar a rádio.",
         }));
     }
 };
 
 export const pauseAudio = () => {
+    stopAutoplay();
     getAudio()?.pause();
 };
 
@@ -356,7 +387,42 @@ export const toggleMute = () => {
     player.update((state) => ({ ...state, muted: element.muted }));
 };
 
+const retryAutoplay = async () => {
+    if (!autoplayEnabled || autoplayAttempting || get(player).playing) {
+        return;
+    }
+
+    setVolume(AUTOPLAY_VOLUME);
+    autoplayAttempting = true;
+    await playAudio({ silent: true });
+    autoplayAttempting = false;
+};
+
+function handleAutoplayInteraction() {
+    retryAutoplay();
+}
+
+export const startAutoplay = () => {
+    if (typeof window === "undefined" || autoplayEnabled || get(player).playing) {
+        return stopAutoplay;
+    }
+
+    autoplayEnabled = true;
+    retryAutoplay();
+    autoplayRetryInterval = setInterval(retryAutoplay, AUTOPLAY_RETRY_MS);
+
+    AUTOPLAY_INTERACTION_EVENTS.forEach((eventName) => {
+        window.addEventListener(eventName, handleAutoplayInteraction, {
+            capture: true,
+            passive: true,
+        });
+    });
+
+    return stopAutoplay;
+};
+
 export const destroyPlayer = () => {
+    stopAutoplay();
     clearPlayLoadingTimeout();
     stopWaveAnalysis();
 

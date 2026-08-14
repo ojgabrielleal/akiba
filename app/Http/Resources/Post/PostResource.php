@@ -27,7 +27,7 @@ class PostResource extends JsonResource
                 'image' => $this->image,
                 'cover' => $this->cover,
                 'views' => $this->views_count,
-                'likes_percentage' => $this->likesPercentage(),
+                'likes_count' => $this->likesCount(),
             ];
         }
 
@@ -41,7 +41,7 @@ class PostResource extends JsonResource
                 'image' => $this->image,
                 'cover' => $this->cover,
                 'metadata' => $this->metadata,
-                'likes_percentage' => $this->likesPercentage(),
+                'likes_count' => $this->likesCount(),
                 'tags' => PostTagResource::collection($this->tags),
             ];
         }
@@ -71,7 +71,6 @@ class PostResource extends JsonResource
             'tags' => PostTagResource::collection($this->tags),
             'reactions' => PostReactionResource::collection($this->reactions),
             'likes_count' => $this->likesCount(),
-            'likes_percentage' => $this->likesPercentage(),
             'liked_by_me' => $this->likedByCurrentVisitor($request),
             'module' => $this->module,
         ];
@@ -116,17 +115,6 @@ class PostResource extends JsonResource
         }
 
         return 0;
-    }
-
-    private function likesPercentage(): int
-    {
-        $views = (int) ($this->views_count ?? 0);
-
-        if ($views <= 0) {
-            return 0;
-        }
-
-        return (int) round(($this->likesCount() / $views) * 100);
     }
 
     private function likedByCurrentVisitor(Request $request): bool

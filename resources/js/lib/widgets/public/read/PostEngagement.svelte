@@ -1,6 +1,7 @@
 <script>
     import { router } from "@inertiajs/svelte";
     import { AuthGuard, Pagination } from "@/lib/components/public";
+    import PostCommentItem from "./PostCommentItem.svelte";
     import { resolvePlaceholderImage } from "@/lib/utils";
 
     export let post = {};
@@ -27,15 +28,12 @@
         });
     };
 
-    const fallbackAvatar = (event, gender = null) => {
-        event.currentTarget.src = resolvePlaceholderImage(null, "avatar", gender);
-    };
 </script>
 
 <footer class="mt-9 grid items-stretch gap-x-4 gap-y-12 font-noto-sans uppercase md:grid-cols-[minmax(0,1fr)_24rem] md:gap-y-4">
     <div class="grid grid-rows-[auto_auto_1fr] gap-4">
         <h2 class="text-center text-xl leading-none font-normal text-orange-amber">
-            Fontes de pesquisa
+            Fontes
         </h2>
         <div class="grid gap-4">
             {#if sources.length}
@@ -52,7 +50,7 @@
         </div>
         {#if post.created_at}
             <p class="flex items-center justify-end self-end text-right text-xl leading-none font-normal text-orange-amber">
-                Postado:
+                Publicado
                 <span class="ml-2 rounded-sm bg-blue-cerulean px-3 py-1 text-xl font-black text-suspense-aurora italic">
                     {post.created_at}
                 </span>
@@ -128,30 +126,7 @@
     <div class="mt-6 grid gap-4">
         {#if commentList.length}
             {#each commentList as item}
-                <article class="rounded-md bg-blue-ocean p-4">
-                    <div class="mb-3 flex items-center gap-3">
-                        <div class="size-12 shrink-0 overflow-hidden rounded-full border-2 border-suspense-aurora bg-suspense-aurora shadow">
-                            <img
-                                src={resolvePlaceholderImage(item.author?.avatar, "avatar", item.author?.gender)}
-                                alt=""
-                                aria-hidden="true"
-                                class="h-full w-full object-cover object-top scale-125"
-                                on:error={(event) => fallbackAvatar(event, item.author?.gender)}
-                            />
-                        </div>
-                        <div class="min-w-0">
-                            <p class="truncate text-sm font-black text-suspense-aurora uppercase italic">
-                                {item.author?.name}
-                            </p>
-                            <p class="text-xs font-bold text-suspense-aurora/60">
-                                {item.created_at}
-                            </p>
-                        </div>
-                    </div>
-                    <p class="whitespace-pre-line text-sm font-medium leading-relaxed text-suspense-aurora">
-                        {item.comment}
-                    </p>
-                </article>
+                <PostCommentItem {post} {item} {oauth} />
             {/each}
         {:else}
             <p class="rounded-md border border-blue-skywave/30 px-4 py-5 text-center text-sm font-bold text-suspense-aurora/70">

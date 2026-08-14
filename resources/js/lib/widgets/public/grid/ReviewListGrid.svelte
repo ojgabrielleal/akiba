@@ -1,5 +1,6 @@
 <script>
     import { Link } from "@inertiajs/svelte";
+    import { publicAnimations } from "@/lib/constants";
     import { GridList, Section } from "@/lib/components/public";
     import { resolvePlaceholderImage } from "@/lib/utils";
 
@@ -21,11 +22,11 @@
                         aria-label={`Ler review: ${review.title}`}
                         class="group block rounded-md focus-visible:outline-none"
                     >
-                        <article class="overflow-hidden rounded-md bg-orange-citric transition duration-300 ease-out group-hover:-translate-y-1 group-hover:shadow-lg group-hover:shadow-blue-skywave/10 group-focus-visible:-translate-y-1 group-focus-visible:ring-2 group-focus-visible:ring-orange-citric motion-reduce:transform-none motion-reduce:transition-none">
+                        <article class={["overflow-hidden rounded-md bg-orange-citric group-focus-visible:ring-2 group-focus-visible:ring-orange-citric", publicAnimations.cardInteractive]}>
                             <img
                                 src={resolvePlaceholderImage(review.cover, "placeholder")}
                                 alt={review.title}
-                                class="aspect-[3/2] w-full bg-neutral-gray object-cover transition duration-300 ease-out group-hover:scale-[1.03] group-focus-visible:scale-[1.03] motion-reduce:transform-none motion-reduce:transition-none"
+                                class={["aspect-[3/2] w-full bg-neutral-gray object-cover", publicAnimations.imageZoom]}
                             />
                             <div class="px-2 py-2">
                                 <h3 class="truncate text-center font-noto-sans text-base leading-tight font-black text-blue-night uppercase italic sm:text-lg">

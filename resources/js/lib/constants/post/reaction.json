@@ -1,27 +1,27 @@
 [
     {
-        "name": "angry",
-        "label": "Irritado",
-        "image": "/svg/angry.svg"
-    },
-    {
-        "name": "duvid",
-        "label": "Em dúvida",
-        "image": "/svg/duvid.svg"
-    },
-    {
-        "name": "content",
-        "label": "Contente",
-        "image": "/svg/content.svg"
+        "name": "big-happy",
+        "label": "Muito Legal",
+        "image": "/svg/big-happy.svg"
     },
     {
         "name": "happy",
-        "label": "Feliz",
+        "label": "Legal",
         "image": "/svg/happy.svg"
     },
     {
-        "name": "big-happy",
-        "label": "Muito feliz",
-        "image": "/svg/big-happy.svg"
+        "name": "content",
+        "label": "Boa",
+        "image": "/svg/content.svg"
+    },
+    {
+        "name": "duvid",
+        "label": "MEH",
+        "image": "/svg/duvid.svg"
+    },
+    {
+        "name": "angry",
+        "label": "Ruim",
+        "image": "/svg/angry.svg"
     }
 ]

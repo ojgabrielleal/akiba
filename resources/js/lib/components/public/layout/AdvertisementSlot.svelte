@@ -13,7 +13,7 @@
     target={href ? "_blank" : undefined}
     rel={href ? "noopener noreferrer sponsored" : undefined}
     class={[
-        "group relative block h-32 cursor-pointer overflow-hidden border border-blue-skywave/25 bg-blue-ocean/20 transition duration-300 ease-out hover:scale-[1.02] motion-reduce:transform-none motion-reduce:transition-none [clip-path:polygon(0_0,96%_0,100%_18%,100%_100%,4%_100%,0_82%)]",
+        "group relative block h-32 cursor-pointer overflow-hidden border border-blue-skywave/25 bg-blue-ocean/20 transition duration-300 ease-out hover:scale-[1.02] motion-reduce:transform-none motion-reduce:transition-none [clip-path:polygon(0_0,calc(100%_-_16px)_0,100%_16px,100%_100%,16px_100%,0_calc(100%_-_16px))]",
         className,
     ]}
     aria-label={href ? alt : undefined}

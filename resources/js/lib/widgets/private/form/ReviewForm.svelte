@@ -37,7 +37,7 @@
         title: post?.data.title ?? null,
         cover: post?.data.cover ?? null,
         metadata: {
-            year_of_release: post?.data.metadata?.year_of_release ?? null,
+            date_of_release: post?.data.metadata?.date_of_release ?? post?.data.metadata?.year_of_release ?? null,
             sinopse: post?.data.metadata?.sinopse ?? null,
         },
         review: post?.data.review ?? { uuid: null, content: null, status: null, author: null },
@@ -74,15 +74,15 @@
                         error={$form.errors.title}
                     />
                 </FormField>
-                <FormField for="year_of_release" label="Ano de lançamento" labelVariant="editorial" spacing="lg" error={$form.errors["metadata.year_of_release"]}>
+                <FormField for="date_of_release" label="Data de lançamento" labelVariant="editorial" spacing="lg" error={$form.errors["metadata.date_of_release"]}>
                     <TextInput
-                        id="year_of_release"
-                        type="number"
-                        name="metadata[year_of_release]"
+                        id="date_of_release"
+                        type="date"
+                        name="metadata[date_of_release]"
                         variant="editorial"
                         required={!post}
-                        bind:value={$form.metadata.year_of_release}
-                        error={$form.errors["metadata.year_of_release"]}
+                        bind:value={$form.metadata.date_of_release}
+                        error={$form.errors["metadata.date_of_release"]}
                     />
                 </FormField>
             </div>

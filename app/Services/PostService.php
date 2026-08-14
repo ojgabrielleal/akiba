@@ -13,12 +13,14 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
 class PostService
 {
     public function __construct(
         private ImageProcess $image,
+        private PushNotificationService $pushNotification,
     ) {}
 
     public function deactivate(Post $post): Post
@@ -33,6 +35,7 @@ class PostService
     {
         return DB::transaction(function () use ($post, $author, $data) {
             $comment = $post->comments()->make([
+                'parent_id' => $data['parent_id'] ?? null,
                 'comment' => $data['comment'],
             ]);
 
@@ -41,6 +44,22 @@ class PostService
 
             return $comment;
         });
+    }
+
+    public function updateComment(PostComment $comment, array $data): PostComment
+    {
+        return DB::transaction(function () use ($comment, $data) {
+            $comment->update([
+                'comment' => $data['comment'],
+            ]);
+
+            return $comment;
+        });
+    }
+
+    public function deleteComment(PostComment $comment): void
+    {
+        DB::transaction(fn () => $comment->delete());
     }
 
     public function storeReaction(Post $post, Model $reactor, string $name): PostReaction
@@ -56,7 +75,7 @@ class PostService
 
     public function store(User $user, array $data, ?UploadedFile $image = null, ?UploadedFile $cover = null): Post
     {
-        return DB::transaction(function () use ($user, $data, $image, $cover) {
+        $post = DB::transaction(function () use ($user, $data, $image, $cover) {
             $post = $this->storeStorePost($user, $data, $image, $cover);
             $this->storeStoreTags($post, $data['tags'] ?? []);
             $this->storeStoreReferences($post, $data['references'] ?? []);
@@ -64,10 +83,18 @@ class PostService
 
             return $post;
         });
+
+        if ($post->status === 'published') {
+            $this->sendPublishedNotification($post);
+        }
+
+        return $post;
     }
 
     private function storeStorePost(User $user, array $data, ?UploadedFile $image = null, ?UploadedFile $cover = null): Post
     {
+        $metadata = $this->normalizeMetadata($data);
+
         return Post::create([
             'user_id' => $user->id,
             'title' => $data['title'],
@@ -76,7 +103,7 @@ class PostService
             'image' => $this->image->store('posts', $image),
             'cover' => $this->image->store('posts', $cover),
             'module' => $data['module'] ?? 'post',
-            'metadata' => $data['metadata'] ?? null,
+            'metadata' => $metadata,
         ]);
     }
 
@@ -144,7 +171,9 @@ class PostService
 
     public function update(Post $post, array $data, ?UploadedFile $image = null, ?UploadedFile $cover = null): Post
     {
-        return DB::transaction(function () use ($post, $data, $image, $cover) {
+        $wasPublished = $post->status === 'published';
+
+        $post = DB::transaction(function () use ($post, $data, $image, $cover) {
             $this->updateUpdatePost($post, $data, $image, $cover);
             $this->updateSyncTags($post, $data['tags'] ?? []);
             $this->updateSyncReferences($post, $data['references'] ?? []);
@@ -152,18 +181,56 @@ class PostService
 
             return $post;
         });
+
+        if (! $wasPublished && $post->status === 'published') {
+            $this->sendPublishedNotification($post);
+        }
+
+        return $post;
+    }
+
+    private function sendPublishedNotification(Post $post): void
+    {
+        $this->pushNotification->sendToUserOrAll(null, [
+            'title' => $this->publishedNotificationTitle($post),
+            'body' => $post->title,
+            'url' => $this->publishedNotificationUrl($post),
+            'icon' => '/favicon.ico',
+            'banner' => $post->cover,
+        ]);
+    }
+
+    private function publishedNotificationTitle(Post $post): string
+    {
+        return match ($post->module) {
+            'review' => 'Review nova na Akiba',
+            'event' => 'Evento novo na Akiba',
+            default => 'Matéria nova na Akiba',
+        };
+    }
+
+    private function publishedNotificationUrl(Post $post): string
+    {
+        return match ($post->module) {
+            'review' => route('review.read', $post->slug),
+            'event' => route('event.read', $post->slug),
+            default => route('post.read', $post->slug),
+        };
     }
 
     private function updateUpdatePost(Post $post, array $data, ?UploadedFile $image = null, ?UploadedFile $cover = null): void
     {
+        $module = $data['module'] ?? $post->module;
+        $metadata = $this->normalizeMetadata($data, $module);
+
         $post->fill([
             'title' => $data['title'],
             'status' => $data['status'] ?? 'published',
             'content' => $data['content'] ?? null,
             'image' => $this->image->store('posts', $image, $post->image),
             'cover' => $this->image->store('posts', $cover, $post->cover),
-            'module' => $data['module'] ?? $post->module,
-            'metadata' => $data['metadata'] ?? null,
+            'module' => $module,
+            'metadata' => $metadata,
         ]);
 
         if ($post->isDirty()) {
@@ -201,6 +268,22 @@ class PostService
             'status' => $review['status'],
             'content' => $review['content'],
         ]);
+    }
+
+    private function normalizeMetadata(array $data, ?string $module = null): ?array
+    {
+        $metadata = $data['metadata'] ?? null;
+
+        if (! is_array($metadata)) {
+            return null;
+        }
+
+        if (($module ?? $data['module'] ?? 'post') === 'review' && isset($metadata['date_of_release'])) {
+            $metadata['date_of_release'] = Carbon::parse($metadata['date_of_release'])->toDateString();
+            unset($metadata['year_of_release']);
+        }
+
+        return $metadata;
     }
 
     public function filter(array $filters = []): Collection|LengthAwarePaginator
@@ -397,8 +480,8 @@ class PostService
             'interactions_count' => $query->orderByRaw(
                 "(views_count + likes_count + comments_count) {$orderDirection}"
             ),
-            'metadata_year_of_release' => $query->orderByRaw(
-                "CAST(JSON_UNQUOTE(JSON_EXTRACT(metadata, '$.year_of_release')) AS UNSIGNED) {$orderDirection}"
+            'metadata_date_of_release' => $query->orderByRaw(
+                "JSON_UNQUOTE(JSON_EXTRACT(metadata, '$.date_of_release')) {$orderDirection}"
             ),
             'metadata_event_date' => $query->orderByRaw(
                 "JSON_UNQUOTE(JSON_EXTRACT(metadata, '$.event_date')) {$orderDirection}"

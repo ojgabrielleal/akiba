@@ -15,6 +15,7 @@ class StorePostCommentRequest extends LoggedWebRequest
     {
         return [
             'comment' => ['required', 'string', 'max:1000'],
+            'parent_uuid' => ['nullable', 'string', 'exists:post_comments,uuid'],
         ];
     }
 }

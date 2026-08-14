@@ -1,5 +1,6 @@
 <script>
     import { onMount } from "svelte";
+    import toast from "svelte-hot-french-toast";
     import {
         AdvertisementSlot,
         AuthGuard,
@@ -22,6 +23,9 @@
     $: air = onair?.data?.[0] ?? {};
     $: currentSong = stream?.current_song ?? {};
     $: canRender = Boolean(onair?.data?.[0]);
+    $: hasActiveHost = air?.execution_mode === "live";
+    $: requestActionVisible = $player.playing && hasActiveHost;
+    $: canRequestSong = requestActionVisible && air?.allows_song_requests;
 
     let modalRef;
 
@@ -67,18 +71,43 @@
         }));
     }
 
+    const handlePlayerAction = () => {
+        if (canRequestSong) {
+            modalRef.open();
+            return;
+        }
+
+        if (requestActionVisible) {
+            toast.error("Pedidos fechados. Fica na escuta!");
+            return;
+        }
+
+        toggleAudio();
+    };
+
 </script>
 
 <CustomModal bind:this={modalRef}>
     <div slot="content" let:close>
-        <AuthGuard
-            title="Entre para pedir sua música"
-            description="Use sua conta para continuar."
-            action={OAuthAction.OPEN_SONG_REQUEST}
-            {oauth}
-        >
-            <SongRequestForm {close} {oauth} />
-        </AuthGuard>
+        {#if air?.allows_song_requests}
+            <AuthGuard
+                title="Entre para pedir sua música"
+                description="Use sua conta para continuar."
+                action={OAuthAction.OPEN_SONG_REQUEST}
+                {oauth}
+            >
+                <SongRequestForm {close} {oauth} />
+            </AuthGuard>
+        {:else}
+            <div class="px-2 py-4 text-center font-noto-sans">
+                <h2 class="text-xl font-extrabold text-blue-night">
+                    Pedidos musicais fechados
+                </h2>
+                <p class="mt-2 text-sm text-gray-600">
+                    A locução ainda não abriu os pedidos.
+                </p>
+            </div>
+        {/if}
     </div>
 </CustomModal>
 
@@ -130,7 +159,7 @@
     <!-- First Column-->
     <div class="block">
         <!--Program and Host Information-->
-        <div class="flex items-center gap-5 mb-5">
+        <div class="flex items-center gap-5 mb-10">
             <div class="w-60">
                 <img
                     src={resolvePlaceholderImage(playerData.program.image, "program")}
@@ -179,7 +208,7 @@
             </div>
         </div>
         <!--Current Song Information-->
-        <div class="flex gap-3 items-end">
+        <div class="-mt-3 flex gap-3 items-end">
             <div class="w-20 shrink-0">
                 <img
                     src={resolvePlaceholderImage(playerData.current_song.cover, "placeholder")}
@@ -273,10 +302,10 @@
                     {"ml-3": !$player.playing},
                     {"ml-2": $player.playing},
                 ]}>
-                    Dê o
+                    {$player.playing ? "Não" : "Dê o"}
                 </div>
                 <div class={["font-noto-sans font-extrabold uppercase italic",
-                    { "text-orange-morning text-[3.9rem] -mt-6": !$player.playing },
+                    { "text-orange-citric text-[3.9rem] -mt-6": !$player.playing },
                     { "text-blue-skywave text-[3.1rem] -mt-5": $player.playing },
                 ]}>
                     {$player.playing ? "Pause" : "Play"}
@@ -311,7 +340,11 @@
                 <span class="text-[10px] text-suspense-aurora/40 font-extrabold uppercase">
                     Volume
                 </span>
-                <span class="text-[10px] text-orange-morning font-extrabold">
+                <span class={[
+                    "text-[10px] font-extrabold",
+                    { "text-orange-citric": !$player.playing },
+                    { "text-blue-skywave": $player.playing },
+                ]}>
                     {Math.round($player.volume * 100)}%
                 </span>
             </div>
@@ -323,24 +356,32 @@
                 max="1"
                 step="0.01"
                 value={$player.volume}
-                class="w-full accent-orange-citric h-1.5 rounded-full cursor-pointer"
+                class={[
+                    "w-full h-1.5 rounded-full cursor-pointer",
+                    { "accent-orange-citric": !$player.playing },
+                    { "accent-blue-skywave": $player.playing },
+                ]}
                 on:input={(e) => setVolume(e.target.value)}
             />
         </div>
         <!-- Song Request Button-->
         <button type="button"
-            aria-label="Faça seu pedido"
+            aria-label={requestActionVisible ? "Faça o seu pedido" : "Escute Akiba"}
             class={[
-                "cursor-pointer w-full py-2 px-1 border-2 border-suspense-aurora rounded-full text-blue-skywave text-xl text-center font-noto-sans font-extrabold italic uppercase transition-transform duration-200 ease-out hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.99] disabled:cursor-not-allowed disabled:border-gray-500 disabled:bg-gray-500/20 disabled:text-gray-500 disabled:transform-none motion-reduce:transition-none",
-                { "song-request-active": air?.allows_song_requests },
+                "cursor-pointer w-full min-h-12 px-1 border-2 border-suspense-aurora rounded-full flex items-center justify-center text-blue-skywave text-lg leading-none text-center font-noto-sans font-extrabold italic uppercase transition-transform duration-200 ease-out hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.99] motion-reduce:transition-none",
+                { "song-request-active": canRequestSong },
             ]}
-            disabled={!air?.allows_song_requests}
-            on:click={() => modalRef.open()}
+            on:click={handlePlayerAction}
         >
-            & Faça seu <strong class={[
-                { "text-orange-citric": air?.allows_song_requests },
-                { "text-gray-500": !air?.allows_song_requests },
-            ]}>Pedido</strong>
+            <span class="flex items-center justify-center gap-1">
+                {#if requestActionVisible}
+                    <span>& Faça o seu</span>
+                    <strong class="text-orange-citric">Pedido</strong>
+                {:else}
+                    <span>& Escute</span>
+                    <strong class="text-orange-citric">Akiba</strong>
+                {/if}
+            </span>
         </button>
     </div>
 </section>

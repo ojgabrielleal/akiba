@@ -2,10 +2,10 @@
     import { Link, page, router } from "@inertiajs/svelte";
     import { Meta } from "@/lib/components/shared";
     import { postReactions } from "@/lib/constants";
-    import { AuthGuard, Tooltip } from "@/lib/components/public";
+    import { AdvertisementSlot, AuthGuard, Tooltip } from "@/lib/components/public";
     import { Layout } from "@/lib/layouts/public";
     import { PostEngagement, PostLikeButton } from "@/lib/widgets/public";
-    import { resolvePlaceholderImage } from "@/lib/utils";
+    import { resolveDate, resolvePlaceholderImage } from "@/lib/utils";
 
     $: ({ flash, oauth, onair, stream, post, comments, relatedPosts } = $page.props);
 
@@ -36,7 +36,7 @@
         <div class="bg-blue-marinho">
             <div class={[
                 "container-page grid gap-8 py-8",
-                related.length ? "lg:grid-cols-[minmax(0,1fr)_15rem]" : "lg:max-w-5xl",
+                "lg:grid-cols-[minmax(0,1fr)_15rem]",
             ]}>
                 <article class="min-w-0">
                     <div class="mb-5 rounded-md bg-orange-amber px-3 py-2">
@@ -46,22 +46,22 @@
                     </div>
 
                     <div class="relative mb-5">
-                        <div class="absolute -left-6 top-3 z-10">
+                        <div class="absolute -right-3 top-3 z-10">
                             <PostLikeButton post={review} />
                         </div>
                         <img
                             src={resolvePlaceholderImage(review.cover, "placeholder")}
                             alt=""
                             aria-hidden="true"
-                            class="h-56 w-full rounded-md bg-neutral-gray object-cover sm:h-72 lg:h-[26rem]"
+                            class="w-full rounded-md bg-neutral-gray"
                         />
                     </div>
 
-                    {#if review.metadata?.year_of_release}
+                    {#if review.metadata?.date_of_release || review.metadata?.year_of_release}
                         <dl class="mb-6 grid gap-3 font-noto-sans uppercase">
                             <div class="rounded-md bg-blue-ocean px-4 py-3">
-                                <dt class="mb-1 text-xs font-black text-blue-skywave">Ano de lançamento</dt>
-                                <dd class="text-lg font-black text-suspense-aurora italic">{review.metadata.year_of_release}</dd>
+                                <dt class="mb-1 text-xs font-black text-blue-skywave">Data de lançamento</dt>
+                                <dd class="text-lg font-black text-suspense-aurora italic">{resolveDate(review.metadata.date_of_release ?? review.metadata.year_of_release)}</dd>
                             </div>
                         </dl>
                     {/if}
@@ -71,7 +71,7 @@
                             Sinopse
                         </h2>
                         {#if review.metadata?.sinopse}
-                            <div>{@html review.metadata.sinopse}</div>
+                            <div class="text-[1.0625rem]">{@html review.metadata.sinopse}</div>
                         {:else}
                             <p class="rounded-md border border-blue-skywave/30 px-4 py-5 text-center text-sm font-bold text-suspense-aurora/70">
                                 Sinopse em breve.
@@ -82,7 +82,7 @@
                     <section class="mt-6 font-noto-sans">
                         <div class="mb-4 flex flex-wrap items-end justify-between gap-3">
                             <h2 class="text-xl leading-none font-normal text-orange-amber uppercase">
-                                Reviews da tripulação Akiba
+                                Reviews da Akiba
                             </h2>
                         </div>
 
@@ -123,7 +123,7 @@
                                     </div>
                                 </div>
                                 {#if selectedReview.content}
-                                    <div>{@html selectedReview.content}</div>
+                                    <div class="text-[1.0625rem]">{@html selectedReview.content}</div>
                                 {:else}
                                     <p class="rounded-md border border-blue-skywave/30 px-4 py-5 text-center text-sm font-bold text-suspense-aurora">
                                         Review ainda não publicada.
@@ -172,31 +172,32 @@
                     <PostEngagement post={review} {oauth} {comments} />
                 </article>
 
-                {#if related.length}
                 <aside class="min-w-0">
-                    <h2 class="mb-6 flex flex-col items-center gap-1 font-noto-sans leading-none font-black text-orange-amber uppercase italic">
-                        <span class="whitespace-nowrap text-sm text-suspense-aurora">Veja mais:</span>
-                        <span class="mt-1 flex items-center justify-center gap-2 text-2xl">
-                            <img src="/svg/reviews.svg" alt="" aria-hidden="true" class="size-8 filter-orange-amber" />
-                            <span class="whitespace-nowrap">Reviews</span>
-                        </span>
-                    </h2>
-                    <ul class="grid gap-5">
-                        {#each related as item}
-                            <li class="border-t border-suspense-aurora/45 pt-5 first:border-t-0 first:pt-0">
-                                <Link href={item.href} class="group block rounded-md transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric motion-reduce:transform-none motion-reduce:transition-none">
-                                    <div class="aspect-[3/2] rounded-md bg-neutral-gray">
-                                        <img src={resolvePlaceholderImage(item.cover, "placeholder")} alt="" aria-hidden="true" class="h-full w-full rounded-md object-cover transition duration-300 ease-out group-hover:scale-[1.02] group-focus-visible:scale-[1.02] motion-reduce:transform-none motion-reduce:transition-none" />
-                                    </div>
-                                    <h3 class="mt-2 line-clamp-4 font-noto-sans text-base font-black leading-tight text-orange-citric uppercase italic">
-                                        {item.title}
-                                    </h3>
-                                </Link>
-                            </li>
-                        {/each}
-                    </ul>
+                    {#if related.length}
+                        <h2 class="mb-6 flex flex-col items-center gap-1 font-noto-sans leading-none font-black text-orange-amber uppercase italic">
+                            <span class="whitespace-nowrap text-sm text-suspense-aurora">Veja mais:</span>
+                            <span class="mt-1 flex items-center justify-center gap-2 text-2xl">
+                                <img src="/svg/reviews.svg" alt="" aria-hidden="true" class="size-8 filter-orange-amber" />
+                                <span class="whitespace-nowrap">Reviews</span>
+                            </span>
+                        </h2>
+                        <ul class="grid gap-5">
+                            {#each related as item}
+                                <li class="border-t border-suspense-aurora/45 pt-5 first:border-t-0 first:pt-0">
+                                    <Link href={item.href} class="group block rounded-md transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric motion-reduce:transform-none motion-reduce:transition-none">
+                                        <div class="aspect-[3/2] rounded-md bg-neutral-gray">
+                                            <img src={resolvePlaceholderImage(item.cover, "placeholder")} alt="" aria-hidden="true" class="h-full w-full rounded-md object-cover transition duration-300 ease-out group-hover:scale-[1.02] group-focus-visible:scale-[1.02] motion-reduce:transform-none motion-reduce:transition-none" />
+                                        </div>
+                                        <h3 class="mt-2 line-clamp-4 font-noto-sans text-base font-black leading-tight text-orange-citric uppercase italic">
+                                            {item.title}
+                                        </h3>
+                                    </Link>
+                                </li>
+                            {/each}
+                        </ul>
+                    {/if}
+                    <AdvertisementSlot class={related.length ? "mt-8 h-96 lg:h-[34rem]" : "h-96 lg:h-[34rem]"} />
                 </aside>
-                {/if}
             </div>
         </div>
     </section>

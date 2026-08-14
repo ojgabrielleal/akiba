@@ -70,9 +70,9 @@
                 {#each remaining as music, index}
                     <li class={["flex justify-center", index === 6 ? "lg:col-start-2" : ""]}>
                         <div class="relative w-full rounded-md bg-gradient-blue-cerulean-glow py-4 pl-12 pr-4 font-noto-sans text-suspense-aurora">
-                            <span class="absolute left-0 top-1/2 flex size-14 -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center rounded-full border-4 border-blue-marinho bg-orange-amber text-center font-noto-sans font-black italic leading-none text-blue-marinho">
-                                <span class="text-2xl">{index + 4}º</span>
-                                <span class="text-[0.5rem] uppercase not-italic">Lugar</span>
+                            <span class="absolute left-0 top-1/2 flex size-16 -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center rounded-full border-4 border-blue-marinho bg-orange-amber text-center font-noto-sans font-black italic leading-none text-blue-marinho">
+                                <span class="text-xl">{index + 4}º</span>
+                                <span class="block w-full text-center text-[0.5rem] uppercase not-italic">Lugar</span>
                             </span>
                             <h3 class="line-clamp-2 min-h-9 text-base font-black italic uppercase leading-5">
                                 {music.name}

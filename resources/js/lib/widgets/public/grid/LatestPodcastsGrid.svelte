@@ -1,5 +1,6 @@
 <script>
     import { Link } from "@inertiajs/svelte";
+    import { publicAnimations } from "@/lib/constants";
     import { Section } from "@/lib/components/public";
     import { resolvePlaceholderImage } from "@/lib/utils";
 
@@ -20,13 +21,15 @@
                             aria-label={`Ouvir podcast: ${podcast.title}`}
                             class="group block rounded-md focus-visible:outline-none"
                         >
-                            <article class="overflow-hidden rounded-md bg-orange-citric transition duration-300 ease-out group-hover:-translate-y-0.5 group-focus-visible:-translate-y-0.5 group-focus-visible:ring-2 group-focus-visible:ring-orange-citric motion-reduce:transform-none motion-reduce:transition-none">
-                                <img
-                                    src={resolvePlaceholderImage(podcast.image, "placeholder")}
-                                    alt=""
-                                    aria-hidden="true"
-                                    class="aspect-[4/3] w-full bg-neutral-gray object-cover lg:aspect-[1/1.02]"
-                                />
+                            <article class={["overflow-hidden rounded-md bg-orange-citric group-focus-visible:ring-2 group-focus-visible:ring-orange-citric", publicAnimations.cardInteractive]}>
+                                <div class="overflow-hidden">
+                                    <img
+                                        src={resolvePlaceholderImage(podcast.image, "placeholder")}
+                                        alt=""
+                                        aria-hidden="true"
+                                        class={["aspect-[4/3] w-full bg-neutral-gray object-cover lg:aspect-[1/1.02]", publicAnimations.imageZoom]}
+                                    />
+                                </div>
                                 <h3 class="px-3 py-2.5 font-noto-sans text-base leading-tight font-black text-blue-night uppercase italic">
                                     <span
                                         class="block overflow-hidden lg:min-h-[4.5rem]"

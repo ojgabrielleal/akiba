@@ -12,17 +12,22 @@
     export let iconClass = "";
     export let tone = null;
     export let surface = null;
+    export let interactive = true;
 
     import { Link } from "@inertiajs/svelte";
+    import { publicAnimations } from "@/lib/constants";
     import Tooltip from "../overlays/Tooltip.svelte";
 
     const variants = {
         close: { icon: "/svg/close.svg", tone: "dark", surface: "light" },
+        edit: { icon: "/svg/edit.svg", tone: "accent", surface: "ocean" },
         play: { icon: "/svg/play.svg", tone: "dark", surface: "accent" },
         pause: { icon: "/svg/pause.svg", tone: "dark", surface: "primary" },
         menu: { icon: "/svg/menu.svg", tone: "light", surface: "transparent" },
         next: { icon: "/svg/chevron-right.svg", tone: "dark", surface: "accent" },
         previous: { icon: "/svg/chevron-left.svg", tone: "dark", surface: "accent" },
+        reply: { icon: "/svg/reply.svg", tone: "accent", surface: "ocean" },
+        trash: { icon: "/svg/trash.svg", tone: "accent", surface: "ocean" },
     };
 
     const tones = {
@@ -55,7 +60,9 @@
     $: selectedSurface = surface ?? selectedVariant.surface;
     $: selectedSize = sizes[size] ?? sizes.md;
     $: classes = [
-        "inline-flex shrink-0 cursor-pointer items-center justify-center rounded-full transition hover:brightness-110 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50",
+        "inline-flex shrink-0 cursor-pointer items-center justify-center rounded-full disabled:cursor-not-allowed disabled:opacity-50",
+        interactive ? "hover:brightness-110" : "",
+        interactive ? publicAnimations.iconButtonInteractive : "",
         selectedSize.button,
         surfaces[selectedSurface] ?? surfaces.transparent,
         className,

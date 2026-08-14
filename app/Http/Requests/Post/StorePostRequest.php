@@ -39,7 +39,7 @@ class StorePostRequest extends LoggedWebRequest
             'metadata.dates' => 'required_if:module,event|string',
             'metadata.event_date' => 'required_if:module,event|date',
             'metadata.address' => 'required_if:module,event|string',
-            'metadata.year_of_release' => 'required_if:module,review|integer',
+            'metadata.date_of_release' => 'required_if:module,review|date',
             'metadata.sinopse' => 'required_if:module,review|string',
             'review' => 'required_if:module,review|nullable|array',
             'review.status' => 'required_if:module,review|string',

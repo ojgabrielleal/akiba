@@ -5,6 +5,7 @@
     import { AuthGuard, Button, EditorialTitle, Modal, Section } from "@/lib/components/public";
     import { Layout } from "@/lib/layouts/public";
     import { ListenerGalleryGrid } from "@/lib/widgets/public";
+    import { publicAnimations } from "@/lib/constants";
     import { resolvePlaceholderImage } from "@/lib/utils";
 
     $: ({ flash, oauth, onair, stream, events, listenerGallery, polls, latestPoll } = $page.props);
@@ -69,14 +70,14 @@
 
         {#if eventList.length > 0}
             <Section title="Eventos" styles="container-page mt-10 mb-12">
-                <div class="grid grid-cols-2 gap-3 lg:grid-cols-4">
+                <div class="grid grid-cols-2 gap-3 lg:grid-cols-5">
                     {#each eventList as item (item.uuid)}
-                        <Link href={item.href} class="group overflow-hidden rounded-md bg-orange-citric text-blue-night transition duration-300 ease-out hover:-translate-y-0.5 hover:shadow-xl focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric motion-reduce:transform-none motion-reduce:transition-none">
-                            <div class="aspect-[16/9] bg-neutral-gray">
+                        <Link href={item.href} class={["group overflow-hidden rounded-md bg-orange-citric text-blue-night focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric", publicAnimations.cardInteractive]}>
+                            <div class="aspect-[16/9] overflow-hidden bg-neutral-gray">
                                 <img
                                     src={resolvePlaceholderImage(item.cover || item.image, "placeholder")}
                                     alt={item.title}
-                                    class="h-full w-full object-cover transition duration-300 group-hover:scale-105 motion-reduce:transform-none motion-reduce:transition-none"
+                                    class={["h-full w-full object-cover", publicAnimations.imageZoom]}
                                     loading="lazy"
                                 />
                             </div>
@@ -109,7 +110,7 @@
                         </h2>
                         <div class="mt-5 mb-10 flex flex-col justify-center gap-5 lg:my-13 lg:flex-row lg:gap-20">
                             {#each poll.options as option (option.uuid)}
-                                <div class="flex w-full gap-2 lg:w-40">
+                                <div class="flex w-full justify-center gap-2 text-center lg:min-w-40 lg:flex-1">
                                     <input
                                         id={option.uuid}
                                         bind:group={mainSelectedOption}
@@ -119,7 +120,7 @@
                                         class="mt-2 h-5 w-5 shrink-0 cursor-pointer"
                                     />
                                     <div class="min-w-0">
-                                        <label for={option.uuid} title={option.option} class="fonto-noto-sans block max-w-full truncate text-xl font-bold uppercase italic text-suspense-aurora">
+                                        <label for={option.uuid} title={option.option} class="fonto-noto-sans block max-w-full break-words text-center text-xl font-bold uppercase italic leading-tight text-suspense-aurora">
                                             {option.option}
                                         </label>
                                         <div class="relative mt-1 flex h-3 w-30 select-none items-center rounded-full bg-black px-2">
@@ -170,7 +171,8 @@
                                 <button
                                     type="button"
                                     class={[
-                                        "min-h-20 cursor-pointer rounded-md bg-blue-ocean px-4 py-4 text-left font-noto-sans text-base font-extrabold uppercase italic leading-tight text-suspense-aurora transition duration-300 ease-out hover:-translate-y-0.5 hover:bg-blue-cerulean focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric motion-reduce:transform-none motion-reduce:transition-none",
+                                        "min-h-20 cursor-pointer rounded-md bg-blue-ocean px-4 py-4 text-left font-noto-sans text-base font-extrabold uppercase italic leading-tight text-suspense-aurora hover:bg-blue-cerulean focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric",
+                                        publicAnimations.cardInteractive,
                                         item.has_voted && "pointer-events-none opacity-50",
                                     ]}
                                     disabled={item.has_voted}
@@ -185,7 +187,7 @@
             </Section>
         {/if}
 
-        <Modal bind:this={pollModalRef} title="Enquete" size="md">
+        <Modal bind:this={pollModalRef} title="Enquete" size="sm">
             {#if selectedPoll}
                 <form on:submit|preventDefault={submitVote}>
                     <h2 class="font-noto-sans text-xl font-extrabold uppercase italic leading-tight text-blue-night">
@@ -195,7 +197,8 @@
                         {#each selectedPoll.options as option (option.uuid)}
                             <label
                                 class={[
-                                    "grid cursor-pointer grid-cols-[1.35rem_1fr] gap-2.5 rounded-md border-2 bg-suspense-aurora px-3 py-2.5 text-blue-night transition hover:border-orange-citric hover:bg-orange-citric/5",
+                                    "grid cursor-pointer grid-cols-[1.35rem_1fr] gap-2.5 rounded-md border-2 bg-suspense-aurora px-3 py-2.5 text-blue-night hover:border-orange-citric hover:bg-orange-citric/5",
+                                    publicAnimations.buttonInteractive,
                                     selectedOption === option.uuid ? "border-orange-citric shadow-[inset_0_0_0_1px_theme(colors.orange-citric)]" : "border-blue-ocean/25",
                                 ]}
                             >
@@ -206,8 +209,8 @@
                                     value={option.uuid}
                                     class="mt-0.5 size-5 accent-orange-citric"
                                 />
-                                <span class="min-w-0">
-                                    <span class="block truncate font-noto-sans text-base font-extrabold uppercase italic">{option.option}</span>
+                                <span class="min-w-0 text-center">
+                                    <span class="block break-words font-noto-sans text-base font-extrabold uppercase italic leading-tight">{option.option}</span>
                                     <span class="mt-2 flex h-2 overflow-hidden rounded-full bg-blue-night/15">
                                         <span class="rounded-full bg-orange-citric" style={`width: ${optionPercent(selectedPoll, option)}%`}></span>
                                     </span>

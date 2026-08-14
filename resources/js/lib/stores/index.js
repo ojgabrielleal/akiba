@@ -4,6 +4,7 @@ export {
     playAudio,
     player,
     setVolume,
+    startAutoplay,
     syncMediaSessionMetadata,
     toggleAudio,
     toggleMute,

@@ -231,7 +231,7 @@
                 />
             </form>
             {#if canRequestPushNotifications}
-                <div class="relative">
+                <div class="relative" on:click|stopPropagation>
                     {#if hasActiveNotifications}
                         <button
                             type="button"
@@ -255,7 +255,7 @@
                                 type="button"
                                 class="relative flex size-8 cursor-pointer items-center justify-center rounded-full bg-transparent transition hover:brightness-110 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric"
                                 aria-label="Ativar notificações"
-                                on:click={handleNotificationClick}
+                                on:click|stopPropagation={handleNotificationClick}
                             >
                                 <img
                                     src="/svg/bell.svg"
@@ -329,7 +329,7 @@
         </div>
         <div class="flex shrink-0 items-center gap-1 lg:hidden">
             {#if canRequestPushNotifications}
-                <div class="relative">
+                <div class="relative" on:click|stopPropagation>
                     {#if hasActiveNotifications}
                         <IconButton
                             label="Notificações"
