@@ -11,15 +11,15 @@
     const resolveEventPlace = (event) => event.metadata?.address ?? "";
 </script>
 
-<Section styles="container-page mb-10">
-    <div class="mb-5 flex items-center gap-3 after:h-px after:min-w-10 after:flex-1 after:bg-orange-amber after:content-[''] sm:gap-4">
-        <h2 class="whitespace-nowrap font-noto-sans text-[1.3rem] font-black text-orange-amber uppercase italic">
-            <span class="md:hidden">Eventos</span>
-            <span class="hidden md:inline">Calendário de eventos</span>
-        </h2>
-    </div>
-    <div class="grid grid-cols-1 gap-x-5 gap-y-5 lg:grid-cols-[minmax(0,1fr)_15rem]">
-        {#if eventList.length > 0}
+{#if eventList.length > 0}
+    <Section styles="container-page mb-10">
+        <div class="mb-5 flex items-center gap-3 after:h-px after:min-w-10 after:flex-1 after:bg-orange-amber after:content-[''] sm:gap-4">
+            <h2 class="whitespace-nowrap font-noto-sans text-[1.3rem] font-black text-orange-amber uppercase italic">
+                <span class="md:hidden">Eventos</span>
+                <span class="hidden md:inline">Calendário de eventos</span>
+            </h2>
+        </div>
+        <div class="grid grid-cols-1 gap-x-5 gap-y-5 lg:grid-cols-[minmax(0,1fr)_15rem]">
             <div class="min-w-0">
                 <div class="w-full font-noto-sans text-lg uppercase italic">
                     <ul class="grid grid-cols-1 gap-8 md:hidden">
@@ -82,9 +82,9 @@
                     </ul>
                 </div>
             </div>
-        {/if}
-        <div class={["overflow-hidden rounded-md", eventList.length > 0 ? "lg:h-full" : "lg:col-start-2"]}>
-            <AdvertisementSlot class={eventList.length > 0 ? "h-44 lg:h-full lg:min-h-60" : "h-44 lg:h-60"} />
+            <div class="overflow-hidden rounded-md lg:h-full">
+                <AdvertisementSlot class="h-44 lg:h-full lg:min-h-60" />
+            </div>
         </div>
-    </div>
-</Section>
+    </Section>
+{/if}
