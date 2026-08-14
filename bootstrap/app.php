@@ -1,8 +1,8 @@
 <?php
 
-use App\Filters\OnairFilter;
 use App\Http\Resources\Onair\OnairResource;
-use App\Services\External\StreamService;
+use App\Integrations\StreamService;
+use App\Services\OnairService;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -42,7 +42,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
             return Inertia::render('public/NotFound', [
                 'onair' => fn () => OnairResource::collection(
-                    app(OnairFilter::class)->apply([
+                    app(OnairService::class)->filter([
                         'live' => true,
                         'with' => 'program.host',
                     ])
