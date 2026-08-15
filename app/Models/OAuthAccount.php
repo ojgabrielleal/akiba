@@ -21,7 +21,6 @@ class OAuthAccount extends Model
         'address',
         'avatar',
         'birth_date',
-        'bio',
         'profile_completed_at',
         'account_token_hash',
     ];

@@ -141,7 +141,6 @@
                                 {oauth}
                                 compact
                                 buttonLabel="Entre para votar"
-                                intent="vote"
                                 filters="filter-blue-night"
                                 containerClass="order-1 md:order-3"
                                 buttonClass="text-blue-night"
@@ -240,7 +239,7 @@
                                 <span class="text-3xl font-extrabold text-blue-night">{selectedPoll.total_votes}</span>
                                 <span class="text-xs text-blue-ocean">Votos</span>
                             </div>
-                            <AuthGuard {oauth} compact buttonLabel="Entre para votar" intent="vote" filters="filter-blue-night" buttonClass="text-blue-night">
+                            <AuthGuard {oauth} compact buttonLabel="Entre para votar" filters="filter-blue-night" buttonClass="text-blue-night">
                                 <Button type="submit" variant="primary" shape="pill" loading={voting} disabled={!selectedOption || selectedPoll.has_voted}>
                                     {selectedOption ? "Confirmar seu voto" : "Votar"}
                                 </Button>

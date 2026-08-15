@@ -27,7 +27,6 @@ class OAuthAccountFactory extends Factory
             'avatar' => Str::random(32),
             'birth_date' => fake()->date(),
             'address' => fake()->address(),
-            'bio' => fake()->optional()->text(160),
             'profile_completed_at' => now(),
             'account_token_hash' => hash('sha256', Str::random(64)),
         ];

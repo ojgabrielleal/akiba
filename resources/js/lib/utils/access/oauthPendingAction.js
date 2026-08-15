@@ -69,16 +69,6 @@ const resolvePendingOAuthAction = () => {
 
     if (!action) return;
 
-    if (oauth.is_oauth && !oauth.profile_completed) {
-        const profileListeners = listeners.get(OAuthAction.OPEN_PROFILE);
-
-        if (profileListeners?.size) {
-            profileListeners.forEach((listener) => listener());
-        }
-
-        return;
-    }
-
     const actionListeners = listeners.get(action);
 
     if (!actionListeners?.size) return;

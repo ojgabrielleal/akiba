@@ -62,15 +62,29 @@ class PostService
         DB::transaction(fn () => $comment->delete());
     }
 
-    public function storeReaction(Post $post, Model $reactor, string $name): PostReaction
+    public function storeReaction(Post $post, Model $reactor, string $name): ?PostReaction
     {
-        return DB::transaction(fn () => $post->reactions()->updateOrCreate(
-            [
+        return DB::transaction(function () use ($post, $reactor, $name) {
+            $identifiers = [
                 'reactor_type' => $reactor->getMorphClass(),
                 'reactor_id' => $reactor->getKey(),
-            ],
-            ['name' => $name],
-        ));
+            ];
+
+            $reaction = $post->reactions()
+                ->where($identifiers)
+                ->first();
+
+            if ($reaction?->name === $name) {
+                $reaction->delete();
+
+                return null;
+            }
+
+            return $post->reactions()->updateOrCreate(
+                $identifiers,
+                ['name' => $name],
+            );
+        });
     }
 
     public function store(User $user, array $data, ?UploadedFile $image = null, ?UploadedFile $cover = null): Post

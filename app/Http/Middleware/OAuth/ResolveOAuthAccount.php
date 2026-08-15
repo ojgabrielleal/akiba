@@ -68,7 +68,6 @@ class ResolveOAuthAccount
                 'avatar' => $oauthAccount->avatar,
                 'birth_date' => $oauthAccount->birth_date?->format('Y-m-d'),
                 'address' => $oauthAccount->address,
-                'bio' => $oauthAccount->bio,
             ] : null),
         ]);
 

@@ -18,7 +18,6 @@ class OAuthAccountService
                 'nickname' => $data['nickname'],
                 'birth_date' => $data['birth_date'],
                 'address' => $data['address'],
-                'bio' => $data['bio'] ?? null,
                 'profile_completed_at' => now(),
             ]);
 

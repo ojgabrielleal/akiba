@@ -75,7 +75,6 @@
                         <AuthGuard
                             {oauth}
                             buttonLabel="Entrar"
-                            intent="react"
                             compact
                         >
                             <div class="flex flex-wrap items-center justify-center gap-2">

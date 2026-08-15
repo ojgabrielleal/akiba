@@ -96,7 +96,6 @@
         title="Entre para comentar"
         description="Use sua conta para participar da conversa."
         buttonLabel="Entrar"
-        intent="comment"
         filters="filter-suspense-aurora"
         titleClass="text-suspense-aurora"
         descriptionClass="text-suspense-aurora/70"

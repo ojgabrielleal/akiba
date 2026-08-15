@@ -27,7 +27,6 @@ class CompleteOAuthAccountProfileRequest extends FormRequest
             'nickname' => ['required', 'string', 'max:255'],
             'birth_date' => ['required', 'date', 'before:today'],
             'address' => ['required', 'string', 'max:255'],
-            'bio' => ['nullable', 'string', 'max:500'],
         ];
     }
 }

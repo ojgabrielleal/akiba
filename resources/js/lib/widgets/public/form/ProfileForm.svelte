@@ -51,7 +51,7 @@
         city: profile?.city ?? "",
         state: profile?.state ?? "",
         country: profile?.country ?? "",
-        bio: profile?.bio ?? "",
+        bio: internal ? profile?.bio ?? "" : "",
     });
 
     let avatarPreview = avatar;
@@ -288,24 +288,26 @@
             </FormField>
         {/if}
 
-        <FormField
-            for="oauth-bio"
-            label="Sobre você"
-            labelVariant="dark"
-            spacing="none"
-            error={$form.errors.bio}
-        >
-            <TextArea
-                id="oauth-bio"
-                name="bio"
-                variant="profile"
-                resize="none"
-                bind:value={$form.bio}
+        {#if internal}
+            <FormField
+                for="member-bio"
+                label="Sobre você"
+                labelVariant="dark"
+                spacing="none"
                 error={$form.errors.bio}
-                maxlength="500"
-                placeholder="Conte um pouco sobre você"
-            />
-        </FormField>
+            >
+                <TextArea
+                    id="member-bio"
+                    name="bio"
+                    variant="profile"
+                    resize="none"
+                    bind:value={$form.bio}
+                    error={$form.errors.bio}
+                    maxlength="500"
+                    placeholder="Conte um pouco sobre você"
+                />
+            </FormField>
+        {/if}
     </div>
 
     <div class="flex flex-wrap justify-end gap-2 pt-2">

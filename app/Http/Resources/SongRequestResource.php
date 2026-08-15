@@ -29,6 +29,7 @@ class SongRequestResource extends JsonResource
             'avatar' => $requester?->avatar,
             'gender' => $requester instanceof User ? $requester->gender : null,
             'address' => $this->requesterAddress($requester),
+            'birth_date' => $this->requesterBirthDate($requester),
             'message' => $this->message ?? 'Ouvinte não deixou mensagem',
             'music' => MusicResource::make($this->music),
             'created_at' => $this->created_at->setTimezone('America/Sao_Paulo')->format('H:i'),
@@ -53,5 +54,23 @@ class SongRequestResource extends JsonResource
         }
 
         return $requester?->address;
+    }
+
+    private function requesterBirthDate(User|OAuthAccount|null $requester): ?array
+    {
+        $birthDate = $requester?->birth_date;
+
+        if (!$birthDate) {
+            return null;
+        }
+
+        $today = now('America/Sao_Paulo');
+
+        return [
+            'date' => $birthDate->format('d/m'),
+            'day' => (int) $birthDate->format('d'),
+            'month' => (int) $birthDate->format('m'),
+            'is_birthday' => $birthDate->format('m-d') === $today->format('m-d'),
+        ];
     }
 }

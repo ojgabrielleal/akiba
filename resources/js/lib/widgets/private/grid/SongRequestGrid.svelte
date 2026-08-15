@@ -173,6 +173,27 @@
                             </span>
                         </div>
                     {/if}
+                    {#if item.birth_date}
+                        <div class="mt-1 flex w-full min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-suspense-aurora text-[1rem] font-noto-sans font-light leading-none">
+                            <div class="flex min-w-0 items-center gap-1.5">
+                                <img
+                                    src="/svg/cake.svg"
+                                    alt=""
+                                    aria-hidden="true"
+                                    class="block h-5 w-5 shrink-0 filter-suspense-aurora"
+                                    loading="lazy"
+                                />
+                                <span class="truncate leading-none">
+                                    Aniversário: {item.birth_date.date}
+                                </span>
+                            </div>
+                            {#if item.birth_date.is_birthday}
+                                <span class="shrink-0 rounded-full bg-orange-amber px-2 py-0.5 text-[0.65rem] font-black uppercase italic text-blue-night">
+                                    Aniversariante hoje
+                                </span>
+                            {/if}
+                        </div>
+                    {/if}
                     {#if item.music}
                         <div class="flex items-center justify-center w-full mt-5 mb-5">
                             <div class="relative w-full">
