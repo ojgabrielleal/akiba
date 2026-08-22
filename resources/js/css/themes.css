@@ -475,7 +475,7 @@
 }
 
 [data-public-theme-scope][data-public-theme="night"] .public-featured-card {
-    background: var(--gradient-featured-card-night);
+    background: linear-gradient(50deg, var(--color-blue-marinho) 0%, var(--color-blue-ocean) 100%);
 }
 
 [data-public-theme-scope][data-public-theme="night"] .main-player-phrase-background {
