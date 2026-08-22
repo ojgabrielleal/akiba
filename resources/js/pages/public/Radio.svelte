@@ -28,9 +28,9 @@
 </script>
 
 <Meta meta={{ title: "Rádio" }} />
-<Layout {flash} {oauth} {onair} {stream} {pageUrl}>
+<Layout {flash} {oauth} {onair} {stream} {pageUrl} publicThemeEnabled>
     <h1 class="sr-only">Rádio</h1>
-    <div class="bg-blue-night pt-10">
+    <div class="public-page-background bg-blue-night pt-10">
         <RadioProgramGrid {programs} />
         <RadioRankingGrid {ranking} />
         <RadioListenerMonthGrid {listenerMonth} />

@@ -120,7 +120,7 @@
     </CustomModal>
 
     <aside
-        class="fixed inset-x-0 bottom-0 z-60 border-t border-blue-skywave/20 bg-blue-night/95 backdrop-blur-md"
+        class="public-player-bar fixed inset-x-0 bottom-0 z-60 border-t border-blue-skywave/20 bg-blue-night/95 backdrop-blur-md"
         transition:fly={{ y: 88, duration: 240 }}
     >
         {#if $player.playing && !$player.loading}
@@ -192,7 +192,7 @@
                     />
                 </button>
                 <div class="absolute top-1/2 right-full z-30 hidden w-44 -translate-y-1/2 pr-3 group-hover/volume:block group-focus-within/volume:block">
-                    <div class="rounded-md border border-blue-skywave/20 bg-blue-night px-3 py-2 shadow-lg shadow-blue-night/40">
+                    <div class="public-player-bar-volume rounded-md border border-blue-skywave/20 bg-blue-night px-3 py-2 shadow-lg shadow-blue-night/40">
                         <div class="mb-2 flex items-center justify-between font-noto-sans text-[0.65rem] font-black uppercase">
                             <span class="text-suspense-aurora/45">Volume</span>
                             <span class={[

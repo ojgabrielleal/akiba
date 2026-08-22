@@ -11,7 +11,7 @@
 </script>
 
 {#if podcastList.length > 0}
-    <Section title="Últimos podcasts" styles="container-page mb-10 overflow-hidden pb-10 lg:pb-6">
+    <Section title="Últimos podcasts" styles="container-page overflow-hidden pb-10 lg:pb-6">
         <div class="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-end lg:gap-0 xl:grid-cols-[minmax(0,1fr)_25rem]">
             <ul class="grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {#each visiblePodcasts as podcast (podcast.uuid)}

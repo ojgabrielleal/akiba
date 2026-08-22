@@ -31,9 +31,9 @@
 </script>
 
 <Meta meta={{ title: review.title }} />
-<Layout {flash} {oauth} {onair} {stream} {pageUrl}>
-    <section class="bg-blue-night pt-5 pb-2">
-        <div class="bg-blue-marinho">
+<Layout {flash} {oauth} {onair} {stream} {pageUrl} publicThemeEnabled>
+    <section class="public-read-content-background bg-blue-marinho pt-5 pb-2">
+        <div class="public-read-content-background bg-blue-marinho">
             <div class={[
                 "container-page grid gap-8 py-8",
                 "lg:grid-cols-[minmax(0,1fr)_15rem]",

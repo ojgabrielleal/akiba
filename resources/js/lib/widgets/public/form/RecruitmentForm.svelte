@@ -4,8 +4,8 @@
     import { Button, SelectInput, TextArea, TextInput } from "@/lib/components/public";
 
     const fieldClass = "grid gap-1.5";
-    const inputClass = "border-0 focus:border-0";
-    const labelClass = "font-noto-sans text-xs font-black italic uppercase text-neutral-gray";
+    const inputClass = "public-recruitment-input border border-gray-400 !bg-neutral-gray/30 focus:border-gray-400";
+    const labelClass = "public-recruitment-label font-noto-sans text-xs font-black italic uppercase text-gray-700";
     const roleOptions = [
         "Locutor",
         "Redator",
@@ -47,10 +47,10 @@
     };
 </script>
 
-<form class="grid gap-4" on:submit|preventDefault={submit}>
+<form class="recruitment-form grid gap-4" on:submit|preventDefault={submit}>
     <div class={fieldClass}>
         <label class={labelClass} for="role">Que cargo você quer exercer?</label>
-        <SelectInput id="role" class={inputClass} bind:value={$form.payload.role} error={$form.errors["payload.role"]} required>
+        <SelectInput id="role" variant="dark" class={inputClass} bind:value={$form.payload.role} error={$form.errors["payload.role"]} required>
             <option value="" disabled>Selecione um cargo</option>
             {#each roleOptions as roleOption}
                 <option value={roleOption}>{roleOption}</option>
@@ -60,18 +60,19 @@
 
     <div class={fieldClass}>
         <label class={labelClass} for="name">Qual o seu nome?</label>
-        <TextInput id="name" class={inputClass} bind:value={$form.name} error={$form.errors.name} required />
+        <TextInput id="name" variant="dark" class={inputClass} bind:value={$form.name} error={$form.errors.name} required />
     </div>
 
     <div class={fieldClass}>
         <label class={labelClass} for="nickname">Qual o seu nick?</label>
-        <TextInput id="nickname" class={inputClass} bind:value={$form.payload.nickname} error={$form.errors["payload.nickname"]} />
+        <TextInput id="nickname" variant="dark" class={inputClass} bind:value={$form.payload.nickname} error={$form.errors["payload.nickname"]} />
     </div>
 
     <div class={fieldClass}>
         <label class={labelClass} for="whatsapp">Coloca um whatsapp ai pra gente</label>
         <TextInput
             id="whatsapp"
+            variant="dark"
             class={inputClass}
             type="tel"
             inputmode="tel"
@@ -88,17 +89,17 @@
 
     <div class={fieldClass}>
         <label class={labelClass} for="age">Tem quantos anos?</label>
-        <TextInput id="age" class={inputClass} type="number" min="16" max="120" bind:value={$form.payload.age} error={$form.errors["payload.age"]} />
+        <TextInput id="age" variant="dark" class={inputClass} type="number" min="16" max="120" bind:value={$form.payload.age} error={$form.errors["payload.age"]} />
     </div>
 
     <div class={fieldClass}>
         <label class={labelClass} for="portfolio">Você tem trabalhos que a gente possa ver? Coloca os link aí pa nois!</label>
-        <TextArea id="portfolio" class={`min-h-20 ${inputClass}`} bind:value={$form.payload.portfolio} error={$form.errors["payload.portfolio"]} resize="none" />
+        <TextArea id="portfolio" variant="dark" class={`min-h-20 ${inputClass}`} bind:value={$form.payload.portfolio} error={$form.errors["payload.portfolio"]} resize="none" />
     </div>
 
     <div class={fieldClass}>
         <label class={labelClass} for="message">Hora da pré-entrevista, por quê você quer entrar na Akiba?</label>
-        <TextArea id="message" class={`min-h-36 ${inputClass}`} bind:value={$form.payload.message} error={$form.errors["payload.message"]} required resize="none" />
+        <TextArea id="message" variant="dark" class={`min-h-36 ${inputClass}`} bind:value={$form.payload.message} error={$form.errors["payload.message"]} required resize="none" />
     </div>
 
     <div class="flex justify-end pt-1">

@@ -8,7 +8,7 @@
     export let resize = "vertical";
 
     const variants = {
-        light: "bg-suspense-aurora text-blue-night placeholder:text-blue-night/35",
+        light: "bg-neutral-gray text-suspense-aurora placeholder:text-suspense-aurora/45",
         dark: "bg-blue-ocean text-suspense-aurora placeholder:text-suspense-aurora/35",
         transparent: "bg-transparent text-suspense-aurora placeholder:text-suspense-aurora/35",
         profile: "bg-neutral-white text-blue-night placeholder:text-blue-night/35",

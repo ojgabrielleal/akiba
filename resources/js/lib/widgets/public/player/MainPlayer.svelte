@@ -113,7 +113,7 @@
 
 <!-- Phrase Section -->
 {#if canRender}
-<section class="w-full bg-contain bg-right bg-no-repeat mt-5 mb-7"  style={`background-image: url('${playerData.phrase.texture}'), var(--gradient-blue-ocean-cerulean);`}>
+<section class="main-player-phrase-background w-full bg-contain bg-right bg-no-repeat mt-5 mb-7"  style={`--main-player-phrase-texture: url('${playerData.phrase.texture}'); background-image: var(--main-player-phrase-texture), var(--main-player-phrase-gradient, var(--gradient-blue-ocean-cerulean));`}>
     <div class="container-player h-30 relative">
         <div class="absolute -top-8 left-0 z-10 xl:-left-28">
             <img
@@ -124,10 +124,10 @@
                 loading="lazy"
             />
         </div>
-        <div class="w-full min-w-0 h-30 pr-32 xl:pr-40 pl-20 xl:pl-0 flex items-center text-suspense-aurora text-3xl font-noto-sans font-extrabold uppercase italic">
+        <div class="main-player-phrase-text w-full min-w-0 h-30 pr-32 xl:pr-40 pl-20 xl:pl-0 flex items-center text-suspense-aurora text-3xl font-noto-sans font-extrabold uppercase italic">
             <span class="block w-full overflow-hidden text-ellipsis text-left whitespace-nowrap leading-9">
                 {#each splitHighlightedText(playerData.phrase.text) as phrasePart}
-                    <span class:text-orange-amber={phrasePart.highlighted}>
+                    <span class:main-player-phrase-highlight={phrasePart.highlighted} class:text-orange-amber={phrasePart.highlighted}>
                         {phrasePart.text}
                     </span>
                 {/each}
@@ -155,7 +155,7 @@
 </section>
 
 <!-- Main Player Section -->
-<section class="container-player grid grid-cols-[3fr_1fr_1.2fr] items-center gap-5">
+<section class="main-player-content container-player grid grid-cols-[3fr_1fr_1.2fr] items-center gap-5">
     <!-- First Column-->
     <div class="block">
         <!--Program and Host Information-->
@@ -296,7 +296,7 @@
             </div>
         </div>
         <!-- Player Controls-->
-        <div class="h-25 flex items-center justify-center">
+        <div class="h-25 flex items-center justify-center" data-player-controls>
             <div>
                 <div class={["text-suspense-aurora text-lg font-noto-sans font-extrabold uppercase italic",
                     {"ml-3": !$player.playing},
@@ -335,7 +335,7 @@
                 {/if}
             </button>
         </div>
-        <div class="mx-3 mb-5 flex flex-col gap-2">
+        <div class="mx-3 mb-5 flex flex-col gap-2" data-player-controls>
             <div class="flex justify-between items-center px-1">
                 <span class="text-[10px] text-suspense-aurora/40 font-extrabold uppercase">
                     Volume
@@ -367,6 +367,7 @@
         <!-- Song Request Button-->
         <button type="button"
             aria-label={requestActionVisible ? "Faça o seu pedido" : "Escute Akiba"}
+            data-player-controls
             class={[
                 "cursor-pointer w-full min-h-12 px-1 border-2 border-suspense-aurora rounded-full flex items-center justify-center text-blue-skywave text-lg leading-none text-center font-noto-sans font-extrabold italic uppercase transition-transform duration-200 ease-out hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.99] motion-reduce:transition-none",
                 { "song-request-active": canRequestSong },

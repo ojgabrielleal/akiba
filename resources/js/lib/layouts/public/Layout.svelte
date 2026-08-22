@@ -4,6 +4,8 @@
     import { CookieConsent, FlashToaster, Modal } from "@/lib/components/public";
     import { startAutoplay } from "@/lib/stores";
     import {
+        applyPublicTheme,
+        getStoredPublicTheme,
         listenForOAuthAction,
         OAuthAction,
     } from "@/lib/utils";
@@ -14,6 +16,7 @@
     export let onair = null;
     export let stream = null;
     export let pageUrl = null;
+    export let publicThemeEnabled = false;
 
     let profileModalRef;
 
@@ -37,6 +40,7 @@
             openProfile,
         );
 
+        applyPublicTheme(getStoredPublicTheme());
         startAutoplay();
 
         return () => {
@@ -46,16 +50,21 @@
 </script>
 
 <FlashToaster {flash} />
-<header class="bg-blue-night">
-    <Navbar {oauth} />
-</header>
+<div
+    data-public-theme-scope={publicThemeEnabled ? "" : null}
+    data-public-theme={publicThemeEnabled ? "akiba" : null}
+>
+    <header class="public-header-background bg-blue-night">
+        <Navbar {oauth} />
+    </header>
 
-<main>
-    <slot />
-</main>
+    <main>
+        <slot />
+    </main>
 
-<Footer />
-<PlayerBar {onair} {stream} {pageUrl} {oauth} />
+    <Footer />
+    <PlayerBar {onair} {stream} {pageUrl} {oauth} />
+</div>
 {#if canOpenProfile}
     <Modal
         bind:this={profileModalRef}
@@ -69,4 +78,4 @@
         />
     </Modal>
 {/if}
-<CookieConsent />
+<CookieConsent {publicThemeEnabled} />

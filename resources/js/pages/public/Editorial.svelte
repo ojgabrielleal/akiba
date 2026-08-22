@@ -21,8 +21,8 @@
 </script>
 
 <Meta meta={{ title: displayTitle }} />
-<Layout {flash} {oauth} {onair} {stream} {pageUrl}>
-    <section class="bg-blue-night pt-10">
+<Layout {flash} {oauth} {onair} {stream} {pageUrl} publicThemeEnabled>
+    <section class="public-page-background bg-blue-night pt-10">
         <EditorialTitle title={displayTitle} listLabel={`Categorias de ${title}`}>
             {#each categories as category}
                 <li class="flex h-8 items-center border-l border-neutral-gray/35 px-3 first:border-none first:pl-0 xl:px-5">

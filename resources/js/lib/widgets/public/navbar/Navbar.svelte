@@ -8,9 +8,13 @@
         markPushNotificationAsRead,
         markPushNotificationsAsRead,
         OAuthAction,
+        applyPublicTheme,
         requestPushNotificationSubscription,
         resolvePushNotificationPermission,
         dispatchOAuthAction,
+        getStoredPublicTheme,
+        publicThemes,
+        setStoredPublicTheme,
     } from "@/lib/utils";
     import { Button, IconButton, Modal, Tooltip } from "@/lib/components/public";
     import NotificationPanel from "./NotificationPanel.svelte";
@@ -136,15 +140,23 @@
         }
     };
 
-    const themes = [
-        { name: "light", label: "Modo claro", icon: "/svg/dawn.svg" },
-        { name: "akiba", label: "Modo Akiba", icon: "/svg/akiba.svg" },
-        { name: "night", label: "Modo escuro", icon: "/svg/night.svg" },
-    ];
+    const themes = publicThemes;
 
     const providerIconStyle = (provider) => `mask-image: url('${provider.icon}'); -webkit-mask-image: url('${provider.icon}');`;
 
+    const syncSelectedThemeFromStorage = (event = null) => {
+        selectedTheme = event?.detail?.theme ?? getStoredPublicTheme();
+    };
+
+    const selectTheme = (theme) => {
+        selectedTheme = setStoredPublicTheme(theme);
+        applyPublicTheme(selectedTheme);
+    };
+
     onMount(() => {
+        syncSelectedThemeFromStorage();
+        applyPublicTheme(selectedTheme);
+
         notificationPermission = resolvePushNotificationPermission();
 
         if (notificationPermission === "granted") {
@@ -171,7 +183,7 @@
 </script>
 
 <nav aria-label="Navegação principal">
-    <div class="container-page flex items-center justify-between gap-4 pt-10 pb-6 md:pb-8 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:pb-0">
+    <div class="container-page flex items-center justify-between gap-4 pt-10 pb-6 md:pb-8 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:pb-8">
         <Link href="/site" class="group/logo w-52 shrink-0 focus-visible:outline-none" aria-label="Página inicial">
             <img
                 src="/img/brand/logo.webp"
@@ -220,6 +232,7 @@
                     tone="light"
                     surface="transparent"
                     size="sm"
+                    iconClass="public-navbar-utility-icon"
                     tooltipPosition="bottom"
                     type="submit"
                 />
@@ -237,7 +250,7 @@
                                 src="/svg/bell.svg"
                                 alt=""
                                 aria-hidden="true"
-                                class="size-4 filter-suspense-aurora"
+                                class="public-navbar-utility-icon size-4 filter-suspense-aurora"
                             />
                             {#if hasUnreadNotifications}
                                 <span class="absolute right-1 top-1 size-2.5 rounded-full bg-orange-morning ring-2 ring-blue-night"></span>
@@ -255,7 +268,7 @@
                                     src="/svg/bell.svg"
                                     alt=""
                                     aria-hidden="true"
-                                    class="size-4 filter-suspense-aurora"
+                                    class="public-navbar-utility-icon size-4 filter-suspense-aurora"
                                 />
                             </button>
                             <span slot="content">Ativar notificações</span>
@@ -276,7 +289,7 @@
                     <button
                         type="button"
                         aria-label={`Editar perfil de ${nickname}`}
-                        class="ml-1 flex size-12 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-full border-2 border-suspense-aurora bg-suspense-aurora shadow-md shadow-blue-night/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-suspense-aurora"
+                        class="public-navbar-avatar ml-1 flex size-12 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-full border-2 border-suspense-aurora bg-suspense-aurora focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-suspense-aurora"
                         on:click={requestProfile}
                     >
                         <img
@@ -289,7 +302,7 @@
                 </Tooltip>
             {:else if oauth?.authenticated}
                 <div
-                    class="ml-1 flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-suspense-aurora bg-suspense-aurora shadow-md shadow-blue-night/30"
+                    class="public-navbar-avatar ml-1 flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-suspense-aurora bg-suspense-aurora"
                     aria-label={nickname}
                 >
                     <img
@@ -318,7 +331,7 @@
                 class="ml-1"
                 {themes}
                 {selectedTheme}
-                on:select={(event) => (selectedTheme = event.detail)}
+                onSelect={selectTheme}
             />
         </div>
         <div class="flex shrink-0 items-center gap-1 lg:hidden">
@@ -331,7 +344,7 @@
                             tone="light"
                             surface="transparent"
                             size="md"
-                            iconClass="!size-4"
+                            iconClass="public-navbar-utility-icon !size-4"
                             tooltipPosition="bottom"
                             on:click={handleNotificationClick}
                         />
@@ -345,7 +358,7 @@
                             tone="light"
                             surface="transparent"
                             size="md"
-                            iconClass="!size-4"
+                            iconClass="public-navbar-utility-icon !size-4"
                             tooltipPosition="bottom"
                             on:click={handleNotificationClick}
                         />
@@ -358,6 +371,7 @@
                 tone="light"
                 surface="transparent"
                 size="md"
+                iconClass="public-navbar-utility-icon"
                 on:click={() => (mobilenavbar = true)}
             />
         </div>
@@ -469,7 +483,7 @@
                                 size="md"
                                 {themes}
                                 {selectedTheme}
-                                on:select={(event) => (selectedTheme = event.detail)}
+                                onSelect={selectTheme}
                             />
                         </div>
                     </div>

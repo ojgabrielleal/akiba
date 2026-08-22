@@ -10,13 +10,13 @@
         { name: "YouTube", icon: "/svg/youtube.svg", href: "https://www.youtube.com/@RedeAkiba" },
         { name: "Apple Podcasts", icon: "/svg/apple-podcasts.svg", href: "https://podcasts.apple.com/us/podcast/akibacast/id1508240222" },
         { name: "Spotify", icon: "/svg/spotify.svg", href: "https://open.spotify.com/show/21MR4fnrOnKW7gNGYiWx37" },
-        { name: "Amazon Music", icon: "/svg/amazon-music.svg", iconClass: "w-7", href: "https://music.amazon.com.au/podcasts/fafe997e-b911-4a8e-8e38-dbbc6b285d83/akibacast" },
+        { name: "Amazon Music", icon: "/svg/amazon-music.svg", iconClass: "w-7 filter-suspense-aurora", href: "https://music.amazon.com.au/podcasts/fafe997e-b911-4a8e-8e38-dbbc6b285d83/akibacast" },
     ];
 
     const currentYear = new Date().getFullYear();
 </script>
 
-<footer class="bg-blue-night pt-12 pb-24">
+<footer class="public-footer pt-10 bg-blue-night pb-24">
     <div class="container-page border-t border-orange-amber pt-8">
         <div class="grid gap-8 lg:grid-cols-[1.2fr_1fr_0.8fr]">
             <div class="min-w-0">
@@ -44,13 +44,13 @@
                         <li class="min-w-0">
                             <Link
                                 href={item.address}
-                                class="group/item flex min-h-8 items-center gap-2 rounded-md font-noto-sans text-sm font-extrabold text-suspense-aurora/70 uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 hover:text-orange-citric focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric motion-reduce:transform-none motion-reduce:transition-none"
+	                                class="public-footer-link group/item flex min-h-8 items-center gap-2 rounded-md font-noto-sans text-sm font-extrabold text-suspense-aurora/70 uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 hover:text-orange-citric focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric motion-reduce:transform-none motion-reduce:transition-none"
                             >
                                 <img
                                     src={item.icon}
                                     alt=""
                                     aria-hidden="true"
-                                    class="size-5 shrink-0 filter-suspense-aurora group-hover/item:filter-orange-citric group-focus-visible/item:filter-orange-citric"
+	                                    class="public-footer-link-icon size-5 shrink-0 filter-suspense-aurora group-hover/item:filter-orange-citric group-focus-visible/item:filter-orange-citric"
                                 />
                                 <span class="truncate">{item.name}</span>
                             </Link>
@@ -77,19 +77,19 @@
                                 aria-label={item.name}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                class="flex size-10 items-center justify-center rounded-md bg-blue-ocean transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric motion-reduce:transform-none motion-reduce:transition-none"
+	                                class="public-footer-social flex size-10 items-center justify-center rounded-md bg-blue-ocean transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric motion-reduce:transform-none motion-reduce:transition-none"
                             >
                                 <img
                                     src={item.icon}
                                     alt=""
                                     aria-hidden="true"
-                                    class={item.iconClass ?? "size-5 filter-suspense-aurora"}
+	                                    class={["public-footer-social-icon", item.iconClass ?? "size-5 filter-suspense-aurora"]}
                                 />
                             </a>
                         </li>
                     {/each}
                 </ul>
-                <div class="mt-5 rounded-md border border-blue-skywave/20 bg-blue-ocean/20 px-3 py-2 font-noto-sans uppercase italic">
+                <div class="public-footer-note mt-5 rounded-md border border-blue-skywave/20 bg-blue-ocean/20 px-3 py-2 font-noto-sans uppercase italic">
                     <p class="text-[0.65rem] font-black tracking-[0.18em] text-blue-skywave">
                         またね!
                     </p>

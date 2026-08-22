@@ -49,8 +49,8 @@
    objecttolerance="10"
    borderopacity="1"
    inkscape:document-rotation="0"
-   bordercolor="#666666"
-   pagecolor="#ffffff" />
+   bordercolor="#000000"
+   pagecolor="#000000" />
 
 <style
    id="style833"
@@ -79,22 +79,22 @@
    id="SVGID_1_">
 		<stop
    id="stop835"
-   style="stop-color:#0C6CB3"
+   style="stop-color:#000000"
    offset="0" />
 
 		<stop
    id="stop837"
-   style="stop-color:#1E84C4"
+   style="stop-color:#000000"
    offset="0.2911" />
 
 		<stop
    id="stop839"
-   style="stop-color:#4CC0EF"
+   style="stop-color:#000000"
    offset="0.8873" />
 
 		<stop
    id="stop841"
-   style="stop-color:#4CC0EF"
+   style="stop-color:#000000"
    offset="1" />
 
 	</linearGradient>
@@ -117,22 +117,22 @@
    id="SVGID_2_">
 		<stop
    id="stop846"
-   style="stop-color:#0C6CB3"
+   style="stop-color:#000000"
    offset="0" />
 
 		<stop
    id="stop848"
-   style="stop-color:#1E84C4"
+   style="stop-color:#000000"
    offset="0.2911" />
 
 		<stop
    id="stop850"
-   style="stop-color:#4CC0EF"
+   style="stop-color:#000000"
    offset="0.8873" />
 
 		<stop
    id="stop852"
-   style="stop-color:#4CC0EF"
+   style="stop-color:#000000"
    offset="1" />
 
 	</linearGradient>
@@ -155,22 +155,22 @@
    id="SVGID_3_">
 		<stop
    id="stop857"
-   style="stop-color:#0C6CB3"
+   style="stop-color:#000000"
    offset="0" />
 
 		<stop
    id="stop859"
-   style="stop-color:#1E84C4"
+   style="stop-color:#000000"
    offset="0.2911" />
 
 		<stop
    id="stop861"
-   style="stop-color:#4CC0EF"
+   style="stop-color:#000000"
    offset="0.8873" />
 
 		<stop
    id="stop863"
-   style="stop-color:#4CC0EF"
+   style="stop-color:#000000"
    offset="1" />
 
 	</linearGradient>
@@ -193,22 +193,22 @@
    id="SVGID_4_">
 		<stop
    id="stop868"
-   style="stop-color:#0C6CB3"
+   style="stop-color:#000000"
    offset="0" />
 
 		<stop
    id="stop870"
-   style="stop-color:#1E84C4"
+   style="stop-color:#000000"
    offset="0.2911" />
 
 		<stop
    id="stop872"
-   style="stop-color:#4CC0EF"
+   style="stop-color:#000000"
    offset="0.8873" />
 
 		<stop
    id="stop874"
-   style="stop-color:#4CC0EF"
+   style="stop-color:#000000"
    offset="1" />
 
 	</linearGradient>
@@ -231,22 +231,22 @@
    id="SVGID_5_">
 		<stop
    id="stop879"
-   style="stop-color:#0C6CB3"
+   style="stop-color:#000000"
    offset="0" />
 
 		<stop
    id="stop881"
-   style="stop-color:#1E84C4"
+   style="stop-color:#000000"
    offset="0.2911" />
 
 		<stop
    id="stop883"
-   style="stop-color:#4CC0EF"
+   style="stop-color:#000000"
    offset="0.8873" />
 
 		<stop
    id="stop885"
-   style="stop-color:#4CC0EF"
+   style="stop-color:#000000"
    offset="1" />
 
 	</linearGradient>
@@ -269,22 +269,22 @@
    id="SVGID_6_">
 		<stop
    id="stop890"
-   style="stop-color:#0C6CB3"
+   style="stop-color:#000000"
    offset="0" />
 
 		<stop
    id="stop892"
-   style="stop-color:#1E84C4"
+   style="stop-color:#000000"
    offset="0.2911" />
 
 		<stop
    id="stop894"
-   style="stop-color:#4CC0EF"
+   style="stop-color:#000000"
    offset="0.8873" />
 
 		<stop
    id="stop896"
-   style="stop-color:#4CC0EF"
+   style="stop-color:#000000"
    offset="1" />
 
 	</linearGradient>
@@ -307,22 +307,22 @@
    id="SVGID_7_">
 		<stop
    id="stop901"
-   style="stop-color:#0C6CB3"
+   style="stop-color:#000000"
    offset="0" />
 
 		<stop
    id="stop903"
-   style="stop-color:#1E84C4"
+   style="stop-color:#000000"
    offset="0.2911" />
 
 		<stop
    id="stop905"
-   style="stop-color:#4CC0EF"
+   style="stop-color:#000000"
    offset="0.8873" />
 
 		<stop
    id="stop907"
-   style="stop-color:#4CC0EF"
+   style="stop-color:#000000"
    offset="1" />
 
 	</linearGradient>
@@ -345,22 +345,22 @@
    id="SVGID_8_">
 		<stop
    id="stop912"
-   style="stop-color:#0C6CB3"
+   style="stop-color:#000000"
    offset="0" />
 
 		<stop
    id="stop914"
-   style="stop-color:#1E84C4"
+   style="stop-color:#000000"
    offset="0.2911" />
 
 		<stop
    id="stop916"
-   style="stop-color:#4CC0EF"
+   style="stop-color:#000000"
    offset="0.8873" />
 
 		<stop
    id="stop918"
-   style="stop-color:#4CC0EF"
+   style="stop-color:#000000"
    offset="1" />
 
 	</linearGradient>

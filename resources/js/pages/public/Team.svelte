@@ -9,6 +9,6 @@
 </script>
 
 <Meta meta={{ title: "Equipe" }} />
-<Layout {flash} {oauth} {onair} {stream} {pageUrl}>
+<Layout {flash} {oauth} {onair} {stream} {pageUrl} publicThemeEnabled>
     <TeamDirectory {members} />
 </Layout>

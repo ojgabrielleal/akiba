@@ -54,26 +54,26 @@
             </div>
         </div>
 
-        <div class="mt-2 grid gap-2 font-noto-sans text-xs font-black uppercase italic text-blue-marinho sm:text-sm md:grid-cols-3">
-            <div class="rounded-sm bg-suspense-honeycream px-5 py-1 text-center">
+        <div class="mt-2 grid gap-2 font-noto-sans text-xs font-black uppercase italic text-suspense-aurora sm:text-sm md:grid-cols-3">
+            <div class="rounded-sm bg-orange-amber px-5 py-1 text-center">
                 {member.role}
             </div>
-            <div class="rounded-sm bg-suspense-honeycream px-5 py-1 text-center">
+            <div class="rounded-sm bg-orange-amber px-5 py-1 text-center">
                 {member.location}
             </div>
-            <div class="rounded-sm bg-suspense-honeycream px-5 py-1 text-center">
+            <div class="rounded-sm bg-orange-amber px-5 py-1 text-center">
                 {member.age}
             </div>
         </div>
 
-        <p class="mt-6 w-full font-noto-sans text-sm font-normal leading-snug text-suspense-aurora sm:text-base md:text-lg">
+        <p class="public-team-member-bio mt-6 w-full font-noto-sans text-sm font-normal leading-snug text-blue-night sm:text-base md:text-lg">
             {member.bio}
         </p>
 
         <div class="mt-8 grid items-start gap-8 md:mt-14 md:grid-cols-2 lg:grid-cols-3 lg:gap-6">
             {#if member.favoriteGenres.length > 0}
                 <section class="flex h-full min-w-0 flex-col">
-                    <h3 class="mb-1 min-h-8 text-center font-noto-sans text-lg font-black uppercase italic text-orange-morning">
+                    <h3 class="public-team-member-section-title mb-1 min-h-8 text-center font-noto-sans text-lg font-black uppercase italic text-blue-night">
                         Gosta de:
                     </h3>
                     <div class="grid gap-3">
@@ -88,7 +88,7 @@
 
             {#if member.dislikedGenres.length > 0}
                 <section class="flex h-full min-w-0 flex-col">
-                    <h3 class="mb-1 min-h-8 text-center font-noto-sans text-lg font-black uppercase italic text-orange-morning">
+                    <h3 class="public-team-member-section-title mb-1 min-h-8 text-center font-noto-sans text-lg font-black uppercase italic text-blue-night">
                         Não gosta de:
                     </h3>
                     <div class="grid gap-3">
@@ -103,7 +103,7 @@
 
             {#if member.topAnimes.length > 0}
                 <section class="flex h-full min-w-0 flex-col md:col-span-2 lg:col-span-1">
-                    <h3 class="mb-1 min-h-8 text-center font-noto-sans text-lg font-black uppercase italic text-orange-morning">
+                    <h3 class="public-team-member-section-title mb-1 min-h-8 text-center font-noto-sans text-lg font-black uppercase italic text-blue-night">
                         Meu Top 3:
                     </h3>
                     <div class="grid h-36 min-h-36 max-h-36 grid-cols-3 gap-3 sm:gap-4">

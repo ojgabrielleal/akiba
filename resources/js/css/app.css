@@ -3,6 +3,8 @@
 
 :root {
     /* Neutral */
+    --color-neutral-black: #000000;
+    --color-neutral-ink: #050505;
     --color-neutral-white: #ffffff;
     --color-neutral-gray: #808080;
 
@@ -51,6 +53,13 @@
         var(--color-blue-cerulean) 100%
     );
 
+    --gradient-featured-card-night: linear-gradient(
+        110deg,
+        var(--color-neutral-black) 0%,
+        var(--color-neutral-ink) 18%,
+        #00095f 100%
+    );
+
     --gradient-blue-ocean-skywave: linear-gradient(
         110deg,
         var(--color-blue-ocean) 0%,
@@ -92,6 +101,8 @@
 }
 
 @theme {
+    --color-neutral-black: var(--color-neutral-black);
+    --color-neutral-ink: var(--color-neutral-ink);
     --color-neutral-white: var(--color-neutral-white);
     --color-neutral-gray: var(--color-neutral-gray);
 
@@ -134,6 +145,10 @@
 
 @utility bg-gradient-blue-ocean-skywave {
     background: var(--gradient-blue-ocean-skywave);
+}
+
+@utility bg-gradient-featured-card-night {
+    background: var(--gradient-featured-card-night);
 }
 
 @utility bg-gradient-orange-morning-aurora {

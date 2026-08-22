@@ -61,6 +61,7 @@ class PostFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'module' => 'event',
+            'status' => 'published',
             'metadata' => [
                 'dates' => fake()->date(),
                 'event_date' => fake()->dateTimeBetween('now', '+6 months')->format('Y-m-d'),

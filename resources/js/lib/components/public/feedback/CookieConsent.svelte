@@ -1,10 +1,15 @@
 <script>
     import { onDestroy, onMount } from "svelte";
+    import Cookies from "js-cookie";
+    import { defaultPublicTheme, getStoredPublicTheme } from "@/lib/utils";
 
-    const STORAGE_KEY = "akiba_cookie_consent";
+    const COOKIE_KEY = "akiba_cookie_consent";
+
+    export let publicThemeEnabled = false;
 
     let visible = false;
     let playerBarVisible = false;
+    let selectedTheme = defaultPublicTheme;
 
     const dispatchVisibility = () => {
         window.dispatchEvent(new CustomEvent("akiba:cookie-consent-visibility", {
@@ -17,12 +22,8 @@
     };
 
     onMount(() => {
-        try {
-            visible = localStorage.getItem(STORAGE_KEY) !== "accepted";
-        } catch {
-            visible = true;
-        }
-
+        visible = Cookies.get(COOKIE_KEY) !== "accepted";
+        selectedTheme = getStoredPublicTheme();
         window.addEventListener("akiba:player-bar-visibility", updatePlayerBarVisibility);
         dispatchVisibility();
     });
@@ -32,11 +33,10 @@
     });
 
     const accept = () => {
-        try {
-            localStorage.setItem(STORAGE_KEY, "accepted");
-        } catch {
-            // The banner can still be dismissed during the current visit.
-        }
+        Cookies.set(COOKIE_KEY, "accepted", {
+            expires: 365,
+            sameSite: "lax",
+        });
 
         visible = false;
         dispatchVisibility();
@@ -49,11 +49,13 @@
             "fixed right-4 left-4 z-140 font-noto-sans text-suspense-aurora transition-[bottom] duration-300 ease-out sm:left-auto sm:w-[min(24rem,calc(100vw-2rem))]",
             playerBarVisible ? "bottom-22" : "bottom-4",
         ]}
+        data-public-theme-scope={publicThemeEnabled ? "" : null}
+        data-public-theme={publicThemeEnabled ? selectedTheme : null}
         role="status"
         aria-label="Aviso sobre cookies e dados"
     >
-    <div class="rounded-md border border-dashed border-orange-morning/35 bg-blue-night/95 p-4 shadow-2xl backdrop-blur-md">
-            <p class="text-sm leading-snug text-suspense-aurora/75">
+        <div class="public-cookie-consent rounded-md border border-dashed border-orange-morning/35 bg-blue-night/95 p-4 shadow-2xl backdrop-blur-md">
+            <p class="public-cookie-consent-text text-sm leading-snug text-suspense-aurora/75">
                 Usamos cookies e dados essenciais para manter sua sessão, lembrar preferências e melhorar a experiência na Akiba.
             </p>
             <button

@@ -160,6 +160,7 @@ resources/js/
 - Evite criar uma segunda versao mobile separada quando o mesmo componente puder ser responsivo com classes e estrutura adaptavel. Crie componentes separados por viewport somente quando a experiencia, interacao ou markup forem realmente diferentes.
 - Use tokens existentes do Tailwind em `css/app.css`.
 - Novas cores, gradientes ou filtros devem ser adicionados em `css/app.css` antes de uso.
+- Regras de tema publico devem apenas substituir cores, gradientes e filtros. Nao altere proporcoes, espacamentos, tipografia, layout, markup ou crie elementos novos para aplicar tema.
 - Use `font-noto-sans`.
 - Use `orange-citric` em botoes, elementos clicaveis, itens/cards clicaveis e seus estados de hover/focus/active. Elementos nao clicaveis devem usar `orange-amber` ou `orange-morning`: se a cor precisar ficar proxima de `orange-citric`, use `orange-morning`; caso contrario, use `orange-amber`.
 - Indicadores de likes que forem apenas exibicao/metrica, como contadores ou porcentagens em cards, podem usar `orange-amber`. Acoes de like clicaveis continuam usando `orange-citric`.

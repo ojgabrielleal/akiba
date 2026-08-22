@@ -7,10 +7,10 @@
     export let variant = "light";
 
     const variants = {
-        light: "h-11 rounded-md bg-suspense-aurora text-blue-night",
+        light: "h-11 rounded-md bg-neutral-gray text-suspense-aurora",
         dark: "h-11 rounded-md bg-blue-ocean text-suspense-aurora",
         transparent: "h-11 rounded-md bg-transparent text-suspense-aurora",
-        pill: "h-11 rounded-full bg-suspense-aurora text-blue-night",
+        pill: "h-11 rounded-full bg-neutral-gray text-suspense-aurora",
     };
 
     const borders = {

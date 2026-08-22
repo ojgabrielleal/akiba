@@ -70,8 +70,8 @@
 </script>
 
 <Meta meta={{ title: "Contato" }} />
-<Layout {flash} {oauth} {onair} {stream} {pageUrl}>
-    <section class="bg-blue-night pt-10">
+<Layout {flash} {oauth} {onair} {stream} {pageUrl} publicThemeEnabled>
+    <section class="public-page-background bg-blue-night pt-10">
         <EditorialTitle
             title="Redes sociais da Akiba"
             phrase="Cola com a gente nas redes pra acompanhar a programação, novidades e avisos"
@@ -127,12 +127,12 @@
 
         <div class="pb-12 pt-5 text-suspense-aurora">
             <div class="container-page grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:gap-12">
-                <div class="font-noto-sans">
-                    <h2 class="mb-4 text-sm font-black italic uppercase text-neutral-gray">
+                <div class="public-contact-copy font-noto-sans">
+                    <h2 class="public-contact-title mb-4 text-sm font-black italic uppercase text-blue-night">
                         Tenha certeza de:
                     </h2>
 
-                    <ul class="space-y-2 text-sm font-semibold uppercase text-blue-skywave">
+                    <ul class="public-contact-list space-y-2 text-sm font-semibold uppercase text-blue-night">
                         <li>+ Ter mais de 16 anos de idade</li>
                         <li>+ Ter um bom microfone</li>
                         <li>+ Ter boa oralidade e dissertação</li>
@@ -144,7 +144,7 @@
 
                     <div class="my-6 h-px bg-blue-skywave"></div>
 
-                    <p class="max-w-xl text-sm leading-7 text-blue-skywave">
+                    <p class="public-contact-text max-w-xl text-sm leading-7 text-blue-night">
                         A Akiba Network trabalha de forma independente, porém seguindo certas diretrizes, portanto a sua participação também terá que segui-las.
                         Logo abaixo tem um PDF com todas as diretrizes, se concordar com elas, pode continuar com a inscrição.
                     </p>

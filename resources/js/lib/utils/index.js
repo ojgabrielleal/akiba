@@ -8,6 +8,14 @@ export {
 } from "./access/oauthPendingAction.js"
 export { resolveDate, resolveDateTime, resolveDay, resolveHour, resolveAge } from "./formatters/dateTime.js"
 export { placeholderImages, resolvePlaceholderImage } from "./media/placeholders.js"
+export {
+    applyPublicTheme,
+    defaultPublicTheme,
+    getStoredPublicTheme,
+    normalizePublicTheme,
+    publicThemes,
+    setStoredPublicTheme,
+} from "./publicTheme.js"
 export { resolveStatusBackground } from "./presentation/gridStatus.js"
 export {
     canUsePushNotifications,

@@ -28,10 +28,10 @@
 <div class={["group/tooltip relative inline-flex", className]}>
     <slot />
     <div class={[
-        "pointer-events-none absolute z-50 hidden whitespace-nowrap rounded-md border border-suspense-aurora/10 bg-blue-ocean px-2 py-1 font-noto-sans text-[10px] text-suspense-aurora opacity-0 shadow-xl transition-all group-hover/tooltip:visible group-hover/tooltip:opacity-100 group-focus-within/tooltip:visible group-focus-within/tooltip:opacity-100 lg:block",
+        "public-tooltip pointer-events-none absolute z-50 hidden whitespace-nowrap rounded-md border border-suspense-aurora/10 bg-blue-ocean px-2 py-1 font-noto-sans text-[10px] text-suspense-aurora opacity-0 shadow-xl transition-all group-hover/tooltip:visible group-hover/tooltip:opacity-100 group-focus-within/tooltip:visible group-focus-within/tooltip:opacity-100 lg:block",
         tooltipPosition.content,
     ]}>
         <slot name="content" />
-        <div class={["absolute", tooltipPosition.arrow]}></div>
+        <div class={["public-tooltip-arrow absolute", tooltipPosition.arrow]}></div>
     </div>
 </div>

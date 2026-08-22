@@ -162,7 +162,7 @@
 
 </script>
 
-<section class="bg-blue-night pt-10 text-suspense-aurora">
+<section class="public-page-background bg-blue-night pt-10 text-suspense-aurora">
     <EditorialTitle title="Equipe" listLabel="Filtros da equipe">
         {#each roles as role (role.key)}
             <li class="flex h-8 items-center border-l border-neutral-gray/35 px-3 first:border-none first:pl-0 xl:px-5">

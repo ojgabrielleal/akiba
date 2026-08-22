@@ -11,23 +11,23 @@
     export let spacer = false;
 </script>
 
-<div class={className}>
+<div class={["public-editorial-title", className]}>
     <header
         class={[
-            "relative isolate overflow-hidden bg-cover bg-right bg-no-repeat lg:bg-contain",
+            "public-editorial-title-hero relative isolate overflow-hidden bg-cover bg-right bg-no-repeat lg:bg-contain",
             compact ? "py-3" : "py-5",
         ]}
-        style="background-image: url('/img/textures/screentone.webp'), var(--gradient-blue-ocean-cerulean);"
+        style="--public-editorial-title-texture: url('/img/textures/screentone.webp'); background-image: var(--public-editorial-title-texture), var(--public-editorial-title-gradient, var(--gradient-blue-ocean-cerulean));"
     >
         <div class="container-page relative">
-            <h1 class="break-words text-center font-noto-sans text-4xl font-black italic uppercase leading-none text-orange-morning sm:text-5xl lg:text-6xl">
+            <h1 class="public-editorial-title-heading break-words text-center font-noto-sans text-4xl font-black italic uppercase leading-none text-orange-morning sm:text-5xl lg:text-6xl">
                 {title}
             </h1>
         </div>
     </header>
 
     {#if phrase}
-        <div class="bg-blue-night">
+        <div class="public-editorial-title-phrase bg-blue-night">
             <p class={["container-page flex items-center justify-center text-center font-noto-sans text-sm font-extrabold italic uppercase text-neutral-gray", phraseMinHeight, phrasePadding]}>
                 {phrase}
             </p>

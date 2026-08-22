@@ -13,7 +13,7 @@
     target={href ? "_blank" : undefined}
     rel={href ? "noopener noreferrer sponsored" : undefined}
     class={[
-        "group relative block h-32 cursor-pointer overflow-hidden border border-blue-skywave/25 bg-blue-ocean/20 transition duration-300 ease-out hover:scale-[1.02] motion-reduce:transform-none motion-reduce:transition-none [clip-path:polygon(0_0,calc(100%_-_16px)_0,100%_16px,100%_100%,16px_100%,0_calc(100%_-_16px))]",
+        "public-advertisement-slot group relative block h-32 cursor-pointer overflow-hidden border border-blue-skywave/25 bg-blue-ocean/20 transition duration-300 ease-out hover:scale-[1.02] motion-reduce:transform-none motion-reduce:transition-none [clip-path:polygon(0_0,calc(100%_-_16px)_0,100%_16px,100%_100%,16px_100%,0_calc(100%_-_16px))]",
         className,
     ]}
     aria-label={href ? alt : undefined}
@@ -29,7 +29,7 @@
         </span>
     {:else}
         <div
-            class="absolute inset-0 opacity-25"
+            class="public-advertisement-dots absolute inset-0 opacity-25"
             style="background-image: radial-gradient(circle, var(--color-blue-skywave) 1px, transparent 1px); background-size: 9px 9px;"
         ></div>
         <div class={[
@@ -37,7 +37,7 @@
             mirrored ? "-left-8" : "-right-8",
         ]}></div>
         <div class={[
-            "absolute top-1/2 -translate-y-1/2 font-noto-sans text-8xl font-black italic text-blue-skywave/10",
+            "public-advertisement-watermark absolute top-1/2 -translate-y-1/2 font-noto-sans text-8xl font-black italic text-blue-skywave/10",
             mirrored ? "left-7" : "right-7",
         ]}>
             広告
@@ -56,7 +56,7 @@
                     src="/svg/star.svg"
                     alt=""
                     aria-hidden="true"
-                    class="absolute size-10 filter-blue-skywave opacity-80"
+                    class="public-advertisement-star absolute size-10 filter-blue-skywave opacity-80"
                 />
                 <span class="relative font-noto-sans text-sm font-black text-blue-night">
                     AD
@@ -66,7 +66,7 @@
                 <p class="text-[0.6rem] font-extrabold tracking-[0.15em] text-blue-skywave">
                     アキバで宣伝しよう！
                 </p>
-                <p class="text-xl font-black text-suspense-aurora">
+                <p class="public-advertisement-title text-xl font-black text-suspense-aurora">
                     Anuncie <span class="text-orange-morning">aqui!</span>
                 </p>
             </div>
