@@ -401,10 +401,11 @@ function handleAutoplayInteraction() {
 }
 
 export const startAutoplay = () => {
-    if (typeof window === "undefined" || autoplayEnabled || get(player).playing) {
+    if (typeof window === "undefined" || get(player).playing) {
         return stopAutoplay;
     }
 
+    stopAutoplay();
     autoplayEnabled = true;
     retryAutoplay();
     autoplayRetryInterval = setInterval(retryAutoplay, AUTOPLAY_RETRY_MS);
