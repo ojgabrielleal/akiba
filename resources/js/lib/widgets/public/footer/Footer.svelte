@@ -17,7 +17,7 @@
 </script>
 
 <footer class="public-footer pt-10 bg-blue-night pb-24">
-    <div class="container-page border-t border-orange-amber pt-8">
+    <div class="container-page border-t border-orange-citric pt-8">
         <div class="grid gap-8 lg:grid-cols-[1.2fr_1fr_0.8fr]">
             <div class="min-w-0">
                 <Link href="/site" class="group/logo block w-48 focus-visible:outline-none" aria-label="Página inicial">
@@ -30,13 +30,13 @@
                 <p class="mt-4 max-w-md font-noto-sans text-sm font-bold leading-relaxed text-suspense-aurora/75 uppercase italic">
                     Rede Akiba - O Paraíso dos Otakus
                 </p>
-                <p class="mt-2 font-noto-sans text-lg font-black text-orange-amber uppercase italic">
+                <p class="mt-2 font-noto-sans text-lg font-black text-orange-citric uppercase italic">
                     ラジオ・ニュース・カルチャー
                 </p>
             </div>
 
             <nav aria-label="Links do rodapé" class="min-w-0">
-                <h2 class="flex items-center gap-2 font-noto-sans text-lg font-black text-orange-amber uppercase italic">
+                <h2 class="flex items-center gap-2 font-noto-sans text-lg font-black text-orange-citric uppercase italic">
                     Navegue
                 </h2>
                 <ul class="mt-4 grid grid-cols-3 gap-2">
@@ -60,12 +60,12 @@
             </nav>
 
             <div class="min-w-0">
-                <h2 class="flex items-center gap-2 font-noto-sans text-lg font-black text-orange-amber uppercase italic">
+                <h2 class="flex items-center gap-2 font-noto-sans text-lg font-black text-orange-citric uppercase italic">
                     <img
                         src="/svg/onair.svg"
                         alt=""
                         aria-hidden="true"
-                        class="size-5 filter-orange-amber"
+                        class="size-5 filter-orange-citric"
                     />
                     Comunidade
                 </h2>

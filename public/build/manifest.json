@@ -25,7 +25,7 @@
     "src": "_vendor-CFBDMfBM.css"
   },
   "resources/js/app.js": {
-    "file": "assets/app-DWxNOwrG.js",
+    "file": "assets/app-D5LoXJ6C.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
@@ -41,7 +41,7 @@
     ]
   },
   "resources/js/css/app.css": {
-    "file": "assets/app-CUuSi1bg.css",
+    "file": "assets/app-BdNTx4ov.css",
     "name": "app",
     "names": [
       "app.css"
@@ -50,7 +50,7 @@
     "isEntry": true
   },
   "resources/js/css/custom.css": {
-    "file": "assets/custom-UhXMgF9b.css",
+    "file": "assets/custom-S3hNfQb2.css",
     "name": "custom",
     "names": [
       "custom.css"

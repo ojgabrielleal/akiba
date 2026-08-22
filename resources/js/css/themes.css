@@ -361,8 +361,8 @@
 }
 
 [data-public-theme-scope][data-public-theme="light"] .public-footer-note {
-    background-color: var(--color-orange-amber);
-    border-color: var(--color-orange-amber);
+    background-color: var(--color-orange-citric);
+    border-color: var(--color-orange-citric);
 }
 
 [data-public-theme-scope][data-public-theme="light"] .public-footer-note .text-blue-skywave,
@@ -651,7 +651,7 @@
 }
 
 [data-public-theme-scope][data-public-theme="night"] .public-footer-note .text-blue-skywave {
-    color: var(--color-orange-morning);
+    color: var(--color-orange-citric);
 }
 
 [data-public-theme-scope][data-public-theme="night"] .public-tooltip {
