@@ -2,7 +2,7 @@
     import { Link } from "@inertiajs/svelte";
     
     import { postTags, publicAnimations } from "@/lib/constants";
-    import { AdvertisementSlot } from "@/lib/components/public";
+    import { AdvertisementSlot, MinimalEmptyState } from "@/lib/components/public";
     import { resolvePlaceholderImage } from "@/lib/utils";
 
     export let posts = [];
@@ -11,6 +11,8 @@
     export let baseHref = "/materia";
     export let fallbackPosts = [];
     export let advertisementAfter = 10;
+    export let emptyTitle = "Nada por aqui ainda";
+    export let emptyMessage = "Assim que uma matéria entrar no ar, ela aparece nesta seção.";
 
     $: resolvedPosts = Array.isArray(posts) ? posts : posts?.data ?? [];
     $: postList = resolvedPosts.length > 0 ? resolvedPosts : fallbackPosts;
@@ -19,7 +21,7 @@
 </script>
 
 {#if postList.length > 0}
-	    <section class={["public-post-list-grid", title ? styles : ""]}>
+    <section class={["public-post-list-grid", title ? styles : ""]}>
         {#if title}
             <div class="mb-5 flex items-center gap-4 after:h-px after:flex-1 after:bg-orange-amber after:content-['']">
                 <h2 class="whitespace-nowrap font-noto-sans text-[1.3rem] font-black text-orange-amber uppercase italic">
@@ -55,7 +57,7 @@
                             </span>
                         </div>
                         <article class="flex min-w-0 flex-col justify-between gap-4 p-3 sm:p-0">
-	                            <h3 class="public-post-list-title line-clamp-3 font-noto-sans text-lg leading-tight font-bold text-suspense-aurora uppercase italic sm:text-xl">
+                            <h3 class="public-post-list-title line-clamp-3 font-noto-sans text-lg leading-tight font-bold text-suspense-aurora uppercase italic sm:text-xl">
                                 {post.title}
                             </h3>
                             <div class="flex items-end gap-2">
@@ -64,7 +66,7 @@
                                         src={postTags[tag.name]?.icon}
                                         alt={postTags[tag.name]?.label ?? tag.name}
                                         title={postTags[tag.name]?.label ?? tag.name}
-	                                        class="public-post-list-icon size-5 object-contain filter-suspense-aurora sm:size-6"
+                                        class="public-post-list-icon size-5 object-contain filter-suspense-aurora sm:size-6"
                                     />
                                 {/each}
                             </div>
@@ -74,4 +76,6 @@
             {/each}
         </ul>
     </section>
+{:else}
+    <MinimalEmptyState title={emptyTitle} message={emptyMessage} />
 {/if}

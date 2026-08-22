@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Resources\Onair\OnairResource;
+use App\Http\Middleware\OAuth\ResolveOAuthAccount;
 use App\Integrations\StreamService;
 use App\Services\OnairService;
 use Illuminate\Foundation\Application;
@@ -41,6 +42,7 @@ return Application::configure(basePath: dirname(__DIR__))
             }
 
             return Inertia::render('public/NotFound', [
+                'oauth' => fn () => ResolveOAuthAccount::resolve($request),
                 'onair' => fn () => OnairResource::collection(
                     app(OnairService::class)->filter([
                         'live' => true,

@@ -1,8 +1,6 @@
 import { get, writable } from "svelte/store";
 
-const DEFAULT_VOLUME = 0.03;
-const AUTOPLAY_VOLUME = 0.05;
-const MANUAL_PLAY_VOLUME = 0.2;
+const DEFAULT_VOLUME = 0.2;
 const MIN_PLAY_LOADING_MS = 500;
 const AUTOPLAY_RETRY_MS = 2500;
 const AUTOPLAY_INTERACTION_EVENTS = ["pointerdown", "touchstart", "keydown", "click"];
@@ -51,6 +49,7 @@ let playLoadingStartedAt = 0;
 let autoplayRetryInterval;
 let autoplayEnabled = false;
 let autoplayAttempting = false;
+let manuallyPaused = false;
 let smoothedWaveLevels = [...DEFAULT_WAVE_LEVELS];
 let previousEnergy = 0;
 let boomPulse = 0;
@@ -322,7 +321,8 @@ export const playAudio = async ({ silent = false } = {}) => {
     if (!element) return;
 
     if (!silent) {
-        setVolume(MANUAL_PLAY_VOLUME);
+        manuallyPaused = false;
+        setVolume(DEFAULT_VOLUME);
         startPlayLoading();
     }
 
@@ -352,6 +352,7 @@ export const playAudio = async ({ silent = false } = {}) => {
 };
 
 export const pauseAudio = () => {
+    manuallyPaused = true;
     stopAutoplay();
     getAudio()?.pause();
 };
@@ -392,7 +393,7 @@ const retryAutoplay = async () => {
         return;
     }
 
-    setVolume(AUTOPLAY_VOLUME);
+    setVolume(DEFAULT_VOLUME);
     autoplayAttempting = true;
     await playAudio({ silent: true });
     autoplayAttempting = false;
@@ -403,7 +404,7 @@ function handleAutoplayInteraction() {
 }
 
 export const startAutoplay = () => {
-    if (typeof window === "undefined" || autoplayEnabled || get(player).playing) {
+    if (typeof window === "undefined" || manuallyPaused || autoplayEnabled || get(player).playing) {
         return stopAutoplay;
     }
 

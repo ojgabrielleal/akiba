@@ -18,6 +18,8 @@
     const categoryHref = (category) => `${pageUrl.split("?")[0]}?tag=${category}`;
 
     $: displayTitle = activeTag ? categoryLabel(activeTag) : title;
+    $: emptyTitle = `Nenhuma matéria em ${displayTitle}`;
+    $: emptyMessage = "Novas publicações aparecem aqui assim que entrarem no ar.";
 </script>
 
 <Meta meta={{ title: displayTitle }} />
@@ -50,9 +52,9 @@
             {/each}
         </EditorialTitle>
 
-        <div class="min-h bg-blue-marinho py-16">
+        <div class="min-h-[18rem] bg-blue-marinho py-16">
             <div class="container-page">
-                <PostListGrid {posts} />
+                <PostListGrid {posts} {emptyTitle} {emptyMessage} />
                 <Pagination pages={posts} only={["posts"]} />
             </div>
         </div>

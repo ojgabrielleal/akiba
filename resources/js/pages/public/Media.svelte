@@ -2,7 +2,7 @@
     import { Link, page, router } from "@inertiajs/svelte";
 
     import { Meta } from "@/lib/components/shared";
-    import { AuthGuard, Button, EditorialTitle, Modal, Section } from "@/lib/components/public";
+    import { AuthGuard, Button, EditorialTitle, MinimalEmptyState, Modal, Section } from "@/lib/components/public";
     import { Layout } from "@/lib/layouts/public";
     import { ListenerGalleryGrid } from "@/lib/widgets/public";
     import { publicAnimations } from "@/lib/constants";
@@ -68,8 +68,8 @@
             <EditorialTitle title="Super conteúdos" compact padding="py-6" spacer />
         </div>
 
-        {#if eventList.length > 0}
-            <Section title="Eventos" styles="container-page mt-10 mb-12">
+        <Section title="Eventos" styles="container-page mt-10 mb-12">
+            {#if eventList.length > 0}
                 <div class="grid grid-cols-2 gap-3 lg:grid-cols-5">
                     {#each eventList as item (item.uuid)}
                         <Link href={item.href} class={["group overflow-hidden rounded-md bg-orange-citric text-blue-night focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric", publicAnimations.cardInteractive]}>
@@ -90,13 +90,23 @@
                         </Link>
                     {/each}
                 </div>
-            </Section>
-        {/if}
+            {:else}
+                <MinimalEmptyState
+                    title="Nenhum evento no radar"
+                    message="Novos eventos aparecem aqui assim que entrarem na agenda."
+                />
+            {/if}
+        </Section>
 
-        <ListenerGalleryGrid {listenerGallery} styles="container-page mb-12" />
+        <ListenerGalleryGrid
+            {listenerGallery}
+            styles="container-page mb-12"
+            emptyTitle="Nenhuma mídia enviada"
+            emptyMessage="As fotos da comunidade aparecem aqui quando forem publicadas."
+        />
 
-        {#if poll}
-            <Section title="Enquetes" styles="container-page mt-10 mb-12">
+        <Section title="Enquetes" styles="container-page mt-10 mb-12">
+            {#if poll}
                 <div class="grid gap-3">
                     <form
                         on:submit|preventDefault={submitMainVote}
@@ -190,8 +200,13 @@
                         </div>
                     {/if}
                 </div>
-            </Section>
-        {/if}
+            {:else}
+                <MinimalEmptyState
+                    title="Nenhuma enquete ativa"
+                    message="Quando uma votação entrar no ar, ela aparece neste bloco."
+                />
+            {/if}
+        </Section>
 
         <Modal bind:this={pollModalRef} title="Enquete" size="sm">
             {#if selectedPoll}

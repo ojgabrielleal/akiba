@@ -1,6 +1,7 @@
 import "./bootstrap";
 import { createInertiaApp } from "@inertiajs/svelte";
 import { mount } from "svelte";
+import PageTransitionLoader from "@/lib/components/public/feedback/PageTransitionLoader.svelte";
 
 if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
@@ -18,5 +19,6 @@ createInertiaApp({
     },
     setup({ el, App, props, plugin }) {
         mount(App, { target: el, props });
+        mount(PageTransitionLoader, { target: document.body });
     },
 });

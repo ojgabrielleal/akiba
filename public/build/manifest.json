@@ -25,7 +25,7 @@
     "src": "_vendor-CFBDMfBM.css"
   },
   "resources/js/app.js": {
-    "file": "assets/app-DoFwc0vf.js",
+    "file": "assets/app-DsnIbW51.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
@@ -37,11 +37,11 @@
       "_chart-CjW8w0Fn.js"
     ],
     "css": [
-      "assets/app-Dt6fNj8d.css"
+      "assets/app-DD65zf-d.css"
     ]
   },
   "resources/js/css/app.css": {
-    "file": "assets/app-CKvfTaS-.css",
+    "file": "assets/app-C9rrvFMR.css",
     "name": "app",
     "names": [
       "app.css"

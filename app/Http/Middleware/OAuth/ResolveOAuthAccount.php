@@ -16,6 +16,13 @@ class ResolveOAuthAccount
 {
     public function handle(Request $request, Closure $next): Response
     {
+        Inertia::share('oauth', self::resolve($request));
+
+        return $next($request);
+    }
+
+    public static function resolve(Request $request): array
+    {
         $oauthToken = $request->cookie('akiba_oauth_token');
         $userToken = $request->cookie('akiba_user_token');
 
@@ -39,7 +46,7 @@ class ResolveOAuthAccount
             if ($user) $request->attributes->set('member_user', $user);
         }
 
-        Inertia::share('oauth', [
+        return [
             'type' => $user ? 'member' : ($oauthAccount ? 'oauth' : null),
             'authenticated' => $user !== null || $oauthAccount instanceof OAuthAccount,
             'is_member' => $user !== null,
@@ -69,8 +76,6 @@ class ResolveOAuthAccount
                 'birth_date' => $oauthAccount->birth_date?->format('Y-m-d'),
                 'address' => $oauthAccount->address,
             ] : null),
-        ]);
-
-        return $next($request);
+        ];
     }
 }

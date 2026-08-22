@@ -9,18 +9,17 @@ class CommentPolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->hasAnyPermission(['comment.list', 'comment.view']);
+        return true;
     }
 
     public function view(User $user, Comment $comment): bool
     {
-        return $user->hasPermission('comment.view')
-            || $user->hasPermission('comment.list');
+        return true;
     }
 
     public function approve(User $user, Comment $comment): bool
     {
-        return $user->hasPermission('comment.approve');
+        return false;
     }
 
     public function hide(User $user, Comment $comment): bool

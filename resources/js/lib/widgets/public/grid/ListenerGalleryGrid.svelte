@@ -1,15 +1,17 @@
 <script>
-    import { Section } from "@/lib/components/public";
+    import { MinimalEmptyState, Section } from "@/lib/components/public";
 
     export let listenerGallery = [];
     export let styles = "container-page my-5";
+    export let emptyTitle = "Nenhuma mídia enviada";
+    export let emptyMessage = "As fotos da comunidade aparecem aqui quando forem publicadas.";
 
     $: items = Array.isArray(listenerGallery) ? listenerGallery : listenerGallery?.data ?? [];
     const defaultPlaceholder = "/img/placeholders/placeholder.webp";
 </script>
 
-{#if items.length > 0}
-    <Section title="Galeria do ouvinte" {styles}>
+<Section title="Galeria do ouvinte" {styles}>
+    {#if items.length > 0}
         <div class="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-5">
             {#each items as item (item.uuid)}
                 <article class="overflow-hidden rounded-md">
@@ -36,5 +38,7 @@
                 </article>
             {/each}
         </div>
-    </Section>
-{/if}
+    {:else}
+        <MinimalEmptyState title={emptyTitle} message={emptyMessage} />
+    {/if}
+</Section>
