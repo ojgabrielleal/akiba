@@ -474,14 +474,6 @@
     color: var(--color-orange-morning);
 }
 
-[data-public-theme-scope][data-public-theme="night"] .public-team-member-details {
-    color: var(--color-suspense-aurora);
-}
-
-[data-public-theme-scope][data-public-theme="night"] .public-team-member-detail {
-    background-color: var(--color-orange-amber);
-}
-
 [data-public-theme-scope][data-public-theme="night"] .public-contact-title {
     color: var(--color-orange-morning);
 }
