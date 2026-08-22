@@ -12,10 +12,13 @@
     };
 
     const shouldShow = (event) => {
+        const visit = event?.detail?.visit;
         const currentPath = window.location.pathname;
-        const targetPath = event?.detail?.visit?.url?.pathname ?? currentPath;
+        const targetPath = visit?.url?.pathname ?? currentPath;
+        const isPartialReload = (visit?.only?.length ?? 0) > 0 || (visit?.except?.length ?? 0) > 0;
+        const isPageNavigation = visit?.method === "get" && currentPath !== targetPath && !isPartialReload;
 
-        return isPublicPath(currentPath) && isPublicPath(targetPath);
+        return isPageNavigation && isPublicPath(currentPath) && isPublicPath(targetPath);
     };
 
     const show = (event) => {

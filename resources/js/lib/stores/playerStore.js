@@ -50,6 +50,7 @@ let autoplayRetryInterval;
 let autoplayEnabled = false;
 let autoplayAttempting = false;
 let manuallyPaused = false;
+let lifecycleListenersAttached = false;
 let smoothedWaveLevels = [...DEFAULT_WAVE_LEVELS];
 let previousEnergy = 0;
 let boomPulse = 0;
@@ -76,6 +77,24 @@ const stopAutoplay = () => {
     AUTOPLAY_INTERACTION_EVENTS.forEach((eventName) => {
         window.removeEventListener(eventName, handleAutoplayInteraction, true);
     });
+};
+
+const handlePageHide = () => {
+    manuallyPaused = false;
+};
+
+const handlePageShow = () => {
+    if (!get(player).playing) {
+        startAutoplay();
+    }
+};
+
+const ensureLifecycleListeners = () => {
+    if (typeof window === "undefined" || lifecycleListenersAttached) return;
+
+    window.addEventListener("pagehide", handlePageHide);
+    window.addEventListener("pageshow", handlePageShow);
+    lifecycleListenersAttached = true;
 };
 
 const startPlayLoading = () => {
@@ -352,6 +371,7 @@ export const playAudio = async ({ silent = false } = {}) => {
 };
 
 export const pauseAudio = () => {
+    ensureLifecycleListeners();
     manuallyPaused = true;
     stopAutoplay();
     getAudio()?.pause();
@@ -404,6 +424,8 @@ function handleAutoplayInteraction() {
 }
 
 export const startAutoplay = () => {
+    ensureLifecycleListeners();
+
     if (typeof window === "undefined" || manuallyPaused || autoplayEnabled || get(player).playing) {
         return stopAutoplay;
     }
@@ -444,4 +466,10 @@ export const destroyPlayer = () => {
     audioSource = undefined;
     analyser = undefined;
     frequencyData = undefined;
+
+    if (typeof window !== "undefined" && lifecycleListenersAttached) {
+        window.removeEventListener("pagehide", handlePageHide);
+        window.removeEventListener("pageshow", handlePageShow);
+        lifecycleListenersAttached = false;
+    }
 };
