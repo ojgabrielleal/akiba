@@ -113,8 +113,8 @@
 
 <!-- Phrase Section -->
 {#if canRender}
-<section class="main-player-phrase-background w-full bg-contain bg-right bg-no-repeat mt-5 mb-7"  style={`--main-player-phrase-texture: url('${playerData.phrase.texture}'); background-image: var(--main-player-phrase-texture), var(--main-player-phrase-gradient, var(--gradient-blue-ocean-cerulean));`}>
-    <div class="container-player h-26 relative">
+<section class="main-player-phrase-background w-full bg-contain bg-right bg-no-repeat mt-5 mb-4"  style={`--main-player-phrase-texture: url('${playerData.phrase.texture}'); background-image: var(--main-player-phrase-texture), var(--main-player-phrase-gradient, var(--gradient-blue-ocean-cerulean));`}>
+    <div class="container-player h-[90px] relative">
         <div class="absolute -top-8 left-0 z-10 xl:-left-28">
             <img
                 src={playerData.phrase.decoration.left}
@@ -124,7 +124,7 @@
                 loading="lazy"
             />
         </div>
-        <div class="main-player-phrase-text w-full min-w-0 h-26 pr-32 xl:pr-40 pl-20 xl:pl-0 flex items-center text-suspense-aurora text-[1.65rem] font-noto-sans font-extrabold uppercase italic">
+        <div class="main-player-phrase-text w-full min-w-0 h-[90px] pr-32 xl:pr-40 pl-20 xl:pl-0 flex items-center text-suspense-aurora text-[1.65rem] font-noto-sans font-extrabold uppercase italic">
             <span class="block w-full overflow-hidden text-ellipsis text-left whitespace-nowrap leading-9">
                 {#each splitHighlightedText(playerData.phrase.text) as phrasePart}
                     <span class:main-player-phrase-highlight={phrasePart.highlighted} class:text-orange-amber={phrasePart.highlighted}>
@@ -231,7 +231,7 @@
     <!--Second Column-->
     <div class="block">
         <!--Host Image-->
-        <div class="w-65">
+        <div class="w-60">
             <img
                 src={resolvePlaceholderImage(playerData.host.avatar, "avatar", playerData.host.gender)}
                 alt={playerData.host.nickname || "Locutor atual"}

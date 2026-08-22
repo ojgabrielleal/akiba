@@ -39,7 +39,7 @@
 <Layout {flash} {oauth} {onair} {stream} {pageUrl} publicThemeEnabled>
     <h1 class="sr-only">Akiba Station</h1>
     <div class="home-player-background bg-blue-night pt-px pb-5">
-        <div class="mt-0 lg:mt-12" data-main-player>
+        <div class="mt-0 lg:mt-10" data-main-player>
             <div class="hidden w-full lg:block">
                 <MainPlayer {onair} {stream} {oauth} />
             </div>
