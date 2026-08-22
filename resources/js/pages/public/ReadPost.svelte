@@ -58,7 +58,7 @@
                 </div>
 
                 {#if article.content}
-                    <div class="font-noto-sans text-[1.0625rem] text-suspense-aurora">
+                    <div class="public-read-body font-noto-sans text-[1.0625rem] text-suspense-aurora">
                         {@html article.content}
                     </div>
                 {:else}

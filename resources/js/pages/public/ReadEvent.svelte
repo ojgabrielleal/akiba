@@ -66,7 +66,7 @@
                     </dl>
 
                     {#if event.content}
-                        <div class="font-noto-sans text-[1.0625rem] text-suspense-aurora">
+                        <div class="public-read-body font-noto-sans text-[1.0625rem] text-suspense-aurora">
                             {@html event.content}
                         </div>
                     {:else}

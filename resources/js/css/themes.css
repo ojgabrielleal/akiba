@@ -385,6 +385,11 @@
     background-color: var(--color-neutral-ink);
 }
 
+[data-public-theme-scope] .public-read-body,
+[data-public-theme-scope] .public-read-body :where(p, span, strong, em, b, i, u, a, small) {
+    background-color: transparent !important;
+}
+
 [data-public-theme-scope][data-public-theme="night"] .public-featured-card {
     background: var(--gradient-featured-card-night);
 }
