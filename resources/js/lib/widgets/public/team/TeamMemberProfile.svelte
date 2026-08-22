@@ -66,14 +66,14 @@
             </div>
         </div>
 
-        <p class="public-team-member-bio mt-6 w-full font-noto-sans text-sm font-normal leading-snug text-blue-night sm:text-base md:text-lg">
+        <p class="public-team-member-bio mt-6 w-full font-noto-sans text-sm font-normal leading-snug text-suspense-aurora/75 sm:text-base md:text-lg">
             {member.bio}
         </p>
 
         <div class="mt-8 grid items-start gap-8 md:mt-14 md:grid-cols-2 lg:grid-cols-3 lg:gap-6">
             {#if member.favoriteGenres.length > 0}
                 <section class="flex h-full min-w-0 flex-col">
-                    <h3 class="public-team-member-section-title mb-1 min-h-8 text-center font-noto-sans text-lg font-black uppercase italic text-blue-night">
+                    <h3 class="public-team-member-section-title mb-1 min-h-8 text-center font-noto-sans text-lg font-black uppercase italic text-orange-amber">
                         Gosta de:
                     </h3>
                     <div class="grid gap-3">
@@ -88,7 +88,7 @@
 
             {#if member.dislikedGenres.length > 0}
                 <section class="flex h-full min-w-0 flex-col">
-                    <h3 class="public-team-member-section-title mb-1 min-h-8 text-center font-noto-sans text-lg font-black uppercase italic text-blue-night">
+                    <h3 class="public-team-member-section-title mb-1 min-h-8 text-center font-noto-sans text-lg font-black uppercase italic text-orange-amber">
                         Não gosta de:
                     </h3>
                     <div class="grid gap-3">
@@ -103,7 +103,7 @@
 
             {#if member.topAnimes.length > 0}
                 <section class="flex h-full min-w-0 flex-col md:col-span-2 lg:col-span-1">
-                    <h3 class="public-team-member-section-title mb-1 min-h-8 text-center font-noto-sans text-lg font-black uppercase italic text-blue-night">
+                    <h3 class="public-team-member-section-title mb-1 min-h-8 text-center font-noto-sans text-lg font-black uppercase italic text-orange-amber">
                         Meu Top 3:
                     </h3>
                     <div class="grid h-36 min-h-36 max-h-36 grid-cols-3 gap-3 sm:gap-4">

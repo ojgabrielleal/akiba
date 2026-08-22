@@ -44,7 +44,7 @@
                         class="absolute right-1/2 top-0 h-[145%] w-auto max-w-[145%] translate-x-1/2 scale-135 object-contain object-top drop-shadow-[0_0.25rem_0.35rem_rgba(0,0,20,0.45)] sm:right-0 sm:top-auto sm:bottom-0 sm:h-28 sm:max-w-[150%] sm:translate-x-0 sm:scale-100 sm:object-bottom md:h-32"
                     />
                 </span>
-                <span class="public-team-carousel-name mt-2 block max-w-full truncate px-0.5 font-noto-sans text-[0.7rem] font-black uppercase italic leading-tight text-blue-night min-[390px]:text-xs sm:text-sm">
+                <span class="public-team-carousel-name mt-2 block max-w-full truncate px-0.5 font-noto-sans text-[0.7rem] font-black uppercase italic leading-tight text-suspense-aurora/75 min-[390px]:text-xs sm:text-sm">
                     {member.name}
                 </span>
             </button>

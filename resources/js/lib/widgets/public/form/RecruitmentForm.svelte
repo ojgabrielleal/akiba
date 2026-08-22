@@ -4,8 +4,8 @@
     import { Button, SelectInput, TextArea, TextInput } from "@/lib/components/public";
 
     const fieldClass = "grid gap-1.5";
-    const inputClass = "public-recruitment-input border border-gray-400 !bg-neutral-gray/30 focus:border-gray-400";
-    const labelClass = "public-recruitment-label font-noto-sans text-xs font-black italic uppercase text-gray-700";
+    const inputClass = "public-recruitment-input";
+    const labelClass = "public-recruitment-label font-noto-sans text-xs font-black italic uppercase text-suspense-aurora/70";
     const roleOptions = [
         "Locutor",
         "Redator",

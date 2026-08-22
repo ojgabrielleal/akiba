@@ -60,7 +60,7 @@
             label: "AkibaCast",
             description: "AkibaCast disponível também no Amazon Music.",
             icon: "/svg/amazon-music.svg",
-            iconClass: "w-9",
+            iconClass: "w-9 filter-suspense-aurora",
             href: "https://music.amazon.com.au/podcasts/fafe997e-b911-4a8e-8e38-dbbc6b285d83/akibacast",
         },
     ];
@@ -128,11 +128,11 @@
         <div class="pb-12 pt-5 text-suspense-aurora">
             <div class="container-page grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:gap-12">
                 <div class="public-contact-copy font-noto-sans">
-                    <h2 class="public-contact-title mb-4 text-sm font-black italic uppercase text-blue-night">
+                    <h2 class="public-contact-title mb-4 text-sm font-black italic uppercase text-orange-amber">
                         Tenha certeza de:
                     </h2>
 
-                    <ul class="public-contact-list space-y-2 text-sm font-semibold uppercase text-blue-night">
+                    <ul class="public-contact-list space-y-2 text-sm font-semibold uppercase text-suspense-aurora/75">
                         <li>+ Ter mais de 16 anos de idade</li>
                         <li>+ Ter um bom microfone</li>
                         <li>+ Ter boa oralidade e dissertação</li>
@@ -144,7 +144,7 @@
 
                     <div class="my-6 h-px bg-blue-skywave"></div>
 
-                    <p class="public-contact-text max-w-xl text-sm leading-7 text-blue-night">
+                    <p class="public-contact-text max-w-xl text-sm leading-7 text-suspense-aurora/75">
                         A Akiba Network trabalha de forma independente, porém seguindo certas diretrizes, portanto a sua participação também terá que segui-las.
                         Logo abaixo tem um PDF com todas as diretrizes, se concordar com elas, pode continuar com a inscrição.
                     </p>
