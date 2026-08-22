@@ -73,7 +73,7 @@
             name: "google",
             label: "Entrar com Google",
             icon: "/svg/google.svg",
-            class: "border border-blue-night/10 bg-neutral-white text-blue-night shadow-sm hover:bg-neutral-white hover:shadow-md",
+            class: "border border-blue-night/10 bg-neutral-white text-blue-night shadow-sm hover:bg-neutral-white",
         },
         {
             name: "discord",
