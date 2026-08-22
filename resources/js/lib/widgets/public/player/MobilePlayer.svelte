@@ -166,7 +166,7 @@
                     disabled={$player.loading && !$player.playing}
                     class={[
                         "relative size-16 rounded-full flex items-center justify-center shadow-xl transition duration-200 ease-out hover:scale-105 active:scale-95 motion-reduce:transform-none motion-reduce:transition-none",
-                        { "bg-orange-citric shadow-orange-citric/20": !$player.playing },
+                        { "bg-orange-amber shadow-orange-amber/20": !$player.playing },
                         { "bg-blue-skywave shadow-blue-skywave/20": $player.playing },
                         { "cursor-wait": $player.loading },
                     ]}
@@ -201,7 +201,7 @@
                         max="1"
                         step="0.01"
                         value={$player.volume}
-                        class="w-full h-1.5 rounded-full accent-orange-citric cursor-pointer"
+                        class="w-full h-1.5 rounded-full accent-orange-amber cursor-pointer"
                         on:input={(event) => setVolume(event.currentTarget.value)}
                     />
                 </div>
@@ -214,7 +214,7 @@
                 on:click={() => modalRef.open()}
             >
                 Faça seu <strong class={[
-                    { "text-orange-citric": air?.allows_song_requests },
+                    { "text-orange-amber": air?.allows_song_requests },
                     { "text-gray-500": !air?.allows_song_requests },
                 ]}>pedido</strong>
             </button>
@@ -312,7 +312,7 @@
                         disabled={$player.loading && !$player.playing}
                         class={[
                             "relative size-18 rounded-full flex items-center justify-center shadow-xl transition duration-200 ease-out hover:scale-105 active:scale-95 motion-reduce:transform-none motion-reduce:transition-none",
-                            { "bg-orange-citric shadow-orange-citric/20": !$player.playing },
+                            { "bg-orange-amber shadow-orange-amber/20": !$player.playing },
                             { "bg-blue-skywave shadow-blue-skywave/20": $player.playing },
                             { "cursor-wait": $player.loading },
                         ]}
@@ -349,7 +349,7 @@
                         max="1"
                         step="0.01"
                         value={$player.volume}
-                        class="w-full h-1.5 rounded-full accent-orange-citric cursor-pointer"
+                        class="w-full h-1.5 rounded-full accent-orange-amber cursor-pointer"
                         on:input={(event) => setVolume(event.currentTarget.value)}
                     />
                 </div>
@@ -361,7 +361,7 @@
                     on:click={() => modalRef.open()}
                 >
                     Faça seu <strong class={[
-                        { "text-orange-citric": air?.allows_song_requests },
+                        { "text-orange-amber": air?.allows_song_requests },
                         { "text-gray-500": !air?.allows_song_requests },
                     ]}>pedido</strong>
                 </button>

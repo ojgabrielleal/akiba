@@ -26,11 +26,11 @@
 </script>
 
 <div class={classes}>
-    <span class={["h-px min-w-4 flex-1", selectedTone.line]} aria-hidden="true"></span>
+    <span class={["public-section-heading-line h-px min-w-4 flex-1", selectedTone.line]} aria-hidden="true"></span>
     {#if $$slots.default}
-        <div class={["shrink-0 font-noto-sans font-extrabold uppercase italic", selectedTone.text]}>
+        <div class={["public-section-heading-title shrink-0 font-noto-sans font-extrabold uppercase italic", selectedTone.text]}>
             <slot />
         </div>
-        <span class={["h-px min-w-4 flex-1", selectedTone.line]} aria-hidden="true"></span>
+        <span class={["public-section-heading-line h-px min-w-4 flex-1", selectedTone.line]} aria-hidden="true"></span>
     {/if}
 </div>

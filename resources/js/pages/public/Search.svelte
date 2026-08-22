@@ -92,7 +92,7 @@
                                         <li>
                                             <Link
                                                 href={item.href}
-                                                class="group flex min-h-20 gap-3 rounded-md bg-blue-ocean p-3 transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric motion-reduce:transform-none motion-reduce:transition-none"
+                                                class="group flex min-h-20 gap-3 rounded-md bg-blue-ocean p-3 transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber motion-reduce:transform-none motion-reduce:transition-none"
                                             >
                                                 <div class={[
                                                     "flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-md",
@@ -101,14 +101,14 @@
                                                     {#if item.image}
                                                         <img src={item.image} alt="" aria-hidden="true" class="h-full w-full object-cover" />
                                                     {:else}
-                                                        <img src="/svg/search.svg" alt="" aria-hidden="true" class="size-7 filter-orange-citric" />
+                                                        <img src="/svg/search.svg" alt="" aria-hidden="true" class="size-7 filter-orange-amber" />
                                                     {/if}
                                                 </div>
                                                 <article class="min-w-0">
                                                     <div class="mb-1 font-noto-sans text-xs font-black uppercase italic text-orange-morning">
                                                         {item.type}
                                                     </div>
-                                                    <h3 class="line-clamp-1 font-noto-sans text-base font-black uppercase italic leading-tight text-suspense-aurora group-hover:text-orange-citric">
+                                                    <h3 class="line-clamp-1 font-noto-sans text-base font-black uppercase italic leading-tight text-suspense-aurora group-hover:text-orange-amber">
                                                         {item.title}
                                                     </h3>
                                                     {#if item.description}

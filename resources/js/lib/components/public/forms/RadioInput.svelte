@@ -8,7 +8,7 @@
     export let error = null;
 
     $: classes = [
-        "size-4 cursor-pointer accent-orange-citric focus:ring-orange-citric",
+        "size-4 cursor-pointer accent-orange-amber focus:ring-orange-amber",
         error ? "outline outline-red-crimson" : "",
         className,
     ];

@@ -197,17 +197,17 @@
                     <Link
                         href={item.address}
                         aria-label={item.name}
-                        class="group/item relative flex items-center gap-1 whitespace-nowrap font-noto-sans text-[0.825rem] font-extrabold uppercase italic text-neutral-gray transition-colors hover:text-orange-citric"
+                        class="group/item relative flex items-center gap-1 whitespace-nowrap font-noto-sans text-[0.825rem] font-extrabold uppercase italic text-neutral-gray transition-colors hover:text-orange-amber"
                     >
                         <img
                             src={item.icon}
                             alt=""
                             aria-hidden="true"
-                            class="size-[1.3125rem] filter-neutral-gray group-hover/item:filter-orange-citric"
+                            class="size-[1.3125rem] filter-neutral-gray group-hover/item:filter-orange-amber"
                         />
                         {item.name}
                         <span
-                            class="absolute -bottom-2 left-0 h-0.5 w-full origin-left scale-x-0 rounded-full bg-orange-citric transition-transform duration-300 group-hover/item:scale-x-100"
+                            class="absolute -bottom-2 left-0 h-0.5 w-full origin-left scale-x-0 rounded-full bg-orange-amber transition-transform duration-300 group-hover/item:scale-x-100"
                             aria-hidden="true"
                         ></span>
                     </Link>
@@ -222,7 +222,7 @@
                     id="desktop-global-search"
                     type="search"
                     name="q"
-                    class="h-9 w-0 rounded-full border-0 bg-suspense-aurora/10 px-0 font-noto-sans text-sm text-suspense-aurora outline-none transition-all duration-300 placeholder:text-suspense-aurora/45 focus:w-56 focus:border focus:border-orange-citric focus:px-4"
+                    class="h-9 w-0 rounded-full border-0 bg-suspense-aurora/10 px-0 font-noto-sans text-sm text-suspense-aurora outline-none transition-all duration-300 placeholder:text-suspense-aurora/45 focus:w-56 focus:border focus:border-orange-amber focus:px-4"
                     placeholder="Buscar"
                     bind:value={searchQuery}
                 />
@@ -242,7 +242,7 @@
                     {#if hasActiveNotifications}
                         <button
                             type="button"
-                            class="relative flex size-8 cursor-pointer items-center justify-center rounded-full bg-transparent transition hover:brightness-110 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric"
+                            class="relative flex size-8 cursor-pointer items-center justify-center rounded-full bg-transparent transition hover:brightness-110 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber"
                             aria-label="Notificações"
                             on:click={handleNotificationClick}
                         >
@@ -260,7 +260,7 @@
                         <Tooltip position="bottom">
                             <button
                                 type="button"
-                                class="relative flex size-8 cursor-pointer items-center justify-center rounded-full bg-transparent transition hover:brightness-110 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric"
+                                class="relative flex size-8 cursor-pointer items-center justify-center rounded-full bg-transparent transition hover:brightness-110 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber"
                                 aria-label="Ativar notificações"
                                 on:click|stopPropagation={handleNotificationClick}
                             >
@@ -398,14 +398,14 @@
                                 <Link
                                     href={item.address}
                                     aria-label={item.name}
-                                    class="group/item flex min-h-9 items-center gap-2.5 rounded-md px-2 py-1 font-noto-sans text-[0.8125rem] font-extrabold uppercase italic text-blue-night transition duration-200 hover:translate-x-1 hover:bg-orange-citric/10 hover:text-orange-copper motion-reduce:transform-none motion-reduce:transition-none"
+                                    class="group/item flex min-h-9 items-center gap-2.5 rounded-md px-2 py-1 font-noto-sans text-[0.8125rem] font-extrabold uppercase italic text-blue-night transition duration-200 hover:text-orange-amber motion-reduce:transition-none"
                                     on:click={closeMobileNavbar}
                                 >
                                     <img
                                         src={item.icon}
                                         alt=""
                                         aria-hidden="true"
-                                        class="size-5 filter-blue-marinho group-hover/item:filter-orange-citric"
+                                        class="size-5 filter-blue-marinho group-hover/item:filter-orange-amber"
                                     />
                                     {item.name}
                                 </Link>
@@ -419,7 +419,7 @@
                                 id="mobile-global-search"
                                 type="search"
                                 name="q"
-                                class="h-10 min-w-0 flex-1 rounded-full border border-blue-night/10 bg-neutral-white px-4 font-noto-sans text-sm text-blue-night outline-none transition focus:border-orange-citric"
+                                class="h-10 min-w-0 flex-1 rounded-full border border-blue-night/10 bg-neutral-white px-4 font-noto-sans text-sm text-blue-night outline-none transition focus:border-orange-amber"
                                 placeholder="Buscar"
                                 bind:value={searchQuery}
                             />
@@ -528,7 +528,7 @@
                     <a
                         href={`/oauth/${provider.name}/redirect`}
                         class={[
-                            "group/provider relative flex min-h-[3.25rem] items-center justify-center gap-3 overflow-hidden rounded-md px-5 py-3 text-center font-noto-sans text-sm font-extrabold uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none",
+                            "group/provider relative flex min-h-[3.25rem] items-center justify-center gap-3 overflow-hidden rounded-md px-5 py-3 text-center font-noto-sans text-sm font-extrabold uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none",
                             provider.class,
                         ]}
                     >

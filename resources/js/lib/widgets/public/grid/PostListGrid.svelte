@@ -23,8 +23,8 @@
 {#if postList.length > 0}
     <section class={["public-post-list-grid", title ? styles : ""]}>
         {#if title}
-            <div class="mb-5 flex items-center gap-4 after:h-px after:flex-1 after:bg-orange-amber after:content-['']">
-                <h2 class="whitespace-nowrap font-noto-sans text-[1.3rem] font-black text-orange-amber uppercase italic">
+            <div class="public-section-heading mb-5 flex items-center gap-4 after:h-px after:flex-1 after:bg-orange-amber after:content-['']">
+                <h2 class="public-section-heading-title whitespace-nowrap font-noto-sans text-[1.3rem] font-black text-orange-amber uppercase italic">
                     {title}
                 </h2>
             </div>
@@ -42,7 +42,7 @@
                     <Link
                         href={postHref(post)}
                         aria-label={`Ler matéria: ${post.title}`}
-                        class={["public-post-list-card group block overflow-hidden rounded-md bg-blue-ocean focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric sm:grid sm:grid-cols-[14rem_1fr] sm:gap-3 sm:bg-transparent", publicAnimations.cardInteractive]}
+                        class={["public-post-list-card group block overflow-hidden rounded-md bg-blue-ocean focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber sm:grid sm:grid-cols-[14rem_1fr] sm:gap-3 sm:bg-transparent", publicAnimations.cardInteractive]}
                     >
                         <div class="relative aspect-[16/9] overflow-hidden bg-neutral-gray sm:h-34 sm:aspect-auto sm:rounded-md">
                             <img

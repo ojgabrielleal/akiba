@@ -38,7 +38,7 @@
                                     target="_blank"
                                     rel="noreferrer"
                                     aria-label={socialIcon.name}
-                                    class="flex size-11 items-center justify-center transition hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric motion-reduce:transform-none"
+                                    class="flex size-11 items-center justify-center transition hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber motion-reduce:transform-none"
                                 >
                                     <img
                                         src={socialIcon.icon}

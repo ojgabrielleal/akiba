@@ -11,14 +11,14 @@
     <button
         type="button"
         aria-label="Membro anterior"
-        class="hidden size-14 cursor-pointer items-center justify-center rounded-full transition hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric motion-reduce:transform-none sm:flex md:size-18"
+        class="hidden size-14 cursor-pointer items-center justify-center rounded-full transition hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber motion-reduce:transform-none sm:flex md:size-18"
         on:click={() => dispatch("previous")}
     >
         <img
             src="/svg/chevron-left.svg"
             alt=""
             aria-hidden="true"
-            class="size-11 filter-orange-citric md:size-14"
+            class="size-11 filter-orange-amber md:size-14"
         />
     </button>
 
@@ -34,7 +34,7 @@
                     class={[
                         "relative block size-18 overflow-hidden rounded-full bg-blue-ocean ring-2 transition duration-200 group-hover/member:scale-105 group-focus-visible/member:scale-105 motion-reduce:transform-none sm:h-14 sm:w-full sm:overflow-visible sm:rounded-sm sm:ring-0 md:h-16",
                         selectedMember === member
-                            ? "ring-orange-citric"
+                            ? "ring-orange-amber"
                             : "ring-blue-skywave/35",
                     ]}
                 >
@@ -54,14 +54,14 @@
     <button
         type="button"
         aria-label="Próximo membro"
-        class="hidden size-14 cursor-pointer items-center justify-center rounded-full transition hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric motion-reduce:transform-none sm:flex md:size-18"
+        class="hidden size-14 cursor-pointer items-center justify-center rounded-full transition hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber motion-reduce:transform-none sm:flex md:size-18"
         on:click={() => dispatch("next")}
     >
         <img
             src="/svg/chevron-right.svg"
             alt=""
             aria-hidden="true"
-            class="size-11 filter-orange-citric md:size-14"
+            class="size-11 filter-orange-amber md:size-14"
         />
     </button>
 </div>

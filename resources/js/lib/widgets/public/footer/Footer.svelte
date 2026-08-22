@@ -44,13 +44,13 @@
                         <li class="min-w-0">
                             <Link
                                 href={item.address}
-	                                class="public-footer-link group/item flex min-h-8 items-center gap-2 rounded-md font-noto-sans text-sm font-extrabold text-suspense-aurora/70 uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 hover:text-orange-citric focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric motion-reduce:transform-none motion-reduce:transition-none"
+	                                class="public-footer-link group/item flex min-h-8 items-center gap-2 rounded-md font-noto-sans text-sm font-extrabold text-suspense-aurora/70 uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 hover:text-orange-amber focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber motion-reduce:transform-none motion-reduce:transition-none"
                             >
                                 <img
                                     src={item.icon}
                                     alt=""
                                     aria-hidden="true"
-	                                    class="public-footer-link-icon size-5 shrink-0 filter-suspense-aurora group-hover/item:filter-orange-citric group-focus-visible/item:filter-orange-citric"
+	                                    class="public-footer-link-icon size-5 shrink-0 filter-suspense-aurora group-hover/item:filter-orange-amber group-focus-visible/item:filter-orange-amber"
                                 />
                                 <span class="truncate">{item.name}</span>
                             </Link>
@@ -77,7 +77,7 @@
                                 aria-label={item.name}
                                 target="_blank"
                                 rel="noopener noreferrer"
-	                                class="public-footer-social flex size-10 items-center justify-center rounded-md bg-blue-ocean transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric motion-reduce:transform-none motion-reduce:transition-none"
+	                                class="public-footer-social flex size-10 items-center justify-center rounded-md bg-blue-ocean transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber motion-reduce:transform-none motion-reduce:transition-none"
                             >
                                 <img
                                     src={item.icon}

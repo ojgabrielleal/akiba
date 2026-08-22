@@ -53,7 +53,7 @@
             </h2>
             <button
                 type="button"
-                class="cursor-pointer text-xs font-extrabold text-orange-citric transition hover:text-orange-citric focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric"
+                class="cursor-pointer text-xs font-extrabold text-orange-amber transition hover:text-orange-amber focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber"
                 on:click={markAllAsRead}
             >
                 Marcar todas como lidas
@@ -69,9 +69,9 @@
                         <span class="min-w-0">
                             <a
                                 href={notification.url}
-                                class="block min-w-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric"
+                                class="block min-w-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber"
                             >
-                                <span class="block truncate text-sm font-extrabold text-suspense-aurora hover:text-orange-citric">
+                                <span class="block truncate text-sm font-extrabold text-suspense-aurora hover:text-orange-amber">
                                     {notification.title}
                                 </span>
                                 <span class="mt-1 line-clamp-2 block text-xs leading-snug text-suspense-aurora/70">
@@ -84,7 +84,7 @@
                         </span>
                         <button
                             type="button"
-                            class="mt-1 flex size-8 cursor-pointer items-center justify-center rounded-md border border-suspense-aurora/10 text-orange-citric transition hover:border-orange-citric/60 hover:bg-orange-citric/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric"
+                            class="mt-1 flex size-8 cursor-pointer items-center justify-center rounded-md border border-suspense-aurora/10 text-orange-amber transition hover:border-orange-amber/60 hover:bg-orange-amber/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber"
                             aria-label="Marcar notificação como lida"
                             on:click={() => markAsRead(notification)}
                         >
@@ -92,7 +92,7 @@
                                 src="/svg/verify.svg"
                                 alt=""
                                 aria-hidden="true"
-                                class="size-4 filter-orange-citric"
+                                class="size-4 filter-orange-amber"
                             />
                         </button>
                     </article>

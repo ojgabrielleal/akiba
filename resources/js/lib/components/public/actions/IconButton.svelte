@@ -31,7 +31,7 @@
     };
 
     const tones = {
-        accent: "filter-orange-citric",
+        accent: "filter-orange-amber",
         primary: "filter-blue-skywave",
         light: "filter-suspense-aurora",
         neutral: "filter-neutral-gray",
@@ -43,7 +43,7 @@
         dark: "bg-blue-night",
         ocean: "bg-blue-ocean",
         light: "bg-suspense-aurora",
-        accent: "bg-orange-citric",
+        accent: "bg-orange-amber",
         primary: "bg-blue-skywave",
     };
 

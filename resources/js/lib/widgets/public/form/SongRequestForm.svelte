@@ -169,7 +169,7 @@
             <button
                 type="button"
                 class={["h-8 rounded-full px-3 font-noto-sans text-[0.7rem] font-extrabold uppercase italic transition sm:px-4",
-                    requestMode === "music" ? "bg-orange-citric text-blue-marinho" : "cursor-pointer text-gray-600 hover:text-blue-ocean",
+                    requestMode === "music" ? "bg-orange-amber text-blue-marinho" : "cursor-pointer text-gray-600 hover:text-blue-ocean",
                 ]}
                 aria-pressed={requestMode === "music"}
                 on:click={() => selectRequestMode("music")}
@@ -179,7 +179,7 @@
             <button
                 type="button"
                 class={["h-8 rounded-full px-3 font-noto-sans text-[0.7rem] font-extrabold uppercase italic transition sm:px-4",
-                    requestMode === "message" ? "bg-blue-ocean text-suspense-aurora" : "cursor-pointer text-gray-600 hover:text-blue-ocean",
+                    requestMode === "message" ? "bg-orange-amber text-blue-marinho" : "cursor-pointer text-gray-600 hover:text-blue-ocean",
                 ]}
                 aria-pressed={requestMode === "message"}
                 on:click={() => selectRequestMode("message")}
@@ -295,8 +295,8 @@
                         </div>
                         {#each searchMusicResults.filter((item) => item.type === type) as item}
                             <label class={["mb-2 flex cursor-pointer items-center gap-3 rounded-md border p-3 font-noto-sans transition",
-                                { "border-orange-citric bg-orange-citric text-blue-marinho shadow-sm": $form.music === item },
-                                { "border-blue-ocean/10 bg-white text-blue-marinho hover:border-orange-citric/70 hover:bg-orange-citric/5": $form.music !== item },
+                                { "border-orange-amber bg-orange-amber text-blue-marinho shadow-sm": $form.music === item },
+                                { "border-blue-ocean/10 bg-white text-blue-marinho hover:border-orange-amber/70 hover:bg-orange-amber/5": $form.music !== item },
                             ]}>
                                 <input
                                     type="radio"
@@ -362,7 +362,7 @@
 
 <style>
     .song-request-music-list {
-        scrollbar-color: var(--color-orange-citric) transparent;
+        scrollbar-color: var(--color-orange-amber) transparent;
         scrollbar-width: thin;
     }
 
@@ -371,7 +371,7 @@
     }
 
     .song-request-music-list::-webkit-scrollbar-thumb {
-        background: var(--color-orange-citric);
+        background: var(--color-orange-amber);
         border-radius: 9999px;
     }
 

@@ -16,7 +16,7 @@
     const borders = {
         light: "border border-suspense-aurora/20 focus:border-blue-skywave",
         dark: "border border-blue-skywave/40 focus:border-blue-skywave",
-        transparent: "border border-suspense-aurora/25 focus:border-orange-citric",
+        transparent: "border border-suspense-aurora/25 focus:border-orange-amber",
         pill: "border border-transparent focus:border-blue-skywave",
     };
 

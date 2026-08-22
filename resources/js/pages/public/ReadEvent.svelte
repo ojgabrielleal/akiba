@@ -91,7 +91,7 @@
                                             <button
                                                 type="button"
                                                 aria-label={reaction.label}
-                                                class="group/reaction relative flex size-21 cursor-pointer items-center justify-center rounded-full transition duration-300 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric motion-reduce:transform-none motion-reduce:transition-none"
+                                                class="group/reaction relative flex size-21 cursor-pointer items-center justify-center rounded-full transition duration-300 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber motion-reduce:transform-none motion-reduce:transition-none"
                                                 on:click={() => submitReaction(reaction)}
                                             >
                                                 <img src={reaction.image} alt="" aria-hidden="true" class="size-18" />
@@ -122,11 +122,11 @@
                         <ul class="grid gap-5">
                             {#each related as item}
                                 <li class="border-t border-suspense-aurora/45 pt-5 first:border-t-0 first:pt-0">
-                                    <Link href={item.href} class="group block rounded-md transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric motion-reduce:transform-none motion-reduce:transition-none">
+                                    <Link href={item.href} class="group block rounded-md transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber motion-reduce:transform-none motion-reduce:transition-none">
                                         <div class="aspect-[3/2] rounded-md bg-neutral-gray">
                                             <img src={resolvePlaceholderImage(item.cover, "placeholder")} alt="" aria-hidden="true" class="h-full w-full rounded-md object-cover transition duration-300 ease-out group-hover:scale-[1.02] group-focus-visible:scale-[1.02] motion-reduce:transform-none motion-reduce:transition-none" />
                                         </div>
-                                        <h3 class="mt-2 line-clamp-4 font-noto-sans text-base font-black leading-tight text-orange-citric uppercase italic">
+                                        <h3 class="mt-2 line-clamp-4 font-noto-sans text-base font-black leading-tight text-orange-amber uppercase italic">
                                             {item.title}
                                         </h3>
                                     </Link>

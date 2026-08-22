@@ -12,7 +12,7 @@
         underline: {
             list: "border-b border-suspense-aurora/10",
             base: "border-b-2 border-transparent text-suspense-aurora/45",
-            active: "border-orange-citric text-orange-citric",
+            active: "border-orange-amber text-orange-amber",
         },
         pills: {
             list: "",
@@ -38,7 +38,7 @@
                         href={item.href}
                         aria-current={active === item.value ? "page" : undefined}
                         class={[
-                            "flex min-h-10 items-center gap-2 px-4 font-noto-sans text-xs font-extrabold uppercase italic transition hover:text-orange-citric",
+                            "flex min-h-10 items-center gap-2 px-4 font-noto-sans text-xs font-extrabold uppercase italic transition hover:text-orange-amber",
                             selectedVariant.base,
                             { [selectedVariant.active]: active === item.value },
                         ]}
@@ -53,7 +53,7 @@
                         type="button"
                         aria-pressed={active === item.value}
                         class={[
-                            "flex min-h-10 cursor-pointer items-center gap-2 px-4 font-noto-sans text-xs font-extrabold uppercase italic transition hover:text-orange-citric",
+                            "flex min-h-10 cursor-pointer items-center gap-2 px-4 font-noto-sans text-xs font-extrabold uppercase italic transition hover:text-orange-amber",
                             selectedVariant.base,
                             { [selectedVariant.active]: active === item.value },
                         ]}

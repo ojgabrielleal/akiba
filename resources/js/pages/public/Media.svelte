@@ -72,7 +72,7 @@
             {#if eventList.length > 0}
                 <div class="grid grid-cols-2 gap-3 lg:grid-cols-5">
                     {#each eventList as item (item.uuid)}
-                        <Link href={item.href} class={["group overflow-hidden rounded-md bg-orange-citric text-blue-night focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric", publicAnimations.cardInteractive]}>
+                        <Link href={item.href} class={["group overflow-hidden rounded-md bg-orange-amber text-blue-night focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber", publicAnimations.cardInteractive]}>
                             <div class="aspect-[16/9] overflow-hidden bg-neutral-gray">
                                 <img
                                     src={resolvePlaceholderImage(item.cover || item.image, "placeholder")}
@@ -187,7 +187,7 @@
                                 <button
                                     type="button"
                                     class={[
-                                        "min-h-20 cursor-pointer rounded-md bg-blue-ocean px-4 py-4 text-left font-noto-sans text-base font-extrabold uppercase italic leading-tight text-suspense-aurora hover:bg-blue-cerulean focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric",
+                                        "min-h-20 cursor-pointer rounded-md bg-blue-ocean px-4 py-4 text-left font-noto-sans text-base font-extrabold uppercase italic leading-tight text-suspense-aurora hover:bg-blue-cerulean focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber",
                                         publicAnimations.cardInteractive,
                                         item.has_voted && "pointer-events-none opacity-50",
                                     ]}
@@ -218,9 +218,9 @@
                         {#each selectedPoll.options as option (option.uuid)}
                             <label
                                 class={[
-                                    "grid cursor-pointer grid-cols-[1.35rem_1fr] gap-2.5 rounded-md border-2 bg-suspense-aurora px-3 py-2.5 text-blue-night hover:border-orange-citric hover:bg-orange-citric/5",
+                                    "grid cursor-pointer grid-cols-[1.35rem_1fr] gap-2.5 rounded-md border-2 bg-suspense-aurora px-3 py-2.5 text-blue-night hover:border-orange-amber hover:bg-orange-amber/5",
                                     publicAnimations.buttonInteractive,
-                                    selectedOption === option.uuid ? "border-orange-citric shadow-[inset_0_0_0_1px_theme(colors.orange-citric)]" : "border-blue-ocean/25",
+                                    selectedOption === option.uuid ? "border-orange-amber shadow-[inset_0_0_0_1px_theme(colors.orange-amber)]" : "border-blue-ocean/25",
                                 ]}
                             >
                                 <input
@@ -228,14 +228,14 @@
                                     type="radio"
                                     name="option"
                                     value={option.uuid}
-                                    class="mt-0.5 size-5 accent-orange-citric"
+                                    class="mt-0.5 size-5 accent-orange-amber"
                                 />
                                 <span class="min-w-0 text-center">
                                     <span class="block break-words font-noto-sans text-base font-extrabold uppercase italic leading-tight">{option.option}</span>
                                     <span class="mt-2 flex h-2 min-w-30 overflow-hidden rounded-full bg-blue-night/15">
                                         <span
                                             class={[
-                                                "rounded-full bg-orange-citric",
+                                                "rounded-full bg-orange-amber",
                                                 optionPercent(selectedPoll, option) > 0 ? "min-w-8" : "",
                                             ]}
                                             style={`width: ${optionPercent(selectedPoll, option)}%`}

@@ -24,14 +24,14 @@
 
 <header class={classes}>
     <h2 class={[
-        "shrink-0 font-noto-sans font-black uppercase italic",
+        "public-section-heading-title shrink-0 font-noto-sans font-black uppercase italic",
         sizes[size] ?? sizes.md,
         selectedTone.text,
     ]}>
         {title}
     </h2>
     {#if line}
-        <span class={["h-px min-w-4 flex-1", selectedTone.line]} aria-hidden="true"></span>
+        <span class={["public-section-heading-line h-px min-w-4 flex-1", selectedTone.line]} aria-hidden="true"></span>
     {/if}
     {#if $$slots.actions}
         <div class="flex shrink-0 items-center gap-2">

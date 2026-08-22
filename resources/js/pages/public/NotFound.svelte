@@ -52,7 +52,7 @@
                     <button
                         type="button"
                         class={[
-                            "inline-flex min-h-11 min-w-28 items-center justify-center rounded-md border border-orange-citric/55 bg-transparent px-6 py-2 font-noto-sans text-sm font-extrabold uppercase text-orange-citric hover:bg-orange-citric/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric",
+                            "inline-flex min-h-11 min-w-28 items-center justify-center rounded-md border border-orange-amber/55 bg-transparent px-6 py-2 font-noto-sans text-sm font-extrabold uppercase text-orange-amber hover:bg-orange-amber/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber",
                             publicAnimations.buttonInteractive,
                         ]}
                         on:click={() => window.history.back()}
@@ -62,7 +62,7 @@
                     <Link
                         href="/site"
                         class={[
-                            "inline-flex min-h-11 min-w-40 items-center justify-center rounded-md bg-orange-citric px-6 py-2 font-noto-sans text-sm font-extrabold uppercase text-blue-night shadow-[0_0.75rem_1.5rem_rgba(255,163,26,0.22)] hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric",
+                            "inline-flex min-h-11 min-w-40 items-center justify-center rounded-md bg-orange-amber px-6 py-2 font-noto-sans text-sm font-extrabold uppercase text-blue-night shadow-[0_0.75rem_1.5rem_rgba(255,163,26,0.22)] hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber",
                             publicAnimations.buttonInteractive,
                         ]}
                     >

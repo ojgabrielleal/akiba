@@ -169,9 +169,9 @@
                 <button
                     type="button"
                     class={[
-                        "shrink-0 cursor-pointer rounded-md font-noto-sans text-base font-extrabold uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 hover:text-orange-citric focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric motion-reduce:transform-none motion-reduce:transition-none",
+                        "shrink-0 cursor-pointer rounded-md font-noto-sans text-base font-extrabold uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 hover:text-orange-amber focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber motion-reduce:transform-none motion-reduce:transition-none",
                         activeRole?.key === role.key
-                            ? "text-orange-citric"
+                            ? "text-orange-amber"
                             : "text-neutral-gray",
                     ]}
                     on:click={() => selectRole(role)}

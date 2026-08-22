@@ -305,7 +305,7 @@
                     {$player.playing ? "Não" : "Dê o"}
                 </div>
                 <div class={["font-noto-sans font-extrabold uppercase italic",
-                    { "text-orange-citric text-[3.9rem] -mt-6": !$player.playing },
+                    { "text-orange-amber text-[3.9rem] -mt-6": !$player.playing },
                     { "text-blue-skywave text-[3.1rem] -mt-5": $player.playing },
                 ]}>
                     {$player.playing ? "Pause" : "Play"}
@@ -316,7 +316,7 @@
                 aria-busy={$player.loading}
                 disabled={$player.loading && !$player.playing}
                 class={["cursor-pointer shrink-0 w-14 h-14 rounded-full flex justify-center items-center shadow-lg transition duration-200 ease-out hover:scale-105 active:scale-95 motion-reduce:transform-none motion-reduce:transition-none",
-                    { "bg-orange-citric": !$player.playing },
+                    { "bg-orange-amber": !$player.playing },
                     { "bg-blue-skywave": $player.playing },
                     { "cursor-wait": $player.loading },
                 ]}
@@ -342,7 +342,7 @@
                 </span>
                 <span class={[
                     "text-[10px] font-extrabold",
-                    { "text-orange-citric": !$player.playing },
+                    { "text-orange-amber": !$player.playing },
                     { "text-blue-skywave": $player.playing },
                 ]}>
                     {Math.round($player.volume * 100)}%
@@ -358,7 +358,7 @@
                 value={$player.volume}
                 class={[
                     "w-full h-1.5 rounded-full cursor-pointer",
-                    { "accent-orange-citric": !$player.playing },
+                    { "accent-orange-amber": !$player.playing },
                     { "accent-blue-skywave": $player.playing },
                 ]}
                 on:input={(e) => setVolume(e.target.value)}
@@ -377,10 +377,10 @@
             <span class="flex items-center justify-center gap-1">
                 {#if requestActionVisible}
                     <span>& Faça o seu</span>
-                    <strong class="text-orange-citric">Pedido</strong>
+                    <strong class="text-orange-amber">Pedido</strong>
                 {:else}
                     <span>& Escute</span>
-                    <strong class="text-orange-citric">Akiba</strong>
+                    <strong class="text-orange-amber">Akiba</strong>
                 {/if}
             </span>
         </button>
@@ -397,13 +397,13 @@
         0% {
             box-shadow:
                 0 0 16px color-mix(in srgb, var(--color-blue-skywave) 32%, transparent),
-                0 0 28px color-mix(in srgb, var(--color-orange-citric) 16%, transparent);
+                0 0 28px color-mix(in srgb, var(--color-orange-amber) 16%, transparent);
         }
 
         100% {
             box-shadow:
                 0 0 24px color-mix(in srgb, var(--color-blue-skywave) 55%, transparent),
-                0 0 40px color-mix(in srgb, var(--color-orange-citric) 30%, transparent);
+                0 0 40px color-mix(in srgb, var(--color-orange-amber) 30%, transparent);
         }
     }
 

@@ -21,7 +21,7 @@
                             aria-label={`Ouvir podcast: ${podcast.title}`}
                             class="group block rounded-md focus-visible:outline-none"
                         >
-                            <article class={["overflow-hidden rounded-md bg-orange-citric group-focus-visible:ring-2 group-focus-visible:ring-orange-citric", publicAnimations.cardInteractive]}>
+                            <article class={["overflow-hidden rounded-md bg-orange-amber group-focus-visible:ring-2 group-focus-visible:ring-orange-amber", publicAnimations.cardInteractive]}>
                                 <div class="overflow-hidden">
                                     <img
                                         src={resolvePlaceholderImage(podcast.image, "placeholder")}

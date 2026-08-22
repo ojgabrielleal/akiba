@@ -13,8 +13,8 @@
 
 {#if eventList.length > 0}
     <Section styles="public-event-calendar-original container-page mb-10">
-        <div class="mb-5 flex items-center gap-3 after:h-px after:min-w-10 after:flex-1 after:bg-orange-amber after:content-[''] sm:gap-4">
-            <h2 class="whitespace-nowrap font-noto-sans text-[1.3rem] font-black text-orange-amber uppercase italic">
+        <div class="public-section-heading mb-5 flex items-center gap-3 after:h-px after:min-w-10 after:flex-1 after:bg-orange-amber after:content-[''] sm:gap-4">
+            <h2 class="public-section-heading-title whitespace-nowrap font-noto-sans text-[1.3rem] font-black text-orange-amber uppercase italic">
                 <span class="md:hidden">Eventos</span>
                 <span class="hidden md:inline">Calendário de eventos</span>
             </h2>
@@ -28,7 +28,7 @@
                                 <Link
                                     href={`/event/${item.slug}`}
                                     aria-label={`Ver evento: ${item.title}`}
-                                    class="group block overflow-hidden rounded-md bg-blue-ocean font-black transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric motion-reduce:transform-none motion-reduce:transition-none"
+                                    class="group block overflow-hidden rounded-md bg-blue-ocean font-black transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber motion-reduce:transform-none motion-reduce:transition-none"
                                 >
                                     <div class="relative aspect-[16/9] overflow-hidden bg-neutral-gray">
                                         <img
@@ -59,9 +59,9 @@
                                 <Link
                                     href={`/event/${item.slug}`}
                                     aria-label={`Ver evento: ${item.title}`}
-                                    class="group grid grid-cols-[1.5fr_0.85fr_1fr] gap-2 rounded-md font-black transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric motion-reduce:transform-none motion-reduce:transition-none"
+                                    class="group grid grid-cols-[1.5fr_0.85fr_1fr] gap-2 rounded-md font-black transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber motion-reduce:transform-none motion-reduce:transition-none"
                                 >
-                                    <div class="min-w-0 rounded-md bg-orange-citric px-5 py-2.5 text-center text-lg text-blue-night">
+                                    <div class="min-w-0 rounded-md bg-orange-amber px-5 py-2.5 text-center text-lg text-blue-night">
                                         <span class="block truncate">
                                             {item.title}
                                         </span>

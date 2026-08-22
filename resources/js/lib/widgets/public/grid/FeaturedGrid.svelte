@@ -14,7 +14,7 @@
             {#each posts as item (item.uuid)}
                 <li class="min-w-0">
                     <Link href={item.href} aria-label={`Ler destaque: ${item.title}`} class="group block focus-visible:outline-none">
-                        <article class="public-featured-card relative mt-8 h-40 rounded-md bg-gradient-blue-cerulean-glow transition duration-300 ease-out group-hover:-translate-y-1 group-focus-visible:-translate-y-1 group-focus-visible:ring-2 group-focus-visible:ring-orange-citric motion-reduce:transform-none motion-reduce:transition-none">
+                        <article class="public-featured-card relative mt-8 h-40 rounded-md bg-gradient-blue-cerulean-glow transition duration-300 ease-out group-hover:-translate-y-1 group-focus-visible:-translate-y-1 group-focus-visible:ring-2 group-focus-visible:ring-orange-amber motion-reduce:transform-none motion-reduce:transition-none">
                             <div class="relative z-10 w-[58%] p-2 pr-3">
                                 <h3 class="public-featured-card-title line-clamp-5 font-noto-sans text-lg leading-[1.2] font-extrabold text-suspense-aurora uppercase italic sm:text-xl">
                                     {item.title}

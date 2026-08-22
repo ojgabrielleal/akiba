@@ -115,8 +115,8 @@
     }
 
     .akiba-loader-mark-path {
-        fill: color-mix(in srgb, var(--color-orange-citric) 0%, transparent);
-        stroke: color-mix(in srgb, var(--color-orange-citric) 86%, transparent);
+        fill: color-mix(in srgb, var(--color-orange-amber) 0%, transparent);
+        stroke: color-mix(in srgb, var(--color-orange-amber) 86%, transparent);
         stroke-width: 1.35;
         stroke-linejoin: round;
         stroke-linecap: round;
@@ -146,23 +146,23 @@
 
     @keyframes akiba-mark-draw {
         0% {
-            fill: color-mix(in srgb, var(--color-orange-citric) 0%, transparent);
+            fill: color-mix(in srgb, var(--color-orange-amber) 0%, transparent);
             stroke-dashoffset: 170;
         }
 
         58% {
-            fill: color-mix(in srgb, var(--color-orange-citric) 0%, transparent);
+            fill: color-mix(in srgb, var(--color-orange-amber) 0%, transparent);
             stroke-dashoffset: 0;
         }
 
         76%,
         94% {
-            fill: color-mix(in srgb, var(--color-orange-citric) 86%, transparent);
+            fill: color-mix(in srgb, var(--color-orange-amber) 86%, transparent);
             stroke-dashoffset: 0;
         }
 
         100% {
-            fill: color-mix(in srgb, var(--color-orange-citric) 0%, transparent);
+            fill: color-mix(in srgb, var(--color-orange-amber) 0%, transparent);
             stroke-dashoffset: -170;
         }
     }
@@ -191,7 +191,7 @@
         }
 
         .akiba-loader-mark-path {
-            fill: var(--color-orange-citric);
+            fill: var(--color-orange-amber);
             stroke-dashoffset: 0;
         }
 

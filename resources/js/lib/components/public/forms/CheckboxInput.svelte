@@ -9,7 +9,7 @@
     export let group = undefined;
 
     $: classes = [
-        "mt-0.5 size-4 shrink-0 cursor-pointer accent-orange-citric focus:ring-orange-citric",
+        "mt-0.5 size-4 shrink-0 cursor-pointer accent-orange-amber focus:ring-orange-amber",
         className,
     ];
 

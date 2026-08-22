@@ -41,7 +41,7 @@
                         label={item.name}
                         icon={item.icon}
                         tone="neutral"
-                        iconClass="group-hover/item:filter-orange-citric"
+                        iconClass="group-hover/item:filter-orange-amber"
                         surface="transparent"
                         size="navbar"
                         tooltipPosition="bottom"
@@ -119,7 +119,7 @@
                                         src={item.icon}
                                         alt=""
                                         aria-hidden="true"
-                                        class="w-5 h-5 filter-neutral-gray group-hover/item:filter-orange-citric"
+                                        class="w-5 h-5 filter-neutral-gray group-hover/item:filter-orange-amber"
                                     />
                                     {item.name}
                                 </Link>

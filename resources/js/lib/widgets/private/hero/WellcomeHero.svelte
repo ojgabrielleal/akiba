@@ -48,7 +48,7 @@
                         src="/svg/materials.svg"
                         alt=""
                         aria-hidden="true"
-                        class="w-6 filter-orange-citric"
+                        class="w-6 filter-orange-amber"
                     />
                     Criar matéria
                 </Link>
@@ -62,7 +62,7 @@
                         src="/svg/locution.svg"
                         alt=""
                         aria-hidden="true"
-                        class="w-6 filter-orange-citric"
+                        class="w-6 filter-orange-amber"
                     />
                     Locutar
                 </Link>
@@ -76,7 +76,7 @@
                         src="/svg/alerts.svg"
                         alt=""
                         aria-hidden="true"
-                        class="w-6 filter-orange-citric"
+                        class="w-6 filter-orange-amber"
                     />
                     Adicionar aviso
                 </Link>
@@ -90,7 +90,7 @@
                         src="/svg/events.svg"
                         alt=""
                         aria-hidden="true"
-                        class="w-6 filter-orange-citric"
+                        class="w-6 filter-orange-amber"
                     />
                     Criar evento
                 </Link>
@@ -104,7 +104,7 @@
                         src="/svg/download.svg"
                         alt=""
                         aria-hidden="true"
-                        class="w-6 filter-orange-citric"
+                        class="w-6 filter-orange-amber"
                     />
                     Upar arquivo
                 </Link>

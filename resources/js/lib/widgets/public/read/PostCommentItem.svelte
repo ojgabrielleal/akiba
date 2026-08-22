@@ -21,7 +21,7 @@
     $: isPending = item.status === "pending";
     $: canOwnerDelete = item.can_delete && !item.can_moderate_delete;
     $: canShowModeration = item.can_approve || item.can_hide || item.can_restore || item.can_moderate_delete;
-    $: actionIconClass = "public-comment-action-icon h-[17px] w-[17px] object-contain opacity-70 group-hover:filter-orange-citric group-hover:opacity-100";
+    $: actionIconClass = "public-comment-action-icon h-[17px] w-[17px] object-contain opacity-70 group-hover:filter-orange-amber group-hover:opacity-100";
 
     const fallbackAvatar = (event, gender = null) => {
         event.currentTarget.src = resolvePlaceholderImage(null, "avatar", gender);
@@ -264,7 +264,7 @@
                         </button>
                         <button
                             type="submit"
-                            class="cursor-pointer rounded-full bg-orange-citric px-4 py-2 text-xs font-black text-blue-night uppercase italic disabled:cursor-not-allowed disabled:opacity-50"
+                            class="cursor-pointer rounded-full bg-orange-amber px-4 py-2 text-xs font-black text-blue-night uppercase italic disabled:cursor-not-allowed disabled:opacity-50"
                             disabled={!editComment.trim()}
                         >
                             Salvar
@@ -296,7 +296,7 @@
                         </button>
                         <button
                             type="submit"
-                            class="cursor-pointer rounded-full bg-orange-citric px-4 py-2 text-xs font-black text-blue-night uppercase italic disabled:cursor-not-allowed disabled:opacity-50"
+                            class="cursor-pointer rounded-full bg-orange-amber px-4 py-2 text-xs font-black text-blue-night uppercase italic disabled:cursor-not-allowed disabled:opacity-50"
                             disabled={!replyComment.trim()}
                         >
                             Responder

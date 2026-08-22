@@ -86,9 +86,9 @@
                             href={social.href}
                             target="_blank"
                             rel="noopener noreferrer"
-                            class="group/social relative flex min-h-34 overflow-hidden rounded-md bg-blue-ocean p-4 text-left transition duration-300 ease-out hover:-translate-y-0.5 hover:bg-blue-cerulean focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric motion-reduce:transform-none motion-reduce:transition-none"
+                            class="group/social relative flex min-h-34 overflow-hidden rounded-md bg-blue-ocean p-4 text-left transition duration-300 ease-out hover:-translate-y-0.5 hover:bg-blue-cerulean focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber motion-reduce:transform-none motion-reduce:transition-none"
                         >
-                            <span class="absolute inset-y-0 left-0 w-1.5 bg-orange-citric" aria-hidden="true"></span>
+                            <span class="absolute inset-y-0 left-0 w-1.5 bg-orange-amber" aria-hidden="true"></span>
                             <span class="flex min-w-0 flex-1 flex-col gap-2 pl-1">
                                 <span class="flex items-center gap-3">
                                     <span class="flex size-12 shrink-0 items-center justify-center rounded-md bg-blue-night">
@@ -100,7 +100,7 @@
                                         />
                                     </span>
                                     <span class="min-w-0">
-                                        <span class="block truncate text-base font-black uppercase italic text-orange-amber group-hover/social:text-orange-citric">
+                                        <span class="block truncate text-base font-black uppercase italic text-orange-amber group-hover/social:text-orange-amber">
                                             {social.name}
                                         </span>
                                         <span class="mt-0.5 block text-[0.65rem] font-black uppercase italic text-blue-skywave">

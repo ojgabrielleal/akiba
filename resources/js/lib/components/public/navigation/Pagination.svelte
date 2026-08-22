@@ -78,7 +78,7 @@
                     <button
                         type="button"
                         aria-label="Página anterior"
-                        class="grid size-8 cursor-pointer place-items-center rounded-md bg-orange-citric disabled:cursor-not-allowed disabled:opacity-50"
+                        class="grid size-8 cursor-pointer place-items-center rounded-md bg-orange-amber disabled:cursor-not-allowed disabled:opacity-50"
                         disabled={isLoading}
                         on:click={() => visit(previousUrl, "previous")}
                     >
@@ -109,7 +109,7 @@
                     <button
                         type="button"
                         aria-label="Próxima página"
-                        class="grid size-8 cursor-pointer place-items-center rounded-md bg-orange-citric disabled:cursor-not-allowed disabled:opacity-50"
+                        class="grid size-8 cursor-pointer place-items-center rounded-md bg-orange-amber disabled:cursor-not-allowed disabled:opacity-50"
                         disabled={isLoading}
                         on:click={() => visit(nextUrl, "next")}
                     >

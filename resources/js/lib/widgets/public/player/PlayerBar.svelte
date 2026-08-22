@@ -161,7 +161,7 @@
                 <button
                     type="button"
                     aria-label="Faça o seu pedido"
-                    class="song-request-active relative z-10 hidden size-11 cursor-pointer items-center justify-center rounded-full bg-orange-citric transition duration-200 ease-out hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric active:scale-95 motion-reduce:transform-none motion-reduce:transition-none lg:flex"
+                    class="song-request-active relative z-10 hidden size-11 cursor-pointer items-center justify-center rounded-full bg-orange-amber transition duration-200 ease-out hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber active:scale-95 motion-reduce:transform-none motion-reduce:transition-none lg:flex"
                     on:click={handleSongRequestAction}
                 >
                     <img
@@ -178,8 +178,8 @@
                     type="button"
                     aria-label={`Volume ${Math.round($player.volume * 100)}%`}
                     class={[
-                        "flex size-11 cursor-pointer items-center justify-center rounded-full transition duration-200 ease-out hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric active:scale-95 motion-reduce:transform-none motion-reduce:transition-none",
-                        { "bg-orange-citric": !$player.playing },
+                        "flex size-11 cursor-pointer items-center justify-center rounded-full transition duration-200 ease-out hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber active:scale-95 motion-reduce:transform-none motion-reduce:transition-none",
+                        { "bg-orange-amber": !$player.playing },
                         { "bg-blue-skywave": $player.playing },
                         { "cursor-wait": $player.loading },
                     ]}
@@ -196,7 +196,7 @@
                         <div class="mb-2 flex items-center justify-between font-noto-sans text-[0.65rem] font-black uppercase">
                             <span class="text-suspense-aurora/45">Volume</span>
                             <span class={[
-                                { "text-orange-citric": !$player.playing },
+                                { "text-orange-amber": !$player.playing },
                                 { "text-blue-skywave": $player.playing },
                             ]}>{Math.round($player.volume * 100)}%</span>
                         </div>
@@ -210,7 +210,7 @@
                             value={$player.volume}
                             class={[
                                 "w-full cursor-pointer",
-                                { "accent-orange-citric": !$player.playing },
+                                { "accent-orange-amber": !$player.playing },
                                 { "accent-blue-skywave": $player.playing },
                             ]}
                             on:input={(event) => setVolume(event.currentTarget.value)}
@@ -227,7 +227,7 @@
                 class={[
                     "relative z-10",
                     "flex size-11 cursor-pointer items-center justify-center rounded-full transition duration-200 ease-out hover:scale-105 active:scale-95 motion-reduce:transform-none motion-reduce:transition-none",
-                    { "bg-orange-citric": !$player.playing },
+                    { "bg-orange-amber": !$player.playing },
                     { "bg-blue-skywave": $player.playing },
                     { "cursor-wait": $player.loading },
                 ]}
@@ -281,13 +281,13 @@
         0% {
             box-shadow:
                 0 0 16px color-mix(in srgb, var(--color-blue-skywave) 32%, transparent),
-                0 0 28px color-mix(in srgb, var(--color-orange-citric) 16%, transparent);
+                0 0 28px color-mix(in srgb, var(--color-orange-amber) 16%, transparent);
         }
 
         100% {
             box-shadow:
                 0 0 24px color-mix(in srgb, var(--color-blue-skywave) 55%, transparent),
-                0 0 40px color-mix(in srgb, var(--color-orange-citric) 30%, transparent);
+                0 0 40px color-mix(in srgb, var(--color-orange-amber) 30%, transparent);
         }
     }
 

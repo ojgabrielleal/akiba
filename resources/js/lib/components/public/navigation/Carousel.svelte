@@ -78,7 +78,7 @@
         <button
             type="button"
             aria-label="Voltar no carrossel"
-            class="absolute left-2 top-1/2 z-10 hidden size-11 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-orange-citric shadow-xl sm:flex"
+            class="absolute left-2 top-1/2 z-10 hidden size-11 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-orange-amber shadow-xl sm:flex"
             on:keydown={handleKeydown}
             on:click={() => scroll("left")}
         >
@@ -101,7 +101,7 @@
         <button
             type="button"
             aria-label="Avançar no carrossel"
-            class="absolute right-2 top-1/2 z-10 hidden size-11 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-orange-citric shadow-xl sm:flex"
+            class="absolute right-2 top-1/2 z-10 hidden size-11 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-orange-amber shadow-xl sm:flex"
             on:keydown={handleKeydown}
             on:click={() => scroll("right")}
         >
