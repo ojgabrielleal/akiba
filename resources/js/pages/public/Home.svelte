@@ -168,6 +168,7 @@
         .home-featured-reviews-background.has-featured-posts::before {
             background-image: var(--featured-background);
             background-size: 100% auto;
+            mask-image: linear-gradient(to bottom, #000 0 68%, transparent 86%);
         }
 
         .home-podcasts-background {
