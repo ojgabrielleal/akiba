@@ -13,8 +13,8 @@
 
 {#if eventList.length > 0}
     <Section styles="public-event-calendar-original container-page mb-10">
-        <div class="public-section-heading mb-5 flex items-center gap-3 after:h-px after:min-w-10 after:flex-1 after:bg-orange-amber after:content-[''] sm:gap-4">
-            <h2 class="public-section-heading-title whitespace-nowrap font-noto-sans text-[1.3rem] font-black text-orange-amber uppercase italic">
+        <div class="public-section-heading mb-5 flex items-center gap-3 after:h-px after:min-w-10 after:flex-1 after:bg-orange-citric after:content-[''] sm:gap-4">
+            <h2 class="public-section-heading-title whitespace-nowrap font-noto-sans text-[1.3rem] font-black text-orange-citric uppercase italic">
                 <span class="md:hidden">Eventos</span>
                 <span class="hidden md:inline">Calendário de eventos</span>
             </h2>

@@ -23,8 +23,8 @@
 {#if postList.length > 0}
     <section class={["public-post-list-grid", title ? styles : ""]}>
         {#if title}
-            <div class="public-section-heading mb-5 flex items-center gap-4 after:h-px after:flex-1 after:bg-orange-amber after:content-['']">
-                <h2 class="public-section-heading-title whitespace-nowrap font-noto-sans text-[1.3rem] font-black text-orange-amber uppercase italic">
+            <div class="public-section-heading mb-5 flex items-center gap-4 after:h-px after:flex-1 after:bg-orange-citric after:content-['']">
+                <h2 class="public-section-heading-title whitespace-nowrap font-noto-sans text-[1.3rem] font-black text-orange-citric uppercase italic">
                     {title}
                 </h2>
             </div>

@@ -7,7 +7,7 @@
     export let line = true;
 
     const tones = {
-        accent: { text: "text-orange-amber", line: "bg-orange-amber" },
+        accent: { text: "text-orange-citric", line: "bg-orange-citric" },
         primary: { text: "text-blue-skywave", line: "bg-blue-skywave" },
         light: { text: "text-suspense-aurora", line: "bg-suspense-aurora/40" },
     };

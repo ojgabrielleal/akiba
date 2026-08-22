@@ -5,7 +5,7 @@
     export let spacing = "md";
 
     const tones = {
-        accent: { line: "bg-orange-amber", text: "text-orange-amber" },
+        accent: { line: "bg-orange-citric", text: "text-orange-citric" },
         primary: { line: "bg-blue-skywave", text: "text-blue-skywave" },
         light: { line: "bg-suspense-aurora/30", text: "text-suspense-aurora" },
     };
