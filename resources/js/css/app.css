@@ -49,15 +49,13 @@
 
     --gradient-blue-cerulean-glow: linear-gradient(
         50deg,
-        color-mix(in srgb, var(--color-blue-cerulean) 40%, transparent) 0%,
-        var(--color-blue-cerulean) 50%,
-        color-mix(in srgb, var(--color-blue-cerulean) 40%, transparent) 100%
+        var(--color-blue-marinho) 0%,
+        var(--color-blue-cerulean) 100%
     );
 
     --gradient-featured-card-night: linear-gradient(
         110deg,
-        var(--color-blue-marinho) 0%,
-        var(--color-blue-night) 50%,
+        var(--color-blue-night) 0%,
         var(--color-blue-marinho) 100%
     );
 
@@ -70,8 +68,7 @@
 
     --gradient-orange-morning-aurora: linear-gradient(
         50deg,
-        var(--color-orange-morning) 0%,
-        var(--color-neutral-white) 50%,
+        var(--color-orange-citric) 0%,
         var(--color-orange-morning) 100%
     );
 
