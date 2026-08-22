@@ -28,6 +28,7 @@
     $: canRequestSong = requestActionVisible && air?.allows_song_requests;
 
     let modalRef;
+    let coverLightboxOpen = false;
 
     onMount(() =>
         listenForOAuthAction(
@@ -85,7 +86,23 @@
         toggleAudio();
     };
 
+    const openCoverLightbox = () => {
+        coverLightboxOpen = true;
+    };
+
+    const closeCoverLightbox = () => {
+        coverLightboxOpen = false;
+    };
+
+    const handleKeydown = (event) => {
+        if (coverLightboxOpen && event.key === "Escape") {
+            closeCoverLightbox();
+        }
+    };
+
 </script>
+
+<svelte:window on:keydown={handleKeydown} />
 
 <CustomModal bind:this={modalRef}>
     <div slot="content" let:close>
@@ -111,20 +128,35 @@
     </div>
 </CustomModal>
 
+{#if coverLightboxOpen}
+    <button
+        type="button"
+        class="fixed inset-0 z-[220] flex cursor-zoom-out items-center justify-center bg-blue-night/92 p-4 backdrop-blur-sm focus-visible:outline-none"
+        aria-label="Fechar capa da música"
+        on:click={closeCoverLightbox}
+    >
+        <img
+            src={resolvePlaceholderImage(playerData.current_song.cover, "placeholder")}
+            alt={playerData.current_song.music || "Capa da música atual"}
+            class="max-h-[88vh] max-w-[92vw] rounded-md object-contain shadow-2xl shadow-blue-night/70"
+        />
+    </button>
+{/if}
+
 <!-- Phrase Section -->
 {#if canRender}
 <section class="main-player-phrase-background w-full bg-contain bg-right bg-no-repeat mt-5 mb-4"  style={`--main-player-phrase-texture: url('${playerData.phrase.texture}'); background-image: var(--main-player-phrase-texture), var(--main-player-phrase-gradient, var(--gradient-blue-ocean-cerulean));`}>
     <div class="container-player h-[90px] relative">
-        <div class="absolute -top-8 left-0 z-10 xl:-left-28">
+        <div class="absolute -top-6 left-0 z-10 xl:-left-24">
             <img
                 src={playerData.phrase.decoration.left}
                 alt=""
                 aria-hidden="true"
-                class="w-28"
+                class="w-24"
                 loading="lazy"
             />
         </div>
-        <div class="main-player-phrase-text w-full min-w-0 h-[90px] pr-32 xl:pr-40 pl-20 xl:pl-0 flex items-center text-suspense-aurora text-[1.65rem] font-noto-sans font-extrabold uppercase italic">
+        <div class="main-player-phrase-text w-full min-w-0 h-[90px] pr-30 xl:pr-36 pl-18 xl:pl-0 flex items-center text-suspense-aurora text-[1.65rem] font-noto-sans font-extrabold uppercase italic">
             <span class="block w-full overflow-hidden text-ellipsis text-left whitespace-nowrap leading-9">
                 {#each splitHighlightedText(playerData.phrase.text) as phrasePart}
                     <span class:main-player-phrase-highlight={phrasePart.highlighted} class:text-orange-amber={phrasePart.highlighted}>
@@ -133,21 +165,21 @@
                 {/each}
             </span>
         </div>
-        <div class="absolute right-4 bottom-0 z-10 xl:-right-20">
+        <div class="absolute right-4 bottom-0 z-10 xl:-right-18">
             <img
                 src={playerData.phrase.icon}
                 alt=""
                 aria-hidden="true"
-                class="w-36"
+                class="w-32"
                 loading="lazy"
             />
         </div>
-        <div class="absolute -top-8 right-0 z-10 xl:-right-28">
+        <div class="absolute -top-6 right-0 z-10 xl:-right-24">
             <img
                 src={playerData.phrase.decoration.right}
                 alt=""
                 aria-hidden="true"
-                class="w-28"
+                class="w-24"
                 loading="lazy"
             />
         </div>
@@ -209,15 +241,19 @@
         </div>
         <!--Current Song Information-->
         <div class="-mt-3 flex gap-3 items-end">
-            <div class="w-20 shrink-0">
+            <button
+                type="button"
+                class="group/cover w-20 shrink-0 cursor-zoom-in rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber"
+                aria-label="Ver capa da música em tela cheia"
+                on:click={openCoverLightbox}
+            >
                 <img
                     src={resolvePlaceholderImage(playerData.current_song.cover, "placeholder")}
-                    alt=""
-                    aria-hidden="true"
-                    class="rounded-md transition duration-300 ease-out hover:scale-[1.03] motion-reduce:transform-none motion-reduce:transition-none"
+                    alt={playerData.current_song.music || "Capa da música atual"}
+                    class="rounded-md transition duration-300 ease-out group-hover/cover:scale-[1.03] group-focus-visible/cover:scale-[1.03] motion-reduce:transform-none motion-reduce:transition-none"
                     loading="lazy"
                 />
-            </div>
+            </button>
             <div class="w-full srink-0">
                 <div class="text-orange-amber font-noto-sans uppercase italic">
                     Tocando agora:
