@@ -109,7 +109,7 @@
                 rows="4"
                 maxlength="1000"
                 placeholder="Escreva seu comentário..."
-                class="min-h-28 w-full resize-none rounded-md border-2 border-blue-skywave/30 bg-blue-ocean px-4 py-3 text-sm font-bold text-suspense-aurora placeholder:text-suspense-aurora/45 focus:outline-none"
+                class="public-comment-input min-h-28 w-full resize-none rounded-md border-2 border-blue-skywave/30 bg-blue-ocean px-4 py-3 text-sm font-bold text-suspense-aurora placeholder:text-suspense-aurora/45 focus:outline-none"
             ></textarea>
             <div class="flex justify-end">
                 <button
@@ -123,13 +123,15 @@
         </form>
     </AuthGuard>
 
-    <div class="mt-6 grid gap-4">
+    <div class="mt-6">
         {#if commentList.length}
-            {#each commentList as item}
-                <PostCommentItem {post} {item} {oauth} />
-            {/each}
+            <div class="grid gap-[14px]">
+                {#each commentList as item}
+                    <PostCommentItem {post} {item} {oauth} />
+                {/each}
+            </div>
         {:else}
-            <p class="rounded-md border border-blue-skywave/30 px-4 py-5 text-center text-sm font-bold text-suspense-aurora/70">
+            <p class="public-comment-empty rounded-md border border-blue-skywave/30 px-4 py-5 text-center text-sm font-bold text-suspense-aurora/70">
                 Ainda não há comentários por aqui.
             </p>
         {/if}

@@ -89,6 +89,22 @@ Route::middleware(['oauth.resolve', 'inertia'])->group(function () {
         ->middleware('oauth')
         ->name('post.comment.delete');
 
+    Route::patch('/materia/{post:slug}/comment/{comment}/approve', [ReadController::class, 'approveComment'])
+        ->middleware('auth')
+        ->name('post.comment.approve');
+
+    Route::patch('/materia/{post:slug}/comment/{comment}/hide', [ReadController::class, 'hideComment'])
+        ->middleware('auth')
+        ->name('post.comment.hide');
+
+    Route::patch('/materia/{post:slug}/comment/{comment}/restore', [ReadController::class, 'restoreComment'])
+        ->middleware('auth')
+        ->name('post.comment.restore');
+
+    Route::delete('/materia/{post:slug}/comment/{comment}/moderate', [ReadController::class, 'destroyComment'])
+        ->middleware('auth')
+        ->name('post.comment.destroy');
+
     Route::post('/poll/option/{option:uuid}/vote', [MediaController::class, 'votePollOption'])
         ->name('poll.option.vote');
 

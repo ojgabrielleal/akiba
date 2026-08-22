@@ -2,14 +2,14 @@
 
 namespace Database\Factories;
 
+use App\Models\Comment;
 use App\Models\OAuthAccount;
-
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\PostComment>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Comment>
  */
-class PostCommentFactory extends Factory
+class CommentFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -22,6 +22,7 @@ class PostCommentFactory extends Factory
             'author_type' => OAuthAccount::class,
             'author_id' => OAuthAccount::factory(),
             'comment' => fake()->paragraph(),
+            'status' => Comment::STATUS_VISIBLE,
         ];
     }
 }

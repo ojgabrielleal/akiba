@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Models\Post;
 use Illuminate\Support\Facades\DB;
-use App\Models\PostComment;
+use App\Models\Comment;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\PostReaction;
 use App\Models\User;
@@ -31,7 +31,7 @@ class PostService
         });
     }
 
-    public function storeComment(Post $post, Model $author, array $data): PostComment
+    public function storeComment(Post $post, Model $author, array $data): Comment
     {
         return DB::transaction(function () use ($post, $author, $data) {
             $comment = $post->comments()->make([
@@ -46,7 +46,7 @@ class PostService
         });
     }
 
-    public function updateComment(PostComment $comment, array $data): PostComment
+    public function updateComment(Comment $comment, array $data): Comment
     {
         return DB::transaction(function () use ($comment, $data) {
             $comment->update([
@@ -57,9 +57,38 @@ class PostService
         });
     }
 
-    public function deleteComment(PostComment $comment): void
+    public function deleteComment(Comment $comment): void
     {
         DB::transaction(fn () => $comment->delete());
+    }
+
+    public function approveComment(Comment $comment, User $moderator, ?string $reason = null): Comment
+    {
+        return $this->moderateComment($comment, $moderator, Comment::STATUS_VISIBLE, $reason);
+    }
+
+    public function hideComment(Comment $comment, User $moderator, ?string $reason = null): Comment
+    {
+        return $this->moderateComment($comment, $moderator, Comment::STATUS_HIDDEN, $reason);
+    }
+
+    public function restoreComment(Comment $comment, User $moderator, ?string $reason = null): Comment
+    {
+        return $this->moderateComment($comment, $moderator, Comment::STATUS_VISIBLE, $reason);
+    }
+
+    private function moderateComment(Comment $comment, User $moderator, string $status, ?string $reason = null): Comment
+    {
+        return DB::transaction(function () use ($comment, $moderator, $status, $reason) {
+            $comment->update([
+                'status' => $status,
+                'moderated_by' => $moderator->id,
+                'moderated_at' => now(),
+                'moderation_reason' => $reason,
+            ]);
+
+            return $comment;
+        });
     }
 
     public function storeReaction(Post $post, Model $reactor, string $name): ?PostReaction

@@ -35,8 +35,21 @@ class PermissionSeeder extends Seeder
             ['name' => 'administration.module.view', 'label' => '[Administração] Acesso ao módulo'],
             ['name' => 'report.module.view', 'label' => '[Relatórios] Acesso ao módulo'],
             ['name' => 'trash.module.view', 'label' => '[Lixeira] Acesso ao módulo'],
+            ['name' => 'comment.module.view', 'label' => '[Comentários] Acesso ao módulo'],
             ['name' => 'trash.restore', 'label' => '[Lixeira] Reativar'],
             ['name' => 'trash.delete', 'label' => '[Lixeira] Excluir definitivamente'],
+
+            /*
+            |--------------------------------------------------------------------------
+            | Comentários
+            |--------------------------------------------------------------------------
+            */
+            ['name' => 'comment.list', 'label' => '[Comentários] Listar'],
+            ['name' => 'comment.view', 'label' => '[Comentários] Visualizar'],
+            ['name' => 'comment.approve', 'label' => '[Comentários] Aprovar'],
+            ['name' => 'comment.hide', 'label' => '[Comentários] Ocultar'],
+            ['name' => 'comment.restore', 'label' => '[Comentários] Restaurar'],
+            ['name' => 'comment.delete', 'label' => '[Comentários] Excluir definitivamente'],
 
             /*
             |--------------------------------------------------------------------------

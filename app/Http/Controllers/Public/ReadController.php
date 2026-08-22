@@ -5,16 +5,17 @@ namespace App\Http\Controllers\Public;
 use App\Services\PageViewService;
 use App\Services\PostService;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Post\PostCommentResource;
+use App\Http\Resources\CommentResource;
 use App\Http\Resources\Post\PostResource;
 use App\Models\Post;
-use App\Models\PostComment;
+use App\Models\Comment;
 use Inertia\Inertia;
 use App\Http\Requests\Post\StorePostCommentRequest;
 use App\Http\Requests\Post\StorePostReactionRequest;
 use App\Http\Requests\Post\TogglePostLikeRequest;
 use App\Support\AuthenticatedMember;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Database\Eloquent\Builder;
 
 class ReadController extends Controller
 {
@@ -47,17 +48,24 @@ class ReadController extends Controller
 
     private function indexComments(Post $post)
     {
-        return PostCommentResource::collection(
+        $canModerate = request()->user()?->can('viewAny', Comment::class) ?? false;
+
+        return CommentResource::collection(
             $post->comments()
                 ->whereNull('parent_id')
-                ->with(['author', 'replies.author'])
+                ->when(! $canModerate, fn (Builder $query) => $query->visible())
+                ->with([
+                    'author',
+                    'replies' => fn ($query) => $query->when(! $canModerate, fn (Builder $query) => $query->visible()),
+                    'replies.author',
+                ])
                 ->latest()
                 ->paginate(10)
                 ->withQueryString()
         );
     }
 
-    private function ensureCommentAuthor(PostComment $comment): void
+    private function ensureCommentAuthor(Comment $comment): void
     {
         $author = AuthenticatedMember::fromRequest(request());
 
@@ -121,9 +129,9 @@ class ReadController extends Controller
         return back(303);
     }
 
-    public function updateComment(StorePostCommentRequest $request, PostService $service, Post $post, PostComment $comment): RedirectResponse
+    public function updateComment(StorePostCommentRequest $request, PostService $service, Post $post, Comment $comment): RedirectResponse
     {
-        abort_unless($comment->post_id === $post->id, 404);
+        abort_unless($comment->commentable_type === $post->getMorphClass() && (int) $comment->commentable_id === (int) $post->id, 404);
 
         $this->ensureCommentAuthor($comment);
 
@@ -132,15 +140,64 @@ class ReadController extends Controller
         return back(303);
     }
 
-    public function deleteComment(Post $post, PostComment $comment, PostService $service): RedirectResponse
+    public function deleteComment(Post $post, Comment $comment, PostService $service): RedirectResponse
     {
-        abort_unless($comment->post_id === $post->id, 404);
+        abort_unless($comment->commentable_type === $post->getMorphClass() && (int) $comment->commentable_id === (int) $post->id, 404);
 
         $this->ensureCommentAuthor($comment);
 
         $service->deleteComment($comment);
 
         return back(303);
+    }
+
+    public function approveComment(Post $post, Comment $comment, PostService $service): RedirectResponse
+    {
+        $this->ensurePostComment($post, $comment);
+        $this->authorize('approve', $comment);
+
+        $service->approveComment($comment, request()->user());
+
+        return back(303);
+    }
+
+    public function hideComment(Post $post, Comment $comment, PostService $service): RedirectResponse
+    {
+        $this->ensurePostComment($post, $comment);
+        $this->authorize('hide', $comment);
+
+        $service->hideComment($comment, request()->user());
+
+        return back(303);
+    }
+
+    public function restoreComment(Post $post, Comment $comment, PostService $service): RedirectResponse
+    {
+        $this->ensurePostComment($post, $comment);
+        $this->authorize('restore', $comment);
+
+        $service->restoreComment($comment, request()->user());
+
+        return back(303);
+    }
+
+    public function destroyComment(Post $post, Comment $comment, PostService $service): RedirectResponse
+    {
+        $this->ensurePostComment($post, $comment);
+        $this->authorize('delete', $comment);
+
+        $service->deleteComment($comment);
+
+        return back(303);
+    }
+
+    private function ensurePostComment(Post $post, Comment $comment): void
+    {
+        abort_unless(
+            $comment->commentable_type === $post->getMorphClass()
+                && (int) $comment->commentable_id === (int) $post->id,
+            404
+        );
     }
 
     public function render(PageViewService $service, string $slug)

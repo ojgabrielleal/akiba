@@ -81,6 +81,11 @@ class Podcast extends Model
         return $this->morphMany(PageView::class, 'viewable');
     }
 
+    public function comments()
+    {
+        return $this->morphMany(Comment::class, 'commentable');
+    }
+
     public function author()
     {
         return $this->belongsTo(User::class, 'user_id');

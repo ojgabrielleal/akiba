@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Post;
-use App\Models\PostComment;
+use App\Models\Comment;
 use App\Models\PostReaction;
 use App\Models\PostReference;
 use App\Models\PostReview;
@@ -46,7 +46,7 @@ class PostSeeder extends Seeder
             ->has(PostReference::factory(2), 'references')
             ->has(PostTag::factory(2), 'tags')
             ->has(PostReaction::factory(5), 'reactions')
-            ->has(PostComment::factory(3), 'comments')
+            ->has(Comment::factory(3), 'comments')
             ->create();
     }
 
@@ -58,7 +58,7 @@ class PostSeeder extends Seeder
             ->has(PostReference::factory(2), 'references')
             ->has(PostTag::factory(2), 'tags')
             ->has(PostReaction::factory(5), 'reactions')
-            ->has(PostComment::factory(3), 'comments')
+            ->has(Comment::factory(3), 'comments')
             ->afterCreating(fn (Post $post) => PostReview::factory(5)
                 ->for($user, 'author')
                 ->create(['post_id' => $post->id]))
@@ -73,7 +73,7 @@ class PostSeeder extends Seeder
             ->has(PostReference::factory(2), 'references')
             ->has(PostTag::factory(2), 'tags')
             ->has(PostReaction::factory(5), 'reactions')
-            ->has(PostComment::factory(3), 'comments')
+            ->has(Comment::factory(3), 'comments')
             ->create();
     }
 }

@@ -198,8 +198,8 @@ class User extends Authenticatable
         return $this->morphMany(PostLike::class, 'liker');
     }
 
-    public function postComments()
+    public function comments()
     {
-        return $this->morphMany(PostComment::class, 'author');
+        return $this->morphMany(Comment::class, 'author');
     }
 }

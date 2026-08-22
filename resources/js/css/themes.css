@@ -191,6 +191,48 @@
     color: var(--color-blue-night);
 }
 
+[data-public-theme-scope][data-public-theme="light"] .public-comment-card {
+    background-color: var(--color-suspense-aurora);
+    border-color: color-mix(in srgb, var(--color-blue-night) 10%, transparent);
+    box-shadow: 0 1px 2px 0 rgb(0 0 20 / 0.05);
+}
+
+[data-public-theme-scope][data-public-theme="light"] .public-comment-card::before {
+    border-right-color: color-mix(in srgb, var(--color-blue-night) 10%, transparent);
+}
+
+[data-public-theme-scope][data-public-theme="light"] .public-comment-card::after {
+    border-right-color: var(--color-suspense-aurora);
+}
+
+[data-public-theme-scope][data-public-theme="light"] .public-comment-thread-mask {
+    background-color: var(--color-suspense-aurora);
+}
+
+[data-public-theme-scope][data-public-theme="light"] .public-comment-action-icon {
+    filter: invert(8%) sepia(27%) saturate(5191%) hue-rotate(227deg) brightness(96%) contrast(124%);
+}
+
+[data-public-theme-scope][data-public-theme="light"] .public-comment-input {
+    background-color: var(--color-suspense-aurora);
+    border-color: color-mix(in srgb, var(--color-blue-night) 10%, transparent);
+    color: var(--color-blue-night);
+}
+
+[data-public-theme-scope][data-public-theme="light"] .public-comment-input::placeholder {
+    color: color-mix(in srgb, var(--color-blue-night) 45%, transparent);
+}
+
+[data-public-theme-scope][data-public-theme="light"] .public-comment-input:focus {
+    border-color: var(--color-orange-citric);
+}
+
+[data-public-theme-scope][data-public-theme="light"] .public-comment-empty {
+    background-color: var(--color-suspense-aurora);
+    border-color: color-mix(in srgb, var(--color-blue-night) 10%, transparent);
+    color: color-mix(in srgb, var(--color-blue-night) 70%, transparent);
+}
+
 [data-public-theme-scope][data-public-theme="light"] .public-post-list-icon {
     filter: invert(8%) sepia(27%) saturate(5191%) hue-rotate(227deg) brightness(96%) contrast(124%);
 }
@@ -427,6 +469,48 @@
 
 [data-public-theme-scope][data-public-theme="night"] .public-notification-panel .hover\:bg-suspense-aurora\/5:hover {
     background-color: color-mix(in srgb, var(--color-suspense-aurora) 7%, transparent);
+}
+
+[data-public-theme-scope][data-public-theme="night"] .public-comment-card {
+    background-color: color-mix(in srgb, #00095f 72%, var(--color-neutral-black));
+    border-color: color-mix(in srgb, var(--color-suspense-aurora) 10%, transparent);
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+}
+
+[data-public-theme-scope][data-public-theme="night"] .public-comment-card::before {
+    border-right-color: color-mix(in srgb, var(--color-suspense-aurora) 10%, transparent);
+}
+
+[data-public-theme-scope][data-public-theme="night"] .public-comment-card::after {
+    border-right-color: color-mix(in srgb, #00095f 72%, var(--color-neutral-black));
+}
+
+[data-public-theme-scope][data-public-theme="night"] .public-comment-thread-mask {
+    background-color: var(--color-neutral-ink);
+}
+
+[data-public-theme-scope][data-public-theme="night"] .public-comment-action-icon {
+    filter: invert(93%) sepia(32%) saturate(268%) hue-rotate(331deg) brightness(115%) contrast(104%);
+}
+
+[data-public-theme-scope][data-public-theme="night"] .public-comment-input {
+    background-color: var(--color-neutral-black);
+    border-color: color-mix(in srgb, var(--color-suspense-aurora) 14%, transparent);
+    color: var(--color-suspense-aurora);
+}
+
+[data-public-theme-scope][data-public-theme="night"] .public-comment-input::placeholder {
+    color: color-mix(in srgb, var(--color-suspense-aurora) 42%, transparent);
+}
+
+[data-public-theme-scope][data-public-theme="night"] .public-comment-input:focus {
+    border-color: var(--color-orange-citric);
+}
+
+[data-public-theme-scope][data-public-theme="night"] .public-comment-empty {
+    background-color: color-mix(in srgb, var(--color-neutral-black) 40%, transparent);
+    border-color: color-mix(in srgb, var(--color-suspense-aurora) 14%, transparent);
+    color: color-mix(in srgb, var(--color-suspense-aurora) 70%, transparent);
 }
 
 [data-public-theme-scope][data-public-theme="night"] .public-advertisement-slot {

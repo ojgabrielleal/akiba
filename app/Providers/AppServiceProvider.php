@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\Comment;
 use App\Models\User;
+use App\Policies\CommentPolicy;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -29,6 +31,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         $this->registerPermissions();
+        Gate::policy(Comment::class, CommentPolicy::class);
     }
 
     /**
@@ -48,8 +51,15 @@ class AppServiceProvider extends ServiceProvider
             'administration.module.view',
             'report.module.view',
             'trash.module.view',
+            'comment.module.view',
             'trash.restore',
             'trash.delete',
+            'comment.list',
+            'comment.view',
+            'comment.approve',
+            'comment.hide',
+            'comment.restore',
+            'comment.delete',
             'form.submission.list',
             'form.submission.review',
             'locution.start',

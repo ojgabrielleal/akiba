@@ -7,6 +7,7 @@
     export let item = {};
     export let oauth = null;
     export let depth = 0;
+    export let isLast = false;
 
     let editing = false;
     let replying = false;
@@ -16,6 +17,11 @@
     $: replies = item.replies ?? [];
     $: canReply = Boolean(oauth?.authenticated);
     $: nested = depth > 0;
+    $: isHidden = item.status === "hidden";
+    $: isPending = item.status === "pending";
+    $: canOwnerDelete = item.can_delete && !item.can_moderate_delete;
+    $: canShowModeration = item.can_approve || item.can_hide || item.can_restore || item.can_moderate_delete;
+    $: actionIconClass = "public-comment-action-icon h-[17px] w-[17px] object-contain opacity-70 group-hover:filter-orange-citric group-hover:opacity-100";
 
     const fallbackAvatar = (event, gender = null) => {
         event.currentTarget.src = resolvePlaceholderImage(null, "avatar", gender);
@@ -58,13 +64,49 @@
             preserveScroll: true,
         });
     };
+
+    const moderateComment = (action, method = "patch") => {
+        const url = `/materia/${post.slug}/comment/${item.uuid}/${action}`;
+        const options = {
+            only: ["comments"],
+            preserveScroll: true,
+        };
+
+        if (method === "delete") {
+            router.delete(url, options);
+            return;
+        }
+
+        router.patch(url, {}, options);
+    };
 </script>
 
-<div>
-    <div class="flex items-start gap-6">
+<div class={["relative", nested ? "" : ""]}>
+    <div class={["relative flex items-start", nested ? "gap-[26px]" : "gap-[28px]"]}>
+        {#if nested}
+            <svg
+                class="absolute -left-[40px] top-0 hidden h-[28px] w-[32px] overflow-visible sm:block"
+                viewBox="0 0 32 28"
+                fill="none"
+                aria-hidden="true"
+            >
+                <path
+                    d="M1 0 V14 C1 21 6 24 13 24 H22"
+                    stroke="#00a8ff"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                />
+                <path d="M22 19 L32 24 L22 29 Z" fill="#00a8ff" />
+            </svg>
+            {#if isLast}
+                <span class="public-comment-thread-mask absolute -left-[40px] top-[31px] bottom-[-14px] z-20 hidden w-[2px] bg-[#000036] sm:block"></span>
+            {/if}
+        {/if}
+
         <div class={[
-            "mt-2 shrink-0 overflow-hidden rounded-full border-2 border-suspense-aurora bg-suspense-aurora shadow",
-            nested ? "size-10" : "size-12",
+            "relative z-10 shrink-0 overflow-hidden rounded-full border-[3px] border-suspense-aurora bg-suspense-aurora",
+            nested ? "mt-[1px] size-[44px]" : "mt-[2px] size-[56px]",
         ]}>
             <img
                 src={resolvePlaceholderImage(item.author?.avatar, "avatar", item.author?.gender)}
@@ -76,36 +118,42 @@
         </div>
 
         <article class={[
-            "relative min-w-0 flex-1 rounded-md bg-blue-ocean shadow-[0_8px_0_rgba(0,0,20,0.12)] before:absolute before:left-[-0.9rem] before:size-0 before:border-y-[0.85rem] before:border-r-[0.95rem] before:border-y-transparent before:border-r-blue-ocean before:content-['']",
-            nested ? "p-3 before:top-[1.2rem]" : "p-4 before:top-[1.45rem]",
+            "public-comment-card relative min-h-[58px] min-w-0 flex-1 rounded-[7px] border border-transparent bg-[#082b8f] px-[18px] py-[10px] shadow-none before:absolute before:left-[-20px] before:top-[16px] before:size-0 before:border-y-[13px] before:border-r-[21px] before:border-y-transparent before:border-r-[#082b8f] before:content-[''] after:absolute after:left-[-18px] after:top-[17px] after:size-0 after:border-y-[12px] after:border-r-[20px] after:border-y-transparent after:border-r-[#082b8f] after:content-['']",
+            isHidden ? "opacity-70 outline outline-1 outline-blue-skywave/40" : "",
         ]}>
-            <div class="mb-3 flex flex-wrap items-start justify-between gap-2">
-                <div class="min-w-0">
-                    <p class={[
-                        "truncate font-black text-suspense-aurora uppercase italic",
-                        nested ? "text-xs" : "text-sm",
-                    ]}>
-                        {item.author?.name}
-                    </p>
-                    <p class={[
-                        "font-bold text-suspense-aurora/60",
-                        nested ? "text-[0.68rem]" : "text-xs",
-                    ]}>
-                        {item.created_at}{item.is_edited ? " · editado" : ""}
-                    </p>
+            <div class="flex items-start justify-between gap-4">
+                <div class="min-w-0 text-suspense-aurora">
+                    <div class="flex min-w-0 flex-wrap items-center gap-x-[7px] gap-y-1 leading-none">
+                        <p class="truncate text-[12px] font-black uppercase italic leading-none tracking-normal text-suspense-aurora">
+                            {item.author?.name}
+                        </p>
+                        <span class="text-[11px] font-black leading-none text-suspense-aurora/55">
+                            • {item.created_at}{item.is_edited ? " · editado" : ""}
+                        </span>
+                        {#if isHidden}
+                            <span class="rounded-[2px] bg-blue-night/70 px-2 py-0.5 text-[10px] font-black leading-none text-orange-amber uppercase italic">
+                                Oculto
+                            </span>
+                        {:else if isPending}
+                            <span class="rounded-[2px] bg-orange-amber px-2 py-0.5 text-[10px] font-black leading-none text-blue-night uppercase italic">
+                                Pendente
+                            </span>
+                        {/if}
+                    </div>
                 </div>
 
-                <div class="flex shrink-0 flex-wrap justify-end gap-px">
+                <div class="flex shrink-0 flex-wrap justify-end gap-[8px] pt-[7px]">
                     {#if canReply && !nested}
                         <IconButton
                             variant="reply"
                             label="Responder"
                             size="sm"
                             tone="neutral"
+                            surface="transparent"
                             tooltipPosition="bottom"
                             interactive={false}
-                            iconClass="size-3.5 group-hover:filter-orange-citric"
-                            class="group size-6 bg-transparent"
+                            iconClass={actionIconClass}
+                            class="public-comment-action-button group size-[20px]"
                             on:click={() => replying = !replying}
                         />
                     {/if}
@@ -115,25 +163,85 @@
                             label="Editar"
                             size="sm"
                             tone="neutral"
+                            surface="transparent"
                             tooltipPosition="bottom"
                             interactive={false}
-                            iconClass="size-3.5 group-hover:filter-orange-citric"
-                            class="group size-6 bg-transparent"
+                            iconClass={actionIconClass}
+                            class="public-comment-action-button group size-[20px]"
                             on:click={() => editing = true}
                         />
                     {/if}
-                    {#if item.can_delete}
+                    {#if canOwnerDelete}
                         <IconButton
                             variant="trash"
                             label="Apagar"
                             size="sm"
                             tone="neutral"
+                            surface="transparent"
                             tooltipPosition="bottom"
                             interactive={false}
-                            iconClass="size-3.5 group-hover:filter-orange-citric"
-                            class="group size-6 bg-transparent"
+                            iconClass={actionIconClass}
+                            class="public-comment-action-button group size-[20px]"
                             on:click={deleteComment}
                         />
+                    {/if}
+                    {#if canShowModeration}
+                        {#if item.can_approve && isPending}
+                            <IconButton
+                                icon="/svg/eye.svg"
+                                label="Aprovar"
+                                size="sm"
+                                tone="neutral"
+                                surface="transparent"
+                                tooltipPosition="bottom"
+                                interactive={false}
+                                iconClass={actionIconClass}
+                                class="public-comment-action-button group size-[20px]"
+                                on:click={() => moderateComment("approve")}
+                            />
+                        {/if}
+                        {#if item.can_hide && !isHidden}
+                            <IconButton
+                                icon="/svg/close.svg"
+                                label="Ocultar"
+                                size="sm"
+                                tone="neutral"
+                                surface="transparent"
+                                tooltipPosition="bottom"
+                                interactive={false}
+                                iconClass={actionIconClass}
+                                class="public-comment-action-button group size-[20px]"
+                                on:click={() => moderateComment("hide")}
+                            />
+                        {/if}
+                        {#if item.can_restore && isHidden}
+                            <IconButton
+                                icon="/svg/return.svg"
+                                label="Restaurar"
+                                size="sm"
+                                tone="neutral"
+                                surface="transparent"
+                                tooltipPosition="bottom"
+                                interactive={false}
+                                iconClass={actionIconClass}
+                                class="public-comment-action-button group size-[20px]"
+                                on:click={() => moderateComment("restore")}
+                            />
+                        {/if}
+                        {#if item.can_moderate_delete}
+                            <IconButton
+                                variant="trash"
+                                label="Excluir definitivamente"
+                                size="sm"
+                                tone="neutral"
+                                surface="transparent"
+                                tooltipPosition="bottom"
+                                interactive={false}
+                                iconClass={actionIconClass}
+                                class="public-comment-action-button group size-[20px]"
+                                on:click={() => moderateComment("moderate", "delete")}
+                            />
+                        {/if}
                     {/if}
                 </div>
             </div>
@@ -144,7 +252,7 @@
                         bind:value={editComment}
                         rows="4"
                         maxlength="1000"
-                        class="min-h-24 w-full resize-none rounded-md border-2 border-blue-skywave/30 bg-blue-marinho px-4 py-3 text-sm font-bold text-suspense-aurora placeholder:text-suspense-aurora/45 focus:outline-none"
+                        class="public-comment-input min-h-24 w-full resize-none rounded-md border-2 border-blue-skywave/30 bg-blue-marinho px-4 py-3 text-sm font-bold text-suspense-aurora placeholder:text-suspense-aurora/45 focus:outline-none"
                     ></textarea>
                     <div class="flex flex-wrap justify-end gap-2">
                         <button
@@ -164,10 +272,7 @@
                     </div>
                 </form>
             {:else}
-                <p class={[
-                    "whitespace-pre-line font-medium leading-relaxed text-suspense-aurora",
-                    nested ? "text-xs" : "text-sm",
-                ]}>
+                <p class="mt-[6px] whitespace-pre-line text-[15px] font-semibold leading-[1.35] tracking-normal text-suspense-aurora">
                     {item.comment}
                 </p>
             {/if}
@@ -179,7 +284,7 @@
                         rows="3"
                         maxlength="1000"
                         placeholder="Escreva sua resposta..."
-                        class="min-h-20 w-full resize-none rounded-md border-2 border-blue-skywave/30 bg-blue-marinho px-4 py-3 text-sm font-bold text-suspense-aurora placeholder:text-suspense-aurora/45 focus:outline-none"
+                        class="public-comment-input min-h-20 w-full resize-none rounded-md border-2 border-blue-skywave/30 bg-blue-marinho px-4 py-3 text-sm font-bold text-suspense-aurora placeholder:text-suspense-aurora/45 focus:outline-none"
                     ></textarea>
                     <div class="flex flex-wrap justify-end gap-2">
                         <button
@@ -203,9 +308,9 @@
     </div>
 
     {#if replies.length}
-        <div class="mt-3 grid gap-3 border-l-2 border-blue-skywave/45 pl-4 sm:ml-[4.25rem] sm:pl-5">
-            {#each replies as reply}
-                <svelte:self post={post} item={reply} {oauth} depth={depth + 1} />
+        <div class="relative mt-[16px] grid gap-[14px] pl-[66px] before:absolute before:bottom-[35px] before:left-[26px] before:top-[-48px] before:w-[2px] before:bg-[#00a8ff] before:content-[''] max-sm:pl-[34px] max-sm:before:hidden">
+            {#each replies as reply, index}
+                <svelte:self post={post} item={reply} {oauth} depth={depth + 1} isLast={index === replies.length - 1} />
             {/each}
         </div>
     {/if}
