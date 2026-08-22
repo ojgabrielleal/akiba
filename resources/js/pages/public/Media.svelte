@@ -105,7 +105,7 @@
             emptyMessage="As fotos da comunidade aparecem aqui quando forem publicadas."
         />
 
-        <Section title="Enquetes" styles="container-page mt-10 mb-12">
+        <Section title="Enquetes" styles="public-polls-original container-page mt-10 mb-12">
             {#if poll}
                 <div class="grid gap-3">
                     <form

@@ -42,61 +42,65 @@
     /* Gradients */
     --gradient-blue-ocean-cerulean: linear-gradient(
         50deg,
-        var(--color-blue-ocean) 10%, 
-        color-mix(in srgb, var(--color-blue-cerulean) 30%, transparent) 28%,
-        var(--color-blue-cerulean) 100%
+        var(--color-blue-ocean) 0%,
+        var(--color-blue-marinho) 50%,
+        var(--color-blue-ocean) 100%
     );
 
     --gradient-blue-cerulean-glow: linear-gradient(
         50deg,
-        color-mix(in srgb, var(--color-blue-cerulean) 40%, transparent) 2%,
-        var(--color-blue-cerulean) 100%
+        color-mix(in srgb, var(--color-blue-cerulean) 40%, transparent) 0%,
+        var(--color-blue-cerulean) 50%,
+        color-mix(in srgb, var(--color-blue-cerulean) 40%, transparent) 100%
     );
 
     --gradient-featured-card-night: linear-gradient(
         110deg,
-        var(--color-neutral-black) 0%,
-        var(--color-neutral-ink) 18%,
-        #00095f 100%
+        var(--color-blue-marinho) 0%,
+        var(--color-blue-night) 50%,
+        var(--color-blue-marinho) 100%
     );
 
     --gradient-blue-ocean-skywave: linear-gradient(
         110deg,
         var(--color-blue-ocean) 0%,
-        var(--color-blue-cerulean) 72%,
-        var(--color-blue-skywave) 100%
+        var(--color-blue-skywave) 50%,
+        var(--color-blue-ocean) 100%
     );
 
     --gradient-orange-morning-aurora: linear-gradient(
         50deg,
-        var(--color-orange-morning) 10%, 
-        var(--color-neutral-white) 100%
+        var(--color-orange-morning) 0%,
+        var(--color-neutral-white) 50%,
+        var(--color-orange-morning) 100%
     );
 
     --gradient-green-forest-pine: linear-gradient(
         270deg, 
-        var(--color-green-forest) 0%, 
-        var(--color-green-pine) 100%
+        var(--color-green-forest) 0%,
+        var(--color-green-pine) 50%,
+        var(--color-green-forest) 100%
     );
 
     --gradient-green-pine-mint: linear-gradient(
         110deg,
         var(--color-green-pine) 0%,
-        var(--color-green-forest) 72%,
-        var(--color-green-mint) 100%
+        var(--color-green-mint) 50%,
+        var(--color-green-pine) 100%
     );
 
     --gradient-red-crimson-blood: linear-gradient(
         270deg, 
-        var(--color-red-crimson) 0%, 
-        var(--color-red-blood) 100%
+        var(--color-red-crimson) 0%,
+        var(--color-red-blood) 50%,
+        var(--color-red-crimson) 100%
     );
 
     --gradient-red-blood-crimson: linear-gradient(
         110deg,
         var(--color-red-blood) 0%,
-        color-mix(in srgb, var(--color-red-blood) 55%, var(--color-red-crimson)) 62%,
-        var(--color-red-crimson) 100%
+        var(--color-red-crimson) 50%,
+        var(--color-red-blood) 100%
     );
 }
 

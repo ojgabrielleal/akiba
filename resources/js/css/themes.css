@@ -372,27 +372,27 @@
 }
 
 [data-public-theme-scope][data-public-theme="night"] :where(.bg-blue-night):not([role="dialog"], [role="dialog"] *) {
-    background-color: var(--color-neutral-black);
+    background-color: var(--color-blue-night);
 }
 
 [data-public-theme-scope][data-public-theme="night"] :where(.bg-blue-night\/15, .bg-blue-night\/35, .bg-blue-night\/55, .bg-blue-night\/60, .bg-blue-night\/75, .bg-blue-night\/90, .bg-blue-night\/95):not([role="dialog"], [role="dialog"] *) {
-    background-color: color-mix(in srgb, var(--color-neutral-black) 86%, transparent);
+    background-color: color-mix(in srgb, var(--color-blue-night) 86%, transparent);
 }
 
 [data-public-theme-scope][data-public-theme="night"] :where(.bg-blue-marinho):not([role="dialog"], [role="dialog"] *) {
-    background-color: var(--color-neutral-ink);
+    background-color: var(--color-blue-marinho);
 }
 
 [data-public-theme-scope][data-public-theme="night"] :where(.bg-blue-ocean):not([role="dialog"], [role="dialog"] *) {
-    background-color: color-mix(in srgb, #00095f 72%, var(--color-neutral-black));
+    background-color: color-mix(in srgb, var(--color-blue-marinho) 78%, var(--color-blue-night));
 }
 
 [data-public-theme-scope][data-public-theme="night"] :where(.bg-blue-ocean\/20, .bg-blue-ocean\/25, .bg-blue-ocean\/90, .bg-blue-ocean\/95):not([role="dialog"], [role="dialog"] *) {
-    background-color: color-mix(in srgb, #00095f 38%, var(--color-neutral-black));
+    background-color: color-mix(in srgb, var(--color-blue-marinho) 48%, transparent);
 }
 
 [data-public-theme-scope][data-public-theme="night"] :where(.bg-blue-cerulean):not([role="dialog"], [role="dialog"] *) {
-    background-color: color-mix(in srgb, #00095f 78%, var(--color-blue-skywave));
+    background-color: color-mix(in srgb, var(--color-blue-marinho) 84%, var(--color-blue-skywave));
 }
 
 [data-public-theme-scope][data-public-theme="night"] :where(.bg-gradient-blue-cerulean-glow, .bg-gradient-blue-ocean-skywave, .bg-gradient-blue-ocean-cerulean):not([role="dialog"], [role="dialog"] *) {
@@ -400,11 +400,31 @@
 }
 
 [data-public-theme-scope][data-public-theme="night"] .public-default-gradient {
-    background: color-mix(in srgb, #00095f 72%, var(--color-neutral-black));
+    background: linear-gradient(135deg, var(--color-blue-marinho) 0%, var(--color-blue-night) 50%, var(--color-blue-marinho) 100%);
+}
+
+[data-public-theme-scope][data-public-theme="night"] .public-polls-original .public-default-gradient {
+    background: var(--gradient-blue-cerulean-glow);
 }
 
 [data-public-theme-scope][data-public-theme="night"] :where(.hover\:bg-blue-cerulean:hover):not([role="dialog"], [role="dialog"] *) {
-    background-color: color-mix(in srgb, #00095f 84%, var(--color-blue-skywave));
+    background-color: color-mix(in srgb, var(--color-blue-marinho) 88%, var(--color-blue-skywave));
+}
+
+[data-public-theme-scope][data-public-theme="night"] .public-polls-original :where(.bg-blue-ocean):not([role="dialog"], [role="dialog"] *) {
+    background-color: var(--color-blue-ocean);
+}
+
+[data-public-theme-scope][data-public-theme="night"] .public-polls-original :where(.hover\:bg-blue-cerulean:hover):not([role="dialog"], [role="dialog"] *) {
+    background-color: var(--color-blue-cerulean);
+}
+
+[data-public-theme-scope][data-public-theme="night"] .public-event-calendar-original :where(.bg-blue-ocean):not([role="dialog"], [role="dialog"] *) {
+    background-color: var(--color-blue-ocean);
+}
+
+[data-public-theme-scope][data-public-theme="night"] .public-event-calendar-original :where(.hover\:bg-blue-cerulean:hover):not([role="dialog"], [role="dialog"] *) {
+    background-color: var(--color-blue-cerulean);
 }
 
 [data-public-theme-scope][data-public-theme="night"] :where(.placeholder\:text-suspense-aurora\/35, .placeholder\:text-suspense-aurora\/45):not([role="dialog"], [role="dialog"] *)::placeholder {
@@ -412,27 +432,27 @@
 }
 
 [data-public-theme-scope][data-public-theme="night"] .home-player-background {
-    background-color: var(--color-neutral-black);
+    background-color: var(--color-blue-night);
 }
 
 [data-public-theme-scope][data-public-theme="night"] .public-header-background {
-    background-color: var(--color-neutral-black);
+    background-color: var(--color-blue-night);
 }
 
 [data-public-theme-scope][data-public-theme="night"] .home-content-background {
-    background-color: var(--color-neutral-ink);
+    background-color: var(--color-blue-marinho);
 }
 
 [data-public-theme-scope][data-public-theme="night"] .public-page-background {
-    background-color: var(--color-neutral-ink);
+    background-color: var(--color-blue-marinho);
 }
 
 [data-public-theme-scope][data-public-theme="night"] .public-page-background.bg-blue-night {
-    background-color: var(--color-neutral-black);
+    background-color: var(--color-blue-night);
 }
 
 [data-public-theme-scope][data-public-theme="night"] .public-read-content-background {
-    background-color: var(--color-neutral-ink);
+    background-color: var(--color-blue-marinho);
 }
 
 [data-public-theme-scope] .public-read-body,
@@ -457,7 +477,7 @@
 }
 
 [data-public-theme-scope][data-public-theme="night"] .public-notification-panel {
-    background-color: color-mix(in srgb, var(--color-neutral-black) 94%, transparent);
+    background-color: color-mix(in srgb, var(--color-blue-night) 94%, transparent);
     border-color: color-mix(in srgb, var(--color-suspense-aurora) 10%, transparent);
     color: var(--color-suspense-aurora);
     --tw-shadow-color: rgb(0 0 0 / 0.5);
@@ -472,7 +492,7 @@
 }
 
 [data-public-theme-scope][data-public-theme="night"] .public-comment-card {
-    background-color: color-mix(in srgb, #00095f 72%, var(--color-neutral-black));
+    background-color: color-mix(in srgb, var(--color-blue-marinho) 86%, var(--color-blue-night));
     border-color: color-mix(in srgb, var(--color-suspense-aurora) 10%, transparent);
     box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.3);
 }
@@ -482,11 +502,11 @@
 }
 
 [data-public-theme-scope][data-public-theme="night"] .public-comment-card::after {
-    border-right-color: color-mix(in srgb, #00095f 72%, var(--color-neutral-black));
+    border-right-color: color-mix(in srgb, var(--color-blue-marinho) 86%, var(--color-blue-night));
 }
 
 [data-public-theme-scope][data-public-theme="night"] .public-comment-thread-mask {
-    background-color: var(--color-neutral-ink);
+    background-color: var(--color-blue-marinho);
 }
 
 [data-public-theme-scope][data-public-theme="night"] .public-comment-action-icon {
@@ -494,7 +514,7 @@
 }
 
 [data-public-theme-scope][data-public-theme="night"] .public-comment-input {
-    background-color: var(--color-neutral-black);
+    background-color: var(--color-blue-night);
     border-color: color-mix(in srgb, var(--color-suspense-aurora) 14%, transparent);
     color: var(--color-suspense-aurora);
 }
@@ -508,13 +528,13 @@
 }
 
 [data-public-theme-scope][data-public-theme="night"] .public-comment-empty {
-    background-color: color-mix(in srgb, var(--color-neutral-black) 40%, transparent);
+    background-color: color-mix(in srgb, var(--color-blue-night) 46%, transparent);
     border-color: color-mix(in srgb, var(--color-suspense-aurora) 14%, transparent);
     color: color-mix(in srgb, var(--color-suspense-aurora) 70%, transparent);
 }
 
 [data-public-theme-scope][data-public-theme="night"] .public-advertisement-slot {
-    background-color: var(--color-neutral-ink);
+    background-color: var(--color-blue-marinho);
     border-color: color-mix(in srgb, var(--color-blue-skywave) 22%, transparent);
 }
 
@@ -535,7 +555,7 @@
 }
 
 [data-public-theme-scope][data-public-theme="night"] .public-editorial-title {
-    background-color: var(--color-neutral-black);
+    background-color: var(--color-blue-night);
 }
 
 [data-public-theme-scope][data-public-theme="night"] .public-editorial-title-hero {
@@ -543,7 +563,7 @@
 }
 
 [data-public-theme-scope][data-public-theme="night"] .public-editorial-title-phrase {
-    background: var(--color-neutral-black);
+    background: var(--color-blue-night);
 }
 
 [data-public-theme-scope][data-public-theme="night"] .public-team-carousel-name {
@@ -572,7 +592,7 @@
 }
 
 [data-public-theme-scope][data-public-theme="night"] .public-recruitment-input {
-    background-color: var(--color-neutral-ink) !important;
+    background-color: var(--color-blue-marinho) !important;
     border-color: color-mix(in srgb, var(--color-suspense-aurora) 18%, transparent) !important;
     color: var(--color-suspense-aurora) !important;
 }
@@ -582,7 +602,7 @@
 }
 
 [data-public-theme-scope][data-public-theme="night"] .public-recruitment-input option {
-    background-color: var(--color-neutral-ink);
+    background-color: var(--color-blue-marinho);
     color: var(--color-suspense-aurora);
 }
 
@@ -592,14 +612,14 @@
 
 [data-public-theme-scope][data-public-theme="night"] .public-footer,
 [data-public-theme-scope][data-public-theme="night"] .public-player-bar {
-    background-color: var(--color-neutral-black);
+    background-color: var(--color-blue-night);
     border-color: color-mix(in srgb, var(--color-suspense-aurora) 10%, transparent);
 }
 
 [data-public-theme-scope][data-public-theme="night"] .public-footer-social,
 [data-public-theme-scope][data-public-theme="night"] .public-footer-note,
 [data-public-theme-scope][data-public-theme="night"] .public-player-bar-volume {
-    background-color: var(--color-neutral-ink);
+    background-color: var(--color-blue-marinho);
     border-color: color-mix(in srgb, var(--color-suspense-aurora) 12%, transparent);
 }
 
@@ -617,29 +637,29 @@
 }
 
 [data-public-theme-scope][data-public-theme="night"] .public-tooltip {
-    background-color: var(--color-neutral-ink);
+    background-color: var(--color-blue-marinho);
     border-color: color-mix(in srgb, var(--color-suspense-aurora) 14%, transparent);
     color: var(--color-suspense-aurora);
 }
 
 [data-public-theme-scope][data-public-theme="night"] .public-tooltip-arrow.border-t-blue-ocean {
-    border-top-color: var(--color-neutral-ink);
+    border-top-color: var(--color-blue-marinho);
 }
 
 [data-public-theme-scope][data-public-theme="night"] .public-tooltip-arrow.border-r-blue-ocean {
-    border-right-color: var(--color-neutral-ink);
+    border-right-color: var(--color-blue-marinho);
 }
 
 [data-public-theme-scope][data-public-theme="night"] .public-tooltip-arrow.border-b-blue-ocean {
-    border-bottom-color: var(--color-neutral-ink);
+    border-bottom-color: var(--color-blue-marinho);
 }
 
 [data-public-theme-scope][data-public-theme="night"] .public-tooltip-arrow.border-l-blue-ocean {
-    border-left-color: var(--color-neutral-ink);
+    border-left-color: var(--color-blue-marinho);
 }
 
 [data-public-theme-scope][data-public-theme="night"] .public-cookie-consent {
-    background-color: color-mix(in srgb, var(--color-neutral-black) 94%, transparent);
+    background-color: color-mix(in srgb, var(--color-blue-night) 94%, transparent);
     border-color: color-mix(in srgb, var(--color-orange-amber) 42%, transparent);
     box-shadow: 0 1.25rem 2.5rem rgb(0 0 0 / 0.5);
 }
@@ -678,24 +698,26 @@
     --color-green-pine: #004100;
     --gradient-blue-ocean-cerulean: linear-gradient(
         50deg,
-        var(--color-blue-ocean) 10%,
-        color-mix(in srgb, var(--color-blue-cerulean) 30%, transparent) 28%,
-        var(--color-blue-cerulean) 100%
+        var(--color-blue-ocean) 0%,
+        var(--color-blue-marinho) 50%,
+        var(--color-blue-ocean) 100%
     );
     --gradient-blue-cerulean-glow: linear-gradient(
         50deg,
-        color-mix(in srgb, var(--color-blue-cerulean) 40%, transparent) 2%,
-        var(--color-blue-cerulean) 100%
+        color-mix(in srgb, var(--color-blue-cerulean) 40%, transparent) 0%,
+        var(--color-blue-cerulean) 50%,
+        color-mix(in srgb, var(--color-blue-cerulean) 40%, transparent) 100%
     );
     --gradient-blue-ocean-skywave: linear-gradient(
         110deg,
         var(--color-blue-ocean) 0%,
-        var(--color-blue-cerulean) 72%,
-        var(--color-blue-skywave) 100%
+        var(--color-blue-skywave) 50%,
+        var(--color-blue-ocean) 100%
     );
     --gradient-orange-morning-aurora: linear-gradient(
         50deg,
-        var(--color-orange-morning) 10%,
-        var(--color-neutral-white) 100%
+        var(--color-orange-morning) 0%,
+        var(--color-neutral-white) 50%,
+        var(--color-orange-morning) 100%
     );
 }

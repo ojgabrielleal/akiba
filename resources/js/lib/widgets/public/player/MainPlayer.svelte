@@ -114,7 +114,7 @@
 <!-- Phrase Section -->
 {#if canRender}
 <section class="main-player-phrase-background w-full bg-contain bg-right bg-no-repeat mt-5 mb-7"  style={`--main-player-phrase-texture: url('${playerData.phrase.texture}'); background-image: var(--main-player-phrase-texture), var(--main-player-phrase-gradient, var(--gradient-blue-ocean-cerulean));`}>
-    <div class="container-player h-30 relative">
+    <div class="container-player h-26 relative">
         <div class="absolute -top-8 left-0 z-10 xl:-left-28">
             <img
                 src={playerData.phrase.decoration.left}
@@ -124,7 +124,7 @@
                 loading="lazy"
             />
         </div>
-        <div class="main-player-phrase-text w-full min-w-0 h-30 pr-32 xl:pr-40 pl-20 xl:pl-0 flex items-center text-suspense-aurora text-3xl font-noto-sans font-extrabold uppercase italic">
+        <div class="main-player-phrase-text w-full min-w-0 h-26 pr-32 xl:pr-40 pl-20 xl:pl-0 flex items-center text-suspense-aurora text-[1.65rem] font-noto-sans font-extrabold uppercase italic">
             <span class="block w-full overflow-hidden text-ellipsis text-left whitespace-nowrap leading-9">
                 {#each splitHighlightedText(playerData.phrase.text) as phrasePart}
                     <span class:main-player-phrase-highlight={phrasePart.highlighted} class:text-orange-amber={phrasePart.highlighted}>
@@ -138,7 +138,7 @@
                 src={playerData.phrase.icon}
                 alt=""
                 aria-hidden="true"
-                class="w-40"
+                class="w-36"
                 loading="lazy"
             />
         </div>
