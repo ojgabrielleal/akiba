@@ -195,6 +195,14 @@
     filter: invert(8%) sepia(27%) saturate(5191%) hue-rotate(227deg) brightness(96%) contrast(124%);
 }
 
+[data-public-theme-scope][data-public-theme="light"] .public-team-member-details {
+    color: var(--color-suspense-aurora);
+}
+
+[data-public-theme-scope][data-public-theme="light"] .public-team-member-detail {
+    background-color: var(--color-orange-amber);
+}
+
 [data-public-theme-scope][data-public-theme="light"] .public-post-list-grid .hover\:shadow-lg:hover {
     box-shadow: none;
 }
@@ -464,6 +472,14 @@
 
 [data-public-theme-scope][data-public-theme="night"] .public-team-member-section-title {
     color: var(--color-orange-morning);
+}
+
+[data-public-theme-scope][data-public-theme="night"] .public-team-member-details {
+    color: var(--color-suspense-aurora);
+}
+
+[data-public-theme-scope][data-public-theme="night"] .public-team-member-detail {
+    background-color: var(--color-orange-amber);
 }
 
 [data-public-theme-scope][data-public-theme="night"] .public-contact-title {

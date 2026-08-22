@@ -54,14 +54,14 @@
             </div>
         </div>
 
-        <div class="mt-2 grid gap-2 font-noto-sans text-xs font-black uppercase italic text-blue-night sm:text-sm md:grid-cols-3">
-            <div class="rounded-sm bg-suspense-aurora px-5 py-1 text-center">
+        <div class="public-team-member-details mt-2 grid gap-2 font-noto-sans text-xs font-black uppercase italic text-blue-night sm:text-sm md:grid-cols-3">
+            <div class="public-team-member-detail rounded-sm bg-suspense-aurora px-5 py-1 text-center">
                 {member.role}
             </div>
-            <div class="rounded-sm bg-suspense-aurora px-5 py-1 text-center">
+            <div class="public-team-member-detail rounded-sm bg-suspense-aurora px-5 py-1 text-center">
                 {member.location}
             </div>
-            <div class="rounded-sm bg-suspense-aurora px-5 py-1 text-center">
+            <div class="public-team-member-detail rounded-sm bg-suspense-aurora px-5 py-1 text-center">
                 {member.age}
             </div>
         </div>
