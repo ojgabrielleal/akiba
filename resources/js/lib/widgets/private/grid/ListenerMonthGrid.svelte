@@ -32,7 +32,7 @@
                 class="h-72 w-full self-center rounded-md border-2 border-suspense-aurora object-cover object-center"
                 alt={listenerMonth.current.data.name}
             />
-            <div class="bg-gradient-blue-cerulean-glow rounded-md p-4">
+            <div class="rounded-md bg-blue-ocean p-4">
                 <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-[1fr_1fr_0.3fr] gap-2 lg:gap-5 mb-3">
                     <div class="font-noto-sans font-extrabold text-blue-marinho text-center italic uppercase line-clamp-1 px-4 bg-suspense-aurora rounded-md">
                         {listenerMonth.current.data.name}

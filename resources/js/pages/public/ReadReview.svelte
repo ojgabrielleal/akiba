@@ -71,7 +71,7 @@
                             Sinopse
                         </h2>
                         {#if review.metadata?.sinopse}
-                            <div class="public-read-body text-[1.0625rem]">{@html review.metadata.sinopse}</div>
+                            <div class="public-read-body text-[1.1875rem]">{@html review.metadata.sinopse}</div>
                         {:else}
                             <p class="rounded-md border border-blue-skywave/30 px-4 py-5 text-center text-sm font-bold text-suspense-aurora/70">
                                 Sinopse em breve.
@@ -123,7 +123,7 @@
                                     </div>
                                 </div>
                                 {#if selectedReview.content}
-                                    <div class="public-read-body text-[1.0625rem]">{@html selectedReview.content}</div>
+                                    <div class="public-read-body text-[1.1875rem]">{@html selectedReview.content}</div>
                                 {:else}
                                     <p class="rounded-md border border-blue-skywave/30 px-4 py-5 text-center text-sm font-bold text-suspense-aurora">
                                         Review ainda não publicada.

@@ -18,7 +18,7 @@
                     class="h-72 w-full self-center rounded-md border-2 border-suspense-aurora object-cover object-center"
                     alt={listener.name}
                 />
-                <div class="rounded-md bg-orange-amber p-4">
+                <div class="public-featured-card rounded-md bg-gradient-blue-cerulean-glow p-4">
                     <div class="mb-3 grid grid-cols-1 gap-2 md:grid-cols-3 lg:grid-cols-[1fr_1fr_0.3fr] lg:gap-5">
                         <div class="line-clamp-1 rounded-md bg-suspense-aurora px-4 text-center font-noto-sans font-extrabold italic uppercase text-blue-marinho">
                             {listener.name}

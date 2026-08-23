@@ -4,8 +4,26 @@
     Theme rules only replace colors, gradients and filters. Do not change
     spacing, proportions, typography, layout or create new UI elements here.
 */
+[data-public-theme-scope] {
+    --public-theme-phrase-gradient: var(--gradient-blue-ocean-cerulean);
+}
+
+[data-public-theme-scope] .main-player-phrase-background {
+    --main-player-phrase-gradient: var(--public-theme-phrase-gradient);
+}
+
+[data-public-theme-scope] .public-editorial-title-hero {
+    --public-editorial-title-gradient: var(--public-theme-phrase-gradient);
+}
+
 [data-public-theme-scope][data-public-theme="light"] {
     --public-light-warm-background: #fff0e1;
+    --public-theme-phrase-gradient: linear-gradient(
+        50deg,
+        var(--color-orange-citric) 0%,
+        var(--color-orange-morning) 50%,
+        var(--color-orange-citric) 100%
+    );
 }
 
 [data-public-theme-scope][data-public-theme="light"] :where(.bg-blue-night):not([role="dialog"], [role="dialog"] *) {
@@ -99,15 +117,6 @@
     background-color: var(--public-light-warm-background);
 }
 
-[data-public-theme-scope][data-public-theme="light"] .main-player-phrase-background {
-    --main-player-phrase-gradient: linear-gradient(
-        50deg,
-        var(--color-orange-citric) 0%,
-        var(--color-orange-morning) 50%,
-        var(--color-orange-citric) 100%
-    );
-}
-
 [data-public-theme-scope][data-public-theme="light"] .main-player-phrase-text {
     color: var(--color-blue-skywave);
 }
@@ -126,12 +135,12 @@
 }
 
 [data-public-theme-scope][data-public-theme="light"] .public-section-heading-title {
-    color: var(--color-blue-ocean);
+    color: var(--color-orange-citric);
 }
 
 [data-public-theme-scope][data-public-theme="light"] .public-section-heading::after,
 [data-public-theme-scope][data-public-theme="light"] .public-section-heading-line {
-    background-color: var(--color-blue-ocean);
+    background-color: var(--color-orange-citric);
 }
 
 [data-public-theme-scope][data-public-theme="light"] .public-navbar-avatar {
@@ -206,7 +215,7 @@
 }
 
 [data-public-theme-scope][data-public-theme="light"] .public-post-list-title {
-    color: var(--color-blue-night);
+    color: var(--color-orange-citric);
 }
 
 [data-public-theme-scope][data-public-theme="light"] .public-comment-card {
@@ -275,20 +284,12 @@
     background-color: var(--color-neutral-white);
 }
 
-[data-public-theme-scope][data-public-theme="light"] .public-editorial-title-hero {
-    --public-editorial-title-gradient: var(--gradient-orange-morning-aurora);
-}
-
 [data-public-theme-scope][data-public-theme="light"] .public-editorial-title-heading {
-    color: var(--color-blue-night);
-}
-
-[data-public-theme-scope][data-public-theme="light"] .public-editorial-title-phrase {
-    background: var(--color-neutral-white);
+    color: var(--color-blue-skywave);
 }
 
 [data-public-theme-scope][data-public-theme="light"] .public-editorial-title-phrase .text-neutral-gray {
-    color: var(--color-blue-night);
+    color: var(--color-blue-skywave);
 }
 
 [data-public-theme-scope][data-public-theme="light"] .public-footer,
@@ -384,9 +385,18 @@
     --tw-shadow-color: rgb(0 0 20 / 0.12);
 }
 
+[data-public-theme-scope][data-public-theme="akiba"] .public-editorial-title-heading {
+    color: var(--color-suspense-aurora);
+}
+
+[data-public-theme-scope][data-public-theme="akiba"] .public-editorial-title-phrase .text-neutral-gray {
+    color: var(--color-suspense-aurora);
+}
+
 [data-public-theme-scope][data-public-theme="night"] {
     --color-blue-marinho: #000014;
     --color-blue-night: #000006;
+    --public-theme-phrase-gradient: var(--gradient-featured-card-night);
 }
 
 [data-public-theme-scope][data-public-theme="night"] :where(.bg-blue-night):not([role="dialog"], [role="dialog"] *) {
@@ -482,8 +492,13 @@
     background: linear-gradient(50deg, var(--color-blue-marinho) 0%, var(--color-blue-ocean) 100%);
 }
 
-[data-public-theme-scope][data-public-theme="night"] .main-player-phrase-background {
-    --main-player-phrase-gradient: var(--gradient-featured-card-night);
+[data-public-theme-scope][data-public-theme="night"] .public-section-heading-title {
+    color: var(--color-orange-citric);
+}
+
+[data-public-theme-scope][data-public-theme="night"] .public-section-heading::after,
+[data-public-theme-scope][data-public-theme="night"] .public-section-heading-line {
+    background-color: var(--color-orange-citric);
 }
 
 [data-public-theme-scope][data-public-theme="night"] .public-navbar-avatar {
@@ -576,12 +591,12 @@
     background-color: var(--color-blue-night);
 }
 
-[data-public-theme-scope][data-public-theme="night"] .public-editorial-title-hero {
-    --public-editorial-title-gradient: var(--gradient-featured-card-night);
+[data-public-theme-scope][data-public-theme="night"] .public-editorial-title-heading {
+    color: var(--color-suspense-aurora);
 }
 
-[data-public-theme-scope][data-public-theme="night"] .public-editorial-title-phrase {
-    background: var(--color-blue-night);
+[data-public-theme-scope][data-public-theme="night"] .public-editorial-title-phrase .text-neutral-gray {
+    color: var(--color-suspense-aurora);
 }
 
 [data-public-theme-scope][data-public-theme="night"] .public-team-carousel-name {

@@ -5,10 +5,11 @@
 
 <section class={styles}>
     {#if title}
-        <div class="public-section-heading flex items-center gap-4 mb-5 after:content-[''] after:flex-1 after:h-px after:bg-orange-citric">
+        <div class="public-section-heading mb-5 flex items-center gap-4">
             <h2 class="public-section-heading-title uppercase font-black italic whitespace-nowrap text-[1.3rem] text-orange-citric font-noto-sans">
                 {title}
             </h2>
+            <span class="public-section-heading-line h-px min-w-10 flex-1 bg-orange-citric" aria-hidden="true"></span>
         </div>
     {/if}
     <slot />

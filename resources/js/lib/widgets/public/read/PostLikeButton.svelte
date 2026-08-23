@@ -21,7 +21,7 @@
         aria-pressed={liked}
         aria-label={liked ? "Remover curtida" : "Curtir"}
         class={[
-            "group/like inline-flex h-6 min-w-12 cursor-pointer items-center justify-center gap-1 rounded-md bg-orange-amber px-2 font-noto-sans text-base leading-none font-black text-suspense-aurora uppercase italic shadow-md shadow-blue-night/20 transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-suspense-aurora motion-reduce:transform-none motion-reduce:transition-none",
+            "group/like inline-flex h-7 min-w-14 cursor-pointer items-center justify-center gap-1 rounded-md bg-orange-amber px-2.5 font-noto-sans text-base leading-none font-black text-suspense-aurora uppercase italic shadow-[0_3px_12px_color-mix(in_srgb,var(--color-blue-night)_60%,transparent)] transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-suspense-aurora motion-reduce:transform-none motion-reduce:transition-none",
             liked
                 ? "brightness-110"
                 : "brightness-100",

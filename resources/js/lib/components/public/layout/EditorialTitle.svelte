@@ -27,7 +27,7 @@
     </header>
 
     {#if phrase}
-        <div class="public-editorial-title-phrase bg-blue-night">
+        <div class="public-editorial-title-phrase">
             <p class={["container-page flex items-center justify-center text-center font-noto-sans text-sm font-extrabold italic uppercase text-neutral-gray", phraseMinHeight, phrasePadding]}>
                 {phrase}
             </p>

@@ -1,4 +1,5 @@
 <script>
+    import { onMount } from "svelte";
     import { EditorialTitle, GridList } from "@/lib/components/public";
     import { resolveDay, resolveHour, resolvePlaceholderImage } from "@/lib/utils";
 
@@ -14,52 +15,90 @@
         { day: 0, label: "Domingo" },
     ];
 
-    const brazilTimeZones = [
-        { name: "BRT", region: "Brasília", offset: 0, featured: true },
-        { name: "FNT", region: "Fernando de Noronha", offset: 1 },
-        { name: "AMT", region: "Amazonas", offset: -1 },
-        { name: "ACT", region: "Acre", offset: -2 },
-    ];
+    const baseTimeZone = "America/Sao_Paulo";
+    const baseWeekStart = "2024-01-07";
+    const baseTimeZoneOffset = "-03:00";
+    const timeZoneLabels = {
+        "America/Sao_Paulo": { name: "BRT", region: "Brasília" },
+        "America/Noronha": { name: "FNT", region: "Fernando de Noronha" },
+        "America/Manaus": { name: "AMT", region: "Amazonas" },
+        "America/Boa_Vista": { name: "AMT", region: "Amazonas" },
+        "America/Porto_Velho": { name: "AMT", region: "Amazonas" },
+        "America/Cuiaba": { name: "AMT", region: "Amazonas" },
+        "America/Rio_Branco": { name: "ACT", region: "Acre" },
+        "America/Eirunepe": { name: "ACT", region: "Acre" },
+    };
 
     let activeDay = 1;
+    let visitorTimeZone = baseTimeZone;
 
     $: selectedPrograms = programs?.data ?? [];
     $: dayPrograms = resolveProgramsByDay(selectedPrograms, activeDay);
+    $: visitorTimeZoneLabel = resolveTimeZoneLabel(visitorTimeZone);
+
+    onMount(() => {
+        visitorTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || baseTimeZone;
+    });
 
     function resolveProgramsByDay(items, day) {
         return items
             .flatMap((program) =>
                 (program.airtimes ?? [])
-                    .filter((schedule) => Number(schedule.day) === day)
-                    .map((schedule) => ({ ...program, schedule }))
+                    .map((schedule) => ({
+                        ...program,
+                        schedule,
+                        localSchedule: convertScheduleTime(schedule, visitorTimeZone),
+                    }))
+                    .filter((program) => Number(program.localSchedule.day) === day)
             )
-            .sort((first, second) => String(first.schedule.hour).localeCompare(String(second.schedule.hour)));
+            .sort((first, second) => String(first.localSchedule.hour).localeCompare(String(second.localSchedule.hour)));
     }
 
-    function resolveScheduleTimeZones(schedule) {
-        return brazilTimeZones.map((timezone) => {
-            const converted = convertScheduleTime(schedule.day, schedule.hour, timezone.offset);
-
-            return {
-                ...timezone,
-                ...converted,
-            };
-        });
-    }
-
-    function convertScheduleTime(day, hour, offset) {
-        const [hours = "0", minutes = "0"] = String(hour).split(":");
-        const totalMinutes = (Number(hours) * 60) + Number(minutes) + (offset * 60);
-        const dayOffset = Math.floor(totalMinutes / 1440);
-        const normalizedMinutes = ((totalMinutes % 1440) + 1440) % 1440;
-        const convertedDay = (Number(day) + dayOffset + 7) % 7;
-        const convertedHours = Math.floor(normalizedMinutes / 60);
-        const convertedMinutes = normalizedMinutes % 60;
+    function convertScheduleTime(schedule, timeZone) {
+        const [hours = "0", minutes = "0"] = String(schedule.hour).split(":");
+        const date = new Date(`${resolveBaseDate(schedule.day)}T${hours.padStart(2, "0")}:${minutes.padStart(2, "0")}:00${baseTimeZoneOffset}`);
+        const parts = Object.fromEntries(
+            new Intl.DateTimeFormat("en-US", {
+                timeZone,
+                weekday: "short",
+                hour: "2-digit",
+                minute: "2-digit",
+                hourCycle: "h23",
+                hour12: false,
+            }).formatToParts(date).map((part) => [part.type, part.value])
+        );
+        const convertedDay = resolveWeekDayIndex(parts.weekday);
 
         return {
             day: convertedDay,
-            hour: `${String(convertedHours).padStart(2, "0")}:${String(convertedMinutes).padStart(2, "0")}`,
-            shiftedDay: convertedDay !== Number(day),
+            hour: `${parts.hour}:${parts.minute}`,
+            shiftedDay: convertedDay !== Number(schedule.day),
+        };
+    }
+
+    function resolveBaseDate(day) {
+        const date = new Date(`${baseWeekStart}T12:00:00${baseTimeZoneOffset}`);
+        date.setUTCDate(date.getUTCDate() + Number(day));
+
+        return date.toISOString().slice(0, 10);
+    }
+
+    function resolveWeekDayIndex(weekday) {
+        return {
+            Sun: 0,
+            Mon: 1,
+            Tue: 2,
+            Wed: 3,
+            Thu: 4,
+            Fri: 5,
+            Sat: 6,
+        }[weekday] ?? 0;
+    }
+
+    function resolveTimeZoneLabel(timeZone) {
+        return timeZoneLabels[timeZone] ?? {
+            name: "Local",
+            region: timeZone.split("/").pop()?.replaceAll("_", " ") ?? "sua região",
         };
     }
 </script>
@@ -114,44 +153,23 @@
                                 <dl class="w-full rounded-md bg-suspense-aurora px-4 py-3 mb-2">
                                     <dt class="mb-3 flex items-center justify-between gap-3 font-noto-sans italic uppercase text-blue-marinho">
                                         <span class="text-sm font-extrabold">
-                                            {resolveDay(item.schedule.day)}
+                                            {resolveDay(item.localSchedule.day)}
                                         </span>
                                         <span class="rounded-md bg-orange-amber px-2 py-1 text-xs font-black text-blue-night">
-                                            Horários BR
+                                            Horário local
                                         </span>
                                     </dt>
-                                    <dd class="grid gap-2">
-                                        {#each resolveScheduleTimeZones(item.schedule) as timezone}
-                                            {#if timezone.featured}
-                                                <div class="rounded-md bg-blue-marinho px-3 py-2 font-noto-sans italic uppercase text-suspense-aurora">
-                                                    <div class="flex items-center justify-between gap-3">
-                                                        <span class="text-xs font-black text-orange-amber">
-                                                            {timezone.name} · {timezone.region}
-                                                        </span>
-                                                        <span class="text-lg font-black leading-none">
-                                                            {resolveHour(timezone.hour)}
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            {:else}
-                                                <div class="flex items-center justify-between gap-3 border-t border-blue-marinho/10 pt-2 font-noto-sans text-xs italic uppercase text-blue-marinho">
-                                                    <span class="font-black">
-                                                        {timezone.name}
-                                                        <span class="font-extrabold normal-case not-italic text-blue-marinho/65">
-                                                            {timezone.region}
-                                                        </span>
-                                                    </span>
-                                                    <span class="text-right font-extrabold">
-                                                        {resolveHour(timezone.hour)}
-                                                        {#if timezone.shiftedDay}
-                                                            <span class="ml-1 text-[0.65rem] font-black text-orange-amber">
-                                                                {resolveDay(timezone.day, "short")}
-                                                            </span>
-                                                        {/if}
-                                                    </span>
-                                                </div>
-                                            {/if}
-                                        {/each}
+                                    <dd>
+                                        <div class="rounded-md bg-blue-marinho px-3 py-2 font-noto-sans italic uppercase text-suspense-aurora">
+                                            <div class="flex items-center justify-between gap-3">
+                                                <span class="text-xs font-black text-orange-amber">
+                                                    {visitorTimeZoneLabel.name} · {visitorTimeZoneLabel.region}
+                                                </span>
+                                                <span class="text-lg font-black leading-none">
+                                                    {resolveHour(item.localSchedule.hour)}
+                                                </span>
+                                            </div>
+                                        </div>
                                     </dd>
                                 </dl>
                             </div>

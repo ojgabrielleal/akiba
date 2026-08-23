@@ -85,22 +85,25 @@
     <div class={["relative flex items-start", nested ? "gap-[26px]" : "gap-[28px]"]}>
         {#if nested}
             <svg
-                class="absolute -left-[40px] top-0 hidden h-[28px] w-[32px] overflow-visible sm:block"
+                class={[
+                    "absolute top-0 z-10 hidden h-[28px] w-[32px] overflow-visible sm:block",
+                    isLast ? "-left-[39.9px]" : "-left-[39.5px]",
+                ]}
                 viewBox="0 0 32 28"
                 fill="none"
                 aria-hidden="true"
             >
                 <path
-                    d="M1 0 V14 C1 21 6 24 13 24 H22"
+                    d="M1 0 V14 A10 10 0 0 0 11 24 H22"
                     stroke="#00a8ff"
-                    stroke-width="2"
-                    stroke-linecap="round"
+                    stroke-width="4"
+                    stroke-linecap="butt"
                     stroke-linejoin="round"
                 />
                 <path d="M22 19 L32 24 L22 29 Z" fill="#00a8ff" />
             </svg>
             {#if isLast}
-                <span class="public-comment-thread-mask absolute -left-[40px] top-[31px] bottom-[-14px] z-20 hidden w-[2px] bg-[#000036] sm:block"></span>
+                <span class="public-comment-thread-mask absolute -left-[41px] top-[20px] bottom-[-14px] z-[5] hidden w-[4px] bg-[#000036] sm:block"></span>
             {/if}
         {/if}
 
@@ -308,7 +311,7 @@
     </div>
 
     {#if replies.length}
-        <div class="relative mt-[16px] grid gap-[14px] pl-[66px] before:absolute before:bottom-[35px] before:left-[26px] before:top-[-48px] before:w-[2px] before:bg-[#00a8ff] before:content-[''] max-sm:pl-[34px] max-sm:before:hidden">
+        <div class="relative mt-[16px] grid gap-[14px] pl-[66px] before:absolute before:bottom-[35px] before:left-[25px] before:top-[-48px] before:w-[4px] before:bg-[#00a8ff] before:content-[''] max-sm:pl-[34px] max-sm:before:hidden">
             {#each replies as reply, index}
                 <svelte:self post={post} item={reply} {oauth} depth={depth + 1} isLast={index === replies.length - 1} />
             {/each}

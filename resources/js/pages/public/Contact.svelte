@@ -100,7 +100,7 @@
                                         />
                                     </span>
                                     <span class="min-w-0">
-                                        <span class="block truncate text-base font-black uppercase italic text-orange-amber group-hover/social:text-orange-amber">
+                                        <span class="block truncate text-base font-black uppercase italic text-orange-citric group-hover/social:text-orange-amber">
                                             {social.name}
                                         </span>
                                         <span class="mt-0.5 block text-[0.65rem] font-black uppercase italic text-blue-skywave">
