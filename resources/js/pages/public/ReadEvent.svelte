@@ -36,7 +36,7 @@
                 "lg:grid-cols-[minmax(0,1fr)_15rem]",
             ]}>
                 <article class="min-w-0">
-                    <div class="mb-5 rounded-md bg-orange-amber px-3 py-2">
+                    <div class="mb-5 rounded-md bg-orange-citric px-3 py-2">
                         <h1 class="font-noto-sans text-xl font-black leading-tight text-blue-night uppercase italic sm:text-2xl">
                             {event.title}
                         </h1>
