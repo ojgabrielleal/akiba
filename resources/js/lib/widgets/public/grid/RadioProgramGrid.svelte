@@ -19,39 +19,84 @@
     const baseWeekStart = "2024-01-07";
     const baseTimeZoneOffset = "-03:00";
     const timeZoneLabels = {
-        "America/Sao_Paulo": { name: "BRT", region: "Brasília" },
-        "America/Noronha": { name: "FNT", region: "Fernando de Noronha" },
-        "America/Manaus": { name: "AMT", region: "Amazonas" },
-        "America/Boa_Vista": { name: "AMT", region: "Amazonas" },
-        "America/Porto_Velho": { name: "AMT", region: "Amazonas" },
-        "America/Cuiaba": { name: "AMT", region: "Amazonas" },
-        "America/Rio_Branco": { name: "ACT", region: "Acre" },
-        "America/Eirunepe": { name: "ACT", region: "Acre" },
+        "America/Sao_Paulo": { name: "BRT", region: "Brasília", country: "Brasil", mainTimeZone: "America/Sao_Paulo" },
+        "America/Bahia": { name: "BRT", region: "Brasília", country: "Brasil", mainTimeZone: "America/Sao_Paulo" },
+        "America/Belem": { name: "BRT", region: "Brasília", country: "Brasil", mainTimeZone: "America/Sao_Paulo" },
+        "America/Fortaleza": { name: "BRT", region: "Brasília", country: "Brasil", mainTimeZone: "America/Sao_Paulo" },
+        "America/Maceio": { name: "BRT", region: "Brasília", country: "Brasil", mainTimeZone: "America/Sao_Paulo" },
+        "America/Recife": { name: "BRT", region: "Brasília", country: "Brasil", mainTimeZone: "America/Sao_Paulo" },
+        "America/Araguaina": { name: "BRT", region: "Brasília", country: "Brasil", mainTimeZone: "America/Sao_Paulo" },
+        "America/Santarem": { name: "BRT", region: "Brasília", country: "Brasil", mainTimeZone: "America/Sao_Paulo" },
+        "America/Noronha": { name: "FNT", region: "Fernando de Noronha", country: "Brasil", mainTimeZone: "America/Sao_Paulo" },
+        "America/Manaus": { name: "AMT", region: "Manaus", country: "Brasil", mainTimeZone: "America/Sao_Paulo" },
+        "America/Boa_Vista": { name: "AMT", region: "Boa Vista", country: "Brasil", mainTimeZone: "America/Sao_Paulo" },
+        "America/Porto_Velho": { name: "AMT", region: "Porto Velho", country: "Brasil", mainTimeZone: "America/Sao_Paulo" },
+        "America/Cuiaba": { name: "AMT", region: "Cuiabá", country: "Brasil", mainTimeZone: "America/Sao_Paulo" },
+        "America/Campo_Grande": { name: "AMT", region: "Campo Grande", country: "Brasil", mainTimeZone: "America/Sao_Paulo" },
+        "America/Rio_Branco": { name: "ACT", region: "Rio Branco", country: "Brasil", mainTimeZone: "America/Sao_Paulo" },
+        "America/Eirunepe": { name: "ACT", region: "Eirunepé", country: "Brasil", mainTimeZone: "America/Sao_Paulo" },
+        "Europe/Lisbon": { name: "WET/WEST", region: "Lisboa", country: "Portugal", mainTimeZone: "Europe/Lisbon" },
+        "Atlantic/Madeira": { name: "WET/WEST", region: "Lisboa", country: "Portugal", mainTimeZone: "Europe/Lisbon" },
+        "Atlantic/Azores": { name: "AZOT/AZOST", region: "Açores", country: "Portugal", mainTimeZone: "Europe/Lisbon" },
+        "Africa/Luanda": { name: "WAT", region: "Luanda", country: "Angola", mainTimeZone: "Africa/Luanda" },
+        "Africa/Maputo": { name: "CAT", region: "Maputo", country: "Moçambique", mainTimeZone: "Africa/Maputo" },
+        "Atlantic/Cape_Verde": { name: "CVT", region: "Praia", country: "Cabo Verde", mainTimeZone: "Atlantic/Cape_Verde" },
+        "Africa/Bissau": { name: "GMT", region: "Bissau", country: "Guiné-Bissau", mainTimeZone: "Africa/Bissau" },
+        "Africa/Sao_Tome": { name: "GMT", region: "São Tomé", country: "São Tomé e Príncipe", mainTimeZone: "Africa/Sao_Tome" },
+        "Asia/Dili": { name: "TLT", region: "Díli", country: "Timor-Leste", mainTimeZone: "Asia/Dili" },
+        "Asia/Macau": { name: "CST", region: "Macau", country: "Macau", mainTimeZone: "Asia/Macau" },
+        "Asia/Tokyo": { name: "JST", region: "Tokyo", country: "Japão", mainTimeZone: "Asia/Tokyo" },
     };
 
     let activeDay = 1;
-    let visitorTimeZone = baseTimeZone;
+    let visitorTimeZone = "Asia/Tokyo";
 
     $: selectedPrograms = programs?.data ?? [];
-    $: dayPrograms = resolveProgramsByDay(selectedPrograms, activeDay);
     $: visitorTimeZoneLabel = resolveTimeZoneLabel(visitorTimeZone);
+    $: mainTimeZone = visitorTimeZoneLabel.mainTimeZone ?? visitorTimeZone;
+    $: mainTimeZoneLabel = resolveTimeZoneLabel(mainTimeZone);
+    $: showLocalTime = visitorTimeZoneLabel.name !== mainTimeZoneLabel.name || visitorTimeZoneLabel.region !== mainTimeZoneLabel.region;
+    $: showBrasiliaTime = visitorTimeZoneLabel.country === "Brasil" && mainTimeZone !== baseTimeZone;
+    $: previewPrograms = resolvePreviewPrograms(selectedPrograms);
+    $: dayPrograms = resolveProgramsByDay(previewPrograms, activeDay, visitorTimeZone, mainTimeZone);
 
     onMount(() => {
-        visitorTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || baseTimeZone;
+        visitorTimeZone = "Asia/Tokyo";
+        activeDay = 0;
     });
 
-    function resolveProgramsByDay(items, day) {
+    function resolvePreviewPrograms(items) {
+        if (!items.length) return items;
+
+        return [
+            {
+                ...items[0],
+                airtimes: [
+                    {
+                        ...(items[0].airtimes?.[0] ?? {}),
+                        uuid: "preview-japan",
+                        day: 0,
+                        hour: "21:00",
+                    },
+                ],
+            },
+        ];
+    }
+
+    function resolveProgramsByDay(items, day, localTimeZone, countryMainTimeZone) {
         return items
             .flatMap((program) =>
                 (program.airtimes ?? [])
                     .map((schedule) => ({
                         ...program,
                         schedule,
-                        localSchedule: convertScheduleTime(schedule, visitorTimeZone),
+                        baseSchedule: convertScheduleTime(schedule, baseTimeZone),
+                        mainSchedule: convertScheduleTime(schedule, countryMainTimeZone),
+                        localSchedule: convertScheduleTime(schedule, localTimeZone),
                     }))
-                    .filter((program) => Number(program.localSchedule.day) === day)
+                    .filter((program) => Number(program.baseSchedule.day) === day)
             )
-            .sort((first, second) => String(first.localSchedule.hour).localeCompare(String(second.localSchedule.hour)));
+            .sort((first, second) => String(first.baseSchedule.hour).localeCompare(String(second.baseSchedule.hour)));
     }
 
     function convertScheduleTime(schedule, timeZone) {
@@ -95,10 +140,22 @@
         }[weekday] ?? 0;
     }
 
+    function resolveConvertedScheduleLabel(schedule, comparedSchedule) {
+        const convertedHour = resolveHour(schedule.hour);
+
+        if (Number(schedule.day) === Number(comparedSchedule.day)) {
+            return convertedHour;
+        }
+
+        return `${resolveDay(schedule.day)} · ${convertedHour}`;
+    }
+
     function resolveTimeZoneLabel(timeZone) {
         return timeZoneLabels[timeZone] ?? {
             name: "Local",
             region: timeZone.split("/").pop()?.replaceAll("_", " ") ?? "sua região",
+            country: "Local",
+            mainTimeZone: timeZone,
         };
     }
 </script>
@@ -153,23 +210,48 @@
                                 <dl class="w-full rounded-md bg-suspense-aurora px-4 py-3 mb-2">
                                     <dt class="mb-3 flex items-center justify-between gap-3 font-noto-sans italic uppercase text-blue-marinho">
                                         <span class="text-sm font-extrabold">
-                                            {resolveDay(item.localSchedule.day)}
+                                            {resolveDay(showLocalTime ? item.localSchedule.day : item.mainSchedule.day)}
                                         </span>
                                         <span class="rounded-md bg-orange-amber px-2 py-1 text-xs font-black text-blue-night">
-                                            Horário local
+                                            {visitorTimeZoneLabel.country}
                                         </span>
                                     </dt>
                                     <dd>
                                         <div class="rounded-md bg-blue-marinho px-3 py-2 font-noto-sans italic uppercase text-suspense-aurora">
-                                            <div class="flex items-center justify-between gap-3">
+                                            <div class="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1">
                                                 <span class="text-xs font-black text-orange-amber">
-                                                    {visitorTimeZoneLabel.name} · {visitorTimeZoneLabel.region}
+                                                    {showLocalTime ? `${visitorTimeZoneLabel.name} · ${visitorTimeZoneLabel.region}` : `${mainTimeZoneLabel.name} · ${mainTimeZoneLabel.region}`}
                                                 </span>
-                                                <span class="text-lg font-black leading-none">
-                                                    {resolveHour(item.localSchedule.hour)}
+                                                <span class={["text-lg font-black leading-none", showLocalTime && "row-span-2"]}>
+                                                    {resolveHour(showLocalTime ? item.localSchedule.hour : item.mainSchedule.hour)}
                                                 </span>
+                                                {#if showLocalTime}
+                                                    <span class="text-[0.62rem] font-bold text-suspense-aurora/60">
+                                                        Seu horário local
+                                                    </span>
+                                                {/if}
                                             </div>
                                         </div>
+                                        {#if showLocalTime}
+                                            <div class="mt-2 flex items-center justify-between gap-4 rounded-md bg-blue-marinho/10 px-4 py-2 font-noto-sans italic uppercase text-blue-marinho">
+                                                <span class="text-[0.62rem] font-black">
+                                                    {mainTimeZone === baseTimeZone ? "Horário de Brasília" : "Horário principal"}
+                                                </span>
+                                                <span class="text-[0.68rem] font-black">
+                                                    {resolveConvertedScheduleLabel(item.mainSchedule, item.localSchedule)}
+                                                </span>
+                                            </div>
+                                        {/if}
+                                        {#if showBrasiliaTime && !showLocalTime}
+                                            <div class="mt-2 flex items-center justify-between gap-4 rounded-md bg-blue-marinho/10 px-4 py-2 font-noto-sans italic uppercase text-blue-marinho">
+                                                <span class="text-[0.62rem] font-black">
+                                                    Horário de Brasília
+                                                </span>
+                                                <span class="text-[0.68rem] font-black">
+                                                    {resolveConvertedScheduleLabel(item.baseSchedule, item.mainSchedule)}
+                                                </span>
+                                            </div>
+                                        {/if}
                                     </dd>
                                 </dl>
                             </div>
