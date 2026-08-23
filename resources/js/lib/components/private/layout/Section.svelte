@@ -8,7 +8,7 @@
 
     const actionButtonClass = (action) => [
         "cursor-pointer flex h-7 min-w-23 items-center justify-center gap-1.5 rounded-full px-3 text-sm font-black uppercase italic leading-none text-blue-marinho font-noto-sans",
-        action.background ?? "bg-orange-citric",
+        action.background ?? "bg-orange-amber",
         action.textColor ?? "text-blue-marinho",
     ];
 
@@ -20,8 +20,8 @@
     $: classes = ["container-page mb-10", className];
     $: visibleActions = actions.filter((action) => action.permission);
     $: hasActions = visibleActions.length > 0;
-    $: titleColor = hasActions ? "text-orange-morning" : "text-orange-amber";
-    $: lineColor = hasActions ? "bg-orange-morning" : "bg-orange-amber";
+    $: titleColor = hasActions ? "text-orange-amber" : "text-orange-citric";
+    $: lineColor = hasActions ? "bg-orange-amber" : "bg-orange-citric";
 </script>
 
 <section {...$$restProps} class={classes}>

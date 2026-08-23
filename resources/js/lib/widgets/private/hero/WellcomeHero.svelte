@@ -28,7 +28,7 @@
     chosenPhrase = generatePhrases();
 </script>
 
-<section class="mb-15 hidden w-full bg-[url('https://i.ibb.co/Tdhkkyg/3.png'),var(--gradient-blue-ocean-cerulean)] bg-contain bg-right bg-no-repeat lg:block">
+<section class="mb-15 hidden w-full bg-[url('https://i.ibb.co/Tdhkkyg/3.png'),linear-gradient(90deg,var(--color-blue-ocean)_0%,var(--color-blue-ocean)_62%,var(--color-blue-marinho)_100%)] bg-contain bg-right bg-no-repeat lg:block">
     <div class="container-page relative flex h-30 min-w-0 items-center gap-4 xl:gap-5">
         <img
             src="/img/defaults/character.webp"

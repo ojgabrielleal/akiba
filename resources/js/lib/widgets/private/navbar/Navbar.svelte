@@ -72,7 +72,7 @@
                     <div class="w-40 rounded-md bg-suspense-aurora shadow-xl border border-neutral-gray/20 py-2">
                         <Link
                             href={`/panel/profile/${user.uuid}`}
-                            class="block px-4 py-2 text-sm font-noto-sans font-medium text-neutral-gray hover:text-orange-citric hover:bg-neutral-gray/10"
+                            class="block px-4 py-2 text-sm font-noto-sans font-medium text-neutral-gray hover:text-orange-amber hover:bg-neutral-gray/10"
                         >
                             Meu perfil
                         </Link>
@@ -80,7 +80,7 @@
                             href="/panel/logout"
                             method="post"
                             as="button"
-                            class="cursor-pointer w-full text-left block px-4 py-2 text-sm font-noto-sans font-medium text-neutral-gray hover:text-orange-citric hover:bg-neutral-gray/10"
+                            class="cursor-pointer w-full text-left block px-4 py-2 text-sm font-noto-sans font-medium text-neutral-gray hover:text-orange-amber hover:bg-neutral-gray/10"
                         >
                             Desconectar
                         </Link>
@@ -112,7 +112,7 @@
                                 <Link
                                     aria-label={item.name}
                                     href={item.address}
-                                    class="group/item flex items-center gap-3 text-neutral-gray font-noto-sans font-extrabold italic uppercase hover:text-orange-citric"
+                                    class="group/item flex items-center gap-3 text-neutral-gray font-noto-sans font-extrabold italic uppercase hover:text-orange-amber"
                                     on:click={() => (mobilenavbar = false)}
                                 >
                                     <img
@@ -141,7 +141,7 @@
                             />
                         </div>
                         <div class="min-w-0">
-                            <span class="block truncate text-sm font-noto-sans font-extrabold text-neutral-gray group-hover/profile:text-orange-citric">
+                            <span class="block truncate text-sm font-noto-sans font-extrabold text-neutral-gray group-hover/profile:text-orange-amber">
                                 {user.nickname}
                             </span>
                             <span class="flex items-center gap-1 text-xs font-noto-sans text-green-500">
@@ -158,7 +158,7 @@
                         tone="neutral"
                         surface="transparent"
                         size="lg"
-                        class="rounded-full bg-neutral-gray/10 hover:bg-orange-citric/10"
+                        class="rounded-full bg-neutral-gray/10 hover:bg-orange-amber/10"
                         on:click={() => (mobilenavbar = false)}
                     />
                     </div>

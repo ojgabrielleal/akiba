@@ -63,6 +63,11 @@
   ],
   "public": [
     {
+      "name": "Inicio",
+      "icon": "/svg/home.svg",
+      "address": "/site"
+    },
+    {
       "name": "News",
       "icon": "/svg/news.svg",
       "address": "/news"

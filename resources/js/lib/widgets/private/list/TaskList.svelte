@@ -64,12 +64,14 @@
         {#if tasks.data.length}
             <div class="flex flex-col gap-4">
                 {#each tasks.data as task}
-                <article class={["w-full rounded-md px-4 py-3",
-                    { "bg-gradient-blue-cerulean-glow": task.status === 'pending' },
-                    { "bg-gradient-green-forest-pine": task.status === 'in_review' },
-                    { "bg-gradient-red-crimson-blood": task.is_overdue && task.status === 'pending' },
+                <article class={["relative w-full rounded-md px-4 py-3",
+                    { "bg-blue-cerulean": !task.is_overdue && task.status === 'pending' },
+                    { "bg-green-forest": task.status === 'in_review' },
+                    { "bg-[#a30f14]": task.is_overdue && task.status === 'pending' },
                 ]}>
-                    <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                    <div class={["flex flex-col gap-4 md:flex-row md:items-center md:justify-between",
+                        { "md:pr-10": variant === "administration" && (can.deactivate || can.update) },
+                    ]}>
                         <div class="block min-w-0">
                             <div class="text-xl text-suspense-aurora font-extrabold uppercase italic lg:truncate">
                                 {task.title}
@@ -80,7 +82,7 @@
                         </div>
                         <div class="flex w-full shrink-0 flex-col gap-2 sm:flex-row sm:items-stretch sm:justify-end md:w-auto">
                             {#if task.status === 'pending'}
-                                <div class={["grid w-full shrink-0 overflow-hidden rounded-md bg-blue-night",
+                                <div class={["grid w-full shrink-0 overflow-hidden rounded-md bg-blue-night md:flex-none",
                                     { "grid-cols-1 sm:grid-cols-[1fr_1fr] sm:w-52": task.is_overdue },
                                     { "grid-cols-1 sm:w-20": !task.is_overdue && variant === "administration" },
                                     { "grid-cols-[1fr_2.5rem] sm:w-30": !task.is_overdue && variant !== "administration" },
@@ -133,7 +135,7 @@
                                 {/if}
                             {/if}
                             {#if variant === "administration" && (can.deactivate || can.update)}
-                                <div class="flex shrink-0 gap-1 sm:flex-col">
+                                <div class="flex shrink-0 gap-1 sm:flex-col md:absolute md:right-3 md:top-1/2 md:-translate-y-1/2">
                                     {#if can.deactivate}
                                         <IconButton
                                             variant="trash"

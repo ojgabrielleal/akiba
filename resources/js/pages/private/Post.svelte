@@ -23,14 +23,14 @@
                 title: "Matérias, reviews e eventos da akiba",
                 icon: "/svg/materials.svg",
                 permission: true,
-                background: contentView === "posts" ? "bg-orange-citric" : "bg-blue-skywave",
+                background: contentView === "posts" ? "bg-orange-amber" : "bg-blue-skywave",
                 onClick: () => contentView = "posts",
             },
             {
                 title: "Feed externo de notícias",
                 icon: "/svg/news.svg",
                 permission: true,
-                background: contentView === "feed" ? "bg-orange-citric" : "bg-blue-skywave",
+                background: contentView === "feed" ? "bg-orange-amber" : "bg-blue-skywave",
                 onClick: () => contentView = "feed",
             },
         ]

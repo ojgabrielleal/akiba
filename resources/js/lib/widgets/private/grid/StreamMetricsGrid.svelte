@@ -46,7 +46,7 @@
                 <div class="group relative flex h-11 w-11 items-center justify-center">
                     <button
                         type="button"
-                        class="grid h-11 w-11 cursor-pointer place-items-center rounded-full bg-orange-citric transition hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric"
+                        class="grid h-11 w-11 cursor-pointer place-items-center rounded-full bg-orange-amber transition hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber"
                         aria-label="Ajustar volume"
                     >
                         <img
@@ -61,12 +61,12 @@
                         <div class="rounded-md border border-blue-skywave/20 bg-blue-night px-3 py-2 shadow-lg shadow-blue-night/40">
                             <div class="mb-2 flex items-center justify-between font-noto-sans text-[0.65rem] font-black uppercase">
                                 <label class="text-suspense-aurora/45" for="stream-volume">Volume</label>
-                                <span class="text-orange-citric">{Math.round($player.volume * 100)}%</span>
+                                <span class="text-orange-amber">{Math.round($player.volume * 100)}%</span>
                             </div>
                             <input
                                 id="stream-volume"
                                 name="stream-volume"
-                                class="w-full cursor-pointer accent-orange-citric"
+                                class="w-full cursor-pointer accent-orange-amber"
                                 type="range"
                                 min="0"
                                 max="1"
@@ -80,7 +80,7 @@
                 </div>
                 <button
                     type="button"
-                    class="grid h-11 w-11 cursor-pointer place-items-center rounded-full bg-orange-citric transition hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric"
+                    class="grid h-11 w-11 cursor-pointer place-items-center rounded-full bg-orange-amber transition hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber"
                     aria-label={$player.loading ? "Carregando rádio" : $player.playing ? "Pausar radio" : "Tocar radio"}
                     aria-pressed={$player.playing}
                     aria-busy={$player.loading}

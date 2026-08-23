@@ -193,17 +193,17 @@
         </Link>
         <ul class="mt-1 hidden w-full min-w-0 items-center justify-center lg:flex lg:justify-self-center">
             {#each navbar.public as item}
-                <li class="flex h-6 items-center border-l border-neutral-gray/35 px-3 first:border-none first:pl-0 xl:px-4">
+                <li class="flex h-6 items-center gap-1 border-l border-neutral-gray/35 px-2.5 first:border-none first:pl-0 xl:px-3.5">
                     <Link
                         href={item.address}
                         aria-label={item.name}
-                        class="group/item relative flex items-center gap-1 whitespace-nowrap font-noto-sans text-[0.825rem] font-extrabold uppercase italic text-neutral-gray transition-colors hover:text-orange-amber"
+                        class="group/item relative flex items-center gap-1 whitespace-nowrap font-noto-sans text-xs font-extrabold uppercase italic text-neutral-gray transition-colors hover:text-orange-amber"
                     >
                         <img
                             src={item.icon}
                             alt=""
                             aria-hidden="true"
-                            class="size-[1.3125rem] filter-neutral-gray group-hover/item:filter-orange-amber"
+                            class="size-[1.125rem] filter-neutral-gray group-hover/item:filter-orange-amber"
                         />
                         {item.name}
                         <span

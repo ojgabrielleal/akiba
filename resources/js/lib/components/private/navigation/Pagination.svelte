@@ -79,7 +79,7 @@
                     <button
                         type="button"
                         aria-label="Página anterior"
-                        class="grid size-8 cursor-pointer place-items-center rounded-md bg-orange-citric disabled:cursor-not-allowed disabled:opacity-50"
+                        class="grid size-8 cursor-pointer place-items-center rounded-md bg-orange-amber disabled:cursor-not-allowed disabled:opacity-50"
                         disabled={isLoading}
                         on:click={() => visit(previousUrl, "previous")}
                     >
@@ -94,7 +94,7 @@
                     aria-current={link.active ? "page" : undefined}
                     class={[
                         "grid size-8 cursor-pointer place-items-center rounded-md font-noto-sans text-xs font-extrabold italic text-suspense-aurora disabled:cursor-not-allowed disabled:opacity-50",
-                        link.active ? "bg-neutral-gray" : "bg-blue-ocean hover:bg-neutral-gray",
+                        link.active ? "bg-neutral-gray" : "bg-blue-ocean hover:bg-orange-amber hover:text-blue-marinho",
                     ]}
                     disabled={isLoading || link.active || !link.url}
                     on:click={() => visit(link.url, `page-${link.page}`)}
@@ -110,7 +110,7 @@
                     <button
                         type="button"
                         aria-label="Próxima página"
-                        class="grid size-8 cursor-pointer place-items-center rounded-md bg-orange-citric disabled:cursor-not-allowed disabled:opacity-50"
+                        class="grid size-8 cursor-pointer place-items-center rounded-md bg-orange-amber disabled:cursor-not-allowed disabled:opacity-50"
                         disabled={isLoading}
                         on:click={() => visit(nextUrl, "next")}
                     >
