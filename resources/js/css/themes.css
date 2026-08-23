@@ -17,7 +17,7 @@
 }
 
 [data-public-theme-scope][data-public-theme="light"] {
-    --public-light-warm-background: #fff0e1;
+    --public-light-warm-background: var(--color-neutral-white);
     --public-theme-phrase-gradient: linear-gradient(
         50deg,
         var(--color-orange-citric) 0%,
@@ -27,7 +27,7 @@
 }
 
 [data-public-theme-scope][data-public-theme="light"] :where(.bg-blue-night):not([role="dialog"], [role="dialog"] *) {
-    background-color: var(--color-neutral-white);
+    background-color: #fffdf8;
 }
 
 [data-public-theme-scope][data-public-theme="light"] :where(.bg-blue-night\/15, .bg-blue-night\/35, .bg-blue-night\/55, .bg-blue-night\/60, .bg-blue-night\/75, .bg-blue-night\/90, .bg-blue-night\/95):not([role="dialog"], [role="dialog"] *) {
@@ -98,11 +98,11 @@
 }
 
 [data-public-theme-scope][data-public-theme="light"] .home-player-background {
-    background-color: #ffffff;
+    background-color: #fffdf8;
 }
 
 [data-public-theme-scope][data-public-theme="light"] .public-header-background {
-    background-color: #ffffff;
+    background-color: #fffdf8;
 }
 
 [data-public-theme-scope][data-public-theme="light"] .home-content-background {
@@ -110,7 +110,7 @@
 }
 
 [data-public-theme-scope][data-public-theme="light"] .public-page-background {
-    background-color: var(--color-neutral-white);
+    background-color: #fffdf8;
 }
 
 [data-public-theme-scope][data-public-theme="light"] .public-read-content-background {
@@ -281,7 +281,7 @@
 }
 
 [data-public-theme-scope][data-public-theme="light"] .public-editorial-title {
-    background-color: var(--color-neutral-white);
+    background-color: #fffdf8;
 }
 
 [data-public-theme-scope][data-public-theme="light"] .public-editorial-title-heading {
