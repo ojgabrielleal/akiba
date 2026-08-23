@@ -49,7 +49,7 @@
     };
 
     let activeDay = 1;
-    let visitorTimeZone = "Asia/Tokyo";
+    let visitorTimeZone = baseTimeZone;
 
     $: selectedPrograms = programs?.data ?? [];
     $: visitorTimeZoneLabel = resolveTimeZoneLabel(visitorTimeZone);
@@ -57,31 +57,11 @@
     $: mainTimeZoneLabel = resolveTimeZoneLabel(mainTimeZone);
     $: showLocalTime = visitorTimeZoneLabel.name !== mainTimeZoneLabel.name || visitorTimeZoneLabel.region !== mainTimeZoneLabel.region;
     $: showBrasiliaTime = visitorTimeZoneLabel.country === "Brasil" && mainTimeZone !== baseTimeZone;
-    $: previewPrograms = resolvePreviewPrograms(selectedPrograms);
-    $: dayPrograms = resolveProgramsByDay(previewPrograms, activeDay, visitorTimeZone, mainTimeZone);
+    $: dayPrograms = resolveProgramsByDay(selectedPrograms, activeDay, visitorTimeZone, mainTimeZone);
 
     onMount(() => {
-        visitorTimeZone = "Asia/Tokyo";
-        activeDay = 0;
+        visitorTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || baseTimeZone;
     });
-
-    function resolvePreviewPrograms(items) {
-        if (!items.length) return items;
-
-        return [
-            {
-                ...items[0],
-                airtimes: [
-                    {
-                        ...(items[0].airtimes?.[0] ?? {}),
-                        uuid: "preview-japan",
-                        day: 0,
-                        hour: "21:00",
-                    },
-                ],
-            },
-        ];
-    }
 
     function resolveProgramsByDay(items, day, localTimeZone, countryMainTimeZone) {
         return items
