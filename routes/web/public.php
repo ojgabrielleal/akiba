@@ -11,6 +11,7 @@ use App\Http\Controllers\Public\ContactController;
 use App\Http\Controllers\Public\HomeController;
 use App\Http\Controllers\Public\MediaController;
 use App\Http\Controllers\Public\PlayerController;
+use App\Http\Controllers\Public\PodcastController;
 use App\Http\Controllers\Public\PushNotificationController;
 use App\Http\Controllers\Public\RadioController;
 use App\Http\Controllers\Public\ReadController;
@@ -63,6 +64,40 @@ Route::middleware(['oauth.resolve', 'inertia'])->group(function () {
 
     Route::get('/midias', [MediaController::class, 'render'])
         ->name('media');
+
+    Route::get('/podcasts', [PodcastController::class, 'render'])
+        ->name('podcasts');
+
+    Route::get('/podcast/{podcast:slug}', [PodcastController::class, 'read'])
+        ->name('podcast.read');
+
+    Route::post('/podcast/{podcast:slug}/comment', [PodcastController::class, 'storeComment'])
+        ->middleware('oauth')
+        ->name('podcast.comment.store');
+
+    Route::patch('/podcast/{podcast:slug}/comment/{comment}', [PodcastController::class, 'updateComment'])
+        ->middleware('oauth')
+        ->name('podcast.comment.update');
+
+    Route::delete('/podcast/{podcast:slug}/comment/{comment}', [PodcastController::class, 'deleteComment'])
+        ->middleware('oauth')
+        ->name('podcast.comment.delete');
+
+    Route::patch('/podcast/{podcast:slug}/comment/{comment}/approve', [PodcastController::class, 'approveComment'])
+        ->middleware('auth')
+        ->name('podcast.comment.approve');
+
+    Route::patch('/podcast/{podcast:slug}/comment/{comment}/hide', [PodcastController::class, 'hideComment'])
+        ->middleware('auth')
+        ->name('podcast.comment.hide');
+
+    Route::patch('/podcast/{podcast:slug}/comment/{comment}/restore', [PodcastController::class, 'restoreComment'])
+        ->middleware('auth')
+        ->name('podcast.comment.restore');
+
+    Route::delete('/podcast/{podcast:slug}/comment/{comment}/moderate', [PodcastController::class, 'destroyComment'])
+        ->middleware('auth')
+        ->name('podcast.comment.destroy');
 
     Route::get('/buscar', [SearchController::class, 'render'])
         ->name('search');

@@ -111,13 +111,13 @@
                     required
                 />
             </FormField>
-            <FormField for="audio" label="Spotify embeded" labelVariant="editorial" spacing="none" error={$form.errors.audio}>
+            <FormField for="audio" label="Link do episódio no Spotify" labelVariant="editorial" spacing="none" error={$form.errors.audio}>
                 <TextInput
                     id="audio"
                     type="url"
                     name="audio"
                     variant="editorial"
-                    placeholder="https://open.spotify.com/embed/episode/...."
+                    placeholder="https://open.spotify.com/episode/..."
                     bind:value={$form.audio}
                     error={$form.errors.audio}
                     required

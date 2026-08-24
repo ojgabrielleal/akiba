@@ -73,6 +73,10 @@ class PodcastService
                 fn (Builder $query, array|string $relations) => $query->with($relations)
             )
             ->when(
+                $filters['with_count'] ?? null,
+                fn (Builder $query, array|string $relations) => $query->withCount($relations)
+            )
+            ->when(
                 $filters['search'] ?? null,
                 fn (Builder $query, string $search) => $query->where(function (Builder $query) use ($search) {
                     $term = '%'.trim($search).'%';
@@ -80,6 +84,10 @@ class PodcastService
                     $query->whereLike('title', $term)
                         ->orWhereLike('summary', $term);
                 })
+            )
+            ->when(
+                $filters['except'] ?? null,
+                fn (Builder $query, Podcast $podcast) => $query->whereKeyNot($podcast->getKey())
             )
             ->orderBy(
                 $filters['order_by'] ?? 'id',

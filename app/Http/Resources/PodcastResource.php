@@ -19,6 +19,8 @@ class PodcastResource extends JsonResource
         return [
             'uuid' => $this->uuid,
             'title' => $this->title,
+            'slug' => $this->slug,
+            'href' => route('podcast.read', $this->slug),
             'season' => $this->season,
             'episode' => $this->episode,
             'image' => $this->image,

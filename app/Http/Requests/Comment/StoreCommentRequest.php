@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Post;
+namespace App\Http\Requests\Comment;
 
 use App\Http\Requests\LoggedWebRequest;
 
-class StorePostCommentRequest extends LoggedWebRequest
+class StoreCommentRequest extends LoggedWebRequest
 {
     public function authorize(): bool
     {

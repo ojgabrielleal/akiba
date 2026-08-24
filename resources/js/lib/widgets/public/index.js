@@ -17,6 +17,7 @@ export { default as RadioRankingGrid } from "./grid/RadioRankingGrid.svelte"
 
 // Read
 export { default as PostEngagement } from "./read/PostEngagement.svelte"
+export { default as CommentSection } from "./read/CommentSection.svelte"
 export { default as PostLikeButton } from "./read/PostLikeButton.svelte"
 
 // Player

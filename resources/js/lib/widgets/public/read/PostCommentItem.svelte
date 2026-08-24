@@ -8,6 +8,7 @@
     export let oauth = null;
     export let depth = 0;
     export let isLast = false;
+    export let commentBasePath = `/materia/${post.slug}`;
 
     let editing = false;
     let replying = false;
@@ -33,7 +34,7 @@
     };
 
     const submitEdit = () => {
-        router.patch(`/materia/${post.slug}/comment/${item.uuid}`, {
+        router.patch(`${commentBasePath}/comment/${item.uuid}`, {
             comment: editComment,
         }, {
             only: ["comments"],
@@ -45,7 +46,7 @@
     };
 
     const submitReply = () => {
-        router.post(`/materia/${post.slug}/comment`, {
+        router.post(`${commentBasePath}/comment`, {
             comment: replyComment,
             parent_uuid: item.uuid,
         }, {
@@ -59,14 +60,14 @@
     };
 
     const deleteComment = () => {
-        router.delete(`/materia/${post.slug}/comment/${item.uuid}`, {
+        router.delete(`${commentBasePath}/comment/${item.uuid}`, {
             only: ["comments"],
             preserveScroll: true,
         });
     };
 
     const moderateComment = (action, method = "patch") => {
-        const url = `/materia/${post.slug}/comment/${item.uuid}/${action}`;
+        const url = `${commentBasePath}/comment/${item.uuid}/${action}`;
         const options = {
             only: ["comments"],
             preserveScroll: true,
@@ -313,7 +314,7 @@
     {#if replies.length}
         <div class="relative mt-[16px] grid gap-[14px] pl-[66px] before:absolute before:bottom-[35px] before:left-[25px] before:top-[-48px] before:w-[4px] before:bg-[#00a8ff] before:content-[''] max-sm:pl-[34px] max-sm:before:hidden">
             {#each replies as reply, index}
-                <svelte:self post={post} item={reply} {oauth} depth={depth + 1} isLast={index === replies.length - 1} />
+                <svelte:self post={post} item={reply} {oauth} {commentBasePath} depth={depth + 1} isLast={index === replies.length - 1} />
             {/each}
         </div>
     {/if}

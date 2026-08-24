@@ -25,7 +25,7 @@ class Podcast extends Model
         'episode',
         'summary',
         'description',
-        'audio'
+        'audio',
     ];
 
     protected $casts = [

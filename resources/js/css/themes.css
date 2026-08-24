@@ -27,7 +27,7 @@
 }
 
 [data-public-theme-scope][data-public-theme="light"] :where(.bg-blue-night):not([role="dialog"], [role="dialog"] *) {
-    background-color: #fffdf8;
+    background-color: var(--color-neutral-white);
 }
 
 [data-public-theme-scope][data-public-theme="light"] :where(.bg-blue-night\/15, .bg-blue-night\/35, .bg-blue-night\/55, .bg-blue-night\/60, .bg-blue-night\/75, .bg-blue-night\/90, .bg-blue-night\/95):not([role="dialog"], [role="dialog"] *) {
@@ -110,7 +110,7 @@
 }
 
 [data-public-theme-scope][data-public-theme="light"] .public-page-background {
-    background-color: #fffdf8;
+    background-color: var(--public-light-warm-background);
 }
 
 [data-public-theme-scope][data-public-theme="light"] .public-read-content-background {
@@ -135,12 +135,12 @@
 }
 
 [data-public-theme-scope][data-public-theme="light"] .public-section-heading-title {
-    color: var(--color-orange-citric);
+    color: var(--color-blue-ocean);
 }
 
 [data-public-theme-scope][data-public-theme="light"] .public-section-heading::after,
 [data-public-theme-scope][data-public-theme="light"] .public-section-heading-line {
-    background-color: var(--color-orange-citric);
+    background-color: var(--color-blue-ocean);
 }
 
 [data-public-theme-scope][data-public-theme="light"] .public-navbar-avatar {
@@ -216,6 +216,10 @@
 
 [data-public-theme-scope][data-public-theme="light"] .public-post-list-title {
     color: var(--color-orange-citric);
+}
+
+[data-public-theme-scope][data-public-theme="light"] .public-podcast-divider {
+    background-color: color-mix(in srgb, var(--color-blue-night) 18%, transparent);
 }
 
 [data-public-theme-scope][data-public-theme="light"] .public-comment-card {

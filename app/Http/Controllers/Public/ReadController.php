@@ -4,23 +4,24 @@ namespace App\Http\Controllers\Public;
 
 use App\Services\PageViewService;
 use App\Services\PostService;
+use App\Services\CommentService;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CommentResource;
 use App\Http\Resources\Post\PostResource;
 use App\Models\Post;
 use App\Models\Comment;
 use Inertia\Inertia;
-use App\Http\Requests\Post\StorePostCommentRequest;
+use App\Http\Requests\Comment\StoreCommentRequest;
 use App\Http\Requests\Post\StorePostReactionRequest;
 use App\Http\Requests\Post\TogglePostLikeRequest;
 use App\Support\AuthenticatedMember;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Database\Eloquent\Builder;
 
 class ReadController extends Controller
 {
     public function __construct(
         private PostService $postFilter,
+        private CommentService $commentFilter,
     ) {}
 
     private function componentFor(Post $post): string
@@ -50,19 +51,7 @@ class ReadController extends Controller
     {
         $canModerate = request()->user()?->can('viewAny', Comment::class) ?? false;
 
-        return CommentResource::collection(
-            $post->comments()
-                ->whereNull('parent_id')
-                ->when(! $canModerate, fn (Builder $query) => $query->visible())
-                ->with([
-                    'author',
-                    'replies' => fn ($query) => $query->when(! $canModerate, fn (Builder $query) => $query->visible()),
-                    'replies.author',
-                ])
-                ->latest()
-                ->paginate(10)
-                ->withQueryString()
-        );
+        return CommentResource::collection($this->commentFilter->filter($post, $canModerate));
     }
 
     private function ensureCommentAuthor(Comment $comment): void
@@ -109,7 +98,7 @@ class ReadController extends Controller
         return back(303);
     }
 
-    public function storeComment(StorePostCommentRequest $request, PostService $service, Post $post): RedirectResponse
+    public function storeComment(StoreCommentRequest $request, CommentService $service, Post $post): RedirectResponse
     {
         $data = $request->validated();
 
@@ -124,69 +113,69 @@ class ReadController extends Controller
 
         unset($data['parent_uuid']);
 
-        $service->storeComment($post, AuthenticatedMember::fromRequest($request), $data);
+        $service->store($post, AuthenticatedMember::fromRequest($request), $data);
 
         return back(303);
     }
 
-    public function updateComment(StorePostCommentRequest $request, PostService $service, Post $post, Comment $comment): RedirectResponse
+    public function updateComment(StoreCommentRequest $request, CommentService $service, Post $post, Comment $comment): RedirectResponse
     {
         abort_unless($comment->commentable_type === $post->getMorphClass() && (int) $comment->commentable_id === (int) $post->id, 404);
 
         $this->ensureCommentAuthor($comment);
 
-        $service->updateComment($comment, $request->safe()->only('comment'));
+        $service->update($comment, $request->safe()->only('comment'));
 
         return back(303);
     }
 
-    public function deleteComment(Post $post, Comment $comment, PostService $service): RedirectResponse
+    public function deleteComment(Post $post, Comment $comment, CommentService $service): RedirectResponse
     {
         abort_unless($comment->commentable_type === $post->getMorphClass() && (int) $comment->commentable_id === (int) $post->id, 404);
 
         $this->ensureCommentAuthor($comment);
 
-        $service->deleteComment($comment);
+        $service->delete($comment);
 
         return back(303);
     }
 
-    public function approveComment(Post $post, Comment $comment, PostService $service): RedirectResponse
+    public function approveComment(Post $post, Comment $comment, CommentService $service): RedirectResponse
     {
         $this->ensurePostComment($post, $comment);
         $this->authorize('approve', $comment);
 
-        $service->approveComment($comment, request()->user());
+        $service->approve($comment, request()->user());
 
         return back(303);
     }
 
-    public function hideComment(Post $post, Comment $comment, PostService $service): RedirectResponse
+    public function hideComment(Post $post, Comment $comment, CommentService $service): RedirectResponse
     {
         $this->ensurePostComment($post, $comment);
         $this->authorize('hide', $comment);
 
-        $service->hideComment($comment, request()->user());
+        $service->hide($comment, request()->user());
 
         return back(303);
     }
 
-    public function restoreComment(Post $post, Comment $comment, PostService $service): RedirectResponse
+    public function restoreComment(Post $post, Comment $comment, CommentService $service): RedirectResponse
     {
         $this->ensurePostComment($post, $comment);
         $this->authorize('restore', $comment);
 
-        $service->restoreComment($comment, request()->user());
+        $service->restore($comment, request()->user());
 
         return back(303);
     }
 
-    public function destroyComment(Post $post, Comment $comment, PostService $service): RedirectResponse
+    public function destroyComment(Post $post, Comment $comment, CommentService $service): RedirectResponse
     {
         $this->ensurePostComment($post, $comment);
         $this->authorize('delete', $comment);
 
-        $service->deleteComment($comment);
+        $service->delete($comment);
 
         return back(303);
     }
