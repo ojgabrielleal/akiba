@@ -44,7 +44,7 @@
         <div class="container-page grid gap-8 lg:grid-cols-[minmax(0,1fr)_15rem]">
             <article class="min-w-0 font-noto-sans">
                 <header class="mb-6 rounded-md bg-orange-amber px-3 py-2 text-blue-night sm:px-4">
-                    <div class="flex flex-col gap-2 sm:flex-row sm:items-start sm:gap-4">
+                    <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
                         <h1 class="shrink-0 text-4xl font-black uppercase italic leading-none lg:text-5xl">
                             {episodeCode(item)}
                         </h1>
@@ -56,10 +56,7 @@
                 </header>
 
                 {#if item.description}
-                    <section class="mb-8" aria-labelledby="podcast-description-title">
-                        <h2 id="podcast-description-title" class="mb-3 text-xl font-black uppercase italic text-orange-amber">
-                            Sobre o episódio
-                        </h2>
+                    <section class="mb-8">
                         <div class="public-read-body text-base leading-relaxed lg:text-lg">
                             {@html item.description}
                         </div>
