@@ -496,6 +496,14 @@
     background-color: var(--color-blue-ocean) !important;
 }
 
+[data-public-theme-scope] .public-review-date-band .text-blue-skywave {
+    color: var(--color-blue-skywave) !important;
+}
+
+[data-public-theme-scope] .public-review-date-band .text-suspense-aurora {
+    color: var(--color-suspense-aurora) !important;
+}
+
 [data-public-theme-scope][data-public-theme="night"] .public-featured-card {
     background: linear-gradient(50deg, var(--color-blue-marinho) 0%, var(--color-blue-ocean) 100%);
 }
