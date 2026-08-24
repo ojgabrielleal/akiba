@@ -117,6 +117,11 @@
     background-color: var(--public-light-warm-background);
 }
 
+[data-public-theme-scope][data-public-theme="light"] .public-review-read-surface {
+    background-color: color-mix(in srgb, var(--color-blue-skywave) 8%, var(--color-neutral-white));
+    border-color: color-mix(in srgb, var(--color-blue-night) 12%, transparent);
+}
+
 [data-public-theme-scope][data-public-theme="light"] .main-player-phrase-text {
     color: var(--color-blue-skywave);
 }
@@ -485,6 +490,11 @@
 
 [data-public-theme-scope][data-public-theme="night"] .public-read-content-background {
     background-color: var(--color-blue-marinho);
+}
+
+[data-public-theme-scope][data-public-theme="night"] .public-review-read-surface {
+    background-color: color-mix(in srgb, var(--color-blue-night) 72%, var(--color-blue-ocean));
+    border-color: color-mix(in srgb, var(--color-blue-skywave) 22%, transparent);
 }
 
 [data-public-theme-scope] .public-read-body,

@@ -38,7 +38,7 @@
                 "container-page grid gap-8 py-8",
                 "lg:grid-cols-[minmax(0,1fr)_15rem]",
             ]}>
-                <article class="min-w-0">
+                <article class="public-review-read-surface min-w-0 rounded-md border border-suspense-aurora/10 bg-blue-night/35 p-4 sm:p-5">
                     <div class="mb-5 rounded-md bg-orange-citric px-3 py-2">
                         <h1 class="font-noto-sans text-xl font-black leading-tight text-blue-night uppercase italic sm:text-2xl">
                             {review.title}
