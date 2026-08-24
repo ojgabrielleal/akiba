@@ -72,11 +72,11 @@
                     <ol class="grid gap-7">
                         {#each podcastList as podcast (podcast.uuid)}
                             <li>
-                                <a
-                                    href={podcast.href}
-                                    aria-label={`Ouvir podcast: ${podcast.title}`}
-                                    class={["public-podcast-item group grid gap-4 rounded-md p-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber sm:grid-cols-[10rem_minmax(0,1fr)] sm:gap-5 lg:grid-cols-[13rem_minmax(0,1fr)] xl:grid-cols-[14rem_minmax(0,1fr)]", publicAnimations.cardInteractive]}
-                                >
+                            <Link
+                                href={podcast.href}
+                                aria-label={`Ouvir podcast: ${podcast.title}`}
+                                class={["public-podcast-item group grid gap-4 rounded-md p-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber sm:grid-cols-[10rem_minmax(0,1fr)] sm:gap-5 lg:grid-cols-[13rem_minmax(0,1fr)] xl:grid-cols-[14rem_minmax(0,1fr)]", publicAnimations.cardInteractive]}
+                            >
                                     <div class="block overflow-hidden rounded-md bg-neutral-gray">
                                         <img
                                             src={resolvePlaceholderImage(podcast.image, "placeholder")}
@@ -104,7 +104,7 @@
                                             </p>
                                         {/if}
                                     </article>
-                                </a>
+                            </Link>
                             </li>
                         {/each}
                     </ol>
