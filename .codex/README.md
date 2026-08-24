@@ -12,6 +12,7 @@ Arquivos de contexto e planejamento usados durante o desenvolvimento do projeto.
 
 ## Documentos
 
+- [Mapa de temas publicos](mapa-de-temas-publicos.md)
 - [Guia de UI](docs/ui-guidelines.md)
 
 ## Planos

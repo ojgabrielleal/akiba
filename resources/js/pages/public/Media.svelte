@@ -111,29 +111,29 @@
                     <form
                         on:submit|preventDefault={submitMainVote}
                         class={[
-                            "public-default-gradient w-full rounded-md bg-gradient-blue-cerulean-glow p-4",
+                            "public-default-gradient w-full rounded-md bg-gradient-blue-cerulean-glow px-4 py-5 sm:px-6 lg:px-8",
                             poll.has_voted && "pointer-events-none opacity-50",
                         ]}
                     >
                         <h2 class="text-center font-noto-sans text-xl font-extrabold uppercase italic text-orange-morning lg:text-2xl">
                             {poll.question}
                         </h2>
-                        <div class="mt-5 mb-10 flex flex-col justify-center gap-5 lg:my-13 lg:flex-row lg:gap-8">
+                        <div class="my-7 grid gap-5 sm:grid-cols-2 lg:my-12 xl:grid-cols-4">
                             {#each poll.options as option (option.uuid)}
-                                <div class="flex w-full gap-2 lg:w-44">
+                                <div class="grid min-w-0 grid-cols-[1.25rem_minmax(0,1fr)] gap-2">
                                     <input
                                         id={option.uuid}
                                         bind:group={mainSelectedOption}
                                         name="option"
                                         type="radio"
                                         value={option.uuid}
-                                        class="mt-2 h-5 w-5 shrink-0 cursor-pointer"
+                                        class="mt-1 h-5 w-5 cursor-pointer accent-orange-citric"
                                     />
                                     <div class="min-w-0">
-                                        <label for={option.uuid} title={option.option} class="fonto-noto-sans block max-w-full break-words text-lg font-bold uppercase italic leading-5 text-suspense-aurora">
+                                        <label for={option.uuid} title={option.option} class="block max-w-full break-words font-noto-sans text-base font-bold uppercase italic leading-tight text-suspense-aurora sm:text-lg">
                                             {option.option}
                                         </label>
-                                        <div class="relative mt-1 flex h-3.5 min-w-30 w-full select-none items-center rounded-full bg-black px-2">
+                                        <div class="relative mt-2 flex h-3.5 w-full select-none items-center rounded-full bg-black px-2">
                                             <div
                                                 class={[
                                                     "h-1.5 rounded-sm bg-orange-500",
