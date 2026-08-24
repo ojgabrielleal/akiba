@@ -76,17 +76,27 @@ class PostService
     private function storeStorePost(User $user, array $data, ?UploadedFile $image = null, ?UploadedFile $cover = null): Post
     {
         $metadata = $this->normalizeMetadata($data);
+        $module = $data['module'] ?? 'post';
 
         return Post::create([
             'user_id' => $user->id,
             'title' => $data['title'] ?? 'Rascunho sem título',
-            'status' => $data['status'] ?? 'published',
+            'status' => $this->storePostStatus($data, $module),
             'content' => $data['content'] ?? null,
             'image' => $this->image->store('posts', $image),
             'cover' => $this->image->store('posts', $cover),
-            'module' => $data['module'] ?? 'post',
+            'module' => $module,
             'metadata' => $metadata,
         ]);
+    }
+
+    private function storePostStatus(array $data, string $module): string
+    {
+        if ($module === 'review') {
+            return $data['review']['status'] ?? 'draft';
+        }
+
+        return $data['status'] ?? 'published';
     }
 
     private function storeStoreTags(Post $post, array $tags): void
@@ -164,7 +174,7 @@ class PostService
         $wasPublished = $post->status === 'published';
 
         $post = DB::transaction(function () use ($post, $user, $data, $image, $cover) {
-            $this->updateUpdatePost($post, $data, $image, $cover);
+            $this->updateUpdatePost($post, $user, $data, $image, $cover);
             $this->updateSyncTags($post, $data['tags'] ?? []);
             $this->updateSyncReferences($post, $data['references'] ?? []);
             $this->updateUpdateReview($post, $user, $data['review'] ?? []);
@@ -208,14 +218,14 @@ class PostService
         };
     }
 
-    private function updateUpdatePost(Post $post, array $data, ?UploadedFile $image = null, ?UploadedFile $cover = null): void
+    private function updateUpdatePost(Post $post, User $user, array $data, ?UploadedFile $image = null, ?UploadedFile $cover = null): void
     {
         $module = $data['module'] ?? $post->module;
         $metadata = $this->normalizeMetadata($data, $module);
 
         $post->fill([
             'title' => $data['title'] ?? $post->title,
-            'status' => $data['status'] ?? 'published',
+            'status' => $this->updatePostStatus($post, $user, $data, $module),
             'content' => $data['content'] ?? null,
             'image' => $this->image->store('posts', $image, $post->image),
             'cover' => $this->image->store('posts', $cover, $post->cover),
@@ -226,6 +236,37 @@ class PostService
         if ($post->isDirty()) {
             $post->save();
         }
+    }
+
+    private function updatePostStatus(Post $post, User $user, array $data, string $module): string
+    {
+        if ($module !== 'review') {
+            return $data['status'] ?? 'published';
+        }
+
+        $reviewStatus = $data['review']['status'] ?? $post->status;
+
+        if ($reviewStatus === 'published') {
+            return 'published';
+        }
+
+        if ($this->hasOtherPublishedReview($post, $user, $data['review'] ?? [])) {
+            return 'published';
+        }
+
+        return $reviewStatus;
+    }
+
+    private function hasOtherPublishedReview(Post $post, User $user, array $review): bool
+    {
+        return $post->reviews()
+            ->where('status', 'published')
+            ->when(
+                filled($review['uuid'] ?? null),
+                fn (Builder $query) => $query->where('uuid', '!=', $review['uuid']),
+                fn (Builder $query) => $query->where('user_id', '!=', $user->id)
+            )
+            ->exists();
     }
 
     private function updateSyncTags(Post $post, array $tags): void
