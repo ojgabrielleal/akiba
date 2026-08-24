@@ -94,6 +94,10 @@ class PodcastService
                 $filters['order_direction'] ?? 'desc'
             )
             ->when(
+                $filters['then_order_by'] ?? null,
+                fn (Builder $query, string $column) => $query->orderBy($column, $filters['then_order_direction'] ?? 'desc')
+            )
+            ->when(
                 $filters['limit'] ?? null,
                 fn (Builder $query, int $limit) => $query->limit($limit)
             );

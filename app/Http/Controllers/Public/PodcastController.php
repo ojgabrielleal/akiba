@@ -35,7 +35,8 @@ class PodcastController extends Controller
                     'active' => true,
                     'with' => ['author'],
                     'with_count' => ['views'],
-                    'order_by' => $sort === 'melhor-avaliados' ? 'views_count' : 'created_at',
+                    'order_by' => $sort === 'melhor-avaliados' ? 'views_count' : 'season',
+                    'then_order_by' => 'episode',
                     'paginate' => 5,
                 ])
             ),

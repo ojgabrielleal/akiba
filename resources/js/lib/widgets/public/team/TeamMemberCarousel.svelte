@@ -32,7 +32,7 @@
             >
                 <span
                     class={[
-                        "relative block size-18 overflow-hidden rounded-full bg-blue-ocean ring-2 transition duration-200 group-hover/member:scale-105 group-focus-visible/member:scale-105 motion-reduce:transform-none sm:h-14 sm:w-full sm:overflow-visible sm:rounded-sm sm:ring-0 md:h-16",
+                        "public-team-carousel-avatar relative block size-18 overflow-hidden rounded-full bg-blue-ocean ring-2 transition duration-200 group-hover/member:scale-105 group-focus-visible/member:scale-105 motion-reduce:transform-none sm:h-14 sm:w-full sm:overflow-visible sm:rounded-sm sm:ring-0 md:h-16",
                         selectedMember === member
                             ? "ring-orange-amber"
                             : "ring-blue-skywave/35",

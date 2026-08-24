@@ -607,6 +607,10 @@
     color: color-mix(in srgb, var(--color-suspense-aurora) 72%, transparent);
 }
 
+[data-public-theme-scope][data-public-theme="night"] .public-team-carousel-avatar {
+    background-color: var(--color-blue-cerulean);
+}
+
 [data-public-theme-scope][data-public-theme="night"] .public-team-member-bio {
     color: color-mix(in srgb, var(--color-suspense-aurora) 82%, transparent);
 }
