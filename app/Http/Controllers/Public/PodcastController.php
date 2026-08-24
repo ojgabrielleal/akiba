@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use App\Models\Podcast;
 use App\Models\Comment;
+use App\Services\PageViewService;
 use App\Services\PodcastService;
 use App\Services\CommentService;
 use App\Http\Controllers\Controller;
@@ -42,9 +43,11 @@ class PodcastController extends Controller
         ]);
     }
 
-    public function read(Podcast $podcast): Response
+    public function read(PageViewService $service, Podcast $podcast): Response
     {
         abort_unless($podcast->is_active, 404);
+        $service->store($podcast, request());
+
         $canModerate = request()->user()?->can('viewAny', Comment::class) ?? false;
 
         return Inertia::render('public/ReadPodcast', [
