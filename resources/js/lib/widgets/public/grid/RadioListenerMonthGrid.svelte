@@ -8,7 +8,7 @@
 </script>
 
 <section class="bg-blue-night">
-    <EditorialTitle title="Ouvinte do mês" compact />
+    <EditorialTitle title="Ouvinte do mês" compact topSpacing="" />
 
     <div class="container-page pt-12 pb-20">
         {#if listener}

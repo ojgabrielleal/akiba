@@ -64,8 +64,8 @@
 <Layout {flash} {oauth} {onair} {stream} {pageUrl} publicThemeEnabled>
     <h1 class="sr-only">Mídias</h1>
     <main class="public-page-background flow-root">
-        <div class="public-page-background bg-blue-night pt-10">
-            <EditorialTitle title="Super conteúdos" compact padding="py-6" spacer />
+        <div class="public-page-background bg-blue-night">
+            <EditorialTitle title="Super conteúdos" padding="py-6" spacer />
         </div>
 
         <Section title="Eventos" styles="container-page mt-10 mb-12">

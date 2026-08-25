@@ -90,6 +90,16 @@
         router.get("/buscar", normalizedQuery ? { q: normalizedQuery } : {});
     };
 
+    const isActiveNavItem = (item) => {
+        const currentPath = new URL($page.url, "http://akiba.local").pathname;
+
+        if (item.address === "/site") {
+            return currentPath === item.address;
+        }
+
+        return currentPath === item.address || currentPath.startsWith(`${item.address}/`);
+    };
+
     const requestNotifications = async () => {
         const permission = await requestPushNotificationSubscription(vapidPublicKey);
 
@@ -193,21 +203,31 @@
         </Link>
         <ul class="mt-1 hidden w-full min-w-0 items-center justify-center lg:flex lg:justify-self-center">
             {#each navbar.public as item}
+                {@const active = isActiveNavItem(item)}
                 <li class="flex h-6 items-center gap-1 border-l border-neutral-gray/35 px-2.5 first:border-none first:pl-0 xl:px-3.5">
                     <Link
                         href={item.address}
                         aria-label={item.name}
-                        class="group/item relative flex items-center gap-1 whitespace-nowrap font-noto-sans text-xs font-extrabold uppercase italic text-neutral-gray transition-colors hover:text-orange-amber"
+                        class={[
+                            "group/item relative flex items-center gap-1 whitespace-nowrap font-noto-sans text-xs font-extrabold uppercase italic transition-colors hover:text-orange-amber",
+                            active ? "text-orange-amber" : "text-neutral-gray",
+                        ]}
                     >
                         <img
                             src={item.icon}
                             alt=""
                             aria-hidden="true"
-                            class="size-[1.125rem] filter-neutral-gray group-hover/item:filter-orange-amber"
+                            class={[
+                                "size-[1.125rem] group-hover/item:filter-orange-amber",
+                                active ? "filter-orange-amber" : "filter-neutral-gray",
+                            ]}
                         />
                         {item.name}
                         <span
-                            class="absolute -bottom-2 left-0 h-0.5 w-full origin-left scale-x-0 rounded-full bg-orange-amber transition-transform duration-300 group-hover/item:scale-x-100"
+                            class={[
+                                "absolute -bottom-2 left-0 h-0.5 w-full origin-left rounded-full bg-orange-amber transition-transform duration-300 group-hover/item:scale-x-100",
+                                active ? "scale-x-100" : "scale-x-0",
+                            ]}
                             aria-hidden="true"
                         ></span>
                     </Link>
@@ -394,18 +414,25 @@
                 <div class="flex h-full min-h-0 flex-col">
                     <ul class="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto px-4 pt-6 pb-3">
                         {#each navbar.public as item}
+                            {@const active = isActiveNavItem(item)}
                             <li>
                                 <Link
                                     href={item.address}
                                     aria-label={item.name}
-                                    class="group/item flex min-h-9 items-center gap-2.5 rounded-md px-2 py-1 font-noto-sans text-[0.8125rem] font-extrabold uppercase italic text-blue-night transition duration-200 hover:text-orange-amber motion-reduce:transition-none"
+                                    class={[
+                                        "group/item flex min-h-9 items-center gap-2.5 rounded-md px-2 py-1 font-noto-sans text-[0.8125rem] font-extrabold uppercase italic transition duration-200 hover:text-orange-amber motion-reduce:transition-none",
+                                        active ? "text-orange-amber" : "text-blue-night",
+                                    ]}
                                     on:click={closeMobileNavbar}
                                 >
                                     <img
                                         src={item.icon}
                                         alt=""
                                         aria-hidden="true"
-                                        class="size-5 filter-blue-marinho group-hover/item:filter-orange-amber"
+                                        class={[
+                                            "size-5 group-hover/item:filter-orange-amber",
+                                            active ? "filter-orange-amber" : "filter-blue-marinho",
+                                        ]}
                                     />
                                     {item.name}
                                 </Link>

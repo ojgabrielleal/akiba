@@ -71,7 +71,7 @@
 
 <Meta meta={{ title: "Contato" }} />
 <Layout {flash} {oauth} {onair} {stream} {pageUrl} publicThemeEnabled>
-    <section class="public-page-background bg-blue-night pt-10">
+    <section class="public-page-background bg-blue-night">
         <EditorialTitle
             title="Redes sociais da Akiba"
             phrase="Cola com a gente nas redes pra acompanhar a programação, novidades e avisos"
@@ -123,6 +123,7 @@
             title="Entre para a equipe"
             phrase="Só preencha o formulário aí e espera a resposta (normalmente respondemos aos sábados)"
             phraseMinHeight="min-h-0"
+            topSpacing=""
         />
 
         <div class="pb-12 pt-5 text-suspense-aurora">

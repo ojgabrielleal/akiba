@@ -162,14 +162,14 @@
 
 </script>
 
-<section class="public-page-background bg-blue-night pt-10 text-suspense-aurora">
+<section class="public-page-background bg-blue-night text-suspense-aurora">
     <EditorialTitle title="Equipe" listLabel="Filtros da equipe">
         {#each roles as role (role.key)}
-            <li class="flex h-8 items-center border-l border-neutral-gray/35 px-3 first:border-none first:pl-0 xl:px-5">
+            <li class="flex h-7 items-center border-l border-neutral-gray/35 px-3 first:border-none first:pl-0 xl:px-5">
                 <button
                     type="button"
                     class={[
-                        "shrink-0 cursor-pointer rounded-md font-noto-sans text-base font-extrabold uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 hover:text-orange-amber focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber motion-reduce:transform-none motion-reduce:transition-none",
+                        "shrink-0 cursor-pointer rounded-md font-noto-sans text-sm font-extrabold uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 hover:text-orange-amber focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber motion-reduce:transform-none motion-reduce:transition-none",
                         activeRole?.key === role.key
                             ? "text-orange-amber"
                             : "text-neutral-gray",

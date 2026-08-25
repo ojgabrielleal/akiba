@@ -64,13 +64,13 @@
 <Meta meta={{ title: "Rádio" }} />
 <Layout {flash} {oauth} {onair} {stream} {pageUrl} publicThemeEnabled>
     <h1 class="sr-only">Rádio</h1>
-    <div class="public-page-background bg-blue-night pt-10">
+    <div class="public-page-background bg-blue-night">
         <RadioProgramGrid {programs} />
         <RadioRankingGrid {ranking} />
         <RadioListenerMonthGrid {listenerMonth} />
 
         <section class="bg-blue-marinho pb-8">
-            <EditorialTitle title="Sobre nós" compact />
+            <EditorialTitle title="Sobre nós" compact topSpacing="" />
             <div class="container-page py-8">
                 {#if customAboutParagraphs}
                     <div class="mx-auto max-w-5xl space-y-5 font-noto-sans text-base font-normal leading-7 text-suspense-aurora sm:text-lg sm:leading-8">

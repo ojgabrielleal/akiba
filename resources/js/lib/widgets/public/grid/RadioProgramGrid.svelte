@@ -143,11 +143,11 @@
 <section class="bg-blue-marinho">
     <EditorialTitle title="Programação" listLabel="Filtrar programação por dia">
         {#each weekDays as item}
-            <li class="flex h-8 items-center border-l border-neutral-gray/35 px-3 first:border-none first:pl-0 xl:px-5">
+            <li class="flex h-7 items-center border-l border-neutral-gray/35 px-3 first:border-none first:pl-0 xl:px-5">
                 <button
                     type="button"
                     class={[
-                        "cursor-pointer whitespace-nowrap rounded-md font-noto-sans text-base font-extrabold uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 hover:text-orange-amber focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber motion-reduce:transform-none motion-reduce:transition-none",
+                        "cursor-pointer whitespace-nowrap rounded-md font-noto-sans text-sm font-extrabold uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 hover:text-orange-amber focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber motion-reduce:transform-none motion-reduce:transition-none",
                         activeDay === item.day ? "text-orange-amber" : "text-neutral-gray",
                     ]}
                     on:click={() => (activeDay = item.day)}

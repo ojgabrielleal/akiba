@@ -36,16 +36,16 @@
 
 <Meta meta={{ title: "Podcasts" }} />
 <Layout {flash} {oauth} {onair} {stream} {pageUrl} publicThemeEnabled>
-    <main class="public-podcast-page public-page-background flow-root bg-blue-night pt-10 text-suspense-aurora">
+    <main class="public-podcast-page public-page-background flow-root bg-blue-night text-suspense-aurora">
         <EditorialTitle title="Podcasts" listLabel="Ordenação de podcasts">
             {#each podcastOptions as option}
-                <li class="flex h-8 items-center border-l border-neutral-gray/35 px-3 first:border-none first:pl-0 xl:px-5">
+                <li class="flex h-7 items-center border-l border-neutral-gray/35 px-3 first:border-none first:pl-0 xl:px-5">
                     <Link
                         href={optionHref(option)}
                         only={["podcasts", "activeSort"]}
                         preserveScroll
                         class={[
-                            "group/category relative flex items-center gap-2 whitespace-nowrap rounded-md font-noto-sans text-base font-extrabold uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 hover:text-orange-amber focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber motion-reduce:transform-none motion-reduce:transition-none",
+                            "group/category relative flex items-center gap-2 whitespace-nowrap rounded-md font-noto-sans text-sm font-extrabold uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 hover:text-orange-amber focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber motion-reduce:transform-none motion-reduce:transition-none",
                             activeSort === option.key ? "text-orange-amber" : "text-neutral-gray",
                         ]}
                     >
@@ -54,7 +54,7 @@
                             alt=""
                             aria-hidden="true"
                             class={[
-                                "size-6 group-hover/category:scale-105 group-hover/category:filter-orange-amber group-focus-visible/category:scale-105 group-focus-visible/category:filter-orange-amber motion-reduce:transform-none",
+                                "size-5 group-hover/category:scale-105 group-hover/category:filter-orange-amber group-focus-visible/category:scale-105 group-focus-visible/category:filter-orange-amber motion-reduce:transform-none",
                                 activeSort === option.key ? "filter-orange-amber" : "filter-neutral-gray",
                             ]}
                         />

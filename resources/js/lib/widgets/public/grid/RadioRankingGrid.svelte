@@ -27,7 +27,7 @@
     class="radio-ranking-background bg-blue-marinho"
     style="--ranking-background: url('/img/pages/radio/backgrounds/music-ranking.webp'); --ranking-mobile-background: url('/img/pages/radio/backgrounds/music-ranking-mobile.webp');"
 >
-    <EditorialTitle title="Akiba Ranking" compact />
+    <EditorialTitle title="Akiba Ranking" compact topSpacing="" />
 
     <div class="container-page pt-12 pb-20 lg:pt-24 lg:pb-20">
         <ol class="grid grid-cols-1 gap-5 lg:grid-cols-2 lg:gap-15">
