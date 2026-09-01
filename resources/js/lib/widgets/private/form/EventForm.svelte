@@ -30,7 +30,7 @@
         ];
     }
 
-    $: form = useForm({
+    const form = useForm({
         _method: post ? "PATCH" : "POST",
         module: "event",
         status: post?.data.status ?? null,
@@ -155,7 +155,7 @@
         <div class="block">
             <div class="grid grid-cols-1 lg:grid-cols-[0.4fr_1fr] gap-5 mb-15">
                 <div>
-                    <div class="text-center text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans mb-5">
+                    <div class="text-center text-orange-citric font-extrabold italic text-lg uppercase font-noto-sans mb-5">
                         Tags
                     </div>
                     <FormField for="tag-0" label="Primeira Tag" labelVariant="metadata-indented" spacing="section">
@@ -193,7 +193,7 @@
                     </div>
                 </div>
                 <div>
-                    <div class="text-center text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans mb-5">
+                    <div class="text-center text-orange-citric font-extrabold italic text-lg uppercase font-noto-sans mb-5">
                         Fontes
                     </div>
                     <div class="w-full flex mb-6">

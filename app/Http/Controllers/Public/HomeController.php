@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Public;
 
 use App\Services\PodcastService;
+use App\Services\PollService;
 use App\Services\PostService;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PodcastResource;
+use App\Http\Resources\Poll\PollResource;
 use App\Http\Resources\Post\PostResource;
 use Inertia\Inertia;
 use App\Services\OAuthAccountService;
@@ -23,6 +25,7 @@ class HomeController extends Controller
 
     public function __construct(
         private PodcastService $podcastFilter,
+        private PollService $pollFilter,
         private PostService $postFilter,
     ) {}
 
@@ -106,6 +109,24 @@ class HomeController extends Controller
         );
     }
 
+    private function indexLatestPoll()
+    {
+        $poll = $this->pollFilter->filter([
+            'active' => true,
+            'open' => true,
+            'with' => [
+                'votes',
+                'options' => fn ($query) => $query->withCount('votes'),
+            ],
+            'with_count' => 'votes',
+            'order_by' => 'created_at',
+            'order_direction' => 'desc',
+            'first' => true,
+        ]);
+
+        return $poll ? PollResource::make($poll) : null;
+    }
+
     public function updateOAuthAccountProfile(CompleteOAuthAccountProfileRequest $request, OAuthAccountService $service)
     {
         $service->update($request->attributes->get('oauth_account'), $request->validated());
@@ -149,6 +170,7 @@ class HomeController extends Controller
             'posts' => $this->indexPosts(),
             'events' => $this->indexEvents(),
             'podcasts' => $this->indexPodcasts(),
+            'latestPoll' => $this->indexLatestPoll(),
         ]);
     }
 }

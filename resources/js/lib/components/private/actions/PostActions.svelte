@@ -15,7 +15,7 @@
             aria-label="salvar como rascunho"
             type="submit"
             value="draft"
-            variant="accent"
+            variant="success"
             shape="pill"
             loading={processing && activeAction === "draft"}
             disabled={processing}
@@ -42,7 +42,7 @@
                 aria-label="aprovar"
                 type="submit"
                 value="published"
-                variant="accent"
+                variant="primary"
                 shape="pill"
                 loading={processing && activeAction === "published"}
                 disabled={processing}
@@ -55,7 +55,7 @@
                 aria-label="atualizar"
                 type="submit"
                 value="published"
-                variant="accent"
+                variant="publish"
                 shape="pill"
                 loading={processing && activeAction === "published"}
                 disabled={processing}
@@ -68,7 +68,7 @@
                 aria-label="publicar"
                 type="submit"
                 value="published"
-                variant="accent"
+                variant="publish"
                 shape="pill"
                 loading={processing && activeAction === "published"}
                 disabled={processing}

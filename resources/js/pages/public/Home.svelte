@@ -1,6 +1,7 @@
 <script>
     import { page, usePoll } from "@inertiajs/svelte";
     import { Meta } from "@/lib/components/shared";
+    import { Section } from "@/lib/components/public";
     import { syncMediaSessionMetadata } from "@/lib/stores";
     import { Layout } from "@/lib/layouts/public";
     import {
@@ -11,6 +12,7 @@
         MobilePlayer,
         PostListGrid,
         ReviewListGrid,
+        LatestPollCard,
     } from "@/lib/widgets/public";
 
     $: ({
@@ -21,12 +23,14 @@
         posts,
         events,
         podcasts,
+        latestPoll,
         flash,
         oauth,
     } = $page.props);
     $: air = onair?.data?.[0] ?? null;
     $: pageUrl = $page.url;
     $: featuredPostList = Array.isArray(featuredPosts) ? featuredPosts : featuredPosts?.data ?? [];
+    $: poll = latestPoll?.data ?? null;
     $: hasFeaturedPosts = featuredPostList.length > 0;
     $: syncMediaSessionMetadata(air, stream);
 
@@ -49,6 +53,11 @@
         </div>
     </div>
     <div class="home-content-background bg-blue-marinho pt-10">
+        {#if poll}
+            <Section title="A Akiba pergunta" styles="container-page mb-10">
+                <LatestPollCard {poll} {oauth} />
+            </Section>
+        {/if}
         <div
             class={["home-featured-reviews-background pt-px", hasFeaturedPosts && "has-featured-posts"]}
             style="--featured-background: url('/img/pages/home/backgrounds/featured.webp'); --featured-mobile-background: url('/img/pages/home/backgrounds/featured-mobile.webp'); --reviews-background: url('/img/pages/home/backgrounds/reviews.webp');"

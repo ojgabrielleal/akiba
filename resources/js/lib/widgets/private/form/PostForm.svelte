@@ -31,9 +31,11 @@
         ];
     }
 
+    let appliedDraftKey = "";
+
     $: draftKey = draft ? `${draft.title ?? ""}|${draft.references?.[0]?.url ?? ""}` : "";
 
-    $: form = useForm({
+    const form = useForm({
         _method: post ? "PATCH" : "POST",
         module: "post",
         status: post?.data.status ?? null,
@@ -45,10 +47,11 @@
         references: normalizeReferences(post?.data.references ?? draft?.references),
     });
 
-    $: if (!post && draftKey && $form.title !== draft?.title) {
+    $: if (!post && draftKey && draftKey !== appliedDraftKey) {
         $form.title = draft?.title ?? null;
         $form.content = draft?.content ?? null;
         $form.references = normalizeReferences(draft?.references);
+        appliedDraftKey = draftKey;
     }
 
     function submit(event) {
@@ -122,7 +125,7 @@
         <div class="block">
             <div class="grid grid-cols-1 lg:grid-cols-[0.4fr_1fr] gap-5 mb-15">
                 <div>
-                    <div class="text-center text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans mb-5">
+                    <div class="text-center text-orange-citric font-extrabold italic text-lg uppercase font-noto-sans mb-5">
                         Tags
                     </div>
                     <FormField for="tag-0" label="Primeira Tag" labelVariant="metadata-indented" spacing="section" error={$form.errors["tags.0.name"]} >
@@ -162,7 +165,7 @@
                     </div>
                 </div>
                 <div>
-                    <div class="text-center text-orange-amber font-extrabold italic text-lg uppercase font-noto-sans mb-5">
+                    <div class="text-center text-orange-citric font-extrabold italic text-lg uppercase font-noto-sans mb-5">
                         Fontes
                     </div>
                     <div class="w-full flex mb-6">

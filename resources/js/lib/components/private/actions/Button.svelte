@@ -11,6 +11,7 @@
 
     const variants = {
         primary: "bg-blue-skywave text-suspense-aurora hover:brightness-95",
+        publish: "bg-blue-cerulean text-blue-night hover:brightness-95",
         secondary: "bg-blue-marinho text-suspense-aurora hover:brightness-110",
         info: "bg-blue-ocean text-suspense-aurora hover:brightness-110",
         accent: "bg-orange-amber text-blue-marinho hover:brightness-95",

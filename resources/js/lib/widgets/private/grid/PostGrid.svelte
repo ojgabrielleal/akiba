@@ -43,7 +43,7 @@
         <GridList preset="content">
             {#each posts.data as item (item.uuid)}
                 <li
-                    class="relative h-53 w-full overflow-hidden rounded-md bg-blue-ocean transition hover:-translate-y-0.5 focus-within:ring-2 focus-within:ring-orange-citric"
+                    class="relative h-53 w-full overflow-hidden rounded-md bg-blue-ocean transition hover:-translate-y-0.5"
                 >
                     <article class="h-full">
                         <a

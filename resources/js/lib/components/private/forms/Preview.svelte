@@ -44,7 +44,7 @@
     };
 
     const colors = {
-        default: "text-orange-morning",
+        default: "text-orange-amber",
         muted: "text-blue-ocean",
         light: "text-suspense-aurora",
     };
