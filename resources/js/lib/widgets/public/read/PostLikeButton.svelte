@@ -1,6 +1,7 @@
 <script>
     import { router } from "@inertiajs/svelte";
     import { Tooltip } from "@/lib/components/public";
+    import { themeClass } from "@/lib/utils";
 
     export let post = {};
 
@@ -28,7 +29,7 @@
         ]}
         on:click={toggleLike}
     >
-        <span>{count}</span>
+        <span class={themeClass("text", "suspense-aurora", { fixed: true })}>{count}</span>
         <img
             src="/svg/like.svg"
             alt=""

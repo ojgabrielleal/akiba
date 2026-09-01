@@ -1,20 +1,20 @@
 <script>
     import { Link } from "@inertiajs/svelte";
     import { AdvertisementSlot, Section } from "@/lib/components/public";
-    import { resolvePlaceholderImage } from "@/lib/utils";
+    import { resolveDate, resolvePlaceholderImage, themeClass } from "@/lib/utils";
 
     export let events = [];
 
     $: eventList = Array.isArray(events) ? events : events?.data ?? [];
 
-    const resolveEventDate = (event) => event.metadata?.dates ?? "";
+    const resolveEventDate = (event) => resolveDate(event.metadata?.dates) || "";
     const resolveEventPlace = (event) => event.metadata?.address ?? "";
 </script>
 
 {#if eventList.length > 0}
     <Section styles="public-event-calendar-original container-page mb-10">
-        <div class="public-section-heading mb-5 flex items-center gap-3 after:h-px after:min-w-10 after:flex-1 after:bg-orange-citric after:content-[''] sm:gap-4">
-            <h2 class="public-section-heading-title whitespace-nowrap font-noto-sans text-[1.3rem] font-black text-orange-citric uppercase italic">
+        <div class={["public-section-heading mb-5 flex items-center gap-3 after:h-px after:min-w-10 after:flex-1 after:bg-orange-citric after:content-[''] sm:gap-4", themeClass("after:bg", "blue-cerulean", { theme: "light" })]}>
+            <h2 class={["public-section-heading-title whitespace-nowrap font-noto-sans text-[1.3rem] font-black text-orange-citric uppercase italic", themeClass("text", "blue-cerulean", { theme: "light" })]}>
                 <span class="md:hidden">Eventos</span>
                 <span class="hidden md:inline">Calendário de eventos</span>
             </h2>
@@ -66,12 +66,12 @@
                                             {item.title}
                                         </span>
                                     </div>
-                                    <div class="min-w-0 rounded-md bg-blue-ocean px-5 py-2.5 text-center text-lg text-suspense-aurora">
+                                    <div class={["min-w-0 rounded-md bg-blue-cerulean px-5 py-2.5 text-center text-lg", themeClass("text", "suspense-aurora", { fixed: true })]}>
                                         <span class="block truncate">
                                             {resolveEventDate(item)}
                                         </span>
                                     </div>
-                                    <div class="min-w-0 rounded-md bg-blue-ocean px-5 py-2.5 text-center text-lg text-suspense-aurora">
+                                    <div class={["min-w-0 rounded-md bg-blue-cerulean px-5 py-2.5 text-center text-lg", themeClass("text", "suspense-aurora", { fixed: true })]}>
                                         <span class="block truncate">
                                             {resolveEventPlace(item)}
                                         </span>

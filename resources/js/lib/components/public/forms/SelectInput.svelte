@@ -1,4 +1,6 @@
 <script>
+    import { themeClass } from "@/lib/utils";
+
     let className;
     export { className as class };
     export let id;
@@ -7,10 +9,10 @@
     export let variant = "light";
 
     const variants = {
-        light: "h-11 rounded-md bg-neutral-gray text-suspense-aurora",
-        dark: "h-11 rounded-md bg-blue-ocean text-suspense-aurora",
+        light: `h-11 rounded-md bg-neutral-gray ${themeClass("bg", "neutral-light", { fixed: true, theme: "light" })} text-suspense-aurora`,
+        dark: `h-11 rounded-md bg-blue-ocean ${themeClass("bg", "neutral-light", { fixed: true, theme: "light" })} text-suspense-aurora`,
         transparent: "h-11 rounded-md bg-transparent text-suspense-aurora",
-        pill: "h-11 rounded-full bg-neutral-gray text-suspense-aurora",
+        pill: `h-11 rounded-full bg-neutral-gray ${themeClass("bg", "neutral-light", { fixed: true, theme: "light" })} text-suspense-aurora`,
     };
 
     const borders = {

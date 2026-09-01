@@ -63,7 +63,7 @@
 <Meta meta={{ title: "Mídias" }} />
 <Layout {flash} {oauth} {onair} {stream} {pageUrl} publicThemeEnabled>
     <h1 class="sr-only">Mídias</h1>
-    <main class="public-page-background flow-root">
+    <main class="public-page-background flow-root bg-blue-marinho">
         <div class="public-page-background bg-blue-night">
             <EditorialTitle title="Super conteúdos" padding="py-6" spacer />
         </div>

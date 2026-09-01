@@ -1,4 +1,6 @@
 <script>
+    import { themeClass } from "@/lib/utils";
+
     let className;
     export { className as class };
     export let title;
@@ -7,7 +9,10 @@
     export let line = true;
 
     const tones = {
-        accent: { text: "text-orange-citric", line: "bg-orange-citric" },
+        accent: {
+            text: `text-orange-citric ${themeClass("text", "blue-cerulean", { theme: "light" })}`,
+            line: `bg-orange-citric ${themeClass("bg", "blue-cerulean", { theme: "light" })}`,
+        },
         primary: { text: "text-blue-skywave", line: "bg-blue-skywave" },
         light: { text: "text-suspense-aurora", line: "bg-suspense-aurora/40" },
     };

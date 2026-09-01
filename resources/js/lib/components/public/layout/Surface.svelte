@@ -1,4 +1,6 @@
 <script>
+    import { themeClass } from "@/lib/utils";
+
     let className;
     export { className as class };
     export let as = "div";
@@ -10,9 +12,9 @@
         ocean: "bg-blue-ocean text-suspense-aurora",
         night: "bg-blue-night text-suspense-aurora",
         glass: "border border-suspense-aurora/10 bg-blue-ocean/25 text-suspense-aurora shadow-xl",
-        light: "bg-suspense-aurora text-blue-night",
-        accent: "bg-orange-amber text-blue-night",
-        muted: "bg-neutral-gray text-blue-night",
+        light: `bg-suspense-aurora ${themeClass("text", "blue-night", { fixed: true })}`,
+        accent: `bg-orange-amber ${themeClass("text", "blue-night", { fixed: true })}`,
+        muted: `bg-neutral-gray ${themeClass("text", "blue-night", { fixed: true })}`,
     };
 
     const paddings = {

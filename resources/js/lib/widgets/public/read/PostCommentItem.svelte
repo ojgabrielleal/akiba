@@ -1,7 +1,7 @@
 <script>
     import { router } from "@inertiajs/svelte";
     import { IconButton } from "@/lib/components/public";
-    import { resolvePlaceholderImage } from "@/lib/utils";
+    import { resolvePlaceholderImage, themeClass } from "@/lib/utils";
 
     export let post = {};
     export let item = {};
@@ -22,7 +22,11 @@
     $: isPending = item.status === "pending";
     $: canOwnerDelete = item.can_delete && !item.can_moderate_delete;
     $: canShowModeration = item.can_approve || item.can_hide || item.can_restore || item.can_moderate_delete;
-    $: actionIconClass = "public-comment-action-icon h-[17px] w-[17px] object-contain opacity-70 group-hover:filter-orange-amber group-hover:opacity-100";
+    $: actionButtonClass = "public-comment-action-button group size-[18px]";
+    $: actionIconClass = [
+        "public-comment-action-icon h-[14px] w-[14px] opacity-70 group-hover:text-orange-amber group-hover:opacity-100",
+        themeClass("text", "suspense-aurora", { fixed: true }),
+    ];
 
     const fallbackAvatar = (event, gender = null) => {
         event.currentTarget.src = resolvePlaceholderImage(null, "avatar", gender);
@@ -96,20 +100,20 @@
             >
                 <path
                     d="M1 0 V14 A10 10 0 0 0 11 24 H22"
-                    stroke="#00a8ff"
+                    stroke="#0091ff"
                     stroke-width="4"
                     stroke-linecap="butt"
                     stroke-linejoin="round"
                 />
-                <path d="M22 19 L32 24 L22 29 Z" fill="#00a8ff" />
+                <path d="M22 19 L32 24 L22 29 Z" fill="#0091ff" />
             </svg>
             {#if isLast}
-                <span class="public-comment-thread-mask absolute -left-[41px] top-[20px] bottom-[-14px] z-[5] hidden w-[4px] bg-[#000036] sm:block"></span>
+                <span class="public-comment-thread-mask absolute -left-[41px] top-[20px] bottom-[-14px] z-[5] hidden w-[4px] bg-blue-marinho sm:block"></span>
             {/if}
         {/if}
 
         <div class={[
-            "relative z-10 shrink-0 overflow-hidden rounded-full border-[3px] border-suspense-aurora bg-suspense-aurora",
+            "relative z-10 shrink-0 overflow-hidden rounded-full border-[3px] border-neutral-gray/35 bg-transparent",
             nested ? "mt-[1px] size-[44px]" : "mt-[2px] size-[56px]",
         ]}>
             <img
@@ -126,12 +130,12 @@
             isHidden ? "opacity-70 outline outline-1 outline-blue-skywave/40" : "",
         ]}>
             <div class="flex items-start justify-between gap-4">
-                <div class="min-w-0 text-suspense-aurora">
+                <div class={["min-w-0", themeClass("text", "suspense-aurora", { fixed: true })]}>
                     <div class="flex min-w-0 flex-wrap items-center gap-x-[7px] gap-y-1 leading-none">
-                        <p class="truncate text-[12px] font-black uppercase italic leading-none tracking-normal text-suspense-aurora">
+                        <p class="truncate text-[12px] font-black uppercase italic leading-none tracking-normal text-current">
                             {item.author?.name}
                         </p>
-                        <span class="text-[11px] font-black leading-none text-suspense-aurora/55">
+                        <span class="text-[11px] font-black leading-none text-current opacity-55">
                             • {item.created_at}{item.is_edited ? " · editado" : ""}
                         </span>
                         {#if isHidden}
@@ -139,25 +143,25 @@
                                 Oculto
                             </span>
                         {:else if isPending}
-                            <span class="rounded-[2px] bg-orange-amber px-2 py-0.5 text-[10px] font-black leading-none text-blue-night uppercase italic">
+                            <span class={["rounded-[2px] bg-orange-amber px-2 py-0.5 text-[10px] font-black leading-none uppercase italic", themeClass("text", "blue-night", { fixed: true })]}>
                                 Pendente
                             </span>
                         {/if}
                     </div>
                 </div>
 
-                <div class="flex shrink-0 flex-wrap justify-end gap-[8px] pt-[7px]">
+                <div class="flex shrink-0 flex-wrap justify-end gap-[7px] pt-px">
                     {#if canReply && !nested}
                         <IconButton
                             variant="reply"
                             label="Responder"
                             size="sm"
-                            tone="neutral"
+                            tone="fixed"
                             surface="transparent"
                             tooltipPosition="bottom"
                             interactive={false}
                             iconClass={actionIconClass}
-                            class="public-comment-action-button group size-[20px]"
+                            class={actionButtonClass}
                             on:click={() => replying = !replying}
                         />
                     {/if}
@@ -166,12 +170,12 @@
                             variant="edit"
                             label="Editar"
                             size="sm"
-                            tone="neutral"
+                            tone="fixed"
                             surface="transparent"
                             tooltipPosition="bottom"
                             interactive={false}
                             iconClass={actionIconClass}
-                            class="public-comment-action-button group size-[20px]"
+                            class={actionButtonClass}
                             on:click={() => editing = true}
                         />
                     {/if}
@@ -180,12 +184,12 @@
                             variant="trash"
                             label="Apagar"
                             size="sm"
-                            tone="neutral"
+                            tone="fixed"
                             surface="transparent"
                             tooltipPosition="bottom"
                             interactive={false}
                             iconClass={actionIconClass}
-                            class="public-comment-action-button group size-[20px]"
+                            class={actionButtonClass}
                             on:click={deleteComment}
                         />
                     {/if}
@@ -195,12 +199,12 @@
                                 icon="/svg/eye.svg"
                                 label="Aprovar"
                                 size="sm"
-                                tone="neutral"
+                                tone="fixed"
                                 surface="transparent"
                                 tooltipPosition="bottom"
                                 interactive={false}
                                 iconClass={actionIconClass}
-                                class="public-comment-action-button group size-[20px]"
+                                class={actionButtonClass}
                                 on:click={() => moderateComment("approve")}
                             />
                         {/if}
@@ -209,12 +213,12 @@
                                 icon="/svg/close.svg"
                                 label="Ocultar"
                                 size="sm"
-                                tone="neutral"
+                                tone="fixed"
                                 surface="transparent"
                                 tooltipPosition="bottom"
                                 interactive={false}
                                 iconClass={actionIconClass}
-                                class="public-comment-action-button group size-[20px]"
+                                class={actionButtonClass}
                                 on:click={() => moderateComment("hide")}
                             />
                         {/if}
@@ -223,12 +227,12 @@
                                 icon="/svg/return.svg"
                                 label="Restaurar"
                                 size="sm"
-                                tone="neutral"
+                                tone="fixed"
                                 surface="transparent"
                                 tooltipPosition="bottom"
                                 interactive={false}
                                 iconClass={actionIconClass}
-                                class="public-comment-action-button group size-[20px]"
+                                class={actionButtonClass}
                                 on:click={() => moderateComment("restore")}
                             />
                         {/if}
@@ -237,12 +241,12 @@
                                 variant="trash"
                                 label="Excluir definitivamente"
                                 size="sm"
-                                tone="neutral"
+                                tone="fixed"
                                 surface="transparent"
                                 tooltipPosition="bottom"
                                 interactive={false}
                                 iconClass={actionIconClass}
-                                class="public-comment-action-button group size-[20px]"
+                                class={actionButtonClass}
                                 on:click={() => moderateComment("moderate", "delete")}
                             />
                         {/if}
@@ -256,7 +260,7 @@
                         bind:value={editComment}
                         rows="4"
                         maxlength="1000"
-                        class="public-comment-input min-h-24 w-full resize-none rounded-md border-2 border-blue-skywave/30 bg-blue-marinho px-4 py-3 text-sm font-bold text-suspense-aurora placeholder:text-suspense-aurora/45 focus:outline-none"
+                        class={["public-comment-input min-h-24 w-full resize-none rounded-md border-2 border-blue-skywave/30 bg-blue-marinho px-4 py-3 text-sm font-bold text-suspense-aurora focus:outline-none", themeClass("placeholder", "suspense-aurora", { fixed: true })]}
                     ></textarea>
                     <div class="flex flex-wrap justify-end gap-2">
                         <button
@@ -268,7 +272,7 @@
                         </button>
                         <button
                             type="submit"
-                            class="cursor-pointer rounded-full bg-orange-amber px-4 py-2 text-xs font-black text-blue-night uppercase italic disabled:cursor-not-allowed disabled:opacity-50"
+                            class={["cursor-pointer rounded-full bg-orange-amber px-4 py-2 text-xs font-black uppercase italic disabled:cursor-not-allowed disabled:opacity-50", themeClass("text", "blue-night", { fixed: true })]}
                             disabled={!editComment.trim()}
                         >
                             Salvar
@@ -276,7 +280,7 @@
                     </div>
                 </form>
             {:else}
-                <p class="mt-[6px] whitespace-pre-line text-[15px] font-semibold leading-[1.35] tracking-normal text-suspense-aurora">
+                <p class={["mt-[6px] whitespace-pre-line text-[15px] font-semibold leading-[1.35] tracking-normal", themeClass("text", "suspense-aurora", { fixed: true })]}>
                     {item.comment}
                 </p>
             {/if}
@@ -288,7 +292,7 @@
                         rows="3"
                         maxlength="1000"
                         placeholder="Escreva sua resposta..."
-                        class="public-comment-input min-h-20 w-full resize-none rounded-md border-2 border-blue-skywave/30 bg-blue-marinho px-4 py-3 text-sm font-bold text-suspense-aurora placeholder:text-suspense-aurora/45 focus:outline-none"
+                        class={["public-comment-input min-h-20 w-full resize-none rounded-md border-2 border-blue-skywave/30 bg-blue-marinho px-4 py-3 text-sm font-bold text-suspense-aurora focus:outline-none", themeClass("placeholder", "suspense-aurora", { fixed: true })]}
                     ></textarea>
                     <div class="flex flex-wrap justify-end gap-2">
                         <button
@@ -300,7 +304,7 @@
                         </button>
                         <button
                             type="submit"
-                            class="cursor-pointer rounded-full bg-orange-amber px-4 py-2 text-xs font-black text-blue-night uppercase italic disabled:cursor-not-allowed disabled:opacity-50"
+                            class={["cursor-pointer rounded-full bg-orange-amber px-4 py-2 text-xs font-black uppercase italic disabled:cursor-not-allowed disabled:opacity-50", themeClass("text", "blue-night", { fixed: true })]}
                             disabled={!replyComment.trim()}
                         >
                             Responder

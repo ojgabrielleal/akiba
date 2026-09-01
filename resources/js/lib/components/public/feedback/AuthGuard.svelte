@@ -1,5 +1,5 @@
 <script>
-    import { rememberOAuthAction } from "@/lib/utils";
+    import { rememberOAuthAction, themeClass } from "@/lib/utils";
     import Modal from "../overlays/Modal.svelte";
 
     export let oauth = {};
@@ -25,7 +25,7 @@
     export let containerClass = "";
     export let titleClass = "text-blue-night";
     export let descriptionClass = "text-blue-night/60";
-    export let buttonClass = "text-blue-night";
+    export let buttonClass = themeClass("text", "blue-night", { fixed: true });
     export let action = null;
     export let compact = false;
     export let providersLayout = "list";

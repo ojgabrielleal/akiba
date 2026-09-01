@@ -2,8 +2,8 @@
     import { Link } from "@inertiajs/svelte";
     
     import { postTags, publicAnimations } from "@/lib/constants";
-    import { AdvertisementSlot, MinimalEmptyState } from "@/lib/components/public";
-    import { resolvePlaceholderImage } from "@/lib/utils";
+    import { AdvertisementSlot, MaskIcon, MinimalEmptyState } from "@/lib/components/public";
+    import { resolvePlaceholderImage, themeClass } from "@/lib/utils";
 
     export let posts = [];
     export let title = null;
@@ -23,8 +23,8 @@
 {#if postList.length > 0}
     <section class={["public-post-list-grid", title ? styles : ""]}>
         {#if title}
-            <div class="public-section-heading mb-5 flex items-center gap-4 after:h-px after:flex-1 after:bg-orange-citric after:content-['']">
-                <h2 class="public-section-heading-title whitespace-nowrap font-noto-sans text-[1.3rem] font-black text-orange-citric uppercase italic">
+            <div class={["public-section-heading mb-5 flex items-center gap-4 after:h-px after:flex-1 after:bg-orange-citric after:content-['']", themeClass("after:bg", "blue-cerulean", { theme: "light" })]}>
+                <h2 class={["public-section-heading-title whitespace-nowrap font-noto-sans text-[1.3rem] font-black text-orange-citric uppercase italic", themeClass("text", "blue-cerulean", { theme: "light" })]}>
                     {title}
                 </h2>
             </div>
@@ -44,15 +44,16 @@
                         aria-label={`Ler matéria: ${post.title}`}
                         class={["public-post-list-card group block overflow-hidden rounded-md bg-blue-ocean focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber sm:grid sm:grid-cols-[14rem_1fr] sm:gap-3 sm:bg-transparent", publicAnimations.cardInteractive]}
                     >
-                        <div class="relative aspect-[16/9] overflow-hidden bg-neutral-gray sm:h-34 sm:aspect-auto sm:rounded-md">
+                        <div class="relative aspect-[16/9] overflow-hidden border-0 bg-neutral-gray outline-none sm:h-34 sm:aspect-auto sm:rounded-md">
                             <img
                                 src={resolvePlaceholderImage(post.cover, "placeholder")}
                                 alt=""
                                 aria-hidden="true"
-                                class={["h-full w-full object-cover sm:rounded-md", publicAnimations.imageZoom]}
+                                class={["h-full w-full border-0 object-cover outline-none sm:rounded-md", publicAnimations.imageZoom]}
+                                on:error={(event) => event.currentTarget.remove()}
                             />
-                            <span class="like-metric-badge absolute right-1.5 top-1.5 z-10 inline-flex h-5 min-w-11 items-center justify-center gap-1 rounded-sm bg-orange-amber px-1.5 font-noto-sans text-xs leading-none font-black text-suspense-aurora uppercase italic shadow-sm shadow-blue-night/20">
-                                {post.likes_count ?? 0}
+                            <span class="like-metric-badge absolute right-1.5 top-1.5 z-10 inline-flex h-5 min-w-11 items-center justify-center gap-1 rounded-sm bg-orange-amber px-1.5 font-noto-sans text-xs leading-none font-black uppercase italic shadow-sm shadow-blue-night/20">
+                                <span class={themeClass("text", "suspense-aurora", { fixed: true })}>{post.likes_count ?? 0}</span>
                                 <img src="/svg/like.svg" alt="" aria-hidden="true" class="size-3 filter-suspense-aurora" />
                             </span>
                         </div>
@@ -62,11 +63,10 @@
                             </h3>
                             <div class="flex items-end gap-2">
                                 {#each post.tags ?? [] as tag (tag.uuid)}
-                                    <img
-                                        src={postTags[tag.name]?.icon}
-                                        alt={postTags[tag.name]?.label ?? tag.name}
+                                    <MaskIcon
+                                        icon={postTags[tag.name]?.icon}
+                                        class="public-post-list-icon size-5 text-suspense-aurora sm:size-6"
                                         title={postTags[tag.name]?.label ?? tag.name}
-                                        class="public-post-list-icon size-5 object-contain filter-suspense-aurora sm:size-6"
                                     />
                                 {/each}
                             </div>

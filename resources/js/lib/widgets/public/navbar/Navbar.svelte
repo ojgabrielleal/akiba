@@ -16,7 +16,7 @@
         publicThemes,
         setStoredPublicTheme,
     } from "@/lib/utils";
-    import { Button, IconButton, Modal, Tooltip } from "@/lib/components/public";
+    import { Button, IconButton, MaskIcon, Modal, Tooltip } from "@/lib/components/public";
     import NotificationPanel from "./NotificationPanel.svelte";
     import ThemeSwitcher from "./ThemeSwitcher.svelte";
 
@@ -213,13 +213,11 @@
                             active ? "text-orange-amber" : "text-neutral-gray",
                         ]}
                     >
-                        <img
-                            src={item.icon}
-                            alt=""
-                            aria-hidden="true"
+                        <MaskIcon
+                            icon={item.icon}
                             class={[
-                                "size-[1.125rem] group-hover/item:filter-orange-amber",
-                                active ? "filter-orange-amber" : "filter-neutral-gray",
+                                "size-[1.125rem] transition-colors group-hover/item:text-orange-amber",
+                                active ? "text-orange-amber" : "text-neutral-gray",
                             ]}
                         />
                         {item.name}
@@ -249,7 +247,7 @@
                 <IconButton
                     label="Buscar"
                     icon="/svg/search.svg"
-                    tone="light"
+                    tone="neutral"
                     surface="transparent"
                     size="sm"
                     iconClass="public-navbar-utility-icon"
@@ -266,12 +264,7 @@
                             aria-label="Notificações"
                             on:click={handleNotificationClick}
                         >
-                            <img
-                                src="/svg/bell.svg"
-                                alt=""
-                                aria-hidden="true"
-                                class="public-navbar-utility-icon size-4 filter-suspense-aurora"
-                            />
+                            <MaskIcon icon="/svg/bell.svg" class="public-navbar-utility-icon size-4 text-neutral-gray" />
                             {#if hasUnreadNotifications}
                                 <span class="absolute right-1 top-1 size-2.5 rounded-full bg-orange-morning ring-2 ring-blue-night"></span>
                             {/if}
@@ -284,12 +277,7 @@
                                 aria-label="Ativar notificações"
                                 on:click|stopPropagation={handleNotificationClick}
                             >
-                                <img
-                                    src="/svg/bell.svg"
-                                    alt=""
-                                    aria-hidden="true"
-                                    class="public-navbar-utility-icon size-4 filter-suspense-aurora"
-                                />
+                                <MaskIcon icon="/svg/bell.svg" class="public-navbar-utility-icon size-4 text-neutral-gray" />
                             </button>
                             <span slot="content">Ativar notificações</span>
                         </Tooltip>
@@ -309,7 +297,7 @@
                     <button
                         type="button"
                         aria-label={`Editar perfil de ${nickname}`}
-                        class="public-navbar-avatar ml-1 flex size-12 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-full border-2 border-suspense-aurora bg-suspense-aurora focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-suspense-aurora"
+                        class="public-navbar-avatar ml-1 flex size-12 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-full border-2 border-neutral-gray/35 bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber"
                         on:click={requestProfile}
                     >
                         <img
@@ -322,7 +310,7 @@
                 </Tooltip>
             {:else if oauth?.authenticated}
                 <div
-                    class="public-navbar-avatar ml-1 flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-suspense-aurora bg-suspense-aurora"
+                    class="public-navbar-avatar ml-1 flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-neutral-gray/35 bg-transparent"
                     aria-label={nickname}
                 >
                     <img
@@ -338,12 +326,7 @@
                     class="ml-1 transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 motion-reduce:transform-none motion-reduce:transition-none"
                     on:click={openOAuthLogin}
                 >
-                    <img
-                        src="/svg/profile.svg"
-                        alt=""
-                        aria-hidden="true"
-                        class="size-4 filter-blue-marinho"
-                    />
+                    <MaskIcon icon="/svg/profile.svg" class="size-4 text-blue-marinho" />
                     Entrar
                 </Button>
             {/if}
@@ -425,13 +408,11 @@
                                     ]}
                                     on:click={closeMobileNavbar}
                                 >
-                                    <img
-                                        src={item.icon}
-                                        alt=""
-                                        aria-hidden="true"
+                                    <MaskIcon
+                                        icon={item.icon}
                                         class={[
-                                            "size-5 group-hover/item:filter-orange-amber",
-                                            active ? "filter-orange-amber" : "filter-blue-marinho",
+                                            "size-5 transition-colors group-hover/item:text-orange-amber",
+                                            active ? "text-orange-amber" : "text-blue-marinho",
                                         ]}
                                     />
                                     {item.name}
@@ -466,7 +447,7 @@
                                     class="flex min-w-0 items-center gap-2 text-left"
                                     on:click={requestProfile}
                                 >
-                                    <div class="size-10 shrink-0 overflow-hidden rounded-full border-2 border-suspense-aurora bg-suspense-aurora shadow">
+                                    <div class="size-10 shrink-0 overflow-hidden rounded-full border-2 border-neutral-gray/35 bg-transparent shadow">
                                         <img
                                             src={avatar}
                                             alt={nickname}
@@ -479,7 +460,7 @@
                                 </button>
                             {:else if oauth?.authenticated}
                                 <div class="flex min-w-0 items-center gap-2 text-left">
-                                    <div class="size-10 shrink-0 overflow-hidden rounded-full border-2 border-suspense-aurora bg-suspense-aurora shadow">
+                                    <div class="size-10 shrink-0 overflow-hidden rounded-full border-2 border-neutral-gray/35 bg-transparent shadow">
                                         <img
                                             src={avatar}
                                             alt={nickname}
@@ -497,12 +478,7 @@
                                     class="transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 motion-reduce:transform-none motion-reduce:transition-none"
                                     on:click={openOAuthLogin}
                                 >
-                                    <img
-                                        src="/svg/profile.svg"
-                                        alt=""
-                                        aria-hidden="true"
-                                        class="size-4 filter-blue-marinho"
-                                    />
+                                    <MaskIcon icon="/svg/profile.svg" class="size-4 text-blue-marinho" />
                                     Entrar
                                 </Button>
                             {/if}

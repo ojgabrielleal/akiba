@@ -15,7 +15,8 @@ export {
     normalizePublicTheme,
     publicThemes,
     setStoredPublicTheme,
-} from "./publicTheme.js"
+    themeClass,
+} from "./themes.js"
 export { resolveStatusBackground } from "./presentation/gridStatus.js"
 export {
     canUsePushNotifications,

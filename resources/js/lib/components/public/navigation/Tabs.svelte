@@ -7,17 +7,18 @@
     export let variant = "underline";
 
     import { Link } from "@inertiajs/svelte";
+    import { themeClass } from "@/lib/utils";
 
     const variants = {
         underline: {
             list: "border-b border-suspense-aurora/10",
-            base: "border-b-2 border-transparent text-suspense-aurora/45",
+            base: `border-b-2 border-transparent ${themeClass("text", "suspense-aurora/45", { fixed: true })}`,
             active: "border-orange-amber text-orange-amber",
         },
         pills: {
             list: "",
-            base: "rounded-full bg-blue-ocean text-suspense-aurora/60",
-            active: "bg-blue-skywave text-suspense-aurora",
+            base: `rounded-full bg-blue-ocean ${themeClass("text", "suspense-aurora/60", { fixed: true })}`,
+            active: `bg-blue-skywave ${themeClass("text", "suspense-aurora", { fixed: true })}`,
         },
     };
 

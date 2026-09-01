@@ -4,6 +4,8 @@
     export let loadingLabel = "Carregando...";
 
     import { router } from "@inertiajs/svelte";
+    import { themeClass } from "@/lib/utils";
+    import MaskIcon from "../media/MaskIcon.svelte";
     import LoadingSpinner from "../feedback/LoadingSpinner.svelte";
 
     let isLoading = false;
@@ -78,11 +80,11 @@
                     <button
                         type="button"
                         aria-label="Página anterior"
-                        class="grid size-8 cursor-pointer place-items-center rounded-md bg-orange-amber disabled:cursor-not-allowed disabled:opacity-50"
+                        class={["grid size-8 cursor-pointer place-items-center rounded-md bg-orange-amber disabled:cursor-not-allowed disabled:opacity-50", themeClass("text", "blue-marinho", { fixed: true })]}
                         disabled={isLoading}
                         on:click={() => visit(previousUrl, "previous")}
                     >
-                        <img src="/svg/chevron-left.svg" alt="" aria-hidden="true" class="size-5 filter-blue-marinho" />
+                        <MaskIcon icon="/svg/chevron-left.svg" class="size-5" />
                     </button>
                 {/if}
             {/if}
@@ -92,7 +94,8 @@
                     type="button"
                     aria-current={link.active ? "page" : undefined}
                     class={[
-                        "grid size-8 cursor-pointer place-items-center rounded-md font-noto-sans text-xs font-extrabold italic text-suspense-aurora disabled:cursor-not-allowed disabled:opacity-50",
+                        "grid size-8 cursor-pointer place-items-center rounded-md font-noto-sans text-xs font-extrabold italic disabled:cursor-not-allowed disabled:opacity-50",
+                        themeClass("text", "suspense-aurora", { fixed: true }),
                         link.active ? "bg-neutral-gray" : "bg-blue-ocean hover:bg-neutral-gray",
                     ]}
                     disabled={isLoading || link.active || !link.url}
@@ -109,11 +112,11 @@
                     <button
                         type="button"
                         aria-label="Próxima página"
-                        class="grid size-8 cursor-pointer place-items-center rounded-md bg-orange-amber disabled:cursor-not-allowed disabled:opacity-50"
+                        class={["grid size-8 cursor-pointer place-items-center rounded-md bg-orange-amber disabled:cursor-not-allowed disabled:opacity-50", themeClass("text", "blue-marinho", { fixed: true })]}
                         disabled={isLoading}
                         on:click={() => visit(nextUrl, "next")}
                     >
-                        <img src="/svg/chevron-right.svg" alt="" aria-hidden="true" class="size-5 filter-blue-marinho" />
+                        <MaskIcon icon="/svg/chevron-right.svg" class="size-5" />
                     </button>
                 {/if}
             {/if}

@@ -1,32 +1,11 @@
-# Regras De Processing
+# Processing Rules
 
-Escopo: tudo em `app/Processing`.
+Scope: `app/Processing`.
 
-## Regra Principal
-
-Processing concentra processamento interno reutilizavel que nao e regra de negocio direta e nao e integracao externa.
-
-## Estrutura
-
-- Arquivos ficam direto na raiz de `app/Processing`.
-- Use sufixo `Process`, nao `Service`.
-- Exemplos: `ImageProcess`, `AudienceCollectorProcess`.
-- Nao crie subpastas sem necessidade clara de subescopo.
-
-## Responsabilidades
-
-- Use esta camada para manipulacao de arquivos, transformacao de dados, coleta interna e rotinas reutilizaveis.
-- Nao coloque regras de negocio de modulo aqui; isso pertence a `app/Services`.
-- Nao coloque chamadas para APIs externas aqui; isso pertence a `app/Integrations`.
-- Processing pode ser injetado em services quando o fluxo de negocio precisar desse processamento.
-
-## Organizacao Interna
-
-- Atributos e construtor devem aparecer logo apos abertura da classe.
-- Use nomes de metodos orientados ao processamento executado, como `store`, `delete`, `collect`.
-- Mantenha dependencias explicitas via construtor quando houver colaborador, como uma integration.
-
-## Finalizacao
-
-- Mantenha os processos pequenos, previsiveis e reutilizaveis.
-- Cubra processamento com testes focados em `tests/Unit/Processing` ou em `tests/Unit/Services` quando ainda existir pasta legada.
+* Processing handles reusable internal file manipulation, data transformation, collection and routines that are neither business rules nor external integrations.
+* Keep files directly in `app/Processing`, using the `Process` suffix; avoid subfolders unless a clear subscope exists.
+* Business rules belong to `app/Services`; external APIs and integrations belong to `app/Integrations`.
+* Processes may be injected into services and must receive collaborators explicitly through the constructor.
+* Keep properties/constructor at the top and use processing-oriented method names such as `store`, `delete` and `collect`.
+* Keep processes small, predictable and reusable.
+* Test them in `tests/Unit/Processing`, or `tests/Unit/Services` while the legacy structure still exists.

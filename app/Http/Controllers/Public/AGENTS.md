@@ -1,46 +1,30 @@
-# Regras De Controllers Publicos
+# Public Controller Rules
 
-Escopo: tudo em `app/Http/Controllers/Public`.
+Scope: `app/Http/Controllers/Public`.
 
-## Regra Principal
+## Structure
 
-Controllers publicos orquestram paginas e interacoes abertas ao usuario, mantendo queries, resources e services separados por responsabilidade.
+* Keep controllers directly in this directory; do not use `Pages`/`Invokes` folders or the `Page` suffix.
+* Name controllers after the screen or scope they represent.
+* Keep traits/properties and constructor at the top; use constructor property promotion and group imports readably by type.
 
-## Estrutura
+## Responsibilities
 
-- Controllers publicos ficam direto em `app/Http/Controllers/Public`.
-- Nao use pastas `Pages` ou `Invokes`.
-- Nao use sufixo `Page` no nome do controller.
-- O controller deve representar a tela ou escopo que atende, como `HomeController`, `RadioController`, `ReadController` ou `PlayerController`.
+* Controllers orchestrate public pages/interactions; business actions belong to injected `app/Services` and validation to injected `app/Http/Requests`.
+* Method parameter order: request, service, then route model.
+* Use explicit action/scope method names.
+* `show` actions return `InertiaRender` with the resource and required page props.
+* Public player flows belong to `PlayerController`, not page controllers such as `RadioController`.
+* Never put private/admin rules or inline validation in public controllers.
 
-## Responsabilidades
+## Inertia
 
-- Acoes de negocio devem passar por `app/Services`, injetados no construtor ou no metodo conforme o padrao local.
-- Input validado deve usar `app/Http/Requests`, injetados como parametros de metodo.
-- Mantenha parametros de metodo na ordem: request, service e depois model vindo da rota, quando todos existirem.
-- Metodos `show` devem retornar `InertiaRender` com a prop correspondente e quaisquer props de pagina que a UI ainda precise.
-- Nomes de metodos de acao devem indicar acao e escopo, como `storeSongRequest`, `storeComment`, `toggleLike` ou `updateOAuthAccountProfile`.
-- Fluxos de player publico pertencem a `PlayerController`, nao a controllers de pagina como `RadioController`.
+* Page controllers must have `render()` as their last method.
+* Build page props with private `index*` methods using the corresponding service, normally `filter()`.
+* Reserve `show` for controller actions; never use `show*` as prop helpers.
+* Inline private methods that only return an array used once.
 
-## Paginas Inertia
+## Queries
 
-- Controllers que renderizam pagina devem ter um metodo `render`.
-- O metodo `render` deve ser a ultima funcao do controller.
-- Props devem ser montadas por metodos privados como `indexPosts`.
-- Queries de pagina devem usar o service do escopo correspondente, normalmente pelo metodo `filter()`.
-- Use metodos privados `index*` para montar props/resources de pagina.
-- Nao use `show*` como helper de prop; reserve `show` para actions de controller que retornam `InertiaRender`.
-- Quando um metodo privado existir apenas para retornar um array usado por outro metodo, incorpore o array no ponto de uso.
-
-## Organizacao Interna
-
-- Atributos e construtor devem aparecer logo apos abertura da classe e `use` de traits.
-- Use promocao de propriedades no construtor, como `public function __construct(private PostService $postFilter) {}`.
-- Mantenha arrays ou strings simples de relations diretamente no `with`/`load` correspondente.
-- Crie metodos privados `*Relations` somente quando o conjunto de relations tiver callbacks de query, logica encadeada ou for compartilhado por multiplas queries no mesmo escopo.
-- Importe dependencias com `use` antes da classe, mantendo agrupamento legivel entre controller base, models, requests, resources, services, facades e Inertia.
-
-## Finalizacao
-
-- Nao coloque regra privada ou administrativa em controllers publicos.
-- Nao coloque validacao inline no controller; use FormRequests.
+* Keep simple relation arrays/strings directly in `with()`/`load()`.
+* Create private `*Relations` methods only for relations with query callbacks, chained logic or reuse across multiple queries.

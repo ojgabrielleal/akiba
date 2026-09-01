@@ -1,6 +1,5 @@
-# Regras para migrations
+# Migration Rules
 
-- Use sempre as abstrações do Laravel (`Schema`, `Blueprint`, `foreignId`, `constrained`, índices e helpers equivalentes) para criação e alteração de tabelas.
-- Use `DB::` somente quando a migration for migrar dados existentes.
-- Toda migração de dados deve ser feita em uma migration separada da migration de estrutura.
-- Não misture criação/alteração de schema com transformação de dados no mesmo arquivo.
+* Use Laravel schema abstractions (`Schema`, `Blueprint`, `foreignId`, `constrained`, indexes and equivalent helpers) for schema changes.
+* Use `DB::` only for migrating existing data.
+* Keep data migrations separate from schema migrations; never mix schema changes and data transformation in the same migration.

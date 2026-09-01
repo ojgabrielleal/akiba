@@ -1,6 +1,7 @@
 <script>
     import { router } from "@inertiajs/svelte";
     import { AuthGuard, Pagination } from "@/lib/components/public";
+    import { themeClass } from "@/lib/utils";
     import PostCommentItem from "./PostCommentItem.svelte";
 
     export let commentable = {};
@@ -31,7 +32,7 @@
         <h2 class="text-xl leading-none font-normal text-orange-amber uppercase">
             Comentários
         </h2>
-        <span class="rounded-full bg-blue-cerulean px-3 py-1 text-xs font-black text-suspense-aurora uppercase italic">
+        <span class={["rounded-full bg-blue-cerulean px-3 py-1 text-xs font-black uppercase italic", themeClass("text", "suspense-aurora", { fixed: true })]}>
             {totalComments}
         </span>
     </div>
@@ -54,12 +55,12 @@
                 rows="4"
                 maxlength="1000"
                 placeholder="Escreva seu comentário..."
-                class="public-comment-input min-h-28 w-full resize-none rounded-md border-2 border-blue-skywave/30 bg-blue-ocean px-4 py-3 text-sm font-bold text-suspense-aurora placeholder:text-suspense-aurora/45 focus:outline-none"
+                class={["public-comment-input min-h-28 w-full resize-none rounded-md border-2 border-blue-skywave/30 bg-blue-ocean px-4 py-3 text-sm font-bold text-suspense-aurora focus:outline-none", themeClass("placeholder", "suspense-aurora", { fixed: true })]}
             ></textarea>
             <div class="flex justify-end">
                 <button
                     type="submit"
-                    class="rounded-full bg-orange-amber px-5 py-2.5 text-sm font-black text-blue-night uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50 motion-reduce:transform-none motion-reduce:transition-none"
+                    class={["rounded-full bg-orange-amber px-5 py-2.5 text-sm font-black uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50 motion-reduce:transform-none motion-reduce:transition-none", themeClass("text", "blue-night", { fixed: true })]}
                     disabled={!comment.trim()}
                 >
                     Comentar

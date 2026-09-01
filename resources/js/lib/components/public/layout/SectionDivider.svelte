@@ -1,11 +1,16 @@
 <script>
+    import { themeClass } from "@/lib/utils";
+
     let className;
     export { className as class };
     export let tone = "accent";
     export let spacing = "md";
 
     const tones = {
-        accent: { line: "bg-orange-citric", text: "text-orange-citric" },
+        accent: {
+            line: `bg-orange-citric ${themeClass("bg", "blue-cerulean", { theme: "light" })}`,
+            text: `text-orange-citric ${themeClass("text", "blue-cerulean", { theme: "light" })}`,
+        },
         primary: { line: "bg-blue-skywave", text: "text-blue-skywave" },
         light: { line: "bg-suspense-aurora/30", text: "text-suspense-aurora" },
     };

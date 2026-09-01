@@ -5,7 +5,7 @@
     import { Layout } from "@/lib/layouts/public";
     import { CommentSection } from "@/lib/widgets/public";
     import { publicAnimations } from "@/lib/constants";
-    import { resolvePlaceholderImage } from "@/lib/utils";
+    import { resolvePlaceholderImage, themeClass } from "@/lib/utils";
 
     $: ({ flash, oauth, onair, stream, podcast, comments, relatedPodcasts } = $page.props);
     $: pageUrl = $page.url;
@@ -43,7 +43,7 @@
     <section class="public-read-content-background bg-blue-marinho pt-10 pb-16 text-suspense-aurora">
         <div class="container-page grid gap-8 lg:grid-cols-[minmax(0,1fr)_15rem]">
             <article class="min-w-0 font-noto-sans">
-                <header class="mb-6 rounded-md bg-orange-amber px-3 py-2 text-blue-night sm:px-4">
+                <header class={["mb-6 rounded-md bg-orange-amber px-3 py-2 sm:px-4", themeClass("text", "blue-night", { fixed: true })]}>
                     <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
                         <h1 class="shrink-0 text-4xl font-black uppercase italic leading-none lg:text-5xl">
                             {episodeCode(item)}

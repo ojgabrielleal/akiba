@@ -7,6 +7,7 @@
         listenForOAuthAction,
         OAuthAction,
         resolvePlaceholderImage,
+        themeClass,
     } from "@/lib/utils";
 
     export let onair = null;
@@ -99,7 +100,7 @@
                         aria-hidden="true"
                         class="size-4 shrink-0 object-contain brightness-0"
                     />
-                    <span class="truncate text-blue-night text-[10px] font-noto-sans font-extrabold uppercase italic">
+                    <span class="truncate text-suspense-aurora text-[10px] font-noto-sans font-extrabold uppercase italic">
                         {status.label}
                     </span>
                 </div>
@@ -244,7 +245,7 @@
                             aria-hidden="true"
                             class="size-4 shrink-0 object-contain brightness-0"
                         />
-                        <span class="truncate text-blue-night text-[10px] font-noto-sans font-extrabold uppercase italic">
+                        <span class={["truncate text-[10px] font-noto-sans font-extrabold uppercase italic", themeClass("text", "suspense-aurora", { fixed: true })]}>
                             {status.label}
                         </span>
                     </div>

@@ -27,6 +27,8 @@ export { default as SectionDivider } from "./layout/SectionDivider.svelte"
 export { default as SectionHeader } from "./layout/SectionHeader.svelte"
 export { default as Surface } from "./layout/Surface.svelte"
 
+export { default as MaskIcon } from "./media/MaskIcon.svelte"
+
 export { default as Carousel } from "./navigation/Carousel.svelte"
 export { default as Pagination } from "./navigation/Pagination.svelte"
 export { default as Tabs } from "./navigation/Tabs.svelte"

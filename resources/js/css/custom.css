@@ -1,5 +1,3 @@
- @import "./themes.css";
-
  /* Container */
  html {
      font-size: 16px;
@@ -44,6 +42,34 @@
 
  img, video, canvas, svg {
      max-width: 100%;
+ }
+
+ .song-request-active {
+     animation: song-request-pulse 2.4s ease-in-out infinite;
+ }
+
+ @keyframes song-request-pulse {
+     0%,
+     100% {
+         transform: scale(1);
+         box-shadow:
+             0 0 10px color-mix(in srgb, var(--color-blue-skywave) 22%, transparent),
+             0 0 18px color-mix(in srgb, var(--color-blue-skywave) 14%, transparent);
+     }
+
+     50% {
+         transform: scale(1.035);
+         box-shadow:
+             0 0 14px color-mix(in srgb, var(--color-blue-skywave) 34%, transparent),
+             0 0 24px color-mix(in srgb, var(--color-blue-skywave) 22%, transparent);
+     }
+ }
+
+ @media (prefers-reduced-motion: reduce) {
+     .song-request-active {
+         animation: none;
+         box-shadow: 0 0 12px color-mix(in srgb, var(--color-blue-skywave) 28%, transparent);
+     }
  }
 
  @media (max-width: 40rem) {

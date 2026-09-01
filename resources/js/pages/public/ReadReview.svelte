@@ -5,7 +5,7 @@
     import { AdvertisementSlot, AuthGuard, Tooltip } from "@/lib/components/public";
     import { Layout } from "@/lib/layouts/public";
     import { PostEngagement, PostLikeButton } from "@/lib/widgets/public";
-    import { resolveDate, resolvePlaceholderImage } from "@/lib/utils";
+    import { resolveDate, resolvePlaceholderImage, themeClass } from "@/lib/utils";
 
     $: ({ flash, oauth, onair, stream, post, comments, relatedPosts } = $page.props);
 
@@ -40,7 +40,7 @@
             ]}>
                 <article class="min-w-0">
                     <div class="mb-5 rounded-md bg-orange-citric px-3 py-2">
-                        <h1 class="font-noto-sans text-xl font-black leading-tight text-blue-night uppercase italic sm:text-2xl">
+                        <h1 class={["font-noto-sans text-xl font-black leading-tight uppercase italic sm:text-2xl", themeClass("text", "blue-night", { fixed: true })]}>
                             {review.title}
                         </h1>
                     </div>
@@ -95,7 +95,7 @@
                                             class={[
                                                 "cursor-pointer rounded-md px-4 py-2 font-noto-sans text-sm font-black uppercase italic transition duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber",
                                                 (item.uuid ?? item.author?.uuid) === activeReview
-                                                    ? "bg-orange-amber text-blue-night"
+                                                    ? `bg-orange-amber ${themeClass("text", "blue-night", { fixed: true })}`
                                                     : "bg-blue-ocean text-suspense-aurora hover:bg-blue-cerulean",
                                             ]}
                                             on:click={() => activeReview = item.uuid ?? item.author?.uuid}
@@ -157,7 +157,7 @@
                                                 on:click={() => submitReaction(reaction)}
                                             >
                                                 <img src={reaction.image} alt="" aria-hidden="true" class="size-18" />
-                                                <span class="absolute -right-1 -bottom-1 min-w-6 rounded-full bg-blue-skywave px-1.5 py-0.5 text-center font-noto-sans text-xs font-black text-suspense-aurora">
+                                                <span class={["absolute -right-1 -bottom-1 min-w-6 rounded-full bg-blue-skywave px-1.5 py-0.5 text-center font-noto-sans text-xs font-black", themeClass("text", "suspense-aurora", { fixed: true })]}>
                                                     {reactionCounts[reaction.name] ?? 0}
                                                 </span>
                                             </button>

@@ -1,47 +1,29 @@
-# Regras De Models
+# Model Rules
 
-Escopo: tudo em `app/Models`.
+Scope: `app/Models`.
 
-## Regra Principal
+## General
 
-Models representam persistencia, casts, scopes, relationships e atributos simples do dominio.
+* Models handle persistence, casts, scopes, relationships and simple domain attributes only.
+* Business flows belong to `app/Services`; page query composition belongs to the corresponding service, usually in `filter()`; reusable non-business processing belongs to `app/Processing`.
 
-## Estrutura
+## Structure
 
-- Models devem ficar na raiz de `app/Models`.
-- Comportamento compartilhado de models deve ficar em `app/Models/Concerns`.
-- Exemplo: `HasPermissions`.
-- Models que precisam de factories devem usar `HasFactory`.
-- Models com colunas UUID devem usar `HasUuids` e definir `uniqueIds(): array`.
-- O metodo deve retornar `['uuid']` quando o model usa a coluna `uuid`.
+* Keep models at the root of `app/Models` and shared model behavior in `app/Models/Concerns`.
+* Use `HasFactory` when factories are needed.
+* Models with UUID columns must use `HasUuids` and implement `uniqueIds(): array`, returning `['uuid']` when using the `uuid` column.
 
-## Configuracao
+## Configuration
 
-- Mantenha configuracao do model perto do topo da classe.
-- Ordem recomendada: `$fillable`, `$hidden`, `$casts`.
-- Use `$fillable` para campos aceitos por mass assignment.
-- Use `$hidden` para foreign keys internas e valores sensiveis.
-- Exemplos: `user_id`, `activity_id`, `password`, `remember_token`.
-- Use `$casts` para booleanos, arrays, datas e formatacao de hora/data.
-- Exemplos: `is_active`, `is_virtual`, `metadata`, `phrases`, `birth_date`.
+* Keep model configuration near the top, ordered as `$fillable`, `$hidden`, `$casts`.
+* `$fillable`: mass-assignable fields.
+* `$hidden`: internal foreign keys and sensitive values.
+* `$casts`: booleans, arrays, dates and date/time formatting.
 
-## Organizacao Interna
+## Eloquent
 
-- Use objetos `Attribute` do Eloquent para accessors e mutators.
-- Exemplos: hash de senha, geracao de slug a partir de titulo ou nickname.
-- Query scopes devem usar o atributo `#[Scope]` do Laravel e ser metodos protegidos.
-- Exemplo: `protected function active(Builder $query): void`.
-- Mantenha logica de query reutilizavel em scopes do model.
-- Exemplos: `active`, `upcoming`, `withStatus`, `authoredBy`, `forModule`, `availableForLocution`.
-- Metodos de relationship devem ficar agrupados depois dos scopes.
-- Relationships devem usar foreign keys explicitas quando o projeto ja faz isso.
-- Exemplos: `hasMany(Post::class, 'user_id')`, `belongsTo(User::class, 'user_id')`.
-- Prefira nomes expressivos de relationship que combinem com o dominio.
-- Exemplos: `author`, `host`, `responsible`, `favorites`, `reviews`, `programAirtimes`.
-
-## Finalizacao
-
-- Mantenha models focados em persistencia, casts, scopes, relationships e atributos simples.
-- Fluxos de negocio pertencem a `app/Services`.
-- Composicao de query para paginas pertence ao service do escopo correspondente, normalmente em metodo `filter()`.
-- Processamento reutilizavel que nao e regra de negocio direta pertence a `app/Processing`.
+* Use Eloquent `Attribute` objects for accessors/mutators.
+* Keep reusable query logic in protected Laravel `#[Scope]` methods.
+* Group relationships after scopes.
+* Use explicit foreign keys when consistent with the existing project.
+* Use expressive, domain-oriented relationship names.

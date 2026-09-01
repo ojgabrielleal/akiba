@@ -1,4 +1,6 @@
 <script>
+    import { themeClass } from "@/lib/utils";
+
     let className;
     export { className as class };
     export let title;
@@ -19,10 +21,10 @@
             "public-editorial-title-hero relative isolate overflow-hidden bg-cover bg-right bg-no-repeat lg:bg-contain",
             compact ? "py-3" : "flex h-[90px] items-center",
         ]}
-        style="--public-editorial-title-texture: url('/img/textures/screentone.webp'); background-image: var(--public-editorial-title-texture), var(--public-editorial-title-gradient, var(--gradient-blue-ocean-cerulean));"
+        style="background-image: url('/img/textures/screentone.webp'), var(--gradient-blue-ocean-cerulean);"
     >
         <div class="container-page relative">
-            <h1 class={["public-editorial-title-heading break-words text-center font-noto-sans text-4xl font-black italic uppercase leading-none text-orange-morning sm:text-5xl lg:text-5xl", headingClass]}>
+            <h1 class={["public-editorial-title-heading break-words text-center font-noto-sans text-4xl font-black italic uppercase leading-none text-orange-morning sm:text-5xl lg:text-5xl", themeClass("text", "blue-night", { fixed: true, theme: "light" }), headingClass]}>
                 {title}
             </h1>
         </div>

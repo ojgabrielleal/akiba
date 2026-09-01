@@ -1,28 +1,14 @@
-# Regras De Integrations
+# Integration Rules
 
-Escopo: tudo em `app/Integrations`.
+Scope: `app/Integrations`.
 
-## Regra Principal
-
-Integrations concentram comunicacao com servicos externos, APIs, webhooks, streams e provedores de terceiros.
-
-## Estrutura
-
-- Arquivos ficam direto na raiz de `app/Integrations`, exceto quando houver subescopo real.
-- Nao use pastas `External` ou `Process`.
-- Processamento interno reutilizavel pertence a `app/Processing`.
-- Regras de negocio pertencem a `app/Services`.
-
-## Responsabilidades
-
-- Cada integration deve encapsular detalhes externos, como URL, headers, payload, timeout e tratamento basico de falha.
-- Leia credenciais e URLs por `config/services.php`, nunca direto de `env()` fora de arquivos de config.
-- Nao misture persistencia de dominio com chamadas externas.
-- OAuth publico usa Laravel Socialite; nao recrie integrations manuais para redirect, troca de token ou busca de usuario do provider.
-- Push notification usa Web Push nativo por `PushNotificationService`; nao reintroduza OneSignal.
-
-## Finalizacao
-
-- Retorne dados simples ou DTOs/arrays quando fizer sentido para o service consumidor.
-- Registre falhas externas com contexto suficiente, mas sem vazar secrets.
-- Em testes, isole chamadas externas com fakes/mocks do Laravel ou do contrato usado.
+* Integrations encapsulate external services, APIs, webhooks, streams and providers, including URLs, headers, payloads, timeouts and basic failure handling.
+* Keep files directly in `app/Integrations` unless a real subscope exists; do not use `External` or `Process` folders.
+* Business rules belong to `app/Services`; reusable internal processing belongs to `app/Processing`.
+* Read credentials and URLs through `config/services.php`, never directly from `env()` outside config files.
+* Do not mix domain persistence with external calls.
+* Use Laravel Socialite for public OAuth; do not recreate provider redirect, token exchange or user-fetch integrations.
+* Push notifications use native Web Push through `PushNotificationService`; never reintroduce OneSignal.
+* Return simple data, DTOs or arrays as appropriate for consuming services.
+* Log external failures with useful context without exposing secrets.
+* Isolate external calls in tests using appropriate Laravel/contract fakes or mocks.

@@ -16,6 +16,7 @@
 
     import { Link } from "@inertiajs/svelte";
     import { publicAnimations } from "@/lib/constants";
+    import MaskIcon from "../media/MaskIcon.svelte";
     import Tooltip from "../overlays/Tooltip.svelte";
 
     const variants = {
@@ -31,11 +32,12 @@
     };
 
     const tones = {
-        accent: "filter-orange-amber",
-        primary: "filter-blue-skywave",
-        light: "filter-suspense-aurora",
-        neutral: "filter-neutral-gray",
-        dark: "filter-blue-marinho",
+        accent: "text-orange-amber",
+        primary: "text-blue-skywave",
+        light: "text-suspense-aurora",
+        neutral: "text-neutral-gray",
+        dark: "text-blue-marinho",
+        fixed: "",
     };
 
     const surfaces = {
@@ -72,13 +74,7 @@
 <Tooltip position={tooltipPosition}>
     {#if href}
         <Link {...$$restProps} {href} aria-label={label} class={classes} on:click>
-            <img
-                src={selectedIcon}
-                alt=""
-                aria-hidden="true"
-                class={[selectedSize.icon, tones[selectedTone], iconClass]}
-                loading="lazy"
-            />
+            <MaskIcon icon={selectedIcon} class={[selectedSize.icon, tones[selectedTone], iconClass]} />
         </Link>
     {:else}
         <button
@@ -89,13 +85,7 @@
             {disabled}
             on:click
         >
-            <img
-                src={selectedIcon}
-                alt=""
-                aria-hidden="true"
-                class={[selectedSize.icon, tones[selectedTone], iconClass]}
-                loading="lazy"
-            />
+            <MaskIcon icon={selectedIcon} class={[selectedSize.icon, tones[selectedTone], iconClass]} />
         </button>
     {/if}
     <span slot="content">{label}</span>

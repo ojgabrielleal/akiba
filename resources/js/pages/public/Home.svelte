@@ -92,11 +92,6 @@
         pointer-events: none;
     }
 
-    :global([data-public-theme-scope][data-public-theme="light"]) .home-featured-reviews-background.has-featured-posts::before {
-        filter: invert(1);
-        opacity: 0.2;
-    }
-
     .home-featured-reviews-background.has-featured-posts > :global(*) {
         position: relative;
         z-index: 1;

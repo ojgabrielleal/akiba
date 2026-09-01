@@ -1,7 +1,7 @@
 <script>
     import { onMount } from "svelte";
     import { EditorialTitle, GridList } from "@/lib/components/public";
-    import { resolveDay, resolveHour, resolvePlaceholderImage } from "@/lib/utils";
+    import { resolveDay, resolveHour, resolvePlaceholderImage, themeClass } from "@/lib/utils";
 
     export let programs = null;
 
@@ -171,7 +171,7 @@
                                     alt={item.name}
                                     loading="lazy"
                                 />
-                                <div class="w-full h-13 flex items-center rounded-md px-3 bg-suspense-aurora relative mb-2">
+                                <div class={["w-full h-13 flex items-center rounded-md px-3 bg-suspense-aurora relative mb-2", themeClass("bg", "orange-morning", { theme: "light" })]}>
                                     <div class="w-36 min-w-0 flex items-center gap-1 text-blue-ocean text-sm font-noto-sans font-extrabold italic uppercase">
                                         <span class="shrink-0 not-italic font-normal text-[0.7rem]">
                                             Com:
@@ -187,12 +187,12 @@
                                         loading="lazy"
                                     />
                                 </div>
-                                <dl class="w-full rounded-md bg-suspense-aurora px-4 py-3 mb-2">
-                                    <dt class="mb-3 flex items-center justify-between gap-3 font-noto-sans italic uppercase text-blue-marinho">
+                                <dl class={["w-full rounded-md bg-suspense-aurora px-4 py-3 mb-2", themeClass("bg", "orange-morning", { theme: "light" })]}>
+                                    <dt class={["mb-3 flex items-center justify-between gap-3 font-noto-sans italic uppercase text-blue-marinho", themeClass("text", "blue-marinho", { fixed: true, theme: "light" })]}>
                                         <span class="text-sm font-extrabold">
                                             {resolveDay(showLocalTime ? item.localSchedule.day : item.mainSchedule.day)}
                                         </span>
-                                        <span class="rounded-md bg-orange-amber px-2 py-1 text-xs font-black text-blue-night">
+                                        <span class={["rounded-md bg-orange-amber px-2 py-1 text-xs font-black text-blue-night", themeClass("text", "blue-night", { fixed: true, theme: "light" })]}>
                                             {visitorTimeZoneLabel.country}
                                         </span>
                                     </dt>

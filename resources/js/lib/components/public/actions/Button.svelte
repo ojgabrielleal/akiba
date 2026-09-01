@@ -1,5 +1,6 @@
 <script>
     import { publicAnimations } from "@/lib/constants";
+    import { themeClass } from "@/lib/utils";
 
     let className;
     export { className as class };
@@ -11,11 +12,11 @@
     export let disabled = false;
 
     const variants = {
-        primary: "bg-orange-amber text-blue-night hover:brightness-105",
+        primary: `bg-orange-amber ${themeClass("text", "blue-night", { fixed: true })} hover:brightness-105`,
         secondary: "bg-blue-skywave text-suspense-aurora hover:brightness-110",
         dark: "bg-blue-ocean text-suspense-aurora hover:bg-blue-cerulean",
-        light: "bg-suspense-aurora text-blue-night hover:brightness-95",
-        success: "bg-green-mint text-blue-night hover:brightness-105",
+        light: `bg-suspense-aurora ${themeClass("text", "blue-night", { fixed: true })} hover:brightness-95`,
+        success: `bg-green-mint ${themeClass("text", "blue-night", { fixed: true })} hover:brightness-105`,
         danger: "bg-red-crimson text-suspense-aurora hover:brightness-110",
         outline: "border-2 border-orange-amber text-orange-amber hover:bg-orange-amber/10",
         ghost: "bg-transparent text-suspense-aurora hover:bg-suspense-aurora/10",

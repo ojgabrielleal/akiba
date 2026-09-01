@@ -2,7 +2,7 @@
     import { onDestroy, onMount, tick } from "svelte";
     import { fly } from "svelte/transition";
     import toast from "svelte-hot-french-toast";
-    import { AuthGuard, CustomModal, LoadingSpinner } from "@/lib/components/public";
+    import { AuthGuard, CustomModal, LoadingSpinner, MaskIcon } from "@/lib/components/public";
     import { player, setVolume, toggleAudio } from "@/lib/stores";
     import { SongRequestForm } from "@/lib/widgets/public";
     import {
@@ -161,15 +161,10 @@
                 <button
                     type="button"
                     aria-label="Faça o seu pedido"
-                    class="song-request-active relative z-10 hidden size-11 cursor-pointer items-center justify-center rounded-full bg-orange-amber transition duration-200 ease-out hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber active:scale-95 motion-reduce:transform-none motion-reduce:transition-none lg:flex"
+                    class="song-request-active relative z-10 hidden size-11 cursor-pointer items-center justify-center rounded-full bg-blue-skywave text-suspense-aurora transition duration-200 ease-out hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber active:scale-95 motion-reduce:transform-none motion-reduce:transition-none lg:flex"
                     on:click={handleSongRequestAction}
                 >
-                    <img
-                        src="/svg/telegram.svg"
-                        alt=""
-                        aria-hidden="true"
-                        class="size-5 brightness-0"
-                    />
+                    <MaskIcon icon="/svg/telegram.svg" class="size-5" />
                 </button>
             {/if}
 
@@ -249,10 +244,6 @@
 {/if}
 
 <style>
-    .song-request-active {
-        animation: song-request-glow 2s ease-in-out infinite alternate;
-    }
-
     .player-wave {
         gap: 1px;
     }
@@ -277,24 +268,4 @@
         background: rgba(86, 104, 132, 0.32);
     }
 
-    @keyframes song-request-glow {
-        0% {
-            box-shadow:
-                0 0 16px color-mix(in srgb, var(--color-blue-skywave) 32%, transparent),
-                0 0 28px color-mix(in srgb, var(--color-orange-amber) 16%, transparent);
-        }
-
-        100% {
-            box-shadow:
-                0 0 24px color-mix(in srgb, var(--color-blue-skywave) 55%, transparent),
-                0 0 40px color-mix(in srgb, var(--color-orange-amber) 30%, transparent);
-        }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-        .song-request-active {
-            animation: none;
-            box-shadow: 0 0 18px color-mix(in srgb, var(--color-blue-skywave) 40%, transparent);
-        }
-    }
 </style>

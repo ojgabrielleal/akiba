@@ -1,18 +1,20 @@
 <script>
+    import { themeClass } from "@/lib/utils";
+
     let className;
     export { className as class };
     export let variant = "accent";
     export let size = "sm";
 
     const variants = {
-        accent: "bg-orange-amber text-blue-night",
+        accent: `bg-orange-amber ${themeClass("text", "blue-night", { fixed: true })}`,
         primary: "bg-blue-skywave text-suspense-aurora",
         ocean: "bg-blue-ocean text-suspense-aurora",
-        light: "bg-suspense-aurora text-blue-night",
-        success: "bg-green-mint text-blue-night",
+        light: `bg-suspense-aurora ${themeClass("text", "blue-night", { fixed: true })}`,
+        success: `bg-green-mint ${themeClass("text", "blue-night", { fixed: true })}`,
         danger: "bg-red-crimson text-suspense-aurora",
         review: "bg-purple-mystic text-suspense-aurora",
-        muted: "bg-neutral-gray text-blue-night",
+        muted: `bg-neutral-gray ${themeClass("text", "blue-night", { fixed: true })}`,
     };
 
     const sizes = {

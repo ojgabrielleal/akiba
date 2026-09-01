@@ -1,4 +1,6 @@
 <script>
+    import { themeClass } from "@/lib/utils";
+
     let className;
     export { className as class };
     export let id;
@@ -8,10 +10,10 @@
     export let variant = "light";
 
     const variants = {
-        light: "h-11 rounded-md bg-neutral-gray text-suspense-aurora placeholder:text-suspense-aurora/45",
-        dark: "h-11 rounded-md bg-blue-ocean text-suspense-aurora placeholder:text-suspense-aurora/35",
+        light: `h-11 rounded-md bg-neutral-gray ${themeClass("bg", "neutral-light", { fixed: true, theme: "light" })} text-suspense-aurora placeholder:text-suspense-aurora/45`,
+        dark: `h-11 rounded-md bg-blue-ocean ${themeClass("bg", "neutral-light", { fixed: true, theme: "light" })} text-suspense-aurora placeholder:text-suspense-aurora/35`,
         transparent: "h-11 rounded-md bg-transparent text-suspense-aurora placeholder:text-suspense-aurora/35",
-        pill: "h-11 rounded-full bg-neutral-gray text-suspense-aurora placeholder:text-suspense-aurora/45",
+        pill: `h-11 rounded-full bg-neutral-gray ${themeClass("bg", "neutral-light", { fixed: true, theme: "light" })} text-suspense-aurora placeholder:text-suspense-aurora/45`,
         profile: "h-11 rounded-md bg-neutral-white text-blue-night placeholder:text-blue-night/35",
     };
 

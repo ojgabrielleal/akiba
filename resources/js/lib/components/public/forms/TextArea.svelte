@@ -1,4 +1,6 @@
 <script>
+    import { themeClass } from "@/lib/utils";
+
     let className;
     export { className as class };
     export let id;
@@ -8,8 +10,8 @@
     export let resize = "vertical";
 
     const variants = {
-        light: "bg-neutral-gray text-suspense-aurora placeholder:text-suspense-aurora/45",
-        dark: "bg-blue-ocean text-suspense-aurora placeholder:text-suspense-aurora/35",
+        light: `bg-neutral-gray ${themeClass("bg", "neutral-light", { fixed: true, theme: "light" })} text-suspense-aurora placeholder:text-suspense-aurora/45`,
+        dark: `bg-blue-ocean ${themeClass("bg", "neutral-light", { fixed: true, theme: "light" })} text-suspense-aurora placeholder:text-suspense-aurora/35`,
         transparent: "bg-transparent text-suspense-aurora placeholder:text-suspense-aurora/35",
         profile: "bg-neutral-white text-blue-night placeholder:text-blue-night/35",
     };

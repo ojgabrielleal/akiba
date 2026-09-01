@@ -1,42 +1,27 @@
-# Regras De Controllers Provisorios
+# Provisory Controller Rules
 
-Escopo: tudo em `app/Http/Controllers/Provisory`.
+Scope: `app/Http/Controllers/Provisory`.
 
-## Regra Principal
+## Structure
 
-Controllers provisorios devem seguir o mesmo padrao de orquestracao dos controllers Inertia, mantendo codigo temporario organizado e facil de remover.
+* Keep controllers directly in this directory; do not use `Pages`/`Invokes` folders or the `Page` suffix.
+* Keep traits/properties and constructor at the top and imports grouped readably by type.
+* When promoting a provisional screen, move its controller to `Public` or `Private` while preserving method signatures and conventions.
 
-## Estrutura
+## Responsibilities
 
-- Controllers provisorios ficam direto em `app/Http/Controllers/Provisory`.
-- Nao crie pastas `Pages` ou `Invokes`.
-- Nao use sufixo `Page`.
-- Ao promover uma tela provisoria para definitiva, mova o controller para `Public` ou `Private` e preserve a assinatura dos metodos.
+* Controllers orchestrate temporary Inertia flows; business actions belong to `app/Services` and validation to injected `app/Http/Requests`.
+* Method parameter order: request, service, then route model.
+* `show` actions return `InertiaRender` with the resource and required page props.
+* Do not spread temporary business rules into models or resources.
 
-## Responsabilidades
+## Inertia
 
-- Acoes de negocio devem passar por `app/Services`.
-- Input validado deve usar `app/Http/Requests`, injetados como parametros de metodo.
-- Mantenha parametros de metodo na ordem: request, service e depois model vindo da rota, quando todos existirem.
-- Metodos `show` devem retornar `InertiaRender` com a prop correspondente e quaisquer props de pagina que a UI ainda precise.
+* Page controllers must have `render()` as their last method.
+* Build page props with private `index*` methods using the corresponding service, normally `filter()`.
+* Reserve `show` for controller actions; never use `show*` as prop helpers.
 
-## Paginas Inertia
+## Queries
 
-- Controllers que renderizam pagina devem ter um metodo `render`.
-- O metodo `render` deve ser a ultima funcao do controller.
-- Props devem ser montadas por metodos privados como `indexPosts`.
-- Queries de pagina devem usar o service do escopo correspondente, normalmente pelo metodo `filter()`.
-- Use metodos privados `index*` para montar props/resources de pagina.
-- Nao use `show*` como helper de prop; reserve `show` para actions de controller que retornam `InertiaRender`.
-
-## Organizacao Interna
-
-- Mantenha arrays ou strings simples de relations diretamente no `with`/`load` correspondente.
-- Crie metodos privados `*Relations` somente quando o conjunto de relations tiver callbacks de query, logica encadeada ou for compartilhado por multiplas queries no mesmo escopo.
-- Atributos e construtor devem aparecer logo apos abertura da classe e `use` de traits.
-- Importe dependencias com `use` antes da classe, mantendo agrupamento legivel entre controller base, models, requests, resources, services, facades e Inertia.
-
-## Finalizacao
-
-- Nao deixe regras temporarias se espalharem para models ou resources.
-- Ao promover uma tela provisoria para definitiva, mova o controller para o escopo correto e preserve este padrao.
+* Keep simple relation arrays/strings directly in `with()`/`load()`.
+* Create private `*Relations` methods only for relations with query callbacks, chained logic or reuse across multiple queries.

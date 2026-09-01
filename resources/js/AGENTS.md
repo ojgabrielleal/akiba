@@ -1,177 +1,58 @@
 # Front-end Rules
 
-Escopo: tudo em `resources/js`.
+Scope: `resources/js`.
 
-## Regra Principal
+## General
 
-Este projeto usa Svelte + Inertia (`@inertiajs/svelte`) + Vite dentro de uma aplicacao Laravel.
+* Use Svelte + Inertia + Vite inside Laravel, Tailwind CSS v4 tokens from `css/app.css`, `font-noto-sans`, and `@/` for internal imports.
+* Frontend is UI/client-only; server logic, database access, secrets, private SDKs and sensitive integrations belong to Laravel.
+* Preserve `private`, `public`, `provisory` and `shared`; use `shared` only for genuinely cross-context code.
 
-O codigo em `resources/js` e somente a camada de UI/client. Nao crie `lib/server/`, `server/` ou qualquer equivalente dentro do frontend. Codigo de servidor, acesso a banco, secrets, SDKs privados, integracoes sensiveis e regras que nao podem ir para o browser pertencem ao Laravel.
+## Structure
 
-Use a organizacao do Svelte como inspiracao, mas adapte ao Inertia:
+* `pages`: Inertia pages and orchestration; `layouts`: persistent structures; `components`: small reusable UI; `widgets`: larger product/UI blocks; `stores`: shared client state; `utils`: pure/browser helpers; `constants`: static UI data; `css`: global styles, tokens and themes.
+* Pages should stay thin; move large forms, tables and complex UI into widgets.
+* Before creating anything, reuse existing components/widgets when possible.
+* Keep extracted widget internals near their parent; when one generic widget becomes multiple files, group them in a same-named subfolder.
+* Export reusable additions through the directory `index.js` when one exists; implementation-only internals need not be exported.
+* Avoid thin wrappers and abstractions without meaningful responsibility.
+* Reusable components should accept `class` and inputs/buttons should forward `$$restProps` when appropriate; keep visual variants in local maps with defaults.
 
-```txt
-SvelteKit              Este projeto
---------------------------------------------
-src/routes             resources/js/pages
-src/lib                resources/js/lib
-src/lib/components     resources/js/lib/components
-src/lib/server         nao existe no frontend
-src/lib/utils          resources/js/lib/utils
-src/lib/stores         resources/js/lib/stores
-static                 public
-```
+## Inertia & State
 
-## Stack
+* `Inertia::render()` names must map to files under `pages`.
+* Pages are the primary `$page.props` boundary and should pass explicit, minimal props to widgets/components; avoid prop drilling and generic large objects.
+* Small components must not read `$page.props`; layouts may for global/transversal data. Other access is limited to justified global components/helpers.
+* Use stores only for shared client-side state, never as mirrors of backend props.
+* Use `useForm`, pass Inertia errors to fields, use `forceFormData: true` for uploads, and normalize optional arrays/objects before building forms.
 
-- Svelte.
-- Inertia (`@inertiajs/svelte`).
-- Vite.
-- Tailwind CSS v4 com tokens em `css/app.css`.
-- Imports internos com alias `@/`.
+## Browser & Web Push
 
-## Estrutura
+* Put reusable browser behavior such as Push, permissions, service workers, storage and global events in `utils`; components should call high-level helpers.
+* Web Push uses `public/push-worker.js` and `lib/utils/push`.
+* Read technical global props at their point of use and pass them to helpers rather than spreading browser API calls through components.
+* Never expose private keys; only `VAPID_PUBLIC_KEY` may reach the browser.
 
-```txt
-resources/js/
-  app.js
-  bootstrap.js
+## Svelte
 
-  pages/
-    private/
-    public/
-    provisory/
+* Order files as `<script>`, markup, then `<style>` when present.
+* Script order: external imports, internal imports, props, constants, state, reactivity, pure helpers, handlers/actions; separate groups with blank lines.
+* Use `const` unless reassignment/reactivity requires `let`.
+* In Inertia pages, prefer one reactive block for `$page.props`.
+* Avoid local state when a centralized utility already resolves the value.
 
-  lib/
-    layouts/
-      shared/
-      private/
-      public/
+## Styling
 
-    components/
-      shared/
-      private/
-        actions/
-        feedback/
-        forms/
-        layout/
-        navigation/
-        overlays/
-      public/
-        actions/
-        feedback/
-        forms/
-        layout/
-        navigation/
-        overlays/
+* Mobile-first; prefer responsive components over separate viewport versions unless interaction/markup genuinely differs.
+* Use existing tokens and components; add new colors, gradients or filters to `css/app.css` before use.
+* Public themes may change colors, gradients and filters only, never layout, spacing, typography, proportions, markup or elements.
+* `orange-citric`: clickable/actions and their hover/focus/active states.
+* `orange-amber` or `orange-morning`: non-clickable elements; displayed like metrics may use `orange-amber`.
+* Clickable text cards/lists use accessible focus, `transition duration-300 ease-out`, slight `hover:-translate-y-0.5` and `motion-reduce`; image-only visuals use slight scale only.
+* Keep layouts explicitly responsive and overflow-safe.
 
-    widgets/
-      shared/
-      private/
-        carousel/
-        chart/
-        form/
-        grid/
-        hero/
-        list/
-        navbar/
-        table/
-      public/
-        footer/
-        form/
-        grid/
-        navbar/
-        player/
-        read/
+## Safety
 
-    stores/
-    utils/
-    constants/
-
-  css/
-```
-
-## Responsabilidades
-
-- `pages/`: paginas Inertia. Orquestram `Meta`, `Layout`, dados de `$page.props` e widgets. Evite colocar forms grandes, tabelas complexas ou muita regra visual diretamente aqui.
-- `lib/layouts/`: estruturas persistentes de tela por contexto, como layout publico, privado ou compartilhado.
-- `lib/components/`: pecas pequenas e reutilizaveis, como botoes, inputs, badges, modais, tooltips, paginacao, `Meta` e blocos basicos de layout.
-- `lib/widgets/`: blocos maiores de produto, como forms, grids, tabelas, charts, carrosseis, navbar, player e secoes especificas de tela.
-- `lib/stores/`: estado compartilhado do browser.
-- `lib/utils/`: helpers puros de frontend, separados por dominio.
-- `lib/constants/`: constantes e opcoes estaticas usadas pela UI, como listas de select, tags, preferencias e configuracoes fixas.
-- `css/`: estilos globais, tokens e temas.
-- Web Push usa `public/push-worker.js` e helpers em `lib/utils/push`. Nao coloque logica de inscricao push diretamente em widgets.
-
-## Paginas Inertia
-
-- O backend renderiza paginas com `Inertia::render(...)`; o nome renderizado deve mapear para um arquivo em `resources/js/pages`.
-- Paginas sao a fronteira com o Inertia: devem ler dados via `$page.props` e distribuir props explicitas para widgets.
-- Paginas devem importar `Meta` de `@/lib/components/shared`, o `Layout` do contexto correto e widgets via `@/lib/...`.
-- Formularios grandes pertencem a `lib/widgets/.../form`, nao diretamente em `pages/`.
-- Use `useForm` para formularios Inertia.
-- Passe erros do Inertia para os campos.
-- Use `forceFormData: true` em uploads.
-- Normalize arrays/objetos opcionais antes de montar forms.
-
-## Componentes E Widgets
-
-- Preserve a separacao `private`/`public`.
-- Use `shared` somente quando o mesmo layout, componente ou widget for usado de verdade por mais de um contexto (`public`, `private` ou `provisory`). Se o uso for exclusivo de um contexto, mantenha no contexto especifico.
-- Evite prop drilling: passe props apenas para quem usa diretamente.
-- Evite passar objetos grandes como `data`, `props`, `pageData` ou um recurso inteiro apenas para algum neto acessar uma pequena parte.
-- Widgets devem receber props explicitas com somente os dados que usam diretamente.
-- Components pequenos nao devem ler `$page.props`; recebem props explicitas.
-- Layouts podem ler `$page.props` quando o dado for global ou transversal, como `user`, `flash`, `oauth`, navbar, player, tema ou estado de menu.
-- Excecoes a `$page.props` fora de paginas/layouts devem ser componentes globais/transversais bem justificados, como `Meta`, `FlashToaster` ou helpers de permissao/autenticacao.
-- Props globais tecnicas, como `push.vapid_public_key`, devem ser lidas no ponto de uso e repassadas para helpers de `lib/utils`; nao espalhe chamadas diretas a APIs do browser pelo componente.
-- Use `lib/stores` apenas para estado client-side compartilhado; nao use stores como espelho de props do backend.
-- Antes de criar algo novo, procure um componente ou widget parecido.
-- Ao desmembrar um widget grande, extraia somente partes com responsabilidade real, como uma area visual/interativa propria, uma lista, um perfil, um formulario interno ou uma secao complexa. Evite criar wrappers finos que apenas encapsulam outro componente sem regra, estado, markup relevante ou reducao clara de duplicacao.
-- Componentes internos extraidos de um widget devem ficar perto dele e nao precisam ser exportados no `index.js` publico quando forem detalhes de implementacao daquele widget.
-- Se um arquivo em uma pasta generica for desmembrado em multiplos arquivos do mesmo escopo, crie uma subpasta com o nome/base do widget dentro da pasta original e mova todos os arquivos relacionados para ela. Exemplo: `widgets/public/grid/PostListGrid.svelte` ao virar varios arquivos deve ficar em `widgets/public/grid/PostListGrid/PostListGrid.svelte`, junto com seus componentes internos.
-- Componentes reutilizaveis devem aceitar extensao visual com `class` quando fizer sentido.
-- Inputs e botoes reutilizaveis devem repassar `{...$$restProps}` quando apropriado.
-- Variantes visuais devem ficar em mapas internos, como `variants`, `sizes` ou `shapes`, com fallback padrao.
-- Ao criar componente/widget reutilizavel, atualize o `index.js` do diretorio quando existir.
-- Quando um comportamento de browser precisar ser reutilizado, como Web Push, permissao de notificacao, service worker, storage ou eventos globais, crie um helper em `lib/utils` e deixe o componente com uma chamada de alto nivel.
-
-## Organizacao Interna Svelte
-
-- Use `<script>` primeiro, markup depois e `<style>` no fim quando existir.
-- Dentro de `<script>`, organize nesta ordem:
-  1. imports externos, como Svelte, Inertia e bibliotecas npm.
-  2. imports internos via `@/lib/...`.
-  3. props (`export let ...`).
-  4. constantes, mapas e configuracoes locais.
-  5. estado local (`let ...`).
-  6. reatividade (`$:`).
-  7. helpers puros.
-  8. handlers/actions que disparam navegacao, submit, router ou alteram estado.
-- Separe cada bloco com uma linha em branco: imports externos, imports internos, props, constantes, estado, reatividade, helpers e handlers/actions.
-- Use `const` para valores que nao sao reatribuidos no componente, incluindo mapas, opcoes e permissao local (`const can = ...Permissions()`). Use `let` somente para estado que muda por interacao, lifecycle ou reatividade.
-- Evite declarar props depois de imports internos ou misturadas com estado local.
-- Em paginas Inertia, apos os imports, leia `$page.props` em um bloco reativo unico sempre que possivel.
-- Evite estado local quando o valor puder ser resolvido por util centralizado. Exemplo: use `resolvePushNotificationPermission()` em vez de manter `notificationPermission` no widget.
-
-## Estilo
-
-- Siga mobile-first: construa primeiro a experiencia mobile como base e use breakpoints (`sm:`, `md:`, `lg:` etc.) para ampliar layout, densidade e composicao em telas maiores.
-- Evite criar uma segunda versao mobile separada quando o mesmo componente puder ser responsivo com classes e estrutura adaptavel. Crie componentes separados por viewport somente quando a experiencia, interacao ou markup forem realmente diferentes.
-- Use tokens existentes do Tailwind em `css/app.css`.
-- Novas cores, gradientes ou filtros devem ser adicionados em `css/app.css` antes de uso.
-- Regras de tema publico devem apenas substituir cores, gradientes e filtros. Nao altere proporcoes, espacamentos, tipografia, layout, markup ou crie elementos novos para aplicar tema.
-- Use `font-noto-sans`.
-- Use `orange-citric` em botoes, elementos clicaveis, itens/cards clicaveis e seus estados de hover/focus/active. Elementos nao clicaveis devem usar `orange-amber` ou `orange-morning`: se a cor precisar ficar proxima de `orange-citric`, use `orange-morning`; caso contrario, use `orange-amber`.
-- Indicadores de likes que forem apenas exibicao/metrica, como contadores ou porcentagens em cards, podem usar `orange-amber`. Acoes de like clicaveis continuam usando `orange-citric`.
-- Hover/focus de item clicavel deve usar `orange-citric` no texto, indicador e icone quando houver.
-- Prefira componentes existentes como `Section`, `GridList`, `Surface`, `Badge`, `Button`, `IconButton`, `Modal`, `Tooltip` e inputs existentes.
-- Cards/listas clicaveis com texto devem usar `transition duration-300 ease-out`, leve `hover:-translate-y-0.5`, foco acessivel com ring e suporte a `motion-reduce`.
-- Blocos que forem apenas imagem/visual devem usar somente scale leve, como `hover:scale-[1.02]`, sem brilho ou deslocamento vertical.
-- Mantenha telas responsivas com classes explicitas, como `grid-cols-1`, `lg:*`, `min-w-0` e `overflow-x-clip`.
-
-## Finalizacao
-
-- Nao altere fora de `resources/js` sem necessidade explicita da tarefa.
-- Nao coloque dado sensivel, segredo, acesso a banco ou logica server-only em `resources/js`.
-- Nunca exponha chaves privadas no frontend. Para Web Push, somente `VAPID_PUBLIC_KEY` pode chegar ao browser.
+* Do not modify outside `resources/js` unless explicitly required.
+* Do not refactor unrelated code.
+* Never put sensitive data, secrets, database access or server-only logic in the frontend.

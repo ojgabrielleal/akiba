@@ -1,7 +1,7 @@
 <script>
     import { Link } from "@inertiajs/svelte";
     import { Section } from "@/lib/components/public";
-    import { resolvePlaceholderImage } from "@/lib/utils";
+    import { resolvePlaceholderImage, themeClass } from "@/lib/utils";
 
     export let featuredPosts = [];
 
@@ -26,8 +26,10 @@
                                 aria-hidden="true"
                                 class="absolute right-0 bottom-0 z-20 h-[12.75rem] w-[55%] max-w-none origin-bottom-right object-contain object-right-bottom transition duration-300 ease-out group-hover:scale-[1.03] group-focus-visible:scale-[1.03] motion-reduce:transform-none motion-reduce:transition-none"
                             />
-                            <span class="like-metric-badge absolute right-3 bottom-3 z-30 inline-flex h-5 min-w-11 items-center justify-center gap-1 rounded-sm bg-orange-amber px-1.5 font-noto-sans text-xs leading-none font-black text-suspense-aurora uppercase italic shadow-sm shadow-blue-night/20">
-                                {item.likes_count ?? 0}
+                            <span class="like-metric-badge absolute right-3 bottom-3 z-30 inline-flex h-5 min-w-11 items-center justify-center gap-1 rounded-sm bg-orange-amber px-1.5 font-noto-sans text-xs leading-none font-black uppercase italic shadow-sm shadow-blue-night/20">
+                                <span class={themeClass("text", "suspense-aurora", { fixed: true })}>
+                                    {item.likes_count ?? 0}
+                                </span>
                                 <img src="/svg/like.svg" alt="" aria-hidden="true" class="size-3 filter-suspense-aurora" />
                             </span>
                         </article>

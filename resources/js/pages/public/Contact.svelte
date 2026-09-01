@@ -1,9 +1,10 @@
 <script>
     import { page } from "@inertiajs/svelte";
     import { Meta } from "@/lib/components/shared";
-    import { EditorialTitle } from "@/lib/components/public";
+    import { EditorialTitle, MaskIcon } from "@/lib/components/public";
     import { Layout } from "@/lib/layouts/public";
     import { RecruitmentForm } from "@/lib/widgets/public";
+    import { themeClass } from "@/lib/utils";
 
     const socialLinks = [
         {
@@ -60,7 +61,7 @@
             label: "AkibaCast",
             description: "AkibaCast disponível também no Amazon Music.",
             icon: "/svg/amazon-music.svg",
-            iconClass: "w-9 filter-suspense-aurora",
+            iconClass: "h-5 w-7",
             href: "https://music.amazon.com.au/podcasts/fafe997e-b911-4a8e-8e38-dbbc6b285d83/akibacast",
         },
     ];
@@ -91,25 +92,20 @@
                             <span class="absolute inset-y-0 left-0 w-1.5 bg-orange-amber" aria-hidden="true"></span>
                             <span class="flex min-w-0 flex-1 flex-col gap-2 pl-1">
                                 <span class="flex items-center gap-3">
-                                    <span class="flex size-12 shrink-0 items-center justify-center rounded-md bg-blue-night">
-                                        <img
-                                            src={social.icon}
-                                            alt=""
-                                            aria-hidden="true"
-                                            class={social.iconClass ?? "size-6 filter-suspense-aurora"}
-                                        />
+                                    <span class={["flex size-12 shrink-0 items-center justify-center rounded-md bg-blue-night", themeClass("text", "suspense-aurora"), themeClass("text", "blue-night", { fixed: true, theme: "light" })]}>
+                                        <MaskIcon icon={social.icon} class={social.iconClass ?? "size-6"} />
                                     </span>
                                     <span class="min-w-0">
                                         <span class="block truncate text-base font-black uppercase italic text-orange-citric group-hover/social:text-orange-amber">
                                             {social.name}
                                         </span>
-                                        <span class="mt-0.5 block text-[0.65rem] font-black uppercase italic text-blue-skywave">
+                                        <span class={["mt-0.5 block text-[0.65rem] font-black uppercase italic text-blue-skywave", themeClass("text", "suspense-aurora/45", { fixed: true, theme: "light" })]}>
                                             {social.label}
                                         </span>
                                     </span>
                                 </span>
 
-                                <span class="block text-xs font-bold leading-5 text-suspense-aurora/75">
+                                <span class={["block text-xs font-bold leading-5 text-suspense-aurora/75", themeClass("text", "suspense-aurora/75", { fixed: true, theme: "light" })]}>
                                     {social.description}
                                 </span>
                             </span>

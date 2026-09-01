@@ -5,6 +5,8 @@
     export let scrollAmount = 0.8;
 
     import { onMount, tick } from "svelte";
+    import { themeClass } from "@/lib/utils";
+    import MaskIcon from "../media/MaskIcon.svelte";
 
     let container;
     let canScrollLeft = false;
@@ -78,11 +80,11 @@
         <button
             type="button"
             aria-label="Voltar no carrossel"
-            class="absolute left-2 top-1/2 z-10 hidden size-11 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-orange-amber shadow-xl sm:flex"
+            class={["absolute left-2 top-1/2 z-10 hidden size-11 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-orange-amber shadow-xl sm:flex", themeClass("text", "blue-marinho", { fixed: true })]}
             on:keydown={handleKeydown}
             on:click={() => scroll("left")}
         >
-            <img src="/svg/chevron-left.svg" alt="" aria-hidden="true" class="size-6 filter-blue-marinho" />
+            <MaskIcon icon="/svg/chevron-left.svg" class="size-6" />
         </button>
     {/if}
 
@@ -101,11 +103,11 @@
         <button
             type="button"
             aria-label="Avançar no carrossel"
-            class="absolute right-2 top-1/2 z-10 hidden size-11 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-orange-amber shadow-xl sm:flex"
+            class={["absolute right-2 top-1/2 z-10 hidden size-11 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-orange-amber shadow-xl sm:flex", themeClass("text", "blue-marinho", { fixed: true })]}
             on:keydown={handleKeydown}
             on:click={() => scroll("right")}
         >
-            <img src="/svg/chevron-right.svg" alt="" aria-hidden="true" class="size-6 filter-blue-marinho" />
+            <MaskIcon icon="/svg/chevron-right.svg" class="size-6" />
         </button>
     {/if}
 </div>

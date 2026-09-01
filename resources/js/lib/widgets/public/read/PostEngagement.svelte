@@ -1,6 +1,6 @@
 <script>
     import CommentSection from "./CommentSection.svelte";
-    import { resolvePlaceholderImage } from "@/lib/utils";
+    import { resolvePlaceholderImage, themeClass } from "@/lib/utils";
 
     export let post = {};
     export let oauth = null;
@@ -19,7 +19,7 @@
         <div class="grid gap-4">
             {#if sources.length}
                 {#each sources as source}
-                    <a href={source.url} class="flex min-h-12 items-center rounded-md bg-blue-cerulean px-4 py-3 text-sm font-black text-suspense-aurora" target="_blank" rel="noopener noreferrer" aria-label={source.name}>
+                    <a href={source.url} class={["flex min-h-12 items-center rounded-md bg-blue-cerulean px-4 py-3 text-sm font-black", themeClass("text", "suspense-aurora", { fixed: true })]} target="_blank" rel="noopener noreferrer" aria-label={source.name}>
                         {source.name}
                     </a>
                 {/each}
@@ -32,7 +32,7 @@
         {#if post.created_at}
             <p class="flex items-center justify-end self-end text-right text-xl leading-none font-normal text-orange-amber">
                 Publicado
-                <span class="ml-2 rounded-sm bg-blue-cerulean px-3 py-1 text-xl font-black text-suspense-aurora italic">
+                <span class={["ml-2 rounded-sm bg-blue-cerulean px-3 py-1 text-xl font-black italic", themeClass("text", "suspense-aurora", { fixed: true })]}>
                     {post.created_at}
                 </span>
             </p>
@@ -45,10 +45,10 @@
         </h2>
         <div class="relative h-full min-h-40 overflow-visible rounded-md bg-blue-cerulean p-3">
             <div class="relative z-10 max-w-[58%] pt-2 leading-none">
-                <p class="font-noto-sans text-[1.65rem] font-black text-suspense-aurora italic">
+                <p class={["font-noto-sans text-[1.65rem] font-black italic", themeClass("text", "suspense-aurora", { fixed: true })]}>
                     {authorNickname}
                 </p>
-                <p class="mt-1 text-[0.8rem] leading-none font-black text-suspense-aurora italic">
+                <p class={["mt-1 text-[0.8rem] leading-none font-black italic", themeClass("text", "suspense-aurora", { fixed: true })]}>
                     ({authorName})
                 </p>
             </div>

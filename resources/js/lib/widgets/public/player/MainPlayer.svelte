@@ -14,6 +14,7 @@
         listenForOAuthAction,
         OAuthAction,
         resolvePlaceholderImage,
+        themeClass,
     } from "@/lib/utils";
 
     export let onair = null;
@@ -215,7 +216,7 @@
                 <div class="w-full text-suspense-aurora text-3xl font-noto-sans font-extrabold uppercase italic">
                     {playerData.host.nickname}
                 </div>
-                <div class={["mt-[0.4rem] w-24 rounded-xl float-end text-center text-sm text-suspense-aurora font-noto-sans font-extrabold italic uppercase",
+                <div class={["mt-[0.4rem] w-24 rounded-xl float-end text-center text-sm font-noto-sans font-extrabold italic uppercase", themeClass("text", "suspense-aurora", { fixed: true }),
                     { "bg-neutral-gray": playerData.execution_mode === "auto_dj" || playerData.execution_mode === "playlist" },
                     { "bg-green-mint": playerData.execution_mode === "live" },
                     { "bg-orange-amber": playerData.execution_mode === "scheduled" },
@@ -319,7 +320,7 @@
                     />
                 {/if}
             </div>
-            <div class="shrink-0 font-noto-sans font-bold italic uppercase text-center text-[0.9rem] text-blue-night leading-4">
+            <div class={["shrink-0 font-noto-sans font-bold italic uppercase text-center text-[0.9rem] leading-4", themeClass("text", "blue-night", { fixed: true })]}>
                 {#if playerData.execution_mode === "auto_dj"}
                     Playlist automática
                 {:else if playerData.execution_mode === "playlist"}
@@ -423,33 +424,6 @@
     </div>
 </section>
 {/if}
-
-<style>
-    .song-request-active {
-        animation: song-request-glow 2s ease-in-out infinite alternate;
-    }
-
-    @keyframes song-request-glow {
-        0% {
-            box-shadow:
-                0 0 16px color-mix(in srgb, var(--color-blue-skywave) 32%, transparent),
-                0 0 28px color-mix(in srgb, var(--color-orange-amber) 16%, transparent);
-        }
-
-        100% {
-            box-shadow:
-                0 0 24px color-mix(in srgb, var(--color-blue-skywave) 55%, transparent),
-                0 0 40px color-mix(in srgb, var(--color-orange-amber) 30%, transparent);
-        }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-        .song-request-active {
-            animation: none;
-            box-shadow: 0 0 18px color-mix(in srgb, var(--color-blue-skywave) 40%, transparent);
-        }
-    }
-</style>
 
 {#if canRender}
 <section class="container-player" aria-label="Publicidade">

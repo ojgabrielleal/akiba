@@ -1,5 +1,6 @@
 <script>
     import { socialIcons, userPreferences } from "@/lib/constants";
+    import { themeClass } from "@/lib/utils";
 
     export let member = null;
 
@@ -78,7 +79,7 @@
                     </h3>
                     <div class="grid gap-3">
                         {#each member.favoriteGenres as genre}
-                            <div class="flex min-h-10 items-center justify-center rounded-md bg-blue-ocean px-4 py-1 text-center font-noto-sans text-lg font-black uppercase italic text-suspense-aurora sm:px-5 sm:py-1.5">
+                            <div class={["flex min-h-10 items-center justify-center rounded-md bg-blue-ocean px-4 py-1 text-center font-noto-sans text-lg font-black uppercase italic text-suspense-aurora sm:px-5 sm:py-1.5", themeClass("text", "suspense-aurora", { fixed: true, theme: "light" })]}>
                                 {formatPreference(genre)}
                             </div>
                         {/each}
@@ -93,7 +94,7 @@
                     </h3>
                     <div class="grid gap-3">
                         {#each member.dislikedGenres as genre}
-                            <div class="flex min-h-10 items-center justify-center rounded-md bg-blue-ocean px-4 py-1 text-center font-noto-sans text-lg font-black uppercase italic text-suspense-aurora sm:px-5 sm:py-1.5">
+                            <div class={["flex min-h-10 items-center justify-center rounded-md bg-blue-ocean px-4 py-1 text-center font-noto-sans text-lg font-black uppercase italic text-suspense-aurora sm:px-5 sm:py-1.5", themeClass("text", "suspense-aurora", { fixed: true, theme: "light" })]}>
                                 {formatPreference(genre)}
                             </div>
                         {/each}

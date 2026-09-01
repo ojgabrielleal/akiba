@@ -4,7 +4,7 @@
     import { Button, SelectInput, TextArea, TextInput } from "@/lib/components/public";
 
     const fieldClass = "grid gap-1.5";
-    const inputClass = "public-recruitment-input";
+    const inputClass = "public-recruitment-input border-0 focus:border-transparent";
     const labelClass = "public-recruitment-label font-noto-sans text-xs font-black italic uppercase text-suspense-aurora/70";
     const roleOptions = [
         "Locutor",
@@ -30,6 +30,10 @@
         },
     });
 
+    $: if ($form.payload.whatsapp) {
+        $form.payload.whatsapp = $form.payload.whatsapp.replace(/\D/g, "").slice(0, 11);
+    }
+
     const submit = () => {
         $form.contact = $form.payload.whatsapp;
 
@@ -42,9 +46,6 @@
         });
     };
 
-    const normalizePhone = (event) => {
-        $form.payload.whatsapp = event.target.value.replace(/[^\d()+\-\s]/g, "");
-    };
 </script>
 
 <form class="recruitment-form grid gap-4" on:submit|preventDefault={submit}>
@@ -77,12 +78,11 @@
             type="tel"
             inputmode="tel"
             autocomplete="tel"
-            placeholder="(11) 99999-9999"
-            pattern="[\d()+\-\s]{10,20}"
-            maxlength="20"
+            placeholder="00 00000-0000"
+            pattern="\d{10,11}"
+            maxlength="11"
             bind:value={$form.payload.whatsapp}
             error={$form.errors["payload.whatsapp"] ?? $form.errors.contact}
-            on:input={normalizePhone}
             required
         />
     </div>
@@ -110,7 +110,7 @@
                 aria-hidden="true"
                 class="w-6 filter-blue-marinho"
             />
-            Completar inscrição
+            <span class="text-[#000036]">Completar inscrição</span>
         </Button>
     </div>
 </form>

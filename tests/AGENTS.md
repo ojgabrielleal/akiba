@@ -1,82 +1,39 @@
-# AGENTS.md
+# Test Rules
 
-## Escopo
+Scope: `tests/`.
 
-Estas instrucoes valem para arquivos dentro de `tests/`.
+## General
 
-## Estilo Dos Testes
+* Follow idiomatic Laravel testing with `Tests\TestCase`, framework helpers and expressive assertions.
+* Test observable behavior, keep each test focused, and use descriptive `snake_case` names.
+* Prefer factories, Laravel fakes and simple real objects over mocks.
+* Keep test folders aligned with the tested domain.
+* Use `Feature` for HTTP, Inertia, Artisan, authorization, validation, persistence and cross-layer flows; use `Unit` for isolated models, services, processing and domain rules.
 
-- Escreva testes no estilo idiomatico do Laravel, usando `Tests\TestCase`, helpers de teste do framework e asserts expressivos.
-- Prefira testar comportamento observavel em vez de detalhes internos de implementacao.
-- Use nomes de metodos descritivos em `snake_case`, deixando claro o cenario e o resultado esperado.
-- Mantenha cada teste focado em um comportamento principal.
-- Evite mocks quando factories, fakes ou objetos reais simples deixarem o teste mais confiavel.
+## Database
 
-## Organizacao
+* Use `RefreshDatabase` when reading or persisting data and prefer factories.
+* Never depend on test order, pre-existing data or global seeders unless explicitly executed by the test.
+* Tests use the local MySQL `akiba` database from `phpunit.xml` and may recreate its schema.
+* Never modify production migration history to fix tests; preserve legacy MySQL-specific migrations.
 
-- Use `tests/Feature` para fluxos HTTP, paginas Inertia, comandos Artisan, autorizacao, validacao, persistencia e integracoes entre camadas.
-- Use `tests/Unit` para regras isoladas, models, services, processing e integracoes simples que nao precisam do kernel HTTP completo.
-- Mantenha a estrutura de pastas alinhada ao dominio testado, por exemplo:
-  - `tests/Feature/Private`
-  - `tests/Feature/Public`
-  - `tests/Feature/Console`
-  - `tests/Unit/Models`
-  - `tests/Unit/Services`
-  - `tests/Unit/Processing`
+## External Effects
 
-## Banco De Dados
+* Use Laravel fakes for external effects and assert the expected result.
+* Mock Socialite instead of calling real providers.
+* Never send real Web Push notifications; test subscription persistence and selection instead.
 
-- Use `RefreshDatabase` quando o teste persistir ou consultar dados.
-- Crie dados com factories sempre que possivel.
-- Nao dependa de ordem de execucao, dados preexistentes ou seeders globais, a menos que o proprio teste execute o seeder necessario.
-- O ambiente de teste local usa MySQL via `phpunit.xml`, apontando para o banco local `akiba`.
-- Como os testes usam o banco local `akiba`, assuma que a suite pode destruir e recriar o schema com `RefreshDatabase`/migrations.
-- Nao altere migrations antigas ja aplicadas em producao para resolver falhas de teste. Se uma migration legada depender de SQL especifico do MySQL, mantenha a compatibilidade pelo ambiente de teste sem reescrever historico de producao.
+## Coverage
 
-## Laravel Fakes
+* When relevant, private routes must cover unauthenticated, unauthorized and authorized users.
+* Inertia pages must assert the component and essential props.
+* Forms must cover valid input and important validation failures.
+* State changes must assert the response and final database state.
+* Models must cover relevant casts, relationships, accessors/mutators and scopes.
+* Avoid unnecessary bootstrapping for directly testable rules.
 
-- Use fakes nativos do Laravel para isolar efeitos externos:
-  - `Storage::fake()`
-  - `Mail::fake()`
-  - `Notification::fake()`
-  - `Queue::fake()`
-  - `Event::fake()`
-  - `Http::fake()`
-- Para Socialite, prefira mockar o contrato/facade do Socialite no teste de feature em vez de chamar provider real.
-- Para Web Push, teste persistencia e selecao de inscricoes; nao envie push real na suite.
-- Ao usar fake, tambem faca asserts sobre o efeito esperado, como envio, nao envio, arquivo criado ou job despachado.
+## Execution
 
-## Feature Tests
-
-- Para rotas privadas, teste pelo menos:
-  - usuario nao autenticado;
-  - usuario autenticado sem permissao;
-  - usuario autenticado com permissao.
-- Para paginas Inertia, valide o componente renderizado e as props essenciais.
-- Para formularios, cubra casos validos e erros de validacao importantes.
-- Para endpoints que alteram estado, confirme a resposta e o estado final no banco.
-
-## Unit Tests
-
-- Teste regras de dominio com entradas pequenas e saidas claras.
-- Evite bootstrapping desnecessario quando uma regra puder ser testada diretamente.
-- Para models, cubra casts, relacionamentos, accessors/mutators e scopes que tenham regra propria.
-
-## Comandos
-
-- Rode testes pelo wrapper do projeto:
-
-```bash
-./run.sh artisan test
-```
-
-- Para diagnosticar uma area especifica:
-
-```bash
-./run.sh artisan test --testsuite=Unit
-./run.sh artisan test --testsuite=Feature
-./run.sh artisan test tests/Feature/Private/MediaPageTest.php
-```
-
-- Nao rode `./run.sh npm run build` automaticamente apos alteracoes em testes.
-- Nao suba os containers automaticamente; se forem necessarios, peca para o usuario executar `./run.sh up`.
+* Run tests with `./run.sh artisan test`; use suites, filters or specific files for diagnosis.
+* Do not automatically run the frontend build after test changes.
+* Do not start containers automatically; ask the user to run `./run.sh up` when required.
