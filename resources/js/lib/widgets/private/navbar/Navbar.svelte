@@ -60,7 +60,7 @@
                 <button
                     type="button"
                     aria-label="Abrir menu do usuario"
-                    class="flex size-12 items-center justify-center overflow-hidden rounded-full border-2 border-suspense-aurora bg-suspense-aurora shadow-md shadow-blue-night/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-suspense-aurora"
+                    class="flex size-12 items-center justify-center overflow-hidden rounded-full border-2 border-neutral-gray shadow-md shadow-blue-night/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-gray"
                 >
                     <img
                         src={resolvePlaceholderImage(user.avatar, "avatar", user.gender)}
@@ -133,7 +133,7 @@
                         class="min-w-0 flex items-center gap-3 group/profile"
                         on:click={() => (mobilenavbar = false)}
                     >
-                        <div class="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-suspense-aurora bg-suspense-aurora shadow">
+                        <div class="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-neutral-gray shadow">
                             <img
                                 src={resolvePlaceholderImage(user.avatar, "avatar", user.gender)}
                                 alt={user.nickname}
