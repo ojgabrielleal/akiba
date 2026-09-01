@@ -67,21 +67,21 @@
                     <h2 class="text-center text-orange-morning text-xl lg:text-2xl font-noto-sans font-extrabold uppercase italic">
                         {latestPoll.data.question}
                     </h2>
-                    <div class="flex flex-col lg:flex-row gap-5 lg:gap-8 justify-center mt-5 mb-10 lg:my-13">
+                    <div class="my-7 grid gap-5 sm:grid-cols-2 lg:my-12 xl:grid-cols-4">
                         {#each latestPoll.data.options as item}
-                            <div class="w-full lg:w-44 flex gap-2">
+                            <div class="grid min-w-0 grid-cols-[1.25rem_minmax(0,1fr)] gap-2">
                                 <input
                                     id={item.uuid}
                                     name="option"
                                     type="radio"
                                     value={item.uuid}
-                                    class="shrink-0 w-5 h-5 mt-2"
+                                    class="mt-1 h-5 w-5"
                                 />
                                 <div class="min-w-0">
-                                    <label for={item.uuid} title={item.option} class="block max-w-full fonto-noto-sans font-bold text-suspense-aurora text-lg leading-5 uppercase italic">
+                                    <label for={item.uuid} title={item.option} class="block max-w-full break-words fonto-noto-sans font-bold text-suspense-aurora text-lg leading-tight uppercase italic">
                                         {item.option}
                                     </label>
-                                    <div class="relative flex items-center min-w-30 w-full h-3.5 bg-black rounded-full px-2 select-none mt-1">
+                                    <div class="relative mt-2 flex h-3.5 w-full select-none items-center rounded-full bg-black px-2">
                                         <div
                                             class={[
                                                 "h-1.5 bg-orange-500 rounded-sm",
