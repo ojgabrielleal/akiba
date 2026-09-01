@@ -63,7 +63,7 @@
     <Section {title} {actions}>
         {#if latestPoll}
             <form on:submit|preventDefault={submitVote} class={`${latestPoll.data.has_voted ? 'opacity-50 pointer-events-none' : null}`}>
-                <div class="w-full bg-gradient-blue-cerulean-glow p-4 rounded-md">
+                <div class="w-full bg-gradient-blue-cerulean-glow px-4 py-5 sm:px-6 lg:px-8 rounded-md">
                     <h2 class="text-center text-orange-morning text-xl lg:text-2xl font-noto-sans font-extrabold uppercase italic">
                         {latestPoll.data.question}
                     </h2>
