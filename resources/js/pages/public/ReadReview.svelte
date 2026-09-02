@@ -162,7 +162,7 @@
                         </div>
                     </section>
 
-                    <PostEngagement post={review} {oauth} {comments} showAuthor={false} showSources={false} showPublished={false} />
+                    <PostEngagement post={review} {oauth} {comments} showAuthor={false} showPublished={false} />
                 </article>
 
                 <aside class="min-w-0">

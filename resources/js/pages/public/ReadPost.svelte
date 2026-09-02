@@ -4,7 +4,7 @@
     import { postReactions, postTags } from "@/lib/constants";
     import { AdvertisementSlot, AuthGuard, Tooltip } from "@/lib/components/public";
     import { Layout } from "@/lib/layouts/public";
-    import { PostEngagement, PostLikeButton, PostReferenceList } from "@/lib/widgets/public";
+    import { PostEngagement, PostLikeButton } from "@/lib/widgets/public";
     import { resolvePlaceholderImage, themeClass } from "@/lib/utils";
 
     $: ({ flash, oauth, onair, stream, post, comments, relatedPosts } = $page.props);
@@ -66,8 +66,6 @@
                         <p>Conteúdo da matéria em breve.</p>
                     </div>
                 {/if}
-
-                <PostReferenceList references={article.references} />
 
                 <section class="mt-8 grid min-h-28 gap-5 py-4 font-noto-sans uppercase">
                     <div class="flex flex-wrap items-center justify-center gap-x-5 gap-y-4">

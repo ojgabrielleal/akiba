@@ -11,7 +11,7 @@
 
     $: authorNickname = post.author?.nickname ?? post.author?.name ?? "Neko Kirame";
     $: authorName = post.author?.name ?? "Ellyson Santos de Castro";
-    $: sources = (post.references ?? []).filter((source) => source.name && source.url);
+    $: sources = (post.references ?? []).filter((source) => source.name && source.url).slice(0, 2);
 </script>
 
 {#if showAuthor || showSources || (showPublished && post.created_at)}
@@ -31,7 +31,7 @@
                             {/each}
                         {:else}
                             <p class="flex min-h-12 items-center rounded-md border border-blue-skywave/30 px-4 py-3 text-sm font-bold text-suspense-aurora/70">
-                                Nenhuma fonte cadastrada.
+                                Nenhuma fonte encontrada.
                             </p>
                         {/if}
                     </div>
