@@ -32,6 +32,16 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
+        $exceptions->dontFlash([
+            'content',
+            'metadata',
+            'metadata.sinopse',
+            'metadata[sinopse]',
+            'review',
+            'review.content',
+            'review[content]',
+        ]);
+
         $exceptions->render(function (NotFoundHttpException $exception, Request $request) {
             if ($request->expectsJson()) {
                 return response()->json(['message' => 'Not Found'], 404);

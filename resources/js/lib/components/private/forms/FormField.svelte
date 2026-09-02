@@ -29,6 +29,7 @@
     $: labelClasses = [
         "mb-1 block font-noto-sans",
         variants[labelVariant] ?? variants.default,
+        error ? "text-red-crimson" : "",
     ];
 </script>
 

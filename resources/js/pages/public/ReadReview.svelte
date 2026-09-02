@@ -57,12 +57,20 @@
                         />
                     </div>
 
-                    {#if review.metadata?.date_of_release || review.metadata?.year_of_release}
-                        <dl class="mb-6 grid gap-3 font-noto-sans uppercase">
-                            <div class="public-review-date-band rounded-md bg-blue-ocean px-4 py-3">
-                                <dt class="mb-1 text-xs font-black text-blue-skywave">Data de lançamento</dt>
-                                <dd class="text-lg font-black text-suspense-aurora italic">{resolveDate(review.metadata.date_of_release ?? review.metadata.year_of_release)}</dd>
-                            </div>
+                    {#if review.metadata?.date_of_release || review.metadata?.year_of_release || review.studio}
+                        <dl class="mb-6 grid gap-3 font-noto-sans uppercase md:grid-cols-2">
+                            {#if review.metadata?.date_of_release || review.metadata?.year_of_release}
+                                <div class="public-review-date-band rounded-md bg-blue-ocean px-4 py-3">
+                                    <dt class="mb-1 text-xs font-black text-blue-skywave">Data de lançamento</dt>
+                                    <dd class="text-lg font-black text-suspense-aurora italic">{resolveDate(review.metadata.date_of_release ?? review.metadata.year_of_release)}</dd>
+                                </div>
+                            {/if}
+                            {#if review.studio}
+                                <div class="min-w-0 rounded-md bg-blue-ocean px-4 py-3">
+                                    <dt class="mb-1 text-xs font-black text-blue-skywave">Estúdio</dt>
+                                    <dd class="truncate text-lg font-black text-suspense-aurora italic">{review.studio}</dd>
+                                </div>
+                            {/if}
                         </dl>
                     {/if}
 
@@ -107,21 +115,6 @@
                             </div>
 
                             <article class="pt-5 text-suspense-aurora">
-                                <div class="mb-4 flex items-center gap-3">
-                                    <div class="size-14 shrink-0 overflow-hidden rounded-full border-2 border-suspense-aurora bg-suspense-aurora shadow-md shadow-blue-night/30">
-                                        <img
-                                            src={resolvePlaceholderImage(selectedReview.author?.avatar, "avatar", selectedReview.author?.gender)}
-                                            alt=""
-                                            aria-hidden="true"
-                                            class="h-full w-full scale-125 object-cover object-top"
-                                        />
-                                    </div>
-                                    <div class="min-w-0">
-                                        <p class="truncate text-base font-black uppercase italic">
-                                            {selectedReview.author?.nickname ?? selectedReview.author?.name}
-                                        </p>
-                                    </div>
-                                </div>
                                 {#if selectedReview.content}
                                     <div class="public-read-body text-[1.1875rem]">{@html selectedReview.content}</div>
                                 {:else}
@@ -169,7 +162,7 @@
                         </div>
                     </section>
 
-                    <PostEngagement post={review} {oauth} {comments} />
+                    <PostEngagement post={review} {oauth} {comments} showAuthor={false} showSources={false} showPublished={false} />
                 </article>
 
                 <aside class="min-w-0">

@@ -8,6 +8,30 @@ use App\Models\Post;
 
 class StorePostRequest extends LoggedWebRequest
 {
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'content' => $this->emptyHtmlToNull($this->input('content')),
+            'metadata' => [
+                ...$this->input('metadata', []),
+                'sinopse' => $this->emptyHtmlToNull($this->input('metadata.sinopse')),
+            ],
+            'review' => [
+                ...$this->input('review', []),
+                'content' => $this->emptyHtmlToNull($this->input('review.content')),
+            ],
+        ]);
+    }
+
+    private function emptyHtmlToNull(mixed $value): mixed
+    {
+        if (! is_string($value)) {
+            return $value;
+        }
+
+        return trim(strip_tags(html_entity_decode($value))) === '' ? null : $value;
+    }
+
     private function isDraft(): bool
     {
         return $this->input('module') === 'review'
@@ -39,16 +63,17 @@ class StorePostRequest extends LoggedWebRequest
 
         return [
             'module' => 'required|in:post,review,event',
-            'status' => 'required_unless:module,review|nullable|string',
+            'status' => 'required_unless:module,review|nullable|string|in:published,revision,draft',
             'title' => "{$requiredUnlessDraft}|string",
             'image' => $requiredUnlessDraft,
             'cover' => $requiredUnlessDraft,
-            'references' => "{$requiredUnlessDraft}|array",
-            'references.*.name' => "{$requiredUnlessDraft}|string|max:255",
-            'references.*.url' => "{$requiredUnlessDraft}|url|max:255",
-            'tags' => "{$requiredUnlessDraft}|array",
-            'tags.*.name' => "{$requiredUnlessDraft}|string|max:255",
+            'references' => 'nullable|array',
+            'references.*.name' => 'nullable',
+            'references.*.url' => 'nullable',
+            'tags' => "exclude_if:module,review|{$requiredUnlessDraft}|array",
+            'tags.*.name' => "exclude_if:module,review|{$requiredUnlessDraft}|string|max:255",
             'content' => $this->isDraft() ? 'nullable|string' : 'required_unless:module,review|nullable|string',
+            'studio' => "exclude_unless:module,review|{$requiredUnlessDraft}|string|max:255",
             'metadata' => $this->isDraft() ? 'nullable|array' : 'required_unless:module,post|nullable|array',
             'metadata.dates' => $this->isDraft() ? 'nullable|string' : 'required_if:module,event|string',
             'metadata.event_date' => $this->isDraft() ? 'nullable|date' : 'required_if:module,event|date',
@@ -56,8 +81,17 @@ class StorePostRequest extends LoggedWebRequest
             'metadata.date_of_release' => $this->isDraft() ? 'nullable|date' : 'required_if:module,review|date',
             'metadata.sinopse' => $this->isDraft() ? 'nullable|string' : 'required_if:module,review|string',
             'review' => 'required_if:module,review|nullable|array',
-            'review.status' => 'required_if:module,review|string',
+            'review.status' => 'required_if:module,review|string|in:published,revision,draft',
             'review.content' => $this->isDraft() ? 'nullable|string' : 'required_if:module,review|string',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'required' => 'Esse campo é obrigatório.',
+            'required_if' => 'Esse campo é obrigatório.',
+            'required_unless' => 'Esse campo é obrigatório.',
         ];
     }
 }

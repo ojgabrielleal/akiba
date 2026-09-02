@@ -5,6 +5,7 @@
 
     export let height = "50rem";
     export let name = "content";
+    export let id = name;
     export let value = null;
     export let required = false;
     export let disabled = false;
@@ -53,18 +54,31 @@
 </script>
 
 <div class={["rounded-md overflow-hidden bg-blue-ocean", 
-    { "border border-red-crimson": error },
+    error ? "private-field-error" : "",
     {'opacity-70 cursor-not-allowed': isDisabled}
 ]}>
     <div bind:this={editor} class="p-3" style="min-height: {height};"></div>
 </div>
 <textarea
+    {id}
     {name}
     {required}
     class="sr-only"
     disabled={isDisabled}
     aria-invalid={error ? "true" : undefined}
-    aria-describedby={error ? `${name}-error` : undefined}
+    aria-describedby={error ? `${id}-error` : undefined}
     bind:this={textarea}
 >
 </textarea>
+
+<style>
+    :global(.private-field-error) {
+        border: 2px solid var(--color-red-crimson) !important;
+        box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-red-crimson) 25%, transparent) !important;
+    }
+
+    :global(.private-field-error) :global(.ql-toolbar),
+    :global(.private-field-error) :global(.ql-container) {
+        border-color: var(--color-red-crimson) !important;
+    }
+</style>

@@ -110,7 +110,8 @@ class PostTest extends TestCase
             ->create();
 
         $this->assertSame('review', $post->module);
-        $this->assertArrayHasKey('year_of_release', $post->metadata);
+        $this->assertNotNull($post->studio);
+        $this->assertArrayHasKey('date_of_release', $post->metadata);
         $this->assertArrayHasKey('sinopse', $post->metadata);
     }
 

@@ -85,6 +85,7 @@ class PostResource extends JsonResource
             'likes_count' => $this->likesCount(),
             'liked_by_me' => $this->likedByCurrentVisitor($request),
             'module' => $this->module,
+            'studio' => $this->module === 'review' ? $this->studio : null,
         ];
 
         return array_merge(

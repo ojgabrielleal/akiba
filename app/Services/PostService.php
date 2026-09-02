@@ -87,6 +87,7 @@ class PostService
             'cover' => $this->image->store('posts', $cover),
             'module' => $module,
             'metadata' => $metadata,
+            'studio' => $module === 'review' ? ($data['studio'] ?? null) : null,
         ]);
     }
 
@@ -176,7 +177,9 @@ class PostService
         $post = DB::transaction(function () use ($post, $user, $data, $image, $cover) {
             $this->updateUpdatePost($post, $user, $data, $image, $cover);
             $this->updateSyncTags($post, $data['tags'] ?? []);
-            $this->updateSyncReferences($post, $data['references'] ?? []);
+            if (array_key_exists('references', $data)) {
+                $this->updateSyncReferences($post, $data['references'] ?? []);
+            }
             $this->updateUpdateReview($post, $user, $data['review'] ?? []);
 
             return $post;
@@ -231,6 +234,7 @@ class PostService
             'cover' => $this->image->store('posts', $cover, $post->cover),
             'module' => $module,
             'metadata' => $metadata,
+            'studio' => $module === 'review' ? ($data['studio'] ?? null) : null,
         ]);
 
         if ($post->isDirty()) {
@@ -241,7 +245,7 @@ class PostService
     private function updatePostStatus(Post $post, User $user, array $data, string $module): string
     {
         if ($module !== 'review') {
-            return $data['status'] ?? 'published';
+            return $data['status'] ?? $post->status;
         }
 
         $reviewStatus = $data['review']['status'] ?? $post->status;
@@ -285,16 +289,31 @@ class PostService
 
     private function updateSyncReferences(Post $post, array $references): void
     {
+        $syncedUuids = [];
+
         foreach ($references as $reference) {
             if (! filled($reference['name'] ?? null) || ! filled($reference['url'] ?? null)) {
+                if (filled($reference['uuid'] ?? null)) {
+                    $post->references()->where('uuid', $reference['uuid'])->delete();
+                }
+
                 continue;
             }
 
-            $post->references()->updateOrCreate(
+            $syncedReference = $post->references()->updateOrCreate(
                 ['uuid' => $reference['uuid'] ?? null],
                 ['name' => $reference['name'], 'url' => $reference['url']]
             );
+
+            $syncedUuids[] = $syncedReference->uuid;
         }
+
+        $post->references()
+            ->when(
+                ! empty($syncedUuids),
+                fn (Builder $query) => $query->whereNotIn('uuid', $syncedUuids)
+            )
+            ->delete();
     }
 
     private function updateUpdateReview(Post $post, User $user, array $review): void
@@ -303,14 +322,21 @@ class PostService
             return;
         }
 
+        if (! filled($review['uuid'] ?? null) && ! filled($review['content'] ?? null)) {
+            return;
+        }
+
         $attributes = filled($review['uuid'] ?? null)
             ? ['uuid' => $review['uuid']]
             : ['user_id' => $user->id];
 
         $values = [
-            'status' => $review['status'],
-            'content' => $review['content'] ?? '',
+            'status' => $review['status'] ?? $post->status,
         ];
+
+        if (array_key_exists('content', $review)) {
+            $values['content'] = $review['content'] ?? '';
+        }
 
         if (! filled($review['uuid'] ?? null)) {
             $values['user_id'] = $user->id;

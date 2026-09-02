@@ -28,6 +28,7 @@ class Post extends Model
         'cover',
         'module',
         'metadata',
+        'studio',
     ];
 
     protected $casts = [

@@ -30,6 +30,7 @@ class PostFactory extends Factory
             'status' => fake()->randomElement(['published', 'revision', 'draft']),
             'module' => 'post',
             'metadata' => null,
+            'studio' => null,
         ];
     }
 
@@ -39,6 +40,7 @@ class PostFactory extends Factory
             'module' => 'review',
             'content' => null,
             'status' => 'published',
+            'studio' => fake()->company(),
             'metadata' => [
                 'date_of_release' => fake()->date(),
                 'sinopse' => fake()->paragraph(),

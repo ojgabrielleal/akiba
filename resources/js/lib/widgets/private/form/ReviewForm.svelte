@@ -11,6 +11,7 @@
     } from "@/lib/components/private";
     import { PostActions } from "@/lib/components/private";
     import { postPermissions } from "@/lib/utils";
+    import { errorFor, normalizeErrors } from "./postFormErrors.js";
 
     export let post = null;
 
@@ -18,15 +19,15 @@
 
     function normalizeTags(tags = []) {
         return [
-            { uuid: null, name: "reviews", ...tags[0] },
-            { uuid: null, name: "anime", ...tags[1] },
+            { uuid: tags[0]?.uuid ?? null, name: "reviews" },
+            { uuid: tags[1]?.uuid ?? null, name: "anime" },
         ];
     }
 
-    function normalizeReferences(references = []) {
+    function normalizeReferences() {
         return [
-            { uuid: null, name: null, url: null, ...references[0] },
-            { uuid: null, name: null, url: null, ...references[1] },
+            { uuid: null, name: null, url: null },
+            { uuid: null, name: null, url: null },
         ];
     }
 
@@ -46,21 +47,55 @@
         image: post?.data.image ?? null,
         title: post?.data.title ?? null,
         cover: post?.data.cover ?? null,
+        studio: post?.data.studio ?? null,
         metadata: {
             date_of_release: post?.data.metadata?.date_of_release ?? post?.data.metadata?.year_of_release ?? null,
             sinopse: post?.data.metadata?.sinopse ?? null,
         },
         review: normalizeReview(post?.data.review),
         tags: normalizeTags(post?.data.tags),
-        references: normalizeReferences(post?.data.references),
+        references: normalizeReferences(),
     });
+
+    $: errors = {
+        ...normalizeErrors($form.errors),
+    };
+    $: titleError = errorFor(errors, ["title"]);
+    $: releaseDateError = errorFor(errors, ["metadata.date_of_release", "metadata[date_of_release]", "metadata.year_of_release", "metadata[year_of_release]", "metadata"]);
+    $: studioError = errorFor(errors, ["studio"]);
+    $: sinopseError = errorFor(errors, ["metadata.sinopse", "metadata[sinopse]", "metadata"]);
+    $: coverError = errorFor(errors, ["cover"]);
+    $: reviewContentError = errorFor(errors, ["review.content", "review[content]", "review"]);
+    $: imageError = errorFor(errors, ["image"]);
+    $: firstReferenceNameError = errorFor(errors, ["references.0.name", "references[0][name]", "references"]);
+    $: firstReferenceUrlError = errorFor(errors, ["references.0.url", "references[0][url]", "references"]);
+    $: secondReferenceNameError = errorFor(errors, ["references.1.name", "references[1][name]", "references"]);
+    $: secondReferenceUrlError = errorFor(errors, ["references.1.url", "references[1][url]", "references"]);
+    $: persistedSelectedReview = post?.data.reviews?.find((opinion) => {
+        if ($form.review?.uuid) {
+            return opinion.uuid === $form.review.uuid;
+        }
+
+        return opinion.author?.uuid === $form.review?.author?.uuid;
+    });
+    $: selectedReviewStatus = persistedSelectedReview?.status ?? $form.review?.status;
 
     function submit(event) {
         let url = post ? `/panel/post/${post.data.uuid}` : "/panel/post";
+        const status = event.submitter.value;
 
-        $form.review.status = event.submitter.value;
-        $form.post(url, {
-            preserveState: false,
+        $form.transform((data) => {
+            const { tags, references, ...payload } = data;
+
+            return {
+                ...payload,
+                review: {
+                    ...payload.review,
+                    status,
+                },
+            };
+        }).post(url, {
+            preserveState: true,
             forceFormData: true,
             onSuccess: () => {
                 post ? null : $form.reset();
@@ -72,19 +107,19 @@
 <form novalidate on:submit|preventDefault={submit}>
     <div class="lg:px-40">
         <div class="mb-8">
-            <div class="grid grid-cols-1 lg:grid-cols-[1fr_13rem] lg:gap-5">
-                <FormField for="title" label="Nome" labelVariant="editorial" spacing="lg" error={$form.errors.title} class="lg:mb-0">
+            <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_12rem_15rem] lg:gap-5">
+                <FormField for="title" label="Nome" labelVariant="editorial" spacing="lg" error={titleError} class="lg:mb-0">
                     <TextInput
                         id="title"
                         type="text"
                         name="title"
                         variant="editorial"
-                        required={!post}
+                        required
                         bind:value={$form.title}
-                        error={$form.errors.title}
+                        error={titleError}
                     />
                 </FormField>
-                <FormField for="date_of_release" label="Data de lançamento" labelVariant="editorial" spacing="lg" error={$form.errors["metadata.date_of_release"]}>
+                <FormField for="date_of_release" label="Lançamento" labelVariant="editorial" spacing="lg" error={releaseDateError}>
                     <TextInput
                         id="date_of_release"
                         type="date"
@@ -92,29 +127,40 @@
                         variant="editorial"
                         required={!post}
                         bind:value={$form.metadata.date_of_release}
-                        error={$form.errors["metadata.date_of_release"]}
+                        error={releaseDateError}
+                    />
+                </FormField>
+                <FormField for="studio" label="Estúdio" labelVariant="editorial" spacing="lg" error={studioError}>
+                    <TextInput
+                        id="studio"
+                        type="text"
+                        name="studio"
+                        variant="editorial"
+                        bind:value={$form.studio}
+                        error={studioError}
                     />
                 </FormField>
             </div>
-            <FormField for="sinopse" label="Sinopse" labelVariant="editorial" spacing="lg" error={$form.errors["metadata.sinopse"]}>
+            <FormField for="sinopse" label="Sinopse" labelVariant="editorial" spacing="lg" error={sinopseError}>
                 <Wysiwyg
+                    id="sinopse"
                     height="13rem"
-                    name="sinopse"
+                    name="metadata[sinopse]"
                     required={!post}
                     bind:value={$form.metadata.sinopse}
-                    error={$form.errors["metadata.sinopse"]}
+                    error={sinopseError}
                 />
             </FormField>
-            <FormField for="cover" label="Capa" labelVariant="editorial" spacing="lg" error={$form.errors.cover}>
+            <FormField for="cover" label="Capa" labelVariant="editorial" spacing="lg" error={coverError}>
                 <Preview
                     name="cover"
                     src={$form.cover}
                     onchange={(event) => ($form.cover = event.target.files[0])}
                     required={!post}
-                    error={$form.errors.cover}
+                    error={coverError}
                 />
             </FormField>
-            <FormField for="content" label="Escreva" labelVariant="editorial" spacing="none" error={$form.errors["review.content"]}>
+            <FormField for="content" label="Escreva" labelVariant="editorial" spacing="none" error={reviewContentError}>
                 {#if post?.data.reviews?.length}
                     <div class="mb-3 flex flex-wrap gap-2">
                         {#each post.data.reviews as opinion (opinion.uuid ?? opinion.author.uuid)}
@@ -141,23 +187,24 @@
                     </div>
                 {/if}
                 <Wysiwyg
-                    name="content"
+                    id="review-content"
+                    name="review[content]"
                     required
                     bind:value={$form.review.content}
-                    error={$form.errors["review.content"]}
+                    error={reviewContentError}
                 />
             </FormField>
         </div>
     </div>
     <div class="grid grid-cols-1 lg:grid-cols-[18rem_1fr] gap-5">
         <div class="mb-3">
-            <FormField for="image" label="Imagem em destaque" labelVariant="editorial" spacing="sm" error={$form.errors.image}>
+            <FormField for="image" label="Imagem em destaque" labelVariant="editorial" spacing="sm" error={imageError}>
                 <Preview
                     name="image"
                     src={$form.image}
                     onchange={(event) => ($form.image = event.target.files[0])}
                     required={!post}
-                    error={$form.errors.image}
+                    error={imageError}
                 />
             </FormField>
             <ul class="mt-4 ml-5 list-disc font-noto-sans font-light text-orange-morning">
@@ -178,11 +225,10 @@
                     <FormField for="tag-0" label="Primeira Tag" labelVariant="metadata-indented" spacing="section">
                         <SelectInput
                             id="tag-0"
-                            name="tags[0][name]"
                             variant="pill"
                             class="disabled:cursor-not-allowed disabled:opacity-50"
                             disabled
-                            bind:value={$form.tags[0].name}
+                            value="reviews"
                         >
                             <option value="reviews">
                                 Reviews
@@ -192,11 +238,10 @@
                     <FormField for="tag-1" label="Segunda Tag" labelVariant="metadata-indented" spacing="none">
                         <SelectInput
                             id="tag-1"
-                            name="tags[1][name]"
                             variant="pill"
                             class="disabled:cursor-not-allowed disabled:opacity-50"
                             disabled
-                            bind:value={$form.tags[1].name}
+                            value="anime"
                         >
                             <option value="anime">
                                 Anime
@@ -212,50 +257,54 @@
                         Fontes
                     </div>
                     <div class="w-full flex mb-6">
-                        <FormField for="reference-0-name" label="Nome:" labelVariant="metadata-indented" spacing="none" error={$form.errors["references.0.name"]} class="flex-1">
+                        <FormField for="reference-0-name" label="Nome:" labelVariant="metadata-indented" spacing="none" error={firstReferenceNameError} class="flex-1">
                             <TextInput
                                 id="reference-0-name"
                                 type="text"
                                 name="references[0][name]"
                                 variant="pillLeft"
-                                required={!post}
+                                class="disabled:cursor-not-allowed disabled:opacity-50"
+                                disabled
                                 bind:value={$form.references[0].name}
-                                error={$form.errors["references.0.name"]}
+                                error={firstReferenceNameError}
                             />
                         </FormField>
-                        <FormField for="reference-0-url" label="Link:" labelVariant="metadata" spacing="none" error={$form.errors["references.0.url"]} class="flex-1">
+                        <FormField for="reference-0-url" label="Link:" labelVariant="metadata" spacing="none" error={firstReferenceUrlError} class="flex-1">
                             <TextInput
                                 id="reference-0-url"
                                 type="url"
                                 name="references[0][url]"
                                 variant="pillRight"
-                                required={!post}
+                                class="disabled:cursor-not-allowed disabled:opacity-50"
+                                disabled
                                 bind:value={$form.references[0].url}
-                                error={$form.errors["references.0.url"]}
+                                error={firstReferenceUrlError}
                             />
                         </FormField>
                     </div>
                     <div class="w-full flex">
-                        <FormField for="reference-1-name" label="Nome:" labelVariant="metadata-indented" spacing="none" error={$form.errors["references.1.name"]} class="flex-1">
+                        <FormField for="reference-1-name" label="Nome:" labelVariant="metadata-indented" spacing="none" error={secondReferenceNameError} class="flex-1">
                             <TextInput
                                 id="reference-1-name"
                                 type="text"
                                 name="references[1][name]"
                                 variant="pillLeft"
-                                required={!post}
+                                class="disabled:cursor-not-allowed disabled:opacity-50"
+                                disabled
                                 bind:value={$form.references[1].name}
-                                error={$form.errors["references.1.name"]}
+                                error={secondReferenceNameError}
                             />
                         </FormField>
-                        <FormField for="reference-1-url" label="Link:" labelVariant="metadata" spacing="none" error={$form.errors["references.1.url"]} class="flex-1">
+                        <FormField for="reference-1-url" label="Link:" labelVariant="metadata" spacing="none" error={secondReferenceUrlError} class="flex-1">
                             <TextInput
                                 id="reference-1-url"
                                 type="url"
                                 name="references[1][url]"
                                 variant="pillRight"
-                                required={!post}
+                                class="disabled:cursor-not-allowed disabled:opacity-50"
+                                disabled
                                 bind:value={$form.references[1].url}
-                                error={$form.errors["references.1.url"]}
+                                error={secondReferenceUrlError}
                             />
                         </FormField>
                     </div>
@@ -265,7 +314,7 @@
                 </div>
             </div>
             <PostActions
-                status={$form.review?.status}
+                status={selectedReviewStatus}
                 can={can}
                 processing={$form.processing}
             />

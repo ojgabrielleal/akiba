@@ -28,7 +28,7 @@
     $: classes = [
         "w-full pl-4 font-noto-sans text-md outline-none",
         variants[variant] ?? variants.default,
-        error ? "border border-red-crimson" : borders[variant] ?? borders.default,
+        error ? "private-field-error" : borders[variant] ?? borders.default,
         className,
     ];
 </script>
@@ -42,3 +42,10 @@
     class={classes}
     bind:value
 />
+
+<style>
+    :global(.private-field-error) {
+        border: 2px solid var(--color-red-crimson) !important;
+        box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-red-crimson) 25%, transparent) !important;
+    }
+</style>

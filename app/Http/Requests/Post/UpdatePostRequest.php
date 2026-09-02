@@ -3,14 +3,24 @@
 namespace App\Http\Requests\Post;
 
 use App\Http\Requests\LoggedWebRequest;
+use Illuminate\Validation\Rule;
 
 class UpdatePostRequest extends LoggedWebRequest
 {
+    private function operationStatus(): ?string
+    {
+        $post = $this->route('post');
+
+        if ($this->input('module') === 'review') {
+            return $this->input('review.status', $post?->status);
+        }
+
+        return $this->input('status', $post?->status);
+    }
+
     private function isDraft(): bool
     {
-        return $this->input('module') === 'review'
-            ? $this->input('review.status') === 'draft'
-            : $this->input('status') === 'draft';
+        return $this->operationStatus() === 'draft';
     }
 
     private function requiredUnlessDraft(): string
@@ -24,7 +34,25 @@ class UpdatePostRequest extends LoggedWebRequest
 
         $this->merge([
             'module' => $this->input('module', $post?->module ?? 'post'),
+            'content' => $this->emptyHtmlToNull($this->input('content')),
+            'metadata' => [
+                ...$this->input('metadata', []),
+                'sinopse' => $this->emptyHtmlToNull($this->input('metadata.sinopse')),
+            ],
+            'review' => [
+                ...$this->input('review', []),
+                'content' => $this->emptyHtmlToNull($this->input('review.content')),
+            ],
         ]);
+    }
+
+    private function emptyHtmlToNull(mixed $value): mixed
+    {
+        if (! is_string($value)) {
+            return $value;
+        }
+
+        return trim(strip_tags(html_entity_decode($value))) === '' ? null : $value;
     }
 
     /**
@@ -42,25 +70,33 @@ class UpdatePostRequest extends LoggedWebRequest
      */
     public function rules(): array
     {
+        $post = $this->route('post');
         $requiredUnlessDraft = $this->requiredUnlessDraft();
 
         return [
-            'module' => 'nullable|in:post,review,event',
-            'status' => 'required_unless:module,review|nullable|string',
+            'module' => 'required|in:post,review,event',
+            'status' => 'required_unless:module,review|nullable|string|in:published,revision,draft',
             'title' => "{$requiredUnlessDraft}|string",
-            'image' => 'nullable',
-            'cover' => 'nullable',
-            'references' => "{$requiredUnlessDraft}|array",
-            'references.*.uuid' => 'nullable|string',
-            'references.*.name' => "{$requiredUnlessDraft}|string|max:255",
-            'references.*.url' => "{$requiredUnlessDraft}|url|max:255",
-            'tags' => "{$requiredUnlessDraft}|array",
-            'tags.*.uuid' => 'nullable|string',
-            'tags.*.name' => "{$requiredUnlessDraft}|string|max:255",
+            'image' => [
+                Rule::requiredIf(fn () => ! $this->isDraft() && blank($post?->image)),
+                'nullable',
+            ],
+            'cover' => [
+                Rule::requiredIf(fn () => ! $this->isDraft() && blank($post?->cover)),
+                'nullable',
+            ],
+            'references' => 'nullable|array',
+            'references.*.uuid' => 'nullable',
+            'references.*.name' => 'nullable',
+            'references.*.url' => 'nullable',
+            'tags' => "exclude_if:module,review|{$requiredUnlessDraft}|array",
+            'tags.*.uuid' => 'exclude_if:module,review|nullable|string',
+            'tags.*.name' => "exclude_if:module,review|{$requiredUnlessDraft}|string|max:255",
             'content' => $this->isDraft() ? 'nullable|string' : 'required_unless:module,review|nullable|string',
+            'studio' => "exclude_unless:module,review|{$requiredUnlessDraft}|string|max:255",
             'review' => 'required_if:module,review|nullable|array',
             'review.uuid' => 'nullable|string',
-            'review.status' => 'required_if:module,review|string',
+            'review.status' => 'nullable|string|in:published,revision,draft',
             'review.content' => $this->isDraft() ? 'nullable|string' : 'required_if:module,review|string',
             'metadata' => $this->isDraft() ? 'nullable|array' : 'required_unless:module,post|nullable|array',
             'metadata.dates' => $this->isDraft() ? 'nullable|string' : 'required_if:module,event|string',
@@ -68,6 +104,15 @@ class UpdatePostRequest extends LoggedWebRequest
             'metadata.address' => $this->isDraft() ? 'nullable|string' : 'required_if:module,event|string',
             'metadata.date_of_release' => $this->isDraft() ? 'nullable|date' : 'required_if:module,review|date',
             'metadata.sinopse' => $this->isDraft() ? 'nullable|string' : 'required_if:module,review|string',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'required' => 'Esse campo é obrigatório.',
+            'required_if' => 'Esse campo é obrigatório.',
+            'required_unless' => 'Esse campo é obrigatório.',
         ];
     }
 }

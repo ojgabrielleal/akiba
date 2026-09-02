@@ -56,7 +56,7 @@
     $: selectedTone = tones[tone] ?? tones.default;
     $: selectedColor = colors[color] ?? colors.default;
 
-    $: errorClass = error ? "border border-red-crimson" : "";
+    $: errorClass = error ? "private-field-error" : "";
     $: placeholderCSS = `${selectedSize.frame} ${selectedTone} ${errorClass} ${selectedColor} w-full flex items-center justify-center overflow-hidden font-noto-sans text-7xl font-extrabold italic uppercase`;
     $: previewCSS = `${selectedSize.image} ${selectedTone} ${errorClass} w-full object-top object-contain`;
 
@@ -107,3 +107,10 @@
         on:change={previewImage}
     />
 </label>
+
+<style>
+    :global(.private-field-error) {
+        border: 2px solid var(--color-red-crimson) !important;
+        box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-red-crimson) 25%, transparent) !important;
+    }
+</style>
