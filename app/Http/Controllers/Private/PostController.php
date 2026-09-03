@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Private;
 
 use App\Services\PostService;
+use App\Services\CacheService;
 
 use App\Http\Controllers\Concerns\ResolvesAuthorizedProps;
 use App\Http\Controllers\Controller;
@@ -28,13 +29,14 @@ class PostController extends Controller
     public function __construct(
         private PostService $postFilter,
         private AnimeNewsFeedService $newsFeed,
+        private CacheService $cache,
     ) {}
 
     private function indexPosts()
     {
         return $this->whenCanViewAny(Post::class,
             fn () => PostResource::collection(
-                $this->postFilter->filter([
+                $this->cache->remember($this->postsCacheKey('index'), fn () => $this->postFilter->filter([
                 'user' => request()->user(),
                     'active' => true,
                     'with_count' => [
@@ -46,7 +48,7 @@ class PostController extends Controller
                     'with' => ['author', 'reviews'],
                     'search' => request()->input('search'),
                     'paginate' => 10,
-                ])
+                ]), null, ['posts', 'reviews', 'events'])
             )->format('grid'),
         );
     }
@@ -128,7 +130,7 @@ class PostController extends Controller
     private function indexEditablePosts()
     {
         return PostResource::collection(
-            $this->postFilter->filter([
+            $this->cache->remember($this->postsCacheKey('editable'), fn () => $this->postFilter->filter([
                 'user' => request()->user(),
                 'active' => true,
                 'with_count' => [
@@ -140,8 +142,20 @@ class PostController extends Controller
                 'with' => ['author', 'reviews.author'],
                 'search' => request()->input('search'),
                 'paginate' => 10,
-            ])
+            ]), null, ['posts', 'reviews', 'events'])
         )->format('grid');
+    }
+
+    private function postsCacheKey(string $scope): array
+    {
+        return [
+            'panel',
+            'posts',
+            $scope,
+            request()->user()->uuid,
+            request()->input('search'),
+            request()->query('page', 1),
+        ];
     }
 
     public function render()

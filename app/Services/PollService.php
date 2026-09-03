@@ -27,6 +27,7 @@ class PollService
         });
 
         $this->cache->invalidatePolls();
+        $this->cache->invalidateTrash();
 
         return $poll;
     }

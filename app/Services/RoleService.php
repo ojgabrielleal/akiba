@@ -15,6 +15,7 @@ class RoleService
 {
     public function __construct(
         private ImageProcess $image,
+        private CacheService $cache,
     ) {}
 
     public function destroy(Role $role): void
@@ -29,16 +30,22 @@ class RoleService
             $role->delete();
             $this->image->delete($icon);
         });
+
+        $this->cache->invalidateRoles();
     }
 
     public function store(array $data): Role
     {
-        return DB::transaction(function () use ($data) {
+        $role = DB::transaction(function () use ($data) {
             $role = $this->storeStoreRole($data);
             $this->storeSyncPermissions($role, $data['permissions'] ?? []);
 
             return $role;
         });
+
+        $this->cache->invalidateRoles();
+
+        return $role;
     }
 
     private function storeStoreRole(array $data): Role
@@ -68,12 +75,16 @@ class RoleService
 
     public function update(Role $role, array $data): Role
     {
-        return DB::transaction(function () use ($role, $data) {
+        $role = DB::transaction(function () use ($role, $data) {
             $this->updateUpdateRole($role, $data);
             $this->updateSyncPermissions($role, $data['permissions'] ?? []);
 
             return $role;
         });
+
+        $this->cache->invalidateRoles();
+
+        return $role;
     }
 
     private function updateUpdateRole(Role $role, array $data): void

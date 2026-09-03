@@ -14,30 +14,40 @@ class RepositoryService
 {
     public function __construct(
         private ImageProcess $image,
+        private CacheService $cache,
     ) {}
 
     public function deactivate(Repository $repository): Repository
     {
-        return DB::transaction(function () use ($repository) {
+        $repository = DB::transaction(function () use ($repository) {
             $repository->update(['is_active' => false]);
 
             return $repository;
         });
+
+        $this->cache->invalidateRepositories();
+        $this->cache->invalidateTrash();
+
+        return $repository;
     }
 
     public function store(array $data, UploadedFile $image): Repository
     {
-        return DB::transaction(fn () => Repository::create([
+        $repository = DB::transaction(fn () => Repository::create([
             'name' => $data['name'],
             'url' => $data['url'],
             'image' => $this->image->store('repository', $image),
             'type' => $data['type'],
         ]));
+
+        $this->cache->invalidateRepositories();
+
+        return $repository;
     }
 
     public function update(Repository $repository, array $data, ?UploadedFile $image = null): Repository
     {
-        return DB::transaction(function () use ($repository, $data, $image) {
+        $repository = DB::transaction(function () use ($repository, $data, $image) {
             $repository->fill([
                 'name' => $data['name'] ?? $repository->name,
                 'url' => $data['url'] ?? $repository->url,
@@ -51,6 +61,10 @@ class RepositoryService
 
             return $repository;
         });
+
+        $this->cache->invalidateRepositories();
+
+        return $repository;
     }
 
     public function filter(array $filters = []): Collection|LengthAwarePaginator

@@ -19,3 +19,7 @@ Schedule::command('audience:collect')
 Schedule::command('audience:prune')
     ->cron('0 3 1 1,7 *')
     ->withoutOverlapping();
+
+Schedule::command('cache:prune-akiba')
+    ->monthlyOn(1, '04:00')
+    ->withoutOverlapping();

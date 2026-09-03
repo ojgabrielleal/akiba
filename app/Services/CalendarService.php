@@ -12,9 +12,13 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class CalendarService
 {
+    public function __construct(
+        private CacheService $cache,
+    ) {}
+
     public function store(User $user, array $data): Calendar
     {
-        return DB::transaction(fn () => Calendar::create([
+        $calendar = DB::transaction(fn () => Calendar::create([
             'user_id' => $user->id,
             'content' => $data['content'],
             'hour' => $data['hour'],
@@ -22,11 +26,15 @@ class CalendarService
             'date' => $data['date'],
             'day_of_week' => Carbon::parse($data['date'])->dayOfWeek,
         ]));
+
+        $this->cache->invalidateCalendar();
+
+        return $calendar;
     }
 
     public function update(Calendar $calendar, User $user, array $data): Calendar
     {
-        return DB::transaction(function () use ($calendar, $user, $data) {
+        $calendar = DB::transaction(function () use ($calendar, $user, $data) {
             $calendar->fill([
                 'user_id' => $user->id,
                 'content' => $data['content'],
@@ -42,6 +50,10 @@ class CalendarService
 
             return $calendar;
         });
+
+        $this->cache->invalidateCalendar();
+
+        return $calendar;
     }
 
     public function filter(array $filters = []): Collection|LengthAwarePaginator

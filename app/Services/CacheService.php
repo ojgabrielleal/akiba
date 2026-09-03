@@ -52,6 +52,47 @@ class CacheService
         $this->incrementVersion('media');
     }
 
+    public function invalidateUsers(): void
+    {
+        $this->incrementVersion('users');
+    }
+
+    public function invalidateRoles(): void
+    {
+        $this->incrementVersion('roles');
+    }
+
+    public function invalidateActivities(): void
+    {
+        $this->incrementVersion('activities');
+        $this->incrementVersion('calendar');
+    }
+
+    public function invalidateCalendar(): void
+    {
+        $this->incrementVersion('calendar');
+    }
+
+    public function invalidateTasks(): void
+    {
+        $this->incrementVersion('tasks');
+    }
+
+    public function invalidateRepositories(): void
+    {
+        $this->incrementVersion('repositories');
+    }
+
+    public function invalidateFormSubmissions(): void
+    {
+        $this->incrementVersion('form-submissions');
+    }
+
+    public function invalidateTrash(): void
+    {
+        $this->incrementVersion('trash');
+    }
+
     private function key(string|array $key, array $domains): string
     {
         $parts = is_array($key) ? $key : [$key];
@@ -59,7 +100,7 @@ class CacheService
         return collect($parts)
             ->map(fn (mixed $part) => is_array($part) ? md5(json_encode($part)) : (string) $part)
             ->prepend($this->versions($domains))
-            ->prepend('public')
+            ->prepend('akiba')
             ->implode(':');
     }
 

@@ -6,6 +6,7 @@ use App\Services\ActivityService;
 use App\Services\CalendarService;
 use App\Services\PostService;
 use App\Services\TaskService;
+use App\Services\CacheService;
 
 use App\Http\Controllers\Concerns\ResolvesAuthorizedProps;
 use App\Http\Controllers\Controller;
@@ -37,6 +38,7 @@ class DashboardController extends Controller
         private CalendarService $calendarFilter,
         private PostService $postFilter,
         private TaskService $taskFilter,
+        private CacheService $cache,
     ) {}
 
     private function indexActivities()
@@ -74,14 +76,19 @@ class DashboardController extends Controller
     {
         return $this->whenCanViewAny(Post::class,
             fn () => PostResource::collection(
-                $this->postFilter->filter([
+                $this->cache->remember([
+                    'panel',
+                    'dashboard',
+                    'posts',
+                    request()->user()->uuid,
+                ], fn () => $this->postFilter->filter([
                 'user' => request()->user(),
                     'active' => true,
                     'authored_by' => request()->user(),
                     'with_count' => 'views',
                     'with' => 'author',
                     'limit' => 5,
-                ])
+                ]), null, ['posts', 'reviews', 'events'])
             ),
         );
     }

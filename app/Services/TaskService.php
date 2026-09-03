@@ -11,38 +11,55 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class TaskService
 {
+    public function __construct(
+        private CacheService $cache,
+    ) {}
+
     public function complete(Task $task): Task
     {
-        return DB::transaction(function () use ($task) {
+        $task = DB::transaction(function () use ($task) {
             if ($task->status === 'in_review') {
                 $task->update(['status' => 'completed']);
             }
 
             return $task;
         });
+
+        $this->cache->invalidateTasks();
+
+        return $task;
     }
 
     public function deactivate(Task $task): Task
     {
-        return DB::transaction(function () use ($task) {
+        $task = DB::transaction(function () use ($task) {
             $task->update(['is_active' => false]);
 
             return $task;
         });
+
+        $this->cache->invalidateTasks();
+        $this->cache->invalidateTrash();
+
+        return $task;
     }
 
     public function markTaskToReview(Task $task): Task
     {
-        return DB::transaction(function () use ($task) {
+        $task = DB::transaction(function () use ($task) {
             $task->update(['status' => 'in_review']);
 
             return $task;
         });
+
+        $this->cache->invalidateTasks();
+
+        return $task;
     }
 
     public function store(User $user, array $data): Task
     {
-        return DB::transaction(function () use ($user, $data) {
+        $task = DB::transaction(function () use ($user, $data) {
             return Task::create([
                 'user_id' => $user->id,
                 'title' => $data['title'],
@@ -50,11 +67,15 @@ class TaskService
                 'dead_line' => $data['dead_line'],
             ]);
         });
+
+        $this->cache->invalidateTasks();
+
+        return $task;
     }
 
     public function update(Task $task, User $user, array $data): Task
     {
-        return DB::transaction(function () use ($task, $user, $data) {
+        $task = DB::transaction(function () use ($task, $user, $data) {
             $task->fill([
                 'user_id' => $user->id,
                 'title' => $data['title'],
@@ -68,6 +89,10 @@ class TaskService
 
             return $task;
         });
+
+        $this->cache->invalidateTasks();
+
+        return $task;
     }
 
     public function filter(array $filters = []): Collection|LengthAwarePaginator

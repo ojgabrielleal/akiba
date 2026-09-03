@@ -27,6 +27,7 @@ class PodcastService
         });
 
         $this->cache->invalidatePodcasts($podcast);
+        $this->cache->invalidateTrash();
 
         return $podcast;
     }

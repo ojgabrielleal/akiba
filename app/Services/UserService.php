@@ -11,24 +11,38 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class UserService
 {
+    public function __construct(
+        private CacheService $cache,
+    ) {}
+
     public function deactivate(User $user): User
     {
-        return DB::transaction(function () use ($user) {
+        $user = DB::transaction(function () use ($user) {
             $user->update(['is_active' => false]);
 
             return $user;
         });
+
+        $this->cache->invalidateUsers();
+        $this->cache->invalidateTrash();
+
+        return $user;
     }
 
     public function store(array $data): User
     {
-        return DB::transaction(function () use ($data) {
+        $user = DB::transaction(function () use ($data) {
             $user = $this->storeStoreUser($data);
             $this->storeAttachRoles($user, $data['roles'] ?? []);
             $this->storeStoreDefaults($user);
 
             return $user;
         });
+
+        $this->cache->invalidateUsers();
+        $this->cache->invalidateRoles();
+
+        return $user;
     }
 
     private function storeStoreUser(array $data): User
@@ -94,12 +108,17 @@ class UserService
 
     public function updateUserAccess(User $user, array $data): User
     {
-        return DB::transaction(function () use ($user, $data) {
+        $user = DB::transaction(function () use ($user, $data) {
             $this->updateUserAccessSyncRoles($user, $data);
             $this->updateUserAccessUpdatePassword($user, $data);
 
             return $user;
         });
+
+        $this->cache->invalidateUsers();
+        $this->cache->invalidateRoles();
+
+        return $user;
     }
 
     private function updateUserAccessSyncRoles(User $user, array $data): void

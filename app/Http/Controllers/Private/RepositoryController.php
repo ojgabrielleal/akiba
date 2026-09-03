@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Private;
 
 use App\Services\RepositoryService;
+use App\Services\CacheService;
 
 use App\Http\Controllers\Concerns\ResolvesAuthorizedProps;
 use App\Http\Controllers\Controller;
@@ -26,13 +27,19 @@ class RepositoryController extends Controller
 
     public function __construct(
         private RepositoryService $repositoryFilter,
+        private CacheService $cache,
     ) {}
 
     private function indexRepositories()
     {
         return $this->whenCanViewAny(Repository::class,
             fn () => RepositoryResource::collection(
-                $this->repositoryFilter->filter(['active' => true])
+                $this->cache->remember([
+                    'panel',
+                    'marketing',
+                    'repositories',
+                    request()->user()->uuid,
+                ], fn () => $this->repositoryFilter->filter(['active' => true]), null, ['repositories'])
             )->format('grouped'),
         );
     }

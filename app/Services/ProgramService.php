@@ -17,20 +17,25 @@ class ProgramService
 {
     public function __construct(
         private ImageProcess $image,
+        private CacheService $cache,
     ) {}
 
     public function deactivate(Program $program): Program
     {
-        return DB::transaction(function () use ($program) {
+        $program = DB::transaction(function () use ($program) {
             $program->update(['is_active' => false]);
 
             return $program;
         });
+
+        $this->cache->invalidateTrash();
+
+        return $program;
     }
 
     public function store(User $user, User $responsible, array $data, ?UploadedFile $image = null): Program
     {
-        return DB::transaction(function () use ($user, $responsible, $data, $image) {
+        $program = DB::transaction(function () use ($user, $responsible, $data, $image) {
             $program = $this->storeStoreProgram($responsible, $data, $image);
 
             if ($program->is_default_auto_dj) {
@@ -42,6 +47,10 @@ class ProgramService
 
             return $program;
         });
+
+        $this->cache->invalidateTrash();
+
+        return $program;
     }
 
     private function storeStoreProgram(User $responsible, array $data, ?UploadedFile $image = null): Program
@@ -116,7 +125,7 @@ class ProgramService
 
     public function update(Program $program, User $user, User $responsible, array $data, ?UploadedFile $image = null): Program
     {
-        return DB::transaction(function () use ($program, $user, $responsible, $data, $image) {
+        $program = DB::transaction(function () use ($program, $user, $responsible, $data, $image) {
             $this->updateUpdateProgram($program, $responsible, $data, $image);
 
             if ($program->is_default_auto_dj) {
@@ -128,6 +137,10 @@ class ProgramService
 
             return $program;
         });
+
+        $this->cache->invalidateTrash();
+
+        return $program;
     }
 
     private function updateUpdateProgram(Program $program, User $responsible, array $data, ?UploadedFile $image = null): void

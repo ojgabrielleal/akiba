@@ -12,14 +12,20 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class ActivityService
 {
+    public function __construct(
+        private CacheService $cache,
+    ) {}
+
     public function confirmActivityParticipant(Activity $activity, User $user): void
     {
         DB::transaction(fn () => $activity->confirmations()->attach($user->id));
+
+        $this->cache->invalidateActivities();
     }
 
     public function store(User $user, array $data): Activity
     {
-        return DB::transaction(function () use ($user, $data) {
+        $activity = DB::transaction(function () use ($user, $data) {
             $mayHaveConfirmations = $data['purpose'] === 'activity';
 
             $activity = Activity::create([
@@ -42,11 +48,15 @@ class ActivityService
 
             return $activity;
         });
+
+        $this->cache->invalidateActivities();
+
+        return $activity;
     }
 
     public function update(Activity $activity, User $user, array $data): Activity
     {
-        return DB::transaction(function () use ($activity, $user, $data) {
+        $activity = DB::transaction(function () use ($activity, $user, $data) {
             $confirmationsAllowed = $data['purpose'] === 'activity';
 
             $activity->fill([
@@ -75,6 +85,10 @@ class ActivityService
 
             return $activity;
         });
+
+        $this->cache->invalidateActivities();
+
+        return $activity;
     }
 
     public function filter(array $filters = []): Collection|LengthAwarePaginator

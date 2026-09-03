@@ -31,6 +31,7 @@ class PostService
         });
 
         $this->cache->invalidatePosts($post);
+        $this->cache->invalidateTrash();
 
         return $post;
     }
