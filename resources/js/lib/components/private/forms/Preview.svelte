@@ -59,8 +59,9 @@
 
     $: errorClass = error ? "private-field-error" : "";
     $: placeholderCSS = `${selectedSize.frame} ${selectedTone} ${errorClass} ${selectedColor} w-full flex items-center justify-center overflow-hidden font-noto-sans text-7xl font-extrabold italic uppercase`;
+    $: previewSize = fit === "cover" ? "h-auto rounded-md" : selectedSize.image;
     $: previewFit = fit === "cover" ? "object-cover" : "object-contain";
-    $: previewCSS = `${selectedSize.image} ${selectedTone} ${errorClass} w-full object-top ${previewFit}`;
+    $: previewCSS = `${previewSize} ${selectedTone} ${errorClass} w-full object-top ${previewFit}`;
 
     const previewImage = (event) => {
         if (disabled) return;

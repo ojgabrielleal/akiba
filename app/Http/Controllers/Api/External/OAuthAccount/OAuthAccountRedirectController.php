@@ -11,7 +11,7 @@ class OAuthAccountRedirectController extends Controller
     public function __invoke(string $provider): RedirectResponse
     {
         abort_unless($this->isSupportedProvider($provider), 404);
-        return Socialite::driver($provider)->redirect();
+        return Socialite::driver($provider)->stateless()->redirect();
     }
 
     private function isSupportedProvider(string $provider): bool
