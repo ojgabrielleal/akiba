@@ -12,7 +12,8 @@ class PushSubscription extends Model
 
     protected $fillable = [
         'uuid',
-        'user_id',
+        'notifiable_type',
+        'notifiable_id',
         'endpoint',
         'public_key',
         'auth_token',
@@ -24,8 +25,8 @@ class PushSubscription extends Model
         return ['uuid'];
     }
 
-    public function user()
+    public function notifiable()
     {
-        return $this->belongsTo(User::class);
+        return $this->morphTo();
     }
 }

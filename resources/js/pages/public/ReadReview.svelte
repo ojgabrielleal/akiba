@@ -57,7 +57,7 @@
                         />
                     </div>
 
-                    {#if review.metadata?.date_of_release || review.metadata?.year_of_release || review.studio}
+                    {#if review.metadata?.date_of_release || review.metadata?.year_of_release || review.metadata?.studio}
                         <dl class="mb-6 grid gap-3 font-noto-sans uppercase md:grid-cols-2">
                             {#if review.metadata?.date_of_release || review.metadata?.year_of_release}
                                 <div class="public-review-date-band rounded-md bg-blue-ocean px-4 py-3">
@@ -65,10 +65,10 @@
                                     <dd class="text-lg font-black text-suspense-aurora italic">{resolveDate(review.metadata.date_of_release ?? review.metadata.year_of_release)}</dd>
                                 </div>
                             {/if}
-                            {#if review.studio}
+                            {#if review.metadata?.studio}
                                 <div class="min-w-0 rounded-md bg-blue-ocean px-4 py-3">
                                     <dt class="mb-1 text-xs font-black text-blue-skywave">Estúdio</dt>
-                                    <dd class="truncate text-lg font-black text-suspense-aurora italic">{review.studio}</dd>
+                                    <dd class="truncate text-lg font-black text-suspense-aurora italic">{review.metadata.studio}</dd>
                                 </div>
                             {/if}
                         </dl>

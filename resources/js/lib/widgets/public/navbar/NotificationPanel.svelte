@@ -61,7 +61,7 @@
         </header>
 
         {#if notifications.length}
-            <div class="max-h-96 overflow-y-auto">
+            <div class="public-themed-scrollbar max-h-96 overflow-y-auto">
                 {#each notifications as notification}
                     <article
                         class="grid grid-cols-[minmax(0,1fr)_2rem] gap-3 border-b border-suspense-aurora/10 px-4 py-4 last:border-b-0 transition hover:bg-suspense-aurora/5"

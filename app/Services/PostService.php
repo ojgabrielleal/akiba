@@ -60,7 +60,9 @@ class PostService
         $post = DB::transaction(function () use ($user, $data, $image, $cover) {
             $post = $this->storeStorePost($user, $data, $image, $cover);
             $this->storeStoreTags($post, $data['tags'] ?? []);
-            $this->storeStoreReferences($post, $data['references'] ?? []);
+            if (($data['module'] ?? 'post') !== 'review') {
+                $this->storeStoreReferences($post, $data['references'] ?? []);
+            }
             $this->storeStoreReview($post, $user, $data['review'] ?? []);
 
             return $post;
@@ -87,7 +89,6 @@ class PostService
             'cover' => $this->image->store('posts', $cover),
             'module' => $module,
             'metadata' => $metadata,
-            'studio' => $module === 'review' ? ($data['studio'] ?? null) : null,
         ]);
     }
 
@@ -177,7 +178,7 @@ class PostService
         $post = DB::transaction(function () use ($post, $user, $data, $image, $cover) {
             $this->updateUpdatePost($post, $user, $data, $image, $cover);
             $this->updateSyncTags($post, $data['tags'] ?? []);
-            if (array_key_exists('references', $data)) {
+            if ($post->module !== 'review' && array_key_exists('references', $data)) {
                 $this->updateSyncReferences($post, $data['references'] ?? []);
             }
             $this->updateUpdateReview($post, $user, $data['review'] ?? []);
@@ -234,7 +235,6 @@ class PostService
             'cover' => $this->image->store('posts', $cover, $post->cover),
             'module' => $module,
             'metadata' => $metadata,
-            'studio' => $module === 'review' ? ($data['studio'] ?? null) : null,
         ]);
 
         if ($post->isDirty()) {
@@ -356,6 +356,10 @@ class PostService
         if (($module ?? $data['module'] ?? 'post') === 'review' && isset($metadata['date_of_release'])) {
             $metadata['date_of_release'] = Carbon::parse($metadata['date_of_release'])->toDateString();
             unset($metadata['year_of_release']);
+        }
+
+        if (($module ?? $data['module'] ?? 'post') === 'review') {
+            $metadata['studio'] = $data['studio'] ?? $metadata['studio'] ?? null;
         }
 
         return $metadata;

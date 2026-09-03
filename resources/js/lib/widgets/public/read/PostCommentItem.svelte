@@ -26,6 +26,7 @@
     $: actionIconClass = [
         "public-comment-action-icon h-[14px] w-[14px] opacity-70 group-hover:text-orange-amber group-hover:opacity-100",
         themeClass("text", "suspense-aurora", { fixed: true }),
+        themeClass("text", "blue-night", { fixed: true, theme: "light" }),
     ];
 
     const fallbackAvatar = (event, gender = null) => {
@@ -126,11 +127,14 @@
         </div>
 
         <article class={[
-            "public-comment-card relative min-h-[58px] min-w-0 flex-1 rounded-[7px] border border-transparent bg-[#082b8f] px-[18px] py-[10px] shadow-none before:absolute before:left-[-20px] before:top-[16px] before:size-0 before:border-y-[13px] before:border-r-[21px] before:border-y-transparent before:border-r-[#082b8f] before:content-[''] after:absolute after:left-[-18px] after:top-[17px] after:size-0 after:border-y-[12px] after:border-r-[20px] after:border-y-transparent after:border-r-[#082b8f] after:content-['']",
+            "public-comment-card relative min-h-[58px] min-w-0 flex-1 rounded-[7px] border border-transparent bg-blue-ocean px-[18px] py-[10px] shadow-none before:absolute before:left-[-20px] before:top-[16px] before:size-0 before:border-y-[13px] before:border-r-[21px] before:border-y-transparent before:border-r-blue-ocean before:content-[''] after:absolute after:left-[-18px] after:top-[17px] after:size-0 after:border-y-[12px] after:border-r-[20px] after:border-y-transparent after:border-r-blue-ocean after:content-['']",
+            themeClass("bg", "neutral-light", { fixed: true, theme: "light" }),
+            themeClass("text", "blue-night", { fixed: true, theme: "light" }),
+            "[[data-public-theme=light]_&]:border-blue-night/10 [[data-public-theme=light]_&]:before:border-r-[#e8e8e8] [[data-public-theme=light]_&]:after:border-r-[#e8e8e8]",
             isHidden ? "opacity-70 outline outline-1 outline-blue-skywave/40" : "",
         ]}>
             <div class="flex items-start justify-between gap-4">
-                <div class={["min-w-0", themeClass("text", "suspense-aurora", { fixed: true })]}>
+                <div class={["min-w-0", themeClass("text", "suspense-aurora", { fixed: true }), themeClass("text", "blue-night", { fixed: true, theme: "light" })]}>
                     <div class="flex min-w-0 flex-wrap items-center gap-x-[7px] gap-y-1 leading-none">
                         <p class="truncate text-[12px] font-black uppercase italic leading-none tracking-normal text-current">
                             {item.author?.name}
@@ -260,7 +264,7 @@
                         bind:value={editComment}
                         rows="4"
                         maxlength="1000"
-                        class={["public-comment-input min-h-24 w-full resize-none rounded-md border-2 border-blue-skywave/30 bg-blue-marinho px-4 py-3 text-sm font-bold text-suspense-aurora focus:outline-none", themeClass("placeholder", "suspense-aurora", { fixed: true })]}
+                        class={["public-comment-input min-h-24 w-full resize-none rounded-md border-2 border-blue-skywave/30 bg-blue-marinho px-4 py-3 text-sm font-bold text-suspense-aurora focus:outline-none", themeClass("bg", "neutral-light", { fixed: true, theme: "light" }), themeClass("text", "blue-night", { fixed: true, theme: "light" }), themeClass("placeholder", "suspense-aurora", { fixed: true }), themeClass("placeholder", "blue-night/45", { theme: "light" })]}
                     ></textarea>
                     <div class="flex flex-wrap justify-end gap-2">
                         <button
@@ -280,7 +284,7 @@
                     </div>
                 </form>
             {:else}
-                <p class={["mt-[6px] whitespace-pre-line text-[15px] font-semibold leading-[1.35] tracking-normal", themeClass("text", "suspense-aurora", { fixed: true })]}>
+                <p class={["mt-[6px] whitespace-pre-line text-[15px] font-semibold leading-[1.35] tracking-normal", themeClass("text", "suspense-aurora", { fixed: true }), themeClass("text", "blue-night", { fixed: true, theme: "light" })]}>
                     {item.comment}
                 </p>
             {/if}
@@ -292,7 +296,7 @@
                         rows="3"
                         maxlength="1000"
                         placeholder="Escreva sua resposta..."
-                        class={["public-comment-input min-h-20 w-full resize-none rounded-md border-2 border-blue-skywave/30 bg-blue-marinho px-4 py-3 text-sm font-bold text-suspense-aurora focus:outline-none", themeClass("placeholder", "suspense-aurora", { fixed: true })]}
+                        class={["public-comment-input min-h-20 w-full resize-none rounded-md border-2 border-blue-skywave/30 bg-blue-marinho px-4 py-3 text-sm font-bold text-suspense-aurora focus:outline-none", themeClass("bg", "neutral-light", { fixed: true, theme: "light" }), themeClass("text", "blue-night", { fixed: true, theme: "light" }), themeClass("placeholder", "suspense-aurora", { fixed: true }), themeClass("placeholder", "blue-night/45", { theme: "light" })]}
                     ></textarea>
                     <div class="flex flex-wrap justify-end gap-2">
                         <button

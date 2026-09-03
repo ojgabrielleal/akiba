@@ -35,6 +35,7 @@ Route::post('/oauth/logout', OAuthAccountLogoutController::class)
     ->name('oauth.logout');
 
 Route::post('/push-notification', [PushNotificationController::class, 'storePushNotification'])
+    ->middleware('oauth.resolve')
     ->name('push-notification.store');
 
 Route::middleware(['oauth.resolve', 'inertia', 'auth'])->group(function () {
@@ -142,6 +143,10 @@ Route::middleware(['oauth.resolve', 'inertia'])->group(function () {
 
     Route::post('/poll/option/{option:uuid}/vote', [MediaController::class, 'votePollOption'])
         ->name('poll.option.vote');
+
+    Route::post('/midias/enigma/{mystery:uuid}/interaction', [MediaController::class, 'storeMysteryInteraction'])
+        ->middleware('oauth')
+        ->name('mystery.interaction.store');
 
     Route::get('/review/{slug}', [ReadController::class, 'render'])
         ->name('review.read');

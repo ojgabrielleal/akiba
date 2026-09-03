@@ -209,7 +209,7 @@
                 Diga o nome do anime ou da música e faremos o resto!
             </span>
             {#if activeSearchDropdown}
-                <div class="absolute w-full bg-white border border-gray-200 rounded-2xl shadow-xl z-25 max-h-56 overflow-y-auto p-2">
+                <div class="public-themed-scrollbar absolute w-full bg-white border border-gray-200 rounded-2xl shadow-xl z-25 max-h-56 overflow-y-auto p-2">
                     {#if !searchQuery.trim()}
                         <div class="p-3 font-noto-sans text-center">
                             <div class="text-gray-700 text-sm font-semibold">
@@ -287,7 +287,7 @@
             <div class="text-md text-gray-700 font-noto-sans block mb-1">
                 Escolha uma música:
             </div>
-            <div class="song-request-music-list max-h-44 overflow-y-auto rounded-md border border-blue-ocean/20 bg-blue-ocean/[0.03] p-2">
+            <div class="public-themed-scrollbar song-request-music-list max-h-44 overflow-y-auto rounded-md border border-blue-ocean/20 bg-blue-ocean/[0.03] p-2">
                 {#each ["OP", "ED"] as type}
                     {#if searchMusicResults.some((item) => item.type === type)}
                         <div class="px-2 py-2 font-noto-sans text-[0.62rem] font-extrabold uppercase tracking-[0.2em] text-orange-amber">
@@ -359,23 +359,3 @@
         Enviar
     </button>
 </form>
-
-<style>
-    .song-request-music-list {
-        scrollbar-color: var(--color-orange-amber) transparent;
-        scrollbar-width: thin;
-    }
-
-    .song-request-music-list::-webkit-scrollbar {
-        width: 0.45rem;
-    }
-
-    .song-request-music-list::-webkit-scrollbar-thumb {
-        background: var(--color-orange-amber);
-        border-radius: 9999px;
-    }
-
-    .song-request-music-list::-webkit-scrollbar-track {
-        background: transparent;
-    }
-</style>

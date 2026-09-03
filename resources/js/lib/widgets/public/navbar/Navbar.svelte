@@ -395,7 +395,7 @@
                 aria-label="Navegação mobile"
             >
                 <div class="flex h-full min-h-0 flex-col">
-                    <ul class="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto px-4 pt-6 pb-3">
+                    <ul class="public-themed-scrollbar flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto px-4 pt-6 pb-3">
                         {#each navbar.public as item}
                             {@const active = isActiveNavItem(item)}
                             <li>

@@ -105,6 +105,7 @@ const fixedThemeClasses = {
     placeholder: {
         "suspense-aurora": "placeholder:text-[#fffaf3]",
         "blue-night": "placeholder:text-[#000014]",
+        "blue-night/45": "placeholder:text-[color-mix(in_srgb,#000014_45%,transparent)]",
     },
 };
 
@@ -129,6 +130,9 @@ const themedThemeClasses = {
         },
         "after:bg": {
             "blue-cerulean": "[[data-public-theme=light]_&]:after:bg-blue-cerulean",
+        },
+        placeholder: {
+            "blue-night/45": "[[data-public-theme=light]_&]:placeholder:text-[color-mix(in_srgb,#000014_45%,transparent)]",
         },
     },
 };

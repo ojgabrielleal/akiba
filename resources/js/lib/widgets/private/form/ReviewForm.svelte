@@ -24,13 +24,6 @@
         ];
     }
 
-    function normalizeReferences() {
-        return [
-            { uuid: null, name: null, url: null },
-            { uuid: null, name: null, url: null },
-        ];
-    }
-
     function normalizeReview(review = {}) {
         return {
             uuid: null,
@@ -47,14 +40,13 @@
         image: post?.data.image ?? null,
         title: post?.data.title ?? null,
         cover: post?.data.cover ?? null,
-        studio: post?.data.studio ?? null,
+        studio: post?.data.metadata?.studio ?? null,
         metadata: {
             date_of_release: post?.data.metadata?.date_of_release ?? post?.data.metadata?.year_of_release ?? null,
             sinopse: post?.data.metadata?.sinopse ?? null,
         },
         review: normalizeReview(post?.data.review),
         tags: normalizeTags(post?.data.tags),
-        references: normalizeReferences(),
     });
 
     $: errors = {
@@ -67,10 +59,6 @@
     $: coverError = errorFor(errors, ["cover"]);
     $: reviewContentError = errorFor(errors, ["review.content", "review[content]", "review"]);
     $: imageError = errorFor(errors, ["image"]);
-    $: firstReferenceNameError = errorFor(errors, ["references.0.name", "references[0][name]", "references"]);
-    $: firstReferenceUrlError = errorFor(errors, ["references.0.url", "references[0][url]", "references"]);
-    $: secondReferenceNameError = errorFor(errors, ["references.1.name", "references[1][name]", "references"]);
-    $: secondReferenceUrlError = errorFor(errors, ["references.1.url", "references[1][url]", "references"]);
     $: persistedSelectedReview = post?.data.reviews?.find((opinion) => {
         if ($form.review?.uuid) {
             return opinion.uuid === $form.review.uuid;
@@ -85,7 +73,7 @@
         const status = event.submitter.value;
 
         $form.transform((data) => {
-            const { tags, references, ...payload } = data;
+            const { tags, ...payload } = data;
 
             return {
                 ...payload,
@@ -250,66 +238,6 @@
                     </FormField>
                     <div class="text-center text-neutral-gray font-light italic text-md uppercase font-noto-sans mt-5">
                         Tags escolhidas automaticamente para reviews
-                    </div>
-                </div>
-                <div>
-                    <div class="text-center text-orange-citric font-extrabold italic text-lg uppercase font-noto-sans mb-5">
-                        Fontes
-                    </div>
-                    <div class="w-full flex mb-6">
-                        <FormField for="reference-0-name" label="Nome:" labelVariant="metadata-indented" spacing="none" error={firstReferenceNameError} class="flex-1">
-                            <TextInput
-                                id="reference-0-name"
-                                type="text"
-                                name="references[0][name]"
-                                variant="pillLeft"
-                                class="disabled:cursor-not-allowed disabled:opacity-50"
-                                disabled
-                                bind:value={$form.references[0].name}
-                                error={firstReferenceNameError}
-                            />
-                        </FormField>
-                        <FormField for="reference-0-url" label="Link:" labelVariant="metadata" spacing="none" error={firstReferenceUrlError} class="flex-1">
-                            <TextInput
-                                id="reference-0-url"
-                                type="url"
-                                name="references[0][url]"
-                                variant="pillRight"
-                                class="disabled:cursor-not-allowed disabled:opacity-50"
-                                disabled
-                                bind:value={$form.references[0].url}
-                                error={firstReferenceUrlError}
-                            />
-                        </FormField>
-                    </div>
-                    <div class="w-full flex">
-                        <FormField for="reference-1-name" label="Nome:" labelVariant="metadata-indented" spacing="none" error={secondReferenceNameError} class="flex-1">
-                            <TextInput
-                                id="reference-1-name"
-                                type="text"
-                                name="references[1][name]"
-                                variant="pillLeft"
-                                class="disabled:cursor-not-allowed disabled:opacity-50"
-                                disabled
-                                bind:value={$form.references[1].name}
-                                error={secondReferenceNameError}
-                            />
-                        </FormField>
-                        <FormField for="reference-1-url" label="Link:" labelVariant="metadata" spacing="none" error={secondReferenceUrlError} class="flex-1">
-                            <TextInput
-                                id="reference-1-url"
-                                type="url"
-                                name="references[1][url]"
-                                variant="pillRight"
-                                class="disabled:cursor-not-allowed disabled:opacity-50"
-                                disabled
-                                bind:value={$form.references[1].url}
-                                error={secondReferenceUrlError}
-                            />
-                        </FormField>
-                    </div>
-                    <div class="text-center text-neutral-gray font-light italic text-md uppercase font-noto-sans mt-5">
-                        Preencha até duas fontes de pesquisa usadas para obter informações sobre o anime
                     </div>
                 </div>
             </div>

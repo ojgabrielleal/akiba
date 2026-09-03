@@ -120,7 +120,7 @@ class User extends Authenticatable
 
     public function pushSubscriptions()
     {
-        return $this->hasMany(PushSubscription::class);
+        return $this->morphMany(PushSubscription::class, 'notifiable');
     }
 
     public function roles()

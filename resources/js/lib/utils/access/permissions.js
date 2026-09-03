@@ -64,6 +64,14 @@ export const pollPermissions = () => ({
     },
 });
 
+export const mysteryPermissions = () => ({
+    create: hasPermission("mystery.create"),
+    update: hasPermission("mystery.update"),
+    delete: hasPermission("mystery.delete"),
+    publish: hasPermission("mystery.publish"),
+    respond: hasPermission("mystery.respond"),
+});
+
 export const postPermissions = () => ({
     create: hasPermission("post.create"),
     update: hasPermission("post.update"),

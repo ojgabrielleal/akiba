@@ -55,7 +55,6 @@ class PostSeeder extends Seeder
         Post::factory($count)
             ->review()
             ->for($user, 'author')
-            ->has(PostReference::factory(2), 'references')
             ->has(PostTag::factory(2), 'tags')
             ->has(PostReaction::factory(5), 'reactions')
             ->has(Comment::factory(3), 'comments')

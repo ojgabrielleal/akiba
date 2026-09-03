@@ -46,6 +46,11 @@ export default defineConfig(() => {
             svelte(svelteConfig),
         ],
         build: {
+            rolldownOptions: {
+                checks: {
+                    pluginTimings: false,
+                },
+            },
             rollupOptions: {
                 output: {
                     manualChunks(id) {
@@ -53,8 +58,28 @@ export default defineConfig(() => {
                             return 'chart';
                         }
 
+                        if (id.includes('node_modules/quill')) {
+                            return 'editor';
+                        }
+
+                        if (id.includes('node_modules/@inertiajs') || id.includes('node_modules/svelte')) {
+                            return 'app-runtime';
+                        }
+
+                        if (id.includes('node_modules/axios') || id.includes('node_modules/js-cookie') || id.includes('node_modules/svelte-hot-french-toast')) {
+                            return 'app-utils';
+                        }
+
                         if (id.includes('node_modules')) {
                             return 'vendor';
+                        }
+
+                        if (id.includes('/resources/js/pages/private/')) {
+                            return 'private-pages';
+                        }
+
+                        if (id.includes('/resources/js/pages/public/')) {
+                            return 'public-pages';
                         }
                     }
                 }

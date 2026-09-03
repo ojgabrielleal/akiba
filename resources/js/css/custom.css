@@ -24,6 +24,121 @@
      display: none;
  }
 
+html,
+body {
+     --public-scrollbar-thumb: #7d8492;
+     --public-scrollbar-track: #1e2028;
+     --public-scrollbar-thumb-hover: #a0a7b4;
+     scrollbar-color: var(--public-scrollbar-thumb) var(--public-scrollbar-track);
+     scrollbar-width: thin;
+ }
+
+ body:has([data-public-theme="light"]) {
+     --public-scrollbar-thumb: #8f98a8;
+     --public-scrollbar-track: #d7dbe2;
+     --public-scrollbar-thumb-hover: #6f7888;
+ }
+
+ body:has([data-public-theme="akiba"]) {
+     --public-scrollbar-thumb: #7f8797;
+     --public-scrollbar-track: #242735;
+     --public-scrollbar-thumb-hover: #a8afbd;
+ }
+
+ body:has([data-public-theme="night"]) {
+     --public-scrollbar-thumb: #747b8b;
+     --public-scrollbar-track: #171922;
+     --public-scrollbar-thumb-hover: #9aa2b2;
+ }
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+     width: 0.32rem;
+     height: 0.32rem;
+     background: var(--public-scrollbar-track);
+ }
+
+html::-webkit-scrollbar-track,
+body::-webkit-scrollbar-track {
+     border-radius: 9999px;
+     background: var(--public-scrollbar-track);
+ }
+
+ html::-webkit-scrollbar-button,
+ body::-webkit-scrollbar-button {
+     width: 0;
+     height: 0;
+     display: none;
+     background: transparent;
+ }
+
+ html::-webkit-scrollbar-corner,
+ body::-webkit-scrollbar-corner {
+     background: transparent;
+ }
+
+html::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-thumb {
+     border-radius: 9999px;
+     background: var(--public-scrollbar-thumb);
+ }
+
+ html::-webkit-scrollbar-thumb:hover,
+ body::-webkit-scrollbar-thumb:hover {
+     background: var(--public-scrollbar-thumb-hover);
+ }
+
+.public-themed-scrollbar {
+     --public-scrollbar-thumb: #7f8797;
+     --public-scrollbar-track: transparent;
+     --public-scrollbar-thumb-hover: #a8afbd;
+     scrollbar-color: var(--public-scrollbar-thumb) var(--public-scrollbar-track);
+     scrollbar-width: thin;
+ }
+
+ [data-public-theme="light"] .public-themed-scrollbar {
+     --public-scrollbar-thumb: #8f98a8;
+     --public-scrollbar-track: transparent;
+     --public-scrollbar-thumb-hover: #6f7888;
+ }
+
+ [data-public-theme="night"] .public-themed-scrollbar {
+     --public-scrollbar-thumb: #747b8b;
+     --public-scrollbar-track: transparent;
+     --public-scrollbar-thumb-hover: #9aa2b2;
+ }
+
+.public-themed-scrollbar::-webkit-scrollbar {
+     width: 0.32rem;
+     height: 0.32rem;
+     background: var(--public-scrollbar-track);
+ }
+
+ .public-themed-scrollbar::-webkit-scrollbar-track {
+     border-radius: 9999px;
+     background: var(--public-scrollbar-track);
+ }
+
+ .public-themed-scrollbar::-webkit-scrollbar-button {
+     width: 0;
+     height: 0;
+     display: none;
+     background: transparent;
+ }
+
+ .public-themed-scrollbar::-webkit-scrollbar-corner {
+     background: transparent;
+ }
+
+.public-themed-scrollbar::-webkit-scrollbar-thumb {
+     border-radius: 9999px;
+     background: var(--public-scrollbar-thumb);
+ }
+
+ .public-themed-scrollbar::-webkit-scrollbar-thumb:hover {
+     background: var(--public-scrollbar-thumb-hover);
+ }
+
  /* Keep long labels and media from creating page-level horizontal scroll. */
  html, body {
      width: 100%;

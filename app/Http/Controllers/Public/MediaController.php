@@ -5,12 +5,16 @@ namespace App\Http\Controllers\Public;
 use App\Services\ListenerGalleryService;
 use App\Services\PollService;
 use App\Services\PostService;
+use App\Services\MysteryService;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ListenerGalleryResource;
 use App\Http\Resources\Poll\PollResource;
 use App\Http\Resources\Post\PostResource;
 use Inertia\Inertia;
 use App\Models\PollOption;
+use App\Models\Mystery;
+use App\Http\Requests\Mystery\StoreMysteryInteractionRequest;
+use App\Http\Resources\MysteryResource;
 use App\Support\AuthenticatedMember;
 use Illuminate\Http\Request;
 
@@ -20,6 +24,7 @@ class MediaController extends Controller
         private ListenerGalleryService $listenerGalleryFilter,
         private PollService $pollFilter,
         private PostService $postFilter,
+        private MysteryService $mysteryFilter,
     ) {}
 
     private function indexEvents()
@@ -111,6 +116,17 @@ class MediaController extends Controller
         return back(303)->with('success', 'Voto registrado com sucesso.');
     }
 
+    public function storeMysteryInteraction(StoreMysteryInteractionRequest $request, MysteryService $service, Mystery $mystery)
+    {
+        $participant = AuthenticatedMember::fromRequest($request);
+
+        abort_unless($participant, 403);
+
+        $service->interact($mystery, $participant, $request->validated());
+
+        return back(303)->with('success', 'Interacao enviada com sucesso.');
+    }
+
     public function render()
     {
         return Inertia::render('public/Media', [
@@ -118,6 +134,7 @@ class MediaController extends Controller
             'listenerGallery' => $this->indexListenerGallery(),
             'polls' => $this->indexPolls(),
             'latestPoll' => $this->indexLatestPoll(),
+            'mystery' => ($mystery = $this->mysteryFilter->active()) ? MysteryResource::make($mystery) : null,
         ]);
     }
 }

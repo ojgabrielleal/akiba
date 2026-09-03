@@ -18,18 +18,20 @@ class PushSubscriptionTest extends TestCase
 
         $this
             ->actingAs($user)
-            ->post('/panel/push-subscription', [
+            ->post('/panel/push-notification', [
                 'endpoint' => 'https://push.example/subscription',
                 'keys' => [
                     'p256dh' => 'public-key',
                     'auth' => 'auth-token',
                 ],
                 'content_encoding' => 'aesgcm',
+                'silent' => true,
             ])
             ->assertNoContent();
 
         $this->assertDatabaseHas('push_subscriptions', [
-            'user_id' => $user->id,
+            'notifiable_type' => User::class,
+            'notifiable_id' => $user->id,
             'endpoint' => 'https://push.example/subscription',
             'public_key' => 'public-key',
             'auth_token' => 'auth-token',
@@ -37,22 +39,63 @@ class PushSubscriptionTest extends TestCase
         ]);
     }
 
+    public function test_same_endpoint_can_be_stored_for_different_notifiables(): void
+    {
+        $firstUser = User::factory()->create();
+        $secondUser = User::factory()->create();
+        $payload = [
+            'endpoint' => 'https://push.example/shared-subscription',
+            'keys' => [
+                'p256dh' => 'public-key',
+                'auth' => 'auth-token',
+            ],
+            'content_encoding' => 'aesgcm',
+        ];
+
+        app(PushNotificationService::class)->store($firstUser, $payload);
+        app(PushNotificationService::class)->store($secondUser, $payload);
+        app(PushNotificationService::class)->store($firstUser, [
+            ...$payload,
+            'keys' => [
+                'p256dh' => 'updated-public-key',
+                'auth' => 'updated-auth-token',
+            ],
+        ]);
+
+        $this->assertDatabaseCount('push_subscriptions', 2);
+        $this->assertDatabaseHas('push_subscriptions', [
+            'notifiable_type' => User::class,
+            'notifiable_id' => $firstUser->id,
+            'endpoint' => 'https://push.example/shared-subscription',
+            'public_key' => 'updated-public-key',
+            'auth_token' => 'updated-auth-token',
+        ]);
+        $this->assertDatabaseHas('push_subscriptions', [
+            'notifiable_type' => User::class,
+            'notifiable_id' => $secondUser->id,
+            'endpoint' => 'https://push.example/shared-subscription',
+            'public_key' => 'public-key',
+            'auth_token' => 'auth-token',
+        ]);
+    }
+
     public function test_user_can_destroy_push_subscription(): void
     {
         $user = User::factory()->create();
-        PushSubscription::factory()->for($user)->create([
+        PushSubscription::factory()->for($user, 'notifiable')->create([
             'endpoint' => 'https://push.example/subscription',
         ]);
 
         $this
             ->actingAs($user)
-            ->delete('/panel/push-subscription', [
+            ->delete('/panel/push-notification', [
                 'endpoint' => 'https://push.example/subscription',
             ])
             ->assertNoContent();
 
         $this->assertDatabaseMissing('push_subscriptions', [
-            'user_id' => $user->id,
+            'notifiable_type' => User::class,
+            'notifiable_id' => $user->id,
             'endpoint' => 'https://push.example/subscription',
         ]);
     }
@@ -66,7 +109,7 @@ class PushSubscriptionTest extends TestCase
         ]);
 
         $user = User::factory()->create();
-        PushSubscription::factory()->for($user)->create();
+        PushSubscription::factory()->for($user, 'notifiable')->create();
 
         app(PushNotificationService::class)->sendToUserOrAll($user, [
             'title' => 'Novo pedido musical',

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Private;
 
 use App\Services\ListenerGalleryService;
 use App\Services\PollService;
+use App\Services\MysteryService;
 
 use App\Http\Controllers\Concerns\ResolvesAuthorizedProps;
 use App\Http\Controllers\Controller;
@@ -20,6 +21,12 @@ use App\Http\Requests\ListenerGallery\StoreListenerGalleryRequest;
 use App\Http\Requests\ListenerGallery\UpdateListenerGalleryRequest;
 use App\Http\Requests\Poll\StorePollRequest;
 use App\Http\Requests\Poll\UpdatePollRequest;
+use App\Http\Requests\Mystery\RespondMysteryInteractionRequest;
+use App\Http\Requests\Mystery\StoreMysteryRequest;
+use App\Http\Requests\Mystery\UpdateMysteryRequest;
+use App\Http\Resources\MysteryResource;
+use App\Models\Mystery;
+use App\Models\MysteryInteraction;
 use App\Models\PollOption;
 use App\Support\AuthenticatedMember;
 use Illuminate\Http\Request;
@@ -35,6 +42,7 @@ class MediaController extends Controller
     public function __construct(
         private ListenerGalleryService $listenerGalleryFilter,
         private PollService $pollFilter,
+        private MysteryService $mysteryFilter,
     ) {}
 
     private function indexPolls()
@@ -71,6 +79,15 @@ class MediaController extends Controller
         return $this->whenCanViewAny(ListenerGallery::class,
             fn () => ListenerGalleryResource::collection(
                 $this->listenerGalleryFilter->filter(['paginate' => 20])
+            ),
+        );
+    }
+
+    private function indexMysteries()
+    {
+        return $this->whenCanViewAny(Mystery::class,
+            fn () => MysteryResource::collection(
+                $this->mysteryFilter->filter(['with' => ['author', 'interactions.participant', 'interactions.responder']])
             ),
         );
     }
@@ -166,6 +183,45 @@ class MediaController extends Controller
         return $this->flashMessage('save');
     }
 
+    public function storeMystery(StoreMysteryRequest $request, MysteryService $service)
+    {
+        $service->store($request->user(), $request->validated());
+
+        return $this->flashMessage('save');
+    }
+
+    public function updateMystery(UpdateMysteryRequest $request, MysteryService $service, Mystery $mystery)
+    {
+        $service->update($mystery, $request->validated());
+
+        return $this->flashMessage('update');
+    }
+
+    public function publishMystery(MysteryService $service, Mystery $mystery)
+    {
+        $this->authorize('publish', $mystery);
+
+        $service->publish($mystery);
+
+        return $this->flashMessage('update');
+    }
+
+    public function deactivateMystery(MysteryService $service, Mystery $mystery)
+    {
+        $this->authorize('delete', $mystery);
+
+        $service->deactivate($mystery);
+
+        return $this->flashMessage('deactivate');
+    }
+
+    public function respondMysteryInteraction(RespondMysteryInteractionRequest $request, MysteryService $service, MysteryInteraction $mysteryInteraction)
+    {
+        $service->respond($mysteryInteraction, $request->user(), $request->validated());
+
+        return $this->flashMessage('update');
+    }
+
     private function indexListenerGalleryItem(ListenerGallery $listenerGallery): ListenerGalleryResource
     {
         return new ListenerGalleryResource($listenerGallery);
@@ -177,6 +233,7 @@ class MediaController extends Controller
             'polls' => $this->indexPolls(),
             'latestPoll' => $this->indexLatestPoll(),
             'listenerGalleries' => $this->indexListenerGalleries(),
+            'mysteries' => $this->indexMysteries(),
         ]);
     }
 }

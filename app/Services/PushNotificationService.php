@@ -4,13 +4,14 @@ namespace App\Services;
 
 use App\Models\PushSubscription;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Minishlink\WebPush\Subscription;
 use Minishlink\WebPush\WebPush;
 
 class PushNotificationService
 {
-    public function store(?User $user, array $data): PushSubscription
+    public function store(?Model $notifiable, array $data): PushSubscription
     {
         $data = validator($data, [
             'endpoint' => ['required', 'string'],
@@ -26,21 +27,24 @@ class PushNotificationService
             'content_encoding' => $data['content_encoding'] ?? 'aes128gcm',
         ];
 
-        if ($user) {
-            $values['user_id'] = $user->id;
+        if ($notifiable) {
+            $values['notifiable_type'] = $notifiable->getMorphClass();
+            $values['notifiable_id'] = $notifiable->getKey();
         }
 
         return PushSubscription::query()->updateOrCreate(
             [
+                'notifiable_type' => $values['notifiable_type'] ?? null,
+                'notifiable_id' => $values['notifiable_id'] ?? null,
                 'endpoint' => $data['endpoint'],
             ],
             $values,
         );
     }
 
-    public function storeWithActivationNotification(?User $user, array $data, string $url = '/'): PushSubscription
+    public function storeWithActivationNotification(?Model $notifiable, array $data, string $url = '/'): PushSubscription
     {
-        $subscription = $this->store($user, $data);
+        $subscription = $this->store($notifiable, $data);
 
         $this->sendToSubscription($subscription, [
             'title' => 'Bem vindo(a) ao clube!!!!',
@@ -52,23 +56,25 @@ class PushNotificationService
         return $subscription;
     }
 
-    public function destroy(User $user, string $endpoint): void
+    public function destroy(Model $notifiable, string $endpoint): void
     {
-        $user->pushSubscriptions()
+        $notifiable->pushSubscriptions()
             ->where('endpoint', $endpoint)
             ->delete();
     }
 
-    public function sendToUserOrAll(?User $user, array $payload): void
+    public function sendToUserOrAll(?Model $notifiable, array $payload): void
     {
         $subscriptions = PushSubscription::query()
-            ->when($user, fn ($query) => $query->where('user_id', $user->id))
+            ->when($notifiable, fn ($query) => $query
+                ->where('notifiable_type', $notifiable->getMorphClass())
+                ->where('notifiable_id', $notifiable->getKey()))
             ->get()
             ->unique('endpoint')
             ->values();
 
         $this->sendToSubscriptions($subscriptions, [
-            'audience' => $user ? 'user' : 'all',
+            'audience' => $notifiable ? 'user' : 'all',
             ...$payload,
         ]);
     }

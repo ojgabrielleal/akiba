@@ -42,6 +42,16 @@
         if (visible && event.key === "Escape") close();
     };
 
+    const portal = (node) => {
+        document.body.appendChild(node);
+
+        return {
+            destroy() {
+                node.remove();
+            },
+        };
+    };
+
     onDestroy(() => {
         if (typeof document !== "undefined") {
             document.body.style.overflow = previousBodyOverflow;
@@ -54,6 +64,7 @@
 
 {#if visible}
     <div
+        use:portal
         class="fixed inset-0 z-[200] flex h-screen w-screen items-center justify-center bg-black/40 p-9 backdrop-blur-xs"
         role="presentation"
         transition:fade={{ duration: 180 }}

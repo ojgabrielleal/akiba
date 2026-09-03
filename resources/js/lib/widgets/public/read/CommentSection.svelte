@@ -32,7 +32,7 @@
         <h2 class="text-xl leading-none font-normal text-orange-amber uppercase">
             Comentários
         </h2>
-        <span class={["rounded-full bg-blue-cerulean px-3 py-1 text-xs font-black uppercase italic", themeClass("text", "suspense-aurora", { fixed: true })]}>
+        <span class={["rounded-full bg-blue-cerulean px-3 py-1 text-xs font-black uppercase italic", themeClass("bg", "neutral-light", { fixed: true, theme: "light" }), themeClass("text", "suspense-aurora", { fixed: true }), themeClass("text", "blue-night", { fixed: true, theme: "light" })]}>
             {totalComments}
         </span>
     </div>
@@ -55,7 +55,7 @@
                 rows="4"
                 maxlength="1000"
                 placeholder="Escreva seu comentário..."
-                class={["public-comment-input min-h-28 w-full resize-none rounded-md border-2 border-blue-skywave/30 bg-blue-ocean px-4 py-3 text-sm font-bold text-suspense-aurora focus:outline-none", themeClass("placeholder", "suspense-aurora", { fixed: true })]}
+                class={["public-comment-input min-h-28 w-full resize-none rounded-md border-2 border-blue-skywave/30 bg-blue-ocean px-4 py-3 text-sm font-bold text-suspense-aurora focus:outline-none", themeClass("bg", "neutral-light", { fixed: true, theme: "light" }), themeClass("text", "blue-night", { fixed: true, theme: "light" }), themeClass("placeholder", "suspense-aurora", { fixed: true }), themeClass("placeholder", "blue-night/45", { theme: "light" }), "[[data-public-theme=light]_&]:border-blue-night/10"]}
             ></textarea>
             <div class="flex justify-end">
                 <button
