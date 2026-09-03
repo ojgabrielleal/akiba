@@ -20,19 +20,24 @@ class PostService
     public function __construct(
         private ImageProcess $image,
         private PushNotificationService $pushNotification,
+        private CacheService $cache,
     ) {}
 
     public function deactivate(Post $post): Post
     {
-        return DB::transaction(function () use ($post) {
+        $post = DB::transaction(function () use ($post) {
             $post->update(['is_active' => false]);
             return $post;
         });
+
+        $this->cache->invalidatePosts($post);
+
+        return $post;
     }
 
     public function storeReaction(Post $post, Model $reactor, string $name): ?PostReaction
     {
-        return DB::transaction(function () use ($post, $reactor, $name) {
+        $reaction = DB::transaction(function () use ($post, $reactor, $name) {
             $identifiers = [
                 'reactor_type' => $reactor->getMorphClass(),
                 'reactor_id' => $reactor->getKey(),
@@ -53,6 +58,10 @@ class PostService
                 ['name' => $name],
             );
         });
+
+        $this->cache->invalidatePosts($post);
+
+        return $reaction;
     }
 
     public function store(User $user, array $data, ?UploadedFile $image = null, ?UploadedFile $cover = null): Post
@@ -69,6 +78,7 @@ class PostService
         });
 
         if ($post->status === 'published') {
+            $this->cache->invalidatePosts($post);
             $this->sendPublishedNotification($post);
         }
 
@@ -138,7 +148,7 @@ class PostService
 
     public function toggleLike(Post $post, ?Model $liker, string $visitorToken): bool
     {
-        return DB::transaction(function () use ($post, $liker, $visitorToken) {
+        $liked = DB::transaction(function () use ($post, $liker, $visitorToken) {
             $query = $post->likes();
 
             if ($liker) {
@@ -169,6 +179,10 @@ class PostService
 
             return true;
         });
+
+        $this->cache->invalidatePosts($post);
+
+        return $liked;
     }
 
     public function update(Post $post, User $user, array $data, ?UploadedFile $image = null, ?UploadedFile $cover = null): Post
@@ -189,6 +203,8 @@ class PostService
         if (! $wasPublished && $post->status === 'published') {
             $this->sendPublishedNotification($post);
         }
+
+        $this->cache->invalidatePosts($post);
 
         return $post;
     }

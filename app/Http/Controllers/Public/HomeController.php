@@ -12,6 +12,7 @@ use App\Http\Resources\Post\PostResource;
 use Inertia\Inertia;
 use App\Services\OAuthAccountService;
 use App\Services\ProfileService;
+use App\Services\CacheService;
 use App\Http\Controllers\Concerns\HasFlashMessages;
 use App\Http\Requests\OAuthAccount\CompleteOAuthAccountProfileRequest;
 use App\Http\Requests\Profile\UpdatePublicMemberProfileRequest;
@@ -27,12 +28,13 @@ class HomeController extends Controller
         private PodcastService $podcastFilter,
         private PollService $pollFilter,
         private PostService $postFilter,
+        private CacheService $cache,
     ) {}
 
     private function indexFeaturedPosts()
     {
         return PostResource::collection(
-            $this->postFilter->filter([
+            $this->cache->remember(['home', 'featured-posts'], fn () => $this->postFilter->filter([
                 'user' => request()->user(),
                 'active' => true,
                 'status' => 'published',
@@ -41,14 +43,14 @@ class HomeController extends Controller
                 'order_direction' => 'desc',
                 'limit' => 3,
                 'ignore_authorization' => true,
-            ])
+            ]), 15, ['posts'])
         )->format('featured');
     }
 
     private function indexLatestReviews()
     {
         return PostResource::collection(
-            $this->postFilter->filter([
+            $this->cache->remember(['home', 'latest-reviews'], fn () => $this->postFilter->filter([
                 'user' => request()->user(),
                 'active' => true,
                 'status' => 'published',
@@ -58,14 +60,14 @@ class HomeController extends Controller
                 'order_direction' => 'desc',
                 'limit' => 5,
                 'ignore_authorization' => true,
-            ])
+            ]), null, ['reviews'])
         )->format('featured');
     }
 
     private function indexPosts()
     {
         return PostResource::collection(
-            $this->postFilter->filter([
+            $this->cache->remember(['home', 'posts'], fn () => $this->postFilter->filter([
                 'user' => request()->user(),
                 'active' => true,
                 'status' => 'published',
@@ -76,14 +78,14 @@ class HomeController extends Controller
                 'order_direction' => 'desc',
                 'limit' => 6,
                 'ignore_authorization' => true,
-            ])
+            ]), null, ['posts'])
         )->format('home-list');
     }
 
     private function indexEvents()
     {
         return PostResource::collection(
-            $this->postFilter->filter([
+            $this->cache->remember(['home', 'events', now()->toDateString()], fn () => $this->postFilter->filter([
                 'user' => request()->user(),
                 'active' => true,
                 'status' => 'published',
@@ -93,25 +95,25 @@ class HomeController extends Controller
                 'order_direction' => 'asc',
                 'limit' => 5,
                 'ignore_authorization' => true,
-            ])
+            ]), null, ['events'])
         )->format('home-list');
     }
 
     private function indexPodcasts()
     {
         return PodcastResource::collection(
-            $this->podcastFilter->filter([
+            $this->cache->remember(['home', 'podcasts'], fn () => $this->podcastFilter->filter([
                 'active' => true,
                 'order_by' => 'created_at',
                 'order_direction' => 'desc',
                 'limit' => 3,
-            ])
+            ]), null, ['podcasts'])
         );
     }
 
     private function indexLatestPoll()
     {
-        $poll = $this->pollFilter->filter([
+        $poll = $this->cache->remember(['home', 'latest-poll'], fn () => $this->pollFilter->filter([
             'active' => true,
             'open' => true,
             'with' => [
@@ -122,7 +124,7 @@ class HomeController extends Controller
             'order_by' => 'created_at',
             'order_direction' => 'desc',
             'first' => true,
-        ]);
+        ]), null, ['polls']);
 
         return $poll ? PollResource::make($poll) : null;
     }

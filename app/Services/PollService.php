@@ -14,18 +14,26 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class PollService
 {
+    public function __construct(
+        private CacheService $cache,
+    ) {}
+
     public function deactivate(Poll $poll): Poll
     {
-        return DB::transaction(function () use ($poll) {
+        $poll = DB::transaction(function () use ($poll) {
             $poll->update(['is_active' => false]);
 
             return $poll;
         });
+
+        $this->cache->invalidatePolls();
+
+        return $poll;
     }
 
     public function store(User $user, array $data): Poll
     {
-        return DB::transaction(function () use ($user, $data) {
+        $poll = DB::transaction(function () use ($user, $data) {
             $poll = Poll::create([
                 'user_id' => $user->id,
                 'status' => $data['status'],
@@ -41,11 +49,15 @@ class PollService
 
             return $poll;
         });
+
+        $this->cache->invalidatePolls();
+
+        return $poll;
     }
 
     public function storeVote(PollOption $option, Model $voter): PollVote
     {
-        return DB::transaction(function () use ($option, $voter) {
+        $vote = DB::transaction(function () use ($option, $voter) {
             $vote = $option->poll->votes()->firstOrNew([
                 'voter_type' => $voter->getMorphClass(),
                 'voter_id' => $voter->getKey(),
@@ -58,11 +70,15 @@ class PollService
 
             return $vote;
         });
+
+        $this->cache->invalidatePolls();
+
+        return $vote;
     }
 
     public function update(Poll $poll, array $data): Poll
     {
-        return DB::transaction(function () use ($poll, $data) {
+        $poll = DB::transaction(function () use ($poll, $data) {
             $poll->update([
                 'status' => $data['status'],
                 'question' => $data['question'],
@@ -79,6 +95,10 @@ class PollService
 
             return $poll;
         });
+
+        $this->cache->invalidatePolls();
+
+        return $poll;
     }
 
     public function filter(array $filters = []): Collection|LengthAwarePaginator|Poll|null

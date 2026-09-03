@@ -24,6 +24,13 @@
         ];
     }
 
+    function normalizeReferences(references = []) {
+        return [
+            { name: null, url: null, ...references[0] },
+            { name: null, url: null, ...references[1] },
+        ];
+    }
+
     function normalizeReview(review = {}) {
         return {
             uuid: null,
@@ -47,6 +54,7 @@
         },
         review: normalizeReview(post?.data.review),
         tags: normalizeTags(post?.data.tags),
+        references: normalizeReferences(post?.data.references),
     });
 
     $: errors = {
@@ -73,7 +81,7 @@
         const status = event.submitter.value;
 
         $form.transform((data) => {
-            const { tags, ...payload } = data;
+            const { tags, references, ...payload } = data;
 
             return {
                 ...payload,
@@ -238,6 +246,55 @@
                     </FormField>
                     <div class="text-center text-neutral-gray font-light italic text-md uppercase font-noto-sans mt-5">
                         Tags escolhidas automaticamente para reviews
+                    </div>
+                </div>
+                <div>
+                    <div class="text-center text-orange-citric font-extrabold italic text-lg uppercase font-noto-sans mb-5">
+                        Fontes
+                    </div>
+                    <div class="w-full flex mb-6">
+                        <FormField for="reference-0-name" label="Nome:" labelVariant="metadata-indented" spacing="none" class="flex-1">
+                            <TextInput
+                                id="reference-0-name"
+                                type="text"
+                                variant="pillLeft"
+                                class="disabled:cursor-not-allowed disabled:opacity-50"
+                                disabled
+                                bind:value={$form.references[0].name}
+                            />
+                        </FormField>
+                        <FormField for="reference-0-url" label="Link:" labelVariant="metadata" spacing="none" class="flex-1">
+                            <TextInput
+                                id="reference-0-url"
+                                type="url"
+                                variant="pillRight"
+                                class="disabled:cursor-not-allowed disabled:opacity-50"
+                                disabled
+                                bind:value={$form.references[0].url}
+                            />
+                        </FormField>
+                    </div>
+                    <div class="w-full flex">
+                        <FormField for="reference-1-name" label="Nome:" labelVariant="metadata-indented" spacing="none" class="flex-1">
+                            <TextInput
+                                id="reference-1-name"
+                                type="text"
+                                variant="pillLeft"
+                                class="disabled:cursor-not-allowed disabled:opacity-50"
+                                disabled
+                                bind:value={$form.references[1].name}
+                            />
+                        </FormField>
+                        <FormField for="reference-1-url" label="Link:" labelVariant="metadata" spacing="none" class="flex-1">
+                            <TextInput
+                                id="reference-1-url"
+                                type="url"
+                                variant="pillRight"
+                                class="disabled:cursor-not-allowed disabled:opacity-50"
+                                disabled
+                                bind:value={$form.references[1].url}
+                            />
+                        </FormField>
                     </div>
                 </div>
             </div>

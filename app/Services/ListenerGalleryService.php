@@ -15,6 +15,7 @@ class ListenerGalleryService
 {
     public function __construct(
         private ImageProcess $image,
+        private CacheService $cache,
     ) {}
 
     public function destroy(ListenerGallery $listenerGallery): void
@@ -23,21 +24,27 @@ class ListenerGalleryService
             $this->image->delete($listenerGallery->image);
             $listenerGallery->delete();
         });
+
+        $this->cache->invalidateMedia();
     }
 
     public function store(User $user, array $data, UploadedFile $image): ListenerGallery
     {
-        return DB::transaction(fn () => ListenerGallery::create([
+        $listenerGallery = DB::transaction(fn () => ListenerGallery::create([
             'user_id' => $user->id,
             'image' => $this->image->store('listener-gallery', $image),
             'caption' => $data['caption'] ?? null,
             'listener_name' => $data['listener_name'] ?? null,
         ]));
+
+        $this->cache->invalidateMedia();
+
+        return $listenerGallery;
     }
 
     public function update(ListenerGallery $listenerGallery, array $data, ?UploadedFile $image = null): ListenerGallery
     {
-        return DB::transaction(function () use ($listenerGallery, $data, $image) {
+        $listenerGallery = DB::transaction(function () use ($listenerGallery, $data, $image) {
             $listenerGallery->fill([
                 'image' => $this->image->store('listener-gallery', $image, $listenerGallery->image),
                 'caption' => $data['caption'] ?? null,
@@ -50,6 +57,10 @@ class ListenerGalleryService
 
             return $listenerGallery;
         });
+
+        $this->cache->invalidateMedia();
+
+        return $listenerGallery;
     }
 
     public function filter(array $filters = []): Collection|LengthAwarePaginator

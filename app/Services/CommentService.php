@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Models\Comment;
+use App\Models\Podcast;
+use App\Models\Post;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -11,6 +13,10 @@ use Illuminate\Support\Facades\DB;
 
 class CommentService
 {
+    public function __construct(
+        private CacheService $cache,
+    ) {}
+
     public function filter(Model $commentable, bool $canModerate = false, int $perPage = 10): LengthAwarePaginator
     {
         return $commentable->comments()
@@ -28,7 +34,7 @@ class CommentService
 
     public function store(Model $commentable, Model $author, array $data): Comment
     {
-        return DB::transaction(function () use ($commentable, $author, $data) {
+        $comment = DB::transaction(function () use ($commentable, $author, $data) {
             $comment = $commentable->comments()->make([
                 'parent_id' => $data['parent_id'] ?? null,
                 'comment' => $data['comment'],
@@ -39,22 +45,34 @@ class CommentService
 
             return $comment;
         });
+
+        $this->invalidateCommentable($commentable);
+
+        return $comment;
     }
 
     public function update(Comment $comment, array $data): Comment
     {
-        return DB::transaction(function () use ($comment, $data) {
+        $comment = DB::transaction(function () use ($comment, $data) {
             $comment->update([
                 'comment' => $data['comment'],
             ]);
 
             return $comment;
         });
+
+        $this->invalidateCommentable($comment->commentable);
+
+        return $comment;
     }
 
     public function delete(Comment $comment): void
     {
+        $commentable = $comment->commentable;
+
         DB::transaction(fn () => $comment->delete());
+
+        $this->invalidateCommentable($commentable);
     }
 
     public function approve(Comment $comment, User $moderator, ?string $reason = null): Comment
@@ -74,7 +92,7 @@ class CommentService
 
     private function moderate(Comment $comment, User $moderator, string $status, ?string $reason = null): Comment
     {
-        return DB::transaction(function () use ($comment, $moderator, $status, $reason) {
+        $comment = DB::transaction(function () use ($comment, $moderator, $status, $reason) {
             $comment->update([
                 'status' => $status,
                 'moderated_by' => $moderator->id,
@@ -84,5 +102,20 @@ class CommentService
 
             return $comment;
         });
+
+        $this->invalidateCommentable($comment->commentable);
+
+        return $comment;
+    }
+
+    private function invalidateCommentable(?Model $commentable): void
+    {
+        if ($commentable instanceof Post) {
+            $this->cache->invalidatePosts($commentable);
+        }
+
+        if ($commentable instanceof Podcast) {
+            $this->cache->invalidatePodcasts($commentable);
+        }
     }
 }

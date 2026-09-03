@@ -15,20 +15,25 @@ class PodcastService
 {
     public function __construct(
         private ImageProcess $image,
+        private CacheService $cache,
     ) {}
 
     public function deactivate(Podcast $podcast): Podcast
     {
-        return DB::transaction(function () use ($podcast) {
+        $podcast = DB::transaction(function () use ($podcast) {
             $podcast->update(['is_active' => false]);
 
             return $podcast;
         });
+
+        $this->cache->invalidatePodcasts($podcast);
+
+        return $podcast;
     }
 
     public function store(User $user, array $data,): Podcast
     {
-        return DB::transaction(fn () => Podcast::create([
+        $podcast = DB::transaction(fn () => Podcast::create([
             'user_id' => $user->id,
             'image' => $this->image->store('podcasts', $data['image']),
             'season' => $data['season'],
@@ -38,11 +43,15 @@ class PodcastService
             'description' => $data['description'],
             'audio' => $data['audio'],
         ]));
+
+        $this->cache->invalidatePodcasts($podcast);
+
+        return $podcast;
     }
 
     public function update(Podcast $podcast, array $data, ?UploadedFile $image = null): Podcast
     {
-        return DB::transaction(function () use ($podcast, $data, $image) {
+        $podcast = DB::transaction(function () use ($podcast, $data, $image) {
             $podcast->fill([
                 'image' => $this->image->store('podcasts', $image, $podcast->image),
                 'season' => $data['season'],
@@ -59,6 +68,10 @@ class PodcastService
 
             return $podcast;
         });
+
+        $this->cache->invalidatePodcasts($podcast);
+
+        return $podcast;
     }
 
     public function filter(array $filters = []): Collection|LengthAwarePaginator

@@ -14,11 +14,14 @@ use Illuminate\Validation\ValidationException;
 
 class MysteryService
 {
-    public function __construct(private PushNotificationService $pushNotification) {}
+    public function __construct(
+        private PushNotificationService $pushNotification,
+        private CacheService $cache,
+    ) {}
 
     public function store(User $user, array $data): Mystery
     {
-        return DB::transaction(function () use ($user, $data): Mystery {
+        $mystery = DB::transaction(function () use ($user, $data): Mystery {
             $mystery = Mystery::create([
                 'user_id' => $user->id,
                 'title' => $data['title'],
@@ -33,11 +36,15 @@ class MysteryService
 
             return $mystery;
         });
+
+        $this->cache->invalidateMysteries();
+
+        return $mystery;
     }
 
     public function update(Mystery $mystery, array $data): Mystery
     {
-        return DB::transaction(function () use ($mystery, $data): Mystery {
+        $mystery = DB::transaction(function () use ($mystery, $data): Mystery {
             $mystery->update([
                 'title' => $data['title'],
                 'content' => $data['content'],
@@ -51,11 +58,15 @@ class MysteryService
 
             return $mystery;
         });
+
+        $this->cache->invalidateMysteries();
+
+        return $mystery;
     }
 
     public function publish(Mystery $mystery): Mystery
     {
-        return DB::transaction(function () use ($mystery): Mystery {
+        $mystery = DB::transaction(function () use ($mystery): Mystery {
             Mystery::query()->lockForUpdate()->whereKeyNot($mystery->id)->active()->update([
                 'status' => Mystery::STATUS_INACTIVE,
             ]);
@@ -64,25 +75,35 @@ class MysteryService
 
             return $mystery;
         });
+
+        $this->cache->invalidateMysteries();
+
+        return $mystery;
     }
 
     public function delete(Mystery $mystery): void
     {
         DB::transaction(fn () => $mystery->delete());
+
+        $this->cache->invalidateMysteries();
     }
 
     public function deactivate(Mystery $mystery): Mystery
     {
-        return DB::transaction(function () use ($mystery): Mystery {
+        $mystery = DB::transaction(function () use ($mystery): Mystery {
             $mystery->update(['status' => Mystery::STATUS_INACTIVE]);
 
             return $mystery;
         });
+
+        $this->cache->invalidateMysteries();
+
+        return $mystery;
     }
 
     public function interact(Mystery $mystery, Model $participant, array $data): MysteryInteraction
     {
-        return DB::transaction(function () use ($mystery, $participant, $data): MysteryInteraction {
+        $interaction = DB::transaction(function () use ($mystery, $participant, $data): MysteryInteraction {
             $mystery = Mystery::query()->lockForUpdate()->active()->whereKey($mystery->id)->firstOrFail();
 
             if ($mystery->interactions()
@@ -120,11 +141,15 @@ class MysteryService
                 'content' => $data['content'],
             ]);
         });
+
+        $this->cache->invalidateMysteries();
+
+        return $interaction;
     }
 
     public function respond(MysteryInteraction $interaction, User $responder, array $data): MysteryInteraction
     {
-        return DB::transaction(function () use ($interaction, $responder, $data): MysteryInteraction {
+        $interaction = DB::transaction(function () use ($interaction, $responder, $data): MysteryInteraction {
             $interaction = MysteryInteraction::query()
                 ->with('participant')
                 ->lockForUpdate()
@@ -169,6 +194,10 @@ class MysteryService
 
             return $interaction;
         });
+
+        $this->cache->invalidateMysteries();
+
+        return $interaction;
     }
 
     public function active(): ?Mystery

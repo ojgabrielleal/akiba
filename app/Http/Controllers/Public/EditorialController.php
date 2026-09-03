@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Public;
 
 use App\Services\PostService;
+use App\Services\CacheService;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Post\PostResource;
 use Inertia\Inertia;
@@ -11,6 +12,7 @@ class EditorialController extends Controller
 {
     public function __construct(
         private PostService $postFilter,
+        private CacheService $cache,
     ) {}
 
     public function news()
@@ -42,7 +44,7 @@ class EditorialController extends Controller
     private function indexNewsPosts(string $tag)
     {
         return PostResource::collection(
-            $this->postFilter->filter([
+            $this->cache->remember(['editorial', 'news', $tag, request()->query('page', 1)], fn () => $this->postFilter->filter([
                 'user' => request()->user(),
                 'active' => true,
                 'status' => 'published',
@@ -53,7 +55,7 @@ class EditorialController extends Controller
                 'tag' => $tag,
                 'paginate' => 10,
                 'ignore_authorization' => true,
-            ])
+            ]), 15, ['posts'])
         )->format('home-list');
     }
 
@@ -62,7 +64,7 @@ class EditorialController extends Controller
         $isReviewCategory = $tag === 'reviews';
 
         return PostResource::collection(
-            $this->postFilter->filter([
+            $this->cache->remember(['editorial', 'columns', $tag, request()->query('page', 1)], fn () => $this->postFilter->filter([
                 'user' => request()->user(),
                 'active' => true,
                 'status' => 'published',
@@ -74,7 +76,7 @@ class EditorialController extends Controller
                 'tags' => $tag ? null : $categories,
                 'paginate' => 10,
                 'ignore_authorization' => true,
-            ])
+            ]), 15, [$isReviewCategory ? 'reviews' : 'posts'])
         )->format('home-list');
     }
 }

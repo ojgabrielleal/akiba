@@ -120,7 +120,9 @@ class PostController extends Controller
 
     private function indexPost(Post $post): PostResource
     {
-        return new PostResource($post->load(['tags', 'references', 'author', 'reviews.author']));
+        return PostResource::make(
+            $post->load(['tags', 'references', 'author', 'reviews.author'])
+        )->format('detail');
     }
 
     private function indexEditablePosts()

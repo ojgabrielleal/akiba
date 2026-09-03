@@ -15,6 +15,7 @@ use App\Models\PollOption;
 use App\Models\Mystery;
 use App\Http\Requests\Mystery\StoreMysteryInteractionRequest;
 use App\Http\Resources\MysteryResource;
+use App\Services\CacheService;
 use App\Support\AuthenticatedMember;
 use Illuminate\Http\Request;
 
@@ -25,12 +26,13 @@ class MediaController extends Controller
         private PollService $pollFilter,
         private PostService $postFilter,
         private MysteryService $mysteryFilter,
+        private CacheService $cache,
     ) {}
 
     private function indexEvents()
     {
         return PostResource::collection(
-            $this->postFilter->filter([
+            $this->cache->remember(['media', 'events', now()->toDateString()], fn () => $this->postFilter->filter([
                 'user' => request()->user(),
                 'active' => true,
                 'status' => 'published',
@@ -40,24 +42,24 @@ class MediaController extends Controller
                 'order_direction' => 'asc',
                 'limit' => 4,
                 'ignore_authorization' => true,
-            ])
+            ]), null, ['events'])
         )->format('home-list');
     }
 
     private function indexListenerGallery()
     {
         return ListenerGalleryResource::collection(
-            $this->listenerGalleryFilter->filter([
+            $this->cache->remember(['media', 'listener-gallery'], fn () => $this->listenerGalleryFilter->filter([
                 'order_by' => 'created_at',
                 'order_direction' => 'desc',
                 'limit' => 5,
-            ])
+            ]), null, ['media'])
         );
     }
 
     private function indexLatestPoll()
     {
-        $poll = $this->pollFilter->filter([
+        $poll = $this->cache->remember(['media', 'latest-poll'], fn () => $this->pollFilter->filter([
             'active' => true,
             'open' => true,
             'with' => [
@@ -68,7 +70,7 @@ class MediaController extends Controller
             'order_by' => 'created_at',
             'order_direction' => 'desc',
             'first' => true,
-        ]);
+        ]), null, ['polls']);
 
         return $poll ? PollResource::make($poll) : null;
     }
@@ -76,7 +78,7 @@ class MediaController extends Controller
     private function indexPolls()
     {
         return PollResource::collection(
-            $this->pollFilter->filter([
+            $this->cache->remember(['media', 'polls'], fn () => $this->pollFilter->filter([
                 'active' => true,
                 'open' => true,
                 'with' => [
@@ -86,7 +88,7 @@ class MediaController extends Controller
                 'with_count' => 'votes',
                 'order_by' => 'created_at',
                 'order_direction' => 'desc',
-            ])
+            ]), null, ['polls'])
         );
     }
 
@@ -134,7 +136,7 @@ class MediaController extends Controller
             'listenerGallery' => $this->indexListenerGallery(),
             'polls' => $this->indexPolls(),
             'latestPoll' => $this->indexLatestPoll(),
-            'mystery' => ($mystery = $this->mysteryFilter->active()) ? MysteryResource::make($mystery) : null,
+            'mystery' => ($mystery = $this->cache->remember(['media', 'active-mystery'], fn () => $this->mysteryFilter->active(), null, ['mysteries'])) ? MysteryResource::make($mystery) : null,
         ]);
     }
 }
