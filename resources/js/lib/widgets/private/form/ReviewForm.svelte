@@ -151,6 +151,7 @@
                 <Preview
                     name="cover"
                     src={$form.cover}
+                    fit="cover"
                     onchange={(event) => ($form.cover = event.target.files[0])}
                     required={!post}
                     error={coverError}
