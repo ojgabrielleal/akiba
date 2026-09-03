@@ -94,16 +94,28 @@ class UpdatePostRequest extends LoggedWebRequest
             'tags.*.name' => "exclude_if:module,review|{$requiredUnlessDraft}|string|max:255",
             'content' => $this->isDraft() ? 'nullable|string' : 'required_unless:module,review|nullable|string',
             'studio' => "exclude_unless:module,review|{$requiredUnlessDraft}|string|max:255",
-            'review' => 'required_if:module,review|nullable|array',
-            'review.uuid' => 'nullable|string',
-            'review.status' => 'nullable|string|in:published,revision,draft',
-            'review.content' => $this->isDraft() ? 'nullable|string' : 'required_if:module,review|string',
+            'review' => 'exclude_unless:module,review|required_if:module,review|nullable|array',
+            'review.uuid' => 'exclude_unless:module,review|nullable|string',
+            'review.status' => 'exclude_unless:module,review|nullable|string|in:published,revision,draft',
+            'review.content' => $this->isDraft()
+                ? 'exclude_unless:module,review|nullable|string'
+                : 'exclude_unless:module,review|required_if:module,review|string',
             'metadata' => $this->isDraft() ? 'nullable|array' : 'required_unless:module,post|nullable|array',
-            'metadata.dates' => $this->isDraft() ? 'nullable|string' : 'required_if:module,event|string',
-            'metadata.event_date' => $this->isDraft() ? 'nullable|date' : 'required_if:module,event|date',
-            'metadata.address' => $this->isDraft() ? 'nullable|string' : 'required_if:module,event|string',
-            'metadata.date_of_release' => $this->isDraft() ? 'nullable|date' : 'required_if:module,review|date',
-            'metadata.sinopse' => $this->isDraft() ? 'nullable|string' : 'required_if:module,review|string',
+            'metadata.dates' => $this->isDraft()
+                ? 'exclude_unless:module,event|nullable|string'
+                : 'exclude_unless:module,event|required_if:module,event|string',
+            'metadata.event_date' => $this->isDraft()
+                ? 'exclude_unless:module,event|nullable|date'
+                : 'exclude_unless:module,event|required_if:module,event|date',
+            'metadata.address' => $this->isDraft()
+                ? 'exclude_unless:module,event|nullable|string'
+                : 'exclude_unless:module,event|required_if:module,event|string',
+            'metadata.date_of_release' => $this->isDraft()
+                ? 'exclude_unless:module,review|nullable|date'
+                : 'exclude_unless:module,review|required_if:module,review|date',
+            'metadata.sinopse' => $this->isDraft()
+                ? 'exclude_unless:module,review|nullable|string'
+                : 'exclude_unless:module,review|required_if:module,review|string',
         ];
     }
 
