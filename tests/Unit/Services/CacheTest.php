@@ -4,6 +4,7 @@ namespace Tests\Unit\Services;
 
 use App\Services\CacheService;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Cache;
 use Tests\TestCase;
 
 class CacheTest extends TestCase
@@ -20,6 +21,8 @@ class CacheTest extends TestCase
             return ++$postBuilds;
         }, domains: ['posts']));
 
+        $this->assertNotEmpty(Cache::get('akiba:registry:posts'));
+
         $this->assertSame(1, $cache->remember($postKey, function () use (&$postBuilds) {
             return ++$postBuilds;
         }, domains: ['posts']));
@@ -29,6 +32,8 @@ class CacheTest extends TestCase
         }, domains: ['polls']));
 
         $cache->invalidatePosts();
+
+        $this->assertNull(Cache::get('akiba:registry:posts'));
 
         $this->assertSame(1, $cache->remember($pollKey, function () use (&$pollBuilds) {
             return ++$pollBuilds;

@@ -12,8 +12,12 @@ class CacheService
 
     public function remember(string|array $key, callable $callback, ?int $minutes = null, array $domains = []): mixed
     {
+        $domains = $this->domains($domains);
+        $cacheKey = $this->key($key, $domains);
+        $this->trackKey($cacheKey, $domains);
+
         return Cache::remember(
-            $this->key($key, $domains),
+            $cacheKey,
             now()->addMinutes($minutes ?? self::TTL_MINUTES),
             $callback
         );
@@ -106,11 +110,16 @@ class CacheService
 
     private function versions(array $domains): string
     {
-        return collect($domains ?: ['posts'])
+        return collect($this->domains($domains))
             ->unique()
             ->sort()
             ->map(fn (string $domain) => $domain.'-'.$this->version($domain))
             ->implode('|');
+    }
+
+    private function domains(array $domains): array
+    {
+        return $domains ?: ['posts'];
     }
 
     private function version(string $domain): int
@@ -120,11 +129,41 @@ class CacheService
 
     private function incrementVersion(string $domain): void
     {
+        $this->forgetTrackedKeys($domain);
         Cache::forever($this->versionKey($domain), $this->version($domain) + 1);
     }
 
     private function versionKey(string $domain): string
     {
-        return "public:version:{$domain}";
+        return "akiba:version:{$domain}";
+    }
+
+    private function trackKey(string $key, array $domains): void
+    {
+        foreach ($domains as $domain) {
+            $keys = Cache::get($this->registryKey($domain), []);
+
+            if (! in_array($key, $keys, true)) {
+                $keys[] = $key;
+                Cache::forever($this->registryKey($domain), $keys);
+            }
+        }
+    }
+
+    private function forgetTrackedKeys(string $domain): void
+    {
+        $registryKey = $this->registryKey($domain);
+        $keys = Cache::get($registryKey, []);
+
+        foreach ($keys as $key) {
+            Cache::forget($key);
+        }
+
+        Cache::forget($registryKey);
+    }
+
+    private function registryKey(string $domain): string
+    {
+        return "akiba:registry:{$domain}";
     }
 }
