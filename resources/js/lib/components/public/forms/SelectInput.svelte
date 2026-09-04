@@ -23,20 +23,28 @@
     };
 
     $: classes = [
-        "w-full px-4 font-noto-sans text-sm outline-none transition",
+        "w-full appearance-none px-4 pr-10 font-noto-sans text-sm outline-none transition",
         variants[variant] ?? variants.light,
         error ? "border border-red-crimson" : borders[variant] ?? borders.light,
         className,
     ];
 </script>
 
-<select
-    {...$$restProps}
-    {id}
-    aria-invalid={error ? "true" : undefined}
-    aria-describedby={error ? `${id}-error` : undefined}
-    class={classes}
-    bind:value
->
-    <slot />
-</select>
+<div class="relative">
+    <select
+        {...$$restProps}
+        {id}
+        aria-invalid={error ? "true" : undefined}
+        aria-describedby={error ? `${id}-error` : undefined}
+        class={classes}
+        bind:value
+    >
+        <slot />
+    </select>
+    <img
+        src="/svg/chevron-down.svg"
+        alt=""
+        aria-hidden="true"
+        class="pointer-events-none absolute top-1/2 right-3 size-5 -translate-y-1/2 opacity-80 filter-orange-amber"
+    />
+</div>

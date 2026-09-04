@@ -21,23 +21,31 @@
     };
 
     $: classes = [
-        "w-full pl-4 font-noto-sans text-md outline-none",
+        "w-full appearance-none pl-4 pr-10 font-noto-sans text-md outline-none",
         variants[variant] ?? variants.default,
         error ? "private-field-error" : borders[variant] ?? borders.default,
         className,
     ];
 </script>
 
-<select
-    {...$$restProps}
-    {id}
-    aria-invalid={error ? "true" : undefined}
-    aria-describedby={error ? `${id}-error` : undefined}
-    class={classes}
-    bind:value
->
-    <slot />
-</select>
+<div class="relative">
+    <select
+        {...$$restProps}
+        {id}
+        aria-invalid={error ? "true" : undefined}
+        aria-describedby={error ? `${id}-error` : undefined}
+        class={classes}
+        bind:value
+    >
+        <slot />
+    </select>
+    <img
+        src="/svg/chevron-down.svg"
+        alt=""
+        aria-hidden="true"
+        class="pointer-events-none absolute top-1/2 right-3 size-5 -translate-y-1/2 opacity-80 filter-blue-marinho"
+    />
+</div>
 
 <style>
     :global(.private-field-error) {

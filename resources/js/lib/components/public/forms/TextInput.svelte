@@ -27,6 +27,7 @@
 
     $: classes = [
         "w-full px-4 font-noto-sans text-sm outline-none transition",
+        type === "date" ? "akiba-date-input pr-3" : "",
         variants[variant] ?? variants.light,
         error ? "border border-red-crimson" : borders[variant] ?? borders.light,
         className,
@@ -42,3 +43,16 @@
     class={classes}
     bind:value
 />
+
+<style>
+    .akiba-date-input::-webkit-calendar-picker-indicator {
+        cursor: pointer;
+        opacity: 0.85;
+        filter: invert(51%) sepia(94%) saturate(1015%) hue-rotate(2deg) brightness(105%) contrast(104%);
+    }
+
+    .akiba-date-input:disabled::-webkit-calendar-picker-indicator {
+        cursor: not-allowed;
+        opacity: 0.45;
+    }
+</style>

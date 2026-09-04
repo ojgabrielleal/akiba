@@ -1,16 +1,16 @@
 <script>
-    import { onMount } from "svelte";
-    import { page } from "@inertiajs/svelte";
+    import { Link, page } from "@inertiajs/svelte";
     import { Meta } from "@/lib/components/shared";
+    import { publicAnimations } from "@/lib/constants";
     import { Layout } from "@/lib/layouts/public";
-    import { OAuthAction, rememberOAuthAction } from "@/lib/utils";
+    import { OAuthAction, rememberOAuthAction, themeClass } from "@/lib/utils";
 
     const providers = [
         {
             name: "google",
             label: "Entrar com Google",
             icon: "/svg/google.svg",
-            class: "border border-blue-night/10 bg-suspense-aurora text-blue-night hover:bg-neutral-white",
+            class: "border border-suspense-aurora/15 bg-suspense-aurora text-blue-night hover:bg-neutral-white",
         },
         {
             name: "discord",
@@ -22,35 +22,35 @@
 
     const contexts = {
         song_request: {
-            eyebrow: "Rádio Akiba",
-            title: "Pede aí",
-            description: "Entre com sua conta para pedir música, mandar recado e aparecer no player da Akiba.",
+            eyebrow: "Rede Akiba no ar",
+            title: "Sintonize seu pedido",
+            description: "Entre com sua conta para pedir música, mandar recado e participar da programação da Rede Akiba.",
             action: OAuthAction.OPEN_SONG_REQUEST,
             icon: "/svg/music.svg",
         },
         event_submission: {
-            eyebrow: "Eventos da comunidade",
-            title: "Conta pra gente",
-            description: "Entre com sua conta para enviar um evento otaku para a Akiba avaliar e publicar no calendário.",
+            eyebrow: "Radar da Rede Akiba",
+            title: "Avise a nossa central",
+            description: "Entre com sua conta para indicar um evento otaku e colocar a cobertura no radar da Rede Akiba.",
             icon: "/svg/events.svg",
         },
         mystery: {
-            eyebrow: "Enigma da Akiba",
+            eyebrow: "Frequência misteriosa",
             title: "Entre na investigação",
-            description: "Use sua conta para perguntar, responder e participar dos enigmas da Akiba.",
-            icon: "/svg/duvid.svg",
+            description: "Use sua conta para perguntar, responder e participar dos enigmas da Rede Akiba.",
+            icon: "/svg/search.svg",
         },
         default: {
-            eyebrow: "Área da comunidade",
+            eyebrow: "Comunidade sintonizada",
             title: "Entre para continuar",
-            description: "Use sua conta para comentar, reagir, pedir músicas e participar da Akiba.",
+            description: "Use sua conta para comentar, reagir, pedir músicas e participar da Rede Akiba.",
             icon: "/svg/profile.svg",
         },
     };
     const internalContext = {
-        eyebrow: "Membro Akiba",
+        eyebrow: "Equipe Rede Akiba",
         title: "Reconhecemos você",
-        description: "Vi que você é um membro da Akiba. Para continuar por aqui, entra no painel rapidinho e ativa sua sessão interna.",
+        description: "Você é um membro da Rede Akiba. Para continuar por aqui, entra no painel rapidinho e ativa sua sessão interna.",
         icon: "/svg/profile.svg",
     };
 
@@ -59,6 +59,7 @@
     $: redirect = authContext?.redirect ?? "/";
     $: isInternalLogin = oauth?.is_member && !oauth?.member_session_authenticated;
     $: context = isInternalLogin ? internalContext : (contexts[authContext?.reason] ?? contexts.default);
+    $: iconInverted = authContext?.reason === "song_request";
     const providerHref = (provider) =>
         `/oauth/${provider.name}/redirect?redirect=${encodeURIComponent(redirect)}`;
 
@@ -67,103 +68,118 @@
     };
 
     const iconStyle = (icon) => `mask-image: url('${icon}'); -webkit-mask-image: url('${icon}');`;
-
-    onMount(() => {
-        window.scrollTo({ top: 118, behavior: "smooth" });
-    });
 </script>
 
 <Meta meta={{ title: context.title }} />
 <Layout {flash} {oauth} {onair} {stream} {pageUrl} publicThemeEnabled>
-    <section class="relative min-h-[calc(100vh-5rem)] overflow-hidden bg-blue-night">
-        <img
-            src="/img/pages/auth/continue-hero.png"
-            alt=""
-            aria-hidden="true"
-            class="absolute inset-0 h-full w-full object-cover object-left"
-        />
-        <div class="absolute inset-0 bg-blue-night/10" aria-hidden="true"></div>
-        <div class="absolute inset-x-0 bottom-0 h-48 bg-linear-to-b from-transparent via-blue-night/75 to-blue-night" aria-hidden="true"></div>
+    <section class="public-page-background relative isolate overflow-hidden bg-blue-night text-suspense-aurora">
+        <div class="absolute inset-0 opacity-[0.08]" style="background-image: url('/img/textures/stars.webp');" aria-hidden="true"></div>
+        <div class="absolute inset-x-0 top-0 h-32 bg-linear-to-b from-blue-night to-transparent" aria-hidden="true"></div>
+        <div class="absolute inset-x-0 bottom-0 h-32 bg-linear-to-t from-blue-night to-transparent" aria-hidden="true"></div>
 
-        <div class="container-page relative z-10 flex min-h-[calc(100vh-5rem)] items-center justify-center py-12 lg:justify-end">
-            <article class="w-full max-w-120 overflow-hidden rounded-md bg-suspense-aurora/96 font-noto-sans shadow-[0_1.5rem_4rem_rgba(0,0,0,0.45)] backdrop-blur-sm lg:mr-6">
-                <div class="grid grid-cols-[0.45rem_minmax(0,1fr)]">
-                    <span class="bg-orange-citric" aria-hidden="true"></span>
-                    <div class="p-5 lg:p-7">
-                        <div class="mb-5 flex items-start gap-4">
-                            <span class="mt-1 flex size-10 shrink-0 items-center justify-center rounded-md bg-orange-citric text-blue-night">
-                                <span
-                                    aria-hidden="true"
-                                    class="block size-5 bg-current [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain] [-webkit-mask-repeat:no-repeat] [-webkit-mask-position:center] [-webkit-mask-size:contain]"
-                                    style={iconStyle(context.icon)}
-                                ></span>
-                            </span>
-                            <div class="min-w-0">
-                                <p class="text-xs font-black uppercase italic text-orange-citric">
-                                    {context.eyebrow}
-                                </p>
-                                <h1 class="text-2xl font-black uppercase italic leading-tight text-blue-night sm:text-3xl">
-                                    {context.title}
-                                </h1>
-                                <p class="mt-0.5 max-w-100 text-sm font-semibold leading-5 text-blue-night/65">
-                                    {context.description}
-                                </p>
-                            </div>
-                        </div>
+        <div class="container-page relative flex min-h-[calc(100vh-9rem)] items-center justify-center py-16 text-center">
+            <article class="mx-auto flex w-full max-w-xl flex-col items-center font-noto-sans">
+                <div class="flex items-center gap-3 text-[0.7rem] font-black uppercase tracking-[0.22em] text-orange-amber/90">
+                    <span class="h-px w-9 bg-linear-to-r from-transparent to-orange-amber/70"></span>
+                    {context.eyebrow}
+                    <span class="h-px w-9 bg-linear-to-l from-transparent to-orange-amber/70"></span>
+                </div>
 
-                        {#if isInternalLogin}
-                            <a
-                                href="/panel"
-                                class="flex min-h-12 items-center justify-center gap-3 rounded-md bg-orange-amber px-5 py-2.5 text-center text-sm font-extrabold uppercase italic text-blue-night transition duration-300 ease-out hover:-translate-y-0.5 hover:brightness-105 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none"
-                            >
-                                <span
-                                    aria-hidden="true"
-                                    class="block size-4 bg-current [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain] [-webkit-mask-repeat:no-repeat] [-webkit-mask-position:center] [-webkit-mask-size:contain]"
-                                    style="mask-image: url('/svg/profile.svg'); -webkit-mask-image: url('/svg/profile.svg');"
-                                ></span>
-                                Entrar no painel
-                            </a>
-                        {:else if oauth?.authenticated}
-                            <a
-                                href={redirect}
-                                class="flex min-h-12 items-center justify-center rounded-md bg-orange-amber px-5 py-2.5 text-center text-sm font-extrabold uppercase italic text-blue-night transition duration-300 ease-out hover:-translate-y-0.5 hover:brightness-105 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none"
-                            >
-                                Continuar
-                            </a>
-                        {:else}
-                            <div class="grid gap-3">
-                                {#each providers as provider}
-                                    <a
-                                        href={providerHref(provider)}
-                                        class={[
-                                            "group/provider flex min-h-13 items-center justify-center gap-3 rounded-md px-5 py-3 text-center text-sm font-extrabold uppercase italic shadow-sm transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none",
-                                            provider.class,
-                                        ]}
-                                        on:click={authenticate}
-                                    >
-                                        <span class="flex size-7 shrink-0 items-center justify-center rounded-full bg-current/10 transition group-hover/provider:scale-110" aria-hidden="true">
-                                            <span
-                                                class="block size-4 bg-current [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain] [-webkit-mask-repeat:no-repeat] [-webkit-mask-position:center] [-webkit-mask-size:contain]"
-                                                style={iconStyle(provider.icon)}
-                                            ></span>
-                                        </span>
-                                        <span class="min-w-0">{provider.label}</span>
-                                    </a>
-                                {/each}
-                            </div>
-                            <div class="mt-4 flex items-center justify-center gap-2 text-[0.68rem] font-bold uppercase text-blue-night/40">
-                                <span class="h-px flex-1 bg-blue-night/10" aria-hidden="true"></span>
-                                <span>Acesso seguro pela comunidade</span>
-                                <span class="h-px flex-1 bg-blue-night/10" aria-hidden="true"></span>
-                            </div>
-                        {/if}
+                <div class="mt-5 flex items-center justify-center gap-2">
+                    <span class="h-6 w-1.5 rounded-full bg-blue-skywave/45"></span>
+                    <span class="h-11 w-1.5 rounded-full bg-orange-amber"></span>
+                    <span class="flex h-16 w-18 items-center justify-center rounded-md bg-orange-amber shadow-[0_1rem_2.25rem_rgba(255,128,0,0.24)]">
+                        <img
+                            src={context.icon}
+                            alt=""
+                            aria-hidden="true"
+                            class={[
+                                "size-9 filter-blue-marinho",
+                                iconInverted && "rotate-180",
+                            ]}
+                        />
+                    </span>
+                    <span class="h-11 w-1.5 rounded-full bg-orange-amber"></span>
+                    <span class="h-6 w-1.5 rounded-full bg-blue-skywave/45"></span>
+                </div>
 
+                <h1 class="mt-6 font-noto-sans text-3xl font-black leading-tight text-suspense-aurora sm:text-4xl">
+                    {context.title}
+                </h1>
+
+                <p class="mt-4 max-w-md font-noto-sans text-base font-semibold leading-7 text-neutral-gray">
+                    {context.description}
+                </p>
+
+                <div class="mt-8 w-full max-w-xs">
+                    {#if isInternalLogin}
                         <a
+                            href="/panel"
+                            class={[
+                                "flex min-h-11 items-center justify-center gap-3 rounded-md bg-orange-amber px-6 py-2 font-noto-sans text-sm font-extrabold uppercase shadow-[0_0.75rem_1.5rem_rgba(255,163,26,0.22)] hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber",
+                                themeClass("text", "blue-night", { fixed: true }),
+                                publicAnimations.buttonInteractive,
+                            ]}
+                        >
+                            <span
+                                aria-hidden="true"
+                                class="block size-4 bg-current [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain] [-webkit-mask-repeat:no-repeat] [-webkit-mask-position:center] [-webkit-mask-size:contain]"
+                                style="mask-image: url('/svg/profile.svg'); -webkit-mask-image: url('/svg/profile.svg');"
+                            ></span>
+                            Entrar no painel
+                        </a>
+                    {:else if oauth?.authenticated}
+                        <Link
                             href={redirect}
-                            class="mt-5 inline-flex text-xs font-bold uppercase text-blue-night/45 transition hover:text-orange-amber focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber"
+                            class={[
+                                "flex min-h-11 items-center justify-center rounded-md bg-orange-amber px-6 py-2 font-noto-sans text-sm font-extrabold uppercase shadow-[0_0.75rem_1.5rem_rgba(255,163,26,0.22)] hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber",
+                                themeClass("text", "blue-night", { fixed: true }),
+                                publicAnimations.buttonInteractive,
+                            ]}
+                        >
+                            Continuar
+                        </Link>
+                    {:else}
+                        <div class="grid gap-3">
+                            {#each providers as provider}
+                                <a
+                                    href={providerHref(provider)}
+                                    class={[
+                                        "group/provider flex min-h-12 items-center justify-center gap-3 rounded-md px-6 py-2.5 text-center text-sm font-extrabold uppercase shadow-sm hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber",
+                                        provider.class,
+                                        publicAnimations.buttonInteractive,
+                                    ]}
+                                    on:click={authenticate}
+                                >
+                                    <span class="flex size-7 shrink-0 items-center justify-center rounded-full bg-current/10 transition group-hover/provider:scale-110" aria-hidden="true">
+                                        <span
+                                            class="block size-4 bg-current [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain] [-webkit-mask-repeat:no-repeat] [-webkit-mask-position:center] [-webkit-mask-size:contain]"
+                                            style={iconStyle(provider.icon)}
+                                        ></span>
+                                    </span>
+                                    <span class="min-w-0">{provider.label}</span>
+                                </a>
+                            {/each}
+                        </div>
+                        <div class="mt-6 flex items-center justify-center gap-2 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-blue-skywave">
+                            <span class="h-px flex-1 bg-suspense-aurora/10" aria-hidden="true"></span>
+                            <span>Acesso seguro pela comunidade</span>
+                            <span class="h-px flex-1 bg-suspense-aurora/10" aria-hidden="true"></span>
+                        </div>
+                    {/if}
+
+                    <div class="mt-7 flex items-center justify-center gap-3">
+                        <span class="h-px w-10 bg-blue-skywave/25" aria-hidden="true"></span>
+                        <Link
+                            href={redirect}
+                            class={[
+                                "inline-flex min-h-10 min-w-24 items-center justify-center rounded-md border border-orange-amber/55 bg-blue-night/35 px-5 py-2 font-noto-sans text-xs font-extrabold uppercase text-orange-amber hover:bg-orange-amber/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber",
+                                publicAnimations.buttonInteractive,
+                            ]}
                         >
                             Voltar
-                        </a>
+                        </Link>
+                        <span class="h-px w-10 bg-blue-skywave/25" aria-hidden="true"></span>
                     </div>
                 </div>
             </article>
