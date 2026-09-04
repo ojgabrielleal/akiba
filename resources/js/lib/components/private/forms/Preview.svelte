@@ -51,6 +51,7 @@
     };
 
     let preview = null;
+    let inputRef;
 
     $: imageToShow = preview ?? (src && src !== "#" ? src : null);
     $: selectedSize = sizes[size] ?? sizes.default;
@@ -62,6 +63,13 @@
     $: previewSize = fit === "cover" ? "h-auto rounded-md" : selectedSize.image;
     $: previewFit = fit === "cover" ? "object-cover" : "object-contain";
     $: previewCSS = `${previewSize} ${selectedTone} ${errorClass} w-full object-top ${previewFit}`;
+    $: if (!src || src === "#") {
+        preview = null;
+
+        if (inputRef) {
+            inputRef.value = "";
+        }
+    }
 
     const previewImage = (event) => {
         if (disabled) return;
@@ -97,6 +105,7 @@
         </div>
     {/if}
     <input
+        bind:this={inputRef}
         id={name}
         type="file"
         class="sr-only"

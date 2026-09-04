@@ -2,9 +2,9 @@
     import { Link, page, router } from "@inertiajs/svelte";
     import { Meta } from "@/lib/components/shared";
     import { postReactions } from "@/lib/constants";
-    import { AdvertisementSlot, AuthGuard, Button, Modal, Tooltip } from "@/lib/components/public";
+    import { AdvertisementSlot, AuthGuard, Tooltip } from "@/lib/components/public";
     import { Layout } from "@/lib/layouts/public";
-    import { EventRegistrationForm, PostEngagement, PostLikeButton } from "@/lib/widgets/public";
+    import { PostEngagement, PostLikeButton } from "@/lib/widgets/public";
     import { resolvePlaceholderImage, themeClass } from "@/lib/utils";
 
     $: ({ flash, oauth, onair, stream, post, comments, relatedPosts } = $page.props);
@@ -16,8 +16,6 @@
         counts[reaction.name] = (counts[reaction.name] ?? 0) + 1;
         return counts;
     }, {});
-    let registrationModalRef;
-
     const submitReaction = (reaction) => {
         router.post(`/materia/${event.slug}/reaction`, {
             name: reaction.name,
@@ -30,10 +28,6 @@
 
 <Meta meta={{ title: event.title }} />
 <Layout {flash} {oauth} {onair} {stream} {pageUrl} publicThemeEnabled>
-    <Modal bind:this={registrationModalRef} title="Informar evento" size="sm">
-        <EventRegistrationForm {event} close={() => registrationModalRef.close()} />
-    </Modal>
-
     <section class="public-read-content-background bg-blue-marinho pt-5 pb-2">
         <div class="public-read-content-background bg-blue-marinho">
             <div class={[
@@ -69,13 +63,6 @@
                             <dd class="truncate text-lg font-black text-suspense-aurora italic">{event.metadata?.address ?? "Local em breve"}</dd>
                         </div>
                     </dl>
-
-                    <div class="mb-8 flex justify-center">
-                        <Button type="button" size="lg" on:click={() => registrationModalRef.open()}>
-                            <img src="/svg/plus.svg" alt="" aria-hidden="true" class="w-6 filter-blue-marinho" />
-                            <span class="text-[#000036]">Cadastrar nesse evento</span>
-                        </Button>
-                    </div>
 
                     {#if event.content}
                         <div class="public-read-body font-noto-sans text-[1.1875rem] text-suspense-aurora">

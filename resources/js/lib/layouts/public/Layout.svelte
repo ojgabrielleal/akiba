@@ -2,7 +2,7 @@
     import { onMount } from "svelte";
     import { usePoll } from "@inertiajs/svelte";
     import { CookieConsent, FlashToaster, Modal } from "@/lib/components/public";
-    import { startAutoplay } from "@/lib/stores";
+    import { startAutoplay, syncMediaSessionMetadata } from "@/lib/stores";
     import {
         applyPublicTheme,
         getStoredPublicTheme,
@@ -23,9 +23,11 @@
     $: profile = oauth?.profile;
     $: nickname = profile?.nickname || profile?.username || "Perfil";
     $: canOpenProfile = oauth?.is_oauth || (oauth?.is_member && oauth?.can_view_profile && oauth?.can_update_profile);
+    $: air = onair?.data?.[0] ?? null;
+    $: syncMediaSessionMetadata(air, stream);
 
     usePoll(10 * 1000, {
-        only: ["onair"]
+        only: ["onair", "stream"],
     });
 
     const openProfile = () => {

@@ -1,8 +1,7 @@
 <script>
-    import { page, usePoll } from "@inertiajs/svelte";
+    import { page } from "@inertiajs/svelte";
     import { Meta } from "@/lib/components/shared";
     import { Section } from "@/lib/components/public";
-    import { syncMediaSessionMetadata } from "@/lib/stores";
     import { Layout } from "@/lib/layouts/public";
     import {
         EventCalendarGrid,
@@ -27,16 +26,10 @@
         flash,
         oauth,
     } = $page.props);
-    $: air = onair?.data?.[0] ?? null;
     $: pageUrl = $page.url;
     $: featuredPostList = Array.isArray(featuredPosts) ? featuredPosts : featuredPosts?.data ?? [];
     $: poll = latestPoll?.data ?? null;
     $: hasFeaturedPosts = featuredPostList.length > 0;
-    $: syncMediaSessionMetadata(air, stream);
-
-    usePoll(10 * 1000, {
-        only: ["stream"],
-    });
 </script>
 
 <Meta />
