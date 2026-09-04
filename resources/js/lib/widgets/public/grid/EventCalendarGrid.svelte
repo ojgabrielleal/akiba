@@ -89,14 +89,8 @@
                         {/each}
                     </ul>
                 {:else}
-                    <div class="flex min-h-64 flex-col items-center justify-center rounded-md border border-blue-skywave/15 bg-blue-ocean/25 px-5 py-10 text-center">
-                        <img
-                            src="/svg/angry.svg"
-                            alt=""
-                            aria-hidden="true"
-                            class="size-18 opacity-90"
-                        />
-                        <h3 class="mt-5 font-noto-sans text-2xl font-black leading-tight text-orange-amber uppercase italic">
+                    <div class="mx-auto flex min-h-44 max-w-xl flex-col items-center justify-center px-6 py-8 text-center">
+                        <h3 class="font-noto-sans text-xl font-black leading-tight text-suspense-aurora uppercase italic sm:text-2xl">
                             Sem eventos por enquanto
                         </h3>
                         <p class="mt-2 max-w-md font-noto-sans text-sm font-bold leading-6 text-neutral-gray not-italic normal-case">
