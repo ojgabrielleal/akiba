@@ -122,8 +122,8 @@
             emptyMessage="As fotos da comunidade aparecem aqui quando forem publicadas."
         />
 
-        {#if mystery?.data}
-            <Section title="Enigma da Akiba" styles="container-page order-2 mt-10 mb-12">
+        <Section title="Enigma da Akiba" styles="container-page order-2 mt-10 mb-12">
+            {#if mystery?.data}
                 <div class="grid gap-5 lg:grid-cols-[minmax(0,1fr)_1px_minmax(16rem,0.48fr)] lg:items-stretch lg:gap-8">
                     <div class="grid gap-3">
                         {#if mystery.data.participation?.has_submitted_final_answer}
@@ -308,8 +308,13 @@
                         </p>
                     </div>
                 </div>
-            </Section>
-        {/if}
+            {:else}
+                <MinimalEmptyState
+                    title="Nenhum enigma no ar"
+                    message="Quando uma nova investigação começar, ela aparece aqui."
+                />
+            {/if}
+        </Section>
 
         <Section title="Enquetes" styles="public-polls-original container-page order-5 mt-10 mb-12">
             {#if poll}
