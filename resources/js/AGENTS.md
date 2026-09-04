@@ -46,8 +46,8 @@ Scope: `resources/js`.
 * Mobile-first; prefer responsive components over separate viewport versions unless interaction/markup genuinely differs.
 * Use existing tokens and components; add new colors, gradients or filters to `css/app.css` before use.
 * Public themes may change colors, gradients and filters only, never layout, spacing, typography, proportions, markup or elements.
-* `orange-citric`: clickable/actions and their hover/focus/active states.
-* `orange-amber` or `orange-morning`: non-clickable elements; displayed like metrics may use `orange-amber`.
+* `orange-amber`: clickable/actions and their hover/focus/active states.
+* `orange-citric` or `orange-morning`: non-clickable elements; displayed like metrics may use `orange-amber`.
 * Clickable text cards/lists use accessible focus, `transition duration-300 ease-out`, slight `hover:-translate-y-0.5` and `motion-reduce`; image-only visuals use slight scale only.
 * Keep layouts explicitly responsive and overflow-safe.
 

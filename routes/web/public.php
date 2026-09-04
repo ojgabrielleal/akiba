@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\External\OAuthAccount\OAuthAccountCallbackControlle
 use App\Http\Controllers\Api\External\OAuthAccount\OAuthAccountLogoutController;
 use App\Http\Controllers\Api\External\OAuthAccount\OAuthAccountRedirectController;
 use App\Http\Controllers\Public\EditorialController;
+use App\Http\Controllers\Public\AuthController;
 use App\Http\Controllers\Public\ContactController;
 use App\Http\Controllers\Public\HomeController;
 use App\Http\Controllers\Public\MediaController;
@@ -39,18 +40,21 @@ Route::post('/push-notification', [PushNotificationController::class, 'storePush
     ->name('push-notification.store');
 
 Route::middleware(['oauth.resolve', 'inertia', 'auth'])->group(function () {
-    Route::get('/contato', [ContactController::class, 'render'])
-        ->name('contact');
-
-    Route::post('/form-submissions', [ContactController::class, 'storeFormSubmission'])
-        ->name('form-submissions.store');
-
     Route::post('/song-request', [PlayerController::class, 'storeSongRequest'])
         ->middleware('oauth')
         ->name('player.song-request.store');
 });
 
 Route::middleware(['oauth.resolve', 'inertia'])->group(function () {
+    Route::get('/entrar', [AuthController::class, 'render'])
+        ->name('auth.continue');
+
+    Route::get('/contato', [ContactController::class, 'render'])
+        ->name('contact');
+
+    Route::post('/form-submissions', [ContactController::class, 'storeFormSubmission'])
+        ->name('form-submissions.store');
+
     Route::get('/news', [EditorialController::class, 'news'])
         ->name('news');
 

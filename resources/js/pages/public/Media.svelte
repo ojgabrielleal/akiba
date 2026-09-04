@@ -145,14 +145,21 @@
                                 Aguarde ate {mystery.data.participation.next_interaction_at} para interagir novamente.
                             </div>
                         {:else}
-                            <form class="grid gap-3" on:submit|preventDefault>
-                                <textarea
-                                    class={["min-h-28 resize-none rounded-[7px] border border-suspense-aurora/15 bg-blue-ocean px-4 py-3 font-noto-sans text-sm font-normal text-suspense-aurora outline-none ring-0 placeholder:text-suspense-aurora/55 focus:border-suspense-aurora/15 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0", themeClass("bg", "neutral-light", { fixed: true, theme: "light" }), themeClass("text", "blue-night", { fixed: true, theme: "light" }), themeClass("placeholder", "blue-night/45", { theme: "light" })]}
-                                    bind:value={mysteryContent}
-                                    placeholder="Digite sua pergunta ou resposta para o enigma"
-                                    required
-                                ></textarea>
-                                <AuthGuard {oauth} compact buttonLabel="Entre para participar" filters="filter-blue-night" buttonClass="text-blue-night">
+                            <AuthGuard
+                                {oauth}
+                                compact
+                                buttonLabel="Entre para participar"
+                                filters="filter-blue-night"
+                                buttonClass="text-blue-night"
+                                reason="mystery"
+                            >
+                                <form class="grid gap-3" on:submit|preventDefault>
+                                    <textarea
+                                        class={["min-h-28 resize-none rounded-[7px] border border-suspense-aurora/15 bg-blue-ocean px-4 py-3 font-noto-sans text-sm font-normal text-suspense-aurora outline-none ring-0 placeholder:text-suspense-aurora/55 focus:border-suspense-aurora/15 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0", themeClass("bg", "neutral-light", { fixed: true, theme: "light" }), themeClass("text", "blue-night", { fixed: true, theme: "light" }), themeClass("placeholder", "blue-night/45", { theme: "light" })]}
+                                        bind:value={mysteryContent}
+                                        placeholder="Digite sua pergunta ou resposta para o enigma"
+                                        required
+                                    ></textarea>
                                     <div class="flex flex-wrap gap-2">
                                         <Button
                                             type="button"
@@ -179,8 +186,8 @@
                                             Responder enigma
                                         </Button>
                                     </div>
-                                </AuthGuard>
-                            </form>
+                                </form>
+                            </AuthGuard>
                         {/if}
 
                         {#if mystery.data.solved && mystery.data.solved_by}

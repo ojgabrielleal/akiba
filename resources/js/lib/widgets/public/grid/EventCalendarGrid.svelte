@@ -1,17 +1,23 @@
 <script>
     import { Link } from "@inertiajs/svelte";
-    import { AdvertisementSlot, Section } from "@/lib/components/public";
+    import { AdvertisementSlot, Modal, Section } from "@/lib/components/public";
     import { resolveDate, resolvePlaceholderImage, themeClass } from "@/lib/utils";
+    import EventRegistrationForm from "../form/EventRegistrationForm.svelte";
 
     export let events = [];
 
     $: eventList = Array.isArray(events) ? events : events?.data ?? [];
-
     const resolveEventDate = (event) => resolveDate(event.metadata?.dates) || "";
     const resolveEventPlace = (event) => event.metadata?.address ?? "";
+
+    let registrationModalRef;
 </script>
 
 {#if eventList.length > 0}
+    <Modal bind:this={registrationModalRef} title="Informar evento" size="sm">
+        <EventRegistrationForm close={() => registrationModalRef.close()} />
+    </Modal>
+
     <Section styles="public-event-calendar-original container-page mb-10">
         <div class={["public-section-heading mb-5 flex items-center gap-3 after:h-px after:min-w-10 after:flex-1 after:bg-orange-citric after:content-[''] sm:gap-4", themeClass("after:bg", "blue-cerulean", { theme: "light" })]}>
             <h2 class={["public-section-heading-title whitespace-nowrap font-noto-sans text-[1.3rem] font-black text-orange-citric uppercase italic", themeClass("text", "blue-cerulean", { theme: "light" })]}>
@@ -25,25 +31,27 @@
                     <ul class="grid grid-cols-1 gap-8 md:hidden">
                         {#each eventList as item (item.uuid)}
                             <li class="min-w-0">
-                                <Link
-                                    href={`/event/${item.slug}`}
-                                    aria-label={`Ver evento: ${item.title}`}
-                                    class="group block overflow-hidden rounded-md bg-blue-ocean font-black transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber motion-reduce:transform-none motion-reduce:transition-none"
-                                >
-                                    <div class="relative aspect-[16/9] overflow-hidden bg-neutral-gray">
-                                        <img
-                                            src={resolvePlaceholderImage(item.cover || item.image, "placeholder")}
-                                            alt=""
-                                            aria-hidden="true"
-                                            class="h-full w-full object-cover transition duration-300 ease-out group-hover:scale-[1.03] group-focus-visible:scale-[1.03] motion-reduce:transform-none motion-reduce:transition-none"
-                                        />
-                                    </div>
-                                    <article class="min-h-[6rem] px-3 py-5">
-                                        <h3 class="line-clamp-3 font-noto-sans text-lg leading-tight font-bold text-suspense-aurora uppercase italic">
-                                            {item.title}
-                                        </h3>
-                                    </article>
-                                </Link>
+                                <div class="overflow-hidden rounded-md bg-blue-ocean">
+                                    <Link
+                                        href={`/event/${item.slug}`}
+                                        aria-label={`Ver evento: ${item.title}`}
+                                        class="group block font-black transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber motion-reduce:transform-none motion-reduce:transition-none"
+                                    >
+                                        <div class="relative aspect-[16/9] overflow-hidden bg-neutral-gray">
+                                            <img
+                                                src={resolvePlaceholderImage(item.cover || item.image, "placeholder")}
+                                                alt=""
+                                                aria-hidden="true"
+                                                class="h-full w-full object-cover transition duration-300 ease-out group-hover:scale-[1.03] group-focus-visible:scale-[1.03] motion-reduce:transform-none motion-reduce:transition-none"
+                                            />
+                                        </div>
+                                        <article class="min-h-[6rem] px-3 py-5">
+                                            <h3 class="line-clamp-3 font-noto-sans text-lg leading-tight font-bold text-suspense-aurora uppercase italic">
+                                                {item.title}
+                                            </h3>
+                                        </article>
+                                    </Link>
+                                </div>
                             </li>
                         {/each}
                     </ul>
@@ -80,6 +88,19 @@
                             </li>
                         {/each}
                     </ul>
+
+                    <div class="mt-8 flex items-center justify-center gap-2 px-2 py-1 font-noto-sans not-italic uppercase">
+                        <p class="text-center text-xs font-normal leading-none tracking-normal text-orange-citric not-italic lg:text-sm">
+                            Algum evento otaku vai acontecer na sua região?
+                        </p>
+                        <button
+                            type="button"
+                            class="inline-flex min-h-7 shrink-0 cursor-pointer items-center justify-center rounded-md bg-orange-amber px-3 py-1 font-noto-sans text-sm font-black leading-none text-blue-night uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 hover:brightness-105 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none"
+                            on:click={() => registrationModalRef.open()}
+                        >
+                            Conta pra gente!
+                        </button>
+                    </div>
                 </div>
             </div>
             <div class="overflow-hidden rounded-md lg:h-full">

@@ -48,10 +48,14 @@ class FormSubmissionService
 
     public function store(array $data): FormSubmission
     {
+        if (($data['form_type'] ?? null) === 'event_registration' && empty($data['payload']['event_name'])) {
+            $data['payload']['event_name'] = $data['payload']['event_title'] ?? null;
+        }
+
         $formSubmission = FormSubmission::create([
             'form_type' => $data['form_type'],
-            'name' => $data['name'],
-            'contact' => $data['contact'],
+            'name' => $data['name'] ?? null,
+            'contact' => $data['contact'] ?? null,
             'subject' => $data['subject'] ?? null,
             'payload' => $data['payload'],
         ]);

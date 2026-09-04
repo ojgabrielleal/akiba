@@ -33,7 +33,9 @@ class OAuthAccountCallbackController extends Controller
             ]);
         }
 
-        return redirect()->route('home');
+        $redirect = $request->session()->pull('oauth_redirect_after_login', route('home', absolute: false));
+
+        return redirect($redirect);
     }
 
     private function isSupportedProvider(string $provider): bool

@@ -29,6 +29,12 @@
         portfolio: "Trabalhos",
         interview_time: "Horário da pré-entrevista",
         message: "Motivo",
+        event_uuid: "Evento UUID",
+        event_title: "Evento",
+        event_name: "Nome do evento",
+        city: "Cidade",
+        state: "Estado",
+        social_links: "Redes sociais",
     };
 
     const statusLabels = {
@@ -41,6 +47,7 @@
         recruitment: "Recrutamento",
         complaint: "Reclamação",
         contact: "Contato",
+        event_registration: "Informação de evento",
     };
 
     const statusClasses = {
@@ -54,6 +61,26 @@
 
     const modalTitle = (submission) =>
         formTypeLabels[submission?.form_type] ?? "Formulário recebido";
+
+    const submissionSubject = (submission) =>
+        submission?.form_type === "event_registration"
+            ? "Informações de evento"
+            : (submission?.subject ?? submission?.form_type);
+
+    const legacyEventName = (submission) =>
+        /^Cadastro no evento:\s*/i.test(submission?.subject ?? "")
+            ? submission.subject.replace(/^Cadastro no evento:\s*/i, "").trim()
+            : null;
+
+    const submissionTitle = (submission) =>
+        submission?.form_type === "event_registration"
+            ? (submission?.payload?.event_name ?? submission?.payload?.event_title ?? legacyEventName(submission) ?? submission?.name)
+            : submission?.name;
+
+    const submissionSubtitle = (submission) =>
+        submission?.form_type === "event_registration"
+            ? ([submission?.payload?.city, submission?.payload?.state].filter(Boolean).join(" - ") || submission?.contact)
+            : submission?.contact;
 
     const openSubmission = (submission) => {
         selectedSubmission = submission;
@@ -102,13 +129,13 @@
                 <header class="mb-6 flex flex-wrap items-start justify-between gap-4">
                     <div class="min-w-0">
                         <p class="font-noto-sans text-xs font-black uppercase italic text-orange-amber">
-                            {selectedSubmission.subject ?? selectedSubmission.form_type}
+                            {submissionSubject(selectedSubmission)}
                         </p>
                         <h3 class="mt-1 break-words font-noto-sans text-2xl font-black uppercase italic leading-7">
-                            {selectedSubmission.name}
+                            {submissionTitle(selectedSubmission)}
                         </h3>
                         <p class="mt-1 break-words text-sm font-semibold text-blue-skywave">
-                            {selectedSubmission.contact}
+                            {submissionSubtitle(selectedSubmission)}
                         </p>
                     </div>
 
@@ -138,7 +165,7 @@
 
                     <aside class="rounded-md border border-blue-marinho/10 bg-blue-marinho/5 p-4">
                         <h4 class="font-noto-sans text-sm font-black uppercase italic text-blue-marinho">
-                            Comentários da avaliação
+                            Comentários
                         </h4>
 
                         {#if selectedSubmission.comments?.length}
@@ -279,7 +306,7 @@
                     >
                         <div class="mb-3 flex items-start justify-between gap-3">
                             <p class="min-w-0 font-noto-sans text-xs font-black uppercase italic text-orange-amber">
-                                {submission.subject ?? submission.form_type}
+                                {submissionSubject(submission)}
                             </p>
                             <span class={["shrink-0 rounded-full px-3 py-1 font-noto-sans text-[0.65rem] font-black uppercase italic", statusClasses[submission.status] ?? statusClasses.pending]}>
                                 {statusLabels[submission.status] ?? submission.status}
@@ -287,10 +314,10 @@
                         </div>
 
                         <h3 class="line-clamp-1 font-noto-sans text-xl font-black uppercase italic">
-                            {submission.name}
+                            {submissionTitle(submission)}
                         </h3>
                         <p class="mt-1 line-clamp-1 text-sm font-semibold text-blue-skywave">
-                            {submission.contact}
+                            {submissionSubtitle(submission)}
                         </p>
 
                         <p class="mt-5 text-xs font-semibold text-suspense-aurora/50">
