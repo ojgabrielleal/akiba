@@ -79,10 +79,10 @@ class StorePostRequest extends LoggedWebRequest
             'metadata.event_date' => $this->isDraft() ? 'nullable|date' : 'required_if:module,event|date',
             'metadata.address' => $this->isDraft() ? 'nullable|string' : 'required_if:module,event|string',
             'metadata.date_of_release' => $this->isDraft() ? 'nullable|date' : 'required_if:module,review|date',
-            'metadata.sinopse' => $this->isDraft() ? 'nullable|string' : 'required_if:module,review|string',
+            'metadata.sinopse' => $this->isDraft() ? 'nullable' : 'required',
             'review' => 'required_if:module,review|nullable|array',
             'review.status' => 'required_if:module,review|string|in:published,revision,draft',
-            'review.content' => $this->isDraft() ? 'nullable|string' : 'required_if:module,review|string',
+            'review.content' => $this->isDraft() ? 'nullable' : 'required',
         ];
     }
 
