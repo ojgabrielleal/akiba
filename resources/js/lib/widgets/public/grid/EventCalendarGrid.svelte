@@ -105,7 +105,7 @@
                     </div>
                 {/if}
 
-                <div class="mt-8 flex items-center justify-center gap-2 px-2 py-1 font-noto-sans not-italic uppercase">
+                <div class="mt-6 flex items-center justify-center gap-2 px-2 py-1 font-noto-sans not-italic uppercase">
                     <p class="text-center text-xs font-normal leading-none tracking-normal text-orange-citric not-italic lg:text-sm">
                         Algum evento otaku vai acontecer na sua região?
                     </p>
