@@ -11,16 +11,34 @@ class StorePostRequest extends LoggedWebRequest
     protected function prepareForValidation(): void
     {
         $this->merge([
-            'content' => $this->emptyHtmlToNull($this->input('content')),
+            'title' => $this->stringInput($this->input('title')),
+            'content' => $this->emptyHtmlToNull($this->stringInput($this->input('content'))),
+            'studio' => $this->stringInput($this->input('studio')),
             'metadata' => [
                 ...$this->input('metadata', []),
-                'sinopse' => $this->emptyHtmlToNull($this->input('metadata.sinopse')),
+                'dates' => $this->stringInput($this->input('metadata.dates')),
+                'event_date' => $this->stringInput($this->input('metadata.event_date')),
+                'address' => $this->stringInput($this->input('metadata.address')),
+                'date_of_release' => $this->stringInput($this->input('metadata.date_of_release')),
+                'sinopse' => $this->emptyHtmlToNull($this->stringInput($this->input('metadata.sinopse'))),
             ],
             'review' => [
                 ...$this->input('review', []),
-                'content' => $this->emptyHtmlToNull($this->input('review.content')),
+                'content' => $this->emptyHtmlToNull($this->stringInput($this->input('review.content'))),
             ],
         ]);
+    }
+
+    private function stringInput(mixed $value): mixed
+    {
+        if (! is_array($value)) {
+            return $value;
+        }
+
+        return collect($value)
+            ->flatten()
+            ->filter(fn (mixed $item) => is_scalar($item) && filled((string) $item))
+            ->last();
     }
 
     private function emptyHtmlToNull(mixed $value): mixed
@@ -74,15 +92,27 @@ class StorePostRequest extends LoggedWebRequest
             'tags.*.name' => "exclude_if:module,review|{$requiredUnlessDraft}|string|max:255",
             'content' => $this->isDraft() ? 'nullable|string' : 'required_unless:module,review|nullable|string',
             'studio' => "exclude_unless:module,review|{$requiredUnlessDraft}|string|max:255",
-            'metadata' => $this->isDraft() ? 'nullable|array' : 'required_unless:module,post|nullable|array',
-            'metadata.dates' => $this->isDraft() ? 'nullable|string' : 'required_if:module,event|string',
-            'metadata.event_date' => $this->isDraft() ? 'nullable|date' : 'required_if:module,event|date',
-            'metadata.address' => $this->isDraft() ? 'nullable|string' : 'required_if:module,event|string',
-            'metadata.date_of_release' => $this->isDraft() ? 'nullable|date' : 'required_if:module,review|date',
-            'metadata.sinopse' => $this->isDraft() ? 'nullable' : 'required',
-            'review' => 'required_if:module,review|nullable|array',
-            'review.status' => 'required_if:module,review|string|in:published,revision,draft',
-            'review.content' => $this->isDraft() ? 'nullable' : 'required',
+            'metadata' => 'exclude_if:module,post|nullable|array',
+            'metadata.dates' => $this->isDraft()
+                ? 'exclude_unless:module,event|nullable|string'
+                : 'exclude_unless:module,event|required_if:module,event|string',
+            'metadata.event_date' => $this->isDraft()
+                ? 'exclude_unless:module,event|nullable|date'
+                : 'exclude_unless:module,event|required_if:module,event|date',
+            'metadata.address' => $this->isDraft()
+                ? 'exclude_unless:module,event|nullable|string'
+                : 'exclude_unless:module,event|required_if:module,event|string',
+            'metadata.date_of_release' => $this->isDraft()
+                ? 'exclude_unless:module,review|nullable|date'
+                : 'exclude_unless:module,review|required_if:module,review|date',
+            'metadata.sinopse' => $this->isDraft()
+                ? 'exclude_unless:module,review|nullable|string'
+                : 'exclude_unless:module,review|required_if:module,review|string',
+            'review' => 'exclude_unless:module,review|required_if:module,review|nullable|array',
+            'review.status' => 'exclude_unless:module,review|required_if:module,review|string|in:published,revision,draft',
+            'review.content' => $this->isDraft()
+                ? 'exclude_unless:module,review|nullable|string'
+                : 'exclude_unless:module,review|required_if:module,review|string',
         ];
     }
 

@@ -34,16 +34,34 @@ class UpdatePostRequest extends LoggedWebRequest
 
         $this->merge([
             'module' => $this->input('module', $post?->module ?? 'post'),
-            'content' => $this->emptyHtmlToNull($this->input('content')),
+            'title' => $this->stringInput($this->input('title')),
+            'content' => $this->emptyHtmlToNull($this->stringInput($this->input('content'))),
+            'studio' => $this->stringInput($this->input('studio')),
             'metadata' => [
                 ...$this->input('metadata', []),
-                'sinopse' => $this->emptyHtmlToNull($this->input('metadata.sinopse')),
+                'dates' => $this->stringInput($this->input('metadata.dates')),
+                'event_date' => $this->stringInput($this->input('metadata.event_date')),
+                'address' => $this->stringInput($this->input('metadata.address')),
+                'date_of_release' => $this->stringInput($this->input('metadata.date_of_release')),
+                'sinopse' => $this->emptyHtmlToNull($this->stringInput($this->input('metadata.sinopse'))),
             ],
             'review' => [
                 ...$this->input('review', []),
-                'content' => $this->emptyHtmlToNull($this->input('review.content')),
+                'content' => $this->emptyHtmlToNull($this->stringInput($this->input('review.content'))),
             ],
         ]);
+    }
+
+    private function stringInput(mixed $value): mixed
+    {
+        if (! is_array($value)) {
+            return $value;
+        }
+
+        return collect($value)
+            ->flatten()
+            ->filter(fn (mixed $item) => is_scalar($item) && filled((string) $item))
+            ->last();
     }
 
     private function emptyHtmlToNull(mixed $value): mixed
@@ -100,7 +118,7 @@ class UpdatePostRequest extends LoggedWebRequest
             'review.content' => $this->isDraft()
                 ? 'exclude_unless:module,review|nullable|string'
                 : 'exclude_unless:module,review|required_if:module,review|string',
-            'metadata' => $this->isDraft() ? 'nullable|array' : 'required_unless:module,post|nullable|array',
+            'metadata' => 'exclude_if:module,post|nullable|array',
             'metadata.dates' => $this->isDraft()
                 ? 'exclude_unless:module,event|nullable|string'
                 : 'exclude_unless:module,event|required_if:module,event|string',
