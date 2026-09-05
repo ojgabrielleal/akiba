@@ -13,26 +13,18 @@
 </script>
 
 <div class="min-w-0 w-full">
-    <div class="mb-7 flex justify-center">
+    <div class="mb-4 flex justify-center">
         <img
             class="w-56 max-w-full"
             src="/img/brand/logo.webp"
             alt="Akiba"
         />
     </div>
-    <div class="mb-6 text-center font-noto-sans">
-        <p class="text-sm font-black uppercase tracking-[0.18em] text-orange-amber">
-            Painel Akiba
-        </p>
-        <h2 class="mt-2 text-2xl font-black uppercase italic text-blue-marinho">
-            Bem-vindo de volta
-        </h2>
-        <p class="mt-2 text-sm font-medium text-blue-ocean/70">
-            Entre para acessar a administração da estação.
-        </p>
-    </div>
-    <form class="space-y-4" on:submit|preventDefault={submit}>
-        <FormField for="username" label="Usuário" error={$form.errors.username} spacing="compact">
+    <p class="mb-5 text-center font-noto-sans text-md text-neutral-gray">
+        Faça login para acessar o sistema
+    </p>
+    <form class="space-y-3" on:submit|preventDefault={submit}>
+        <FormField for="username" error={$form.errors.username} spacing="compact">
             <div class="relative">
                 <img
                     src="/svg/profile.svg"
@@ -45,7 +37,7 @@
                     type="text"
                     name="username"
                     autocomplete="username"
-                    placeholder="Seu usuário"
+                    placeholder="Digite seu usuário"
                     class="h-13 pl-12"
                     bind:value={$form.username}
                     error={$form.errors.username}
@@ -53,7 +45,7 @@
                 />
             </div>
         </FormField>
-        <FormField for="password" label="Senha" error={$form.errors.password} spacing="compact">
+        <FormField for="password" error={$form.errors.password} spacing="compact">
             <div class="relative">
                 <img
                     src="/svg/key.svg"
@@ -66,7 +58,7 @@
                     type="password"
                     name="password"
                     autocomplete="current-password"
-                    placeholder="Sua senha"
+                    placeholder="Digite sua senha"
                     class="h-13 pl-12"
                     bind:value={$form.password}
                     error={$form.errors.password}
