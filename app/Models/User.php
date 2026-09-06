@@ -37,13 +37,11 @@ class User extends Authenticatable
         'state',
         'country',
         'bibliography',
-        'account_token_hash',
     ];
 
     protected $hidden = [
         'password',
         'remember_token',
-        'account_token_hash',
     ];
 
     protected $casts = [

@@ -1,10 +1,11 @@
 <script>
     import { useForm } from "@inertiajs/svelte";
-    import { Button, FormField, TextInput } from "@/lib/components/private";
+    import { Button, CheckboxInput, FormField, TextInput } from "@/lib/components/private";
 
     const form = useForm({
         username: null,
         password: null,
+        remember: false,
     });
 
     const submit = () => {
@@ -66,6 +67,19 @@
                 />
             </div>
         </FormField>
+        <div class="my-4">
+            <CheckboxInput
+                id="remember"
+                name="remember"
+                label="Continuar conectado"
+                description="Use apenas em dispositivos confiáveis."
+                class="mt-[0.1rem] rounded bg-suspense-aurora text-orange-citric"
+                labelClass="cursor-pointer font-noto-sans text-xs text-neutral-gray"
+                descriptionClass="block text-[0.65rem] font-medium leading-tight text-neutral-gray"
+                bind:checked={$form.remember}
+                error={$form.errors.remember}
+            />
+        </div>
         <Button
             type="submit"
             variant="accent"

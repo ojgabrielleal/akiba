@@ -62,6 +62,15 @@ class StorePostRequest extends LoggedWebRequest
         return $this->isDraft() ? 'nullable' : 'required';
     }
 
+    private function coverRules(): array
+    {
+        return [
+            $this->requiredUnlessDraft(),
+            'image',
+            'dimensions:min_width=1200,min_height=400',
+        ];
+    }
+
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -84,7 +93,7 @@ class StorePostRequest extends LoggedWebRequest
             'status' => 'required_unless:module,review|nullable|string|in:published,revision,draft',
             'title' => "{$requiredUnlessDraft}|string",
             'image' => $requiredUnlessDraft,
-            'cover' => $requiredUnlessDraft,
+            'cover' => $this->coverRules(),
             'references' => 'exclude_if:module,review|nullable|array',
             'references.*.name' => 'exclude_if:module,review|nullable',
             'references.*.url' => 'exclude_if:module,review|nullable',
@@ -122,6 +131,8 @@ class StorePostRequest extends LoggedWebRequest
             'required' => 'Esse campo é obrigatório.',
             'required_if' => 'Esse campo é obrigatório.',
             'required_unless' => 'Esse campo é obrigatório.',
+            'cover.image' => 'A capa precisa ser uma imagem.',
+            'cover.dimensions' => 'A capa precisa ter pelo menos 1200x400 pixels para funcionar bem como fundo.',
         ];
     }
 }

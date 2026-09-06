@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Private;
 
 use App\Services\ListenerGalleryService;
 use App\Services\PollService;
-use App\Services\MysteryService;
+use App\Services\EnigmaGameService;
 use App\Services\CacheService;
 
 use App\Http\Controllers\Concerns\ResolvesAuthorizedProps;
@@ -22,12 +22,12 @@ use App\Http\Requests\ListenerGallery\StoreListenerGalleryRequest;
 use App\Http\Requests\ListenerGallery\UpdateListenerGalleryRequest;
 use App\Http\Requests\Poll\StorePollRequest;
 use App\Http\Requests\Poll\UpdatePollRequest;
-use App\Http\Requests\Mystery\RespondMysteryInteractionRequest;
-use App\Http\Requests\Mystery\StoreMysteryRequest;
-use App\Http\Requests\Mystery\UpdateMysteryRequest;
-use App\Http\Resources\MysteryResource;
-use App\Models\Mystery;
-use App\Models\MysteryInteraction;
+use App\Http\Requests\EnigmaGame\RespondEnigmaGameInteractionRequest;
+use App\Http\Requests\EnigmaGame\StoreEnigmaGameRequest;
+use App\Http\Requests\EnigmaGame\UpdateEnigmaGameRequest;
+use App\Http\Resources\EnigmaGameResource;
+use App\Models\EnigmaGame;
+use App\Models\EnigmaGameInteraction;
 use App\Models\PollOption;
 use App\Support\AuthenticatedMember;
 use Illuminate\Http\Request;
@@ -43,7 +43,7 @@ class MediaController extends Controller
     public function __construct(
         private ListenerGalleryService $listenerGalleryFilter,
         private PollService $pollFilter,
-        private MysteryService $mysteryFilter,
+        private EnigmaGameService $enigmagameFilter,
         private CacheService $cache,
     ) {}
 
@@ -90,15 +90,15 @@ class MediaController extends Controller
         );
     }
 
-    private function indexMysteries()
+    private function indexEnigmaGames()
     {
-        return $this->whenCanViewAny(Mystery::class,
-            fn () => MysteryResource::collection(
+        return $this->whenCanViewAny(EnigmaGame::class,
+            fn () => EnigmaGameResource::collection(
                 $this->cache->remember(
-                    $this->mediaCacheKey('mysteries'),
-                    fn () => $this->mysteryFilter->filter(['with' => ['author', 'interactions.participant', 'interactions.responder']]),
+                    $this->mediaCacheKey('enigmagames'),
+                    fn () => $this->enigmagameFilter->filter(['with' => ['author', 'interactions.participant', 'interactions.responder']]),
                     null,
-                    ['mysteries']
+                    ['enigmagames']
                 )
             ),
         );
@@ -206,41 +206,50 @@ class MediaController extends Controller
         return $this->flashMessage('save');
     }
 
-    public function storeMystery(StoreMysteryRequest $request, MysteryService $service)
+    public function storeEnigmaGame(StoreEnigmaGameRequest $request, EnigmaGameService $service)
     {
         $service->store($request->user(), $request->validated());
 
         return $this->flashMessage('save');
     }
 
-    public function updateMystery(UpdateMysteryRequest $request, MysteryService $service, Mystery $mystery)
+    public function updateEnigmaGame(UpdateEnigmaGameRequest $request, EnigmaGameService $service, EnigmaGame $enigmagame)
     {
-        $service->update($mystery, $request->validated());
+        $service->update($enigmagame, $request->validated());
 
         return $this->flashMessage('update');
     }
 
-    public function publishMystery(MysteryService $service, Mystery $mystery)
+    public function publishEnigmaGame(EnigmaGameService $service, EnigmaGame $enigmagame)
     {
-        $this->authorize('publish', $mystery);
+        $this->authorize('publish', $enigmagame);
 
-        $service->publish($mystery);
+        $service->publish($enigmagame);
 
         return $this->flashMessage('update');
     }
 
-    public function deactivateMystery(MysteryService $service, Mystery $mystery)
+    public function deactivateEnigmaGame(EnigmaGameService $service, EnigmaGame $enigmagame)
     {
-        $this->authorize('delete', $mystery);
+        $this->authorize('delete', $enigmagame);
 
-        $service->deactivate($mystery);
+        $service->deactivate($enigmagame);
 
         return $this->flashMessage('deactivate');
     }
 
-    public function respondMysteryInteraction(RespondMysteryInteractionRequest $request, MysteryService $service, MysteryInteraction $mysteryInteraction)
+    public function finishEnigmaGame(EnigmaGameService $service, EnigmaGame $enigmagame)
     {
-        $service->respond($mysteryInteraction, $request->user(), $request->validated());
+        $this->authorize('delete', $enigmagame);
+
+        $service->finish($enigmagame);
+
+        return $this->flashMessage('finish');
+    }
+
+    public function respondEnigmaGameInteraction(RespondEnigmaGameInteractionRequest $request, EnigmaGameService $service, EnigmaGameInteraction $enigmagameInteraction)
+    {
+        $service->respond($enigmagameInteraction, $request->user(), $request->validated());
 
         return $this->flashMessage('update');
     }
@@ -256,7 +265,7 @@ class MediaController extends Controller
             'polls' => $this->indexPolls(),
             'latestPoll' => $this->indexLatestPoll(),
             'listenerGalleries' => $this->indexListenerGalleries(),
-            'mysteries' => $this->indexMysteries(),
+            'enigmagames' => $this->indexEnigmaGames(),
         ]);
     }
 }

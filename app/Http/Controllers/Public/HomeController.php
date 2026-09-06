@@ -18,7 +18,6 @@ use App\Http\Requests\OAuthAccount\CompleteOAuthAccountProfileRequest;
 use App\Http\Requests\Profile\UpdatePublicMemberProfileRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cookie;
 
 class HomeController extends Controller
 {
@@ -147,19 +146,11 @@ class HomeController extends Controller
 
     public function logoutMemberProfile(Request $request)
     {
-        $user = $request->user() ?? $request->attributes->get('member_user');
-
-        $user?->update([
-            'account_token_hash' => null,
-        ]);
-
         if ($request->user()) {
             Auth::logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
         }
-
-        Cookie::queue(Cookie::forget('akiba_user_token'));
 
         return redirect('/site');
     }

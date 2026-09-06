@@ -3,12 +3,12 @@
 namespace App\Http\Middleware\OAuth;
 
 use App\Models\OAuthAccount;
-use App\Models\User;
 
 use Closure;
 use Illuminate\Http\Request;
 
 use Inertia\Inertia;
+use Laravel\Sanctum\PersonalAccessToken;
 
 use Symfony\Component\HttpFoundation\Response;
 
@@ -24,26 +24,24 @@ class ResolveOAuthAccount
     public static function resolve(Request $request): array
     {
         $oauthToken = $request->cookie('akiba_oauth_token');
-        $userToken = $request->cookie('akiba_user_token');
 
         $authenticatedUser = $request->user();
         $user = $authenticatedUser;
         $oauthAccount = null;
 
         if ($oauthToken) {
-            $oauthAccount = OAuthAccount::query()
-                ->where('account_token_hash', hash('sha256', $oauthToken))
-                ->first();
+            $accessToken = PersonalAccessToken::findToken($oauthToken);
+            $tokenable = $accessToken?->tokenable;
 
-            if ($oauthAccount) $request->attributes->set('oauth_account', $oauthAccount);
-        }
-
-        if (!$user && $userToken) {
-            $user = User::query()
-                ->where('account_token_hash', hash('sha256', $userToken))
-                ->first();
-
-            if ($user) $request->attributes->set('member_user', $user);
+            if (
+                $tokenable instanceof OAuthAccount
+                && $accessToken->can('public')
+                && (! $accessToken->expires_at || $accessToken->expires_at->isFuture())
+            ) {
+                $oauthAccount = $tokenable;
+                $accessToken->forceFill(['last_used_at' => now()])->save();
+                $request->attributes->set('oauth_account', $oauthAccount);
+            }
         }
 
         return [

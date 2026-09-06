@@ -97,9 +97,11 @@
         'review': 'Review',
         'event': 'Evento'
     };
+
+    $: metaTitle = show && pageName[form] ? pageName[form] : "Matérias";
 </script>
 
-<Meta meta={{ title: pageName[form]}} />
+<Meta meta={{ title: metaTitle }} />
 <Layout>
     <h1 class="sr-only">Posts</h1>
     <Section id="post-editor" title="Criar" {actions}>

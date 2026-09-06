@@ -107,12 +107,13 @@ Route::prefix('panel')->middleware(['inertia'])->group(function () {
                 Route::patch('{poll:uuid}/deactivate', 'deactivatePoll');
                 Route::post('option/{option:uuid}/vote', 'votePollOption');
             });
-            Route::prefix('mystery')->group(function () {
-                Route::post('', 'storeMystery');
-                Route::patch('{mystery:uuid}', 'updateMystery');
-                Route::patch('{mystery:uuid}/publish', 'publishMystery');
-                Route::patch('{mystery:uuid}/deactivate', 'deactivateMystery');
-                Route::patch('interaction/{mysteryInteraction:uuid}/respond', 'respondMysteryInteraction');
+            Route::prefix('enigmagame')->group(function () {
+                Route::post('', 'storeEnigmaGame');
+                Route::patch('{enigmagame:uuid}', 'updateEnigmaGame');
+                Route::patch('{enigmagame:uuid}/publish', 'publishEnigmaGame');
+                Route::patch('{enigmagame:uuid}/finish', 'finishEnigmaGame');
+                Route::patch('{enigmagame:uuid}/deactivate', 'deactivateEnigmaGame');
+                Route::patch('interaction/{enigmagameInteraction:uuid}/respond', 'respondEnigmaGameInteraction');
             });
             Route::get('', 'render')->name('panel.media');
         });

@@ -7,9 +7,8 @@ use App\Http\Controllers\Controller;
 use Inertia\Inertia;
 use App\Http\Requests\Login\AuthLoginRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cookie;
-use Illuminate\Support\Str;
 
 class LoginController extends Controller
 {
@@ -17,33 +16,21 @@ class LoginController extends Controller
 
     public function loginUser(AuthLoginRequest $request)
     {
-        $credentials = $request->validated();
+        $request->ensureIsNotRateLimited();
+
+        $data = $request->validated();
+        $credentials = Arr::only($data, ['username', 'password']);
         $credentials['is_active'] = true;
+        $remember = (bool) ($data['remember'] ?? false);
 
-        if (Auth::attempt($credentials)) {
+        if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
-            $accountToken = Str::random(64);
-
-            $request->user()->update([
-                'account_token_hash' => hash('sha256', $accountToken),
-            ]);
-
-            Cookie::queue(
-                Cookie::make(
-                    'akiba_user_token',
-                    $accountToken,
-                    60 * 24 * 30,
-                    null,
-                    null,
-                    $request->isSecure(),
-                    true,
-                    false,
-                    'lax',
-                )
-            );
+            $request->clearRateLimiter();
 
             return redirect()->intended(route('panel.dashboard'));
         }
+
+        $request->hitRateLimiter();
 
         return Inertia::render($this->render)->with('flash', [
             'type' => 'error',
@@ -54,15 +41,10 @@ class LoginController extends Controller
 
     public function logoutUser(Request $request)
     {
-        $request->user()?->update([
-            'account_token_hash' => null,
-        ]);
-
         Auth::logout();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        Cookie::queue(Cookie::forget('akiba_user_token'));
 
         return redirect()->route('login');
     }

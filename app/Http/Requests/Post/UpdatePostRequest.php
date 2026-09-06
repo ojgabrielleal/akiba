@@ -28,6 +28,20 @@ class UpdatePostRequest extends LoggedWebRequest
         return $this->isDraft() ? 'nullable' : 'required';
     }
 
+    private function coverRules(): array
+    {
+        $post = $this->route('post');
+
+        return [
+            Rule::requiredIf(fn () => ! $this->isDraft() && blank($post?->cover)),
+            'nullable',
+            Rule::when($this->hasFile('cover'), [
+                'image',
+                'dimensions:min_width=1200,min_height=400',
+            ]),
+        ];
+    }
+
     protected function prepareForValidation(): void
     {
         $post = $this->route('post');
@@ -99,10 +113,7 @@ class UpdatePostRequest extends LoggedWebRequest
                 Rule::requiredIf(fn () => ! $this->isDraft() && blank($post?->image)),
                 'nullable',
             ],
-            'cover' => [
-                Rule::requiredIf(fn () => ! $this->isDraft() && blank($post?->cover)),
-                'nullable',
-            ],
+            'cover' => $this->coverRules(),
             'references' => 'exclude_if:module,review|nullable|array',
             'references.*.uuid' => 'exclude_if:module,review|nullable',
             'references.*.name' => 'exclude_if:module,review|nullable',
@@ -143,6 +154,8 @@ class UpdatePostRequest extends LoggedWebRequest
             'required' => 'Esse campo é obrigatório.',
             'required_if' => 'Esse campo é obrigatório.',
             'required_unless' => 'Esse campo é obrigatório.',
+            'cover.image' => 'A capa precisa ser uma imagem.',
+            'cover.dimensions' => 'A capa precisa ter pelo menos 1200x400 pixels para funcionar bem como fundo.',
         ];
     }
 }

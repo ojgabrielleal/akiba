@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Sanctum\HasApiTokens;
 
 class OAuthAccount extends Model
 {
-    use HasFactory, HasUuids;
+    use HasApiTokens, HasFactory, HasUuids;
 
     protected $table = 'oauth_accounts';
 
@@ -22,11 +23,6 @@ class OAuthAccount extends Model
         'avatar',
         'birth_date',
         'profile_completed_at',
-        'account_token_hash',
-    ];
-
-    protected $hidden = [
-        'account_token_hash',
     ];
 
     protected $casts = [
@@ -80,8 +76,8 @@ class OAuthAccount extends Model
         return $this->morphMany(PushSubscription::class, 'notifiable');
     }
 
-    public function mysteryInteractions()
+    public function enigmagameInteractions()
     {
-        return $this->morphMany(MysteryInteraction::class, 'participant');
+        return $this->morphMany(EnigmaGameInteraction::class, 'participant');
     }
 }

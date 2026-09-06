@@ -34,7 +34,7 @@
             description: "Entre com sua conta para indicar um evento otaku e colocar a cobertura no radar da Rede Akiba.",
             icon: "/svg/events.svg",
         },
-        mystery: {
+        enigmagame: {
             eyebrow: "Frequência misteriosa",
             title: "Entre na investigação",
             description: "Use sua conta para perguntar, responder e participar dos enigmas da Rede Akiba.",

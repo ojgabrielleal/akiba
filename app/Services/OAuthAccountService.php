@@ -6,7 +6,6 @@ use App\Models\OAuthAccount;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
-use Illuminate\Support\Str;
 use Laravel\Socialite\Contracts\User as ProviderUser;
 
 class OAuthAccountService
@@ -27,9 +26,7 @@ class OAuthAccountService
 
     public function storeFromProvider(string $provider, ProviderUser $providerUser, Request $request): OAuthAccount
     {
-        $accountToken = Str::random(64);
-
-        $oauth = DB::transaction(function () use ($provider, $providerUser, $accountToken) {
+        $oauth = DB::transaction(function () use ($provider, $providerUser) {
             return OAuthAccount::query()->updateOrCreate(
                 [
                     'provider' => $provider,
@@ -39,12 +36,17 @@ class OAuthAccountService
                     'username' => $this->username($provider, $providerUser),
                     'nickname' => $this->nickname($provider, $providerUser),
                     'avatar' => $providerUser->getAvatar(),
-                    'account_token_hash' => hash('sha256', $accountToken),
                 ],
             );
         });
 
-        $this->queueAccountTokenCookie($accountToken, $request);
+        $plainTextToken = $oauth->createToken(
+            'public-oauth-remember',
+            ['public'],
+            now()->addDays(30),
+        )->plainTextToken;
+
+        $this->queueAccountTokenCookie($plainTextToken, $request);
 
         return $oauth;
     }

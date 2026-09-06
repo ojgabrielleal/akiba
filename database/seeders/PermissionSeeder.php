@@ -202,16 +202,16 @@ class PermissionSeeder extends Seeder
 
             /*
             |--------------------------------------------------------------------------
-            | Enigma da Akiba
+            | Enigma Game
             |--------------------------------------------------------------------------
             */
-            ['name' => 'mystery.list', 'label' => '[Enigma da Akiba] Listar'],
-            ['name' => 'mystery.view', 'label' => '[Enigma da Akiba] Visualizar'],
-            ['name' => 'mystery.create', 'label' => '[Enigma da Akiba] Criar'],
-            ['name' => 'mystery.update', 'label' => '[Enigma da Akiba] Atualizar'],
-            ['name' => 'mystery.delete', 'label' => '[Enigma da Akiba] Excluir'],
-            ['name' => 'mystery.publish', 'label' => '[Enigma da Akiba] Publicar'],
-            ['name' => 'mystery.respond', 'label' => '[Enigma da Akiba] Responder interações'],
+            ['name' => 'enigmagame.list', 'label' => '[Enigma Game] Listar'],
+            ['name' => 'enigmagame.view', 'label' => '[Enigma Game] Visualizar'],
+            ['name' => 'enigmagame.create', 'label' => '[Enigma Game] Criar'],
+            ['name' => 'enigmagame.update', 'label' => '[Enigma Game] Atualizar'],
+            ['name' => 'enigmagame.delete', 'label' => '[Enigma Game] Excluir'],
+            ['name' => 'enigmagame.publish', 'label' => '[Enigma Game] Publicar'],
+            ['name' => 'enigmagame.respond', 'label' => '[Enigma Game] Responder interações'],
 
             /*
             |--------------------------------------------------------------------------

@@ -11,6 +11,9 @@
     export let required = false;
     export let disabled = false;
     export let error = null;
+    export let minWidth = null;
+    export let minHeight = null;
+    export let minDimensionsMessage = null;
 
     const sizes = {
         default: {
@@ -71,17 +74,49 @@
         }
     }
 
-    const previewImage = (event) => {
+    function imageDimensions(file) {
+        return new Promise((resolve, reject) => {
+            const image = new Image();
+            const url = URL.createObjectURL(file);
+
+            image.onload = () => {
+                URL.revokeObjectURL(url);
+                resolve({ width: image.naturalWidth, height: image.naturalHeight });
+            };
+            image.onerror = () => {
+                URL.revokeObjectURL(url);
+                reject();
+            };
+            image.src = url;
+        });
+    }
+
+    const previewImage = async (event) => {
         if (disabled) return;
         const file = event.target.files[0];
 
-        onchange?.(event);
-
         if (file) {
+            if (minWidth || minHeight) {
+                const dimensions = await imageDimensions(file).catch(() => null);
+                const tooSmall = !dimensions
+                    || (minWidth && dimensions.width < minWidth)
+                    || (minHeight && dimensions.height < minHeight);
+
+                if (tooSmall) {
+                    event.target.value = "";
+                    preview = null;
+                    alert(minDimensionsMessage ?? `A imagem precisa ter pelo menos ${minWidth}x${minHeight} pixels.`);
+                    return;
+                }
+            }
+
+            onchange?.(event);
+
             const reader = new FileReader();
             reader.onload = (e) => preview = e.target.result;
             reader.readAsDataURL(file);
         } else {
+            onchange?.(event);
             preview = null;
         }
     };

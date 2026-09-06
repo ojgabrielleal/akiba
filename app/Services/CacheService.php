@@ -48,7 +48,7 @@ class CacheService
 
     public function invalidateMysteries(): void
     {
-        $this->incrementVersion('mysteries');
+        $this->incrementVersion('enigmagames');
     }
 
     public function invalidateMedia(): void

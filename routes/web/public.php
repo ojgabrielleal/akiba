@@ -148,9 +148,9 @@ Route::middleware(['oauth.resolve', 'inertia'])->group(function () {
     Route::post('/poll/option/{option:uuid}/vote', [MediaController::class, 'votePollOption'])
         ->name('poll.option.vote');
 
-    Route::post('/midias/enigma/{mystery:uuid}/interaction', [MediaController::class, 'storeMysteryInteraction'])
+    Route::post('/midias/enigma/{enigmagame:uuid}/interaction', [MediaController::class, 'storeEnigmaGameInteraction'])
         ->middleware('oauth')
-        ->name('mystery.interaction.store');
+        ->name('enigmagame.interaction.store');
 
     Route::get('/review/{slug}', [ReadController::class, 'render'])
         ->name('review.read');

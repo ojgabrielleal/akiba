@@ -29,7 +29,7 @@ class PostUpdateValidationTest extends TestCase
                 'module' => 'review',
                 'title' => 'Anime Test',
                 'image' => UploadedFile::fake()->image('featured.jpg', 708, 827),
-                'cover' => UploadedFile::fake()->image('cover.jpg', 640, 360),
+                'cover' => UploadedFile::fake()->image('cover.jpg', 1200, 400),
                 'studio' => 'Studio Test',
                 'metadata' => [
                     'date_of_release' => '2026-09-04',
@@ -70,7 +70,7 @@ class PostUpdateValidationTest extends TestCase
                 'title' => 'Evento Test',
                 'content' => ['', '<p>Conteúdo do evento</p>'],
                 'image' => UploadedFile::fake()->image('featured.jpg', 708, 827),
-                'cover' => UploadedFile::fake()->image('cover.jpg', 640, 360),
+                'cover' => UploadedFile::fake()->image('cover.jpg', 1200, 400),
                 'metadata' => [
                     'event_date' => '2026-09-04',
                     'dates' => ['', '04 de setembro de 2026'],
@@ -90,6 +90,33 @@ class PostUpdateValidationTest extends TestCase
         $this->assertSame('<p>Conteúdo do evento</p>', $post->content);
         $this->assertSame('04 de setembro de 2026', $post->metadata['dates']);
         $this->assertSame('Rua Teste, 123', $post->metadata['address']);
+    }
+
+    public function test_post_store_rejects_small_cover_images(): void
+    {
+        Storage::fake('public');
+
+        $user = $this->userWithPermissions(['post.create']);
+
+        $response = $this
+            ->actingAs($user)
+            ->from('/panel/post')
+            ->post('/panel/post', [
+                'module' => 'post',
+                'status' => 'published',
+                'title' => 'Matéria com capa pequena',
+                'content' => '<p>Conteúdo da matéria</p>',
+                'image' => UploadedFile::fake()->image('featured.jpg', 708, 827),
+                'cover' => UploadedFile::fake()->image('cover.jpg', 640, 360),
+                'tags' => [
+                    ['name' => 'anime'],
+                ],
+            ]);
+
+        $response->assertRedirect('/panel/post');
+        $response->assertSessionHasErrors([
+            'cover' => 'A capa precisa ter pelo menos 1200x400 pixels para funcionar bem como fundo.',
+        ]);
     }
 
     public function test_review_update_returns_field_errors_for_required_fields(): void

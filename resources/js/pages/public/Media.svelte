@@ -8,7 +8,7 @@
     import { publicAnimations } from "@/lib/constants";
     import { resolvePlaceholderImage, themeClass } from "@/lib/utils";
 
-    $: ({ flash, oauth, onair, stream, events, listenerGallery, polls, latestPoll, mystery } = $page.props);
+    $: ({ flash, oauth, onair, stream, events, listenerGallery, polls, latestPoll, enigmagame } = $page.props);
     $: pageUrl = $page.url;
     $: eventList = Array.isArray(events) ? events : events?.data ?? [];
     $: poll = latestPoll?.data ?? null;
@@ -18,6 +18,7 @@
     const resolveEventDate = (event) => event.metadata?.dates ?? "";
     const resolveEventPlace = (event) => event.metadata?.address ?? "";
     const optionPercent = (pollItem, option) => pollItem?.total_votes ? (option.votes / pollItem.total_votes) * 100 : 0;
+    const enigmaGameStartedStorageKey = (uuid) => `akiba_enigmagame_started_${uuid}`;
 
     let pollModalRef;
     let mainSelectedOption = null;
@@ -25,8 +26,37 @@
     let selectedOption = null;
     let voting = false;
     let mainVoting = false;
-    let mysteryContent = "";
-    let mysterySubmitting = null;
+    let enigmagameContent = "";
+    let enigmagameSubmitting = null;
+    let enigmaGameStarted = false;
+    let enigmaGameHasSave = false;
+    let enigmaGameStartedUuid = null;
+
+    $: if (enigmagame?.data?.uuid !== enigmaGameStartedUuid) {
+        enigmaGameStartedUuid = enigmagame?.data?.uuid ?? null;
+        enigmaGameHasSave = enigmaGameStartedUuid && typeof sessionStorage !== "undefined"
+            ? sessionStorage.getItem(enigmaGameStartedStorageKey(enigmaGameStartedUuid)) === "1"
+            : false;
+        enigmaGameStarted = false;
+    }
+
+    function startEnigmaGame() {
+        enigmaGameStarted = true;
+        enigmaGameHasSave = true;
+
+        if (enigmaGameStartedUuid && typeof sessionStorage !== "undefined") {
+            sessionStorage.setItem(enigmaGameStartedStorageKey(enigmaGameStartedUuid), "1");
+        }
+    }
+
+    function restartEnigmaGame() {
+        enigmaGameStarted = false;
+        enigmaGameHasSave = false;
+
+        if (enigmaGameStartedUuid && typeof sessionStorage !== "undefined") {
+            sessionStorage.removeItem(enigmaGameStartedStorageKey(enigmaGameStartedUuid));
+        }
+    }
 
     function openPollModal(pollItem) {
         if (pollItem.has_voted) return;
@@ -61,18 +91,18 @@
         });
     }
 
-    function submitMysteryInteraction(type) {
-        const currentMystery = mystery?.data;
-        if (!currentMystery || !mysteryContent.trim() || mysterySubmitting || !currentMystery.participation?.can_interact) return;
+    function submitEnigmaGameInteraction(type) {
+        const currentEnigmaGame = enigmagame?.data;
+        if (!currentEnigmaGame || !enigmagameContent.trim() || enigmagameSubmitting || !currentEnigmaGame.participation?.can_interact) return;
 
-        mysterySubmitting = type;
-        router.post(`/midias/enigma/${currentMystery.uuid}/interaction`, {
+        enigmagameSubmitting = type;
+        router.post(`/midias/enigma/${currentEnigmaGame.uuid}/interaction`, {
             type,
-            content: mysteryContent,
+            content: enigmagameContent,
         }, {
             preserveScroll: true,
-            onSuccess: () => mysteryContent = "",
-            onFinish: () => mysterySubmitting = null,
+            onSuccess: () => enigmagameContent = "",
+            onFinish: () => enigmagameSubmitting = null,
         });
     }
 </script>
@@ -122,27 +152,167 @@
             emptyMessage="As fotos da comunidade aparecem aqui quando forem publicadas."
         />
 
-        <Section title="Enigma da Akiba" styles="container-page order-2 mt-10 mb-12">
-            {#if mystery?.data}
-                <div class="grid gap-5 lg:grid-cols-[minmax(0,1fr)_1px_minmax(16rem,0.48fr)] lg:items-stretch lg:gap-8">
+        <Section title="Enigma Game" styles="container-page order-2 mt-10 mb-12">
+            {#if enigmagame?.data}
+                <div class="relative min-h-[22rem] overflow-hidden bg-blue-night/25 px-3 py-4 [[data-public-theme=light]_&]:bg-transparent sm:px-5 lg:px-6">
+                    {#if !enigmaGameStarted}
+                        <div class="absolute inset-0 z-20 grid place-items-center overflow-hidden bg-blue-night/90 px-5 py-8 text-center [[data-public-theme=light]_&]:bg-neutral-light/90">
+                            <div class="pointer-events-none absolute inset-0 opacity-[0.1]" style="background-image: repeating-linear-gradient(0deg, transparent 0 7px, rgba(255,255,255,0.08) 8px, transparent 9px);"></div>
+                            <div class="pointer-events-none absolute inset-5 rounded-sm border border-orange-amber/35"></div>
+                            <div class="pointer-events-none absolute left-8 top-8 grid grid-cols-2 gap-1">
+                                <span class="size-2 bg-orange-amber/80"></span>
+                                <span class="size-2 bg-orange-amber/45"></span>
+                                <span class="size-2 bg-orange-amber/45"></span>
+                            </div>
+                            <div class="pointer-events-none absolute right-8 top-8 grid grid-cols-2 gap-1">
+                                <span class="size-2 bg-orange-amber/45"></span>
+                                <span class="size-2 bg-orange-amber/80"></span>
+                                <span></span>
+                                <span class="size-2 bg-orange-amber/45"></span>
+                            </div>
+                            <div class="pointer-events-none absolute bottom-8 left-8 grid grid-cols-2 gap-1">
+                                <span class="size-2 bg-orange-amber/45"></span>
+                                <span></span>
+                                <span class="size-2 bg-orange-amber/80"></span>
+                                <span class="size-2 bg-orange-amber/45"></span>
+                            </div>
+                            <div class="pointer-events-none absolute bottom-8 right-8 grid grid-cols-2 gap-1">
+                                <span></span>
+                                <span class="size-2 bg-orange-amber/45"></span>
+                                <span class="size-2 bg-orange-amber/45"></span>
+                                <span class="size-2 bg-orange-amber/80"></span>
+                            </div>
+                            <div class="pointer-events-none absolute left-10 top-1/2 hidden -translate-y-1/2 grid-cols-2 gap-1 opacity-70 sm:grid">
+                                <span class="size-2 bg-orange-amber"></span>
+                                <span class="size-2 bg-orange-amber/45"></span>
+                                <span class="size-2 bg-orange-amber/45"></span>
+                                <span class="size-2 bg-orange-amber"></span>
+                                <span class="size-2 bg-orange-amber"></span>
+                                <span class="size-2 bg-orange-amber/45"></span>
+                            </div>
+                            <div class="pointer-events-none absolute right-10 top-1/2 hidden -translate-y-1/2 grid-cols-2 gap-1 opacity-70 sm:grid">
+                                <span class="size-2 bg-orange-amber/45"></span>
+                                <span class="size-2 bg-orange-amber"></span>
+                                <span class="size-2 bg-orange-amber"></span>
+                                <span class="size-2 bg-orange-amber/45"></span>
+                                <span class="size-2 bg-orange-amber/45"></span>
+                                <span class="size-2 bg-orange-amber"></span>
+                            </div>
+                            <div class="pointer-events-none absolute left-12 top-16 hidden w-28 gap-1 sm:grid">
+                                <span class="h-1.5 w-full bg-orange-amber"></span>
+                                <span class="h-1.5 w-3/4 bg-orange-amber/60"></span>
+                                <span class="h-1.5 w-1/2 bg-orange-amber/35"></span>
+                            </div>
+                            <div class="pointer-events-none absolute right-12 top-16 hidden w-28 justify-items-end gap-1 sm:grid">
+                                <span class="h-1.5 w-full bg-orange-amber"></span>
+                                <span class="h-1.5 w-3/4 bg-orange-amber/60"></span>
+                                <span class="h-1.5 w-1/2 bg-orange-amber/35"></span>
+                            </div>
+                            <div class="pointer-events-none absolute bottom-16 left-12 hidden items-end gap-1 opacity-65 sm:flex">
+                                <span class="h-3 w-2 bg-orange-amber/35"></span>
+                                <span class="h-5 w-2 bg-orange-amber/60"></span>
+                                <span class="h-8 w-2 bg-orange-amber"></span>
+                                <span class="h-4 w-2 bg-orange-amber/45"></span>
+                            </div>
+                            <div class="pointer-events-none absolute bottom-16 right-12 hidden grid-cols-3 gap-1 opacity-65 sm:grid">
+                                <span class="size-2 bg-orange-amber"></span>
+                                <span class="size-2 bg-transparent"></span>
+                                <span class="size-2 bg-orange-amber/45"></span>
+                                <span class="size-2 bg-orange-amber/45"></span>
+                                <span class="size-2 bg-orange-amber"></span>
+                                <span class="size-2 bg-transparent"></span>
+                                <span class="size-2 bg-transparent"></span>
+                                <span class="size-2 bg-orange-amber/45"></span>
+                                <span class="size-2 bg-orange-amber"></span>
+                            </div>
+
+                            <div class="relative w-full max-w-xl font-noto-sans uppercase italic">
+                                <div class="mb-5 flex items-center justify-center gap-2 text-[0.62rem] font-black tracking-[0.18em] text-orange-amber">
+                                    <span class="inline-flex gap-1" aria-hidden="true">
+                                        <span class="size-2 bg-orange-citric"></span>
+                                        <span class="size-2 bg-orange-citric"></span>
+                                        <span class="size-2 bg-orange-citric"></span>
+                                    </span>
+                                    <span>{enigmagame.data.solved ? "Clear" : "Lv. 01"}</span>
+                                    <span class="text-suspense-aurora/45 [[data-public-theme=light]_&]:text-blue-night/45">
+                                        {enigmagame.data.solved ? "Winner Found" : "Score 0000"}
+                                    </span>
+                                </div>
+                                <div class="mx-auto mb-4 grid max-w-52 grid-cols-[1fr_auto_1fr] items-center gap-3 text-[0.58rem] font-black tracking-[0.16em] text-orange-amber/80">
+                                    <span class="h-px bg-orange-amber/45"></span>
+                                    <span>{enigmagame.data.solved ? "Game Clear" : "Stage Ready"}</span>
+                                    <span class="h-px bg-orange-amber/45"></span>
+                                </div>
+                                <div class="mx-auto mb-5 grid size-14 place-items-center rounded-sm border-2 border-orange-amber/80 bg-blue-ocean/80 [[data-public-theme=light]_&]:bg-blue-night">
+                                    <img src="/svg/search.svg" alt="" aria-hidden="true" class="size-8 filter-orange-amber" loading="lazy" />
+                                </div>
+                                <p class="text-xs font-black tracking-[0.28em] text-orange-amber">Akiba Game</p>
+                                <h3 class="mt-3 text-3xl font-black text-suspense-aurora [[data-public-theme=light]_&]:text-blue-night sm:text-4xl">
+                                    {enigmagame.data.solved ? "Game Clear" : "Enigma Game"}
+                                </h3>
+                                <p class="mx-auto mt-4 max-w-md text-sm font-black leading-6 text-suspense-aurora/75 [[data-public-theme=light]_&]:text-blue-night/70">
+                                    {#if enigmagame.data.solved}
+                                        {enigmagame.data.solved_by?.name ?? "Um jogador"} venceu esta fase. Abra o resultado para ver a solução.
+                                    {:else}
+                                        {enigmaGameHasSave ? "Continue sua investigação ou reinicie a fase." : "Aperte start para liberar a pista e entrar na investigação."}
+                                    {/if}
+                                </p>
+                                <button
+                                    type="button"
+                                    class={[publicAnimations.buttonInteractive, "mt-7 inline-flex min-h-11 min-w-40 cursor-pointer items-center justify-center rounded-sm border-2 border-orange-morning bg-orange-citric px-7 py-2.5 text-sm font-black uppercase italic text-blue-night hover:bg-orange-morning active:translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric"]}
+                                    on:click={startEnigmaGame}
+                                >
+                                    <span class="mr-3 text-blue-night/70" aria-hidden="true">▶</span>
+                                    {#if enigmagame.data.solved}
+                                        Ver Resultado
+                                    {:else}
+                                        {enigmaGameHasSave ? "Continue" : "Start"}
+                                    {/if}
+                                    <span class="ml-3 text-blue-night/70" aria-hidden="true">◀</span>
+                                </button>
+                                {#if enigmaGameHasSave && !enigmagame.data.solved}
+                                    <button
+                                        type="button"
+                                        class={[publicAnimations.buttonInteractive, "mt-4 inline-flex min-h-9 cursor-pointer items-center justify-center rounded-sm border border-orange-amber/70 px-5 py-2 text-[0.68rem] font-black uppercase italic tracking-[0.12em] text-orange-amber hover:bg-orange-amber/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric"]}
+                                        on:click={restartEnigmaGame}
+                                    >
+                                        Restart
+                                    </button>
+                                {/if}
+                                <div class="mt-5 flex items-center justify-center gap-2 text-[0.62rem] font-black tracking-[0.16em] text-suspense-aurora/45 [[data-public-theme=light]_&]:text-blue-night/45">
+                                    <span class="size-1.5 bg-orange-amber"></span>
+                                    <span>{enigmagame.data.solved ? "Result Unlocked" : "1 Player"}</span>
+                                    <span class="size-1.5 bg-orange-amber"></span>
+                                </div>
+                                <div class="mx-auto mt-3 flex max-w-44 items-center justify-center gap-1" aria-hidden="true">
+                                    <span class="h-1.5 w-7 bg-orange-amber"></span>
+                                    <span class="h-1.5 w-4 bg-orange-amber/45"></span>
+                                    <span class="h-1.5 w-4 bg-orange-amber/45"></span>
+                                    <span class="h-1.5 w-7 bg-orange-amber"></span>
+                                </div>
+                            </div>
+                        </div>
+                    {/if}
+
+                    <div class={["grid gap-5 transition duration-300 lg:grid-cols-[minmax(0,1fr)_1px_minmax(16rem,0.48fr)] lg:items-stretch lg:gap-8", !enigmaGameStarted && "select-none opacity-30 blur-[1px]"]}>
                     <div class="grid gap-3">
-                        {#if mystery.data.participation?.has_submitted_final_answer}
+                        {#if enigmagame.data.participation?.has_submitted_final_answer}
                             <div class={["border-l-2 border-orange-amber pl-3 font-noto-sans text-sm font-semibold uppercase italic text-orange-morning", themeClass("text", "blue-night", { fixed: true, theme: "light" })]}>
-                                {#if mystery.data.participation.final_answer_result === "correct"}
+                                {#if enigmagame.data.participation.final_answer_result === "correct"}
                                     Sua resposta definitiva esta certa.
-                                {:else if mystery.data.participation.final_answer_result === "incorrect"}
+                                {:else if enigmagame.data.participation.final_answer_result === "incorrect"}
                                     Sua resposta definitiva foi analisada, mas nao solucionou o enigma.
                                 {:else}
                                     Sua resposta definitiva ja foi enviada para este enigma.
                                 {/if}
                             </div>
-                        {:else if mystery.data.solved}
+                        {:else if enigmagame.data.solved}
                             <div class={["border-l-2 border-orange-amber pl-3 font-noto-sans text-sm font-semibold uppercase italic text-orange-morning", themeClass("text", "blue-night", { fixed: true, theme: "light" })]}>
                                 Este enigma ja foi resolvido.
                             </div>
-                        {:else if !mystery.data.participation?.can_interact && mystery.data.participation?.next_interaction_at}
+                        {:else if !enigmagame.data.participation?.can_interact && enigmagame.data.participation?.next_interaction_at}
                             <div class={["border-l-2 border-orange-amber pl-3 font-noto-sans text-sm font-semibold uppercase italic text-orange-morning", themeClass("text", "blue-night", { fixed: true, theme: "light" })]}>
-                                Aguarde ate {mystery.data.participation.next_interaction_at} para interagir novamente.
+                                Aguarde ate {enigmagame.data.participation.next_interaction_at} para interagir novamente.
                             </div>
                         {:else}
                             <AuthGuard
@@ -151,12 +321,12 @@
                                 buttonLabel="Entre para participar"
                                 filters="filter-blue-night"
                                 buttonClass="text-blue-night"
-                                reason="mystery"
+                                reason="enigmagame"
                             >
                                 <form class="grid gap-3" on:submit|preventDefault>
                                     <textarea
                                         class={["min-h-28 resize-none rounded-[7px] border border-suspense-aurora/15 bg-blue-ocean px-4 py-3 font-noto-sans text-sm font-normal text-suspense-aurora outline-none ring-0 placeholder:text-suspense-aurora/55 focus:border-suspense-aurora/15 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0", themeClass("bg", "neutral-light", { fixed: true, theme: "light" }), themeClass("text", "blue-night", { fixed: true, theme: "light" }), themeClass("placeholder", "blue-night/45", { theme: "light" })]}
-                                        bind:value={mysteryContent}
+                                        bind:value={enigmagameContent}
                                         placeholder="Digite sua pergunta ou resposta para o enigma"
                                         required
                                     ></textarea>
@@ -167,9 +337,9 @@
                                             shape="pill"
                                             size="sm"
                                             class="px-6"
-                                            loading={mysterySubmitting === "question"}
-                                            disabled={!mysteryContent.trim() || mysterySubmitting}
-                                            on:click={() => submitMysteryInteraction("question")}
+                                            loading={enigmagameSubmitting === "question"}
+                                            disabled={!enigmagameContent.trim() || enigmagameSubmitting}
+                                            on:click={() => submitEnigmaGameInteraction("question")}
                                         >
                                             Perguntar
                                         </Button>
@@ -179,9 +349,9 @@
                                             shape="pill"
                                             size="sm"
                                             class="px-6"
-                                            loading={mysterySubmitting === "final_answer"}
-                                            disabled={!mysteryContent.trim() || mysterySubmitting}
-                                            on:click={() => submitMysteryInteraction("final_answer")}
+                                            loading={enigmagameSubmitting === "final_answer"}
+                                            disabled={!enigmagameContent.trim() || enigmagameSubmitting}
+                                            on:click={() => submitEnigmaGameInteraction("final_answer")}
                                         >
                                             Responder enigma
                                         </Button>
@@ -190,10 +360,10 @@
                             </AuthGuard>
                         {/if}
 
-                        {#if mystery.data.solved && mystery.data.solved_by}
+                        {#if enigmagame.data.solved && enigmagame.data.solved_by}
                             <div class={["flex items-center gap-3 rounded-[7px] border border-green-forest/40 bg-green-forest/10 px-4 py-3", themeClass("bg", "neutral-light", { fixed: true, theme: "light" })]}>
                                 <img
-                                    src={resolvePlaceholderImage(mystery.data.solved_by.avatar, "avatar", mystery.data.solved_by.gender)}
+                                    src={resolvePlaceholderImage(enigmagame.data.solved_by.avatar, "avatar", enigmagame.data.solved_by.gender)}
                                     alt=""
                                     aria-hidden="true"
                                     class="size-10 rounded-full border-2 border-neutral-gray/35 bg-transparent object-cover"
@@ -201,25 +371,25 @@
                                 />
                                 <div class="min-w-0 font-noto-sans uppercase italic">
                                     <div class="truncate text-sm font-black text-green-forest">
-                                        {mystery.data.solved_by.name} acertou o enigma
+                                        {enigmagame.data.solved_by.name} acertou o enigma
                                     </div>
-                                    {#if mystery.data.solved_at}
+                                    {#if enigmagame.data.solved_at}
                                         <div class={["text-xs font-bold text-suspense-aurora/70", themeClass("text", "blue-night/70", { theme: "light" })]}>
-                                            {mystery.data.solved_at}
+                                            {enigmagame.data.solved_at}
                                         </div>
                                     {/if}
-                                    {#if mystery.data.solution}
+                                    {#if enigmagame.data.solution}
                                         <div class={["mt-2 text-sm font-normal normal-case not-italic text-suspense-aurora", themeClass("text", "blue-night", { fixed: true, theme: "light" })]}>
-                                            {mystery.data.solution}
+                                            {enigmagame.data.solution}
                                         </div>
                                     {/if}
                                 </div>
                             </div>
                         {/if}
 
-                        {#if mystery.data.interactions?.length}
+                        {#if enigmagame.data.interactions?.length}
                             <div class="public-themed-scrollbar mt-4 grid max-h-[13rem] gap-3 overflow-y-auto overscroll-contain lg:max-h-[16rem]">
-                                {#each mystery.data.interactions as interaction (interaction.uuid)}
+                                {#each enigmagame.data.interactions as interaction (interaction.uuid)}
                                     <article class="grid gap-3">
                                         <div class="flex items-start gap-6">
                                             <div class="mt-0.5 size-12 shrink-0 overflow-hidden rounded-full border-[3px] border-neutral-gray/35 bg-transparent">
@@ -284,10 +454,10 @@
                     </div>
                     <div class="hidden w-px bg-orange-amber/45 [[data-public-theme=light]_&]:bg-blue-cerulean lg:block"></div>
                     <div class={["p-1 text-suspense-aurora lg:sticky lg:top-24", themeClass("text", "blue-night", { fixed: true, theme: "light" })]}>
-                        {#if mystery.data.author}
+                        {#if enigmagame.data.author}
                             <div class="mb-4 flex items-center gap-3">
                                 <img
-                                    src={resolvePlaceholderImage(mystery.data.author.avatar, "avatar", mystery.data.author.gender)}
+                                    src={resolvePlaceholderImage(enigmagame.data.author.avatar, "avatar", enigmagame.data.author.gender)}
                                     alt=""
                                     aria-hidden="true"
                                     class="size-10 rounded-full border-2 border-neutral-gray/35 bg-transparent object-cover"
@@ -295,7 +465,7 @@
                                 />
                                 <div class="min-w-0 font-noto-sans uppercase italic">
                                     <div class={["truncate text-sm font-black text-orange-morning", themeClass("text", "blue-night", { fixed: true, theme: "light" })]}>
-                                        {mystery.data.author.nickname ?? mystery.data.author.name}
+                                        {enigmagame.data.author.nickname ?? enigmagame.data.author.name}
                                     </div>
                                     <div class={["text-xs font-bold text-suspense-aurora", themeClass("text", "blue-night/70", { theme: "light" })]}>
                                         lançou um enigma
@@ -304,8 +474,9 @@
                             </div>
                         {/if}
                         <p class={["whitespace-pre-line font-noto-sans text-sm font-normal leading-relaxed text-suspense-aurora", themeClass("text", "blue-night", { fixed: true, theme: "light" })]}>
-                            {mystery.data.content}
+                            {enigmagame.data.content}
                         </p>
+                    </div>
                     </div>
                 </div>
             {:else}

@@ -57,7 +57,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             PollSeeder::class,
             PollVoteSeeder::class,
-            MysterySeeder::class,
+            EnigmaGameSeeder::class,
             ListenerGallerySeeder::class,
             TaskSeeder::class,
             RepositorySeeder::class,

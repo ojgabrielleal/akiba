@@ -8,14 +8,14 @@
     export let checked = false;
     export let group = undefined;
     export let error = null;
+    export let labelClass = "cursor-pointer font-noto-sans text-md text-gray-700";
+    export let descriptionClass = "line-clamp-2 block text-xs text-gray-400";
 
     $: classes = [
         "size-4 shrink-0 cursor-pointer text-blue-skywave focus:ring-blue-skywave",
         error ? "border border-red-crimson" : "border-gray-300",
         className,
     ];
-
-    const labelClasses = "cursor-pointer font-noto-sans text-md text-gray-700";
 
     $: groupValues = Array.isArray(group) ? group : [];
     $: isGroupChecked = groupValues.includes(value);
@@ -51,12 +51,12 @@
             bind:checked
         />
     {/if}
-    <label for={id} class={labelClasses}>
+    <label for={id} class={labelClass}>
         <span class="block text-sm font-semibold">
             {label}
         </span>
         {#if description}
-            <span class="line-clamp-2 block text-xs text-gray-400">
+            <span class={descriptionClass}>
                 {description}
             </span>
         {/if}

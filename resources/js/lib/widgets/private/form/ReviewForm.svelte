@@ -152,10 +152,16 @@
                     name="cover"
                     src={$form.cover}
                     fit="cover"
+                    minWidth={1200}
+                    minHeight={400}
+                    minDimensionsMessage="A capa precisa ter pelo menos 1200x400 pixels para funcionar bem como fundo."
                     onchange={(event) => ($form.cover = event.target.files[0])}
                     required={!post}
                     error={coverError}
                 />
+                <p class="mt-2 font-noto-sans text-sm text-orange-morning">
+                    Tamanho mínimo: 1200x400
+                </p>
             </FormField>
             <FormField for="content" label="Escreva" labelVariant="editorial" spacing="none" error={reviewContentError}>
                 {#if post?.data.reviews?.length}
