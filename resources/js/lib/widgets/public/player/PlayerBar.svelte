@@ -161,10 +161,7 @@
                 <button
                     type="button"
                     aria-label="Faça o seu pedido"
-                    class={[
-                        "relative z-10 hidden size-11 cursor-pointer items-center justify-center rounded-full bg-blue-skywave text-suspense-aurora transition duration-200 ease-out hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber active:scale-95 motion-reduce:transform-none motion-reduce:transition-none lg:flex",
-                        { "song-request-active": canRequestSong },
-                    ]}
+                    class="relative z-10 hidden size-11 cursor-pointer items-center justify-center rounded-full bg-blue-skywave text-blue-night transition duration-200 ease-out hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber active:scale-95 motion-reduce:transform-none motion-reduce:transition-none lg:flex"
                     on:click={handleSongRequestAction}
                 >
                     <MaskIcon icon="/svg/telegram.svg" class="size-5" />

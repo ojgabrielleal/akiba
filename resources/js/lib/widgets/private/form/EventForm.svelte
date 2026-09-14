@@ -19,8 +19,8 @@
 
     function normalizeTags(tags = []) {
         return [
-            { uuid: null, name: "event", ...tags[0] },
-            { uuid: null, name: null, ...tags[1] },
+            { uuid: tags[0]?.uuid ?? null, name: "event" },
+            { uuid: null, name: null },
         ];
     }
 
@@ -63,6 +63,12 @@
     $: firstReferenceUrlError = errorFor(errors, ["references.0.url", "references[0][url]", "references"]);
     $: secondReferenceNameError = errorFor(errors, ["references.1.name", "references[1][name]", "references"]);
     $: secondReferenceUrlError = errorFor(errors, ["references.1.url", "references[1][url]", "references"]);
+    $: if ($form.tags?.[0]?.name !== "event") {
+        $form.tags[0].name = "event";
+    }
+    $: if ($form.tags?.[1]?.name !== null) {
+        $form.tags[1].name = null;
+    }
 
     function submit(event) {
         let url = post ? `/panel/post/${post.data.uuid}` : "/panel/post";
@@ -71,6 +77,9 @@
         $form.transform((data) => ({
             ...data,
             status,
+            tags: [
+                { ...data.tags[0], name: "event" },
+            ],
         })).post(url, {
             preserveState: true,
             forceFormData: true,
@@ -204,7 +213,8 @@
                             id="tag-1"
                             name="tags[1][name]"
                             variant="pill"
-                            required={!post}
+                            class="disabled:cursor-not-allowed disabled:opacity-50"
+                            disabled
                             bind:value={$form.tags[1].name}
                             error={secondTagError}
                         >

@@ -17,6 +17,7 @@ use App\Models\Onair;
 use App\Models\Program;
 use App\Models\SongRequest;
 
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Services\LocutionService;
 use App\Http\Controllers\Concerns\HasFlashMessages;
@@ -81,9 +82,16 @@ class LocutionController extends Controller
         return $this->flashMessage('start');
     }
 
-    public function finishLocution(LocutionService $service)
+    public function finishLocution(Request $request, LocutionService $service)
     {
-        $this->authorize('locution.finish');
+        $onair = $this->getOnair();
+        $user = $request->user();
+        $isCurrentHost = $onair?->program?->user_id === $user->id;
+
+        abort_unless(
+            $user->can('locution.finish.any') || ($isCurrentHost && $user->can('locution.finish')),
+            403,
+        );
 
         $service->finish();
 

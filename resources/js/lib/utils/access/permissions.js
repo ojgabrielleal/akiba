@@ -35,7 +35,8 @@ export const listenerGalleryPermissions = () => ({
 
 export const locutionPermissions = () => ({
     start: hasPermission("locution.start"),
-    finish: hasPermission("locution.finish"),
+    finish: hasPermission("locution.finish") || hasPermission("locution.finish.any"),
+    finishAny: hasPermission("locution.finish.any"),
 });
 
 export const musicPermissions = () => ({
@@ -109,7 +110,7 @@ export const songRequestPermissions = () => ({
     reproduce: hasPermission("song.request.reproduce"),
     cancel: hasPermission("song.request.cancel"),
     locution: {
-        finish: hasPermission("locution.finish"),
+        finish: hasPermission("locution.finish") || hasPermission("locution.finish.any"),
     },
 });
 

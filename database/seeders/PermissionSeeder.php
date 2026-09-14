@@ -112,6 +112,7 @@ class PermissionSeeder extends Seeder
             */
             ['name' => 'locution.start', 'label' => '[Locução] Iniciar programa'],
             ['name' => 'locution.finish', 'label' => '[Locução] Encerrar programa'],
+            ['name' => 'locution.finish.any', 'label' => '[Locução] Encerrar qualquer programa'],
 
 
             /*

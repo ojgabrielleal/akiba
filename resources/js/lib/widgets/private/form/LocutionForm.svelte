@@ -43,33 +43,63 @@
 </script>
 
 <Modal bind:this={notificationModalRef}>
-    <div slot="content" class="font-noto-sans">
-        <p class="text-sm text-center leading-relaxed text-blue-marinho">
-            Deseja mandar notificações avisando que você entrará
-            <span class="font-extrabold uppercase italic text-red-crimson">ao vivo</span>
-            nas plataformas da Rede Akiba?
-        </p>
-        <div class="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <Button
-                type="button"
-                variant="outline"
-                shape="pill"
-                class="h-11 w-full border-2"
-                disabled={$form.processing}
-                on:click={() => startLocution(true)}
-            >
-                Avisar
-            </Button>
-            <Button
-                type="button"
-                variant="accent"
-                shape="pill"
-                class="h-11 w-full"
-                disabled={$form.processing}
-                on:click={() => startLocution(false)}
-            >
-                Não avisar
-            </Button>
+    <div slot="content" class="-m-4 overflow-hidden rounded-md border border-blue-skywave/20 bg-blue-ocean font-noto-sans shadow-[0_1.25rem_4rem_rgba(0,0,0,0.25)] sm:-m-6">
+        <div class="relative">
+            <div class="absolute inset-x-0 top-0 h-1 bg-orange-citric" aria-hidden="true"></div>
+            <div class="absolute right-0 top-0 h-20 w-20 rounded-bl-full bg-blue-skywave/10" aria-hidden="true"></div>
+            <div class="relative z-10 p-4 sm:p-5">
+                <div class="flex flex-wrap items-center gap-2">
+                    <span class="inline-flex h-6 items-center rounded-full bg-blue-marinho/55 px-3 text-[0.62rem] font-extrabold uppercase italic text-orange-citric">
+                        Entrada ao vivo
+                    </span>
+                    <span class="inline-flex h-6 items-center rounded-full border border-blue-skywave/25 px-3 text-[0.62rem] font-extrabold uppercase italic text-blue-skywave">
+                        Notificação
+                    </span>
+                </div>
+
+                <div class="mt-3 grid grid-cols-[auto_minmax(0,1fr)] items-center gap-3">
+                    <span class="flex size-12 items-center justify-center rounded-md border-2 border-orange-citric bg-blue-marinho">
+                        <img src="/svg/alerts.svg" alt="" class="w-7 filter-orange-citric" />
+                    </span>
+                    <div class="min-w-0">
+                        <h2 class="text-xl font-extrabold uppercase italic leading-tight text-suspense-aurora">
+                            Avisar a Rede Akiba?
+                        </h2>
+                        <p class="mt-1 text-sm font-bold text-blue-skywave">
+                            Programa prestes a entrar no ar
+                        </p>
+                    </div>
+                </div>
+
+                <div class="mt-4 rounded-md border border-blue-skywave/15 bg-blue-marinho/35 px-4 py-3">
+                    <p class="text-sm leading-relaxed text-suspense-aurora/82">
+                        Deseja mandar notificações avisando que você entrará
+                        <span class="font-extrabold uppercase italic text-orange-citric">ao vivo</span>
+                        nas plataformas da Rede Akiba?
+                    </p>
+                </div>
+
+                <div class="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                    <button
+                        type="button"
+                        class="flex min-h-10 cursor-pointer items-center justify-center gap-2 rounded-full bg-orange-citric px-4 py-2 font-noto-sans text-[0.68rem] font-extrabold uppercase italic whitespace-nowrap text-blue-marinho transition duration-200 ease-out hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-suspense-aurora active:translate-y-0 disabled:cursor-wait disabled:opacity-70 motion-reduce:transform-none motion-reduce:transition-none"
+                        disabled={$form.processing}
+                        on:click={() => startLocution(true)}
+                    >
+                        <img src="/svg/alerts.svg" alt="" class="w-5 filter-blue-marinho" />
+                        Avisar
+                    </button>
+                    <button
+                        type="button"
+                        class="group/no-alert flex min-h-10 cursor-pointer items-center justify-center gap-2 rounded-full border-2 border-orange-citric bg-transparent px-4 py-2 font-noto-sans text-[0.68rem] font-extrabold uppercase italic whitespace-nowrap text-orange-citric transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-orange-citric hover:text-blue-marinho focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-suspense-aurora active:translate-y-0 disabled:cursor-wait disabled:opacity-70 motion-reduce:transform-none motion-reduce:transition-none"
+                        disabled={$form.processing}
+                        on:click={() => startLocution(false)}
+                    >
+                        <img src="/svg/bloqued.svg" alt="" class="w-5 filter-orange-citric group-hover/no-alert:filter-blue-marinho" />
+                        Não avisar
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 </Modal>

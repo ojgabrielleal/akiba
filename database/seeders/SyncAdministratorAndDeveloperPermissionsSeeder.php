@@ -16,7 +16,7 @@ class SyncAdministratorAndDeveloperPermissionsSeeder extends Seeder
         $permissions = Permission::query()->pluck('id');
 
         Role::query()
-            ->whereIn('name', ['administrador', 'desenvolvedor'])
+            ->whereIn('name', ['administrator', 'developer', 'administrador', 'desenvolvedor'])
             ->get()
             ->each(fn (Role $role) => $role->permissions()->syncWithoutDetaching($permissions));
     }

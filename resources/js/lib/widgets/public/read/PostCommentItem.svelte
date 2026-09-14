@@ -87,8 +87,8 @@
     };
 </script>
 
-<div class={["relative", nested ? "" : ""]}>
-    <div class={["relative flex items-start", nested ? "gap-[26px]" : "gap-[28px]"]}>
+<div class="relative min-w-0">
+    <div class={["relative flex min-w-0 items-start", nested ? "gap-2 sm:gap-[26px]" : "gap-2.5 sm:gap-[28px]"]}>
         {#if nested}
             <svg
                 class={[
@@ -100,22 +100,22 @@
                 aria-hidden="true"
             >
                 <path
-                    d="M1 0 V14 A10 10 0 0 0 11 24 H22"
+                    d="M0.7 0 V14 A10 10 0 0 0 11 24 H22"
                     stroke="#0091ff"
                     stroke-width="4"
                     stroke-linecap="butt"
                     stroke-linejoin="round"
                 />
-                <path d="M22 19 L32 24 L22 29 Z" fill="#0091ff" />
+                <path d="M22 19 L33 24 L22 29 Z" fill="#0091ff" />
             </svg>
             {#if isLast}
-                <span class="public-comment-thread-mask absolute -left-[41px] top-[20px] bottom-[-14px] z-[5] hidden w-[4px] bg-blue-marinho sm:block"></span>
+                <span class="public-comment-thread-mask absolute -left-[41px] top-[17px] bottom-[-14px] z-[5] hidden w-[4px] bg-blue-marinho sm:block"></span>
             {/if}
         {/if}
 
         <div class={[
-            "relative z-10 shrink-0 overflow-hidden rounded-full border-[3px] border-neutral-gray/35 bg-transparent",
-            nested ? "mt-[1px] size-[44px]" : "mt-[2px] size-[56px]",
+            "relative z-10 shrink-0 overflow-hidden rounded-full border-2 border-neutral-gray/35 bg-transparent sm:border-[3px]",
+            nested ? "mt-[1px] size-8 sm:size-[44px]" : "mt-[2px] size-10 sm:size-[56px]",
         ]}>
             <img
                 src={resolvePlaceholderImage(item.author?.avatar, "avatar", item.author?.gender)}
@@ -127,19 +127,19 @@
         </div>
 
         <article class={[
-            "public-comment-card relative min-h-[58px] min-w-0 flex-1 rounded-[7px] border border-transparent bg-blue-ocean px-[18px] py-[10px] shadow-none before:absolute before:left-[-20px] before:top-[16px] before:size-0 before:border-y-[13px] before:border-r-[21px] before:border-y-transparent before:border-r-blue-ocean before:content-[''] after:absolute after:left-[-18px] after:top-[17px] after:size-0 after:border-y-[12px] after:border-r-[20px] after:border-y-transparent after:border-r-blue-ocean after:content-['']",
+            "public-comment-card relative min-h-[58px] min-w-0 flex-1 rounded-[7px] border border-transparent bg-blue-ocean px-3 py-2 shadow-none sm:px-[18px] sm:py-[10px] sm:before:absolute sm:before:left-[-20px] sm:before:top-[16px] sm:before:size-0 sm:before:border-y-[13px] sm:before:border-r-[21px] sm:before:border-y-transparent sm:before:border-r-blue-ocean sm:before:content-[''] sm:after:absolute sm:after:left-[-18px] sm:after:top-[17px] sm:after:size-0 sm:after:border-y-[12px] sm:after:border-r-[20px] sm:after:border-y-transparent sm:after:border-r-blue-ocean sm:after:content-['']",
             themeClass("bg", "neutral-light", { fixed: true, theme: "light" }),
             themeClass("text", "blue-night", { fixed: true, theme: "light" }),
             "[[data-public-theme=light]_&]:border-blue-night/10 [[data-public-theme=light]_&]:before:border-r-[#e8e8e8] [[data-public-theme=light]_&]:after:border-r-[#e8e8e8]",
             isHidden ? "opacity-70 outline outline-1 outline-blue-skywave/40" : "",
         ]}>
-            <div class="flex items-start justify-between gap-4">
+            <div class="grid min-w-0 gap-2 sm:flex sm:items-start sm:justify-between sm:gap-4">
                 <div class={["min-w-0", themeClass("text", "suspense-aurora", { fixed: true }), themeClass("text", "blue-night", { fixed: true, theme: "light" })]}>
                     <div class="flex min-w-0 flex-wrap items-center gap-x-[7px] gap-y-1 leading-none">
-                        <p class="truncate text-[12px] font-black uppercase italic leading-none tracking-normal text-current">
+                        <p class="max-w-full truncate text-[11px] font-black uppercase italic leading-none tracking-normal text-current sm:text-[12px]">
                             {item.author?.name}
                         </p>
-                        <span class="text-[11px] font-black leading-none text-current opacity-55">
+                        <span class="text-[10px] font-black leading-none text-current opacity-55 sm:text-[11px]">
                             • {item.created_at}{item.is_edited ? " · editado" : ""}
                         </span>
                         {#if isHidden}
@@ -154,7 +154,7 @@
                     </div>
                 </div>
 
-                <div class="flex shrink-0 flex-wrap justify-end gap-[7px] pt-px">
+                <div class="flex shrink-0 flex-wrap justify-start gap-[7px] pt-px sm:justify-end">
                     {#if canReply && !nested}
                         <IconButton
                             variant="reply"
@@ -264,7 +264,7 @@
                         bind:value={editComment}
                         rows="4"
                         maxlength="1000"
-                        class={["public-comment-input min-h-24 w-full resize-none rounded-md border-2 border-blue-skywave/30 bg-blue-marinho px-4 py-3 text-sm font-bold text-suspense-aurora focus:outline-none", themeClass("bg", "neutral-light", { fixed: true, theme: "light" }), themeClass("text", "blue-night", { fixed: true, theme: "light" }), themeClass("placeholder", "suspense-aurora", { fixed: true }), themeClass("placeholder", "blue-night/45", { theme: "light" })]}
+                        class={["public-comment-input min-h-24 w-full min-w-0 resize-none rounded-md border-2 border-blue-skywave/30 bg-blue-marinho px-3 py-2.5 text-sm font-bold text-suspense-aurora focus:outline-none sm:px-4 sm:py-3", themeClass("bg", "neutral-light", { fixed: true, theme: "light" }), themeClass("text", "blue-night", { fixed: true, theme: "light" }), themeClass("placeholder", "suspense-aurora", { fixed: true }), themeClass("placeholder", "blue-night/45", { theme: "light" })]}
                     ></textarea>
                     <div class="flex flex-wrap justify-end gap-2">
                         <button
@@ -284,7 +284,7 @@
                     </div>
                 </form>
             {:else}
-                <p class={["mt-[6px] whitespace-pre-line text-[15px] font-semibold leading-[1.35] tracking-normal", themeClass("text", "suspense-aurora", { fixed: true }), themeClass("text", "blue-night", { fixed: true, theme: "light" })]}>
+                <p class={["mt-[6px] whitespace-pre-line break-words text-[13px] font-semibold leading-[1.4] tracking-normal sm:text-[15px] sm:leading-[1.35]", themeClass("text", "suspense-aurora", { fixed: true }), themeClass("text", "blue-night", { fixed: true, theme: "light" })]}>
                     {item.comment}
                 </p>
             {/if}
@@ -296,7 +296,7 @@
                         rows="3"
                         maxlength="1000"
                         placeholder="Escreva sua resposta..."
-                        class={["public-comment-input min-h-20 w-full resize-none rounded-md border-2 border-blue-skywave/30 bg-blue-marinho px-4 py-3 text-sm font-bold text-suspense-aurora focus:outline-none", themeClass("bg", "neutral-light", { fixed: true, theme: "light" }), themeClass("text", "blue-night", { fixed: true, theme: "light" }), themeClass("placeholder", "suspense-aurora", { fixed: true }), themeClass("placeholder", "blue-night/45", { theme: "light" })]}
+                        class={["public-comment-input min-h-20 w-full min-w-0 resize-none rounded-md border-2 border-blue-skywave/30 bg-blue-marinho px-3 py-2.5 text-sm font-bold text-suspense-aurora focus:outline-none sm:px-4 sm:py-3", themeClass("bg", "neutral-light", { fixed: true, theme: "light" }), themeClass("text", "blue-night", { fixed: true, theme: "light" }), themeClass("placeholder", "suspense-aurora", { fixed: true }), themeClass("placeholder", "blue-night/45", { theme: "light" })]}
                     ></textarea>
                     <div class="flex flex-wrap justify-end gap-2">
                         <button
@@ -320,7 +320,7 @@
     </div>
 
     {#if replies.length}
-        <div class="relative mt-[16px] grid gap-[14px] pl-[66px] before:absolute before:bottom-[35px] before:left-[25px] before:top-[-48px] before:w-[4px] before:bg-[#00a8ff] before:content-[''] max-sm:pl-[34px] max-sm:before:hidden">
+        <div class="relative mt-3 grid min-w-0 gap-3 pl-5 sm:mt-[16px] sm:gap-[14px] sm:pl-[66px] sm:before:absolute sm:before:bottom-[35px] sm:before:left-[25px] sm:before:top-[-48px] sm:before:w-[4px] sm:before:bg-[#0091ff] sm:before:content-['']">
             {#each replies as reply, index}
                 <svelte:self post={post} item={reply} {oauth} {commentBasePath} depth={depth + 1} isLast={index === replies.length - 1} />
             {/each}

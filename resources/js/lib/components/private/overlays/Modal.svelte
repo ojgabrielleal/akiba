@@ -64,7 +64,11 @@
         on:click={close}
     >
         <div
-            class={["my-auto w-full min-w-0 rounded-t-2xl rounded-b-md border-0 bg-suspense-aurora shadow-none outline-none ring-0 focus:outline-none focus:ring-0", sizes[size] ?? sizes.sm]}
+            class={[
+                "my-auto w-full min-w-0 border-0 bg-suspense-aurora shadow-none outline-none ring-0 focus:outline-none focus:ring-0",
+                title ? "rounded-t-2xl rounded-b-md" : "rounded-md",
+                sizes[size] ?? sizes.sm,
+            ]}
             role="dialog"
             aria-modal="true"
             aria-labelledby={titleId}

@@ -4,12 +4,11 @@
     $: referenceList = Array.isArray(references) ? references : references?.data ?? [];
 </script>
 
-<section class="mt-8 font-noto-sans uppercase">
-    <h2 class="mb-3 text-xl leading-none font-normal text-orange-amber">
-        Fontes de pesquisa
-    </h2>
-
-    {#if referenceList.length}
+{#if referenceList.length}
+    <section class="mt-8 font-noto-sans uppercase">
+        <h2 class="mb-3 text-xl leading-none font-normal text-orange-amber">
+            Fontes de pesquisa
+        </h2>
         <ul class="grid gap-2">
             {#each referenceList.slice(0, 2) as reference}
                 <li>
@@ -24,9 +23,12 @@
                 </li>
             {/each}
         </ul>
-    {:else}
-        <p class="rounded-md border border-blue-skywave/30 px-4 py-5 text-center text-sm font-bold text-suspense-aurora/70">
-            Sem fontes de pesquisa
-        </p>
-    {/if}
-</section>
+    </section>
+{:else}
+    <section class="mt-8 hidden font-noto-sans uppercase md:block md:invisible" aria-hidden="true">
+        <div class="mb-3 text-xl leading-none font-normal text-orange-amber">
+            Fontes de pesquisa
+        </div>
+        <div class="min-h-12 rounded-md px-4 py-3"></div>
+    </section>
+{/if}

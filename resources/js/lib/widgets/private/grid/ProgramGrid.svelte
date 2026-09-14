@@ -35,12 +35,12 @@
             icon: "/svg/onair.svg",
         },
         {
-            title: "Gravados",
+            title: "Agendados",
             execution_mode: "scheduled",
             icon: "/svg/bestAvaliable.svg",
         },
         {
-            title: "Playlist",
+            title: "Playlists",
             execution_mode: "playlist",
             icon: "/svg/disc.svg",
         },

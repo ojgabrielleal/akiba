@@ -12,28 +12,33 @@
     $: authorNickname = post.author?.nickname ?? post.author?.name ?? "Neko Kirame";
     $: authorName = post.author?.name ?? "Ellyson Santos de Castro";
     $: sources = (post.references ?? []).filter((source) => source.name && source.url).slice(0, 2);
+    $: canShowSources = showSources && sources.length > 0;
+    $: shouldReserveSources = showSources && !sources.length;
 </script>
 
 {#if showAuthor || showSources || (showPublished && post.created_at)}
     <footer class="mt-9 grid items-stretch gap-x-4 gap-y-12 font-noto-sans uppercase md:grid-cols-[minmax(0,1fr)_24rem] md:gap-y-4">
         {#if showSources || (showPublished && post.created_at)}
             <div class="grid grid-rows-[auto_auto_1fr] gap-4">
-                {#if showSources}
+                {#if canShowSources}
                     <h2 class="text-center text-xl leading-none font-normal text-orange-amber">
                         Fontes
                     </h2>
                     <div class="grid gap-4">
-                        {#if sources.length}
-                            {#each sources as source}
-                                <a href={source.url} class={["flex min-h-12 items-center rounded-md bg-blue-cerulean px-4 py-3 text-sm font-black", themeClass("text", "suspense-aurora", { fixed: true })]} target="_blank" rel="noopener noreferrer" aria-label={source.name}>
-                                    {source.name}
-                                </a>
-                            {/each}
-                        {:else}
-                            <p class="flex min-h-12 items-center rounded-md border border-blue-skywave/30 px-4 py-3 text-sm font-bold text-suspense-aurora/70">
-                                Nenhuma fonte encontrada.
-                            </p>
-                        {/if}
+                        {#each sources as source}
+                            <a href={source.url} class={["flex min-h-12 items-center rounded-md bg-blue-cerulean px-4 py-3 text-sm font-black", themeClass("text", "suspense-aurora", { fixed: true })]} target="_blank" rel="noopener noreferrer" aria-label={source.name}>
+                                {source.name}
+                            </a>
+                        {/each}
+                    </div>
+                {:else if shouldReserveSources}
+                    <div class="hidden text-center text-xl leading-none font-normal text-orange-amber md:block md:invisible" aria-hidden="true">
+                        Fontes
+                    </div>
+                    <div class="hidden gap-4 md:grid md:invisible" aria-hidden="true">
+                        <span class="flex min-h-12 items-center rounded-md px-4 py-3 text-sm font-black">
+                            Fontes indisponíveis
+                        </span>
                     </div>
                 {/if}
                 {#if showPublished && post.created_at}

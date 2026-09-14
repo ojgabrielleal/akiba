@@ -60,6 +60,7 @@ class AppServiceProvider extends ServiceProvider
             'form.submission.review',
             'locution.start',
             'locution.finish',
+            'locution.finish.any',
         ];
 
         foreach ($permissions as $permission) {
