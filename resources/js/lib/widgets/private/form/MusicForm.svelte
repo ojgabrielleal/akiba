@@ -19,7 +19,7 @@
         image: null,
         image_ranking: null,
         type: musicSelected?.type ?? null,
-        production: musicSelected?.production ?? null,
+        anime: musicSelected?.anime?.name ?? musicSelected?.production ?? null,
         artist: musicSelected?.artist ?? null,
         name: musicSelected?.name ?? null,
     });
@@ -45,7 +45,7 @@
                 tone="muted"
                 color="muted"
                 name="image"
-                src={$form.image ?? musicSelected?.image}
+                src={$form.image ?? musicSelected?.anime?.image ?? musicSelected?.image}
                 error={$form.errors.image}
                 oninput={(event) => ($form.image = event.target.files[0])}
             />
@@ -84,14 +84,14 @@
             required
         />
     </FormField>
-    <FormField for="production" label="Anime" error={$form.errors.production}>
+    <FormField for="anime" label="Anime" error={$form.errors.anime}>
         <TextInput
             variant="offcanvas"
-            id="production"
+            id="anime"
             type="text"
-            name="production"
-            bind:value={$form.production}
-            error={$form.errors.production}
+            name="anime"
+            bind:value={$form.anime}
+            error={$form.errors.anime}
             required
         />
     </FormField>
@@ -112,6 +112,9 @@
             </option>
             <option value="ED">
                 ED
+            </option>
+            <option value="OVA">
+                OVA
             </option>
         </SelectInput>
     </FormField>

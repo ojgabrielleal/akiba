@@ -13,6 +13,7 @@ class UserTopAnime extends Model
     protected $fillable = [
         'uuid',
         'user_id',
+        'anime_id',
         'position',
         'anime_theme_list_id',
         'slug',
@@ -23,6 +24,7 @@ class UserTopAnime extends Model
 
     protected $hidden = [
         'user_id',
+        'anime_id',
     ];
 
     protected $casts = [
@@ -38,5 +40,10 @@ class UserTopAnime extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function anime()
+    {
+        return $this->belongsTo(Anime::class, 'anime_id');
     }
 }

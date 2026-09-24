@@ -103,7 +103,7 @@ class User extends Authenticatable
 
     public function topAnimes()
     {
-        return $this->hasMany(UserTopAnime::class, 'user_id')->orderBy('position');
+        return $this->hasMany(UserTopAnime::class, 'user_id')->with('anime')->orderBy('position');
     }
 
     public function socials()

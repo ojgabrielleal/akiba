@@ -212,8 +212,8 @@
                         </div>
                         <div class="flex items-center gap-3 min-w-0">
                             <img
-                                src={resolvePlaceholderImage(item.music.image, "placeholder")}
-                                alt={`Capa do anime ${item.music.production}`}
+                                src={resolvePlaceholderImage(item.music.anime?.image ?? item.music.image, "placeholder")}
+                                alt={`Capa do anime ${item.music.anime?.name ?? item.music.production}`}
                                 class="w-15 h-15 rounded-md object-cover object-top shrink-0"
                                 loading="lazy"
                             />
@@ -222,7 +222,7 @@
                                     <span class="font-light">
                                         Anime:
                                     </span>
-                                    {item.music.production}
+                                    {item.music.anime?.name ?? item.music.production}
                                 </div>
                                 <div class="w-full block text-suspense-aurora text-sm font-noto-sans truncate">
                                     <span class="font-light">

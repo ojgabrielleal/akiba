@@ -1,32 +1,37 @@
 <?php
 
-namespace Tests\Unit\Services\Radio;
+namespace Tests\Unit\Actions\Radio;
 
+use App\Models\Anime;
 use App\Services\MusicService;
 use App\Models\Music;
 use App\Processing\ImageProcess;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class MusicServiceTest extends TestCase
+class UpdateMusicActionTest extends TestCase
 {
     use RefreshDatabase;
 
     public function testItUpdatesMusicData(): void
     {
-        $music = Music::factory()->create([
+        $anime = Anime::factory()->create([
+            'name' => 'Old Anime',
+            'slug' => 'old-anime',
+            'image' => '/storage/images/musics/old.webp',
+        ]);
+
+        $music = Music::factory()->for($anime, 'anime')->create([
             'type' => 'OP',
-            'production' => 'Old Anime',
             'artist' => 'Old Artist',
             'name' => 'Old Song',
-            'image' => '/storage/images/musics/old.webp',
         ]);
 
         $service = new MusicService(new ImageProcess());
 
         $service->update($music, [
             'type' => 'ED',
-            'production' => 'New Anime',
+            'anime' => 'New Anime',
             'artist' => 'New Artist',
             'name' => 'New Song',
         ]);
@@ -34,9 +39,9 @@ class MusicServiceTest extends TestCase
         $music->refresh();
 
         $this->assertSame('ED', $music->type);
-        $this->assertSame('New Anime', $music->production);
+        $this->assertSame('New Anime', $music->anime->name);
         $this->assertSame('New Artist', $music->artist);
         $this->assertSame('New Song', $music->name);
-        $this->assertSame('/storage/images/musics/old.webp', $music->image);
+        $this->assertNull($music->anime->image);
     }
 }

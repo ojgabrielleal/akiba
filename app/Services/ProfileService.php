@@ -2,10 +2,12 @@
 
 namespace App\Services;
 
+use App\Models\Anime;
 use App\Models\User;
 use App\Processing\ImageProcess;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class ProfileService
 {
@@ -77,9 +79,12 @@ class ProfileService
                         continue;
                     }
 
+                    $storedAnime = $this->storeAnime($anime);
+
                     $user->topAnimes()->updateOrCreate(
                         ['position' => $anime['position']],
                         [
+                            'anime_id' => $storedAnime->id,
                             'anime_theme_list_id' => $anime['anime_theme_list_id'] ?? null,
                             'slug' => $anime['slug'] ?? null,
                             'name' => $anime['name'],
@@ -168,4 +173,27 @@ class ProfileService
 
             return $user;
         });
-    }}
+
+    }
+
+    private function storeAnime(array $data): Anime
+    {
+        $slug = filled($data['slug'] ?? null)
+            ? $data['slug']
+            : (Str::slug($data['name']) ?: Str::uuid()->toString());
+
+        $anime = Anime::firstOrNew(['slug' => $slug]);
+
+        $anime->fill([
+            'name' => $data['name'],
+            'slug' => $slug,
+            'image' => $data['image'] ?? $anime->image,
+        ]);
+
+        if (! $anime->exists || $anime->isDirty()) {
+            $anime->save();
+        }
+
+        return $anime;
+    }
+}

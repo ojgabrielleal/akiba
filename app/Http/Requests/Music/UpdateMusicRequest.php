@@ -22,8 +22,8 @@ class UpdateMusicRequest extends LoggedWebRequest
     public function rules(): array
     {
         return [
-            'type' => 'required|string|max:255',
-            'production' => 'required|string|max:255',
+            'type' => 'required|string|in:OP,ED,OVA',
+            'anime' => 'required|string|max:255',
             'artist' => 'required|string|max:255',
             'name' => 'required|string|max:255',
             'image' => 'nullable|image',

@@ -57,7 +57,7 @@
                                 <span class="font-medium">
                                     Anime:
                                 </span>
-                                {songs[index].production}
+                                {songs[index].anime?.name ?? songs[index].production}
                             </div>
                         </div>
                     </li>
@@ -83,7 +83,7 @@
                             </p>
                             <p class="mt-1 truncate text-xs font-normal uppercase">
                                 Anime:
-                                {music.production}
+                                {music.anime?.name ?? music.production}
                             </p>
                         </div>
                     </li>

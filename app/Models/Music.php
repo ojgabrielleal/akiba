@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Music extends Model
 {
@@ -14,17 +15,22 @@ class Music extends Model
 
     protected $fillable = [
         'uuid',
+        'anime_id',
         'type',
-        'production',
-        'image',
         'artist',
         'name',
+        'is_manual',
         'in_ranking',
         'image_ranking',
         'song_requests_total',
     ];
 
+    protected $hidden = [
+        'anime_id',
+    ];
+
     protected $casts = [
+        'is_manual' => 'boolean',
         'in_ranking' => 'boolean',
         'song_requests_total' => 'integer',
     ];
@@ -50,7 +56,14 @@ class Music extends Model
     #[Scope]
     protected function inRanking(Builder $query): void
     {
-        $query->where('in_ranking', true);
+        $query->where('in_ranking', true)
+            ->where('is_manual', false);
+    }
+
+    #[Scope]
+    protected function automatic(Builder $query): void
+    {
+        $query->where('is_manual', false);
     }
 
     /**
@@ -60,9 +73,15 @@ class Music extends Model
      * rules that return finalized results, such as reports,
      * aggregations, or ranked lookups.
      */
+
+    public function anime(): BelongsTo
+    {
+        return $this->belongsTo(Anime::class, 'anime_id');
+    }
+
     public static function mostRequested(int $limit = 3)
     {
-        return self::orderBy('song_requests_total', 'desc')
+        return self::with('anime')->automatic()->orderBy('song_requests_total', 'desc')
             ->limit($limit)
             ->get();
     }

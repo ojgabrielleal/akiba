@@ -102,19 +102,20 @@ class ListenerMonth extends Model
             SELECT 
                 music.name AS name,
                 music.artist AS artist,
-                music.production AS production,
-                music.image AS image,
+                animes.name AS production,
+                animes.image AS image,
                 COUNT(*) AS requests_total
             FROM song_requests
             JOIN music ON song_requests.music_id = music.id 
+            LEFT JOIN animes ON music.anime_id = animes.id
             WHERE song_requests.created_at BETWEEN ? AND ? 
                 AND song_requests.requester_type = ?
                 AND song_requests.requester_id = ?
             GROUP BY 
                 music.name, 
                 music.artist,
-                music.production,
-                music.image
+                animes.name,
+                animes.image
             ORDER BY requests_total DESC
             LIMIT 1
         ', [$startOfMonth, $endOfMonth, OAuthAccount::class, $listener->oauth_account_id]);

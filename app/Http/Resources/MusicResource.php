@@ -14,16 +14,20 @@ class MusicResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $anime = $this->relationLoaded('anime') ? $this->anime : null;
+
         return [
             'uuid' => $this->uuid,
             'name' => $this->name,
             'type' => $this->type,
-            'image' => $this->image,
-            'production' => $this->production,
+            'is_manual' => $this->is_manual,
+            'anime' => AnimeResource::make($this->whenLoaded('anime')),
+            'image' => $anime?->image,
+            'production' => $anime?->name,
             'artist' => $this->artist,
             'ranking' => [
                 'image' => $this->image_ranking,
-            ]
+            ],
         ];
     }
 }

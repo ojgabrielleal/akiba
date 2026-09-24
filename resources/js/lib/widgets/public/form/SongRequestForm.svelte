@@ -16,11 +16,15 @@
     });
 
     const submit = () => {
+        if ($form.processing) return;
+
         $form.post("/song-request", {
+            preserveScroll: true,
             onSuccess: () => {
                 toast.success($form.music ? "Pedido enviado!" : "Recado enviado!");
                 close();
             },
+            onError: () => toast.error("Revise o pedido e tente novamente."),
         });
     };
 
@@ -32,10 +36,18 @@
 
     let searchError = false;
     let hasSearched = false;
+    let apiAvailable = true;
+    let manualAnime = "";
+    let manualMusicName = "";
 
     let latestSearchId = 0;
     let isSearching = false;
     let requestMode = "music";
+
+    $: showManualMusicFields = requestMode === "music"
+        && hasSearched
+        && searchResults.length === 0
+        && !apiAvailable;
 
     const selectRequestMode = (mode) => {
         requestMode = mode;
@@ -45,9 +57,42 @@
             searchResults = [];
             searchMusicResults = [];
             activeSearchDropdown = false;
+            manualAnime = "";
+            manualMusicName = "";
             $form.anime = null;
             $form.music = null;
         }
+    };
+
+    const syncManualMusic = () => {
+        const anime = manualAnime.trim();
+        const name = manualMusicName.trim();
+
+        $form.anime = anime || null;
+        $form.music = anime && name
+            ? {
+                production: anime,
+                type: "OVA",
+                artist: "Não informado",
+                name,
+                image: null,
+                is_manual: true,
+            }
+            : null;
+    };
+
+    const resetManualMusic = () => {
+        searchQuery = "";
+        searchResults = [];
+        searchMusicResults = [];
+        searchError = false;
+        hasSearched = false;
+        apiAvailable = true;
+        manualAnime = "";
+        manualMusicName = "";
+        activeSearchDropdown = false;
+        $form.anime = null;
+        $form.music = null;
     };
 
     const searchAnimeThemes = async (value, searchId) => {
@@ -58,7 +103,11 @@
 
             if (searchId !== latestSearchId) return;
 
-            const results = Array.isArray(response.data) ? response.data : [];
+            const results = Array.isArray(response.data)
+                ? response.data
+                : response.data?.results ?? [];
+
+            apiAvailable = response.data?.api_available ?? true;
             searchResults = results.map((item) => ({
                 title: item.anime,
                 image: item.banner,
@@ -86,7 +135,9 @@
         searchMusicResults = [];
         searchError = false;
         hasSearched = false;
-
+        apiAvailable = true;
+        manualAnime = "";
+        manualMusicName = "";
         $form.anime = null;
         $form.music = null;
 
@@ -102,6 +153,14 @@
         debouncedSearchAnimeThemes(query, searchId);
     };
 
+    const normalizeArtists = (artists) => {
+        if (Array.isArray(artists)) {
+            return artists.filter(Boolean).join(", ");
+        }
+
+        return artists || "Artista não informado";
+    };
+
     const selectAnime = (item) => {
         activeSearchDropdown = false;
 
@@ -113,7 +172,8 @@
             image: item.image,
             type: music.type,
             name: music.title,
-            artist: music.artists,
+            artist: normalizeArtists(music.artists),
+            is_manual: false,
         }));
 
         if (searchMusicResults.length === 1) {
@@ -145,6 +205,11 @@
                 <span class="text-[0.8rem] text-gray-500 font-noto-sans mt-1 block">
                     Fora do Brasil? Informe cidade e país que tu está!.
                 </span>
+                {#if $form.errors.address}
+                    <span class="mt-1 block font-noto-sans text-xs text-red-600">
+                        {$form.errors.address}
+                    </span>
+                {/if}
             </div>
             <div>
                 <label for="birth-date" class="text-md text-gray-700 font-noto-sans block mb-1">
@@ -161,6 +226,11 @@
                 <span class="text-[0.8rem] text-gray-500 font-noto-sans mt-1 block">
                     É só pra mostrar sua idade caso você seja o Ouvinte do Mês.
                 </span>
+                {#if $form.errors.birth_date}
+                    <span class="mt-1 block font-noto-sans text-xs text-red-600">
+                        {$form.errors.birth_date}
+                    </span>
+                {/if}
             </div>
         </div>
     {/if}
@@ -169,7 +239,7 @@
             <button
                 type="button"
                 class={["h-8 rounded-full px-3 font-noto-sans text-[0.7rem] font-extrabold uppercase italic transition sm:px-4",
-                    requestMode === "music" ? "bg-orange-amber text-blue-marinho" : "cursor-pointer text-gray-600 hover:text-blue-ocean",
+                    requestMode === "music" ? "bg-orange-citric text-blue-marinho" : "cursor-pointer text-gray-600 hover:text-blue-ocean",
                 ]}
                 aria-pressed={requestMode === "music"}
                 on:click={() => selectRequestMode("music")}
@@ -179,7 +249,7 @@
             <button
                 type="button"
                 class={["h-8 rounded-full px-3 font-noto-sans text-[0.7rem] font-extrabold uppercase italic transition sm:px-4",
-                    requestMode === "message" ? "bg-orange-amber text-blue-marinho" : "cursor-pointer text-gray-600 hover:text-blue-ocean",
+                    requestMode === "message" ? "bg-orange-citric text-blue-marinho" : "cursor-pointer text-gray-600 hover:text-blue-ocean",
                 ]}
                 aria-pressed={requestMode === "message"}
                 on:click={() => selectRequestMode("message")}
@@ -188,7 +258,7 @@
             </button>
         </div>
     </div>
-    {#if requestMode === "music"}
+    {#if requestMode === "music" && !showManualMusicFields}
         <div class="mb-3 relative">
             <label for="anime-theme-search" class="text-md text-gray-700 font-noto-sans block mb-1">
                 Busque por anime ou música
@@ -209,7 +279,7 @@
                 Diga o nome do anime ou da música e faremos o resto!
             </span>
             {#if activeSearchDropdown}
-                <div class="public-themed-scrollbar absolute w-full bg-white border border-gray-200 rounded-2xl shadow-xl z-25 max-h-56 overflow-y-auto p-2">
+                <div class="public-themed-scrollbar absolute z-50 w-full max-h-56 overflow-y-auto rounded-2xl border border-gray-200 bg-white p-2 shadow-xl">
                     {#if !searchQuery.trim()}
                         <div class="p-3 font-noto-sans text-center">
                             <div class="text-gray-700 text-sm font-semibold">
@@ -250,7 +320,7 @@
                         {#each searchResults as item}
                             <button aria-label={`Selecionar anime ${item.title}`}
                                 type="button"
-                                class="cursor-pointer flex items-center gap-3 w-full p-2 rounded-xl"
+                                class="flex w-full cursor-pointer items-center gap-3 rounded-xl p-2 transition hover:bg-orange-citric/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric"
                                 on:mousedown={() => selectAnime(item)}
                             >
                                 <img
@@ -266,7 +336,7 @@
                                     {#each item.musics.slice(0, 2) as music}
                                         <div class="w-full text-gray-500 text-xs line-clamp-1">
                                             <span class="font-bold text-blue-ocean">{music.type}</span>
-                                            {music.title}{music.artists ? ` — ${music.artists}` : ""}
+                                            {music.title}{music.artists ? ` - ${normalizeArtists(music.artists)}` : ""}
                                         </div>
                                     {/each}
                                     {#if item.musics.length > 2}
@@ -282,21 +352,70 @@
             {/if}
         </div>
     {/if}
+    {#if showManualMusicFields}
+        <div class="mb-3 rounded-md border border-orange-citric/45 bg-orange-citric/10 px-4 py-3 font-noto-sans">
+            <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                    <p class="text-sm font-extrabold text-blue-marinho">
+                        Não achei essa música no catálogo
+                    </p>
+                    <p class="mt-0.5 text-xs text-blue-marinho/70">
+                        Me diz o anime e o nome da música que eu mando do seu jeito.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="mb-3 relative">
+            <label for="manual-anime" class="text-md text-gray-700 font-noto-sans block mb-1">
+                Qual é o nome do anime? <span class="text-red-600">*</span>
+            </label>
+            <input
+                id="manual-anime"
+                type="text"
+                name="manual_anime"
+                class="w-full h-10 bg-white font-noto-sans text-md text-black rounded-md outline-none px-4 border border-gray-400"
+                placeholder="Ex: Naruto"
+                bind:value={manualAnime}
+                on:input={syncManualMusic}
+                required
+            />
+        </div>
+        <div class="mb-3 relative">
+            <label for="manual-music" class="text-md text-gray-700 font-noto-sans block mb-1">
+                Qual é a música desse anime? <span class="text-red-600">*</span>
+            </label>
+            <input
+                id="manual-music"
+                type="text"
+                name="manual_music"
+                class="w-full h-10 bg-white font-noto-sans text-md text-black rounded-md outline-none px-4 border border-gray-400"
+                placeholder="Ex: Blue Bird"
+                bind:value={manualMusicName}
+                on:input={syncManualMusic}
+                required
+            />
+        </div>
+        {#if $form.errors.music}
+            <span class="sm:col-span-2 mt-1 block font-noto-sans text-xs text-red-600">
+                {$form.errors.music}
+            </span>
+        {/if}
+    {/if}
     {#if requestMode === "music" && searchMusicResults.length > 1}
         <div class="mb-5">
             <div class="text-md text-gray-700 font-noto-sans block mb-1">
                 Escolha uma música:
             </div>
             <div class="public-themed-scrollbar song-request-music-list max-h-44 overflow-y-auto rounded-md border border-blue-ocean/20 bg-blue-ocean/[0.03] p-2">
-                {#each ["OP", "ED"] as type}
+                {#each ["OP", "ED", "OVA"] as type}
                     {#if searchMusicResults.some((item) => item.type === type)}
                         <div class="px-2 py-2 font-noto-sans text-[0.62rem] font-extrabold uppercase tracking-[0.2em] text-orange-amber">
-                            {type === "OP" ? "Aberturas" : "Encerramentos"}
+                            {type === "OP" ? "Aberturas" : type === "ED" ? "Encerramentos" : "OVAs"}
                         </div>
                         {#each searchMusicResults.filter((item) => item.type === type) as item}
                             <label class={["mb-2 flex cursor-pointer items-center gap-3 rounded-md border p-3 font-noto-sans transition",
-                                { "border-orange-amber bg-orange-amber text-blue-marinho shadow-sm": $form.music === item },
-                                { "border-blue-ocean/10 bg-white text-blue-marinho hover:border-orange-amber/70 hover:bg-orange-amber/5": $form.music !== item },
+                                { "border-orange-citric bg-orange-citric text-blue-marinho shadow-sm": $form.music === item },
+                                { "border-blue-ocean/10 bg-white text-blue-marinho hover:border-orange-citric/70 hover:bg-orange-citric/5": $form.music !== item },
                             ]}>
                                 <input
                                     type="radio"
@@ -325,6 +444,11 @@
                     {/if}
                 {/each}
             </div>
+            {#if $form.errors.music}
+                <span class="mt-1 block font-noto-sans text-xs text-red-600">
+                    {$form.errors.music}
+                </span>
+            {/if}
         </div>
     {/if}
     <div class="mb-3">
@@ -354,8 +478,9 @@
     </div>
     <button
         type="submit"
-        class="cursor-pointer font-noto-sans font-extrabold italic uppercase text-suspense-aurora py-2 px-6 rounded-full bg-blue-ocean"
+        class="cursor-pointer rounded-full bg-orange-citric px-6 py-2 font-noto-sans font-extrabold uppercase italic text-blue-marinho transition hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric focus-visible:ring-offset-2 disabled:cursor-wait disabled:opacity-70"
+        disabled={$form.processing}
     >
-        Enviar
+        {$form.processing ? "Enviando..." : "Enviar"}
     </button>
 </form>

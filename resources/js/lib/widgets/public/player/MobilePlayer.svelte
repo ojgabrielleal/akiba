@@ -17,6 +17,8 @@
     $: air = onair?.data?.[0] ?? {};
     $: currentSong = stream?.current_song ?? {};
     $: canRender = Boolean(onair?.data?.[0]);
+    $: hasActiveHost = air?.execution_mode === "live";
+    $: canRequestSong = hasActiveHost && air?.allows_song_requests;
 
     let modalRef;
 
@@ -46,6 +48,12 @@
 
     $: status = getStatus(playerData.executionMode, playerData.host.gender);
 
+    const openSongRequest = () => {
+        if (canRequestSong) {
+            modalRef.open();
+        }
+    };
+
     function getStatus(mode, gender) {
         if (mode === "auto_dj") {
             return { label: "Playlist automática", icon: "/svg/robot.svg" };
@@ -68,14 +76,25 @@
 
 <CustomModal bind:this={modalRef}>
     <div slot="content" let:close>
-        <AuthGuard
-            title="Entre para pedir sua música"
-            description="Use sua conta para continuar."
-            action={OAuthAction.OPEN_SONG_REQUEST}
-            {oauth}
-        >
-            <SongRequestForm {close} {oauth} />
-        </AuthGuard>
+        {#if canRequestSong}
+            <AuthGuard
+                title="Entre para pedir sua música"
+                description="Use sua conta para continuar."
+                action={OAuthAction.OPEN_SONG_REQUEST}
+                {oauth}
+            >
+                <SongRequestForm {close} {oauth} />
+            </AuthGuard>
+        {:else}
+            <div class="px-2 py-4 text-center font-noto-sans">
+                <h2 class="text-xl font-extrabold text-blue-night">
+                    Pedidos musicais fechados
+                </h2>
+                <p class="mt-2 text-sm text-gray-600">
+                    A locução ainda não abriu os pedidos.
+                </p>
+            </div>
+        {/if}
     </div>
 </CustomModal>
 
@@ -210,13 +229,13 @@
 
             <button
                 type="button"
-                class="w-full py-3 px-5 rounded-full border border-suspense-aurora/30 text-blue-skywave text-base text-center font-noto-sans font-extrabold italic uppercase active:scale-[0.98] transition-transform disabled:cursor-not-allowed disabled:border-gray-500 disabled:bg-gray-500/20 disabled:text-gray-500 disabled:active:scale-100"
-                disabled={!air?.allows_song_requests}
-                on:click={() => modalRef.open()}
+                class="w-full rounded-full border border-suspense-aurora/30 px-5 py-3 text-center font-noto-sans text-base font-extrabold uppercase italic text-blue-skywave transition-transform active:scale-[0.98] disabled:cursor-not-allowed disabled:border-gray-500 disabled:bg-gray-500/20 disabled:text-gray-500 disabled:active:scale-100"
+                disabled={!canRequestSong}
+                on:click={openSongRequest}
             >
                 Faça seu <strong class={[
-                    { "text-orange-amber": air?.allows_song_requests },
-                    { "text-gray-500": !air?.allows_song_requests },
+                    { "text-orange-citric": canRequestSong },
+                    { "text-gray-500": !canRequestSong },
                 ]}>pedido</strong>
             </button>
         </div>
@@ -357,13 +376,13 @@
 
                 <button
                     type="button"
-                    class="w-full py-3 px-5 rounded-full border border-suspense-aurora/30 text-blue-skywave text-base text-center font-noto-sans font-extrabold italic uppercase active:scale-[0.98] transition-transform disabled:cursor-not-allowed disabled:border-gray-500 disabled:bg-gray-500/20 disabled:text-gray-500 disabled:active:scale-100"
-                    disabled={!air?.allows_song_requests}
-                    on:click={() => modalRef.open()}
+                    class="w-full rounded-full border border-suspense-aurora/30 px-5 py-3 text-center font-noto-sans text-base font-extrabold uppercase italic text-blue-skywave transition-transform active:scale-[0.98] disabled:cursor-not-allowed disabled:border-gray-500 disabled:bg-gray-500/20 disabled:text-gray-500 disabled:active:scale-100"
+                    disabled={!canRequestSong}
+                    on:click={openSongRequest}
                 >
                     Faça seu <strong class={[
-                        { "text-orange-amber": air?.allows_song_requests },
-                        { "text-gray-500": !air?.allows_song_requests },
+                        { "text-orange-citric": canRequestSong },
+                        { "text-gray-500": !canRequestSong },
                     ]}>pedido</strong>
                 </button>
             </div>

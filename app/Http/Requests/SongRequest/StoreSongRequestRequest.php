@@ -32,10 +32,11 @@ class StoreSongRequestRequest extends LoggedWebRequest
             'anime' => 'nullable|string',
             'music' => 'nullable|array',
             'music.production' => 'required_with:music|string',
-            'music.type' => 'required_with:music|string',
-            'music.artist' => 'required_with:music|string',
+            'music.type' => 'nullable|string|in:OP,ED,OVA',
+            'music.artist' => 'nullable|string',
             'music.name' => 'required_with:music|string',
             'music.image' => 'nullable|string',
+            'music.is_manual' => 'nullable|boolean',
             'message' => 'required_without:music|nullable|string',
         ];
     }

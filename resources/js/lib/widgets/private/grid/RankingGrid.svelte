@@ -91,7 +91,7 @@
                                 <span class="font-medium">
                                     Anime:
                                 </span>
-                                {ranking.data[index].production}
+                                {ranking.data[index].anime?.name ?? ranking.data[index].production}
                             </div>
                         </div>
                     </div>

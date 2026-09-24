@@ -146,7 +146,7 @@
 
 <!-- Phrase Section -->
 {#if canRender}
-<section class="main-player-phrase-background w-full bg-contain bg-right bg-no-repeat mt-5 mb-4"  style={`--main-player-phrase-texture: url('${playerData.phrase.texture}'); background-image: var(--main-player-phrase-texture), var(--main-player-phrase-gradient, var(--gradient-blue-ocean-cerulean));`}>
+<section class="main-player-phrase-background w-full bg-contain bg-right bg-no-repeat mt-12 mb-8"  style={`--main-player-phrase-texture: url('${playerData.phrase.texture}'); background-image: var(--main-player-phrase-texture), var(--main-player-phrase-gradient, var(--gradient-blue-ocean-cerulean));`}>
     <div class="container-player h-[90px] relative">
         <div class="absolute -top-6 left-0 z-10 xl:-left-24">
             <img
@@ -192,8 +192,8 @@
     <!-- First Column-->
     <div class="block">
         <!--Program and Host Information-->
-        <div class="flex items-center gap-5 mb-10">
-            <div class="w-60">
+        <div class="flex items-center gap-5 mb-8">
+            <div class="w-55">
                 <img
                     src={resolvePlaceholderImage(playerData.program.image, "program")}
                     alt="Programa no ar"
@@ -241,10 +241,10 @@
             </div>
         </div>
         <!--Current Song Information-->
-        <div class="-mt-3 flex gap-3 items-end">
+        <div class="flex gap-3 items-end">
             <button
                 type="button"
-                class="group/cover w-20 shrink-0 cursor-zoom-in rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber"
+                class="group/cover w-18 shrink-0 cursor-zoom-in rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber"
                 aria-label="Ver capa da música em tela cheia"
                 on:click={openCoverLightbox}
             >

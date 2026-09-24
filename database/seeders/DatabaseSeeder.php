@@ -36,6 +36,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RadioStationSeeder::class,
             PodcastSeeder::class,
+            AnimeSeeder::class,
             MusicSeeder::class,
             PlaylistBattleSeeder::class,
             ListenerMonthSeeder::class,

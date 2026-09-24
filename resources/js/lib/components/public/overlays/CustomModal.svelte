@@ -49,12 +49,12 @@
     <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div
         transition:fade={{ x: "100%", duration: 500, easing: quintOut }}
-        class="modal-active w-screen h-screen fixed inset-0 flex justify-center items-center p-9 bg-black/40 backdrop-blur-xs z-[200]"
+        class="modal-active fixed inset-0 z-[200] flex h-[100dvh] w-screen items-center justify-center bg-black/40 p-4 backdrop-blur-xs sm:p-6 lg:p-9"
         role="presentation"
         on:click={close}
     >
         <div
-            class="w-full lg:w-104 bg-suspense-aurora rounded-t-xl rounded-b-xl relative"
+            class="relative flex max-h-[calc(100dvh-2rem)] w-full flex-col rounded-t-xl rounded-b-xl bg-suspense-aurora sm:max-h-[calc(100dvh-3rem)] lg:w-104"
             role="dialog"
             aria-modal="true"
             aria-label="Pedido musical"
@@ -72,7 +72,7 @@
                 <button
                     type="button"
                     aria-label="Fechar modal"
-                    class="w-6 h-6 cursor-pointer absolute -top-8 -right-5 flex justify-center items-center bg-suspense-aurora rounded-full"
+                    class="absolute right-3 top-3 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-suspense-aurora shadow-md sm:-right-5 sm:-top-8 sm:h-6 sm:w-6 sm:shadow-none"
                     on:click={close}
                 >
                     <img
@@ -84,7 +84,7 @@
                     />
                 </button>
             </header>
-            <div class="w-full max-h-[70vh] lg:max-h-[90vh] mt-5 p-5 overflow-y-auto">
+            <div class="w-full flex-1 overflow-y-auto p-5 pt-8 lg:pt-5">
                 <slot name="content" {close} />
             </div>
         </div>

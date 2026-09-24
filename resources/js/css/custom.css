@@ -9,7 +9,7 @@
  }
 
  .container-player {
-     width: min(100% - clamp(16px, 5vw, 64px), 1100px);
+     width: min(100% - clamp(16px, 5vw, 64px), 1020px);
      margin-inline: auto;
  }
 

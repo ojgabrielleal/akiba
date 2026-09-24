@@ -2,12 +2,14 @@
 
 namespace App\Services;
 
+use App\Models\Anime;
 use App\Models\Music;
 use App\Models\OAuthAccount;
 use App\Models\Onair;
 use App\Models\SongRequest;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -50,19 +52,39 @@ class SongRequestService
 
     private function storeMusic(array $data): Music
     {
-        $music = Music::where('name', $data['name'])->first();
+        $animeSlug = Str::slug($data['production']) ?: Str::uuid()->toString();
+        $isManual = (bool) ($data['is_manual'] ?? false);
+
+        $anime = Anime::firstOrCreate(
+            ['slug' => $animeSlug],
+            [
+                'name' => $data['production'],
+                'image' => $data['image'] ?? null,
+            ],
+        );
+
+        if (! $anime->image && ! empty($data['image'])) {
+            $anime->update(['image' => $data['image']]);
+        }
+
+        $music = Music::where('anime_id', $anime->id)
+            ->where('name', $data['name'])
+            ->first();
 
         if (! $music) {
             return Music::create([
-                'production' => $data['production'],
-                'type' => $data['type'],
-                'artist' => $data['artist'],
+                'anime_id' => $anime->id,
+                'type' => $data['type'] ?? 'OVA',
+                'artist' => $data['artist'] ?? 'Não informado',
                 'name' => $data['name'],
-                'image' => $data['image'],
+                'is_manual' => $isManual,
+                'song_requests_total' => $isManual ? 0 : 1,
             ]);
         }
 
-        $music->increment('song_requests_total');
+        if (! $music->is_manual) {
+            $music->increment('song_requests_total');
+        }
 
         return $music;
     }
@@ -82,7 +104,7 @@ class SongRequestService
 
     private function storeNotifyCurrentLocutor(SongRequest $songRequest): void
     {
-        $songRequest->loadMissing(['music', 'onair.program.host', 'requester']);
+        $songRequest->loadMissing(['music.anime', 'onair.program.host', 'requester']);
 
         app(PushNotificationService::class)->sendToUserOrAll(
             $songRequest->onair?->program?->host,
@@ -107,7 +129,7 @@ class SongRequestService
     public function filter(array $filters = []): Collection|LengthAwarePaginator
     {
         $query = SongRequest::query()
-            ->with('requester')
+            ->with(['requester', 'music.anime'])
             ->when(
                 $filters['onair_id'] ?? null,
                 fn (Builder $query, int $onairId) => $query->where('onair_id', $onairId)

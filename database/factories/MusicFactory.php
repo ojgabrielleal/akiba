@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Anime;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,11 +18,11 @@ class MusicFactory extends Factory
     public function definition(): array
     {
         return [
-            'type' => fake()->randomElement(['OP', 'ED']),
-            'production' => fake()->word(),
-            'image' => '/img/placeholders/avatar.webp',
+            'anime_id' => Anime::factory(),
+            'type' => fake()->randomElement(['OP', 'ED', 'OVA']),
             'artist' => fake()->name(),
             'name' => fake()->name(),
+            'is_manual' => false,
             'in_ranking' => fake()->boolean(),
             'image_ranking' => '/img/placeholders/avatar.webp',
             'song_requests_total' => fake()->randomDigit(),

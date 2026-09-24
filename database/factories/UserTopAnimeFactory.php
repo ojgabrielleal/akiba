@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Anime;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -21,6 +22,7 @@ class UserTopAnimeFactory extends Factory
 
         return [
             'user_id' => User::factory(),
+            'anime_id' => Anime::factory(),
             'position' => fake()->numberBetween(1, 10),
             'anime_theme_list_id' => fake()->uuid(),
             'slug' => fake()->slug(),
