@@ -50,7 +50,9 @@ class EnigmaGameService
         $enigmagame = DB::transaction(function () use ($enigmagame, $data, $image): EnigmaGame {
             $enigmagame->update([
                 'title' => $data['title'],
-                'content' => $this->image->store('enigmagames', $image, $enigmagame->content),
+                'content' => $image
+                    ? $this->image->store('enigmagames', $image, $enigmagame->content)
+                    : $enigmagame->content,
                 'status' => $data['status'] ?? $enigmagame->status,
                 'solution' => $data['solution'] ?? null,
             ]);

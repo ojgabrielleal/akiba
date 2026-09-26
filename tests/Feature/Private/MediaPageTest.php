@@ -135,6 +135,36 @@ class MediaPageTest extends TestCase
         Storage::disk('public')->assertExists(str_replace('/storage/', '', $enigmagame->content));
     }
 
+    public function test_enigmagame_can_be_updated_without_reprocessing_legacy_content(): void
+    {
+        Storage::fake('public');
+
+        $user = $this->userWithPermissions([
+            'media.module.view',
+            'enigmagame.update',
+        ]);
+        $legacyContent = "Passou a vida se preparando para lutar\ncontra monstros e descobriu que...";
+        $enigmagame = EnigmaGame::factory()->draft()->create([
+            'title' => 'Enigma antigo',
+            'content' => $legacyContent,
+        ]);
+
+        $this
+            ->actingAs($user)
+            ->post("/panel/media/enigmagame/{$enigmagame->uuid}", [
+                '_method' => 'PATCH',
+                'title' => 'Enigma atualizado',
+                'status' => 'draft',
+                'solution' => 'Resposta atualizada',
+            ])
+            ->assertRedirect();
+
+        $enigmagame->refresh();
+
+        $this->assertSame('Enigma atualizado', $enigmagame->title);
+        $this->assertSame($legacyContent, $enigmagame->content);
+    }
+
     public function test_enigmagame_question_can_be_classified_as_yes(): void
     {
         $user = $this->userWithPermissions([

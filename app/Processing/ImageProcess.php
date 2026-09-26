@@ -37,6 +37,10 @@ class ImageProcess
 
     public function delete(string $imagePath): bool
     {
+        if (! str_starts_with($imagePath, '/storage/')) {
+            return false;
+        }
+
         $filePath = str_replace('/storage/', '', $imagePath);
 
         if (Storage::disk(self::DISK)->exists($filePath)) {
