@@ -30,7 +30,7 @@
         on:submit|preventDefault={submitVote}
         class={[
             "public-default-gradient w-full rounded-md bg-gradient-featured-akiba-card px-4 py-5 sm:px-6 lg:px-8",
-            poll.has_voted && "pointer-events-none opacity-50",
+            poll.has_voted && "pointer-events-none opacity-80",
         ]}
     >
         <h2 class={["text-center font-noto-sans text-xl font-extrabold uppercase italic text-orange-morning lg:text-2xl", themeClass("text", "suspense-aurora", { theme: "light" })]}>
@@ -86,7 +86,7 @@
                 </Button>
             </AuthGuard>
             <div class="order-2 font-noto-sans font-bold uppercase italic md:order-1">
-                <span class="text-3xl font-extrabold text-suspense-aurora">
+                <span class={["text-3xl font-extrabold text-suspense-aurora", themeClass("text", "suspense-aurora", { theme: "light" })]}>
                     {poll.total_votes}
                 </span>
                 <span class={["text-sm text-orange-morning", themeClass("text", "suspense-aurora", { theme: "light" })]}>
