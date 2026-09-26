@@ -143,7 +143,7 @@
                     src={$form.phrase.decoration?.left}
                     alt=""
                     aria-hidden="true"
-                    class="w-23 absolute left-0 filter-blue-skywave"
+                    class="w-23 absolute left-0 filter-player-decoration"
                     loading="lazy"
                 />
                 <input 
@@ -161,7 +161,7 @@
                     src={$form.phrase.decoration?.right}
                     alt=""
                     aria-hidden="true"
-                    class="w-23 absolute -right-10 filter-blue-skywave"
+                    class="w-23 absolute -right-10 filter-player-decoration"
                     loading="lazy"
                 />
             </div>
@@ -188,7 +188,7 @@
                             src={item.icon}
                             alt={item.alt}
                             aria-hidden="true"
-                            class={["object-contain w-full h-full filter-blue-skywave",
+                            class={["object-contain w-full h-full filter-player-decoration",
                                 { "hidden": item.disabled },
                                 { "initial": !item.disabled }
                             ]}

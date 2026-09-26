@@ -40,7 +40,7 @@ const themeVariables = {
         "--public-background-texture-filter": "invert(45%) sepia(97%) saturate(1965%) hue-rotate(3deg) brightness(103%) contrast(102%)",
         "--gradient-blue-ocean-cerulean": "linear-gradient(50deg, #0091ff 0%, #0059c0 50%, #0091ff 100%)",
         "--gradient-blue-cerulean-glow": "var(--gradient-orange-morning-aurora)",
-        "--gradient-featured-akiba-card": "linear-gradient(50deg, #0095c0 0%, #0091ff 100%)",
+        "--gradient-featured-akiba-card": "linear-gradient(50deg, #0059C0 40%, #0091ff 90%)",
         "--gradient-featured-card-night": "linear-gradient(110deg, var(--color-blue-night) 0%, var(--color-blue-marinho) 100%)",
         "--gradient-blue-ocean-skywave": "linear-gradient(50deg, #0091ff 0%, #0059c0 50%, #0091ff 100%)",
         "--gradient-orange-morning-aurora": "linear-gradient(50deg, var(--color-orange-citric) 0%, var(--color-orange-morning) 100%)",

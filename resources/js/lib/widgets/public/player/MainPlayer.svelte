@@ -190,8 +190,7 @@
                 src={playerData.phrase.decoration.left}
                 alt=""
                 aria-hidden="true"
-                class="w-24"
-                style="filter: var(--public-title-texture-filter);"
+                class="w-24 filter-player-decoration"
                 loading="lazy"
             />
         </div>
@@ -218,8 +217,7 @@
                 src={playerData.phrase.decoration.right}
                 alt=""
                 aria-hidden="true"
-                class="w-24"
-                style="filter: var(--public-title-texture-filter);"
+                class="w-24 filter-player-decoration"
                 loading="lazy"
             />
         </div>

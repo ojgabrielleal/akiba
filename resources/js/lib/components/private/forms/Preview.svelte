@@ -55,8 +55,10 @@
 
     let preview = null;
     let inputRef;
+    let brokenSource = null;
 
-    $: imageToShow = preview ?? (src && src !== "#" ? src : null);
+    $: if (src !== brokenSource) brokenSource = null;
+    $: imageToShow = preview ?? (src && src !== "#" && src !== brokenSource ? src : null);
     $: selectedSize = sizes[size] ?? sizes.default;
     $: selectedTone = tones[tone] ?? tones.default;
     $: selectedColor = colors[color] ?? colors.default;
@@ -133,6 +135,7 @@
             aria-hidden="true"
             class={previewCSS}
             loading="lazy"
+            on:error={() => brokenSource = imageToShow}
         />
     {:else}
         <div class={placeholderCSS}>
