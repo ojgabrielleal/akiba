@@ -53,7 +53,7 @@
         {/if}
         <div
             class={["home-featured-reviews-background pt-px", hasFeaturedPosts && "has-featured-posts"]}
-            style="--featured-background: url('/img/pages/home/backgrounds/featured.webp'); --featured-mobile-background: url('/img/pages/home/backgrounds/featured-mobile.webp'); --reviews-background: url('/img/pages/home/backgrounds/reviews.webp');"
+            style="--featured-background: url('/img/pages/home/backgrounds/featured.svg'); --featured-mobile-background: url('/img/pages/home/backgrounds/featured_mobile.svg'); --reviews-background: url('/img/pages/home/backgrounds/reviews.svg');"
         >
             <FeaturedGrid {featuredPosts} />
             <div class="home-reviews-mobile-background">
@@ -64,7 +64,7 @@
         <EventCalendarGrid {events} />
         <div
             class="home-podcasts-background pt-5"
-            style="--podcasts-background: url('/img/pages/home/backgrounds/podcasts.webp');"
+            style="--podcasts-background: url('/img/pages/home/backgrounds/podcasts.svg');"
         >
             <LatestPodcastsGrid {podcasts} />
         </div>
@@ -83,15 +83,24 @@
         background-size: contain;
     }
 
-    .home-featured-reviews-background.has-featured-posts::before {
+    .home-featured-reviews-background.has-featured-posts::before,
+    .home-featured-reviews-background.has-featured-posts::after {
         content: "";
         position: absolute;
         inset: 0;
-        background-image: var(--featured-mobile-background);
         background-position: top center;
         background-repeat: no-repeat;
         background-size: contain;
+        filter: var(--public-background-texture-filter);
         pointer-events: none;
+    }
+
+    .home-featured-reviews-background.has-featured-posts::before {
+        background-image: var(--featured-mobile-background);
+    }
+
+    .home-featured-reviews-background.has-featured-posts::after {
+        background-image: none;
     }
 
     .home-featured-reviews-background.has-featured-posts > :global(*) {
@@ -112,6 +121,7 @@
         background-position: bottom center;
         background-repeat: no-repeat;
         background-size: cover;
+        filter: var(--public-background-texture-filter);
         pointer-events: none;
     }
 
@@ -133,6 +143,7 @@
         background-position: bottom center;
         background-repeat: no-repeat;
         background-size: cover;
+        filter: var(--public-background-texture-filter);
         pointer-events: none;
     }
 
@@ -153,19 +164,20 @@
 
     @media (min-width: 1024px) {
         .home-featured-reviews-background.has-featured-posts {
-            background-image: var(--reviews-background) !important;
-            background-position:
-                bottom center;
-            background-repeat:
-                no-repeat;
-            background-size:
-                100% auto;
+            background-image: none !important;
         }
 
         .home-featured-reviews-background.has-featured-posts::before {
             background-image: var(--featured-background);
             background-size: 100% auto;
             mask-image: linear-gradient(to bottom, #000 0 68%, transparent 86%);
+        }
+
+        .home-featured-reviews-background.has-featured-posts::after {
+            background-image: var(--reviews-background);
+            background-position: bottom center;
+            background-repeat: no-repeat;
+            background-size: 100% auto;
         }
 
         .home-podcasts-background {

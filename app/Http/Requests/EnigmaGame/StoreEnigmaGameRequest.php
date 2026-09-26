@@ -23,8 +23,8 @@ class StoreEnigmaGameRequest extends FormRequest
     {
         return [
             'title' => ['required', 'string', 'max:255'],
-            'content' => ['required', 'string'],
-            'status' => ['required', 'string', 'in:draft,active,ended,inactive'],
+            'image' => ['required', 'image'],
+            'status' => ['required', 'string', 'in:draft,active,inactive'],
             'solution' => ['nullable', 'string'],
         ];
     }

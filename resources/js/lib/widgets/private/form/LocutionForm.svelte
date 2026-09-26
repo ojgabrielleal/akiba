@@ -136,8 +136,8 @@
         {/if}
     </Section>
     <Section title="Personalização do player">
-        <div class="w-full mt-15 rounded-sm hidden lg:flex justify-center bg-contain bg-right bg-no-repeat" style={`background-image: url('${$form.phrase.texture}'), var(--gradient-blue-ocean-cerulean);`}>  
-            <div class="w-8/12 h-25 flex items-center relative">
+        <div class="locution-phrase-preview relative isolate w-full mt-15 rounded-sm hidden lg:flex justify-center" style={`--locution-phrase-texture: url("${$form.phrase.texture}"); background-image: var(--gradient-blue-ocean-cerulean);`}>
+            <div class="relative z-10 w-8/12 h-25 flex items-center">
                 <img
                     src={$form.phrase.decoration?.left}
                     alt=""
@@ -206,15 +206,14 @@
                         disabled={item.disabled}
                         on:click={() => { $form.phrase.texture = item.url}}
                     >
-                        <img 
-                            src={item.url}
-                            alt={item.alt}
+                        <span
                             aria-hidden="true"
-                            class={["object-cover w-full h-full",
+                            class={["block h-full w-full bg-blue-skywave [mask-repeat:no-repeat] [mask-position:center] [mask-size:cover] [-webkit-mask-repeat:no-repeat] [-webkit-mask-position:center] [-webkit-mask-size:cover]",
                                 { "hidden": item.disabled },
                                 { "initial": !item.disabled }
                             ]}
-                        />
+                            style={`mask-image: url("${item.url}"); -webkit-mask-image: url("${item.url}");`}
+                        ></span>
                     </button>
                 {/each}
             </div>

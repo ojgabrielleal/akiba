@@ -19,12 +19,14 @@ class EnigmaGameSeeder extends Seeder
             ->where('id', $author->id)
             ->firstOrFail();
 
+        $questionResults = ['yes', 'no', 'banal'];
+
         $active = EnigmaGame::factory()
             ->active()
             ->for($author, 'author')
             ->create([
                 'title' => 'Teste do corredor azul',
-                'content' => 'Uma voz some antes do refrão, mas deixa uma pista escondida entre duas sombras.',
+                'content' => '/img/placeholders/default.webp',
                 'solution' => 'A chave esta no segundo verso.',
             ]);
 
@@ -33,11 +35,23 @@ class EnigmaGameSeeder extends Seeder
             ->for($active)
             ->create();
 
-        EnigmaGameInteraction::factory(8)
-            ->question()
-            ->answered($responder)
-            ->for($active)
-            ->create();
+        foreach ([
+            'A pista envolve uma joia?',
+            'O enigma acontece durante a noite?',
+            'Existe uma senha escondida na imagem?',
+            'A resposta tem relação com música?',
+            'O baú é apenas decoração?',
+            'A cor azul é importante?',
+        ] as $index => $content) {
+            EnigmaGameInteraction::factory()
+                ->question()
+                ->answered($responder)
+                ->for($active)
+                ->create([
+                    'content' => $content,
+                    'result' => $questionResults[$index % count($questionResults)],
+                ]);
+        }
 
         EnigmaGameInteraction::factory(5)
             ->incorrect($responder)
@@ -50,19 +64,28 @@ class EnigmaGameSeeder extends Seeder
             ->create();
 
         $solved = EnigmaGame::factory()
-            ->active()
+            ->draft()
             ->for($author, 'author')
             ->create([
                 'title' => 'Enigma resolvido',
-                'content' => 'Este fica para testar como o painel mostra um caso finalizado.',
+                'content' => '/img/placeholders/default.webp',
                 'solution' => 'Akiba',
             ]);
 
-        EnigmaGameInteraction::factory(6)
-            ->question()
-            ->answered($responder)
+        EnigmaGameInteraction::factory()
+            ->yes($responder)
             ->for($solved)
-            ->create();
+            ->create(['content' => 'A resposta envolve a rádio?']);
+
+        EnigmaGameInteraction::factory()
+            ->no($responder)
+            ->for($solved)
+            ->create(['content' => 'É um personagem de cabelo vermelho?']);
+
+        EnigmaGameInteraction::factory()
+            ->banal($responder)
+            ->for($solved)
+            ->create(['content' => 'Tem anime no site?']);
 
         EnigmaGameInteraction::factory()
             ->correct($responder)
@@ -76,7 +99,7 @@ class EnigmaGameSeeder extends Seeder
             ->for($author, 'author')
             ->create([
                 'title' => 'Rascunho de teste',
-                'content' => 'Rascunho para testar o card sem interações.',
+                'content' => '/img/placeholders/default.webp',
                 'solution' => 'Ainda nao publicada.',
             ]);
 
@@ -85,7 +108,7 @@ class EnigmaGameSeeder extends Seeder
             ->for($author, 'author')
             ->create([
                 'title' => 'Enigma inativo',
-                'content' => 'Este registro deve ficar fora da lista do painel.',
+                'content' => '/img/placeholders/default.webp',
             ]);
     }
 }

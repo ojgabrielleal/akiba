@@ -1,7 +1,7 @@
 <script>
     import { router } from "@inertiajs/svelte";
 
-    import { Button, EmptyState, GridList, IconButton, Modal, Offcanvas, Section, TextArea } from "@/lib/components/private";
+    import { Button, EmptyState, GridList, IconButton, Modal, Offcanvas, Section } from "@/lib/components/private";
     import EnigmaGameForm from "../form/EnigmaGameForm.svelte";
     import { enigmagamePermissions, resolvePlaceholderImage, resolveStatusBackground } from "@/lib/utils";
 
@@ -14,15 +14,27 @@
     let interactionsModalRef;
     let enigmagameSelected = null;
     let interactionsEnigmaGameUuid = null;
-    let responseContent = {};
+    let enigmaView = "all";
 
-    $: list = (enigmagames?.data ?? []).filter((item) => item.status !== "inactive");
+    $: allList = (enigmagames?.data ?? []).filter((item) => !["ended", "inactive"].includes(item.status));
+    $: solvedList = allList.filter((item) => isSolved(item));
+    $: unresolvedList = allList.filter((item) => !isSolved(item));
+    $: list = enigmaView === "solved" ? solvedList : unresolvedList;
     $: interactionsEnigmaGame = list.find((item) => item.uuid === interactionsEnigmaGameUuid);
     $: offcanvasTitle = enigmagameSelected ? "Atualizar enigma" : "Cadastrar enigma";
     $: interactionsModalTitle = interactionsEnigmaGame?.title ?? "Interações";
-    $: hasUnsolvedEnigmaGame = list.some((item) => !["ended", "inactive"].includes(item.status) && !isSolved(item));
+    $: hasUnsolvedEnigmaGame = allList.some((item) => !["ended", "inactive"].includes(item.status) && !isSolved(item));
 
-    let actions = [
+    $: actions = [
+        {
+            title: enigmaView === "solved" ? "Todos os enigmas" : "Enigmas resolvidos",
+            icon: "/svg/interactions.svg",
+            permission: true,
+            background: enigmaView === "solved" ? "bg-blue-ocean" : "bg-blue-skywave",
+            textColor: "text-suspense-aurora",
+            filter: "filter-suspense-aurora",
+            onClick: () => enigmaView = enigmaView === "solved" ? "all" : "solved",
+        },
         {
             title: "Criar",
             icon: "/svg/plus.svg",
@@ -60,50 +72,16 @@
         });
     }
 
-    function finish(item) {
-        if (!confirm("Encerrar este enigma? Ele vai sair do site.")) return;
-
-        router.patch(`/panel/media/enigmagame/${item.uuid}/finish`, {}, {
-            preserveScroll: true,
-            only: ["enigmagames", "flash"],
-        });
-    }
-
-    function respond(interaction) {
-        const adminResponse = responseContent[interaction.uuid] ?? "";
-
-        router.patch(`/panel/media/enigmagame/interaction/${interaction.uuid}/respond`, {
-            admin_response: adminResponse,
-        }, {
-            preserveScroll: true,
-            onSuccess: () => {
-                responseContent[interaction.uuid] = "";
-
-                if (!interactionsEnigmaGame) return;
-
-                interactionsEnigmaGame.interactions = interactionsEnigmaGame.interactions.map((item) => item.uuid === interaction.uuid
-                    ? { ...item, admin_response: adminResponse }
-                    : item
-                );
-            },
-        });
-    }
-
     function judge(interaction, result) {
-        const adminResponse = responseContent[interaction.uuid] ?? "";
-
         router.patch(`/panel/media/enigmagame/interaction/${interaction.uuid}/respond`, {
-            admin_response: adminResponse,
             result,
         }, {
             preserveScroll: true,
             onSuccess: () => {
-                responseContent[interaction.uuid] = "";
-
                 if (!interactionsEnigmaGame) return;
 
                 interactionsEnigmaGame.interactions = interactionsEnigmaGame.interactions.map((item) => item.uuid === interaction.uuid
-                    ? { ...item, admin_response: adminResponse, result }
+                    ? { ...item, admin_response: null, result }
                     : item
                 );
             },
@@ -112,11 +90,15 @@
 
     function cardStatusBackground(item) {
         if (isSolved(item)) {
-            return "bg-purple-mystic";
+            return "bg-blue-skywave";
         }
 
         if (item.status === "draft") {
             return "bg-green-mint";
+        }
+
+        if (item.status === "active") {
+            return "bg-purple-mystic";
         }
 
         return resolveStatusBackground({ ...item, status: "published" }, { useValidity: false });
@@ -126,6 +108,33 @@
         return type === "final_answer" ? "Resposta definitiva" : "Pergunta";
     }
 
+    function resultLabel(interaction) {
+        if (interaction.type === "question") {
+            return {
+                yes: "Sim",
+                no: "Não",
+                banal: "Banal",
+            }[interaction.result] ?? null;
+        }
+
+        return {
+            correct: "Acertou",
+            incorrect: "Errou",
+        }[interaction.result] ?? null;
+    }
+
+    function resultClass(interaction) {
+        if (interaction.type === "question") {
+            return {
+                yes: "bg-green-forest text-suspense-aurora",
+                no: "bg-red-crimson text-suspense-aurora",
+                banal: "bg-neutral-gray text-suspense-aurora",
+            }[interaction.result] ?? "bg-blue-night/10 text-blue-ocean";
+        }
+
+        return interaction.result === "correct" ? "bg-green-forest text-suspense-aurora" : "bg-red-crimson text-suspense-aurora";
+    }
+
     function isSolved(item) {
         return item.interactions?.some((interaction) => interaction.type === "final_answer" && interaction.result === "correct");
     }
@@ -133,7 +142,7 @@
 
 <Offcanvas bind:this={offcanvasRef} title={offcanvasTitle}>
     <div slot="content" let:close>
-        <EnigmaGameForm {enigmagameSelected} {close} hidePublish={!enigmagameSelected && hasUnsolvedEnigmaGame} />
+        <EnigmaGameForm {enigmagameSelected} {close} publishBlocked={!enigmagameSelected && hasUnsolvedEnigmaGame} />
     </div>
 </Offcanvas>
 
@@ -162,11 +171,8 @@
                                         {typeLabel(interaction.type)}
                                     </span>
                                     {#if interaction.result}
-                                        <span class={[
-                                            "rounded-sm px-2 py-0.5 text-[0.65rem] font-black uppercase italic leading-none",
-                                            interaction.result === "correct" ? "bg-green-forest text-blue-marinho" : "bg-red-crimson text-suspense-aurora",
-                                        ]}>
-                                            {interaction.result === "correct" ? "Acertou" : "Errou"}
+                                        <span class={["rounded-sm px-2 py-0.5 text-[0.65rem] font-black uppercase italic leading-none", resultClass(interaction)]}>
+                                            {resultLabel(interaction)}
                                         </span>
                                     {/if}
                                 </div>
@@ -175,6 +181,68 @@
                                 </p>
                             </div>
                         </div>
+
+                        {#if can.respond && !interaction.result}
+                            <div class="px-4 pt-3">
+                                {#if interaction.type === "final_answer"}
+                                    <div class="flex flex-wrap gap-2">
+                                        <Button
+                                            type="button"
+                                            variant="success"
+                                            size="sm"
+                                            shape="pill"
+                                            class="w-fit px-4 py-1 text-xs"
+                                            on:click={() => judge(interaction, "correct")}
+                                        >
+                                            Acertou
+                                        </Button>
+                                        <Button
+                                            type="button"
+                                            variant="danger"
+                                            size="sm"
+                                            shape="pill"
+                                            class="w-fit px-4 py-1 text-xs"
+                                            on:click={() => judge(interaction, "incorrect")}
+                                        >
+                                            Errou
+                                        </Button>
+                                    </div>
+                                {:else}
+                                    <div class="flex flex-wrap gap-2">
+                                        <Button
+                                            type="button"
+                                            variant="success"
+                                            size="sm"
+                                            shape="pill"
+                                            class="w-fit px-4 py-1 text-xs"
+                                            on:click={() => judge(interaction, "yes")}
+                                        >
+                                            Sim
+                                        </Button>
+                                        <Button
+                                            type="button"
+                                            variant="danger"
+                                            size="sm"
+                                            shape="pill"
+                                            class="w-fit px-4 py-1 text-xs"
+                                            on:click={() => judge(interaction, "no")}
+                                        >
+                                            Não
+                                        </Button>
+                                        <Button
+                                            type="button"
+                                            variant="dark"
+                                            size="sm"
+                                            shape="pill"
+                                            class="w-fit px-4 py-1 text-xs"
+                                            on:click={() => judge(interaction, "banal")}
+                                        >
+                                            Banal
+                                        </Button>
+                                    </div>
+                                {/if}
+                            </div>
+                        {/if}
 
                         <div class="px-4 py-3">
                             <p class="whitespace-pre-line font-noto-sans text-sm font-normal leading-relaxed text-blue-night">
@@ -212,53 +280,6 @@
                                     {interaction.admin_response}
                                 </p>
                             </div>
-                        {:else if can.respond && !interaction.result}
-                            <div class="flex flex-1 flex-col border-t border-blue-night/10 bg-blue-night/5 px-4 py-3">
-                                <div class="grid flex-1 content-start gap-2">
-                                    <TextArea
-                                        variant="profile"
-                                        class="min-h-18 text-sm"
-                                        bind:value={responseContent[interaction.uuid]}
-                                        placeholder={interaction.type === "final_answer" ? "Comentário opcional" : "Sua resposta"}
-                                    />
-                                    {#if interaction.type === "final_answer"}
-                                        <div class="flex flex-wrap gap-2">
-                                            <Button
-                                                type="button"
-                                                variant="success"
-                                                size="sm"
-                                                shape="pill"
-                                                class="w-fit px-4 py-1 text-xs"
-                                                on:click={() => judge(interaction, "correct")}
-                                            >
-                                                Acertou
-                                            </Button>
-                                            <Button
-                                                type="button"
-                                                variant="danger"
-                                                size="sm"
-                                                shape="pill"
-                                                class="w-fit px-4 py-1 text-xs"
-                                                on:click={() => judge(interaction, "incorrect")}
-                                            >
-                                                Errou
-                                            </Button>
-                                        </div>
-                                    {:else}
-                                        <Button
-                                            type="button"
-                                            variant="accent"
-                                            size="sm"
-                                            shape="pill"
-                                            class="w-fit px-4 py-1 text-xs"
-                                            disabled={!responseContent[interaction.uuid]}
-                                            on:click={() => respond(interaction)}
-                                        >
-                                            Responder
-                                        </Button>
-                                    {/if}
-                                </div>
-                            </div>
                         {/if}
                     </article>
                 {/each}
@@ -274,7 +295,7 @@
         {#if list.length > 0}
             <GridList as="div" preset="content">
                 {#each list as item (item.uuid)}
-                    <article class={["relative flex min-h-44 flex-col rounded-md bg-blue-ocean", item.status === "ended" && "opacity-55"]}>
+                    <article class="relative flex min-h-44 flex-col rounded-md bg-blue-ocean">
                         <div class="flex-1 overflow-hidden rounded-t-md p-3">
                             <h3 class="line-clamp-2 font-noto-sans text-base font-normal uppercase text-suspense-aurora">
                                 {item.title}
@@ -299,17 +320,6 @@
                                 {/if}
                                 {#if can.delete && item.status !== "inactive" && item.status !== "active"}
                                     <IconButton variant="trash" label="Inativar" size="sm" surface="dark" on:click={() => deactivate(item)} />
-                                {/if}
-                                {#if can.delete && item.status === "active"}
-                                    <IconButton
-                                        variant="close"
-                                        icon="/svg/finish.svg"
-                                        label="Encerrar enigma"
-                                        size="sm"
-                                        surface="dark"
-                                        tone="accent"
-                                        on:click={() => finish(item)}
-                                    />
                                 {/if}
                             </div>
                         </div>

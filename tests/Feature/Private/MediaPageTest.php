@@ -2,12 +2,16 @@
 
 namespace Tests\Feature\Private;
 
+use App\Models\EnigmaGame;
+use App\Models\EnigmaGameInteraction;
 use App\Models\Permission;
 use App\Models\Poll;
 use App\Models\PollOption;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class MediaPageTest extends TestCase
@@ -70,6 +74,108 @@ class MediaPageTest extends TestCase
                 ->has('polls')
                 ->has('listenerGalleries')
             );
+    }
+
+    public function test_enigmagame_can_be_created_with_image(): void
+    {
+        Storage::fake('public');
+
+        $user = $this->userWithPermissions([
+            'media.module.view',
+            'enigmagame.create',
+        ]);
+
+        $this
+            ->actingAs($user)
+            ->post('/panel/media/enigmagame', [
+                'title' => 'Enigma de teste',
+                'image' => UploadedFile::fake()->image('enigma.png', 900, 500),
+                'status' => 'draft',
+                'solution' => 'Resposta secreta',
+            ])
+            ->assertRedirect();
+
+        $enigmagame = EnigmaGame::query()->firstOrFail();
+
+        $this->assertSame('Enigma de teste', $enigmagame->title);
+        $this->assertSame(EnigmaGame::STATUS_DRAFT, $enigmagame->status);
+        $this->assertStringStartsWith('/storage/images/enigmagames/', $enigmagame->content);
+        Storage::disk('public')->assertExists(str_replace('/storage/', '', $enigmagame->content));
+    }
+
+    public function test_enigmagame_image_can_be_updated(): void
+    {
+        Storage::fake('public');
+
+        $user = $this->userWithPermissions([
+            'media.module.view',
+            'enigmagame.update',
+        ]);
+        $enigmagame = EnigmaGame::factory()->draft()->create([
+            'title' => 'Enigma antigo',
+            'content' => '/storage/images/enigmagames/old.webp',
+        ]);
+
+        $this
+            ->actingAs($user)
+            ->post("/panel/media/enigmagame/{$enigmagame->uuid}", [
+                '_method' => 'PATCH',
+                'title' => 'Enigma atualizado',
+                'image' => UploadedFile::fake()->image('novo-enigma.png', 900, 500),
+                'status' => 'draft',
+                'solution' => 'Resposta atualizada',
+            ])
+            ->assertRedirect();
+
+        $enigmagame->refresh();
+
+        $this->assertSame('Enigma atualizado', $enigmagame->title);
+        $this->assertStringStartsWith('/storage/images/enigmagames/', $enigmagame->content);
+        $this->assertNotSame('/storage/images/enigmagames/old.webp', $enigmagame->content);
+        Storage::disk('public')->assertExists(str_replace('/storage/', '', $enigmagame->content));
+    }
+
+    public function test_enigmagame_question_can_be_classified_as_yes(): void
+    {
+        $user = $this->userWithPermissions([
+            'media.module.view',
+            'enigmagame.respond',
+        ]);
+        $interaction = EnigmaGameInteraction::factory()
+            ->question()
+            ->create();
+
+        $this
+            ->actingAs($user)
+            ->patch("/panel/media/enigmagame/interaction/{$interaction->uuid}/respond", [
+                'result' => 'yes',
+            ])
+            ->assertRedirect();
+
+        $interaction->refresh();
+
+        $this->assertSame('yes', $interaction->result);
+        $this->assertNull($interaction->admin_response);
+        $this->assertSame($user->id, $interaction->responded_by);
+        $this->assertNotNull($interaction->responded_at);
+    }
+
+    public function test_enigmagame_question_rejects_final_answer_result(): void
+    {
+        $user = $this->userWithPermissions([
+            'media.module.view',
+            'enigmagame.respond',
+        ]);
+        $interaction = EnigmaGameInteraction::factory()
+            ->question()
+            ->create();
+
+        $this
+            ->actingAs($user)
+            ->patch("/panel/media/enigmagame/interaction/{$interaction->uuid}/respond", [
+                'result' => 'correct',
+            ])
+            ->assertSessionHasErrors('result');
     }
 
     private function userWithPermissions(array $permissionNames): User

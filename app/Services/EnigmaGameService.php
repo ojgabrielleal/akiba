@@ -4,10 +4,12 @@ namespace App\Services;
 
 use App\Models\EnigmaGame;
 use App\Models\EnigmaGameInteraction;
+use App\Processing\ImageProcess;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
@@ -17,15 +19,16 @@ class EnigmaGameService
     public function __construct(
         private PushNotificationService $pushNotification,
         private CacheService $cache,
+        private ImageProcess $image,
     ) {}
 
-    public function store(User $user, array $data): EnigmaGame
+    public function store(User $user, array $data, UploadedFile $image): EnigmaGame
     {
-        $enigmagame = DB::transaction(function () use ($user, $data): EnigmaGame {
+        $enigmagame = DB::transaction(function () use ($user, $data, $image): EnigmaGame {
             $enigmagame = EnigmaGame::create([
                 'user_id' => $user->id,
                 'title' => $data['title'],
-                'content' => $data['content'],
+                'content' => $this->image->store('enigmagames', $image),
                 'status' => $data['status'] ?? EnigmaGame::STATUS_DRAFT,
                 'solution' => $data['solution'] ?? null,
             ]);
@@ -42,12 +45,12 @@ class EnigmaGameService
         return $enigmagame;
     }
 
-    public function update(EnigmaGame $enigmagame, array $data): EnigmaGame
+    public function update(EnigmaGame $enigmagame, array $data, ?UploadedFile $image = null): EnigmaGame
     {
-        $enigmagame = DB::transaction(function () use ($enigmagame, $data): EnigmaGame {
+        $enigmagame = DB::transaction(function () use ($enigmagame, $data, $image): EnigmaGame {
             $enigmagame->update([
                 'title' => $data['title'],
-                'content' => $data['content'],
+                'content' => $this->image->store('enigmagames', $image, $enigmagame->content),
                 'status' => $data['status'] ?? $enigmagame->status,
                 'solution' => $data['solution'] ?? null,
             ]);
@@ -92,19 +95,6 @@ class EnigmaGameService
     {
         $enigmagame = DB::transaction(function () use ($enigmagame): EnigmaGame {
             $enigmagame->update(['status' => EnigmaGame::STATUS_INACTIVE]);
-
-            return $enigmagame;
-        });
-
-        $this->cache->invalidateMysteries();
-
-        return $enigmagame;
-    }
-
-    public function finish(EnigmaGame $enigmagame): EnigmaGame
-    {
-        $enigmagame = DB::transaction(function () use ($enigmagame): EnigmaGame {
-            $enigmagame->update(['status' => EnigmaGame::STATUS_ENDED]);
 
             return $enigmagame;
         });
@@ -175,15 +165,19 @@ class EnigmaGameService
 
             validator($data, [
                 'admin_response' => [
-                    Rule::requiredIf($interaction->type === EnigmaGameInteraction::TYPE_QUESTION),
                     'nullable',
                     'string',
                 ],
                 'result' => [
-                    Rule::requiredIf($interaction->type === EnigmaGameInteraction::TYPE_FINAL_ANSWER),
+                    Rule::requiredIf(in_array($interaction->type, [
+                        EnigmaGameInteraction::TYPE_QUESTION,
+                        EnigmaGameInteraction::TYPE_FINAL_ANSWER,
+                    ], true)),
                     'nullable',
                     'string',
-                    'in:correct,incorrect',
+                    Rule::in($interaction->type === EnigmaGameInteraction::TYPE_QUESTION
+                        ? ['yes', 'no', 'banal']
+                        : ['correct', 'incorrect']),
                 ],
             ])->validate();
 

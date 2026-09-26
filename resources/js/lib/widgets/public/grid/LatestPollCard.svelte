@@ -2,6 +2,7 @@
     import { router } from "@inertiajs/svelte";
 
     import { AuthGuard, Button } from "@/lib/components/public";
+    import { themeClass } from "@/lib/utils";
 
     export let poll = null;
     export let oauth = {};
@@ -28,11 +29,11 @@
     <form
         on:submit|preventDefault={submitVote}
         class={[
-            "public-default-gradient w-full rounded-md bg-gradient-blue-cerulean-glow px-4 py-5 sm:px-6 lg:px-8",
+            "public-default-gradient w-full rounded-md bg-gradient-featured-akiba-card px-4 py-5 sm:px-6 lg:px-8",
             poll.has_voted && "pointer-events-none opacity-50",
         ]}
     >
-        <h2 class="text-center font-noto-sans text-xl font-extrabold uppercase italic text-orange-morning lg:text-2xl">
+        <h2 class={["text-center font-noto-sans text-xl font-extrabold uppercase italic text-orange-morning lg:text-2xl", themeClass("text", "suspense-aurora", { theme: "light" })]}>
             {poll.question}
         </h2>
         <div class="my-7 grid gap-5 sm:grid-cols-2 lg:my-12 xl:grid-cols-4">
@@ -47,7 +48,7 @@
                         class="mt-1 h-5 w-5 cursor-pointer accent-orange-citric"
                     />
                     <div class="min-w-0">
-                        <label for={option.uuid} title={option.option} class="block max-w-full break-words font-noto-sans text-base font-bold uppercase italic leading-tight text-suspense-aurora sm:text-lg">
+                        <label for={option.uuid} title={option.option} class={["block max-w-full break-words font-noto-sans text-base font-bold uppercase italic leading-tight text-suspense-aurora sm:text-lg", themeClass("text", "suspense-aurora", { theme: "light" })]}>
                             {option.option}
                         </label>
                         <div class="relative mt-2 flex h-3.5 w-full select-none items-center rounded-full bg-black px-2">
@@ -88,7 +89,7 @@
                 <span class="text-3xl font-extrabold text-suspense-aurora">
                     {poll.total_votes}
                 </span>
-                <span class="text-sm text-orange-morning">
+                <span class={["text-sm text-orange-morning", themeClass("text", "suspense-aurora", { theme: "light" })]}>
                     Votos
                 </span>
             </div>

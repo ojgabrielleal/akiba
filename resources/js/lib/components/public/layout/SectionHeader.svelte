@@ -11,7 +11,7 @@
     const tones = {
         accent: {
             text: `text-orange-citric ${themeClass("text", "blue-cerulean", { theme: "light" })}`,
-            line: `bg-orange-citric ${themeClass("bg", "blue-cerulean", { theme: "light" })}`,
+            line: `bg-orange-citric ${themeClass("bg", "blue-marinho", { theme: "light" })}`,
         },
         primary: { text: "text-blue-skywave", line: "bg-blue-skywave" },
         light: { text: "text-suspense-aurora", line: "bg-suspense-aurora/40" },

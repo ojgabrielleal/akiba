@@ -31,6 +31,19 @@
     let modalRef;
     let coverLightboxOpen = false;
 
+    const legacyTextureMap = {
+        "/img/textures/screentone.webp": "/img/textures/tecnologia_texture.svg",
+        "/img/textures/music-bars.webp": "/img/textures/sound_bars_texture.svg",
+        "/img/textures/stars.webp": "/img/textures/estrelas_texture.svg",
+        "/img/textures/grunge.webp": "/img/textures/thunder_texture.svg",
+        "/img/textures/fan.webp": "/img/textures/leque_texture.svg",
+        "/img/textures/lines.webp": "/img/textures/no_war_texture.svg",
+        "/img/textures/squares.webp": "/img/textures/bambu_texture.svg",
+        "/img/textures/horror.webp": "/img/textures/terror_texture.svg",
+    };
+
+    const resolveTexture = (texture) => legacyTextureMap[texture] ?? texture ?? locutionTextures[0].url;
+
     onMount(() =>
         listenForOAuthAction(
             OAuthAction.OPEN_SONG_REQUEST,
@@ -56,7 +69,7 @@
         phrase: {
             text: air?.phrase?.text,
             icon: air?.phrase?.icon ?? locutionIcons[10].url,
-            texture: air?.phrase?.texture ?? locutionTextures[0].url,
+            texture: resolveTexture(air?.phrase?.texture),
             decoration: {
                 left: air?.phrase?.decoration?.left ?? locutionDecorations[0].left,
                 right: air?.phrase?.decoration?.right ?? locutionDecorations[0].right,
@@ -146,8 +159,9 @@
 
 <!-- Phrase Section -->
 {#if canRender}
-<section class="main-player-phrase-background w-full bg-contain bg-right bg-no-repeat mt-12 mb-8"  style={`--main-player-phrase-texture: url('${playerData.phrase.texture}'); background-image: var(--main-player-phrase-texture), var(--main-player-phrase-gradient, var(--gradient-blue-ocean-cerulean));`}>
-    <div class="container-player h-[90px] relative">
+<section class="main-player-phrase-background relative isolate w-full mt-12 mb-8" style={`--main-player-phrase-texture: url('${playerData.phrase.texture}'); background-image: var(--main-player-phrase-gradient, var(--gradient-blue-ocean-cerulean));`}>
+    <img src={playerData.phrase.texture} alt="" aria-hidden="true" class="pointer-events-none absolute inset-y-0 right-0 z-0 h-full w-full object-contain object-right" style="filter: var(--public-title-texture-filter);" />
+    <div class="container-player h-[90px] relative z-10">
         <div class="absolute -top-6 left-0 z-10 xl:-left-24">
             <img
                 src={playerData.phrase.decoration.left}
@@ -157,7 +171,7 @@
                 loading="lazy"
             />
         </div>
-        <div class="main-player-phrase-text w-full min-w-0 h-[90px] pr-30 xl:pr-36 pl-18 xl:pl-0 flex items-center text-suspense-aurora text-[1.65rem] font-noto-sans font-extrabold uppercase italic">
+        <div class="main-player-phrase-text w-full min-w-0 h-[90px] pr-30 xl:pr-36 pl-18 xl:pl-0 flex items-center text-[#ffffff] text-[1.65rem] font-noto-sans font-extrabold uppercase italic">
             <span class="block w-full overflow-hidden text-ellipsis text-left whitespace-nowrap leading-9">
                 {#each splitHighlightedText(playerData.phrase.text) as phrasePart}
                     <span class:main-player-phrase-highlight={phrasePart.highlighted} class:text-orange-amber={phrasePart.highlighted}>

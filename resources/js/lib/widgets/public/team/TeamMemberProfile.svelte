@@ -23,10 +23,10 @@
             <div class="min-h-32 px-5 py-6 md:ml-36 md:px-8">
                 <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div class="mt-1">
-                        <h2 class="font-noto-sans text-3xl font-black uppercase italic text-suspense-aurora sm:text-4xl md:text-5xl">
+                        <h2 class="font-noto-sans text-3xl font-black uppercase italic text-[#ffffff] sm:text-4xl md:text-5xl">
                             {member.name}
                         </h2>
-                        <p class="mt-1 font-noto-sans text-sm font-black uppercase italic text-suspense-aurora">
+                        <p class="mt-1 font-noto-sans text-sm font-black uppercase italic text-[#ffffff]">
                             ({member.fullName})
                         </p>
                     </div>

@@ -18,7 +18,6 @@
     const resolveEventDate = (event) => event.metadata?.dates ?? "";
     const resolveEventPlace = (event) => event.metadata?.address ?? "";
     const optionPercent = (pollItem, option) => pollItem?.total_votes ? (option.votes / pollItem.total_votes) * 100 : 0;
-    const enigmaGameStartedStorageKey = (uuid) => `akiba_enigmagame_started_${uuid}`;
 
     let pollModalRef;
     let mainSelectedOption = null;
@@ -28,36 +27,6 @@
     let mainVoting = false;
     let enigmagameContent = "";
     let enigmagameSubmitting = null;
-    let enigmaGameStarted = false;
-    let enigmaGameHasSave = false;
-    let enigmaGameStartedUuid = null;
-
-    $: if (enigmagame?.data?.uuid !== enigmaGameStartedUuid) {
-        enigmaGameStartedUuid = enigmagame?.data?.uuid ?? null;
-        enigmaGameHasSave = enigmaGameStartedUuid && typeof sessionStorage !== "undefined"
-            ? sessionStorage.getItem(enigmaGameStartedStorageKey(enigmaGameStartedUuid)) === "1"
-            : false;
-        enigmaGameStarted = false;
-    }
-
-    function startEnigmaGame() {
-        enigmaGameStarted = true;
-        enigmaGameHasSave = true;
-
-        if (enigmaGameStartedUuid && typeof sessionStorage !== "undefined") {
-            sessionStorage.setItem(enigmaGameStartedStorageKey(enigmaGameStartedUuid), "1");
-        }
-    }
-
-    function restartEnigmaGame() {
-        enigmaGameStarted = false;
-        enigmaGameHasSave = false;
-
-        if (enigmaGameStartedUuid && typeof sessionStorage !== "undefined") {
-            sessionStorage.removeItem(enigmaGameStartedStorageKey(enigmaGameStartedUuid));
-        }
-    }
-
     function openPollModal(pollItem) {
         if (pollItem.has_voted) return;
 
@@ -104,6 +73,36 @@
             onSuccess: () => enigmagameContent = "",
             onFinish: () => enigmagameSubmitting = null,
         });
+    }
+
+    $: answeredEnigmaInteractions = (enigmagame?.data?.interactions ?? [])
+        .filter((interaction) => interaction.type === "question" && (interaction.admin_response || interaction.result))
+        .slice(0, 12);
+
+    function enigmaResultLabel(interaction) {
+        return {
+            yes: "Sim",
+            no: "Não",
+            banal: "Banal",
+        }[interaction.result] ?? "Banal";
+    }
+
+    function enigmaResultClass(interaction) {
+        return {
+            yes: "bg-green-mint text-suspense-aurora",
+            no: "bg-red-crimson text-suspense-aurora",
+            banal: "bg-neutral-gray text-suspense-aurora",
+        }[interaction.result] ?? "bg-neutral-gray text-suspense-aurora";
+    }
+
+    function enigmaStatusMessage(game) {
+        if (game.participation?.has_submitted_final_answer) return "Sua resposta definitiva ja foi enviada.";
+        if (game.solved) return "Este enigma ja foi resolvido.";
+        if (!game.participation?.can_interact && game.participation?.next_interaction_at) {
+            return `Aguarde ate ${game.participation.next_interaction_at} para interagir novamente.`;
+        }
+
+        return null;
     }
 </script>
 
@@ -154,330 +153,107 @@
 
         <Section title="Enigma Game" styles="container-page order-2 mt-10 mb-12">
             {#if enigmagame?.data}
-                <div class="relative min-h-[22rem] overflow-hidden bg-blue-night/25 px-3 py-4 [[data-public-theme=light]_&]:bg-transparent sm:px-5 lg:px-6">
-                    {#if !enigmaGameStarted}
-                        <div class="absolute inset-0 z-20 grid place-items-center overflow-hidden bg-blue-night/90 px-5 py-8 text-center [[data-public-theme=light]_&]:bg-neutral-light/90">
-                            <div class="pointer-events-none absolute inset-0 opacity-[0.1]" style="background-image: repeating-linear-gradient(0deg, transparent 0 7px, rgba(255,255,255,0.08) 8px, transparent 9px);"></div>
-                            <div class="pointer-events-none absolute inset-5 rounded-sm border border-orange-amber/35"></div>
-                            <div class="pointer-events-none absolute left-8 top-8 grid grid-cols-2 gap-1">
-                                <span class="size-2 bg-orange-amber/80"></span>
-                                <span class="size-2 bg-orange-amber/45"></span>
-                                <span class="size-2 bg-orange-amber/45"></span>
-                            </div>
-                            <div class="pointer-events-none absolute right-8 top-8 grid grid-cols-2 gap-1">
-                                <span class="size-2 bg-orange-amber/45"></span>
-                                <span class="size-2 bg-orange-amber/80"></span>
-                                <span></span>
-                                <span class="size-2 bg-orange-amber/45"></span>
-                            </div>
-                            <div class="pointer-events-none absolute bottom-8 left-8 grid grid-cols-2 gap-1">
-                                <span class="size-2 bg-orange-amber/45"></span>
-                                <span></span>
-                                <span class="size-2 bg-orange-amber/80"></span>
-                                <span class="size-2 bg-orange-amber/45"></span>
-                            </div>
-                            <div class="pointer-events-none absolute bottom-8 right-8 grid grid-cols-2 gap-1">
-                                <span></span>
-                                <span class="size-2 bg-orange-amber/45"></span>
-                                <span class="size-2 bg-orange-amber/45"></span>
-                                <span class="size-2 bg-orange-amber/80"></span>
-                            </div>
-                            <div class="pointer-events-none absolute left-10 top-1/2 hidden -translate-y-1/2 grid-cols-2 gap-1 opacity-70 sm:grid">
-                                <span class="size-2 bg-orange-amber"></span>
-                                <span class="size-2 bg-orange-amber/45"></span>
-                                <span class="size-2 bg-orange-amber/45"></span>
-                                <span class="size-2 bg-orange-amber"></span>
-                                <span class="size-2 bg-orange-amber"></span>
-                                <span class="size-2 bg-orange-amber/45"></span>
-                            </div>
-                            <div class="pointer-events-none absolute right-10 top-1/2 hidden -translate-y-1/2 grid-cols-2 gap-1 opacity-70 sm:grid">
-                                <span class="size-2 bg-orange-amber/45"></span>
-                                <span class="size-2 bg-orange-amber"></span>
-                                <span class="size-2 bg-orange-amber"></span>
-                                <span class="size-2 bg-orange-amber/45"></span>
-                                <span class="size-2 bg-orange-amber/45"></span>
-                                <span class="size-2 bg-orange-amber"></span>
-                            </div>
-                            <div class="pointer-events-none absolute left-12 top-16 hidden w-28 gap-1 sm:grid">
-                                <span class="h-1.5 w-full bg-orange-amber"></span>
-                                <span class="h-1.5 w-3/4 bg-orange-amber/60"></span>
-                                <span class="h-1.5 w-1/2 bg-orange-amber/35"></span>
-                            </div>
-                            <div class="pointer-events-none absolute right-12 top-16 hidden w-28 justify-items-end gap-1 sm:grid">
-                                <span class="h-1.5 w-full bg-orange-amber"></span>
-                                <span class="h-1.5 w-3/4 bg-orange-amber/60"></span>
-                                <span class="h-1.5 w-1/2 bg-orange-amber/35"></span>
-                            </div>
-                            <div class="pointer-events-none absolute bottom-16 left-12 hidden items-end gap-1 opacity-65 sm:flex">
-                                <span class="h-3 w-2 bg-orange-amber/35"></span>
-                                <span class="h-5 w-2 bg-orange-amber/60"></span>
-                                <span class="h-8 w-2 bg-orange-amber"></span>
-                                <span class="h-4 w-2 bg-orange-amber/45"></span>
-                            </div>
-                            <div class="pointer-events-none absolute bottom-16 right-12 hidden grid-cols-3 gap-1 opacity-65 sm:grid">
-                                <span class="size-2 bg-orange-amber"></span>
-                                <span class="size-2 bg-transparent"></span>
-                                <span class="size-2 bg-orange-amber/45"></span>
-                                <span class="size-2 bg-orange-amber/45"></span>
-                                <span class="size-2 bg-orange-amber"></span>
-                                <span class="size-2 bg-transparent"></span>
-                                <span class="size-2 bg-transparent"></span>
-                                <span class="size-2 bg-orange-amber/45"></span>
-                                <span class="size-2 bg-orange-amber"></span>
-                            </div>
-
-                            <div class="relative w-full max-w-xl font-noto-sans uppercase italic">
-                                <div class="mb-5 flex items-center justify-center gap-2 text-[0.62rem] font-black tracking-[0.18em] text-orange-amber">
-                                    <span class="inline-flex gap-1" aria-hidden="true">
-                                        <span class="size-2 bg-orange-citric"></span>
-                                        <span class="size-2 bg-orange-citric"></span>
-                                        <span class="size-2 bg-orange-citric"></span>
-                                    </span>
-                                    <span>{enigmagame.data.solved ? "Clear" : "Lv. 01"}</span>
-                                    <span class="text-suspense-aurora/45 [[data-public-theme=light]_&]:text-blue-night/45">
-                                        {enigmagame.data.solved ? "Winner Found" : "Score 0000"}
-                                    </span>
-                                </div>
-                                <div class="mx-auto mb-4 grid max-w-52 grid-cols-[1fr_auto_1fr] items-center gap-3 text-[0.58rem] font-black tracking-[0.16em] text-orange-amber/80">
-                                    <span class="h-px bg-orange-amber/45"></span>
-                                    <span>{enigmagame.data.solved ? "Game Clear" : "Stage Ready"}</span>
-                                    <span class="h-px bg-orange-amber/45"></span>
-                                </div>
-                                <div class="mx-auto mb-5 grid size-14 place-items-center rounded-sm border-2 border-orange-amber/80 bg-blue-ocean/80 [[data-public-theme=light]_&]:bg-blue-night">
-                                    <img src="/svg/search.svg" alt="" aria-hidden="true" class="size-8 filter-orange-amber" loading="lazy" />
-                                </div>
-                                <p class="text-xs font-black tracking-[0.28em] text-orange-amber">Akiba Game</p>
-                                <h3 class="mt-3 text-3xl font-black text-suspense-aurora [[data-public-theme=light]_&]:text-blue-night sm:text-4xl">
-                                    {enigmagame.data.solved ? "Game Clear" : "Enigma Game"}
-                                </h3>
-                                <p class="mx-auto mt-4 max-w-md text-sm font-black leading-6 text-suspense-aurora/75 [[data-public-theme=light]_&]:text-blue-night/70">
-                                    {#if enigmagame.data.solved}
-                                        {enigmagame.data.solved_by?.name ?? "Um jogador"} venceu esta fase. Abra o resultado para ver a solução.
-                                    {:else}
-                                        {enigmaGameHasSave ? "Continue sua investigação ou reinicie a fase." : "Aperte start para liberar a pista e entrar na investigação."}
-                                    {/if}
-                                </p>
-                                <button
-                                    type="button"
-                                    class={[publicAnimations.buttonInteractive, "mt-7 inline-flex min-h-11 min-w-40 cursor-pointer items-center justify-center rounded-sm border-2 border-orange-morning bg-orange-citric px-7 py-2.5 text-sm font-black uppercase italic text-blue-night hover:bg-orange-morning active:translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric"]}
-                                    on:click={startEnigmaGame}
-                                >
-                                    <span class="mr-3 text-blue-night/70" aria-hidden="true">▶</span>
-                                    {#if enigmagame.data.solved}
-                                        Ver Resultado
-                                    {:else}
-                                        {enigmaGameHasSave ? "Continue" : "Start"}
-                                    {/if}
-                                    <span class="ml-3 text-blue-night/70" aria-hidden="true">◀</span>
-                                </button>
-                                {#if enigmaGameHasSave && !enigmagame.data.solved}
-                                    <button
-                                        type="button"
-                                        class={[publicAnimations.buttonInteractive, "mt-4 inline-flex min-h-9 cursor-pointer items-center justify-center rounded-sm border border-orange-amber/70 px-5 py-2 text-[0.68rem] font-black uppercase italic tracking-[0.12em] text-orange-amber hover:bg-orange-amber/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric"]}
-                                        on:click={restartEnigmaGame}
-                                    >
-                                        Restart
-                                    </button>
-                                {/if}
-                                <div class="mt-5 flex items-center justify-center gap-2 text-[0.62rem] font-black tracking-[0.16em] text-suspense-aurora/45 [[data-public-theme=light]_&]:text-blue-night/45">
-                                    <span class="size-1.5 bg-orange-amber"></span>
-                                    <span>{enigmagame.data.solved ? "Result Unlocked" : "1 Player"}</span>
-                                    <span class="size-1.5 bg-orange-amber"></span>
-                                </div>
-                                <div class="mx-auto mt-3 flex max-w-44 items-center justify-center gap-1" aria-hidden="true">
-                                    <span class="h-1.5 w-7 bg-orange-amber"></span>
-                                    <span class="h-1.5 w-4 bg-orange-amber/45"></span>
-                                    <span class="h-1.5 w-4 bg-orange-amber/45"></span>
-                                    <span class="h-1.5 w-7 bg-orange-amber"></span>
-                                </div>
-                            </div>
+                <div
+                    class="grid overflow-hidden rounded-md bg-blue-night px-5 py-6 text-suspense-aurora shadow-[0_0.75rem_2rem_rgba(0,0,20,0.22)] [[data-public-theme=light]_&]:border-2 [[data-public-theme=light]_&]:border-orange-amber lg:grid-cols-[minmax(0,1.25fr)_1px_minmax(24rem,0.9fr)] lg:px-7 lg:py-6"
+                    style="--color-neutral-white:#ffffff; --color-neutral-gray:#808080; --color-suspense-aurora:#fffaf3; --color-suspense-honeycream:#ffe8bf; --color-red-crimson:#ed3237; --color-orange-amber:#ff8000; --color-orange-citric:#ffaa35; --color-blue-ocean:#002080; --color-blue-night:#000014; --color-green-mint:#00a859;"
+                >
+                    <section class="flex min-h-[21rem] flex-col items-center justify-center px-2 py-8 text-center font-noto-sans uppercase italic lg:min-h-[24rem] lg:px-4">
+                        <div class="flex w-full flex-1 items-center justify-center">
+                            <img
+                                src={enigmagame.data.content}
+                                alt={`Imagem do enigma ${enigmagame.data.title}`}
+                                class="max-h-[18rem] w-auto max-w-full object-contain sm:max-h-[24rem] lg:max-h-[28rem]"
+                                loading="lazy"
+                            />
                         </div>
-                    {/if}
 
-                    <div class={["grid gap-5 transition duration-300 lg:grid-cols-[minmax(0,1fr)_1px_minmax(16rem,0.48fr)] lg:items-stretch lg:gap-8", !enigmaGameStarted && "select-none opacity-30 blur-[1px]"]}>
-                    <div class="grid gap-3">
-                        {#if enigmagame.data.participation?.has_submitted_final_answer}
-                            <div class={["border-l-2 border-orange-amber pl-3 font-noto-sans text-sm font-semibold uppercase italic text-orange-morning", themeClass("text", "blue-night", { fixed: true, theme: "light" })]}>
-                                {#if enigmagame.data.participation.final_answer_result === "correct"}
-                                    Sua resposta definitiva esta certa.
-                                {:else if enigmagame.data.participation.final_answer_result === "incorrect"}
-                                    Sua resposta definitiva foi analisada, mas nao solucionou o enigma.
-                                {:else}
-                                    Sua resposta definitiva ja foi enviada para este enigma.
+                        {#if enigmagame.data.solved && enigmagame.data.solution}
+                            <p class="mt-6 max-w-2xl text-lg font-normal normal-case leading-snug text-suspense-honeycream sm:text-2xl [[data-public-theme=light]_&]:text-blue-night">
+                                {enigmagame.data.solution}
+                            </p>
+                        {/if}
+
+                    </section>
+
+                    <div class="hidden bg-orange-amber lg:block"></div>
+
+                    <aside class="border-t border-orange-amber pt-5 lg:border-t-0 lg:pl-7 lg:pt-0">
+                        <AuthGuard
+                            {oauth}
+                            compact
+                            buttonLabel="Entre para participar"
+                            filters="filter-blue-night"
+                            buttonClass="text-blue-night"
+                            reason="enigmagame"
+                        >
+                            <form class="grid gap-2" on:submit|preventDefault>
+                                <input
+                                    class="h-10 w-full rounded-md border border-transparent bg-suspense-aurora px-4 font-noto-sans text-sm font-normal not-italic text-blue-night outline-none ring-0 placeholder:text-blue-night/45 focus:border-transparent focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0"
+                                    bind:value={enigmagameContent}
+                                    placeholder=""
+                                    disabled={!enigmagame.data.participation?.can_interact || enigmagameSubmitting}
+                                    required
+                                />
+
+                                <div class="flex flex-wrap items-center justify-center gap-2">
+                                    <Button
+                                        type="button"
+                                        variant="accent"
+                                        size="sm"
+                                        class="min-h-7 rounded-sm px-3 py-1 text-xs"
+                                        loading={enigmagameSubmitting === "final_answer"}
+                                        disabled={!enigmagameContent.trim() || enigmagameSubmitting || !enigmagame.data.participation?.can_interact}
+                                        on:click={() => submitEnigmaGameInteraction("final_answer")}
+                                    >
+                                        Enviar resposta
+                                    </Button>
+                                    <Button
+                                        type="button"
+                                        variant="accent"
+                                        size="sm"
+                                        class="min-h-7 rounded-sm px-3 py-1 text-xs"
+                                        loading={enigmagameSubmitting === "question"}
+                                        disabled={!enigmagameContent.trim() || enigmagameSubmitting || !enigmagame.data.participation?.can_interact}
+                                        on:click={() => submitEnigmaGameInteraction("question")}
+                                    >
+                                        Enviar pergunta
+                                    </Button>
+                                </div>
+
+                                {#if enigmaStatusMessage(enigmagame.data)}
+                                    <p class="font-noto-sans text-xs font-bold text-suspense-aurora">
+                                        {enigmaStatusMessage(enigmagame.data)}
+                                    </p>
                                 {/if}
-                            </div>
-                        {:else if enigmagame.data.solved}
-                            <div class={["border-l-2 border-orange-amber pl-3 font-noto-sans text-sm font-semibold uppercase italic text-orange-morning", themeClass("text", "blue-night", { fixed: true, theme: "light" })]}>
-                                Este enigma ja foi resolvido.
-                            </div>
-                        {:else if !enigmagame.data.participation?.can_interact && enigmagame.data.participation?.next_interaction_at}
-                            <div class={["border-l-2 border-orange-amber pl-3 font-noto-sans text-sm font-semibold uppercase italic text-orange-morning", themeClass("text", "blue-night", { fixed: true, theme: "light" })]}>
-                                Aguarde ate {enigmagame.data.participation.next_interaction_at} para interagir novamente.
-                            </div>
-                        {:else}
-                            <AuthGuard
-                                {oauth}
-                                compact
-                                buttonLabel="Entre para participar"
-                                filters="filter-blue-night"
-                                buttonClass="text-blue-night"
-                                reason="enigmagame"
-                            >
-                                <form class="grid gap-3" on:submit|preventDefault>
-                                    <textarea
-                                        class={["min-h-28 resize-none rounded-[7px] border border-suspense-aurora/15 bg-blue-ocean px-4 py-3 font-noto-sans text-sm font-normal text-suspense-aurora outline-none ring-0 placeholder:text-suspense-aurora/55 focus:border-suspense-aurora/15 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0", themeClass("bg", "neutral-light", { fixed: true, theme: "light" }), themeClass("text", "blue-night", { fixed: true, theme: "light" }), themeClass("placeholder", "blue-night/45", { theme: "light" })]}
-                                        bind:value={enigmagameContent}
-                                        placeholder="Digite sua pergunta ou resposta para o enigma"
-                                        required
-                                    ></textarea>
-                                    <div class="flex flex-wrap gap-2">
-                                        <Button
-                                            type="button"
-                                            variant="accent"
-                                            shape="pill"
-                                            size="sm"
-                                            class="px-6"
-                                            loading={enigmagameSubmitting === "question"}
-                                            disabled={!enigmagameContent.trim() || enigmagameSubmitting}
-                                            on:click={() => submitEnigmaGameInteraction("question")}
-                                        >
-                                            Perguntar
-                                        </Button>
-                                        <Button
-                                            type="button"
-                                            variant="accent"
-                                            shape="pill"
-                                            size="sm"
-                                            class="px-6"
-                                            loading={enigmagameSubmitting === "final_answer"}
-                                            disabled={!enigmagameContent.trim() || enigmagameSubmitting}
-                                            on:click={() => submitEnigmaGameInteraction("final_answer")}
-                                        >
-                                            Responder enigma
-                                        </Button>
-                                    </div>
-                                </form>
-                            </AuthGuard>
-                        {/if}
+                            </form>
+                        </AuthGuard>
 
-                        {#if enigmagame.data.solved && enigmagame.data.solved_by}
-                            <div class={["flex items-center gap-3 rounded-[7px] border border-green-forest/40 bg-green-forest/10 px-4 py-3", themeClass("bg", "neutral-light", { fixed: true, theme: "light" })]}>
-                                <img
-                                    src={resolvePlaceholderImage(enigmagame.data.solved_by.avatar, "avatar", enigmagame.data.solved_by.gender)}
-                                    alt=""
-                                    aria-hidden="true"
-                                    class="size-10 rounded-full border-2 border-neutral-gray/35 bg-transparent object-cover"
-                                    loading="lazy"
-                                />
-                                <div class="min-w-0 font-noto-sans uppercase italic">
-                                    <div class="truncate text-sm font-black text-green-forest">
-                                        {enigmagame.data.solved_by.name} acertou o enigma
-                                    </div>
-                                    {#if enigmagame.data.solved_at}
-                                        <div class={["text-xs font-bold text-suspense-aurora/70", themeClass("text", "blue-night/70", { theme: "light" })]}>
-                                            {enigmagame.data.solved_at}
-                                        </div>
-                                    {/if}
-                                    {#if enigmagame.data.solution}
-                                        <div class={["mt-2 text-sm font-normal normal-case not-italic text-suspense-aurora", themeClass("text", "blue-night", { fixed: true, theme: "light" })]}>
-                                            {enigmagame.data.solution}
-                                        </div>
-                                    {/if}
+                        <div class="mt-7">
+                            <div class="mb-3 grid grid-cols-[auto_1fr] items-center gap-3 font-noto-sans text-xs font-bold uppercase italic text-orange-amber">
+                                <h4>Perguntas respondidas</h4>
+                                <span class="h-px bg-orange-amber"></span>
+                            </div>
+
+                            {#if answeredEnigmaInteractions.length}
+                                <div class="public-themed-scrollbar grid max-h-60 gap-2 overflow-y-auto pr-1">
+                                    {#each answeredEnigmaInteractions as interaction (interaction.uuid)}
+                                        <article class="grid grid-cols-[minmax(0,1fr)_4rem] overflow-hidden rounded-md font-noto-sans text-sm font-normal">
+                                            <p class="break-words bg-suspense-honeycream px-3 py-2 text-blue-night">
+                                                {interaction.content}
+                                            </p>
+                                            <span class={["grid place-items-center px-2 py-2 text-center font-bold uppercase italic", enigmaResultClass(interaction)]}>
+                                                {enigmaResultLabel(interaction)}
+                                            </span>
+                                        </article>
+                                    {/each}
                                 </div>
-                            </div>
-                        {/if}
-
-                        {#if enigmagame.data.interactions?.length}
-                            <div class="public-themed-scrollbar mt-4 grid max-h-[13rem] gap-3 overflow-y-auto overscroll-contain lg:max-h-[16rem]">
-                                {#each enigmagame.data.interactions as interaction (interaction.uuid)}
-                                    <article class="grid gap-3">
-                                        <div class="flex items-start gap-6">
-                                            <div class="mt-0.5 size-12 shrink-0 overflow-hidden rounded-full border-[3px] border-neutral-gray/35 bg-transparent">
-                                                <img
-                                                    src={resolvePlaceholderImage(interaction.participant?.avatar, "avatar", interaction.participant?.gender)}
-                                                    alt=""
-                                                    aria-hidden="true"
-                                                    class="h-full w-full scale-125 object-cover object-top"
-                                                    loading="lazy"
-                                                />
-                                            </div>
-                                            <div class={[
-                                                "relative min-h-16 min-w-0 flex-1 rounded-[7px] border border-transparent px-[18px] py-[10px] before:absolute before:left-[-18px] before:top-[16px] before:size-0 before:border-y-[13px] before:border-r-[19px] before:border-y-transparent before:content-['']",
-                                                interaction.result === "correct"
-                                                    ? `bg-orange-amber ${themeClass("text", "blue-night", { fixed: true })} before:border-r-orange-amber [[data-public-theme=light]_&]:bg-orange-morning [[data-public-theme=light]_&]:before:border-r-orange-morning`
-                                                    : `bg-blue-ocean text-suspense-aurora before:border-r-blue-ocean ${themeClass("bg", "neutral-light", { fixed: true, theme: "light" })} ${themeClass("text", "blue-night", { fixed: true, theme: "light" })} [[data-public-theme=light]_&]:border-blue-night/10 [[data-public-theme=light]_&]:before:border-r-[#e8e8e8]`,
-                                            ]}>
-                                                <div class="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 font-noto-sans leading-none">
-                                                    <h3 class="truncate text-[12px] font-black uppercase italic leading-none">
-                                                        {interaction.participant?.name ?? "Ouvinte"}
-                                                    </h3>
-                                                    <span class="text-[11px] font-black leading-none opacity-55">
-                                                        • {interaction.created_at}
-                                                    </span>
-                                                </div>
-                                                <p class="mt-3 whitespace-pre-line font-noto-sans text-sm font-normal leading-relaxed">
-                                                    {interaction.content}
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                        {#if interaction.admin_response}
-                                            <div class="ml-12 flex items-start gap-5">
-                                                <div class="mt-0.5 size-10 shrink-0 overflow-hidden rounded-full border-[3px] border-neutral-gray/35 bg-transparent">
-                                                    <img
-                                                        src={resolvePlaceholderImage(interaction.responder?.avatar, "avatar", interaction.responder?.gender)}
-                                                        alt=""
-                                                        aria-hidden="true"
-                                                        class="h-full w-full scale-125 object-cover object-top"
-                                                        loading="lazy"
-                                                    />
-                                                </div>
-                                                <div class={["relative min-h-14 min-w-0 flex-1 rounded-[7px] border border-transparent bg-blue-ocean px-4 py-2.5 text-suspense-aurora before:absolute before:left-[-14px] before:top-[13px] before:size-0 before:border-y-[10px] before:border-r-[15px] before:border-y-transparent before:border-r-blue-ocean before:content-['']", themeClass("bg", "neutral-light", { fixed: true, theme: "light" }), themeClass("text", "blue-night", { fixed: true, theme: "light" }), "[[data-public-theme=light]_&]:border-blue-night/10 [[data-public-theme=light]_&]:before:border-r-[#e8e8e8]"]}>
-                                                    <div class="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 font-noto-sans leading-none">
-                                                        <h4 class="truncate text-[11px] font-black uppercase italic leading-none">
-                                                            {interaction.responder?.nickname ?? interaction.responder?.name ?? "Equipe Akiba"}
-                                                        </h4>
-                                                        <span class="text-[10px] font-black leading-none opacity-55">
-                                                            • {interaction.responded_at}
-                                                        </span>
-                                                    </div>
-                                                    <p class="mt-2 whitespace-pre-line font-noto-sans text-sm font-normal leading-relaxed">
-                                                        {interaction.admin_response}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        {/if}
-                                    </article>
-                                {/each}
-                            </div>
-                        {/if}
-                    </div>
-                    <div class="hidden w-px bg-orange-amber/45 [[data-public-theme=light]_&]:bg-blue-cerulean lg:block"></div>
-                    <div class={["p-1 text-suspense-aurora lg:sticky lg:top-24", themeClass("text", "blue-night", { fixed: true, theme: "light" })]}>
-                        {#if enigmagame.data.author}
-                            <div class="mb-4 flex items-center gap-3">
-                                <img
-                                    src={resolvePlaceholderImage(enigmagame.data.author.avatar, "avatar", enigmagame.data.author.gender)}
-                                    alt=""
-                                    aria-hidden="true"
-                                    class="size-10 rounded-full border-2 border-neutral-gray/35 bg-transparent object-cover"
-                                    loading="lazy"
-                                />
-                                <div class="min-w-0 font-noto-sans uppercase italic">
-                                    <div class={["truncate text-sm font-black text-orange-morning", themeClass("text", "blue-night", { fixed: true, theme: "light" })]}>
-                                        {enigmagame.data.author.nickname ?? enigmagame.data.author.name}
-                                    </div>
-                                    <div class={["text-xs font-bold text-suspense-aurora", themeClass("text", "blue-night/70", { theme: "light" })]}>
-                                        lançou um enigma
-                                    </div>
-                                </div>
-                            </div>
-                        {/if}
-                        <p class={["whitespace-pre-line font-noto-sans text-sm font-normal leading-relaxed text-suspense-aurora", themeClass("text", "blue-night", { fixed: true, theme: "light" })]}>
-                            {enigmagame.data.content}
-                        </p>
-                    </div>
-                    </div>
+                            {:else}
+                                <p class="font-noto-sans text-sm font-normal text-suspense-aurora/60">
+                                    Nenhuma pergunta respondida ainda.
+                                </p>
+                            {/if}
+                        </div>
+                    </aside>
                 </div>
             {:else}
                 <MinimalEmptyState
@@ -493,11 +269,11 @@
                     <form
                         on:submit|preventDefault={submitMainVote}
                         class={[
-                            "public-default-gradient w-full rounded-md bg-gradient-blue-cerulean-glow px-4 py-5 sm:px-6 lg:px-8",
+                            "public-default-gradient w-full rounded-md bg-gradient-blue-ocean-cerulean px-4 py-5 sm:px-6 lg:px-8",
                             poll.has_voted && "pointer-events-none opacity-50",
                         ]}
                     >
-                        <h2 class={["text-center font-noto-sans text-xl font-extrabold uppercase italic text-orange-morning lg:text-2xl", themeClass("text", "blue-night", { fixed: true, theme: "light" })]}>
+                        <h2 class="text-center font-noto-sans text-xl font-extrabold uppercase italic text-[#fffaf3] lg:text-2xl">
                             {poll.question}
                         </h2>
                         <div class="my-7 grid gap-5 sm:grid-cols-2 lg:my-12 xl:grid-cols-4">
@@ -512,7 +288,7 @@
                                         class="mt-1 h-5 w-5 cursor-pointer accent-orange-citric"
                                     />
                                     <div class="min-w-0">
-                                        <label for={option.uuid} title={option.option} class={["block max-w-full break-words font-noto-sans text-base font-bold uppercase italic leading-tight text-suspense-aurora sm:text-lg", themeClass("text", "blue-night", { fixed: true, theme: "light" })]}>
+                                        <label for={option.uuid} title={option.option} class="block max-w-full break-words font-noto-sans text-base font-bold uppercase italic leading-tight text-[#fffaf3] sm:text-lg">
                                             {option.option}
                                         </label>
                                         <div class="relative mt-2 flex h-3.5 w-full select-none items-center rounded-full bg-black px-2">
@@ -542,7 +318,7 @@
                                     type="submit"
                                     variant="primary"
                                     shape="pill"
-                                    class="order-1 md:order-3"
+                                    class="order-1 !text-[#fffaf3] md:order-3"
                                     loading={mainVoting}
                                     disabled={!mainSelectedOption || poll.has_voted}
                                 >
@@ -550,14 +326,14 @@
                                 </Button>
                             </AuthGuard>
                             <div class="order-2 font-noto-sans font-bold uppercase italic md:order-1">
-                                <span class={["text-3xl font-extrabold text-suspense-aurora", themeClass("text", "blue-night", { fixed: true, theme: "light" })]}>
+                                <span class="text-3xl font-extrabold text-[#fffaf3]">
                                     {poll.total_votes}
                                 </span>
-                                <span class={["text-sm text-orange-morning", themeClass("text", "blue-night", { fixed: true, theme: "light" })]}>
+                                <span class="text-sm text-[#fffaf3]">
                                     Votos
                                 </span>
                             </div>
-                            <span class={["order-3 w-full font-noto-sans text-sm font-normal uppercase italic text-orange-morning md:order-2 md:ml-auto md:w-auto", themeClass("text", "blue-night/70", { theme: "light" })]}>
+                            <span class="order-3 w-full font-noto-sans text-sm font-normal uppercase italic text-[#fffaf3] md:order-2 md:ml-auto md:w-auto">
                                 ** Vote com sabedoria, após confirmar, o voto não pode ser mudado e você não pode votar novamente**
                             </span>
                         </div>
@@ -569,9 +345,7 @@
                                 <button
                                     type="button"
                                     class={[
-                                        "min-h-20 cursor-pointer rounded-md bg-blue-ocean px-4 py-4 text-left font-noto-sans text-base font-extrabold uppercase italic leading-tight text-suspense-aurora hover:bg-blue-cerulean focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber",
-                                        themeClass("bg", "orange-morning", { theme: "light" }),
-                                        themeClass("text", "blue-night", { fixed: true, theme: "light" }),
+                                        "min-h-20 cursor-pointer rounded-md bg-blue-ocean px-4 py-4 text-left font-noto-sans text-base font-extrabold uppercase italic leading-tight text-[#fffaf3] hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber [[data-public-theme=light]_&]:bg-blue-skywave [[data-public-theme=night]_&]:bg-blue-ocean",
                                         publicAnimations.cardInteractive,
                                         item.has_voted && "pointer-events-none opacity-50",
                                     ]}

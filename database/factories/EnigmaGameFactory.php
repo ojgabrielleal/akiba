@@ -21,11 +21,10 @@ class EnigmaGameFactory extends Factory
         return [
             'user_id' => User::factory(),
             'title' => fake()->words(3, true),
-            'content' => fake()->paragraph(2),
+            'content' => '/img/placeholders/default.webp',
             'status' => fake()->randomElement([
                 EnigmaGame::STATUS_DRAFT,
                 EnigmaGame::STATUS_ACTIVE,
-                EnigmaGame::STATUS_ENDED,
                 EnigmaGame::STATUS_INACTIVE,
             ]),
             'solution' => fake()->sentence(4),
@@ -50,13 +49,6 @@ class EnigmaGameFactory extends Factory
     {
         return $this->state(fn () => [
             'status' => EnigmaGame::STATUS_INACTIVE,
-        ]);
-    }
-
-    public function ended(): static
-    {
-        return $this->state(fn () => [
-            'status' => EnigmaGame::STATUS_ENDED,
         ]);
     }
 }

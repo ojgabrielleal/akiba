@@ -17,8 +17,6 @@
 
 <Layout {flash} {oauth} {onair} {stream} {pageUrl} publicThemeEnabled>
     <section class="public-page-background relative isolate overflow-hidden bg-blue-night text-suspense-aurora">
-        <div class="absolute inset-0 opacity-[0.08]" style="background-image: url('/img/textures/stars.webp');" aria-hidden="true"></div>
-
         <div class="container-page relative flex min-h-[calc(100vh-9rem)] items-center justify-center py-16 text-center">
             <div class="mx-auto flex max-w-xl flex-col items-center">
                 <div class="flex items-center gap-3 font-noto-sans text-[0.7rem] font-black uppercase tracking-[0.18em] text-orange-amber/90">

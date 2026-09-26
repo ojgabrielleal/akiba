@@ -54,10 +54,31 @@ class EnigmaGameInteractionFactory extends Factory
     public function answered(?User $responder = null): static
     {
         return $this->state(fn () => [
-            'admin_response' => fake()->sentence(10),
+            'admin_response' => null,
             'responded_by' => $responder?->id ?? User::factory(),
             'responded_at' => fake()->dateTimeBetween('-3 days', 'now'),
             'response_notified_at' => now(),
+        ]);
+    }
+
+    public function yes(?User $responder = null): static
+    {
+        return $this->question()->answered($responder)->state(fn () => [
+            'result' => 'yes',
+        ]);
+    }
+
+    public function no(?User $responder = null): static
+    {
+        return $this->question()->answered($responder)->state(fn () => [
+            'result' => 'no',
+        ]);
+    }
+
+    public function banal(?User $responder = null): static
+    {
+        return $this->question()->answered($responder)->state(fn () => [
+            'result' => 'banal',
         ]);
     }
 

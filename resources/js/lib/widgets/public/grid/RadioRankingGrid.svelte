@@ -24,12 +24,12 @@
 </script>
 
 <section
-    class="radio-ranking-background bg-blue-marinho"
-    style="--ranking-background: url('/img/pages/radio/backgrounds/music-ranking.webp'); --ranking-mobile-background: url('/img/pages/radio/backgrounds/music-ranking-mobile.webp');"
+    class="radio-ranking-background relative bg-blue-marinho"
+    style="--ranking-background: url('/img/pages/radio/backgrounds/music_ranking.svg'); --ranking-mobile-background: url('/img/pages/radio/backgrounds/music_ranking_mobile.svg');"
 >
     <EditorialTitle title="Akiba Ranking" compact topSpacing="" />
 
-    <div class="container-page pt-12 pb-20 lg:pt-24 lg:pb-20">
+    <div class="container-page relative z-10 pt-12 pb-20 lg:pt-24 lg:pb-20">
         <ol class="grid grid-cols-1 gap-5 lg:grid-cols-2 lg:gap-15">
             {#each rankingCards as card, index}
                 {#if songs[index]}
@@ -44,16 +44,16 @@
                                 class="absolute bottom-0 right-0 h-28 w-28 object-contain sm:h-40 sm:w-40"
                                 loading="lazy"
                             />
-                            <h2 class="mb-2 h-10 max-w-full font-noto-sans text-base font-extrabold uppercase italic leading-5 text-blue-marinho sm:w-[18rem] sm:text-xl sm:leading-[1.3rem]">
+                            <h2 class="mb-5 h-10 max-w-full font-noto-sans text-base font-extrabold uppercase italic leading-5 text-blue-marinho sm:w-[18rem] sm:text-xl sm:leading-[1.3rem]">
                                 {songs[index].name}
                             </h2>
-                            <div class="max-w-full font-noto-sans text-sm text-blue-marinho">
+                            <div class="max-w-full truncate pr-2 font-noto-sans text-sm text-blue-marinho sm:w-[18rem]">
                                 <span class="font-medium">
                                     Cantor/Banda:
                                 </span>
                                 {songs[index].artist}
                             </div>
-                            <div class="mt-[-0.2rem] max-w-full font-noto-sans text-sm text-blue-marinho">
+                            <div class="max-w-full truncate pr-2 font-noto-sans text-sm text-blue-marinho sm:w-[18rem]">
                                 <span class="font-medium">
                                     Anime:
                                 </span>
@@ -78,11 +78,15 @@
                                 {music.name}
                             </h3>
                             <p class="mt-3 truncate text-xs font-normal uppercase">
-                                Cantor / Banda:
+                                <span class="font-medium">
+                                    Cantor / Banda:
+                                </span>
                                 {music.artist}
                             </p>
                             <p class="mt-1 truncate text-xs font-normal uppercase">
-                                Anime:
+                                <span class="font-medium">
+                                    Anime:
+                                </span>
                                 {music.anime?.name ?? music.production}
                             </p>
                         </div>
@@ -95,14 +99,24 @@
 
 <style>
     .radio-ranking-background {
+        overflow: hidden;
+    }
+
+    .radio-ranking-background::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 0;
         background-image: var(--ranking-mobile-background);
         background-position: center top;
         background-repeat: no-repeat;
         background-size: cover;
+        filter: var(--public-background-texture-filter);
+        pointer-events: none;
     }
 
     @media (min-width: 1024px) {
-        .radio-ranking-background {
+        .radio-ranking-background::before {
             background-image: var(--ranking-background);
             background-position: center top;
             background-repeat: repeat-y;

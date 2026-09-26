@@ -8,12 +8,6 @@
 <Meta meta={{ title: "Realize o Login" } } />
 <main class="relative flex min-h-dvh w-full items-center justify-center overflow-hidden bg-blue-night px-4 py-8 sm:px-6 lg:px-8">
     <h1 class="sr-only">Login</h1>
-    <div
-        class="absolute inset-0 opacity-[0.08]"
-        aria-hidden="true"
-        style="background-image: url('/img/textures/stars.webp');"
-    ></div>
-
     <section class="relative z-10 grid w-[61rem] max-w-5xl overflow-hidden rounded-md bg-suspense-aurora shadow-xl shadow-blue-night/45 lg:min-h-125 lg:grid-cols-[minmax(23rem,0.75fr)_minmax(0,1.25fr)]">
         <div class="flex items-center px-5 py-8 sm:px-7 lg:px-9">
             <LoginForm />

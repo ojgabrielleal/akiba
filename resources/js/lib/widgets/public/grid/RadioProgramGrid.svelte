@@ -5,7 +5,8 @@
 
     export let programs = null;
 
-    const weekDays = [
+    const filterTabs = [
+        { day: "all", label: "Todos" },
         { day: 1, label: "Segunda-feira" },
         { day: 2, label: "Terça-feira" },
         { day: 3, label: "Quarta-feira" },
@@ -18,52 +19,37 @@
     const baseTimeZone = "America/Sao_Paulo";
     const baseWeekStart = "2024-01-07";
     const baseTimeZoneOffset = "-03:00";
-    const timeZoneLabels = {
-        "America/Sao_Paulo": { name: "BRT", region: "Brasília", country: "Brasil", mainTimeZone: "America/Sao_Paulo" },
-        "America/Bahia": { name: "BRT", region: "Brasília", country: "Brasil", mainTimeZone: "America/Sao_Paulo" },
-        "America/Belem": { name: "BRT", region: "Brasília", country: "Brasil", mainTimeZone: "America/Sao_Paulo" },
-        "America/Fortaleza": { name: "BRT", region: "Brasília", country: "Brasil", mainTimeZone: "America/Sao_Paulo" },
-        "America/Maceio": { name: "BRT", region: "Brasília", country: "Brasil", mainTimeZone: "America/Sao_Paulo" },
-        "America/Recife": { name: "BRT", region: "Brasília", country: "Brasil", mainTimeZone: "America/Sao_Paulo" },
-        "America/Araguaina": { name: "BRT", region: "Brasília", country: "Brasil", mainTimeZone: "America/Sao_Paulo" },
-        "America/Santarem": { name: "BRT", region: "Brasília", country: "Brasil", mainTimeZone: "America/Sao_Paulo" },
-        "America/Noronha": { name: "FNT", region: "Fernando de Noronha", country: "Brasil", mainTimeZone: "America/Sao_Paulo" },
-        "America/Manaus": { name: "AMT", region: "Manaus", country: "Brasil", mainTimeZone: "America/Sao_Paulo" },
-        "America/Boa_Vista": { name: "AMT", region: "Boa Vista", country: "Brasil", mainTimeZone: "America/Sao_Paulo" },
-        "America/Porto_Velho": { name: "AMT", region: "Porto Velho", country: "Brasil", mainTimeZone: "America/Sao_Paulo" },
-        "America/Cuiaba": { name: "AMT", region: "Cuiabá", country: "Brasil", mainTimeZone: "America/Sao_Paulo" },
-        "America/Campo_Grande": { name: "AMT", region: "Campo Grande", country: "Brasil", mainTimeZone: "America/Sao_Paulo" },
-        "America/Rio_Branco": { name: "ACT", region: "Rio Branco", country: "Brasil", mainTimeZone: "America/Sao_Paulo" },
-        "America/Eirunepe": { name: "ACT", region: "Eirunepé", country: "Brasil", mainTimeZone: "America/Sao_Paulo" },
-        "Europe/Lisbon": { name: "WET/WEST", region: "Lisboa", country: "Portugal", mainTimeZone: "Europe/Lisbon" },
-        "Atlantic/Madeira": { name: "WET/WEST", region: "Lisboa", country: "Portugal", mainTimeZone: "Europe/Lisbon" },
-        "Atlantic/Azores": { name: "AZOT/AZOST", region: "Açores", country: "Portugal", mainTimeZone: "Europe/Lisbon" },
-        "Africa/Luanda": { name: "WAT", region: "Luanda", country: "Angola", mainTimeZone: "Africa/Luanda" },
-        "Africa/Maputo": { name: "CAT", region: "Maputo", country: "Moçambique", mainTimeZone: "Africa/Maputo" },
-        "Atlantic/Cape_Verde": { name: "CVT", region: "Praia", country: "Cabo Verde", mainTimeZone: "Atlantic/Cape_Verde" },
-        "Africa/Bissau": { name: "GMT", region: "Bissau", country: "Guiné-Bissau", mainTimeZone: "Africa/Bissau" },
-        "Africa/Sao_Tome": { name: "GMT", region: "São Tomé", country: "São Tomé e Príncipe", mainTimeZone: "Africa/Sao_Tome" },
-        "Asia/Dili": { name: "TLT", region: "Díli", country: "Timor-Leste", mainTimeZone: "Asia/Dili" },
-        "Asia/Macau": { name: "CST", region: "Macau", country: "Macau", mainTimeZone: "Asia/Macau" },
-        "Asia/Tokyo": { name: "JST", region: "Tokyo", country: "Japão", mainTimeZone: "Asia/Tokyo" },
-    };
-
-    let activeDay = 1;
+    const brazilTimeZones = new Set([
+        "America/Sao_Paulo",
+        "America/Bahia",
+        "America/Belem",
+        "America/Fortaleza",
+        "America/Maceio",
+        "America/Recife",
+        "America/Araguaina",
+        "America/Santarem",
+        "America/Noronha",
+        "America/Manaus",
+        "America/Boa_Vista",
+        "America/Porto_Velho",
+        "America/Cuiaba",
+        "America/Campo_Grande",
+        "America/Rio_Branco",
+        "America/Eirunepe",
+    ]);
+    const weekDayOrder = { 1: 0, 2: 1, 3: 2, 4: 3, 5: 4, 6: 5, 0: 6 };
+    let activeDay = "all";
     let visitorTimeZone = baseTimeZone;
 
-    $: selectedPrograms = programs?.data ?? [];
-    $: visitorTimeZoneLabel = resolveTimeZoneLabel(visitorTimeZone);
-    $: mainTimeZone = visitorTimeZoneLabel.mainTimeZone ?? visitorTimeZone;
-    $: mainTimeZoneLabel = resolveTimeZoneLabel(mainTimeZone);
-    $: showLocalTime = visitorTimeZoneLabel.name !== mainTimeZoneLabel.name || visitorTimeZoneLabel.region !== mainTimeZoneLabel.region;
-    $: showBrasiliaTime = visitorTimeZoneLabel.country === "Brasil" && mainTimeZone !== baseTimeZone;
-    $: dayPrograms = resolveProgramsByDay(selectedPrograms, activeDay, visitorTimeZone, mainTimeZone);
+    $: selectedPrograms = (programs?.data ?? []).filter((program) => program.execution_mode !== "auto_dj");
+    $: isBrazilTimeZone = brazilTimeZones.has(visitorTimeZone);
+    $: dayPrograms = resolveProgramsByDay(selectedPrograms, activeDay, visitorTimeZone);
 
     onMount(() => {
         visitorTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || baseTimeZone;
     });
 
-    function resolveProgramsByDay(items, day, localTimeZone, countryMainTimeZone) {
+    function resolveProgramsByDay(items, day, localTimeZone) {
         return items
             .flatMap((program) =>
                 (program.airtimes ?? [])
@@ -71,12 +57,17 @@
                         ...program,
                         schedule,
                         baseSchedule: convertScheduleTime(schedule, baseTimeZone),
-                        mainSchedule: convertScheduleTime(schedule, countryMainTimeZone),
                         localSchedule: convertScheduleTime(schedule, localTimeZone),
                     }))
-                    .filter((program) => Number(program.baseSchedule.day) === day)
+                    .filter((program) => day === "all" || Number(program.localSchedule.day) === Number(day))
             )
-            .sort((first, second) => String(first.baseSchedule.hour).localeCompare(String(second.baseSchedule.hour)));
+            .sort((first, second) => {
+                if (Number(first.localSchedule.day) !== Number(second.localSchedule.day)) {
+                    return weekDayOrder[first.localSchedule.day] - weekDayOrder[second.localSchedule.day];
+                }
+
+                return String(first.localSchedule.hour).localeCompare(String(second.localSchedule.hour));
+            });
     }
 
     function convertScheduleTime(schedule, timeZone) {
@@ -120,29 +111,14 @@
         }[weekday] ?? 0;
     }
 
-    function resolveConvertedScheduleLabel(schedule, comparedSchedule) {
-        const convertedHour = resolveHour(schedule.hour);
-
-        if (Number(schedule.day) === Number(comparedSchedule.day)) {
-            return convertedHour;
-        }
-
-        return `${resolveDay(schedule.day)} · ${convertedHour}`;
-    }
-
-    function resolveTimeZoneLabel(timeZone) {
-        return timeZoneLabels[timeZone] ?? {
-            name: "Local",
-            region: timeZone.split("/").pop()?.replaceAll("_", " ") ?? "sua região",
-            country: "Local",
-            mainTimeZone: timeZone,
-        };
+    function resolveEmptyMessage(day) {
+        return day === "all" ? "Nenhum programa encontrado." : "Nenhum programa encontrado neste dia.";
     }
 </script>
 
 <section class="bg-blue-marinho">
     <EditorialTitle title="Programação" listLabel="Filtrar programação por dia">
-        {#each weekDays as item}
+        {#each filterTabs as item}
             <li class="flex h-7 items-center border-l border-neutral-gray/35 px-3 first:border-none first:pl-0 xl:px-5">
                 <button
                     type="button"
@@ -187,53 +163,26 @@
                                         loading="lazy"
                                     />
                                 </div>
-                                <dl class={["w-full rounded-md bg-suspense-aurora px-4 py-3 mb-2", themeClass("bg", "orange-morning", { theme: "light" })]}>
-                                    <dt class={["mb-3 flex items-center justify-between gap-3 font-noto-sans italic uppercase text-blue-marinho", themeClass("text", "blue-marinho", { fixed: true, theme: "light" })]}>
-                                        <span class="text-sm font-extrabold">
-                                            {resolveDay(showLocalTime ? item.localSchedule.day : item.mainSchedule.day)}
+                                <div class={["mb-2 w-full rounded-md bg-suspense-aurora px-4 py-3 font-noto-sans italic uppercase text-blue-marinho", themeClass("bg", "orange-morning", { theme: "light" }), themeClass("text", "blue-marinho", { fixed: true, theme: "light" })]}>
+                                    <div class="flex items-center justify-between gap-4">
+                                        <span class="min-w-0 truncate text-sm font-extrabold">
+                                            {resolveDay(item.localSchedule.day)}
                                         </span>
-                                        <span class={["rounded-md bg-orange-amber px-2 py-1 text-xs font-black text-blue-night", themeClass("text", "blue-night", { fixed: true, theme: "light" })]}>
-                                            {visitorTimeZoneLabel.country}
+                                        <span class="shrink-0 text-lg font-black leading-none">
+                                            {resolveHour(item.localSchedule.hour)}
                                         </span>
-                                    </dt>
-                                    <dd>
-                                        <div class="rounded-md bg-blue-marinho px-3 py-2 font-noto-sans italic uppercase text-suspense-aurora">
-                                            <div class="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1">
-                                                <span class="text-xs font-black text-orange-amber">
-                                                    {showLocalTime ? `${visitorTimeZoneLabel.name} · ${visitorTimeZoneLabel.region}` : `${mainTimeZoneLabel.name} · ${mainTimeZoneLabel.region}`}
-                                                </span>
-                                                <span class={["text-lg font-black leading-none", showLocalTime && "row-span-2"]}>
-                                                    {resolveHour(showLocalTime ? item.localSchedule.hour : item.mainSchedule.hour)}
-                                                </span>
-                                                {#if showLocalTime}
-                                                    <span class="text-[0.62rem] font-bold text-suspense-aurora/60">
-                                                        Seu horário local
-                                                    </span>
-                                                {/if}
-                                            </div>
+                                    </div>
+                                    {#if !isBrazilTimeZone}
+                                        <div class="mt-2 flex items-center justify-between gap-3 rounded-md bg-blue-marinho/10 px-3 py-2 text-[0.62rem] font-black">
+                                            <span class="shrink-0 text-orange-amber">
+                                                Horário de Brasília
+                                            </span>
+                                            <span class="min-w-0 truncate text-right">
+                                                {resolveDay(item.baseSchedule.day)} · {resolveHour(item.baseSchedule.hour)}
+                                            </span>
                                         </div>
-                                        {#if showLocalTime}
-                                            <div class="mt-2 flex items-center justify-between gap-4 rounded-md bg-blue-marinho/10 px-4 py-2 font-noto-sans italic uppercase text-blue-marinho">
-                                                <span class="text-[0.62rem] font-black">
-                                                    {mainTimeZone === baseTimeZone ? "Horário de Brasília" : "Horário principal"}
-                                                </span>
-                                                <span class="text-[0.68rem] font-black">
-                                                    {resolveConvertedScheduleLabel(item.mainSchedule, item.localSchedule)}
-                                                </span>
-                                            </div>
-                                        {/if}
-                                        {#if showBrasiliaTime && !showLocalTime}
-                                            <div class="mt-2 flex items-center justify-between gap-4 rounded-md bg-blue-marinho/10 px-4 py-2 font-noto-sans italic uppercase text-blue-marinho">
-                                                <span class="text-[0.62rem] font-black">
-                                                    Horário de Brasília
-                                                </span>
-                                                <span class="text-[0.68rem] font-black">
-                                                    {resolveConvertedScheduleLabel(item.baseSchedule, item.mainSchedule)}
-                                                </span>
-                                            </div>
-                                        {/if}
-                                    </dd>
-                                </dl>
+                                    {/if}
+                                </div>
                             </div>
                         </article>
                     </li>
@@ -241,7 +190,7 @@
             </GridList>
         {:else}
             <p class="text-center font-noto-sans text-lg font-extrabold italic uppercase text-neutral-gray">
-                Nenhum programa encontrado neste dia.
+                {resolveEmptyMessage(activeDay)}
             </p>
         {/if}
     </div>

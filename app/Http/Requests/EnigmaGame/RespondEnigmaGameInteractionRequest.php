@@ -16,7 +16,7 @@ class RespondEnigmaGameInteractionRequest extends FormRequest
     {
         return [
             'admin_response' => ['nullable', 'string'],
-            'result' => ['nullable', 'string', 'in:correct,incorrect'],
+            'result' => ['nullable', 'string', 'in:correct,incorrect,yes,no,banal'],
         ];
     }
 }

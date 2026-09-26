@@ -41,8 +41,30 @@
     $: resolvedOAuth = oauth ?? $page.props.oauth ?? {};
     $: isAuthenticated = Boolean(resolvedOAuth?.authenticated);
 
-    const authenticate = () => {
+    const authenticate = (event, url = null) => {
         rememberOAuthAction(action);
+
+        if (!url) return;
+
+        const popup = openOAuthPopup(url);
+
+        if (popup) {
+            event.preventDefault();
+            popup.focus();
+        }
+    };
+
+    const openOAuthPopup = (url) => {
+        const width = 520;
+        const height = 720;
+        const left = window.screenX + Math.max(0, (window.outerWidth - width) / 2);
+        const top = window.screenY + Math.max(0, (window.outerHeight - height) / 2);
+
+        return window.open(
+            url,
+            "akiba_oauth",
+            `popup=yes,width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=yes`
+        );
     };
 
     const providerIconStyle = (provider) => `mask-image: url('${provider.icon}'); -webkit-mask-image: url('${provider.icon}');`;
@@ -74,7 +96,7 @@
                     "flex min-h-9 cursor-pointer items-center gap-2 rounded-full bg-orange-amber px-4 py-2 text-sm font-extrabold uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 hover:brightness-105 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none",
                     buttonClass,
                 ]}
-                on:click={authenticate}
+                on:click={(event) => authenticate(event, authHref)}
             >
                 <img
                     src="/svg/profile.svg"
@@ -98,7 +120,7 @@
                             "flex min-h-12 items-center justify-center gap-3 rounded-md px-5 py-2.5 text-center font-noto-sans text-sm font-extrabold uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none",
                             provider.class,
                         ]}
-                        on:click={authenticate}
+                        on:click={(event) => authenticate(event, `/oauth/${provider.name}/redirect`)}
                     >
                         <span
                             aria-hidden="true"

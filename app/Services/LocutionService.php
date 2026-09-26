@@ -85,7 +85,7 @@ class LocutionService
                 'left' => '/img/player/decorations/music-left.webp',
                 'right' => '/img/player/decorations/music-right.webp',
             ],
-            'texture' => $selected['texture'] ?? '/img/textures/music-bars.webp',
+            'texture' => $selected['texture'] ?? '/img/textures/sound_bars_texture.svg',
         ];
     }
 

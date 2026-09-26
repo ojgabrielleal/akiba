@@ -23,8 +23,8 @@
 {#if postList.length > 0}
     <section class={["public-post-list-grid", title ? styles : ""]}>
         {#if title}
-            <div class={["public-section-heading mb-5 flex items-center gap-4 after:h-px after:flex-1 after:bg-orange-citric after:content-['']", themeClass("after:bg", "blue-cerulean", { theme: "light" })]}>
-                <h2 class={["public-section-heading-title whitespace-nowrap font-noto-sans text-[1.3rem] font-black text-orange-citric uppercase italic", themeClass("text", "blue-cerulean", { theme: "light" })]}>
+            <div class={["public-section-heading mb-5 flex items-center gap-4 after:h-px after:flex-1 after:bg-orange-citric after:content-['']", themeClass("after:bg", "blue-marinho", { theme: "light" })]}>
+                <h2 class={["public-section-heading-title whitespace-nowrap font-noto-sans text-[1.3rem] font-black text-orange-citric uppercase italic", themeClass("text", "blue-marinho", { theme: "light" })]}>
                     {title}
                 </h2>
             </div>
@@ -58,14 +58,14 @@
                             </span>
                         </div>
                         <article class="flex min-w-0 flex-col justify-between gap-4 p-3 sm:p-0">
-                            <h3 class="public-post-list-title line-clamp-3 font-noto-sans text-xl leading-tight font-bold text-suspense-aurora uppercase italic sm:text-[1.375rem]">
+                            <h3 class={["public-post-list-title line-clamp-3 font-noto-sans text-xl leading-tight font-bold text-suspense-aurora uppercase italic sm:text-[1.375rem]", themeClass("text", "blue-marinho", { theme: "light" })]}>
                                 {post.title}
                             </h3>
                             <div class="flex items-end gap-2">
                                 {#each post.tags ?? [] as tag (tag.uuid)}
                                     <MaskIcon
                                         icon={postTags[tag.name]?.icon}
-                                        class="public-post-list-icon size-5 text-suspense-aurora sm:size-6"
+                                        class={["public-post-list-icon size-5 text-suspense-aurora sm:size-6", themeClass("text", "blue-marinho", { theme: "light" })]}
                                         title={postTags[tag.name]?.label ?? tag.name}
                                     />
                                 {/each}

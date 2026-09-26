@@ -8,7 +8,7 @@
 
     const tones = {
         accent: {
-            line: `bg-orange-citric ${themeClass("bg", "blue-cerulean", { theme: "light" })}`,
+            line: `bg-orange-citric ${themeClass("bg", "blue-marinho", { theme: "light" })}`,
             text: `text-orange-citric ${themeClass("text", "blue-cerulean", { theme: "light" })}`,
         },
         primary: { line: "bg-blue-skywave", text: "text-blue-skywave" },

@@ -1,42 +1,47 @@
 [
   {
-    "alt": "Screentone",
-    "url": "/img/textures/screentone.webp",
+    "alt": "Tecnologia",
+    "url": "/img/textures/tecnologia_texture.svg",
     "disabled": false
   },
   {
-    "alt": "Music bars",
-    "url": "/img/textures/music-bars.webp",
+    "alt": "Sound bars",
+    "url": "/img/textures/sound_bars_texture.svg",
     "disabled": false
   },
   {
-    "alt": "Stars",
-    "url": "/img/textures/stars.webp",
+    "alt": "Estrelas",
+    "url": "/img/textures/estrelas_texture.svg",
     "disabled": false
   },
   {
-    "alt": "Grunge",
-    "url": "/img/textures/grunge.webp",
+    "alt": "Thunder",
+    "url": "/img/textures/thunder_texture.svg",
     "disabled": false
   },
   {
-    "alt": "Fan",
-    "url": "/img/textures/fan.webp",
+    "alt": "Leque",
+    "url": "/img/textures/leque_texture.svg",
     "disabled": false
   },
   {
-    "alt": "Lines",
-    "url": "/img/textures/lines.webp",
+    "alt": "No war",
+    "url": "/img/textures/no_war_texture.svg",
     "disabled": false
   },
   {
-    "alt": "Squares",
-    "url": "/img/textures/squares.webp",
+    "alt": "Bambu",
+    "url": "/img/textures/bambu_texture.svg",
     "disabled": false
   },
   {
-    "alt": "Horror",
-    "url": "/img/textures/horror.webp",
+    "alt": "Terror",
+    "url": "/img/textures/terror_texture.svg",
+    "disabled": false
+  },
+  {
+    "alt": "Sakura",
+    "url": "/img/textures/sakura_texture.svg",
     "disabled": false
   }
 ]

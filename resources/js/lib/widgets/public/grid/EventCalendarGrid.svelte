@@ -18,8 +18,8 @@
 </Modal>
 
 <Section styles="public-event-calendar-original container-page mb-10">
-    <div class={["public-section-heading mb-5 flex items-center gap-3 after:h-px after:min-w-10 after:flex-1 after:bg-orange-citric after:content-[''] sm:gap-4", themeClass("after:bg", "blue-cerulean", { theme: "light" })]}>
-        <h2 class={["public-section-heading-title whitespace-nowrap font-noto-sans text-[1.3rem] font-black text-orange-citric uppercase italic", themeClass("text", "blue-cerulean", { theme: "light" })]}>
+    <div class={["public-section-heading mb-5 flex items-center gap-3 after:h-px after:min-w-10 after:flex-1 after:bg-orange-citric after:content-[''] sm:gap-4", themeClass("after:bg", "blue-marinho", { theme: "light" })]}>
+        <h2 class={["public-section-heading-title whitespace-nowrap font-noto-sans text-[1.3rem] font-black text-orange-citric uppercase italic", themeClass("text", "blue-marinho", { theme: "light" })]}>
             <span class="md:hidden">Eventos</span>
             <span class="hidden md:inline">Calendário de eventos</span>
         </h2>
@@ -69,17 +69,17 @@
                                     aria-label={`Ver evento: ${item.title}`}
                                     class="group grid grid-cols-[1.5fr_0.85fr_1fr] gap-2 rounded-md font-black transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber motion-reduce:transform-none motion-reduce:transition-none"
                                 >
-                                    <div class="min-w-0 rounded-md bg-orange-amber px-5 py-2.5 text-center text-lg text-blue-night">
+                                    <div class="min-w-0 rounded-md bg-[#ffaa35] px-5 py-2.5 text-center text-lg text-[#000014]">
                                         <span class="block truncate">
                                             {item.title}
                                         </span>
                                     </div>
-                                    <div class={["min-w-0 rounded-md bg-blue-cerulean px-5 py-2.5 text-center text-lg", themeClass("text", "suspense-aurora", { fixed: true })]}>
+                                    <div class="min-w-0 rounded-md bg-[#002080] px-5 py-2.5 text-center text-lg text-suspense-honeycream">
                                         <span class="block truncate">
                                             {resolveEventDate(item)}
                                         </span>
                                     </div>
-                                    <div class={["min-w-0 rounded-md bg-blue-cerulean px-5 py-2.5 text-center text-lg", themeClass("text", "suspense-aurora", { fixed: true })]}>
+                                    <div class="min-w-0 rounded-md bg-[#002080] px-5 py-2.5 text-center text-lg text-suspense-honeycream">
                                         <span class="block truncate">
                                             {resolveEventPlace(item)}
                                         </span>

@@ -208,14 +208,14 @@ class MediaController extends Controller
 
     public function storeEnigmaGame(StoreEnigmaGameRequest $request, EnigmaGameService $service)
     {
-        $service->store($request->user(), $request->validated());
+        $service->store($request->user(), $request->validated(), $request->file('image'));
 
         return $this->flashMessage('save');
     }
 
     public function updateEnigmaGame(UpdateEnigmaGameRequest $request, EnigmaGameService $service, EnigmaGame $enigmagame)
     {
-        $service->update($enigmagame, $request->validated());
+        $service->update($enigmagame, $request->validated(), $request->file('image'));
 
         return $this->flashMessage('update');
     }
@@ -236,15 +236,6 @@ class MediaController extends Controller
         $service->deactivate($enigmagame);
 
         return $this->flashMessage('deactivate');
-    }
-
-    public function finishEnigmaGame(EnigmaGameService $service, EnigmaGame $enigmagame)
-    {
-        $this->authorize('delete', $enigmagame);
-
-        $service->finish($enigmagame);
-
-        return $this->flashMessage('finish');
     }
 
     public function respondEnigmaGameInteraction(RespondEnigmaGameInteractionRequest $request, EnigmaGameService $service, EnigmaGameInteraction $enigmagameInteraction)

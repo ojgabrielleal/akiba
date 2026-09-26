@@ -73,7 +73,7 @@
 <Meta meta={{ title: context.title }} />
 <Layout {flash} {oauth} {onair} {stream} {pageUrl} publicThemeEnabled>
     <section class="public-page-background relative isolate overflow-hidden bg-blue-night text-suspense-aurora">
-        <div class="absolute inset-0 opacity-[0.08]" style="background-image: url('/img/textures/stars.webp');" aria-hidden="true"></div>
+        <div class="absolute inset-0 opacity-[0.08]" style="background-image: url('/img/textures/estrelas_texture.svg');" aria-hidden="true"></div>
         <div class="absolute inset-x-0 top-0 h-32 bg-linear-to-b from-blue-night to-transparent" aria-hidden="true"></div>
         <div class="absolute inset-x-0 bottom-0 h-32 bg-linear-to-t from-blue-night to-transparent" aria-hidden="true"></div>
 

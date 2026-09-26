@@ -33,7 +33,7 @@ class EnigmaGameResource extends JsonResource
             ? $this->interactions
             : $this->interactions
                 ->where('type', EnigmaGameInteraction::TYPE_QUESTION)
-                ->whereNotNull('admin_response')
+                ->filter(fn ($interaction) => filled($interaction->admin_response) || filled($interaction->result))
                 ->values();
 
         return [

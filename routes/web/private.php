@@ -111,7 +111,6 @@ Route::prefix('panel')->middleware(['inertia'])->group(function () {
                 Route::post('', 'storeEnigmaGame');
                 Route::patch('{enigmagame:uuid}', 'updateEnigmaGame');
                 Route::patch('{enigmagame:uuid}/publish', 'publishEnigmaGame');
-                Route::patch('{enigmagame:uuid}/finish', 'finishEnigmaGame');
                 Route::patch('{enigmagame:uuid}/deactivate', 'deactivateEnigmaGame');
                 Route::patch('interaction/{enigmagameInteraction:uuid}/respond', 'respondEnigmaGameInteraction');
             });
