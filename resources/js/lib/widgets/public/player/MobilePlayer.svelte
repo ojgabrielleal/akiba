@@ -172,7 +172,7 @@
                     <p class="text-orange-amber text-[9px] font-noto-sans font-extrabold uppercase italic">
                         Tocando agora
                     </p>
-                    <p class="truncate text-suspense-aurora/75 text-xs font-noto-sans font-bold uppercase italic">
+                    <p class="truncate text-suspense-aurora/75 text-xs font-song-title font-bold uppercase italic">
                         {playerData.currentSong.music || "Estamos offline"}
                     </p>
                 </div>
@@ -318,7 +318,7 @@
                         <p class="text-orange-amber text-[9px] font-noto-sans font-extrabold uppercase italic">
                             Tocando agora
                         </p>
-                        <p class="line-clamp-2 text-suspense-aurora/80 text-sm leading-4 font-noto-sans font-bold uppercase italic">
+                        <p class="line-clamp-2 text-suspense-aurora/80 text-sm leading-4 font-song-title font-bold uppercase italic">
                             {playerData.currentSong.music || "Estamos offline"}
                         </p>
                     </div>

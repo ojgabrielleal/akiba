@@ -154,7 +154,7 @@
         <Section title="Enigma Game" styles="container-page order-2 mt-10 mb-12">
             {#if enigmagame?.data}
                 <div
-                    class="grid overflow-hidden rounded-md bg-blue-night px-5 py-6 text-suspense-aurora shadow-[0_0.75rem_2rem_rgba(0,0,20,0.22)] [[data-public-theme=light]_&]:border-2 [[data-public-theme=light]_&]:border-orange-amber lg:grid-cols-[minmax(0,1.25fr)_1px_minmax(24rem,0.9fr)] lg:px-7 lg:py-6"
+                    class="grid overflow-hidden rounded-md bg-blue-night px-5 py-6 text-suspense-aurora [[data-public-theme=light]_&]:bg-[#d7dce3] lg:grid-cols-[minmax(0,1.25fr)_1px_minmax(24rem,0.9fr)] lg:px-7 lg:py-6"
                     style="--color-neutral-white:#ffffff; --color-neutral-gray:#808080; --color-suspense-aurora:#fffaf3; --color-suspense-honeycream:#ffe8bf; --color-red-crimson:#ed3237; --color-orange-amber:#ff8000; --color-orange-citric:#ffaa35; --color-blue-ocean:#002080; --color-blue-night:#000014; --color-green-mint:#00a859;"
                 >
                     <section class="flex min-h-[21rem] flex-col items-center justify-center px-2 py-8 text-center font-noto-sans uppercase italic lg:min-h-[24rem] lg:px-4">
@@ -162,7 +162,7 @@
                             <img
                                 src={enigmagame.data.content}
                                 alt={`Imagem do enigma ${enigmagame.data.title}`}
-                                class="max-h-[18rem] w-auto max-w-full object-contain sm:max-h-[24rem] lg:max-h-[28rem]"
+                                class="max-h-[18rem] w-auto max-w-full object-contain [[data-public-theme=light]_&]:drop-shadow-[0_2px_5px_rgba(0,0,0,0.85)] sm:max-h-[24rem] lg:max-h-[28rem]"
                                 loading="lazy"
                             />
                         </div>

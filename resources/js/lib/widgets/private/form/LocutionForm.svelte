@@ -136,13 +136,14 @@
         {/if}
     </Section>
     <Section title="Personalização do player">
-        <div class="locution-phrase-preview relative isolate w-full mt-15 rounded-sm hidden lg:flex justify-center" style={`--locution-phrase-texture: url("${$form.phrase.texture}"); background-image: var(--gradient-blue-ocean-cerulean);`}>
+        <div class="locution-phrase-preview relative isolate w-full mt-15 rounded-sm hidden lg:flex justify-center" style="background-image: var(--gradient-blue-ocean-cerulean);">
+            <img src={$form.phrase.texture} alt="" aria-hidden="true" class="pointer-events-none absolute inset-y-0 right-0 z-0 h-full w-full object-contain object-right filter-blue-skywave" />
             <div class="relative z-10 w-8/12 h-25 flex items-center">
                 <img
                     src={$form.phrase.decoration?.left}
                     alt=""
                     aria-hidden="true"
-                    class="w-23 absolute left-0"
+                    class="w-23 absolute left-0 filter-blue-skywave"
                     loading="lazy"
                 />
                 <input 
@@ -160,7 +161,7 @@
                     src={$form.phrase.decoration?.right}
                     alt=""
                     aria-hidden="true"
-                    class="w-23 absolute -right-10"
+                    class="w-23 absolute -right-10 filter-blue-skywave"
                     loading="lazy"
                 />
             </div>
@@ -171,8 +172,8 @@
             placeholder="Digite a frase de locução"
             bind:value={$form.phrase.text}
         >
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mt-5 lg:mt-12">
-            <div class="grid grid-cols-3 gap-3 min-[24rem]:grid-cols-4 sm:grid-cols-5 sm:gap-5 xl:grid-cols-10">
+        <div class="grid grid-cols-1 gap-y-5 mt-5 lg:mt-12 lg:grid-cols-2 lg:gap-x-16 xl:gap-x-24">
+            <div class="grid content-start grid-cols-[repeat(auto-fit,3.75rem)] gap-2 lg:grid-cols-[repeat(9,3.75rem)]">
                 {#each locutionDecorations as item}
                     <button
                         type="button"
@@ -187,7 +188,7 @@
                             src={item.icon}
                             alt={item.alt}
                             aria-hidden="true"
-                            class={["object-contain w-full h-full",
+                            class={["object-contain w-full h-full filter-blue-skywave",
                                 { "hidden": item.disabled },
                                 { "initial": !item.disabled }
                             ]}
@@ -199,6 +200,7 @@
                 {#each locutionTextures as item}
                     <button
                         type="button"
+                        aria-label={`Selecionar textura ${item.alt}`}
                         class={["cursor-pointer h-15 border-2 border-blue-ocean rounded-md disabled:cursor-not-allowed disabled:opacity-50", 
                             { "border-blue-skywave drop-shadow-[0_0_20px_rgba(0,255,200,0.3)]": $form.phrase.texture === item.url },
                             { "border-blue-ocean": $form.phrase.texture !== item.url }

@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Noto+Sans+JP:wght@100..900&family=Noto+Sans+KR:wght@100..900&family=Noto+Sans+SC:wght@100..900&family=Noto+Sans+TC:wght@100..900&display=swap");
 @import "tailwindcss";
 
 :root {
@@ -143,6 +143,10 @@
     --font-noto-sans: "Noto Sans", sans-serif;
 }
 
+@utility font-song-title {
+    font-family: "Noto Sans", "Noto Sans JP", "Noto Sans CJK JP", "Noto Sans CJK SC", "Noto Sans CJK KR", "Hiragino Sans", "Yu Gothic", "Meiryo", "Microsoft YaHei", "Microsoft JhengHei", "PingFang SC", "PingFang TC", "Apple SD Gothic Neo", sans-serif;
+}
+
 /*
     Gradient utilities based on the project color palette.
 */
@@ -233,22 +237,4 @@
 
 @utility filter-orange-citric {
     filter: invert(67%) sepia(64%) saturate(1600%) hue-rotate(357deg) brightness(103%) contrast(104%);
-}
-
-
-
-.locution-phrase-preview::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    background-color: var(--color-blue-skywave);
-    mask-image: var(--locution-phrase-texture);
-    mask-position: right center;
-    mask-repeat: no-repeat;
-    mask-size: contain;
-    -webkit-mask-image: var(--locution-phrase-texture);
-    -webkit-mask-position: right center;
-    -webkit-mask-repeat: no-repeat;
-    -webkit-mask-size: contain;
 }

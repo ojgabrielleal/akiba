@@ -82,8 +82,8 @@ class LocutionService
             'text' => $selected['text'] ?? 'Rede Akiba no automático',
             'icon' => $selected['icon'] ?? '/img/locution/characters/tanjiro.webp',
             'decoration' => $selected['decoration'] ?? [
-                'left' => '/img/player/decorations/music-left.webp',
-                'right' => '/img/player/decorations/music-right.webp',
+                'left' => '/img/player/decorations/sound_left_ornaments.svg',
+                'right' => '/img/player/decorations/sound_right_ornaments.svg',
             ],
             'texture' => $selected['texture'] ?? '/img/textures/sound_bars_texture.svg',
         ];

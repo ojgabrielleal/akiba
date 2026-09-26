@@ -44,6 +44,29 @@
 
     const resolveTexture = (texture) => legacyTextureMap[texture] ?? texture ?? locutionTextures[0].url;
 
+    const legacyDecorationMap = {
+        "/img/player/decorations/rains-left.webp": "/img/player/decorations/abstract_left_ornaments.svg",
+        "/img/player/decorations/rains-right.webp": "/img/player/decorations/abstract_right_ornaments.svg",
+        "/img/player/decorations/aesthetic-left.webp": "/img/player/decorations/abstract_left_ornaments.svg",
+        "/img/player/decorations/aesthetic-right.webp": "/img/player/decorations/abstract_right_ornaments.svg",
+        "/img/player/decorations/anime-left.webp": "/img/player/decorations/otaku_left_ornaments.svg",
+        "/img/player/decorations/anime-right.webp": "/img/player/decorations/otaku_right_ornaments.svg",
+        "/img/player/decorations/circles-left.webp": "/img/player/decorations/abstract_left_ornaments.svg",
+        "/img/player/decorations/circles-right.webp": "/img/player/decorations/abstract_right_ornaments.svg",
+        "/img/player/decorations/clouds-left.webp": "/img/player/decorations/cloud_left_ornaments.svg",
+        "/img/player/decorations/clouds-right.webp": "/img/player/decorations/cloud_right_ornaments.svg",
+        "/img/player/decorations/music-left.webp": "/img/player/decorations/sound_left_ornaments.svg",
+        "/img/player/decorations/music-right.webp": "/img/player/decorations/sound_right_ornaments.svg",
+        "/img/player/decorations/ninja-left.webp": "/img/player/decorations/feudal_left_ornaments.svg",
+        "/img/player/decorations/ninja-right.webp": "/img/player/decorations/feudal_right_ornaments.svg",
+        "/img/player/decorations/radio-left.webp": "/img/player/decorations/sound_left_ornaments.svg",
+        "/img/player/decorations/radio-right.webp": "/img/player/decorations/sound_right_ornaments.svg",
+        "/img/player/decorations/seasons-left.webp": "/img/player/decorations/seasons_left_ornaments.svg",
+        "/img/player/decorations/seasons-right.webp": "/img/player/decorations/seasons_right_ornaments.svg",
+    };
+
+    const resolveDecoration = (decoration, fallback) => legacyDecorationMap[decoration] ?? decoration ?? fallback;
+
     onMount(() =>
         listenForOAuthAction(
             OAuthAction.OPEN_SONG_REQUEST,
@@ -71,8 +94,8 @@
             icon: air?.phrase?.icon ?? locutionIcons[10].url,
             texture: resolveTexture(air?.phrase?.texture),
             decoration: {
-                left: air?.phrase?.decoration?.left ?? locutionDecorations[0].left,
-                right: air?.phrase?.decoration?.right ?? locutionDecorations[0].right,
+                left: resolveDecoration(air?.phrase?.decoration?.left, locutionDecorations[0].left),
+                right: resolveDecoration(air?.phrase?.decoration?.right, locutionDecorations[0].right),
             },
         },
     };
@@ -168,6 +191,7 @@
                 alt=""
                 aria-hidden="true"
                 class="w-24"
+                style="filter: var(--public-title-texture-filter);"
                 loading="lazy"
             />
         </div>
@@ -195,6 +219,7 @@
                 alt=""
                 aria-hidden="true"
                 class="w-24"
+                style="filter: var(--public-title-texture-filter);"
                 loading="lazy"
             />
         </div>
@@ -255,26 +280,28 @@
             </div>
         </div>
         <!--Current Song Information-->
-        <div class="flex gap-3 items-end">
+        <div class="flex min-w-0 gap-3 items-end">
             <button
                 type="button"
-                class="group/cover w-18 shrink-0 cursor-zoom-in rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber"
+                class="group/cover size-18 shrink-0 overflow-hidden rounded-md cursor-zoom-in bg-blue-ocean focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber"
                 aria-label="Ver capa da música em tela cheia"
                 on:click={openCoverLightbox}
             >
                 <img
                     src={resolvePlaceholderImage(playerData.current_song.cover, "placeholder")}
                     alt={playerData.current_song.music || "Capa da música atual"}
-                    class="rounded-md transition duration-300 ease-out group-hover/cover:scale-[1.03] group-focus-visible/cover:scale-[1.03] motion-reduce:transform-none motion-reduce:transition-none"
+                    class="h-full w-full rounded-md object-cover transition duration-300 ease-out group-hover/cover:scale-[1.03] group-focus-visible/cover:scale-[1.03] motion-reduce:transform-none motion-reduce:transition-none"
                     loading="lazy"
                 />
             </button>
-            <div class="w-full srink-0">
+            <div class="flex min-h-18 min-w-0 flex-1 flex-col justify-end">
                 <div class="text-orange-amber font-noto-sans uppercase italic">
                     Tocando agora:
                 </div>
-                <div class="w-full text-suspense-aurora text-lg font-noto-sans font-extrabold uppercase italic line-clamp-2 leading-6">
-                    {playerData.current_song.music || "Estamos offline"}
+                <div class="max-h-12 min-w-0 overflow-hidden">
+                    <span class="line-clamp-2 text-suspense-aurora text-lg font-song-title font-extrabold uppercase italic leading-6">
+                        {playerData.current_song.music || "Estamos offline"}
+                    </span>
                 </div>
             </div>
         </div>

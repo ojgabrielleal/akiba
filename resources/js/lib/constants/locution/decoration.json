@@ -1,65 +1,72 @@
 [
     {
-        "alt": "rains",
-        "icon": "/img/player/decorations/rains-icon.webp",
-        "left": "/img/player/decorations/rains-left.webp",
-        "right": "/img/player/decorations/rains-right.webp",
-        "disabled": false
-    },
-    {
-        "alt": "aesthetic",
-        "icon": "/img/player/decorations/aesthetic-icon.webp",
-        "left": "/img/player/decorations/aesthetic-left.webp",
-        "right": "/img/player/decorations/aesthetic-right.webp",
-        "disabled": false
-    },
-    {
-        "alt": "anime",
-        "icon": "/img/player/decorations/anime-icon.webp",
-        "left": "/img/player/decorations/anime-left.webp",
-        "right": "/img/player/decorations/anime-right.webp",
-        "disabled": false
-    },
-    {
-        "alt": "circles",
-        "icon": "/img/player/decorations/circles-icon.webp",
-        "left": "/img/player/decorations/circles-left.webp",
-        "right": "/img/player/decorations/circles-right.webp",
-        "disabled": false
-    },
-    {
-        "alt": "clouds",
-        "icon": "/img/player/decorations/clouds-icon.webp",
-        "left": "/img/player/decorations/clouds-left.webp",
-        "right": "/img/player/decorations/clouds-right.webp",
-        "disabled": false
-    },
-    {
-        "alt": "music",
-        "icon": "/img/player/decorations/music-icon.webp",
-        "left": "/img/player/decorations/music-left.webp",
-        "right": "/img/player/decorations/music-right.webp",
-        "disabled": false
-    },
-    {
-        "alt": "ninja",
-        "icon": "/img/player/decorations/ninja-icon.webp",
-        "left": "/img/player/decorations/ninja-left.webp",
-        "right": "/img/player/decorations/ninja-right.webp",
-        "disabled": false
-    },
-    {
-        "alt": "radio",
-        "icon": "/img/player/decorations/radio-icon.webp",
-        "left": "/img/player/decorations/radio-left.webp",
-        "right": "/img/player/decorations/radio-right.webp",
+        "alt": "abstract",
+        "icon": "/img/player/decorations/abstract_icon_ornaments.svg",
+        "left": "/img/player/decorations/abstract_left_ornaments.svg",
+        "right": "/img/player/decorations/abstract_right_ornaments.svg",
         "disabled": false
     },
     {
         "alt": "seasons",
-        "icon": "/img/player/decorations/seasons-icon.webp",
-        "left": "/img/player/decorations/seasons-left.webp",
-        "right": "/img/player/decorations/seasons-right.webp",
+        "icon": "/img/player/decorations/seasons_icon_ornaments.svg",
+        "left": "/img/player/decorations/seasons_left_ornaments.svg",
+        "right": "/img/player/decorations/seasons_right_ornaments.svg",
+        "disabled": false
+    },
+    {
+        "alt": "feudal",
+        "icon": "/img/player/decorations/feudal_icon_ornaments.svg",
+        "left": "/img/player/decorations/feudal_left_ornaments.svg",
+        "right": "/img/player/decorations/feudal_right_ornaments.svg",
+        "disabled": false
+    },
+    {
+        "alt": "flowers",
+        "icon": "/img/player/decorations/flowers_icon_ornaments.svg",
+        "left": "/img/player/decorations/flowers_left_ornaments.svg",
+        "right": "/img/player/decorations/flowers_right_ornaments.svg",
+        "disabled": false
+    },
+    {
+        "alt": "mask",
+        "icon": "/img/player/decorations/mask_icon_ornaments.svg",
+        "left": "/img/player/decorations/mask_left_ornaments.svg",
+        "right": "/img/player/decorations/mask_right_ornaments.svg",
+        "disabled": false
+    },
+    {
+        "alt": "notes",
+        "icon": "/img/player/decorations/notes_icon_ornaments.svg",
+        "left": "/img/player/decorations/notes_left_ornaments.svg",
+        "right": "/img/player/decorations/notes_right_ornaments.svg",
+        "disabled": false
+    },
+    {
+        "alt": "cloud",
+        "icon": "/img/player/decorations/cloud_icon_ornaments.svg",
+        "left": "/img/player/decorations/cloud_left_ornaments.svg",
+        "right": "/img/player/decorations/cloud_right_ornaments.svg",
+        "disabled": false
+    },
+    {
+        "alt": "otaku",
+        "icon": "/img/player/decorations/otaku_icon_ornaments.svg",
+        "left": "/img/player/decorations/otaku_left_ornaments.svg",
+        "right": "/img/player/decorations/otaku_right_ornaments.svg",
+        "disabled": false
+    },
+    {
+        "alt": "sound",
+        "icon": "/img/player/decorations/sound_icon_ornaments.svg",
+        "left": "/img/player/decorations/sound_left_ornaments.svg",
+        "right": "/img/player/decorations/sound_right_ornaments.svg",
+        "disabled": false
+    },
+    {
+        "alt": "lightning",
+        "icon": "/img/player/decorations/lightning_icon_ornaments.svg",
+        "left": "/img/player/decorations/lightning_left_ornaments.svg",
+        "right": "/img/player/decorations/lightning_right_ornaments.svg",
         "disabled": false
     }
 ]
