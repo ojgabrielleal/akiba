@@ -20,6 +20,7 @@
     const optionPercent = (pollItem, option) => pollItem?.total_votes ? (option.votes / pollItem.total_votes) * 100 : 0;
 
     let pollModalRef;
+    let enigmaRulesModalRef;
     let mainSelectedOption = null;
     let selectedPollUuid = null;
     let selectedOption = null;
@@ -151,7 +152,7 @@
             emptyMessage="As fotos da comunidade aparecem aqui quando forem publicadas."
         />
 
-        <Section title="Enigma Game" styles="container-page order-2 mt-10 mb-12">
+        <Section title="Enigma Otaku" styles="container-page order-2 mt-10 mb-12">
             {#if enigmagame?.data}
                 <div
                     class="grid overflow-hidden rounded-md bg-blue-night px-5 py-6 text-suspense-aurora [[data-public-theme=light]_&]:bg-[#d7dce3] lg:grid-cols-[minmax(0,1.25fr)_1px_minmax(24rem,0.9fr)] lg:px-7 lg:py-6"
@@ -187,7 +188,21 @@
                             reason="enigmagame"
                         >
                             <form class="grid gap-2" on:submit|preventDefault>
+                                <div class="flex flex-wrap items-end justify-between gap-2 font-noto-sans text-xs font-black uppercase italic">
+                                    <label for="enigmagame-interaction" class="text-orange-amber">
+                                        Faça uma pergunta ou responda o enigma
+                                    </label>
+                                    <button
+                                        type="button"
+                                        class="cursor-pointer text-orange-amber underline decoration-orange-amber/40 underline-offset-4 transition-colors hover:text-orange-citric hover:decoration-orange-citric/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-suspense-aurora"
+                                        on:click={() => enigmaRulesModalRef.open()}
+                                    >
+                                        Como jogar?
+                                    </button>
+                                </div>
+
                                 <input
+                                    id="enigmagame-interaction"
                                     class="h-10 w-full rounded-md border border-transparent bg-suspense-aurora px-4 font-noto-sans text-sm font-normal not-italic text-blue-night outline-none ring-0 placeholder:text-blue-night/45 focus:border-transparent focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0"
                                     bind:value={enigmagameContent}
                                     placeholder=""
@@ -365,6 +380,56 @@
                 />
             {/if}
         </Section>
+
+        <Modal bind:this={enigmaRulesModalRef} title="Como jogar" size="md">
+            <div class="font-noto-sans text-blue-night">
+                <p class="text-sm leading-relaxed">
+                    Um título, uma imagem e uma frase estranha serão apresentados. Sua missão é descobrir, usando essas informações e as respostas da comunidade, qual é o anime.
+                </p>
+
+                <div class="mt-5 grid gap-4">
+                    <section>
+                        <h3 class="font-black uppercase italic text-orange-amber">Faça perguntas</h3>
+                        <p class="mt-2 text-sm leading-relaxed">
+                            Faça perguntas que possam ser respondidas com:
+                        </p>
+                        <ul class="mt-3 grid gap-2 text-sm leading-relaxed">
+                            <li><span class="font-black uppercase italic text-green-mint">Sim</span> — a resposta é positiva e ajuda a descobrir o anime.</li>
+                            <li><span class="font-black uppercase italic text-red-crimson">Não</span> — a resposta é negativa, mas ajuda a descobrir o anime.</li>
+                            <li><span class="font-black uppercase italic text-neutral-gray">Banal</span> — a resposta não ajuda a descobrir o anime.</li>
+                        </ul>
+                        <p class="mt-3 rounded-md bg-orange-morning px-3 py-2 text-sm font-bold text-blue-night">
+                            Atenção: você pode fazer apenas uma pergunta por dia.
+                        </p>
+                    </section>
+
+                    <section>
+                        <h3 class="font-black uppercase italic text-orange-amber">Junte as pistas</h3>
+                        <p class="mt-2 text-sm leading-relaxed">
+                            Todas as perguntas respondidas ficam no Quadro de Investigação. Confira ele antes de perguntar, porque sua pergunta pode já ter sido feita por outro jogador.
+                        </p>
+                        <p class="mt-2 text-sm leading-relaxed">
+                            Cada resposta ajuda a eliminar possibilidades e revelar novos detalhes sobre o anime. Nem toda informação precisa ser descoberta diretamente. Use as respostas para formular novas hipóteses.
+                        </p>
+                    </section>
+
+                    <section class="rounded-md bg-blue-ocean px-4 py-3 text-suspense-aurora">
+                        <h3 class="font-black uppercase italic text-orange-citric">Dica</h3>
+                        <p class="mt-2 text-sm leading-relaxed">
+                            Não tente descobrir uma sinopse inteira de uma vez. Faça perguntas específicas, como:
+                        </p>
+                        <ul class="mt-3 grid gap-1 text-sm font-bold italic">
+                            <li>“O protagonista é humano?”</li>
+                            <li>“O anime tem mais de uma temporada?”</li>
+                            <li>“O poder dele está relacionado a sangue?”</li>
+                        </ul>
+                        <p class="mt-3 text-sm leading-relaxed">
+                            Caso contrário, sua pergunta será considerada banal.
+                        </p>
+                    </section>
+                </div>
+            </div>
+        </Modal>
 
         <Modal bind:this={pollModalRef} title="Enquete" size="sm">
             {#if selectedPoll}

@@ -5,7 +5,7 @@
     import EnigmaGameForm from "../form/EnigmaGameForm.svelte";
     import { enigmagamePermissions, resolvePlaceholderImage, resolveStatusBackground } from "@/lib/utils";
 
-    export let title = "Enigma Game";
+    export let title = "Enigma Otaku";
     export let enigmagames = null;
 
     const can = enigmagamePermissions();

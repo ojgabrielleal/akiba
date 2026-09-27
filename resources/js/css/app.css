@@ -239,6 +239,10 @@
     filter: invert(84%) sepia(30%) saturate(791%) hue-rotate(337deg) brightness(105%) contrast(103%);
 }
 
+[data-public-theme="light"] .filter-player-decoration {
+    filter: invert(67%) sepia(64%) saturate(1600%) hue-rotate(357deg) brightness(103%) contrast(104%);
+}
+
 @utility filter-orange-citric {
     filter: invert(67%) sepia(64%) saturate(1600%) hue-rotate(357deg) brightness(103%) contrast(104%);
 }

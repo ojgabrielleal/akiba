@@ -11,6 +11,6 @@
 <Layout>
     <h1 class="sr-only">Midias</h1>
     <PollGrid title="Enquetes" {polls} {latestPoll} />
-    <EnigmaGameGrid title="Enigma Game" {enigmagames} />
+    <EnigmaGameGrid title="Enigma Otaku" {enigmagames} />
     <ListenerGalleryGrid title="Galeria dos ouvintes" {listenerGalleries} />
 </Layout>
