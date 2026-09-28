@@ -159,6 +159,10 @@
                     style="--color-neutral-white:#ffffff; --color-neutral-gray:#808080; --color-suspense-aurora:#fffaf3; --color-suspense-honeycream:#ffe8bf; --color-red-crimson:#ed3237; --color-orange-amber:#ff8000; --color-orange-citric:#ffaa35; --color-blue-ocean:#002080; --color-blue-night:#000014; --color-green-mint:#00a859;"
                 >
                     <section class="flex min-h-[21rem] flex-col items-center justify-center px-2 py-8 text-center font-noto-sans uppercase italic lg:min-h-[24rem] lg:px-4">
+                        <h3 class="mb-5 max-w-2xl text-xl font-extrabold leading-tight text-neutral-white sm:text-2xl [[data-public-theme=light]_&]:text-blue-night">
+                            {enigmagame.data.title}
+                        </h3>
+
                         <div class="flex w-full flex-1 items-center justify-center">
                             <img
                                 src={enigmagame.data.content}
@@ -389,7 +393,7 @@
 
                 <div class="mt-5 grid gap-4">
                     <section>
-                        <h3 class="font-black uppercase italic text-orange-amber">Faça perguntas</h3>
+                        <h3 class="font-black uppercase italic text-orange-amber">1º passo — Faça perguntas</h3>
                         <p class="mt-2 text-sm leading-relaxed">
                             Faça perguntas que possam ser respondidas com:
                         </p>
@@ -399,14 +403,14 @@
                             <li><span class="font-black uppercase italic text-neutral-gray">Banal</span> — a resposta não ajuda a descobrir o anime.</li>
                         </ul>
                         <p class="mt-3 rounded-md bg-orange-morning px-3 py-2 text-sm font-bold text-blue-night">
-                            Atenção: você pode fazer apenas uma pergunta por dia.
+                            Atenção: Você pode fazer apenas uma pergunta por dia.
                         </p>
                     </section>
 
                     <section>
-                        <h3 class="font-black uppercase italic text-orange-amber">Junte as pistas</h3>
+                        <h3 class="font-black uppercase italic text-orange-amber">2º passo — Junte as pistas</h3>
                         <p class="mt-2 text-sm leading-relaxed">
-                            Todas as perguntas respondidas ficam no Quadro de Investigação. Confira ele antes de perguntar, porque sua pergunta pode já ter sido feita por outro jogador.
+                            Todas as perguntas respondidas ficarão no Quadro de Investigação, então confira ele, sua pergunta pode já ter sido feita por outro jogador.
                         </p>
                         <p class="mt-2 text-sm leading-relaxed">
                             Cada resposta ajuda a eliminar possibilidades e revelar novos detalhes sobre o anime. Nem toda informação precisa ser descoberta diretamente. Use as respostas para formular novas hipóteses.
@@ -424,7 +428,24 @@
                             <li>“O poder dele está relacionado a sangue?”</li>
                         </ul>
                         <p class="mt-3 text-sm leading-relaxed">
-                            Caso contrário, sua pergunta será considerada banal.
+                            Caso contrário sua pergunta será considerada “Banal”.
+                        </p>
+                    </section>
+
+                    <section>
+                        <h3 class="font-black uppercase italic text-orange-amber">3º passo — Resolva o mistério</h3>
+                        <p class="mt-2 text-sm leading-relaxed">
+                            Use todas as pistas para formular suas hipóteses. Acha que descobriu? Envie o título do anime.
+                        </p>
+                    </section>
+
+                    <section>
+                        <h3 class="font-black uppercase italic text-orange-amber">4º passo — Descubra a resposta</h3>
+                        <p class="mt-2 text-sm leading-relaxed">
+                            O Enigma Otaku fica disponível durante uma semana, mesmo que alguém descubra a resposta antes. Quando a semana terminar, a solução será revelada.
+                        </p>
+                        <p class="mt-3 rounded-md bg-orange-morning px-3 py-2 text-sm font-bold text-blue-night">
+                            Mas existe uma recompensa especial: a primeira pessoa a acertar o anime poderá dizer que é o Maior Otaku do Brasil. Além de ganhar uma Badge no seu Perfil da Rede Akiba.
                         </p>
                     </section>
                 </div>
