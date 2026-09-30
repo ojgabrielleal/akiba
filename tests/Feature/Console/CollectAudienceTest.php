@@ -13,13 +13,20 @@ class CollectAudienceTest extends TestCase
         $collector = Mockery::mock(AudienceCollectorProcess::class);
         $collector
             ->shouldReceive('collect')
-            ->once();
+            ->once()
+            ->andReturn([
+                'stations' => 2,
+                'online' => 1,
+                'offline' => 1,
+                'invalid_response' => 0,
+                'slow' => 1,
+            ]);
 
         $this->app->instance(AudienceCollectorProcess::class, $collector);
 
         $this
             ->artisan('audience:collect')
-            ->expectsOutput('Radio audience collected successfully.')
+            ->expectsOutput('Radio audience collected successfully. Stations: 2, online: 1, offline: 1, invalid: 0, slow: 1.')
             ->assertSuccessful();
     }
 }

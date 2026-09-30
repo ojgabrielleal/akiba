@@ -49,16 +49,30 @@ class AudienceCollectorProcessTest extends TestCase
             );
 
         $collector = new AudienceCollectorProcess($audienceService);
-        $collector->collect();
+        $summary = $collector->collect();
 
         $firstPeakAt = $onair->fresh()->peak_listeners_at;
 
+        $this->assertSame([
+            'stations' => 1,
+            'online' => 1,
+            'offline' => 0,
+            'invalid_response' => 0,
+            'slow' => 0,
+        ], $summary);
         $this->assertSame(42, $onair->fresh()->peak_listeners);
         $this->assertSame(0, $autoDj->fresh()->peak_listeners);
         $this->assertNotNull($firstPeakAt);
 
-        $collector->collect();
+        $summary = $collector->collect();
 
+        $this->assertSame([
+            'stations' => 1,
+            'online' => 1,
+            'offline' => 0,
+            'invalid_response' => 0,
+            'slow' => 0,
+        ], $summary);
         $this->assertSame(42, $onair->fresh()->peak_listeners);
         $this->assertTrue($firstPeakAt->equalTo($onair->fresh()->peak_listeners_at));
         $this->assertCount(2, $station->audienceSnapshots()->get());

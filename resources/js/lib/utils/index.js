@@ -8,6 +8,7 @@ export {
 } from "./access/oauthPendingAction.js"
 export { resolveDate, resolveDateTime, resolveDay, resolveHour, resolveAge } from "./formatters/dateTime.js"
 export { placeholderImages, resolvePlaceholderImage } from "./media/placeholders.js"
+export { startPublicSiteRefreshWatcher } from "./navigation/publicSiteRefresh.js"
 export {
     applyPublicTheme,
     defaultPublicTheme,

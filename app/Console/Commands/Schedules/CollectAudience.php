@@ -12,9 +12,16 @@ class CollectAudience extends Command
 
     public function handle(AudienceCollectorProcess $audienceCollectorProcess): int
     {
-        $audienceCollectorProcess->collect();
+        $summary = $audienceCollectorProcess->collect();
 
-        $this->info('Radio audience collected successfully.');
+        $this->info(sprintf(
+            'Radio audience collected successfully. Stations: %d, online: %d, offline: %d, invalid: %d, slow: %d.',
+            $summary['stations'],
+            $summary['online'],
+            $summary['offline'],
+            $summary['invalid_response'],
+            $summary['slow'],
+        ));
 
         return self::SUCCESS;
     }

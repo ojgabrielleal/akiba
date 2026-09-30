@@ -8,6 +8,7 @@
         getStoredPublicTheme,
         listenForOAuthAction,
         OAuthAction,
+        startPublicSiteRefreshWatcher,
     } from "@/lib/utils";
     import { Footer, Navbar, PlayerBar, ProfileForm } from "@/lib/widgets/public";
 
@@ -17,6 +18,7 @@
     export let stream = null;
     export let pageUrl = null;
     export let publicThemeEnabled = false;
+    export let publicSiteVersion = null;
 
     let profileModalRef;
 
@@ -44,9 +46,11 @@
 
         applyPublicTheme(getStoredPublicTheme());
         startAutoplay();
+        const stopRefreshWatcher = startPublicSiteRefreshWatcher(() => publicSiteVersion);
 
         return () => {
             stopOAuthListener?.();
+            stopRefreshWatcher?.();
         };
     });
 </script>

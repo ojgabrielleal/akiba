@@ -39,6 +39,9 @@ return [
 
     'audience' => [
         'internal_station_name' => env('AUDIENCE_INTERNAL_STATION_NAME', 'Rádio Akiba'),
+        'timeout' => env('AUDIENCE_TIMEOUT', 2),
+        'connect_timeout' => env('AUDIENCE_CONNECT_TIMEOUT', 1),
+        'slow_response_ms' => env('AUDIENCE_SLOW_RESPONSE_MS', 1500),
     ],
 
     'discord' => [

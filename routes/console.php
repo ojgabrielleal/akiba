@@ -23,3 +23,8 @@ Schedule::command('audience:prune')
 Schedule::command('cache:prune-akiba')
     ->monthlyOn(1, '04:00')
     ->withoutOverlapping();
+
+Schedule::command('site:promote-public')
+    ->monthlyOn(9, '20:00')
+    ->timezone('America/Sao_Paulo')
+    ->withoutOverlapping();

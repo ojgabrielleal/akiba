@@ -12,9 +12,12 @@ class AudienceService
     public function get(RadioStation $radioStation): array
     {
         $startedAt = microtime(true);
+        $timeout = (float) config('services.audience.timeout', 2);
+        $connectTimeout = (float) config('services.audience.connect_timeout', 1);
 
         try {
-            $response = Http::timeout(5)
+            $response = Http::connectTimeout($connectTimeout)
+                ->timeout($timeout)
                 ->withOptions(['verify' => false])
                 ->get($radioStation->endpoint);
 
@@ -36,7 +39,12 @@ class AudienceService
                 'response_time_ms' => $responseTime,
             ];
         } catch (Throwable $throwable) {
-            Log::error("AudienceService error for {$radioStation->name}: {$throwable->getMessage()}");
+            Log::warning('Audience collection failed.', [
+                'station' => $radioStation->name,
+                'endpoint' => $radioStation->endpoint,
+                'error' => $throwable->getMessage(),
+            ]);
+
             return $this->unavailable('offline', $this->responseTime($startedAt));
         }
     }
