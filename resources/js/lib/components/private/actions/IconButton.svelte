@@ -6,6 +6,7 @@
     export let size = "md";
     export let disabled = false;
     export let tooltipPosition = "top";
+    export let tooltip = true;
     let className = "";
     export { className as class };
     export let icon = null;
@@ -115,34 +116,63 @@
     ];
 </script>
 
-<Tooltip position={tooltipPosition}>
-    {#if href}
-        <Link {...$$restProps} {href} aria-label={label} class={classes} on:click>
-            <img
-                src={selectedIcon}
-                alt=""
-                aria-hidden="true"
-                class={[selectedSize.icon, tones[selectedTone], iconClass]}
-                loading="lazy"
-            />
-        </Link>
-    {:else}
-        <button
-            {...$$restProps}
-            {type}
-            aria-label={label}
-            class={classes}
-            {disabled}
-            on:click
-        >
-            <img
-                src={selectedIcon}
-                alt=""
-                aria-hidden="true"
-                class={[selectedSize.icon, tones[selectedTone], iconClass]}
-                loading="lazy"
-            />
-        </button>
-    {/if}
-    <span slot="content">{label}</span>
-</Tooltip>
+{#if tooltip}
+    <Tooltip position={tooltipPosition}>
+        {#if href}
+            <Link {...$$restProps} {href} aria-label={label} class={classes} on:click>
+                <img
+                    src={selectedIcon}
+                    alt=""
+                    aria-hidden="true"
+                    class={[selectedSize.icon, tones[selectedTone], iconClass]}
+                    loading="lazy"
+                />
+            </Link>
+        {:else}
+            <button
+                {...$$restProps}
+                {type}
+                aria-label={label}
+                class={classes}
+                {disabled}
+                on:click
+            >
+                <img
+                    src={selectedIcon}
+                    alt=""
+                    aria-hidden="true"
+                    class={[selectedSize.icon, tones[selectedTone], iconClass]}
+                    loading="lazy"
+                />
+            </button>
+        {/if}
+        <span slot="content">{label}</span>
+    </Tooltip>
+{:else if href}
+    <Link {...$$restProps} {href} aria-label={label} class={classes} on:click>
+        <img
+            src={selectedIcon}
+            alt=""
+            aria-hidden="true"
+            class={[selectedSize.icon, tones[selectedTone], iconClass]}
+            loading="lazy"
+        />
+    </Link>
+{:else}
+    <button
+        {...$$restProps}
+        {type}
+        aria-label={label}
+        class={classes}
+        {disabled}
+        on:click
+    >
+        <img
+            src={selectedIcon}
+            alt=""
+            aria-hidden="true"
+            class={[selectedSize.icon, tones[selectedTone], iconClass]}
+            loading="lazy"
+        />
+    </button>
+{/if}

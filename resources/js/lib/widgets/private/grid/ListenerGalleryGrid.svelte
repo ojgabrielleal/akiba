@@ -56,7 +56,7 @@
                     </div>
                     <div class="absolute inset-x-0 bottom-0 flex h-10 items-center justify-between gap-2 bg-blue-cerulean px-2">
                         <div class="min-w-0 truncate font-noto-sans text-xs font-extrabold italic uppercase text-suspense-aurora">
-                            {item.listener_name || "Ouvinte Akiba"}
+                            Por: {item.listener_name || "Ouvinte Akiba"}
                         </div>
                         <div class="flex shrink-0 items-center gap-1">
                             {#if can.delete}
@@ -65,6 +65,7 @@
                                     label="Remover imagem"
                                     size="sm"
                                     surface="dark"
+                                    tooltip={false}
                                     on:click={() => requestDestroy(item)}
                                 />
                             {/if}
@@ -74,6 +75,7 @@
                                     label="Atualizar imagem"
                                     size="sm"
                                     surface="dark"
+                                    tooltip={false}
                                     on:click={() => {
                                             gallerySelected = item;
                                             offcanvasRef.open();
