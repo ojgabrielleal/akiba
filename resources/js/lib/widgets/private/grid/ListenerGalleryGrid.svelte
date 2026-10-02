@@ -45,8 +45,8 @@
     <GridList preset="media">
         {#each listenerGalleries.data as item}
             <li>
-                <article class="relative aspect-[4/5] w-full overflow-hidden rounded-md bg-blue-ocean">
-                    <div class="absolute inset-x-0 top-0 bottom-10">
+                <article class="relative aspect-[4/5] w-full rounded-md bg-blue-ocean">
+                    <div class="absolute inset-x-0 top-0 bottom-10 overflow-hidden rounded-t-md">
                         <img
                             src={resolvePlaceholderImage(item.image, "placeholder")}
                             alt={item.caption || `Imagem enviada por ${item.listener_name || "ouvinte"}`}
@@ -56,7 +56,7 @@
                     </div>
                     <div class="absolute inset-x-0 bottom-0 flex h-10 items-center justify-between gap-2 bg-blue-cerulean px-2">
                         <div class="min-w-0 truncate font-noto-sans text-xs font-extrabold italic uppercase text-suspense-aurora">
-                            Por: {item.listener_name || "Ouvinte Akiba"}
+                            {item.listener_name || "Ouvinte Akiba"}
                         </div>
                         <div class="flex shrink-0 items-center gap-1">
                             {#if can.delete}
@@ -65,7 +65,6 @@
                                     label="Remover imagem"
                                     size="sm"
                                     surface="dark"
-                                    tooltip={false}
                                     on:click={() => requestDestroy(item)}
                                 />
                             {/if}
@@ -75,7 +74,6 @@
                                     label="Atualizar imagem"
                                     size="sm"
                                     surface="dark"
-                                    tooltip={false}
                                     on:click={() => {
                                             gallerySelected = item;
                                             offcanvasRef.open();
