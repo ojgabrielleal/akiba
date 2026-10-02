@@ -152,7 +152,7 @@
             emptyMessage="As fotos da comunidade aparecem aqui quando forem publicadas."
         />
 
-        <Section title="Enigma Otaku" styles="container-page order-2 mt-10 mb-12">
+        <Section title="Enigma da Akiba" styles="container-page order-2 mt-10 mb-12">
             {#if enigmagame?.data}
                 <div
                     class="grid overflow-hidden rounded-md bg-blue-night px-5 py-6 text-suspense-aurora [[data-public-theme=light]_&]:bg-[#d7dce3] lg:grid-cols-[minmax(0,1.25fr)_1px_minmax(24rem,0.9fr)] lg:px-7 lg:py-6"

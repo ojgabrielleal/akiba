@@ -47,8 +47,8 @@
             tone: "light",
             surface: "default",
         },
-        download: {
-            icon: "/svg/download.svg",
+        upload: {
+            icon: "/svg/upload.svg",
             tone: "primary",
             surface: "transparent",
         },

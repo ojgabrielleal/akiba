@@ -101,7 +101,7 @@
                     href="/panel/marketing"
                 >
                     <img
-                        src="/svg/download.svg"
+                        src="/svg/upload.svg"
                         alt=""
                         aria-hidden="true"
                         class="w-6 filter-orange-amber"

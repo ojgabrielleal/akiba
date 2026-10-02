@@ -46,7 +46,7 @@
                     class="flex items-center gap-2 font-noto-sans font-extrabold italic uppercase text-blue-skywave text-lg pr-5 lg:first:pl-0 lg:border-r-2 lg:border-suspense-aurora/10 lg:last:border-0"
                 >
                     <img
-                        src="/svg/download.svg"
+                        src="/svg/upload.svg"
                         alt=""
                         aria-hidden="true"
                         class="w-6 filter-blue-skywave"

@@ -1,5 +1,10 @@
 export * from "./access/permissions.js"
 export {
+    commemorativeLogoVariants,
+    defaultBrandLogo,
+    resolveCommemorativeLogo,
+} from "./brand/logo.js"
+export {
     OAuthAction,
     consumePendingOAuthAction,
     dispatchOAuthAction,

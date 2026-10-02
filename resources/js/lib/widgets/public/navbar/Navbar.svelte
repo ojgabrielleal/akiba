@@ -10,7 +10,9 @@
         OAuthAction,
         applyPublicTheme,
         requestPushNotificationSubscription,
+        defaultBrandLogo,
         resolvePushNotificationPermission,
+        resolveCommemorativeLogo,
         dispatchOAuthAction,
         getStoredPublicTheme,
         publicThemes,
@@ -29,6 +31,7 @@
     let notificationPermission = "unsupported";
     let searchQuery = "";
     let selectedTheme = "akiba";
+    let brandLogo = resolveCommemorativeLogo();
 
     $: profile = oauth?.profile;
     $: avatar = profile?.avatar || "/img/placeholders/avatar.webp";
@@ -196,9 +199,10 @@
     <div class="container-page flex items-center justify-between gap-4 pt-10 pb-6 md:pb-8 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:pb-8">
         <Link href="/site" class="group/logo w-52 shrink-0 focus-visible:outline-none" aria-label="Página inicial">
             <img
-                src="/img/brand/logo.webp"
-                alt="Akiba Station"
+                src={brandLogo.src}
+                alt={brandLogo.alt}
                 class="w-full transition duration-300 ease-out group-hover/logo:scale-[1.02] group-focus-visible/logo:scale-[1.02] motion-reduce:transform-none motion-reduce:transition-none"
+                on:error={() => brandLogo = defaultBrandLogo}
             />
         </Link>
         <ul class="mt-1 hidden w-full min-w-0 items-center justify-center lg:flex lg:justify-self-center">

@@ -2,7 +2,7 @@
     import { Link } from "@inertiajs/svelte";
     import { MaskIcon } from "@/lib/components/public";
     import { navbar } from "@/lib/constants";
-    import { themeClass } from "@/lib/utils";
+    import { defaultBrandLogo, resolveCommemorativeLogo, themeClass } from "@/lib/utils";
 
     const socials = [
         { name: "Instagram", icon: "/svg/instagram.svg", href: "https://www.instagram.com/redeakiba/" },
@@ -16,6 +16,7 @@
     ];
 
     const currentYear = new Date().getFullYear();
+    let brandLogo = resolveCommemorativeLogo();
 </script>
 
 <footer class="public-footer pt-10 bg-blue-night pb-24">
@@ -24,9 +25,10 @@
             <div class="min-w-0">
                 <Link href="/site" class="group/logo block w-48 focus-visible:outline-none" aria-label="Página inicial">
                     <img
-                        src="/img/brand/logo.webp"
-                        alt="Rede Akiba"
+                        src={brandLogo.src}
+                        alt={brandLogo.alt}
                         class="w-full transition duration-300 ease-out group-hover/logo:scale-[1.02] group-focus-visible/logo:scale-[1.02] motion-reduce:transform-none motion-reduce:transition-none"
+                        on:error={() => brandLogo = defaultBrandLogo}
                     />
                 </Link>
                 <p class="mt-4 max-w-md font-noto-sans text-sm font-bold leading-relaxed text-suspense-aurora/75 uppercase italic">

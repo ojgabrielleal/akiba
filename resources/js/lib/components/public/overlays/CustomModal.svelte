@@ -3,12 +3,13 @@
     import { quintOut } from "svelte/easing";
     import { onDestroy } from "svelte";
     import { publicAnimations } from "@/lib/constants/public/animation";
-    import { themeClass } from "@/lib/utils";
+    import { defaultBrandLogo, resolveCommemorativeLogo, themeClass } from "@/lib/utils";
 
     let visible = false;
     let previousBodyOverflow = "";
     let previousDocumentOverflow = "";
     let scrollLocked = false;
+    let brandLogo = resolveCommemorativeLogo();
 
     $: if (typeof document !== "undefined") {
         if (visible && !scrollLocked) {
@@ -69,9 +70,10 @@
             <header class="w-full h-20 pt-8 px-5 lg:mb-2 bg-cover bg-center rounded-t-xl" style="background-image: url('/img/player/song-requests-bg.webp');">
                 <div class="w-60 mt-4">
                     <img
-                        src="/img/brand/logo.webp"
-                        alt="Akiba Station"
+                        src={brandLogo.src}
+                        alt={brandLogo.alt}
                         loading="lazy"
+                        on:error={() => brandLogo = defaultBrandLogo}
                     />
                 </div>
                 <button
