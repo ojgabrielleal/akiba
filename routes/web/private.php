@@ -130,6 +130,11 @@ Route::prefix('panel')->middleware(['inertia'])->group(function () {
                 Route::patch('{role:uuid}', 'updateRole');
                 Route::delete('{role:uuid}', 'destroyRole');
             });
+            Route::prefix('badge')->group(function () {
+                Route::post('', 'storeBadge');
+                Route::patch('{badge:uuid}', 'updateBadge');
+                Route::delete('{badge:uuid}', 'destroyBadge');
+            });
             Route::prefix('calendar')->group(function () {
                 Route::post('', 'storeCalendar');
                 Route::get('{calendar:uuid}', 'showCalendar');

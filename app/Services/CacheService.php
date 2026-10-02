@@ -66,6 +66,11 @@ class CacheService
         $this->incrementVersion('roles');
     }
 
+    public function invalidateBadges(): void
+    {
+        $this->incrementVersion('badges');
+    }
+
     public function invalidateActivities(): void
     {
         $this->incrementVersion('activities');

@@ -12,6 +12,13 @@ export const activityPermissions = () => ({
     update: hasPermission("activity.update"),
 });
 
+
+export const badgePermissions = () => ({
+    create: hasPermission("badge.create"),
+    update: hasPermission("badge.update"),
+    delete: hasPermission("badge.delete"),
+});
+
 export const calendarPermissions = () => ({
     create: hasPermission("calendar.create"),
     update: hasPermission("calendar.update"),

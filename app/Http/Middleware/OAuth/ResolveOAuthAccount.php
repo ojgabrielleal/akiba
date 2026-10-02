@@ -3,6 +3,7 @@
 namespace App\Http\Middleware\OAuth;
 
 use App\Models\OAuthAccount;
+use Illuminate\Database\Eloquent\Model;
 
 use Closure;
 use Illuminate\Http\Request;
@@ -65,6 +66,7 @@ class ResolveOAuthAccount
                 'state' => $user->state,
                 'country' => $user->country,
                 'bio' => $user->bibliography,
+                'badges' => self::profileBadges($user),
             ] : ($oauthAccount ? [
                 'uuid' => $oauthAccount->uuid,
                 'provider' => $oauthAccount->provider,
@@ -73,7 +75,29 @@ class ResolveOAuthAccount
                 'avatar' => $oauthAccount->avatar,
                 'birth_date' => $oauthAccount->birth_date?->format('Y-m-d'),
                 'address' => $oauthAccount->address,
+                'badges' => self::profileBadges($oauthAccount),
             ] : null),
         ];
     }
+
+    private static function profileBadges(Model $member): array
+    {
+        return $member->badgeAssignments()
+            ->active()
+            ->with('badge')
+            ->latest('acquired_at')
+            ->get()
+            ->map(fn ($assignment) => [
+                'uuid' => $assignment->badge?->uuid,
+                'name' => $assignment->badge?->name,
+                'code' => $assignment->badge?->code,
+                'image' => $assignment->badge?->image,
+                'type' => $assignment->badge?->type,
+                'acquired_at' => $assignment->acquired_at?->setTimezone('America/Sao_Paulo')->format('d/m/Y H:i'),
+            ])
+            ->filter(fn (array $badge) => filled($badge['uuid']))
+            ->values()
+            ->all();
+    }
+
 }

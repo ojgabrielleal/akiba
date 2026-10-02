@@ -241,6 +241,17 @@ class PermissionSeeder extends Seeder
 
             /*
             |--------------------------------------------------------------------------
+            | Emblemas
+            |--------------------------------------------------------------------------
+            */
+            ['name' => 'badge.list', 'label' => '[Emblemas] Listar'],
+            ['name' => 'badge.view', 'label' => '[Emblemas] Visualizar'],
+            ['name' => 'badge.create', 'label' => '[Emblemas] Criar'],
+            ['name' => 'badge.update', 'label' => '[Emblemas] Atualizar'],
+            ['name' => 'badge.delete', 'label' => '[Emblemas] Excluir'],
+
+            /*
+            |--------------------------------------------------------------------------
             | Automáticos
             |--------------------------------------------------------------------------
             */

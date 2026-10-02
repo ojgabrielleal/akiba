@@ -22,6 +22,7 @@
     $: avatar = profile?.avatar || "/img/placeholders/avatar.webp";
     $: nickname = profile?.nickname || profile?.username || "Perfil";
 
+    $: badges = profile?.badges ?? [];
     $: provider = profile?.provider || "google";
     $: providerIcon = provider === "discord" ? "/svg/discord.svg" : "/svg/google.svg";
     $: providerIconClass = "filter-suspense-aurora";
@@ -91,7 +92,8 @@
     };
 </script>
 
-<form class="space-y-4" on:submit|preventDefault={submit}>
+<form class="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(13rem,0.9fr)]" on:submit|preventDefault={submit}>
+    <div class="space-y-4 lg:border-r lg:border-blue-night/25 lg:pr-5">
     <div class="mb-5 flex items-center gap-3 sm:gap-4">
         {#if internal}
             <label
@@ -327,4 +329,51 @@
             Salvar perfil
         </Button>
     </div>
+    </div>
+
+    <aside class="min-h-64 lg:pl-1">
+        <h3 class={[
+            "mb-4 text-center font-noto-sans text-2xl font-black uppercase italic",
+            themeClass("text", "blue-night", { fixed: true }),
+            "[[data-public-theme=akiba]_&]:text-suspense-aurora [[data-public-theme=night]_&]:text-suspense-aurora",
+        ]}>
+            Meus Emblemas
+        </h3>
+
+        {#if badges.length > 0}
+            <ul class="grid grid-cols-3 gap-x-3 gap-y-5 sm:grid-cols-4 lg:grid-cols-3">
+                {#each badges as badge (badge.uuid)}
+                    <li class="min-w-0 text-center">
+                        <div class="mx-auto flex size-16 items-center justify-center overflow-hidden rounded-md">
+                            {#if badge.image}
+                                <img
+                                    src={badge.image}
+                                    alt={badge.name}
+                                    class="h-full w-full object-contain"
+                                    loading="lazy"
+                                />
+                            {:else}
+                                <div class="flex h-full w-full items-center justify-center rounded-md bg-orange-amber font-noto-sans text-xl font-black italic text-blue-night">
+                                    ★
+                                </div>
+                            {/if}
+                        </div>
+                        <p class={[
+                            "mt-1 line-clamp-2 font-noto-sans text-[0.65rem] font-black leading-tight",
+                            themeClass("text", "blue-night", { fixed: true }),
+                            "[[data-public-theme=akiba]_&]:text-suspense-aurora [[data-public-theme=night]_&]:text-suspense-aurora",
+                        ]} title={badge.name}>
+                            {badge.name}
+                        </p>
+                    </li>
+                {/each}
+            </ul>
+        {:else}
+            <div class="flex min-h-40 items-center justify-center rounded-md border border-dashed border-blue-night/20 px-4 text-center [[data-public-theme=akiba]_&]:border-suspense-aurora/25 [[data-public-theme=night]_&]:border-suspense-aurora/25">
+                <p class="font-noto-sans text-sm font-semibold text-[color-mix(in_srgb,#000014_55%,transparent)] [[data-public-theme=akiba]_&]:text-suspense-aurora/60 [[data-public-theme=night]_&]:text-suspense-aurora/60">
+                    Nenhum emblema conquistado ainda.
+                </p>
+            </div>
+        {/if}
+    </aside>
 </form>

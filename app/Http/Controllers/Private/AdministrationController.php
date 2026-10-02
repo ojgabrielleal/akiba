@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Private;
 
 use App\Services\ActivityService;
+use App\Services\BadgeService;
 use App\Services\CalendarService;
 use App\Services\FormSubmissionService;
 use App\Services\PermissionService;
@@ -15,6 +16,7 @@ use App\Http\Controllers\Concerns\ResolvesAuthorizedProps;
 use App\Http\Controllers\Controller;
 
 use App\Http\Resources\ActivityResource;
+use App\Http\Resources\BadgeResource;
 use App\Http\Resources\Calendar\CalendarWeekResource;
 use App\Http\Resources\FormSubmissionResource;
 use App\Http\Resources\PermissionResource;
@@ -23,7 +25,9 @@ use App\Http\Resources\TaskResource;
 use App\Http\Resources\User\UserResource;
 
 use App\Models\Activity;
+use App\Models\Badge;
 use App\Models\Calendar;
+use App\Models\OAuthAccount;
 use App\Models\Role;
 use App\Models\Task;
 use App\Models\User;
@@ -34,6 +38,8 @@ use App\Services\RepositoryService;
 use App\Http\Controllers\Concerns\HasFlashMessages;
 use App\Http\Requests\Activity\StoreActivityRequest;
 use App\Http\Requests\Activity\UpdateActivityRequest;
+use App\Http\Requests\Badge\StoreBadgeRequest;
+use App\Http\Requests\Badge\UpdateBadgeRequest;
 use App\Http\Requests\Calendar\StoreCalendarRequest;
 use App\Http\Requests\Calendar\UpdateCalendarRequest;
 use App\Http\Requests\Role\StoreRoleRequest;
@@ -58,6 +64,7 @@ class AdministrationController extends Controller
 
     public function __construct(
         private ActivityService $activityFilter,
+        private BadgeService $badgeFilter,
         private CalendarService $calendarFilter,
         private FormSubmissionService $formSubmissionFilter,
         private PermissionService $permissionFilter,
@@ -87,6 +94,58 @@ class AdministrationController extends Controller
                 $this->cache->remember($this->adminCacheKey('permissions'), fn () => $this->permissionFilter->filter(), null, ['roles'])
             ),
         );
+    }
+
+    private function indexBadges()
+    {
+        return $this->whenCanViewAny(Badge::class,
+            fn () => BadgeResource::collection(
+                $this->cache->remember($this->adminCacheKey('badges'), fn () => $this->badgeFilter->filter([
+                    'with_count' => ['assignments', 'activeAssignments'],
+                    'order_by' => 'name',
+                    'order_direction' => 'asc',
+                ]), null, ['badges'])
+            ),
+        );
+    }
+
+
+    private function indexBadgeTargets()
+    {
+        $user = request()->user();
+
+        if (! $user?->can('viewAny', Badge::class)
+            && ! $user?->can('create', Badge::class)
+            && ! $user?->can('update', Badge::class)) {
+            return null;
+        }
+
+        $users = User::query()
+            ->active()
+            ->orderBy('nickname')
+            ->get()
+            ->map(fn (User $user) => [
+                'type' => 'user',
+                'uuid' => $user->uuid,
+                'label' => $user->nickname ?? $user->name,
+                'detail' => 'Membro interno',
+                'avatar' => $user->avatar,
+                'gender' => $user->gender,
+            ]);
+
+        $oauthAccounts = OAuthAccount::query()
+            ->orderBy('nickname')
+            ->get()
+            ->map(fn (OAuthAccount $account) => [
+                'type' => 'oauth_account',
+                'uuid' => $account->uuid,
+                'label' => $account->nickname ?? $account->username,
+                'detail' => 'Conta OAuth',
+                'avatar' => $account->avatar,
+                'gender' => null,
+            ]);
+
+        return $users->concat($oauthAccounts)->values();
     }
 
     private function indexActivities()
@@ -238,6 +297,30 @@ class AdministrationController extends Controller
         }
 
         return $this->flashMessage('delete');
+    }
+
+
+    public function destroyBadge(BadgeService $service, Badge $badge)
+    {
+        $this->authorize('delete', $badge);
+
+        $service->destroy($badge);
+
+        return $this->flashMessage('delete');
+    }
+
+    public function storeBadge(StoreBadgeRequest $request, BadgeService $service)
+    {
+        $service->store($request->validated(), $request->file('image'));
+
+        return $this->flashMessage('save');
+    }
+
+    public function updateBadge(UpdateBadgeRequest $request, BadgeService $service, Badge $badge)
+    {
+        $service->update($badge, $request->validated(), $request->file('image'));
+
+        return $this->flashMessage('update');
     }
 
     public function showCalendar(Calendar $calendar)
@@ -405,6 +488,8 @@ class AdministrationController extends Controller
         return Inertia::render($this->render, [
             'roles' => $this->indexRoles(),
             'permissions' => $this->indexPermissions(),
+            'badges' => $this->indexBadges(),
+            'badgeTargets' => $this->indexBadgeTargets(),
             'activities' => $this->indexActivities(),
             'calendar' => $this->indexCalendar(),
             'users' => $this->indexUsers(),

@@ -16,6 +16,10 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class SongRequestService
 {
+    public function __construct(
+        private BadgeService $badges,
+    ) {}
+
     public function store(array $data, Model $requester): SongRequest
     {
         $songRequest = DB::transaction(function () use ($data, $requester) {
@@ -38,9 +42,55 @@ class SongRequestService
             return $songRequest;
         });
 
+        $this->transferMostRequestsBadge();
         $this->storeNotifyCurrentLocutor($songRequest);
 
         return $songRequest;
+    }
+
+    private function transferMostRequestsBadge(): void
+    {
+        $leader = $this->uniqueMostRequestsLeader();
+
+        if (! $leader) {
+            return;
+        }
+
+        $this->badges->transferStealableByTrigger(
+            'song_request.most_requests',
+            $leader,
+            'Pessoa que mais fez pedidos musicais.',
+            ['trigger' => 'song_request.most_requests'],
+        );
+    }
+
+    private function uniqueMostRequestsLeader(): ?Model
+    {
+        $leaders = SongRequest::query()
+            ->select('requester_type', 'requester_id')
+            ->selectRaw('count(*) as requests_total')
+            ->whereNotNull('requester_type')
+            ->whereNotNull('requester_id')
+            ->groupBy('requester_type', 'requester_id')
+            ->orderByDesc('requests_total')
+            ->limit(2)
+            ->get();
+
+        if ($leaders->isEmpty()) {
+            return null;
+        }
+
+        if ($leaders->count() > 1 && (int) $leaders[0]->requests_total === (int) $leaders[1]->requests_total) {
+            return null;
+        }
+
+        $model = $leaders[0]->requester_type;
+
+        if (! is_a($model, Model::class, true)) {
+            return null;
+        }
+
+        return $model::query()->find($leaders[0]->requester_id);
     }
 
     private function storeAcceptingSongRequestsOnair(): Onair

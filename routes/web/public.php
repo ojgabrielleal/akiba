@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\External\OAuthAccount\OAuthAccountLogoutController;
 use App\Http\Controllers\Api\External\OAuthAccount\OAuthAccountRedirectController;
 use App\Http\Controllers\Public\EditorialController;
 use App\Http\Controllers\Public\AuthController;
+use App\Http\Controllers\Public\PresenceController;
 use App\Http\Controllers\Public\ContactController;
 use App\Http\Controllers\Public\HomeController;
 use App\Http\Controllers\Public\MediaController;
@@ -38,6 +39,10 @@ Route::post('/oauth/logout', OAuthAccountLogoutController::class)
 Route::post('/push-notification', [PushNotificationController::class, 'storePushNotification'])
     ->middleware('oauth.resolve')
     ->name('push-notification.store');
+
+Route::post('/presence', [PresenceController::class, 'store'])
+    ->middleware('oauth.resolve')
+    ->name('presence.store');
 
 Route::middleware(['oauth.resolve', 'inertia', 'auth'])->group(function () {
     Route::post('/song-request', [PlayerController::class, 'storeSongRequest'])

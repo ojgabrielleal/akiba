@@ -1,6 +1,7 @@
 <script>
     import { onMount } from "svelte";
     import { usePoll } from "@inertiajs/svelte";
+    import axios from "axios";
     import { CookieConsent, FlashToaster, Modal } from "@/lib/components/public";
     import { startAutoplay, syncMediaSessionMetadata } from "@/lib/stores";
     import {
@@ -38,6 +39,19 @@
         profileModalRef?.open();
     };
 
+    const registerPresence = () => {
+        if (!oauth?.authenticated || typeof window === "undefined") return;
+
+        const key = "akiba:presence:last-posted-at";
+        const lastPostedAt = Number(window.sessionStorage.getItem(key) ?? 0);
+        const now = Date.now();
+
+        if (now - lastPostedAt < 60 * 1000) return;
+
+        window.sessionStorage.setItem(key, String(now));
+        axios.post("/presence").catch(() => {});
+    };
+
     onMount(() => {
         const stopOAuthListener = listenForOAuthAction(
             OAuthAction.OPEN_PROFILE,
@@ -46,11 +60,21 @@
 
         applyPublicTheme(getStoredPublicTheme());
         startAutoplay();
+        registerPresence();
         const stopRefreshWatcher = startPublicSiteRefreshWatcher(() => publicSiteVersion);
+
+        const handleVisibilityChange = () => {
+            if (document.visibilityState === "visible") {
+                registerPresence();
+            }
+        };
+
+        document.addEventListener("visibilitychange", handleVisibilityChange);
 
         return () => {
             stopOAuthListener?.();
             stopRefreshWatcher?.();
+            document.removeEventListener("visibilitychange", handleVisibilityChange);
         };
     });
 </script>
@@ -75,7 +99,7 @@
     <Modal
         bind:this={profileModalRef}
         label={`Perfil de ${nickname}`}
-        size="sm"
+        size="lg"
     >
         <ProfileForm
             {profile}

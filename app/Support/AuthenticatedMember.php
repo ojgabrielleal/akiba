@@ -24,5 +24,6 @@ class AuthenticatedMember
         if ($oauthAccount instanceof OAuthAccount) {
             return $oauthAccount;
         }
+        return null;
     }
 }

@@ -20,6 +20,7 @@ class EnigmaGameService
         private PushNotificationService $pushNotification,
         private CacheService $cache,
         private ImageProcess $image,
+        private BadgeService $badges,
     ) {}
 
     public function store(User $user, array $data, UploadedFile $image): EnigmaGame
@@ -192,6 +193,11 @@ class EnigmaGameService
                 'responded_at' => now(),
             ]);
 
+            if ($interaction->type === EnigmaGameInteraction::TYPE_FINAL_ANSWER
+                && $interaction->result === 'correct') {
+                $this->transferMostWinsBadge();
+            }
+
             if ($shouldNotify) {
                 $this->pushNotification->sendToUserOrAll($interaction->participant, [
                     'title' => 'Enigma Game',
@@ -209,6 +215,53 @@ class EnigmaGameService
         $this->cache->invalidateMysteries();
 
         return $interaction;
+    }
+
+    private function transferMostWinsBadge(): void
+    {
+        $leader = $this->uniqueMostWinsLeader();
+
+        if (! $leader) {
+            return;
+        }
+
+        $this->badges->transferStealableByTrigger(
+            'enigmagame.most_wins',
+            $leader,
+            'Pessoa que mais venceu enigmas.',
+            ['trigger' => 'enigmagame.most_wins'],
+        );
+    }
+
+    private function uniqueMostWinsLeader(): ?Model
+    {
+        $leaders = EnigmaGameInteraction::query()
+            ->select('participant_type', 'participant_id')
+            ->selectRaw('count(*) as wins_total')
+            ->where('type', EnigmaGameInteraction::TYPE_FINAL_ANSWER)
+            ->where('result', 'correct')
+            ->whereNotNull('participant_type')
+            ->whereNotNull('participant_id')
+            ->groupBy('participant_type', 'participant_id')
+            ->orderByDesc('wins_total')
+            ->limit(2)
+            ->get();
+
+        if ($leaders->isEmpty()) {
+            return null;
+        }
+
+        if ($leaders->count() > 1 && (int) $leaders[0]->wins_total === (int) $leaders[1]->wins_total) {
+            return null;
+        }
+
+        $model = $leaders[0]->participant_type;
+
+        if (! is_a($model, Model::class, true)) {
+            return null;
+        }
+
+        return $model::query()->find($leaders[0]->participant_id);
     }
 
     public function active(): ?EnigmaGame

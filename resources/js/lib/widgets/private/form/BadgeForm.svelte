@@ -1,0 +1,319 @@
+<script>
+    import { useForm } from "@inertiajs/svelte";
+
+    import {
+        Button,
+        CheckboxInput,
+        FormField,
+        Preview,
+        RadioInput,
+        SelectInput,
+        TextInput,
+    } from "@/lib/components/private";
+    import { badgePermissions } from "@/lib/utils";
+
+    export let close = () => {};
+    export let badgeSelected = null;
+    export let badgeTargets = null;
+
+    const can = badgePermissions();
+    function badgeCodeFromName(name) {
+        return (name ?? "")
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .toLowerCase()
+            .trim()
+            .replace(/[^a-z0-9]+/g, "_")
+            .replace(/^_+|_+$/g, "");
+    }
+
+    const sourceOptions = [
+        { value: "enigmagame", label: "Enigma Otaku" },
+        { value: "song_request", label: "Pedidos musicais" },
+    ];
+
+    const triggerOptions = {
+        enigmagame: [
+            { value: "enigmagame.most_wins", label: "Pessoa que mais venceu enigmas" },
+        ],
+        song_request: [
+            { value: "song_request.most_requests", label: "Pessoa que mais fez pedidos" },
+        ],
+    };
+
+    $: form = useForm({
+        _method: badgeSelected ? "PATCH" : "POST",
+        name: badgeSelected?.name ?? null,
+        code: badgeSelected?.code ?? null,
+        description: null,
+        image: null,
+        type: badgeSelected?.type ?? "fixed",
+        source: badgeSelected?.source ?? "enigmagame",
+        trigger: badgeSelected?.trigger ?? null,
+        starts_at: badgeSelected?.starts_at ?? null,
+        ends_at: badgeSelected?.ends_at ?? null,
+        audience: badgeSelected?.audience ?? "all",
+        target: badgeSelected?.target_type && badgeSelected?.target_uuid ? `${badgeSelected.target_type}:${badgeSelected.target_uuid}` : null,
+        target_type: badgeSelected?.target_type ?? null,
+        target_uuid: badgeSelected?.target_uuid ?? null,
+        is_active: badgeSelected?.is_active ?? true,
+    });
+
+    $: if ($form.name !== undefined) {
+        $form.code = badgeCodeFromName($form.name);
+    }
+
+    $: availableTriggers = triggerOptions[$form.source] ?? [];
+
+    $: if ($form.type !== "stealable") {
+        $form.source = null;
+        $form.trigger = null;
+    }
+
+    $: hasAudience = $form.type === "fixed" || $form.type === "scheduled";
+
+    $: if ($form.type !== "scheduled") {
+        $form.starts_at = null;
+        $form.ends_at = null;
+    }
+
+    $: if (!hasAudience) {
+        $form.audience = "all";
+        $form.target = null;
+        $form.target_type = null;
+        $form.target_uuid = null;
+    }
+
+    $: if (hasAudience && $form.audience === "all") {
+        $form.target = null;
+        $form.target_type = null;
+        $form.target_uuid = null;
+    }
+
+    $: if (hasAudience && $form.audience === "target" && $form.target) {
+        const [targetType, targetUuid] = $form.target.split(":");
+        $form.target_type = targetType;
+        $form.target_uuid = targetUuid;
+    }
+
+    $: if ($form.type === "stealable" && !$form.source) {
+        $form.source = "enigmagame";
+    }
+
+    $: if ($form.type === "stealable" && availableTriggers.length > 0 && !availableTriggers.some((item) => item.value === $form.trigger)) {
+        $form.trigger = availableTriggers[0].value;
+    }
+
+    function submit() {
+        const url = badgeSelected
+            ? `/panel/administration/badge/${badgeSelected.uuid}`
+            : "/panel/administration/badge";
+
+        $form.post(url, {
+            preserveScroll: true,
+            forceFormData: true,
+            onSuccess: () => close(),
+        });
+    }
+</script>
+
+<form on:submit|preventDefault={submit}>
+    <FormField
+        for="image"
+        label="Ícone"
+        help="Envie um PNG, JPG ou WebP de até 1 MB."
+        error={$form.errors.image}
+        spacing="compact"
+    >
+        <Preview
+            name="image"
+            size="icon"
+            tone="muted"
+            color="muted"
+            src={badgeSelected?.image}
+            oninput={(event) => ($form.image = event.target.files[0])}
+            error={$form.errors.image}
+        />
+    </FormField>
+
+    <FormField for="name" label="Nome" error={$form.errors.name} spacing="compact">
+        <TextInput
+            variant="offcanvas"
+            type="text"
+            name="name"
+            id="name"
+            bind:value={$form.name}
+            error={$form.errors.name}
+            required
+        />
+    </FormField>
+
+    <FormField for="type" label="Categoria" error={$form.errors.type} spacing="compact">
+        <SelectInput
+            variant="offcanvas"
+            name="type"
+            id="type"
+            bind:value={$form.type}
+            error={$form.errors.type}
+            required
+        >
+            <option value="fixed">Fixo</option>
+            <option value="stealable">Roubável</option>
+            <option value="scheduled">Programável</option>
+        </SelectInput>
+    </FormField>
+
+
+    {#if hasAudience}
+        <FormField for="audience" label="Alvo" error={$form.errors.audience} spacing="compact">
+            <div class="space-y-2">
+                <RadioInput
+                    id="audience-all"
+                    name="audience"
+                    value="all"
+                    label="Todos os usuários"
+                    bind:group={$form.audience}
+                    error={$form.errors.audience}
+                    required
+                />
+                <RadioInput
+                    id="audience-target"
+                    name="audience"
+                    value="target"
+                    label="Usuário selecionado"
+                    bind:group={$form.audience}
+                    error={$form.errors.audience}
+                    required
+                />
+            </div>
+        </FormField>
+
+        {#if $form.audience === "target"}
+            <FormField for="target" label="Usuário" error={$form.errors.target_uuid ?? $form.errors.target_type} spacing="compact">
+                <SelectInput
+                    variant="offcanvas"
+                    name="target"
+                    id="target"
+                    bind:value={$form.target}
+                    error={$form.errors.target_uuid ?? $form.errors.target_type}
+                    required
+                >
+                    <option value={null}>Selecione um usuário</option>
+                    {#each badgeTargets ?? [] as target (`${target.type}:${target.uuid}`)}
+                        <option value={`${target.type}:${target.uuid}`}>{target.label} - {target.detail}</option>
+                    {/each}
+                </SelectInput>
+            </FormField>
+        {/if}
+
+    {/if}
+
+    {#if $form.type === "scheduled"}
+        <FormField
+            for="starts_at"
+            label="Início"
+            help="Data e hora inicial para o usuário estar online para ganhar o emblema"
+            error={$form.errors.starts_at}
+            spacing="compact"
+        >
+            <TextInput
+                variant="offcanvas"
+                type="datetime-local"
+                name="starts_at"
+                id="starts_at"
+                bind:value={$form.starts_at}
+                error={$form.errors.starts_at}
+                required
+            />
+        </FormField>
+
+        <FormField
+            for="ends_at"
+            label="Fim"
+            help="Data e hora limite para o usuário estar online para ganhar o emblema."
+            error={$form.errors.ends_at}
+            spacing="compact"
+        >
+            <TextInput
+                variant="offcanvas"
+                type="datetime-local"
+                name="ends_at"
+                id="ends_at"
+                bind:value={$form.ends_at}
+                error={$form.errors.ends_at}
+                required
+            />
+        </FormField>
+    {/if}
+
+    {#if $form.type === "stealable"}
+        <FormField
+            for="source"
+            label="Origem"
+            help="Módulo que vai transferir esse emblema quando integrarmos a regra."
+            error={$form.errors.source}
+            spacing="compact"
+        >
+            <SelectInput
+                variant="offcanvas"
+                name="source"
+                id="source"
+                bind:value={$form.source}
+                error={$form.errors.source}
+            >
+                {#each sourceOptions as option}
+                    <option value={option.value}>{option.label}</option>
+                {/each}
+            </SelectInput>
+        </FormField>
+
+        {#if availableTriggers.length > 1}
+            <FormField
+                for="trigger"
+                label="Gatilho"
+                help="Critério que define quem fica com esse emblema roubável."
+                error={$form.errors.trigger}
+                spacing="compact"
+            >
+                <SelectInput
+                    variant="offcanvas"
+                    name="trigger"
+                    id="trigger"
+                    bind:value={$form.trigger}
+                    error={$form.errors.trigger}
+                    required
+                >
+                    {#each availableTriggers as option}
+                        <option value={option.value}>{option.label}</option>
+                    {/each}
+                </SelectInput>
+            </FormField>
+        {:else if availableTriggers.length === 1}
+            <div class="mb-5 rounded-md bg-blue-ocean/10 p-3 text-sm text-blue-marinho">
+                <span class="block font-noto-sans font-black uppercase italic text-orange-amber">Gatilho</span>
+                <span>{availableTriggers[0].label}</span>
+            </div>
+        {/if}
+    {/if}
+
+    <div class="mb-5">
+        <CheckboxInput
+            id="is_active"
+            label="Emblema ativo"
+            bind:checked={$form.is_active}
+        />
+    </div>
+
+    {#if badgeSelected ? can.update : can.create}
+        <div class="mt-5 pt-2">
+            <Button
+                type="submit"
+                loading={$form.processing}
+                variant="secondary"
+                shape="pill"
+            >
+                {badgeSelected ? "Atualizar" : "Cadastrar"}
+            </Button>
+        </div>
+    {/if}
+</form>

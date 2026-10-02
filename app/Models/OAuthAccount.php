@@ -80,4 +80,9 @@ class OAuthAccount extends Model
     {
         return $this->morphMany(EnigmaGameInteraction::class, 'participant');
     }
+
+    public function badgeAssignments()
+    {
+        return $this->morphMany(BadgeAssignment::class, 'owner');
+    }
 }

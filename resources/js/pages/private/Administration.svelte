@@ -4,6 +4,7 @@
     import { Layout } from "@/lib/layouts/private";
     import {
         ActivityCarousel,
+        BadgeGrid,
         CalendarGrid,
         RoleCarousel,
         TaskList,
@@ -11,7 +12,7 @@
         FormSubmissionList,
     } from "@/lib/widgets/private";
 
-    $: ({ user, activities, calendar, roles, permissions, tasks, users, formSubmissions } = $page.props);
+    $: ({ user, activities, calendar, roles, permissions, badges, badgeTargets, tasks, users, formSubmissions } = $page.props);
 </script>
 
 <Meta meta={{ title: "ADM's" } } />
@@ -22,4 +23,5 @@
     <FormSubmissionList title="Formulários recebidos" submissions={formSubmissions} />
     <UserGrid title="Membros" variant="administration" {users} {roles} />
     <RoleCarousel title="Cargos" variant="administration" {roles} {permissions} />
+    <BadgeGrid title="Emblemas" variant="administration" {badges} {badgeTargets} />
 </Layout>

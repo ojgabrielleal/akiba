@@ -200,4 +200,9 @@ class User extends Authenticatable
     {
         return $this->morphMany(Comment::class, 'author');
     }
+
+    public function badgeAssignments()
+    {
+        return $this->morphMany(BadgeAssignment::class, 'owner');
+    }
 }
