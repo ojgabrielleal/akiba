@@ -108,7 +108,7 @@
                         </div>
                         <div class="flex min-h-12 items-center bg-orange-amber px-3 py-1.5 text-blue-night transition duration-300 ease-out group-hover:brightness-110 group-focus-visible:brightness-110 motion-reduce:transition-none">
                             <h3 class="line-clamp-1 font-noto-sans text-base font-black uppercase italic">
-                                {item.listener_name || "Ouvinte Akiba"}
+                                Por: {item.listener_name || "Ouvinte Akiba"}
                             </h3>
                         </div>
                     </button>
