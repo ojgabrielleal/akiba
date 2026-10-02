@@ -24,6 +24,7 @@ class UpdateEnigmaGameRequest extends FormRequest
     {
         return [
             'title' => ['required', 'string', 'max:255'],
+            'content' => ['required', 'string'],
             'image' => ['nullable', 'image'],
             'status' => ['required', 'string', 'in:draft,active,inactive'],
             'solution' => ['nullable', 'string'],

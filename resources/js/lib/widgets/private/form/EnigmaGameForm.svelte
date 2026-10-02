@@ -16,6 +16,7 @@
         _method: enigmagameSelected ? "PATCH" : "POST",
         status: enigmagameSelected?.status ?? "draft",
         title: enigmagameSelected?.title ?? "",
+        content: enigmagameSelected?.content ?? "",
         image: null,
         solution: enigmagameSelected?.solution ?? "",
     });
@@ -51,7 +52,7 @@
             color="muted"
             fit="cover"
             name="image"
-            src={$form.image ?? enigmagameSelected?.content}
+            src={$form.image ?? enigmagameSelected?.image}
             oninput={(event) => ($form.image = event.target.files[0])}
             required={!enigmagameSelected}
             error={$form.errors.image}
@@ -65,6 +66,18 @@
             variant="offcanvas"
             bind:value={$form.title}
             error={$form.errors.title}
+            required
+        />
+    </FormField>
+
+    <FormField for="enigmagame-content" label="Texto do enigma" error={$form.errors.content} spacing="section">
+        <TextArea
+            id="enigmagame-content"
+            name="content"
+            rows="5"
+            variant="offcanvas"
+            bind:value={$form.content}
+            error={$form.errors.content}
             required
         />
     </FormField>

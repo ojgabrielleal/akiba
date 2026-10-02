@@ -10,14 +10,14 @@
 
     const variants = {
         light: `h-11 rounded-md bg-neutral-gray ${themeClass("bg", "neutral-light", { fixed: true, theme: "light" })} text-suspense-aurora`,
-        dark: `h-11 rounded-md bg-blue-ocean ${themeClass("bg", "neutral-light", { fixed: true, theme: "light" })} text-suspense-aurora`,
+        dark: `h-11 rounded-md bg-blue-ocean ${themeClass("bg", "neutral-light", { fixed: true, theme: "light" })} text-suspense-aurora [[data-public-theme=akiba]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_76%,var(--color-blue-night))] [[data-public-theme=night]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_76%,var(--color-blue-night))]`,
         transparent: "h-11 rounded-md bg-transparent text-suspense-aurora",
         pill: `h-11 rounded-full bg-neutral-gray ${themeClass("bg", "neutral-light", { fixed: true, theme: "light" })} text-suspense-aurora`,
     };
 
     const borders = {
         light: "border border-suspense-aurora/20 focus:border-blue-skywave",
-        dark: "border border-blue-skywave/40 focus:border-blue-skywave",
+        dark: "border border-blue-skywave/40 focus:border-blue-skywave [[data-public-theme=akiba]_&]:border-0 [[data-public-theme=night]_&]:border-0",
         transparent: "border border-suspense-aurora/25 focus:border-orange-amber",
         pill: "border border-transparent focus:border-blue-skywave",
     };

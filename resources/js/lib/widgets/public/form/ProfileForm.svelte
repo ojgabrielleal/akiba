@@ -12,6 +12,7 @@
         dispatchOAuthAction,
         OAuthAction,
         rememberOAuthAction,
+        themeClass,
     } from "@/lib/utils";
 
     export let profile;
@@ -96,7 +97,8 @@
             <label
                 for="member-avatar"
                 class={[
-                    "group/avatar relative shrink-0 cursor-pointer overflow-hidden rounded-full border-2 border-suspense-aurora bg-suspense-aurora shadow focus-within:ring-2 focus-within:ring-orange-amber",
+                    "group/avatar relative shrink-0 cursor-pointer overflow-hidden rounded-full border-2 border-suspense-aurora bg-suspense-aurora shadow focus-within:ring-2 focus-within:ring-orange-citric",
+                    themeClass("bg", "suspense-aurora", { fixed: true, theme: "light" }),
                     avatarSizeClass,
                 ]}
             >
@@ -120,6 +122,7 @@
         {:else}
             <div class={[
                 "shrink-0 overflow-hidden rounded-full border-2 border-suspense-aurora bg-suspense-aurora shadow",
+                themeClass("bg", "suspense-aurora", { fixed: true, theme: "light" }),
                 avatarSizeClass,
             ]}>
                 <img
@@ -130,10 +133,14 @@
             </div>
         {/if}
         <div class="min-w-0 flex-1">
-            <p class="truncate font-noto-sans text-lg font-extrabold text-blue-night">
+            <p class={[
+                "truncate font-noto-sans text-lg font-extrabold",
+                themeClass("text", "blue-night", { fixed: true }),
+                "[[data-public-theme=akiba]_&]:text-suspense-aurora [[data-public-theme=night]_&]:text-suspense-aurora",
+            ]}>
                 {nickname}
             </p>
-            <p class="truncate font-noto-sans text-xs text-blue-night/50">
+            <p class="truncate font-noto-sans text-xs text-[color-mix(in_srgb,#000014_50%,transparent)] [[data-public-theme=akiba]_&]:text-suspense-aurora/60 [[data-public-theme=night]_&]:text-suspense-aurora/60">
                 {internal ? "Membro interno" : `@${profile?.username}`}
             </p>
         </div>
@@ -158,7 +165,7 @@
         <Tooltip position="left">
             <button
                 type="button"
-                class="group/logout flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full bg-transparent transition hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none"
+                class="group/logout flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full bg-transparent transition hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none"
                 aria-label="Sair da conta"
                 on:click={logout}
             >
@@ -166,7 +173,7 @@
                     src="/svg/logout.svg"
                     alt=""
                     aria-hidden="true"
-                    class="mr-[0.1rem] size-4 filter-neutral-gray transition group-hover/logout:filter-orange-amber group-focus-visible/logout:filter-orange-amber"
+                    class="mr-[0.1rem] size-4 filter-neutral-gray transition group-hover/logout:filter-orange-amber group-focus-visible/logout:filter-orange-amber [[data-public-theme=akiba]_&]:filter-suspense-aurora [[data-public-theme=night]_&]:filter-suspense-aurora"
                 />
             </button>
             <span slot="content">Sair da conta</span>

@@ -1,4 +1,6 @@
 <script>
+    import { themeClass } from "@/lib/utils";
+
     let className;
     let forId;
     export { className as class };
@@ -15,7 +17,7 @@
         accent: "font-extrabold uppercase italic text-orange-morning",
         primary: "font-extrabold uppercase italic text-blue-skywave",
         compact: "text-[0.65rem] uppercase italic text-suspense-aurora/70",
-        dark: "font-semibold text-blue-night/70",
+        dark: `font-semibold ${themeClass("text", "blue-night/70", { fixed: true })} [[data-public-theme=akiba]_&]:text-suspense-aurora/75 [[data-public-theme=night]_&]:text-suspense-aurora/75`,
     };
 
     const spacings = {

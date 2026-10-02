@@ -21,7 +21,8 @@ class EnigmaGameFactory extends Factory
         return [
             'user_id' => User::factory(),
             'title' => fake()->words(3, true),
-            'content' => '/img/placeholders/default.webp',
+            'content' => fake()->paragraph(),
+            'image' => '/img/placeholders/default.webp',
             'status' => fake()->randomElement([
                 EnigmaGame::STATUS_DRAFT,
                 EnigmaGame::STATUS_ACTIVE,

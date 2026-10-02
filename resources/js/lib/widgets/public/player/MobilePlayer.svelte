@@ -2,6 +2,7 @@
     import { onMount } from "svelte";
     import { AuthGuard, CustomModal, LoadingSpinner } from "@/lib/components/public";
     import { SongRequestForm } from "@/lib/widgets/public";
+    import SongCoverLightbox from "./SongCoverLightbox.svelte";
     import { player, toggleAudio, setVolume } from "@/lib/stores";
     import {
         listenForOAuthAction,
@@ -21,6 +22,7 @@
     $: canRequestSong = hasActiveHost && air?.allows_song_requests;
 
     let modalRef;
+    let coverLightboxOpen = false;
 
     onMount(() =>
         listenForOAuthAction(
@@ -52,6 +54,14 @@
         if (canRequestSong) {
             modalRef.open();
         }
+    };
+
+    const openCoverLightbox = () => {
+        coverLightboxOpen = true;
+    };
+
+    const closeCoverLightbox = () => {
+        coverLightboxOpen = false;
     };
 
     function getStatus(mode, gender) {
@@ -97,6 +107,13 @@
         {/if}
     </div>
 </CustomModal>
+
+<SongCoverLightbox
+    open={coverLightboxOpen}
+    cover={playerData.currentSong.cover}
+    music={playerData.currentSong.music}
+    close={closeCoverLightbox}
+/>
 
 {#if canRender}
 <!-- Phone player -->
@@ -161,13 +178,19 @@
             </div>
 
             <div class="mb-6 flex items-center gap-3 rounded-2xl bg-blue-night/35 p-3">
-                <img
-                    src={resolvePlaceholderImage(playerData.currentSong.cover, "placeholder")}
-                    alt=""
-                    aria-hidden="true"
-                    class="size-11 shrink-0 rounded-lg object-cover opacity-80 transition duration-300 ease-out hover:scale-105 motion-reduce:transform-none motion-reduce:transition-none"
-                    loading="lazy"
-                />
+                <button
+                    type="button"
+                    class="group/cover size-11 shrink-0 cursor-zoom-in overflow-hidden rounded-lg bg-blue-ocean focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric"
+                    aria-label="Ver capa da música em tela cheia"
+                    on:click={openCoverLightbox}
+                >
+                    <img
+                        src={resolvePlaceholderImage(playerData.currentSong.cover, "placeholder")}
+                        alt={playerData.currentSong.music ? `Capa da música ${playerData.currentSong.music}` : "Capa da música atual"}
+                        class="h-full w-full object-cover opacity-80 transition duration-300 ease-out group-hover/cover:scale-[1.03] group-focus-visible/cover:scale-[1.03] motion-reduce:transform-none motion-reduce:transition-none"
+                        loading="lazy"
+                    />
+                </button>
                 <div class="min-w-0">
                     <p class="text-orange-amber text-[9px] font-noto-sans font-extrabold uppercase italic">
                         Tocando agora
@@ -307,13 +330,19 @@
 
             <div class="min-w-0 flex flex-col justify-center">
                 <div class="mb-7 flex items-center gap-3 rounded-2xl bg-blue-night/35 p-3">
-                    <img
-                        src={resolvePlaceholderImage(playerData.currentSong.cover, "placeholder")}
-                        alt=""
-                        aria-hidden="true"
-                        class="size-14 shrink-0 rounded-xl object-cover opacity-80 transition duration-300 ease-out hover:scale-105 motion-reduce:transform-none motion-reduce:transition-none"
-                        loading="lazy"
-                    />
+                    <button
+                        type="button"
+                        class="group/cover size-14 shrink-0 cursor-zoom-in overflow-hidden rounded-xl bg-blue-ocean focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric"
+                        aria-label="Ver capa da música em tela cheia"
+                        on:click={openCoverLightbox}
+                    >
+                        <img
+                            src={resolvePlaceholderImage(playerData.currentSong.cover, "placeholder")}
+                            alt={playerData.currentSong.music ? `Capa da música ${playerData.currentSong.music}` : "Capa da música atual"}
+                            class="h-full w-full object-cover opacity-80 transition duration-300 ease-out group-hover/cover:scale-[1.03] group-focus-visible/cover:scale-[1.03] motion-reduce:transform-none motion-reduce:transition-none"
+                            loading="lazy"
+                        />
+                    </button>
                     <div class="min-w-0">
                         <p class="text-orange-amber text-[9px] font-noto-sans font-extrabold uppercase italic">
                             Tocando agora

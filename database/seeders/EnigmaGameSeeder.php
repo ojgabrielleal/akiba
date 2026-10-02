@@ -26,7 +26,8 @@ class EnigmaGameSeeder extends Seeder
             ->for($author, 'author')
             ->create([
                 'title' => 'Teste do corredor azul',
-                'content' => '/img/placeholders/default.webp',
+                'content' => 'No corredor azul, tres portas repetem o mesmo simbolo, mas apenas uma delas guarda a chave. A pista esta naquilo que aparece fora de lugar na imagem.',
+                'image' => '/img/placeholders/default.webp',
                 'solution' => 'A chave esta no segundo verso.',
             ]);
 
@@ -68,7 +69,8 @@ class EnigmaGameSeeder extends Seeder
             ->for($author, 'author')
             ->create([
                 'title' => 'Enigma resolvido',
-                'content' => '/img/placeholders/default.webp',
+                'content' => 'Sou o ponto de encontro de quem canta junto, pede musica e segue a transmissao ate o fim. Meu nome tambem abre as portas desta comunidade.',
+                'image' => '/img/placeholders/default.webp',
                 'solution' => 'Akiba',
             ]);
 
@@ -99,7 +101,8 @@ class EnigmaGameSeeder extends Seeder
             ->for($author, 'author')
             ->create([
                 'title' => 'Rascunho de teste',
-                'content' => '/img/placeholders/default.webp',
+                'content' => 'Um mascote deixou tres pistas no estudio: uma cor, um numero e um verso de abertura. Quando as tres se juntam, revelam uma senha.',
+                'image' => '/img/placeholders/default.webp',
                 'solution' => 'Ainda nao publicada.',
             ]);
 
@@ -108,7 +111,8 @@ class EnigmaGameSeeder extends Seeder
             ->for($author, 'author')
             ->create([
                 'title' => 'Enigma inativo',
-                'content' => '/img/placeholders/default.webp',
+                'content' => 'Entre fitas antigas e luzes apagadas, uma resposta ficou escondida no primeiro pedido musical da noite.',
+                'image' => '/img/placeholders/default.webp',
             ]);
     }
 }

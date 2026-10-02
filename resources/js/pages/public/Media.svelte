@@ -163,14 +163,20 @@
                             {enigmagame.data.title}
                         </h3>
 
-                        <div class="flex w-full flex-1 items-center justify-center">
+                        <div class="flex w-full items-center justify-center">
                             <img
-                                src={enigmagame.data.content}
+                                src={enigmagame.data.image}
                                 alt={`Imagem do enigma ${enigmagame.data.title}`}
-                                class="max-h-[18rem] w-auto max-w-full object-contain [[data-public-theme=light]_&]:drop-shadow-[0_2px_5px_rgba(0,0,0,0.85)] sm:max-h-[24rem] lg:max-h-[28rem]"
+                                class="h-auto max-w-full object-contain [[data-public-theme=light]_&]:drop-shadow-[0_2px_5px_rgba(0,0,0,0.85)]"
                                 loading="lazy"
                             />
                         </div>
+
+                        {#if enigmagame.data.content}
+                            <p class="mt-6 max-w-2xl whitespace-pre-line text-base font-normal normal-case leading-relaxed text-suspense-honeycream sm:text-lg [[data-public-theme=light]_&]:text-blue-night">
+                                {enigmagame.data.content}
+                            </p>
+                        {/if}
 
                         {#if enigmagame.data.solved && enigmagame.data.solution}
                             <p class="mt-6 max-w-2xl text-lg font-normal normal-case leading-snug text-suspense-honeycream sm:text-2xl [[data-public-theme=light]_&]:text-blue-night">
@@ -386,7 +392,7 @@
         </Section>
 
         <Modal bind:this={enigmaRulesModalRef} title="Como jogar" size="md">
-            <div class="font-noto-sans text-blue-night">
+            <div class="font-noto-sans text-blue-night [[data-public-theme=akiba]_&]:text-suspense-aurora/80 [[data-public-theme=night]_&]:text-suspense-aurora/80">
                 <p class="text-sm leading-relaxed">
                     Um título, uma imagem e uma frase estranha serão apresentados. Sua missão é descobrir, usando essas informações e as respostas da comunidade, qual é o anime.
                 </p>
@@ -400,7 +406,7 @@
                         <ul class="mt-3 grid gap-2 text-sm leading-relaxed">
                             <li><span class="font-black uppercase italic text-green-mint">Sim</span> — a resposta é positiva e ajuda a descobrir o anime.</li>
                             <li><span class="font-black uppercase italic text-red-crimson">Não</span> — a resposta é negativa, mas ajuda a descobrir o anime.</li>
-                            <li><span class="font-black uppercase italic text-neutral-gray">Banal</span> — a resposta não ajuda a descobrir o anime.</li>
+                            <li><span class="font-black uppercase italic text-neutral-gray [[data-public-theme=akiba]_&]:text-suspense-aurora/60 [[data-public-theme=night]_&]:text-suspense-aurora/60">Banal</span> — a resposta não ajuda a descobrir o anime.</li>
                         </ul>
                         <p class="mt-3 rounded-md bg-orange-morning px-3 py-2 text-sm font-bold text-blue-night">
                             Atenção: Você pode fazer apenas uma pergunta por dia.
@@ -417,7 +423,7 @@
                         </p>
                     </section>
 
-                    <section class="rounded-md bg-blue-ocean px-4 py-3 text-suspense-aurora">
+                    <section class="rounded-md bg-blue-ocean px-4 py-3 text-suspense-aurora [[data-public-theme=akiba]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_76%,var(--color-blue-night))] [[data-public-theme=night]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_76%,var(--color-blue-night))]">
                         <h3 class="font-black uppercase italic text-orange-citric">Dica</h3>
                         <p class="mt-2 text-sm leading-relaxed">
                             Não tente descobrir uma sinopse inteira de uma vez. Faça perguntas específicas, como:

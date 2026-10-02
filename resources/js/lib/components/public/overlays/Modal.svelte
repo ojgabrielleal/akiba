@@ -1,6 +1,8 @@
 <script>
     import { onDestroy, tick } from "svelte";
     import { fade, fly } from "svelte/transition";
+    import { publicAnimations } from "@/lib/constants/public/animation";
+    import { applyPublicTheme, getStoredPublicTheme, themeClass } from "@/lib/utils";
 
     export let title = null;
     export let label = title || "Janela de diálogo";
@@ -12,6 +14,7 @@
     let titleId = title ? `modal-title-${Math.random().toString(36).slice(2)}` : undefined;
     let previousBodyOverflow = "";
     let previousDocumentOverflow = "";
+    let selectedTheme = getStoredPublicTheme();
 
     const sizes = {
         sm: "max-w-sm",
@@ -20,6 +23,7 @@
     };
 
     export const open = async () => {
+        selectedTheme = getStoredPublicTheme();
         previousBodyOverflow = document.body.style.overflow;
         previousDocumentOverflow = document.documentElement.style.overflow;
         document.body.style.overflow = "hidden";
@@ -45,6 +49,7 @@
 
     const portal = (node) => {
         document.body.appendChild(node);
+        applyPublicTheme(selectedTheme);
 
         return {
             destroy() {
@@ -66,6 +71,8 @@
 {#if visible}
     <div
         use:portal
+        data-public-theme-scope
+        data-public-theme={selectedTheme}
         class="fixed inset-0 z-[200] flex h-screen w-screen items-center justify-center bg-black/40 p-9 backdrop-blur-xs"
         role="presentation"
         transition:fade={{ duration: 180 }}
@@ -73,7 +80,12 @@
     >
         <div
             bind:this={panel}
-            class={["relative w-full rounded-t-xl rounded-b-xl bg-suspense-aurora shadow-2xl", sizes[size] ?? sizes.md]}
+            class={[
+                "relative w-full rounded-t-xl rounded-b-xl bg-blue-ocean shadow-[0_24px_80px_rgba(0,0,0,0.55)] [[data-public-theme=akiba]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_90%,var(--color-blue-night))] [[data-public-theme=night]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_90%,var(--color-blue-night))]",
+                themeClass("bg", "suspense-aurora", { fixed: true, theme: "light" }),
+                "[[data-public-theme=light]_&]:border [[data-public-theme=light]_&]:border-blue-night/10 [[data-public-theme=light]_&]:shadow-2xl",
+                sizes[size] ?? sizes.md,
+            ]}
             role="dialog"
             aria-modal="true"
             aria-labelledby={titleId}
@@ -82,14 +94,18 @@
             transition:fly={{ y: 12, duration: 220 }}
         >
             {#if title}
-                <div class="grid grid-cols-[1.5rem_1fr_1.5rem] items-center rounded-t-md bg-blue-marinho p-4">
+                <div class={["grid grid-cols-[1.5rem_1fr_1.5rem] items-center rounded-t-md bg-blue-marinho p-4", themeClass("bg", "blue-marinho", { theme: "light" })]}>
                     <span aria-hidden="true"></span>
-                    <h2 id={titleId} class="text-center font-noto-sans font-bold text-suspense-aurora uppercase italic">
+                    <h2 id={titleId} class={["text-center font-noto-sans font-bold text-suspense-aurora uppercase italic", themeClass("text", "suspense-aurora", { fixed: true })]}>
                         {title}
                     </h2>
                     <button
                         type="button"
-                        class="flex cursor-pointer justify-end transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber"
+                        class={[
+                            "flex size-6 cursor-pointer items-center justify-center justify-self-end rounded-full bg-suspense-aurora shadow-lg hover:bg-neutral-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric [[data-public-theme=akiba]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_76%,var(--color-blue-night))] [[data-public-theme=akiba]_&]:hover:bg-blue-ocean [[data-public-theme=night]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_76%,var(--color-blue-night))] [[data-public-theme=night]_&]:hover:bg-blue-ocean",
+                            themeClass("bg", "suspense-aurora", { fixed: true, theme: "light" }),
+                            publicAnimations.iconButtonInteractive,
+                        ]}
                         aria-label="Fechar"
                         on:click={close}
                     >
@@ -97,7 +113,7 @@
                             src="/svg/close.svg"
                             alt=""
                             aria-hidden="true"
-                            class="w-4 invert brightness-0"
+                            class="w-3 brightness-0 [[data-public-theme=akiba]_&]:filter-suspense-aurora [[data-public-theme=night]_&]:filter-suspense-aurora"
                             loading="lazy"
                         />
                     </button>
@@ -106,14 +122,18 @@
                 <button
                     type="button"
                     aria-label="Fechar"
-                    class="absolute -top-8 -right-5 z-10 flex h-6 w-6 cursor-pointer items-center justify-center rounded-full bg-suspense-aurora shadow-lg transition hover:-translate-y-0.5 hover:bg-neutral-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none"
+                    class={[
+                        "absolute -top-8 -right-5 z-10 flex h-6 w-6 cursor-pointer items-center justify-center rounded-full bg-suspense-aurora shadow-lg hover:bg-neutral-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric [[data-public-theme=akiba]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_76%,var(--color-blue-night))] [[data-public-theme=akiba]_&]:hover:bg-blue-ocean [[data-public-theme=night]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_76%,var(--color-blue-night))] [[data-public-theme=night]_&]:hover:bg-blue-ocean",
+                        themeClass("bg", "suspense-aurora", { fixed: true, theme: "light" }),
+                        publicAnimations.iconButtonInteractive,
+                    ]}
                     on:click={close}
                 >
                     <img
                         src="/svg/close.svg"
                         alt=""
                         aria-hidden="true"
-                        class="w-3 filter-blue-marinho"
+                        class="w-3 brightness-0 [[data-public-theme=akiba]_&]:filter-suspense-aurora [[data-public-theme=night]_&]:filter-suspense-aurora"
                     />
                 </button>
             {/if}

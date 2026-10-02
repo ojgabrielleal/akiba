@@ -8,6 +8,7 @@
         LoadingSpinner,
     } from "@/lib/components/public";
     import { SongRequestForm } from "@/lib/widgets/public";
+    import SongCoverLightbox from "./SongCoverLightbox.svelte";
     import { player, toggleAudio, setVolume } from "@/lib/stores";
     import { locutionIcons, locutionTextures, locutionDecorations } from "@/lib/constants";
     import {
@@ -131,15 +132,7 @@
         coverLightboxOpen = false;
     };
 
-    const handleKeydown = (event) => {
-        if (coverLightboxOpen && event.key === "Escape") {
-            closeCoverLightbox();
-        }
-    };
-
 </script>
-
-<svelte:window on:keydown={handleKeydown} />
 
 <CustomModal bind:this={modalRef}>
     <div slot="content" let:close>
@@ -165,20 +158,12 @@
     </div>
 </CustomModal>
 
-{#if coverLightboxOpen}
-    <button
-        type="button"
-        class="fixed inset-0 z-[220] flex cursor-zoom-out items-center justify-center bg-blue-night/92 p-4 backdrop-blur-sm focus-visible:outline-none"
-        aria-label="Fechar capa da música"
-        on:click={closeCoverLightbox}
-    >
-        <img
-            src={resolvePlaceholderImage(playerData.current_song.cover, "placeholder")}
-            alt={playerData.current_song.music || "Capa da música atual"}
-            class="max-h-[88vh] max-w-[92vw] rounded-md object-contain shadow-2xl shadow-blue-night/70"
-        />
-    </button>
-{/if}
+<SongCoverLightbox
+    open={coverLightboxOpen}
+    cover={playerData.current_song.cover}
+    music={playerData.current_song.music}
+    close={closeCoverLightbox}
+/>
 
 <!-- Phrase Section -->
 {#if canRender}

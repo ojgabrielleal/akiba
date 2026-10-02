@@ -2,6 +2,8 @@
     import { fade } from "svelte/transition";
     import { quintOut } from "svelte/easing";
     import { onDestroy } from "svelte";
+    import { publicAnimations } from "@/lib/constants/public/animation";
+    import { themeClass } from "@/lib/utils";
 
     let visible = false;
     let previousBodyOverflow = "";
@@ -54,7 +56,10 @@
         on:click={close}
     >
         <div
-            class="relative flex max-h-[calc(100dvh-2rem)] w-full flex-col rounded-t-xl rounded-b-xl bg-suspense-aurora sm:max-h-[calc(100dvh-3rem)] lg:w-104"
+            class={[
+                "relative flex max-h-[calc(100dvh-2rem)] w-full flex-col rounded-t-xl rounded-b-xl bg-suspense-aurora sm:max-h-[calc(100dvh-3rem)] lg:w-104 [[data-public-theme=akiba]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_90%,var(--color-blue-night))] [[data-public-theme=night]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_90%,var(--color-blue-night))]",
+                themeClass("bg", "suspense-aurora", { fixed: true, theme: "light" }),
+            ]}
             role="dialog"
             aria-modal="true"
             aria-label="Pedido musical"
@@ -72,14 +77,18 @@
                 <button
                     type="button"
                     aria-label="Fechar modal"
-                    class="absolute right-3 top-3 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-suspense-aurora shadow-md sm:-right-5 sm:-top-8 sm:h-6 sm:w-6 sm:shadow-none"
+                    class={[
+                        "absolute right-3 top-3 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-suspense-aurora shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric sm:-right-5 sm:-top-8 sm:h-6 sm:w-6 sm:shadow-lg [[data-public-theme=akiba]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_76%,var(--color-blue-night))] [[data-public-theme=akiba]_&]:hover:bg-blue-ocean [[data-public-theme=night]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_76%,var(--color-blue-night))] [[data-public-theme=night]_&]:hover:bg-blue-ocean",
+                        themeClass("bg", "suspense-aurora", { fixed: true, theme: "light" }),
+                        publicAnimations.iconButtonInteractive,
+                    ]}
                     on:click={close}
                 >
                     <img
                         src="/svg/close.svg"
                         alt=""
                         aria-hidden="true"
-                        class="w-3"
+                        class="w-3 brightness-0 [[data-public-theme=akiba]_&]:filter-suspense-aurora [[data-public-theme=night]_&]:filter-suspense-aurora"
                         loading="lazy"
                     />
                 </button>

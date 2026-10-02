@@ -43,6 +43,14 @@
     let latestSearchId = 0;
     let isSearching = false;
     let requestMode = "music";
+    const labelClass = "text-md text-gray-700 font-noto-sans block mb-1 [[data-public-theme=akiba]_&]:text-suspense-aurora/75 [[data-public-theme=night]_&]:text-suspense-aurora/75";
+    const inputClass = "w-full h-10 bg-white font-noto-sans text-md text-black rounded-md outline-none border border-gray-400 [[data-public-theme=akiba]_&]:border-0 [[data-public-theme=akiba]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_76%,var(--color-blue-night))] [[data-public-theme=akiba]_&]:text-suspense-aurora [[data-public-theme=akiba]_&]:placeholder:text-suspense-aurora/35 [[data-public-theme=night]_&]:border-0 [[data-public-theme=night]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_76%,var(--color-blue-night))] [[data-public-theme=night]_&]:text-suspense-aurora [[data-public-theme=night]_&]:placeholder:text-suspense-aurora/35";
+    const helpClass = "text-[0.8rem] text-gray-500 font-noto-sans mt-1 block [[data-public-theme=akiba]_&]:text-suspense-aurora/60 [[data-public-theme=night]_&]:text-suspense-aurora/60";
+    const segmentedClass = "inline-grid grid-cols-2 rounded-full border border-gray-300 bg-gray-100 p-0.5 [[data-public-theme=akiba]_&]:border-0 [[data-public-theme=akiba]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_76%,var(--color-blue-night))] [[data-public-theme=night]_&]:border-0 [[data-public-theme=night]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_76%,var(--color-blue-night))]";
+    const inactiveModeClass = "cursor-pointer text-gray-600 hover:text-blue-ocean [[data-public-theme=akiba]_&]:text-suspense-aurora/70 [[data-public-theme=akiba]_&]:hover:text-suspense-aurora [[data-public-theme=night]_&]:text-suspense-aurora/70 [[data-public-theme=night]_&]:hover:text-suspense-aurora";
+    const dropdownClass = "public-themed-scrollbar absolute z-50 w-full max-h-56 overflow-y-auto rounded-2xl border border-gray-200 bg-white p-2 shadow-xl [[data-public-theme=akiba]_&]:border-blue-skywave/20 [[data-public-theme=akiba]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_88%,var(--color-blue-night))] [[data-public-theme=night]_&]:border-blue-skywave/20 [[data-public-theme=night]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_88%,var(--color-blue-night))]";
+    const dropdownTitleClass = "text-gray-700 text-sm font-semibold [[data-public-theme=akiba]_&]:text-suspense-aurora [[data-public-theme=night]_&]:text-suspense-aurora";
+    const dropdownMutedClass = "text-gray-500 text-xs mt-1 [[data-public-theme=akiba]_&]:text-suspense-aurora/60 [[data-public-theme=night]_&]:text-suspense-aurora/60";
 
     $: showManualMusicFields = requestMode === "music"
         && hasSearched
@@ -190,19 +198,19 @@
     {#if oauth.is_oauth && !oauth.profile_completed}
         <div class="mb-3 grid grid-cols-1 gap-3">
             <div>
-                <label for="address" class="text-md text-gray-700 font-noto-sans block mb-1">
+                <label for="address" class={labelClass}>
                     Qual é a sua cidade e estado?
                 </label>
                 <input
                     id="address"
                     type="text"
                     name="address"
-                    class="w-full h-10 bg-white font-noto-sans text-md text-black rounded-md outline-none pl-4 border border-gray-400"
+                    class={[inputClass, "pl-4"]}
                     placeholder="Ex: Salto - SP"
                     bind:value={$form.address}
                     required
                 />
-                <span class="text-[0.8rem] text-gray-500 font-noto-sans mt-1 block">
+                <span class={helpClass}>
                     Fora do Brasil? Informe cidade e país que tu está!.
                 </span>
                 {#if $form.errors.address}
@@ -212,18 +220,18 @@
                 {/if}
             </div>
             <div>
-                <label for="birth-date" class="text-md text-gray-700 font-noto-sans block mb-1">
+                <label for="birth-date" class={labelClass}>
                     Qual é a sua data de nascimento?
                 </label>
                 <input
                     id="birth-date"
                     type="date"
                     name="birth_date"
-                    class="w-full h-10 bg-white font-noto-sans text-md text-black rounded-md outline-none px-4 border border-gray-400"
+                    class={[inputClass, "px-4"]}
                     bind:value={$form.birth_date}
                     required
                 />
-                <span class="text-[0.8rem] text-gray-500 font-noto-sans mt-1 block">
+                <span class={helpClass}>
                     É só pra mostrar sua idade caso você seja o Ouvinte do Mês.
                 </span>
                 {#if $form.errors.birth_date}
@@ -235,11 +243,11 @@
         </div>
     {/if}
     <div class="mb-3 flex justify-center">
-        <div class="inline-grid grid-cols-2 rounded-full border border-gray-300 bg-gray-100 p-0.5">
+        <div class={segmentedClass}>
             <button
                 type="button"
                 class={["h-8 rounded-full px-3 font-noto-sans text-[0.7rem] font-extrabold uppercase italic transition sm:px-4",
-                    requestMode === "music" ? "bg-orange-citric text-blue-marinho" : "cursor-pointer text-gray-600 hover:text-blue-ocean",
+                    requestMode === "music" ? "bg-orange-citric text-blue-marinho" : inactiveModeClass,
                 ]}
                 aria-pressed={requestMode === "music"}
                 on:click={() => selectRequestMode("music")}
@@ -249,7 +257,7 @@
             <button
                 type="button"
                 class={["h-8 rounded-full px-3 font-noto-sans text-[0.7rem] font-extrabold uppercase italic transition sm:px-4",
-                    requestMode === "message" ? "bg-orange-citric text-blue-marinho" : "cursor-pointer text-gray-600 hover:text-blue-ocean",
+                    requestMode === "message" ? "bg-orange-citric text-blue-marinho" : inactiveModeClass,
                 ]}
                 aria-pressed={requestMode === "message"}
                 on:click={() => selectRequestMode("message")}
@@ -260,14 +268,14 @@
     </div>
     {#if requestMode === "music" && !showManualMusicFields}
         <div class="mb-3 relative">
-            <label for="anime-theme-search" class="text-md text-gray-700 font-noto-sans block mb-1">
+            <label for="anime-theme-search" class={labelClass}>
                 Busque por anime ou música
             </label>
             <input
                 id="anime-theme-search"
                 type="text"
                 name="anime_theme_search"
-                class="w-full h-10 bg-white font-noto-sans text-md text-black rounded-md outline-none pl-4 border border-gray-400"
+                class={[inputClass, "pl-4"]}
                 placeholder="Ex: Naruto ou unravel"
                 autocomplete="off"
                 bind:value={searchQuery}
@@ -275,26 +283,26 @@
                 on:focus={() => (activeSearchDropdown = true)}
                 on:blur={() => (activeSearchDropdown = false)}
             />
-            <span class="text-[0.8rem] text-gray-500 font-noto-sans mt-1 block">
+            <span class={helpClass}>
                 Diga o nome do anime ou da música e faremos o resto!
             </span>
             {#if activeSearchDropdown}
-                <div class="public-themed-scrollbar absolute z-50 w-full max-h-56 overflow-y-auto rounded-2xl border border-gray-200 bg-white p-2 shadow-xl">
+                <div class={dropdownClass}>
                     {#if !searchQuery.trim()}
                         <div class="p-3 font-noto-sans text-center">
-                            <div class="text-gray-700 text-sm font-semibold">
+                            <div class={dropdownTitleClass}>
                                 O que vai embalar seu pedido?
                             </div>
-                            <div class="text-gray-500 text-xs mt-1">
+                            <div class={dropdownMutedClass}>
                                 Tente Naruto, unravel, Blue Bird...
                             </div>
                         </div>
                     {:else if isSearching}
                         <div class="p-3 font-noto-sans text-center flex flex-col items-center gap-2">
-                            <svg class="w-5 h-5 text-gray-300 animate-spin fill-blue-ocean" viewBox="0 0 24 24" aria-hidden="true">
+                            <svg class="w-5 h-5 text-gray-300 animate-spin fill-blue-ocean [[data-public-theme=akiba]_&]:text-suspense-aurora/35 [[data-public-theme=night]_&]:text-suspense-aurora/35" viewBox="0 0 24 24" aria-hidden="true">
                                 <path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2v3a7 7 0 1 0 7 7h3c0 5.523-4.477 10-10 10Z"/>
                             </svg>
-                            <div class="text-gray-700 text-sm font-semibold">
+                            <div class={dropdownTitleClass}>
                                 Buscando animes e músicas...
                             </div>
                         </div>
@@ -303,16 +311,16 @@
                             <div class="text-red-600 text-sm font-semibold">
                                 Não foi possível realizar a busca.
                             </div>
-                            <div class="text-gray-500 text-xs mt-1">
+                            <div class={dropdownMutedClass}>
                                 Tente novamente em instantes.
                             </div>
                         </div>
                     {:else if hasSearched && searchResults.length === 0}
                         <div class="p-3 font-noto-sans text-center">
-                            <div class="text-gray-700 text-sm font-semibold">
+                            <div class={dropdownTitleClass}>
                                 Nenhum anime ou música encontrado.
                             </div>
-                            <div class="text-gray-500 text-xs mt-1">
+                            <div class={dropdownMutedClass}>
                                 Confira o termo pesquisado e tente novamente.
                             </div>
                         </div>
@@ -326,21 +334,21 @@
                                 <img
                                     src={resolvePlaceholderImage(item.image, "placeholder")}
                                     alt={item.title}
-                                    class="w-14 h-14 object-cover rounded-md border border-gray-100 shadow-sm shrink-0"
+                                    class="w-14 h-14 object-cover rounded-md border border-gray-100 shadow-sm shrink-0 [[data-public-theme=akiba]_&]:border-blue-skywave/20 [[data-public-theme=night]_&]:border-blue-skywave/20"
                                     loading="lazy"
                                 />
                                 <div class="flex flex-col items-start text-left">
-                                    <div class="font-noto-sans font-semibold text-gray-900 text-sm line-clamp-1">
+                                    <div class="font-noto-sans font-semibold text-gray-900 text-sm line-clamp-1 [[data-public-theme=akiba]_&]:text-suspense-aurora [[data-public-theme=night]_&]:text-suspense-aurora">
                                         {item.title}
                                     </div>
                                     {#each item.musics.slice(0, 2) as music}
-                                        <div class="w-full text-gray-500 text-xs line-clamp-1">
+                                        <div class="w-full text-gray-500 text-xs line-clamp-1 [[data-public-theme=akiba]_&]:text-suspense-aurora/60 [[data-public-theme=night]_&]:text-suspense-aurora/60">
                                             <span class="font-bold text-blue-ocean">{music.type}</span>
                                             {music.title}{music.artists ? ` - ${normalizeArtists(music.artists)}` : ""}
                                         </div>
                                     {/each}
                                     {#if item.musics.length > 2}
-                                        <div class="text-gray-400 text-[0.65rem]">
+                                        <div class="text-gray-400 text-[0.65rem] [[data-public-theme=akiba]_&]:text-suspense-aurora/45 [[data-public-theme=night]_&]:text-suspense-aurora/45">
                                             +{item.musics.length - 2} músicas
                                         </div>
                                     {/if}
@@ -366,14 +374,14 @@
             </div>
         </div>
         <div class="mb-3 relative">
-            <label for="manual-anime" class="text-md text-gray-700 font-noto-sans block mb-1">
+            <label for="manual-anime" class={labelClass}>
                 Qual é o nome do anime? <span class="text-red-600">*</span>
             </label>
             <input
                 id="manual-anime"
                 type="text"
                 name="manual_anime"
-                class="w-full h-10 bg-white font-noto-sans text-md text-black rounded-md outline-none px-4 border border-gray-400"
+                class={[inputClass, "px-4"]}
                 placeholder="Ex: Naruto"
                 bind:value={manualAnime}
                 on:input={syncManualMusic}
@@ -381,14 +389,14 @@
             />
         </div>
         <div class="mb-3 relative">
-            <label for="manual-music" class="text-md text-gray-700 font-noto-sans block mb-1">
+            <label for="manual-music" class={labelClass}>
                 Qual é a música desse anime? <span class="text-red-600">*</span>
             </label>
             <input
                 id="manual-music"
                 type="text"
                 name="manual_music"
-                class="w-full h-10 bg-white font-noto-sans text-md text-black rounded-md outline-none px-4 border border-gray-400"
+                class={[inputClass, "px-4"]}
                 placeholder="Ex: Blue Bird"
                 bind:value={manualMusicName}
                 on:input={syncManualMusic}
@@ -403,10 +411,10 @@
     {/if}
     {#if requestMode === "music" && searchMusicResults.length > 1}
         <div class="mb-5">
-            <div class="text-md text-gray-700 font-noto-sans block mb-1">
+            <div class={labelClass}>
                 Escolha uma música:
             </div>
-            <div class="public-themed-scrollbar song-request-music-list max-h-44 overflow-y-auto rounded-md border border-blue-ocean/20 bg-blue-ocean/[0.03] p-2">
+            <div class="public-themed-scrollbar song-request-music-list max-h-44 overflow-y-auto rounded-md border border-blue-ocean/20 bg-blue-ocean/[0.03] p-2 [[data-public-theme=akiba]_&]:border-0 [[data-public-theme=akiba]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_76%,var(--color-blue-night))] [[data-public-theme=night]_&]:border-0 [[data-public-theme=night]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_76%,var(--color-blue-night))]">
                 {#each ["OP", "ED", "OVA"] as type}
                     {#if searchMusicResults.some((item) => item.type === type)}
                         <div class="px-2 py-2 font-noto-sans text-[0.62rem] font-extrabold uppercase tracking-[0.2em] text-orange-amber">
@@ -415,7 +423,7 @@
                         {#each searchMusicResults.filter((item) => item.type === type) as item}
                             <label class={["mb-2 flex cursor-pointer items-center gap-3 rounded-md border p-3 font-noto-sans transition",
                                 { "border-orange-citric bg-orange-citric text-blue-marinho shadow-sm": $form.music === item },
-                                { "border-blue-ocean/10 bg-white text-blue-marinho hover:border-orange-citric/70 hover:bg-orange-citric/5": $form.music !== item },
+                                { "border-blue-ocean/10 bg-white text-blue-marinho hover:border-orange-citric/70 hover:bg-orange-citric/5 [[data-public-theme=akiba]_&]:border-blue-skywave/20 [[data-public-theme=akiba]_&]:bg-blue-night/15 [[data-public-theme=akiba]_&]:text-suspense-aurora [[data-public-theme=akiba]_&]:hover:border-orange-citric/70 [[data-public-theme=akiba]_&]:hover:bg-orange-citric/10 [[data-public-theme=night]_&]:border-blue-skywave/20 [[data-public-theme=night]_&]:bg-blue-night/15 [[data-public-theme=night]_&]:text-suspense-aurora [[data-public-theme=night]_&]:hover:border-orange-citric/70 [[data-public-theme=night]_&]:hover:bg-orange-citric/10": $form.music !== item },
                             ]}>
                                 <input
                                     type="radio"
@@ -435,7 +443,7 @@
                                     <span class="block truncate text-sm font-extrabold">
                                         {item.name}
                                     </span>
-                                    <span class={$form.music === item ? "block truncate text-xs text-blue-marinho/75" : "block truncate text-xs text-gray-500"}>
+                                    <span class={$form.music === item ? "block truncate text-xs text-blue-marinho/75" : "block truncate text-xs text-gray-500 [[data-public-theme=akiba]_&]:text-suspense-aurora/60 [[data-public-theme=night]_&]:text-suspense-aurora/60"}>
                                         {item.artist || "Artista não informado"}
                                     </span>
                                 </span>
@@ -452,7 +460,7 @@
         </div>
     {/if}
     <div class="mb-3">
-        <label for="message" class="text-md text-gray-700 font-noto-sans block mb-1">
+        <label for="message" class={labelClass}>
             Escreva uma mensagem
             {#if requestMode === "message"}
                 <span class="text-red-600">*</span>
@@ -462,12 +470,12 @@
             id="message"
             name="message"
             rows="3"
-            class="w-full bg-white font-noto-sans text-md text-black rounded-md outline-none p-4 border border-gray-400 resize-none"
+            class={[inputClass, "min-h-28 p-4 resize-none"]}
             placeholder={requestMode === "message" ? "Deixe uma mensagem amigável" : "(Opcional) Deixe uma mensagem amigável"}
             bind:value={$form.message}
             required={requestMode === "message"}
         ></textarea>
-        <span class="text-[0.8rem] text-gray-500 font-noto-sans mt-1 block">
+        <span class={helpClass}>
             {requestMode === "music" ? "Opcional, mas capricha: o locutor vai ler." : "Escreva seu recado para o locutor."}
         </span>
         {#if $form.errors.message}

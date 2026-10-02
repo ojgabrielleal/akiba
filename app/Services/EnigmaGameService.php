@@ -28,7 +28,8 @@ class EnigmaGameService
             $enigmagame = EnigmaGame::create([
                 'user_id' => $user->id,
                 'title' => $data['title'],
-                'content' => $this->image->store('enigmagames', $image),
+                'content' => $data['content'],
+                'image' => $this->image->store('enigmagames', $image),
                 'status' => $data['status'] ?? EnigmaGame::STATUS_DRAFT,
                 'solution' => $data['solution'] ?? null,
             ]);
@@ -50,9 +51,10 @@ class EnigmaGameService
         $enigmagame = DB::transaction(function () use ($enigmagame, $data, $image): EnigmaGame {
             $enigmagame->update([
                 'title' => $data['title'],
-                'content' => $image
-                    ? $this->image->store('enigmagames', $image, $enigmagame->content)
-                    : $enigmagame->content,
+                'content' => $data['content'],
+                'image' => $image
+                    ? $this->image->store('enigmagames', $image, $enigmagame->image)
+                    : $enigmagame->image,
                 'status' => $data['status'] ?? $enigmagame->status,
                 'solution' => $data['solution'] ?? null,
             ]);

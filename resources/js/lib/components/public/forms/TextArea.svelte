@@ -11,16 +11,16 @@
 
     const variants = {
         light: `bg-neutral-gray ${themeClass("bg", "neutral-light", { fixed: true, theme: "light" })} text-suspense-aurora placeholder:text-suspense-aurora/45`,
-        dark: `bg-blue-ocean ${themeClass("bg", "neutral-light", { fixed: true, theme: "light" })} text-suspense-aurora placeholder:text-suspense-aurora/35`,
+        dark: `bg-blue-ocean ${themeClass("bg", "neutral-light", { fixed: true, theme: "light" })} text-suspense-aurora placeholder:text-suspense-aurora/35 [[data-public-theme=akiba]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_76%,var(--color-blue-night))] [[data-public-theme=night]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_76%,var(--color-blue-night))]`,
         transparent: "bg-transparent text-suspense-aurora placeholder:text-suspense-aurora/35",
-        profile: "bg-neutral-white text-blue-night placeholder:text-blue-night/35",
+        profile: `bg-neutral-gray ${themeClass("bg", "neutral-light", { fixed: true, theme: "light" })} text-suspense-aurora placeholder:text-suspense-aurora/45 [[data-public-theme=akiba]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_76%,var(--color-blue-night))] [[data-public-theme=akiba]_&]:placeholder:text-suspense-aurora/35 [[data-public-theme=night]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_76%,var(--color-blue-night))] [[data-public-theme=night]_&]:placeholder:text-suspense-aurora/35`,
     };
 
     const borders = {
         light: "border border-suspense-aurora/20 focus:border-blue-skywave",
-        dark: "border border-blue-skywave/40 focus:border-blue-skywave",
+        dark: "border border-blue-skywave/40 focus:border-blue-skywave [[data-public-theme=akiba]_&]:border-0 [[data-public-theme=night]_&]:border-0",
         transparent: "border border-suspense-aurora/25 focus:border-orange-amber",
-        profile: "border border-blue-night/15 focus:border-blue-skywave",
+        profile: "border-0",
     };
 
     const resizeModes = {

@@ -40,6 +40,7 @@ class EnigmaGameResource extends JsonResource
             'uuid' => $this->uuid,
             'title' => $this->title,
             'content' => $this->content,
+            'image' => $this->image,
             'status' => $this->status,
             'solution' => $canViewPrivate || $solvedInteraction ? $this->solution : null,
             'created_at' => $this->created_at?->setTimezone('America/Sao_Paulo')->format('d/m/Y H:i'),

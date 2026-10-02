@@ -5,6 +5,7 @@
     import { AuthGuard, CustomModal, LoadingSpinner, MaskIcon } from "@/lib/components/public";
     import { player, setVolume, toggleAudio } from "@/lib/stores";
     import { SongRequestForm } from "@/lib/widgets/public";
+    import SongCoverLightbox from "./SongCoverLightbox.svelte";
     import {
         listenForOAuthAction,
         OAuthAction,
@@ -20,6 +21,7 @@
     let observer;
     let mounted = false;
     let modalRef;
+    let coverLightboxOpen = false;
     let stopListeningForOAuthAction = () => {};
 
     $: air = onair?.data?.[0] ?? {};
@@ -40,6 +42,14 @@
         if (requestActionVisible) {
             toast.error("Pedidos fechados. Fica na escuta!");
         }
+    };
+
+    const openCoverLightbox = () => {
+        coverLightboxOpen = true;
+    };
+
+    const closeCoverLightbox = () => {
+        coverLightboxOpen = false;
     };
 
     const observeMainPlayer = async () => {
@@ -119,6 +129,13 @@
         </div>
     </CustomModal>
 
+    <SongCoverLightbox
+        open={coverLightboxOpen}
+        cover={currentSong.cover}
+        music={currentSong.music}
+        close={closeCoverLightbox}
+    />
+
     <aside
         class="public-player-bar fixed inset-x-0 bottom-0 z-60 border-t border-blue-skywave/20 bg-blue-night/95 backdrop-blur-md"
         transition:fly={{ y: 88, duration: 240 }}
@@ -138,12 +155,18 @@
         {/if}
 
         <div class="container-page relative grid min-h-18 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 py-2 lg:grid-cols-[auto_minmax(0,1fr)_auto_auto_auto]">
-            <img
-                src={resolvePlaceholderImage(currentSong.cover, "placeholder")}
-                alt=""
-                aria-hidden="true"
-                class="relative z-10 size-12 rounded-md object-cover"
-            />
+            <button
+                type="button"
+                class="group/cover relative z-10 size-12 shrink-0 cursor-zoom-in overflow-hidden rounded-md bg-blue-ocean focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric"
+                aria-label="Ver capa da música em tela cheia"
+                on:click={openCoverLightbox}
+            >
+                <img
+                    src={resolvePlaceholderImage(currentSong.cover, "placeholder")}
+                    alt={currentSong.music ? `Capa da música ${currentSong.music}` : "Capa da música atual"}
+                    class="h-full w-full object-cover transition duration-300 ease-out group-hover/cover:scale-[1.03] group-focus-visible/cover:scale-[1.03] motion-reduce:transform-none motion-reduce:transition-none"
+                />
+            </button>
 
             <div class="relative z-10 min-w-0 font-noto-sans uppercase italic">
                 <p class="text-[0.65rem] font-black tracking-[0.12em] text-suspense-aurora/45">
