@@ -9,7 +9,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('onair', function (Blueprint $table) {
+        Schema::table('onairs', function (Blueprint $table) {
             $table->foreignId('user_id')
                 ->nullable()
                 ->after('program_id')
@@ -17,7 +17,7 @@ return new class extends Migration
                 ->nullOnDelete();
         });
 
-        DB::table('onair')
+        DB::table('onairs')
             ->select(['id', 'program_id'])
             ->whereNull('user_id')
             ->orderBy('id')
@@ -30,7 +30,7 @@ return new class extends Migration
                     $userId = $programUserIds[$onair->program_id] ?? null;
 
                     if ($userId) {
-                        DB::table('onair')
+                        DB::table('onairs')
                             ->where('id', $onair->id)
                             ->update(['user_id' => $userId]);
                     }
@@ -40,7 +40,7 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::table('onair', function (Blueprint $table) {
+        Schema::table('onairs', function (Blueprint $table) {
             $table->dropForeign(['user_id']);
             $table->dropColumn('user_id');
         });

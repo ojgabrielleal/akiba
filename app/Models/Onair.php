@@ -12,6 +12,8 @@ class Onair extends Model
 {
     use HasFactory, HasUuids;
 
+    protected $table = 'onairs';
+
     protected $fillable = [
         'uuid',
         'in_air',
