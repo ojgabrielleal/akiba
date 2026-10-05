@@ -4,6 +4,9 @@ export { default as ProfileForm } from "./form/ProfileForm.svelte"
 export { default as RecruitmentForm } from "./form/RecruitmentForm.svelte"
 export { default as EventRegistrationForm } from "./form/EventRegistrationForm.svelte"
 
+// Actions
+export { default as EventRegistrationCallout } from "./actions/EventRegistrationCallout.svelte"
+
 // Grids
 export { default as FeaturedGrid } from "./grid/FeaturedGrid.svelte"
 export { default as PostListGrid } from "./grid/PostListGrid.svelte"

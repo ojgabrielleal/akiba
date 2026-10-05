@@ -93,7 +93,7 @@
                                                 {episodeCode(podcast)}
                                             </span>
                                             <div class="public-podcast-divider hidden min-h-11 w-px bg-suspense-aurora/25 sm:block" aria-hidden="true"></div>
-                                            <h2 class="public-podcast-title max-w-3xl text-xl font-black italic leading-tight text-orange-amber sm:text-2xl lg:text-3xl">
+                                            <h2 class="public-podcast-title max-w-3xl text-xl font-black italic leading-tight text-orange-amber [[data-public-theme=light]_&]:text-[#000036] sm:text-2xl lg:text-3xl">
                                                 {podcast.title}
                                             </h2>
                                         </div>

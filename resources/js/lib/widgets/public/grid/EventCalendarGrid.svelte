@@ -1,21 +1,15 @@
 <script>
     import { Link } from "@inertiajs/svelte";
-    import { AdvertisementSlot, Modal, Section } from "@/lib/components/public";
+    import { AdvertisementSlot, Section } from "@/lib/components/public";
     import { resolveDate, resolvePlaceholderImage, themeClass } from "@/lib/utils";
-    import EventRegistrationForm from "../form/EventRegistrationForm.svelte";
+    import EventRegistrationCallout from "../actions/EventRegistrationCallout.svelte";
 
     export let events = [];
 
     $: eventList = Array.isArray(events) ? events : events?.data ?? [];
     const resolveEventDate = (event) => resolveDate(event.metadata?.dates) || "";
     const resolveEventPlace = (event) => event.metadata?.address ?? "";
-
-    let registrationModalRef;
 </script>
-
-<Modal bind:this={registrationModalRef} title="Informar evento" size="sm">
-    <EventRegistrationForm close={() => registrationModalRef.close()} />
-</Modal>
 
 <Section styles="public-event-calendar-original container-page mb-10">
     <div class={["public-section-heading mb-5 flex items-center gap-3 after:h-px after:min-w-10 after:flex-1 after:bg-orange-citric after:content-[''] sm:gap-4", themeClass("after:bg", "blue-marinho", { theme: "light" })]}>
@@ -99,18 +93,7 @@
                     </div>
                 {/if}
 
-                <div class="mt-6 flex items-center justify-center gap-2 px-2 py-1 font-noto-sans not-italic uppercase">
-                    <p class="text-center text-xs font-normal leading-none tracking-normal text-orange-citric not-italic lg:text-sm">
-                        Algum evento otaku vai acontecer na sua região?
-                    </p>
-                    <button
-                        type="button"
-                        class="inline-flex min-h-7 shrink-0 cursor-pointer items-center justify-center rounded-md bg-orange-amber px-3 py-1 font-noto-sans text-sm font-black leading-none text-blue-night uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 hover:brightness-105 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none"
-                        on:click={() => registrationModalRef.open()}
-                    >
-                        Conta pra gente!
-                    </button>
-                </div>
+                <EventRegistrationCallout />
             </div>
         </div>
         <div class="overflow-hidden rounded-md lg:h-full">

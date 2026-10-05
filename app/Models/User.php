@@ -201,6 +201,11 @@ class User extends Authenticatable
         return $this->morphMany(Comment::class, 'author');
     }
 
+    public function podcastListens()
+    {
+        return $this->morphMany(PodcastListen::class, 'listener');
+    }
+
     public function badgeAssignments()
     {
         return $this->morphMany(BadgeAssignment::class, 'owner');

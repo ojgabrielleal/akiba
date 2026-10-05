@@ -86,6 +86,11 @@ class Podcast extends Model
         return $this->morphMany(Comment::class, 'commentable');
     }
 
+    public function listens()
+    {
+        return $this->hasMany(PodcastListen::class, 'podcast_id');
+    }
+
     public function author()
     {
         return $this->belongsTo(User::class, 'user_id');

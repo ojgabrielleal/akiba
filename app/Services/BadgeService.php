@@ -5,6 +5,9 @@ namespace App\Services;
 use App\Models\Badge;
 use App\Models\BadgeAssignment;
 use App\Models\OAuthAccount;
+use App\Models\Podcast;
+use App\Models\PodcastListen;
+use App\Models\SongRequest;
 use App\Models\User;
 use App\Processing\ImageProcess;
 use Illuminate\Database\Eloquent\Builder;
@@ -192,6 +195,121 @@ class BadgeService
             $owner,
             'Presença no site durante janela programada.',
             ['trigger' => 'site.presence_window'],
+        ));
+    }
+
+    private function awardAchievement(Badge $badge, Model $owner, ?string $reason = null, array $metadata = []): BadgeAssignment
+    {
+        return DB::transaction(function () use ($badge, $owner, $reason, $metadata): BadgeAssignment {
+            $badge = Badge::query()
+                ->lockForUpdate()
+                ->whereKey($badge->id)
+                ->where('type', Badge::TYPE_ACHIEVEMENT)
+                ->active()
+                ->firstOrFail();
+
+            $assignment = BadgeAssignment::query()
+                ->lockForUpdate()
+                ->where('badge_id', $badge->id)
+                ->where('owner_type', $owner->getMorphClass())
+                ->where('owner_id', $owner->getKey())
+                ->active()
+                ->first();
+
+            if ($assignment) {
+                return $assignment;
+            }
+
+            return $this->createAssignment($badge, $owner, $reason, $metadata, null);
+        });
+    }
+
+    public function awardSongRequestPlayedAchievements(Model $owner): Collection
+    {
+        $playedTotal = SongRequest::query()
+            ->where('type', 'music')
+            ->where('was_reproduced', true)
+            ->where('requester_type', $owner->getMorphClass())
+            ->where('requester_id', $owner->getKey())
+            ->count();
+
+        return $this->awardThresholdAchievements(
+            'song_request.played_total',
+            $owner,
+            $playedTotal,
+            'Meta de pedidos atendidos alcançada.',
+        );
+    }
+
+    public function awardPodcastListenAchievements(Model $owner): Collection
+    {
+        $activePodcastIds = Podcast::query()
+            ->active()
+            ->pluck('id');
+
+        $listenedTotal = PodcastListen::query()
+            ->where('listener_type', $owner->getMorphClass())
+            ->where('listener_id', $owner->getKey())
+            ->whereIn('podcast_id', $activePodcastIds)
+            ->count();
+
+        $awards = $this->awardThresholdAchievements(
+            'podcast.listened_total',
+            $owner,
+            $listenedTotal,
+            'Meta de podcasts ouvidos alcançada.',
+        );
+
+        if ($activePodcastIds->isNotEmpty() && $listenedTotal >= $activePodcastIds->count()) {
+            $awards = $awards->concat($this->awardAchievementsByTrigger(
+                'podcast.all_listened',
+                $owner,
+                'Todos os podcasts ativos foram marcados como ouvidos.',
+                [
+                    'trigger' => 'podcast.all_listened',
+                    'listened_total' => $listenedTotal,
+                    'podcasts_total' => $activePodcastIds->count(),
+                ],
+            ));
+        }
+
+        return $awards->values();
+    }
+
+    private function awardThresholdAchievements(string $trigger, Model $owner, int $total, string $reason): Collection
+    {
+        $badges = Badge::query()
+            ->active()
+            ->achievement()
+            ->where('rule->trigger', $trigger)
+            ->get()
+            ->filter(fn (Badge $badge) => $total >= (int) ($badge->rule['threshold'] ?? 0));
+
+        return $badges->map(fn (Badge $badge) => $this->awardAchievement(
+            $badge,
+            $owner,
+            $reason,
+            [
+                'trigger' => $trigger,
+                'threshold' => (int) ($badge->rule['threshold'] ?? 0),
+                'total' => $total,
+            ],
+        ));
+    }
+
+    private function awardAchievementsByTrigger(string $trigger, Model $owner, ?string $reason = null, array $metadata = []): Collection
+    {
+        $badges = Badge::query()
+            ->active()
+            ->achievement()
+            ->where('rule->trigger', $trigger)
+            ->get();
+
+        return $badges->map(fn (Badge $badge) => $this->awardAchievement(
+            $badge,
+            $owner,
+            $reason,
+            $metadata ?: ['trigger' => $trigger],
         ));
     }
 
@@ -383,6 +501,13 @@ class BadgeService
                 'audience' => $data['audience'] ?? 'all',
                 'target_type' => ($data['audience'] ?? 'all') === 'target' ? ($data['target_type'] ?? null) : null,
                 'target_uuid' => ($data['audience'] ?? 'all') === 'target' ? ($data['target_uuid'] ?? null) : null,
+            ];
+        }
+
+        if (($data['type'] ?? null) === Badge::TYPE_ACHIEVEMENT) {
+            return [
+                'trigger' => $data['trigger'] ?? null,
+                'threshold' => filled($data['threshold'] ?? null) ? (int) $data['threshold'] : null,
             ];
         }
 

@@ -15,6 +15,7 @@ class Badge extends Model
     public const TYPE_FIXED = 'fixed';
     public const TYPE_STEALABLE = 'stealable';
     public const TYPE_SCHEDULED = 'scheduled';
+    public const TYPE_ACHIEVEMENT = 'achievement';
 
     protected $fillable = [
         'uuid',
@@ -54,6 +55,12 @@ class Badge extends Model
     protected function stealable(Builder $query): void
     {
         $query->where('type', self::TYPE_STEALABLE);
+    }
+
+    #[Scope]
+    protected function achievement(Builder $query): void
+    {
+        $query->where('type', self::TYPE_ACHIEVEMENT);
     }
 
     public function assignments()

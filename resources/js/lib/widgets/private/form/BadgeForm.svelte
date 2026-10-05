@@ -28,28 +28,41 @@
     }
 
     const sourceOptions = [
-        { value: "enigmagame", label: "Enigma Otaku" },
-        { value: "song_request", label: "Pedidos musicais" },
+        { value: "enigmagame", label: "Enigma Otaku", types: ["stealable"] },
+        { value: "song_request", label: "Pedidos musicais", types: ["stealable", "achievement"] },
+        { value: "podcast", label: "Podcasts", types: ["achievement"] },
     ];
 
     const triggerOptions = {
-        enigmagame: [
-            { value: "enigmagame.most_wins", label: "Pessoa que mais venceu enigmas" },
-        ],
-        song_request: [
-            { value: "song_request.most_requests", label: "Pessoa que mais fez pedidos" },
-        ],
+        stealable: {
+            enigmagame: [
+                { value: "enigmagame.most_wins", label: "Pessoa que mais venceu enigmas", needsThreshold: false },
+            ],
+            song_request: [
+                { value: "song_request.most_requests", label: "Pessoa que mais fez pedidos", needsThreshold: false },
+            ],
+        },
+        achievement: {
+            song_request: [
+                { value: "song_request.played_total", label: "Pedidos atendidos", needsThreshold: true },
+            ],
+            podcast: [
+                { value: "podcast.all_listened", label: "Todos os podcasts ouvidos", needsThreshold: false },
+                { value: "podcast.listened_total", label: "Quantidade de podcasts ouvidos", needsThreshold: true },
+            ],
+        },
     };
 
     $: form = useForm({
         _method: badgeSelected ? "PATCH" : "POST",
         name: badgeSelected?.name ?? null,
         code: badgeSelected?.code ?? null,
-        description: null,
+        description: badgeSelected?.description ?? null,
         image: null,
         type: badgeSelected?.type ?? "fixed",
         source: badgeSelected?.source ?? "enigmagame",
         trigger: badgeSelected?.trigger ?? null,
+        threshold: badgeSelected?.threshold ?? null,
         starts_at: badgeSelected?.starts_at ?? null,
         ends_at: badgeSelected?.ends_at ?? null,
         audience: badgeSelected?.audience ?? "all",
@@ -63,9 +76,13 @@
         $form.code = badgeCodeFromName($form.name);
     }
 
-    $: availableTriggers = triggerOptions[$form.source] ?? [];
+    $: hasSource = $form.type === "stealable" || $form.type === "achievement";
+    $: availableSources = sourceOptions.filter((option) => option.types.includes($form.type));
+    $: availableTriggers = triggerOptions[$form.type]?.[$form.source] ?? [];
+    $: selectedTrigger = availableTriggers.find((item) => item.value === $form.trigger);
+    $: needsThreshold = Boolean(selectedTrigger?.needsThreshold);
 
-    $: if ($form.type !== "stealable") {
+    $: if (!hasSource) {
         $form.source = null;
         $form.trigger = null;
     }
@@ -75,6 +92,10 @@
     $: if ($form.type !== "scheduled") {
         $form.starts_at = null;
         $form.ends_at = null;
+    }
+
+    $: if (!needsThreshold) {
+        $form.threshold = null;
     }
 
     $: if (!hasAudience) {
@@ -96,11 +117,11 @@
         $form.target_uuid = targetUuid;
     }
 
-    $: if ($form.type === "stealable" && !$form.source) {
-        $form.source = "enigmagame";
+    $: if (hasSource && availableSources.length > 0 && !availableSources.some((item) => item.value === $form.source)) {
+        $form.source = availableSources[0].value;
     }
 
-    $: if ($form.type === "stealable" && availableTriggers.length > 0 && !availableTriggers.some((item) => item.value === $form.trigger)) {
+    $: if (hasSource && availableTriggers.length > 0 && !availableTriggers.some((item) => item.value === $form.trigger)) {
         $form.trigger = availableTriggers[0].value;
     }
 
@@ -157,9 +178,10 @@
             error={$form.errors.type}
             required
         >
-            <option value="fixed">Fixo</option>
-            <option value="stealable">Roubável</option>
-            <option value="scheduled">Programável</option>
+            <option value="fixed">Concedido</option>
+            <option value="stealable">Competitivo</option>
+            <option value="scheduled">Evento</option>
+            <option value="achievement">Conquista</option>
         </SelectInput>
     </FormField>
 
@@ -246,11 +268,11 @@
         </FormField>
     {/if}
 
-    {#if $form.type === "stealable"}
+    {#if hasSource}
         <FormField
             for="source"
             label="Origem"
-            help="Módulo que vai transferir esse emblema quando integrarmos a regra."
+            help={$form.type === "stealable" ? "Módulo que transfere o emblema competitivo." : "Módulo que desbloqueia esta conquista."}
             error={$form.errors.source}
             spacing="compact"
         >
@@ -261,7 +283,7 @@
                 bind:value={$form.source}
                 error={$form.errors.source}
             >
-                {#each sourceOptions as option}
+                {#each availableSources as option}
                     <option value={option.value}>{option.label}</option>
                 {/each}
             </SelectInput>
@@ -271,7 +293,7 @@
             <FormField
                 for="trigger"
                 label="Gatilho"
-                help="Critério que define quem fica com esse emblema roubável."
+                help={$form.type === "stealable" ? "Critério que define quem fica com esse emblema competitivo." : "Meta que desbloqueia esta conquista."}
                 error={$form.errors.trigger}
                 spacing="compact"
             >
@@ -293,6 +315,27 @@
                 <span class="block font-noto-sans font-black uppercase italic text-orange-amber">Gatilho</span>
                 <span>{availableTriggers[0].label}</span>
             </div>
+        {/if}
+
+        {#if needsThreshold}
+            <FormField
+                for="threshold"
+                label="Meta"
+                help="Número necessário para desbloquear a conquista."
+                error={$form.errors.threshold}
+                spacing="compact"
+            >
+                <TextInput
+                    variant="offcanvas"
+                    type="number"
+                    name="threshold"
+                    id="threshold"
+                    min="1"
+                    bind:value={$form.threshold}
+                    error={$form.errors.threshold}
+                    required
+                />
+            </FormField>
         {/if}
     {/if}
 

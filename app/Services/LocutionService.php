@@ -13,6 +13,7 @@ class LocutionService
 {
     public function __construct(
         private DiscordWebhookService $discord,
+        private BadgeService $badges,
     ) {}
 
     public function finish(): void
@@ -105,16 +106,22 @@ class LocutionService
 
     public function markSongRequestAsPlayed(SongRequest $songRequest): SongRequest
     {
-        return DB::transaction(function () use ($songRequest) {
+        $songRequest = DB::transaction(function () use ($songRequest) {
             if ($songRequest->type === 'message') {
                 $songRequest->update(['was_read' => true]);
-            } else {
+            } elseif (! $songRequest->was_reproduced) {
                 $songRequest->update(['was_reproduced' => true]);
                 $songRequest->onair()->increment('song_requests_total');
             }
 
-            return $songRequest;
+            return $songRequest->refresh()->load('requester');
         });
+
+        if ($songRequest->type === 'music' && $songRequest->was_reproduced && $songRequest->requester) {
+            $this->badges->awardSongRequestPlayedAchievements($songRequest->requester);
+        }
+
+        return $songRequest;
     }
 
     public function start(User $user, Program $program, array $data): void

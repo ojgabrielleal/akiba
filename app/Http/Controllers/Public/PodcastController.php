@@ -10,6 +10,7 @@ use App\Models\Podcast;
 use App\Models\Comment;
 use App\Services\PageViewService;
 use App\Services\PodcastService;
+use App\Services\PodcastListenService;
 use App\Services\CommentService;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CommentResource;
@@ -66,6 +67,19 @@ class PodcastController extends Controller
                 ]), 15, ['podcasts'])
             ),
         ]);
+    }
+
+
+    public function markAsListened(Podcast $podcast, PodcastListenService $service): RedirectResponse
+    {
+        abort_unless($podcast->is_active, 404);
+
+        $listener = AuthenticatedMember::fromRequest(request());
+        abort_unless($listener, 403);
+
+        $service->markListened($podcast, $listener);
+
+        return back(303);
     }
 
     public function storeComment(StoreCommentRequest $request, CommentService $service, Podcast $podcast): RedirectResponse

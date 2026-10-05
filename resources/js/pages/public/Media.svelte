@@ -4,7 +4,7 @@
     import { Meta } from "@/lib/components/shared";
     import { AuthGuard, Button, EditorialTitle, MinimalEmptyState, Modal, Section } from "@/lib/components/public";
     import { Layout } from "@/lib/layouts/public";
-    import { ListenerGalleryGrid } from "@/lib/widgets/public";
+    import { EventRegistrationCallout, ListenerGalleryGrid } from "@/lib/widgets/public";
     import { publicAnimations } from "@/lib/constants";
     import { resolvePlaceholderImage, themeClass } from "@/lib/utils";
 
@@ -143,6 +143,7 @@
                     message="Novos eventos aparecem aqui assim que entrarem na agenda."
                 />
             {/if}
+            <EventRegistrationCallout />
         </Section>
 
         <ListenerGalleryGrid
@@ -159,7 +160,7 @@
                     style="--color-neutral-white:#ffffff; --color-neutral-gray:#808080; --color-suspense-aurora:#fffaf3; --color-suspense-honeycream:#ffe8bf; --color-red-crimson:#ed3237; --color-orange-amber:#ff8000; --color-orange-citric:#ffaa35; --color-blue-ocean:#002080; --color-blue-night:#000014; --color-green-mint:#00a859;"
                 >
                     <section class="flex min-h-[21rem] flex-col items-center justify-center px-2 py-8 text-center font-noto-sans uppercase italic lg:min-h-[24rem] lg:px-4">
-                        <h3 class="mb-5 max-w-2xl text-xl font-extrabold leading-tight text-neutral-white sm:text-2xl [[data-public-theme=light]_&]:text-blue-night">
+                        <h3 class="mb-5 max-w-2xl text-2xl font-extrabold leading-tight text-neutral-white sm:text-3xl [[data-public-theme=light]_&]:text-blue-night">
                             {enigmagame.data.title}
                         </h3>
 
@@ -173,22 +174,22 @@
                         </div>
 
                         {#if enigmagame.data.content}
-                            <p class="mt-6 max-w-2xl whitespace-pre-line text-base font-normal normal-case leading-relaxed text-suspense-honeycream sm:text-lg [[data-public-theme=light]_&]:text-blue-night">
+                            <p class="mt-6 max-w-2xl whitespace-pre-line text-lg font-normal normal-case leading-relaxed text-suspense-honeycream sm:text-xl [[data-public-theme=light]_&]:text-blue-night">
                                 {enigmagame.data.content}
                             </p>
                         {/if}
 
                         {#if enigmagame.data.solved && enigmagame.data.solution}
-                            <p class="mt-6 max-w-2xl text-lg font-normal normal-case leading-snug text-suspense-honeycream sm:text-2xl [[data-public-theme=light]_&]:text-blue-night">
+                            <p class="mt-6 max-w-2xl text-xl font-normal normal-case leading-snug text-suspense-honeycream sm:text-2xl [[data-public-theme=light]_&]:text-blue-night">
                                 {enigmagame.data.solution}
                             </p>
                         {/if}
 
                     </section>
 
-                    <div class="hidden bg-orange-amber lg:block"></div>
+                    <div class="hidden bg-orange-amber [[data-public-theme=light]_&]:bg-[#000036] lg:block"></div>
 
-                    <aside class="border-t border-orange-amber pt-5 lg:border-t-0 lg:pl-7 lg:pt-0">
+                    <aside class="border-t border-orange-amber pt-5 [[data-public-theme=light]_&]:border-[#000036] lg:border-t-0 lg:pl-7 lg:pt-0">
                         <AuthGuard
                             {oauth}
                             compact
@@ -198,7 +199,7 @@
                             reason="enigmagame"
                         >
                             <form class="grid gap-2" on:submit|preventDefault>
-                                <div class="flex flex-wrap items-end justify-between gap-2 font-noto-sans text-xs font-black uppercase italic">
+                                <div class="flex flex-wrap items-end justify-between gap-2 font-noto-sans text-sm font-black uppercase italic">
                                     <label for="enigmagame-interaction" class="text-orange-amber">
                                         Faça uma pergunta ou responda o enigma
                                     </label>
@@ -213,7 +214,7 @@
 
                                 <input
                                     id="enigmagame-interaction"
-                                    class="h-10 w-full rounded-md border border-transparent bg-suspense-aurora px-4 font-noto-sans text-sm font-normal not-italic text-blue-night outline-none ring-0 placeholder:text-blue-night/45 focus:border-transparent focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0"
+                                    class="h-11 w-full rounded-md border border-transparent bg-suspense-aurora px-4 font-noto-sans text-base font-normal not-italic text-blue-night outline-none ring-0 placeholder:text-blue-night/45 focus:border-transparent focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0"
                                     bind:value={enigmagameContent}
                                     placeholder=""
                                     disabled={!enigmagame.data.participation?.can_interact || enigmagameSubmitting}
@@ -225,7 +226,7 @@
                                         type="button"
                                         variant="accent"
                                         size="sm"
-                                        class="min-h-7 rounded-sm px-3 py-1 text-xs"
+                                        class="min-h-8 rounded-sm px-3 py-1 text-sm"
                                         loading={enigmagameSubmitting === "final_answer"}
                                         disabled={!enigmagameContent.trim() || enigmagameSubmitting || !enigmagame.data.participation?.can_interact}
                                         on:click={() => submitEnigmaGameInteraction("final_answer")}
@@ -236,7 +237,7 @@
                                         type="button"
                                         variant="accent"
                                         size="sm"
-                                        class="min-h-7 rounded-sm px-3 py-1 text-xs"
+                                        class="min-h-8 rounded-sm px-3 py-1 text-sm"
                                         loading={enigmagameSubmitting === "question"}
                                         disabled={!enigmagameContent.trim() || enigmagameSubmitting || !enigmagame.data.participation?.can_interact}
                                         on:click={() => submitEnigmaGameInteraction("question")}
@@ -246,7 +247,7 @@
                                 </div>
 
                                 {#if enigmaStatusMessage(enigmagame.data)}
-                                    <p class="font-noto-sans text-xs font-bold text-suspense-aurora">
+                                    <p class="font-noto-sans text-sm font-bold text-suspense-aurora">
                                         {enigmaStatusMessage(enigmagame.data)}
                                     </p>
                                 {/if}
@@ -254,15 +255,15 @@
                         </AuthGuard>
 
                         <div class="mt-7">
-                            <div class="mb-3 grid grid-cols-[auto_1fr] items-center gap-3 font-noto-sans text-xs font-bold uppercase italic text-orange-amber">
-                                <h4>Perguntas respondidas</h4>
-                                <span class="h-px bg-orange-amber"></span>
+                            <div class="mb-3 grid grid-cols-[auto_1fr] items-center gap-3 font-noto-sans text-sm font-bold uppercase italic text-orange-amber [[data-public-theme=light]_&]:text-[#000036]">
+                                <h4>Quadro de Evidências</h4>
+                                <span class="h-px bg-orange-amber [[data-public-theme=light]_&]:bg-[#000036]"></span>
                             </div>
 
                             {#if answeredEnigmaInteractions.length}
                                 <div class="public-themed-scrollbar grid max-h-60 gap-2 overflow-y-auto pr-1">
                                     {#each answeredEnigmaInteractions as interaction (interaction.uuid)}
-                                        <article class="grid grid-cols-[minmax(0,1fr)_4rem] overflow-hidden rounded-md font-noto-sans text-sm font-normal">
+                                        <article class="grid grid-cols-[minmax(0,1fr)_4.5rem] overflow-hidden rounded-md font-noto-sans text-base font-normal">
                                             <p class="break-words bg-suspense-honeycream px-3 py-2 text-blue-night">
                                                 {interaction.content}
                                             </p>
@@ -273,7 +274,7 @@
                                     {/each}
                                 </div>
                             {:else}
-                                <p class="font-noto-sans text-sm font-normal text-suspense-aurora/60">
+                                <p class="font-noto-sans text-base font-normal text-suspense-aurora/60">
                                     Nenhuma pergunta respondida ainda.
                                 </p>
                             {/if}

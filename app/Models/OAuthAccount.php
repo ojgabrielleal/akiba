@@ -71,6 +71,11 @@ class OAuthAccount extends Model
         return $this->morphMany(Comment::class, 'author');
     }
 
+    public function podcastListens()
+    {
+        return $this->morphMany(PodcastListen::class, 'listener');
+    }
+
     public function pushSubscriptions()
     {
         return $this->morphMany(PushSubscription::class, 'notifiable');

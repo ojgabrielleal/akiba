@@ -43,6 +43,7 @@
         return ({
             enigmagame: "Enigma Otaku",
             song_request: "Pedidos musicais",
+            podcast: "Podcasts",
         })[source] ?? "Sem origem";
     }
 
@@ -50,6 +51,9 @@
         return ({
             "enigmagame.most_wins": "Pessoa que mais venceu enigmas",
             "song_request.most_requests": "Pessoa que mais fez pedidos",
+            "song_request.played_total": "Pedidos atendidos",
+            "podcast.all_listened": "Todos os podcasts ouvidos",
+            "podcast.listened_total": "Quantidade de podcasts ouvidos",
             "site.presence_window": "Presença no site durante a janela",
         })[trigger] ?? trigger;
     }
@@ -137,7 +141,7 @@
 
                                 <div class="min-w-0 pt-0.5">
                                     <div class="mb-2 flex min-h-5 flex-wrap items-center gap-1.5">
-                                        <Badge variant={item.type === "stealable" ? "review" : "accent"} size="sm">
+                                        <Badge variant={item.type === "stealable" ? "review" : item.type === "achievement" ? "success" : "accent"} size="sm">
                                             {item.type_label}
                                         </Badge>
                                         {#if !item.is_active}
@@ -174,6 +178,12 @@
                                         <dd class="truncate" title={triggerLabel(item.trigger)}>{triggerLabel(item.trigger)}</dd>
                                     </div>
                                 {/if}
+                                {#if item.threshold}
+                                    <div class="flex min-w-0 items-center gap-1.5 rounded-sm bg-blue-marinho/35 px-2 py-1.5">
+                                        <dt class="shrink-0 font-noto-sans font-black uppercase italic text-orange-amber">Meta:</dt>
+                                        <dd class="truncate">{item.threshold}</dd>
+                                    </div>
+                                {/if}
                                 {#if item.type === "scheduled"}
                                     <div class="flex min-w-0 items-center gap-1.5 rounded-sm bg-blue-marinho/35 px-2 py-1.5">
                                         <dt class="shrink-0 font-noto-sans font-black uppercase italic text-orange-amber">Janela:</dt>
@@ -194,7 +204,7 @@
         {:else}
             <EmptyState
                 title="Nenhum emblema cadastrado"
-                description="Crie emblemas fixos ou roubáveis para usar nas próximas integrações."
+                description="Crie emblemas concedidos, competitivos, de evento ou conquista para usar nas próximas integrações."
             />
         {/if}
     </Section>

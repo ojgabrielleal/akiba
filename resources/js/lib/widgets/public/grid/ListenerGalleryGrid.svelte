@@ -1,4 +1,6 @@
 <script>
+    import { Link } from "@inertiajs/svelte";
+
     import { MinimalEmptyState, Section } from "@/lib/components/public";
     import { publicAnimations } from "@/lib/constants/public/animation";
 
@@ -14,6 +16,8 @@
 
     const itemAlt = (item) => item.caption || item.listener_name || "Foto da galeria do ouvinte";
     const hasImage = (item) => item.image && item.image !== defaultPlaceholder;
+    const resolveCharacterName = (item) => item.caption || "Personagem Akiba";
+    const resolveArtistName = (item) => item.listener_name || "Ouvinte Akiba";
 
     const openLightbox = (item) => {
         if (!hasImage(item)) return;
@@ -54,29 +58,23 @@
             class="relative flex max-h-[94dvh] w-full max-w-7xl cursor-default items-center justify-center"
             role="dialog"
             aria-modal="true"
-            aria-label={`Foto da galeria enviada por ${selectedItem.listener_name || "Ouvinte Akiba"}`}
+            aria-label={`Arte da galeria enviada por ${resolveArtistName(selectedItem)}`}
         >
-            <figure class="relative max-h-[94dvh] max-w-full overflow-hidden rounded-md">
+            <figure class="flex max-h-[94dvh] w-fit max-w-full flex-col overflow-hidden rounded-md">
                 <img
                     src={selectedItem.image}
                     alt={itemAlt(selectedItem)}
-                    class="max-h-[94dvh] max-w-full object-contain"
+                    class="max-h-[calc(94dvh-6rem)] max-w-full object-contain"
                 />
 
-                <figcaption class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-blue-night via-blue-night/90 to-blue-night/0 px-4 pb-4 pt-16 font-noto-sans text-suspense-aurora sm:px-6 sm:pb-6">
-                    <div class="mx-auto max-w-3xl">
-                        <p class="text-xs font-black uppercase italic tracking-[0.18em] text-white">
-                            Enviado por:
-                        </p>
-                        <h3 class="break-words text-xl font-black uppercase italic leading-tight text-white sm:text-2xl">
-                            {selectedItem.listener_name || "Ouvinte Akiba"}
+                <figcaption class="w-full bg-[#0091FF] px-3 py-2 font-noto-sans text-white sm:px-4">
+                    <div class="mx-auto grid max-w-xl gap-0.5 text-center uppercase italic">
+                        <h3 class="break-words text-sm font-black leading-tight sm:text-base">
+                            {resolveCharacterName(selectedItem)}
                         </h3>
-
-                        {#if selectedItem.caption}
-                            <p class="mt-1 max-w-2xl break-words text-xs font-normal leading-5 text-white sm:text-sm">
-                                {selectedItem.caption}
-                            </p>
-                        {/if}
+                        <p class="break-words text-[0.65rem] font-extrabold leading-tight sm:text-xs">
+                            Por: {resolveArtistName(selectedItem)}
+                        </p>
                     </div>
                 </figcaption>
             </figure>
@@ -92,7 +90,7 @@
                     <button
                         type="button"
                         class={["group block w-full cursor-zoom-in overflow-hidden rounded-md text-left disabled:cursor-not-allowed disabled:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber", publicAnimations.cardInteractive]}
-                        aria-label={`Ver foto enviada por ${item.listener_name || "Ouvinte Akiba"} em tela cheia`}
+                        aria-label={`Ver arte enviada por ${resolveArtistName(item)} em tela cheia`}
                         disabled={!hasImage(item)}
                         on:click={() => openLightbox(item)}
                     >
@@ -108,7 +106,7 @@
                         </div>
                         <div class="flex min-h-12 items-center bg-orange-amber px-3 py-1.5 text-blue-night transition duration-300 ease-out group-hover:brightness-110 group-focus-visible:brightness-110 motion-reduce:transition-none">
                             <h3 class="line-clamp-1 font-noto-sans text-base font-black uppercase italic">
-                                Por: {item.listener_name || "Ouvinte Akiba"}
+                                Por: {resolveArtistName(item)}
                             </h3>
                         </div>
                     </button>
@@ -118,4 +116,16 @@
     {:else}
         <MinimalEmptyState title={emptyTitle} message={emptyMessage} />
     {/if}
+
+    <div class="mt-6 flex items-center justify-center gap-2 px-2 py-1 font-noto-sans not-italic uppercase">
+        <p class="text-center text-xs font-normal leading-none tracking-normal text-orange-citric not-italic lg:text-sm">
+            Sua arte também pode aparecer aqui
+        </p>
+        <Link
+            href="/contato"
+            class="inline-flex min-h-7 shrink-0 cursor-pointer items-center justify-center rounded-md bg-orange-amber px-3 py-1 font-noto-sans text-sm font-black leading-none text-blue-night uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 hover:brightness-105 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none"
+        >
+            Envie a sua arte
+        </Link>
+    </div>
 </Section>

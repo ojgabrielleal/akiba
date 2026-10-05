@@ -81,6 +81,10 @@ Route::middleware(['oauth.resolve', 'inertia'])->group(function () {
     Route::get('/podcast/{podcast:slug}', [PodcastController::class, 'read'])
         ->name('podcast.read');
 
+    Route::post('/podcast/{podcast:slug}/listen', [PodcastController::class, 'markAsListened'])
+        ->middleware('oauth')
+        ->name('podcast.listen.store');
+
     Route::post('/podcast/{podcast:slug}/comment', [PodcastController::class, 'storeComment'])
         ->middleware('oauth')
         ->name('podcast.comment.store');

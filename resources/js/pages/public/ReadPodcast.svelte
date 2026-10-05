@@ -1,7 +1,8 @@
 <script>
-    import { Link, page } from "@inertiajs/svelte";
+    import { Link, page, router } from "@inertiajs/svelte";
 
     import { Meta } from "@/lib/components/shared";
+    import { AuthGuard, Button } from "@/lib/components/public";
     import { Layout } from "@/lib/layouts/public";
     import { CommentSection } from "@/lib/widgets/public";
     import { publicAnimations } from "@/lib/constants";
@@ -19,6 +20,15 @@
 
         return `S${season}-EP${episode}`;
     };
+
+    function markPodcastAsListened() {
+        if (!item?.slug || item.listened) return;
+
+        router.post(`/podcast/${item.slug}/listen`, {}, {
+            preserveScroll: true,
+            only: ["podcast", "oauth"],
+        });
+    }
 
     function resolveSpotifyEmbedUrl(url) {
         if (!url) return null;
@@ -87,6 +97,28 @@
                     </a>
                 {/if}
 
+                <div class="mt-5 flex justify-center sm:justify-start">
+                    <AuthGuard
+                        {oauth}
+                        compact
+                        buttonLabel="Entre para marcar como ouvido"
+                        filters="filter-blue-night"
+                        buttonClass="text-blue-night"
+                        reason="podcast-listen"
+                    >
+                        <Button
+                            type="button"
+                            variant={item.listened ? "success" : "primary"}
+                            shape="pill"
+                            class="min-h-9 px-4 py-2 text-sm"
+                            disabled={item.listened}
+                            on:click={markPodcastAsListened}
+                        >
+                            {item.listened ? "Podcast ouvido" : "Marcar como ouvido"}
+                        </Button>
+                    </AuthGuard>
+                </div>
+
                 <CommentSection commentable={item} {oauth} {comments} commentBasePath={`/podcast/${item.slug}`} />
             </article>
 
@@ -105,7 +137,7 @@
                                             loading="lazy"
                                         />
                                     </div>
-                                    <h2 class="mt-2 line-clamp-4 font-noto-sans text-base font-black leading-tight text-orange-amber uppercase italic">
+                                    <h2 class="mt-2 line-clamp-4 font-noto-sans text-base font-black leading-tight text-orange-amber uppercase italic [[data-public-theme=light]_&]:text-[#000036]">
                                         {related.title}
                                     </h2>
                                 </Link>
