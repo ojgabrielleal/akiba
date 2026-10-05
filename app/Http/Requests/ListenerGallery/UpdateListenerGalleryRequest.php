@@ -25,6 +25,7 @@ class UpdateListenerGalleryRequest extends LoggedWebRequest
             'image' => 'nullable|image',
             'caption' => 'nullable|string|max:255',
             'listener_name' => 'nullable|string|max:255',
+            'character_name' => 'nullable|string|max:255',
         ];
     }
 
@@ -41,6 +42,8 @@ class UpdateListenerGalleryRequest extends LoggedWebRequest
             'caption.max' => 'A legenda deve ter no máximo 255 caracteres.',
             'listener_name.string' => 'O nome do ouvinte precisa ser um texto.',
             'listener_name.max' => 'O nome do ouvinte deve ter no máximo 255 caracteres.',
+            'character_name.string' => 'O nome do personagem precisa ser um texto.',
+            'character_name.max' => 'O nome do personagem deve ter no máximo 255 caracteres.',
         ];
     }
 }

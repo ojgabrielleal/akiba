@@ -35,6 +35,7 @@ class ListenerGalleryService
             'image' => $this->image->store('listener-gallery', $image),
             'caption' => $data['caption'] ?? null,
             'listener_name' => $data['listener_name'] ?? null,
+            'character_name' => $data['character_name'] ?? null,
         ]));
 
         $this->cache->invalidateMedia();
@@ -49,6 +50,7 @@ class ListenerGalleryService
                 'image' => $this->image->store('listener-gallery', $image, $listenerGallery->image),
                 'caption' => $data['caption'] ?? null,
                 'listener_name' => $data['listener_name'] ?? null,
+                'character_name' => $data['character_name'] ?? null,
             ]);
 
             if ($listenerGallery->isDirty()) {

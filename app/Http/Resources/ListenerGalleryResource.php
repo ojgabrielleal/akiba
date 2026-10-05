@@ -19,6 +19,7 @@ class ListenerGalleryResource extends JsonResource
             'image' => $this->image,
             'caption' => $this->caption,
             'listener_name' => $this->listener_name,
+            'character_name' => $this->character_name,
         ];
     }
 }

@@ -13,6 +13,7 @@
         image: null,
         caption: gallerySelected?.caption ?? null,
         listener_name: gallerySelected?.listener_name ?? null,
+        character_name: gallerySelected?.character_name ?? null,
     });
 
     const submit = () => {
@@ -54,6 +55,17 @@
             maxlength="255"
             bind:value={$form.listener_name}
             error={$form.errors.listener_name}
+        />
+    </FormField>
+    <FormField for="character_name" label="Apelido do ouvinte" error={$form.errors.character_name}>
+        <TextInput
+            variant="offcanvas"
+            id="character_name"
+            type="text"
+            name="character_name"
+            maxlength="255"
+            bind:value={$form.character_name}
+            error={$form.errors.character_name}
         />
     </FormField>
     <FormField for="caption" label="Legenda" error={$form.errors.caption}>

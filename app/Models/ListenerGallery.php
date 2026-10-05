@@ -16,6 +16,7 @@ class ListenerGallery extends Model
         'image',
         'caption',
         'listener_name',
+        'character_name',
     ];
 
     /**

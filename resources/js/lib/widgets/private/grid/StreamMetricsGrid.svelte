@@ -5,12 +5,13 @@
 
     $: ({ stream } = $page.props);
     $: streamData = stream ?? {};
+    $: currentSong = streamData.current_song ?? {};
 </script>
 
 <section class="container-page bg-blue-marinho">
     <div class="flex min-h-18 items-center border-t border-orange-amber py-2">
         <div class="flex w-full items-center justify-between gap-4">
-            <div class="flex min-w-0 items-center">
+            <div class="hidden min-w-0 items-center sm:flex">
                 <div class="hidden gap-2 items-end font-noto-sans text-orange-amber text-xl uppercase pr-6 border-r border-r-[rgba(229,231,235,0.3)] lg:flex">
                     <img
                         src="/svg/kbps.svg"
@@ -31,7 +32,7 @@
                     />
                     {streamData.status ?? "N/A"}
                 </div>
-                <div class="flex gap-2 items-end font-noto-sans text-orange-amber text-xl uppercase lg:px-6">
+                <div class="hidden gap-2 items-end font-noto-sans text-orange-amber text-xl uppercase px-6 border-r border-r-[rgba(229,231,235,0.3)] sm:flex lg:border-r-0">
                     <img
                         src="/svg/listeners.svg"
                         alt=""
@@ -42,7 +43,15 @@
                     {streamData.listeners ?? "N/A"} Ouvintes
                 </div>
             </div>
-            <div class="flex shrink-0 items-center gap-3">
+            <div class="flex min-w-0 flex-1 items-center justify-end gap-3">
+                <div class="min-w-0 text-right font-noto-sans uppercase italic">
+                    <p class="text-[0.65rem] font-black tracking-[0.12em] text-suspense-aurora/45">
+                        Tocando agora
+                    </p>
+                    <p class="truncate text-sm font-black text-suspense-aurora sm:text-base">
+                        {currentSong.music || "Estamos offline"}
+                    </p>
+                </div>
                 <div class="group relative flex h-11 w-11 items-center justify-center">
                     <button
                         type="button"

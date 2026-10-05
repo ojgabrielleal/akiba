@@ -2,7 +2,7 @@
     import { Link, page } from "@inertiajs/svelte";
 
     import { Meta } from "@/lib/components/shared";
-    import { EditorialTitle, MinimalEmptyState, Pagination } from "@/lib/components/public";
+    import { EditorialTitle, MaskIcon, MinimalEmptyState, Pagination } from "@/lib/components/public";
     import { Layout } from "@/lib/layouts/public";
     import { publicAnimations } from "@/lib/constants";
     import { resolvePlaceholderImage } from "@/lib/utils";
@@ -93,9 +93,19 @@
                                                 {episodeCode(podcast)}
                                             </span>
                                             <div class="public-podcast-divider hidden min-h-11 w-px bg-suspense-aurora/25 sm:block" aria-hidden="true"></div>
-                                            <h2 class="public-podcast-title max-w-3xl text-xl font-black italic leading-tight text-orange-amber [[data-public-theme=light]_&]:text-[#000036] sm:text-2xl lg:text-3xl">
-                                                {podcast.title}
-                                            </h2>
+                                            <div class="min-w-0 flex-1">
+                                                <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
+                                                    <h2 class="public-podcast-title max-w-3xl text-xl font-black italic leading-tight text-orange-amber [[data-public-theme=light]_&]:text-[#000036] sm:text-2xl lg:text-3xl">
+                                                        {podcast.title}
+                                                    </h2>
+                                                    {#if podcast.listened}
+                                                        <span class="inline-flex min-h-6 items-center gap-1.5 rounded-md bg-green-mint px-2 py-1 font-noto-sans text-[0.65rem] font-black uppercase italic leading-none text-blue-night" title="Podcast ouvido">
+                                                            <MaskIcon icon="/svg/headphones.svg" class="size-3.5 text-blue-night" />
+                                                            Ouvido
+                                                        </span>
+                                                    {/if}
+                                                </div>
+                                            </div>
                                         </div>
 
                                         {#if podcast.summary}

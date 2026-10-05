@@ -2,7 +2,7 @@
     import { Link, page, router } from "@inertiajs/svelte";
 
     import { Meta } from "@/lib/components/shared";
-    import { AuthGuard, Button } from "@/lib/components/public";
+    import { AuthGuard, MaskIcon } from "@/lib/components/public";
     import { Layout } from "@/lib/layouts/public";
     import { CommentSection } from "@/lib/widgets/public";
     import { publicAnimations } from "@/lib/constants";
@@ -97,25 +97,35 @@
                     </a>
                 {/if}
 
-                <div class="mt-5 flex justify-center sm:justify-start">
+                <div class="mt-6 flex flex-wrap items-center justify-center gap-2 px-2 py-1 font-noto-sans not-italic uppercase">
+                    <p class={[
+                        "text-center text-xs font-normal leading-none tracking-normal not-italic lg:text-sm",
+                        item.listened ? "text-green-mint" : "text-orange-citric",
+                    ]}>
+                        {item.listened ? "Boa, episódio na memória!" : "Já ouviu este episódio?"}
+                    </p>
                     <AuthGuard
                         {oauth}
                         compact
-                        buttonLabel="Entre para marcar como ouvido"
+                        buttonLabel="Entre para lembrar que já ouvi"
                         filters="filter-blue-night"
                         buttonClass="text-blue-night"
                         reason="podcast-listen"
                     >
-                        <Button
+                        <button
                             type="button"
-                            variant={item.listened ? "success" : "primary"}
-                            shape="pill"
-                            class="min-h-9 px-4 py-2 text-sm"
+                            class={[
+                                "inline-flex min-h-7 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-md px-3 py-1 font-noto-sans text-sm font-black leading-none text-blue-night uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 hover:brightness-105 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 active:translate-y-0 disabled:cursor-not-allowed motion-reduce:transform-none motion-reduce:transition-none",
+                                item.listened ? "bg-green-mint focus-visible:ring-green-mint" : "bg-orange-amber focus-visible:ring-orange-amber",
+                            ]}
                             disabled={item.listened}
+                            aria-label={item.listened ? "Podcast ouvido" : "Lembrar que já ouvi"}
+                            title={item.listened ? "Podcast ouvido" : "Lembrar que já ouvi"}
                             on:click={markPodcastAsListened}
                         >
-                            {item.listened ? "Podcast ouvido" : "Marcar como ouvido"}
-                        </Button>
+                            <MaskIcon icon="/svg/headphones.svg" class="size-4 text-blue-night" />
+                            {item.listened ? "Podcast ouvido" : "Lembrar que já ouvi"}
+                        </button>
                     </AuthGuard>
                 </div>
 

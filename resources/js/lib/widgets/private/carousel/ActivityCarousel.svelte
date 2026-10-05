@@ -48,7 +48,7 @@
             <Carousel label={title}>
                 {#each activities.data as item}
                 {@const canParticipate = can.participate && !item.confirmations.some((conf) => conf.uuid === user.uuid)}
-                <article class={["w-100 h-45 lg:w-116 shrink-0 rounded-md p-4 relative",
+                <article class={["w-100 h-50 lg:w-116 shrink-0 rounded-md p-4 relative",
                     { "bg-gradient-orange-morning-aurora": item.allows_confirmations },
                     { "bg-gradient-blue-cerulean-glow": !item.allows_confirmations },
                 ]}>
@@ -58,7 +58,7 @@
                     ]}>
                         {item.allows_confirmations ? item.title : item.author.nickname}
                     </div>
-                    <div class={["font-noto-sans text-sm line-clamp-3 mt-1",
+                    <div class={["font-noto-sans text-sm line-clamp-6 mt-1",
                         { "text-blue-marinho": item.allows_confirmations },
                         { "text-suspense-aurora": !item.allows_confirmations },
                     ]}>

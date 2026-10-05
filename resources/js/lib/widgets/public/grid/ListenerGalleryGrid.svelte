@@ -16,7 +16,7 @@
 
     const itemAlt = (item) => item.caption || item.listener_name || "Foto da galeria do ouvinte";
     const hasImage = (item) => item.image && item.image !== defaultPlaceholder;
-    const resolveCharacterName = (item) => item.caption || "Personagem Akiba";
+    const resolveCharacterName = (item) => item.character_name || item.caption || "Personagem Akiba";
     const resolveArtistName = (item) => item.listener_name || "Ouvinte Akiba";
 
     const openLightbox = (item) => {
