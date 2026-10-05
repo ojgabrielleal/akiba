@@ -41,7 +41,7 @@ class LocutionController extends Controller
     {
         return $this->onairFilter->filter([
             'live' => true,
-            'with' => 'program.host',
+            'with' => ['host', 'program.host'],
             'first' => true,
         ]);
     }
@@ -86,7 +86,7 @@ class LocutionController extends Controller
     {
         $onair = $this->getOnair();
         $user = $request->user();
-        $isCurrentHost = $onair?->program?->user_id === $user->id;
+        $isCurrentHost = $onair?->user_id === $user->id;
 
         abort_unless(
             $user->can('locution.finish.any') || ($isCurrentHost && $user->can('locution.finish')),

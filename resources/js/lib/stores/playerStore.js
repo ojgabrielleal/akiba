@@ -309,7 +309,7 @@ export const syncMediaSessionMetadata = (air, stream) => {
     const cover = stream.current_song?.cover;
     navigator.mediaSession.metadata = new MediaMetadata({
         title: stream.current_song?.music || "Rede Akiba",
-        artist: [air.program?.name, air.program?.host?.nickname].filter(Boolean).join(" - "),
+        artist: [air.program?.name, (air.host ?? air.program?.host)?.nickname].filter(Boolean).join(" - "),
         album: "Rede Akiba - O Paraíso dos Otakus",
         artwork: cover ? [{ src: cover, sizes: "192x192" }, { src: cover, sizes: "512x512" }] : [],
     });

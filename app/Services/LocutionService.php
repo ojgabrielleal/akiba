@@ -68,6 +68,7 @@ class LocutionService
     {
         $auto->onair()->create([
             'in_air' => true,
+            'user_id' => $auto->user_id,
             'execution_mode' => 'auto_dj',
             'phrase' => $this->finishRandomPhrase($auto),
             'allows_song_requests' => false,
@@ -128,8 +129,7 @@ class LocutionService
     {
         DB::transaction(function () use ($user, $program, $data) {
             $this->startFinishLiveOnairs();
-            $this->startAssignFreeProgram($program, $user);
-            $this->startStartProgram($program, $data);
+            $this->startStartProgram($program, $user, $data);
         });
 
         if (filter_var($data['send_notification'], FILTER_VALIDATE_BOOLEAN)) {
@@ -144,20 +144,10 @@ class LocutionService
         ]);
     }
 
-    private function startAssignFreeProgram(Program $program, User $user): void
-    {
-        if ($program->access_type !== 'free') {
-            return;
-        }
-
-        $program->update([
-            'user_id' => $user->id,
-        ]);
-    }
-
-    private function startStartProgram(Program $program, array $data): void
+    private function startStartProgram(Program $program, User $user, array $data): void
     {
         $program->onair()->create([
+            'user_id' => $user->id,
             'execution_mode' => 'live',
             'phrase' => [
                 'text' => $data['phrase']['text'],

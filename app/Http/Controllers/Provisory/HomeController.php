@@ -17,7 +17,7 @@ class HomeController extends Controller
     private function indexOnair()
     {
         return OnairResource::collection(
-            Onair::live()->with('program.host')->get()
+            Onair::live()->with(['host', 'program.host'])->get()
         );
     }
 

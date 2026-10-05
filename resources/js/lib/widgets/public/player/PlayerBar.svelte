@@ -27,7 +27,7 @@
     $: air = onair?.data?.[0] ?? {};
     $: currentSong = stream?.current_song ?? {};
     $: program = air?.program ?? {};
-    $: host = program?.host ?? {};
+    $: host = air?.host ?? program?.host ?? {};
     $: canRender = Boolean(onair?.data?.[0]);
     $: hasActiveHost = air?.execution_mode === "live";
     $: requestActionVisible = $player.playing && hasActiveHost;

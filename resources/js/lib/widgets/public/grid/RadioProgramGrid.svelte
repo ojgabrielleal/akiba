@@ -153,13 +153,13 @@
                                             Com:
                                         </span>
                                         <span class="block min-w-0 flex-1 truncate">
-                                            {item.host.nickname}
+                                            {item.host?.nickname ?? "Programa aberto"}
                                         </span>
                                     </div>
                                     <img
                                         class="w-36 aspect-square absolute right-0 bottom-0 object-cover object-top"
-                                        src={resolvePlaceholderImage(item.host.avatar, "avatar", item.host.gender)}
-                                        alt={item.host.nickname}
+                                        src={resolvePlaceholderImage(item.host?.avatar, "avatar", item.host?.gender)}
+                                        alt={item.host?.nickname ?? "Programa aberto"}
                                         loading="lazy"
                                     />
                                 </div>

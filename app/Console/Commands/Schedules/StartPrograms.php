@@ -96,6 +96,7 @@ class StartPrograms extends Command
         $schedule->update(['status' => 'completed']);
 
         $program->onair()->create([
+            'user_id' => $program->user_id,
             'execution_mode' => $program->execution_mode,
             'phrase' => $this->selectPhrase($program),
             'allows_song_requests' => false,
@@ -114,6 +115,7 @@ class StartPrograms extends Command
         if(!$autoDj) return;
 
         $autoDj->onair()->create([
+            'user_id' => $autoDj->user_id,
             'execution_mode' => 'auto_dj',
             'phrase' => $this->selectPhrase($autoDj),
             'allows_song_requests' => false,

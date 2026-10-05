@@ -23,7 +23,7 @@ class StreamController extends Controller
     {
         $stream = $this->stream->data();
 
-        $onair = Onair::live()->with('program.host')->get();
+        $onair = Onair::live()->with(['host', 'program.host'])->get();
 
         $onair->each(function ($item) use ($stream) {
             $item->streaming_data = $stream ?? [];

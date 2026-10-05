@@ -56,7 +56,7 @@ class ProgramService
     private function storeStoreProgram(User $responsible, array $data, ?UploadedFile $image = null): Program
     {
         return Program::create([
-            'user_id' => $responsible->id,
+            'user_id' => $this->resolveProgramHostId($responsible, $data),
             'name' => $data['name'],
             'image' => $this->image->store('programs', $image),
             'access_type' => $data['execution_mode'] === 'auto_dj' ? null : $data['access_type'],
@@ -64,6 +64,15 @@ class ProgramService
             'is_default_auto_dj' => filter_var($data['is_default_auto_dj'] ?? false, FILTER_VALIDATE_BOOLEAN),
             'phrases' => $data['phrases'] ?? [],
         ]);
+    }
+
+    private function resolveProgramHostId(User $responsible, array $data): ?int
+    {
+        if (($data['execution_mode'] ?? null) === 'live' && ($data['access_type'] ?? null) === 'free') {
+            return null;
+        }
+
+        return $responsible->id;
     }
 
     private function storeStoreAirtimes(Program $program, array $data): void
@@ -146,7 +155,7 @@ class ProgramService
     private function updateUpdateProgram(Program $program, User $responsible, array $data, ?UploadedFile $image = null): void
     {
         $program->fill([
-            'user_id' => $responsible->id,
+            'user_id' => $this->resolveProgramHostId($responsible, $data),
             'name' => $data['name'],
             'image' => $this->image->store('programs', $image, $program->image),
             'access_type' => $data['execution_mode'] === 'auto_dj' ? null : $data['access_type'],

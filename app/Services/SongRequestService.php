@@ -96,7 +96,7 @@ class SongRequestService
     private function storeAcceptingSongRequestsOnair(): Onair
     {
         return Onair::acceptingSongRequests()
-            ->with('program.host')
+            ->with(['host', 'program.host'])
             ->firstOrFail();
     }
 
@@ -154,10 +154,10 @@ class SongRequestService
 
     private function storeNotifyCurrentLocutor(SongRequest $songRequest): void
     {
-        $songRequest->loadMissing(['music.anime', 'onair.program.host', 'requester']);
+        $songRequest->loadMissing(['music.anime', 'onair.host', 'onair.program.host', 'requester']);
 
         app(PushNotificationService::class)->sendToUserOrAll(
-            $songRequest->onair?->program?->host,
+            $songRequest->onair?->host ?? $songRequest->onair?->program?->host,
             [
                 'title' => $songRequest->music ? 'Novo pedido chegou!' : 'Novo recado chegou!',
                 'body' => $songRequest->music

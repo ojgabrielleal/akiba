@@ -58,7 +58,7 @@ class ReportsController extends Controller
         return OnairResource::collection(
             $this->onairFilter->filter([
                 'execution_modes' => ['live', 'scheduled'],
-                'with' => ['program.host'],
+                'with' => ['host', 'program.host'],
                 'paginate' => 5,
             ])
         );
@@ -115,12 +115,16 @@ class ReportsController extends Controller
     private function locutorMaisAtivo(): ?array
     {
         $transmissoes = $this->onairFilter->filter([
-            'with' => ['program.host'],
+            'with' => ['host', 'program.host'],
         ]);
 
         $ranking = $transmissoes
-            ->filter(fn (Onair $onair) => $onair->program?->host !== null && ! $onair->program->host->is_virtual)
-            ->groupBy(fn (Onair $onair) => $onair->program->user_id)
+            ->filter(function (Onair $onair) {
+                $host = $onair->host ?? $onair->program?->host;
+
+                return $host !== null && ! $host->is_virtual;
+            })
+            ->groupBy(fn (Onair $onair) => $onair->user_id ?? $onair->program?->user_id)
             ->sortByDesc(fn ($onair) => $onair->count())
             ->first();
 
@@ -128,8 +132,10 @@ class ReportsController extends Controller
             return null;
         }
 
+        $host = $ranking->first()->host ?? $ranking->first()->program->host;
+
         return [
-            'usuario' => UserResource::make($ranking->first()->program->host)
+            'usuario' => UserResource::make($host)
                 ->format('summary')
                 ->resolve(request()),
             'total' => $ranking->count(),

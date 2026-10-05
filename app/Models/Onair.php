@@ -16,6 +16,7 @@ class Onair extends Model
         'uuid',
         'in_air',
         'program_id',
+        'user_id',
         'phrase',
         'execution_mode',
         'icon',
@@ -78,6 +79,11 @@ class Onair extends Model
     public function program()
     {
         return $this->belongsTo(Program::class, 'program_id');
+    }
+
+    public function host()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function songRequests()

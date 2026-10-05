@@ -29,7 +29,7 @@ class ProgramResource extends JsonResource
             'execution_mode' => $this->execution_mode,
             'is_default_auto_dj' => $this->is_default_auto_dj,
             'phrases' => $this->phrases ?? [],
-            'host' => UserResource::make($this->host)->format('summary'),
+            'host' => $this->host ? UserResource::make($this->host)->format('summary') : null,
             'airtimes' => ProgramAirtimeResource::collection($this->programAirtimes),
             'schedules' => ProgramScheduleResource::collection($this->schedules),
         ];

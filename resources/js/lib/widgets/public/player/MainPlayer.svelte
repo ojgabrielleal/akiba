@@ -81,9 +81,9 @@
             image: air?.program?.image,
         },
         host: {
-            nickname: air?.program?.host?.nickname,
-            avatar: air?.program?.host?.avatar,
-            gender: air?.program?.host?.gender,
+            nickname: air?.host?.nickname ?? air?.program?.host?.nickname,
+            avatar: air?.host?.avatar ?? air?.program?.host?.avatar,
+            gender: air?.host?.gender ?? air?.program?.host?.gender,
         },
         execution_mode: air?.execution_mode,
         current_song: {

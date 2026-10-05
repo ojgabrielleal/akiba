@@ -3,6 +3,7 @@
 namespace App\Http\Resources\Onair;
 
 use App\Http\Resources\Program\ProgramResource;
+use App\Http\Resources\User\UserResource;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -29,6 +30,7 @@ class OnairResource extends JsonResource
             'created_at' => $this->created_at
                 ->setTimezone('America/Sao_Paulo')
                 ->format('d/m/Y ~ H:i'),
+            'host' => ($host = $this->host ?? $this->program?->host) ? UserResource::make($host)->format('summary') : null,
             'program' => ProgramResource::make($this->program),
         ];
     }

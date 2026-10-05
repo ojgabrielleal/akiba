@@ -37,7 +37,7 @@ class HandleInertiaRequestsMiddleware extends Middleware
             'onair' => fn () => OnairResource::collection(
                 app(OnairService::class)->filter([
                     'live' => true,
-                    'with' => 'program.host',
+                    'with' => ['host', 'program.host'],
                 ])
             ),
             'stream' => fn () => (new StreamService)->data(),

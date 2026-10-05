@@ -35,7 +35,7 @@
     {/if}
 </Layout>
 
-{#if activeOnair?.execution_mode === "live" && activeOnair.program.host.uuid !== user.uuid}
+{#if activeOnair?.execution_mode === "live" && (activeOnair.host ?? activeOnair.program.host)?.uuid !== user.uuid}
     <div transition:fade={{ duration: 300 }} class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-blue-marinho/85 px-3 py-4 font-noto-sans backdrop-blur-md sm:px-5" role="dialog" aria-modal="true" aria-labelledby="live-lock-title" tabindex="-1">
         <div class="relative w-full max-w-lg overflow-hidden rounded-md border border-blue-skywave/20 bg-blue-ocean shadow-[0_1.25rem_4rem_rgba(0,0,0,0.35)]">
             <div class="absolute inset-x-0 top-0 h-1 bg-orange-citric" aria-hidden="true"></div>
@@ -46,7 +46,7 @@
                     <div class="relative z-10 mx-auto w-fit">
                         <div class="size-19 overflow-hidden rounded-md border-2 border-orange-citric bg-blue-marinho shadow-[0_0_0_0.25rem_rgba(0,0,20,0.16)] sm:size-20">
                             <img
-                                src={resolvePlaceholderImage(activeOnair.program.host.avatar, "avatar", activeOnair.program.host.gender)}
+                                src={resolvePlaceholderImage((activeOnair.host ?? activeOnair.program.host).avatar, "avatar", (activeOnair.host ?? activeOnair.program.host).gender)}
                                 alt=""
                                 class="h-full w-full object-cover object-top"
                             />
@@ -73,7 +73,7 @@
                                 {activeOnair.program.name}
                             </h2>
                             <p class="mt-1 truncate text-sm font-bold text-blue-skywave">
-                                DJ {activeOnair.program.host.nickname}
+                                DJ {(activeOnair.host ?? activeOnair.program.host).nickname}
                             </p>
                         </div>
                     </div>
@@ -81,11 +81,11 @@
                     <div class="mt-4 rounded-md border border-blue-skywave/15 bg-blue-marinho/35 px-4 py-3">
                         <p class="text-sm leading-relaxed text-suspense-aurora/82">
                             Não é possível começar um novo programa enquanto
-                            {activeOnair.program.host.gender === "male" ? "o" : "a"} DJ
+                            {(activeOnair.host ?? activeOnair.program.host).gender === "male" ? "o" : "a"} DJ
                             <span class="font-extrabold text-suspense-aurora">
-                                {activeOnair.program.host.nickname}
+                                {(activeOnair.host ?? activeOnair.program.host).nickname}
                             </span>
-                            está ao vivo. Aguarde {activeOnair.program.host.gender === "male" ? "ele" : "ela"} encerrar o programa.
+                            está ao vivo. Aguarde {(activeOnair.host ?? activeOnair.program.host).gender === "male" ? "ele" : "ela"} encerrar o programa.
                         </p>
                     </div>
 

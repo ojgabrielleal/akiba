@@ -110,14 +110,14 @@
                                     Com:
                                 </span>
                                 <span class="block min-w-0 flex-1 truncate">
-                                    {item.host.nickname}
+                                    {item.host?.nickname ?? "Livre"}
                                 </span>
                             </div>
                             <div class={["z-10 absolute bottom-2 right-22 px-2 rounded-xl float-end text-center text-[0.6rem] text-suspense-aurora font-noto-sans font-extrabold italic uppercase",
-                                {'bg-neutral-gray': item.host.is_virtual},
-                                {'bg-green-mint': !item.host.is_virtual}
+                                {'bg-neutral-gray': item.host?.is_virtual ?? true},
+                                {'bg-green-mint': item.host && !item.host.is_virtual}
                             ]}>
-                                {item.host.is_virtual ? "Robô" : 'Humano'}
+                                {item.host?.is_virtual ? "Robô" : item.host ? 'Humano' : 'Aberto'}
                             </div>
                             <div class="flex gap-1 absolute bottom-3 right-4 z-10">
                                 {#if can.deactivate}
@@ -142,8 +142,8 @@
                             </div>
                             <img
                                 class="w-36 aspect-square absolute right-0 bottom-0 object-cover object-top"
-                                src={resolvePlaceholderImage(item.host.avatar, "avatar", item.host.gender)}
-                                alt={item.host.nickname}
+                                src={resolvePlaceholderImage(item.host?.avatar, "avatar", item.host?.gender)}
+                                alt={item.host?.nickname ?? "Livre"}
                                 loading="lazy"
                             />
                         </div>
