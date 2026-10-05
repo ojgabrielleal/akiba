@@ -66,17 +66,17 @@
                                     <div class="size-10 shrink-0 overflow-hidden rounded-full border-2 border-suspense-aurora bg-suspense-aurora shadow">
                                         <img
                                             src={resolvePlaceholderImage(
-                                                (item.host ?? item.program.host).avatar,
+                                                item.host.avatar,
                                                 "avatar",
-                                                (item.host ?? item.program.host).gender,
+                                                item.host.gender,
                                             )}
-                                            alt={`Avatar de ${(item.host ?? item.program.host).nickname}`}
+                                            alt={`Avatar de ${item.host.nickname}`}
                                             class="h-full w-full object-cover object-top scale-125"
                                             loading="lazy"
                                         />
                                     </div>
                                     <span class="max-w-28 truncate">
-                                        {(item.host ?? item.program.host).nickname}
+                                        {item.host.nickname}
                                     </span>
                                 </div>
                             </td>
