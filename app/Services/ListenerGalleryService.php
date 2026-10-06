@@ -15,7 +15,6 @@ class ListenerGalleryService
 {
     public function __construct(
         private ImageProcess $image,
-        private CacheService $cache,
     ) {}
 
     public function destroy(ListenerGallery $listenerGallery): void
@@ -24,8 +23,6 @@ class ListenerGalleryService
             $this->image->delete($listenerGallery->image);
             $listenerGallery->delete();
         });
-
-        $this->cache->invalidateMedia();
     }
 
     public function store(User $user, array $data, UploadedFile $image): ListenerGallery
@@ -37,8 +34,6 @@ class ListenerGalleryService
             'listener_name' => $data['listener_name'] ?? null,
             'character_name' => $data['character_name'] ?? null,
         ]));
-
-        $this->cache->invalidateMedia();
 
         return $listenerGallery;
     }
@@ -59,8 +54,6 @@ class ListenerGalleryService
 
             return $listenerGallery;
         });
-
-        $this->cache->invalidateMedia();
 
         return $listenerGallery;
     }

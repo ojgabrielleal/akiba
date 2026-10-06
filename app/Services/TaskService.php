@@ -12,7 +12,6 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class TaskService
 {
     public function __construct(
-        private CacheService $cache,
     ) {}
 
     public function complete(Task $task): Task
@@ -25,8 +24,6 @@ class TaskService
             return $task;
         });
 
-        $this->cache->invalidateTasks();
-
         return $task;
     }
 
@@ -38,9 +35,6 @@ class TaskService
             return $task;
         });
 
-        $this->cache->invalidateTasks();
-        $this->cache->invalidateTrash();
-
         return $task;
     }
 
@@ -51,8 +45,6 @@ class TaskService
 
             return $task;
         });
-
-        $this->cache->invalidateTasks();
 
         return $task;
     }
@@ -67,8 +59,6 @@ class TaskService
                 'dead_line' => $data['dead_line'],
             ]);
         });
-
-        $this->cache->invalidateTasks();
 
         return $task;
     }
@@ -89,8 +79,6 @@ class TaskService
 
             return $task;
         });
-
-        $this->cache->invalidateTasks();
 
         return $task;
     }

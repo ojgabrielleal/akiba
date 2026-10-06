@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Private;
 use App\Services\ListenerGalleryService;
 use App\Services\PollService;
 use App\Services\EnigmaGameService;
-use App\Services\CacheService;
 
 use App\Http\Controllers\Concerns\ResolvesAuthorizedProps;
 use App\Http\Controllers\Controller;
@@ -44,18 +43,17 @@ class MediaController extends Controller
         private ListenerGalleryService $listenerGalleryFilter,
         private PollService $pollFilter,
         private EnigmaGameService $enigmagameFilter,
-        private CacheService $cache,
     ) {}
 
     private function indexPolls()
     {
         return $this->whenCanViewAny(Poll::class,
             fn () => PollResource::collection(
-                $this->cache->remember($this->mediaCacheKey('polls'), fn () => $this->pollFilter->filter([
+                $this->pollFilter->filter([
                     'active' => true,
                     'with_count' => 'votes',
                     'with' => $this->pollRelations(),
-                ]), null, ['polls'])
+                ])
             ),
         );
     }
@@ -64,12 +62,12 @@ class MediaController extends Controller
     {
         return $this->whenCanViewAny(Poll::class,
             function () {
-                $poll = $this->cache->remember($this->mediaCacheKey('latest-poll'), fn () => $this->pollFilter->filter([
+                $poll = $this->pollFilter->filter([
                     'open' => true,
                     'with_count' => 'votes',
                     'with' => $this->pollRelations(),
                     'first' => true,
-                ]), null, ['polls']);
+                ]);
 
                 return $poll ? PollResource::make($poll) : null;
             },
@@ -80,12 +78,7 @@ class MediaController extends Controller
     {
         return $this->whenCanViewAny(ListenerGallery::class,
             fn () => ListenerGalleryResource::collection(
-                $this->cache->remember(
-                    $this->mediaCacheKey('listener-galleries', ['page' => request()->query('page', 1)]),
-                    fn () => $this->listenerGalleryFilter->filter(['paginate' => 20]),
-                    null,
-                    ['media']
-                )
+                $this->listenerGalleryFilter->filter(['paginate' => 20])
             ),
         );
     }
@@ -94,25 +87,9 @@ class MediaController extends Controller
     {
         return $this->whenCanViewAny(EnigmaGame::class,
             fn () => EnigmaGameResource::collection(
-                $this->cache->remember(
-                    $this->mediaCacheKey('enigmagames'),
-                    fn () => $this->enigmagameFilter->filter(['with' => ['author', 'interactions.participant', 'interactions.responder']]),
-                    null,
-                    ['enigmagames']
-                )
+                $this->enigmagameFilter->filter(['with' => ['author', 'interactions.participant', 'interactions.responder']])
             ),
         );
-    }
-
-    private function mediaCacheKey(string $scope, array $filters = []): array
-    {
-        return [
-            'panel',
-            'media',
-            $scope,
-            request()->user()->uuid,
-            $filters,
-        ];
     }
 
     private function pollRelations(): array

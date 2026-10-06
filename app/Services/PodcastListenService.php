@@ -11,7 +11,6 @@ class PodcastListenService
 {
     public function __construct(
         private BadgeService $badges,
-        private CacheService $cache,
     ) {}
 
     public function markListened(Podcast $podcast, Model $listener): PodcastListen
@@ -27,7 +26,6 @@ class PodcastListenService
         });
 
         $this->badges->awardPodcastListenAchievements($listener);
-        $this->cache->invalidatePodcasts($podcast);
 
         return $listen;
     }

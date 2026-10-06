@@ -15,7 +15,6 @@ use App\Models\PollOption;
 use App\Models\EnigmaGame;
 use App\Http\Requests\EnigmaGame\StoreEnigmaGameInteractionRequest;
 use App\Http\Resources\EnigmaGameResource;
-use App\Services\CacheService;
 use App\Support\AuthenticatedMember;
 use Illuminate\Http\Request;
 
@@ -26,13 +25,12 @@ class MediaController extends Controller
         private PollService $pollFilter,
         private PostService $postFilter,
         private EnigmaGameService $enigmagameFilter,
-        private CacheService $cache,
     ) {}
 
     private function indexEvents()
     {
         return PostResource::collection(
-            $this->cache->remember(['media', 'events', now()->toDateString()], fn () => $this->postFilter->filter([
+            $this->postFilter->filter([
                 'user' => request()->user(),
                 'active' => true,
                 'status' => 'published',
@@ -42,24 +40,24 @@ class MediaController extends Controller
                 'order_direction' => 'asc',
                 'limit' => 4,
                 'ignore_authorization' => true,
-            ]), null, ['events'])
+            ])
         )->format('home-list');
     }
 
     private function indexListenerGallery()
     {
         return ListenerGalleryResource::collection(
-            $this->cache->remember(['media', 'listener-gallery'], fn () => $this->listenerGalleryFilter->filter([
+            $this->listenerGalleryFilter->filter([
                 'order_by' => 'created_at',
                 'order_direction' => 'desc',
                 'limit' => 5,
-            ]), null, ['media'])
+            ])
         );
     }
 
     private function indexLatestPoll()
     {
-        $poll = $this->cache->remember(['media', 'latest-poll'], fn () => $this->pollFilter->filter([
+        $poll = $this->pollFilter->filter([
             'active' => true,
             'open' => true,
             'with' => [
@@ -70,7 +68,7 @@ class MediaController extends Controller
             'order_by' => 'created_at',
             'order_direction' => 'desc',
             'first' => true,
-        ]), null, ['polls']);
+        ]);
 
         return $poll ? PollResource::make($poll) : null;
     }
@@ -78,7 +76,7 @@ class MediaController extends Controller
     private function indexPolls()
     {
         return PollResource::collection(
-            $this->cache->remember(['media', 'polls'], fn () => $this->pollFilter->filter([
+            $this->pollFilter->filter([
                 'active' => true,
                 'open' => true,
                 'with' => [
@@ -88,7 +86,7 @@ class MediaController extends Controller
                 'with_count' => 'votes',
                 'order_by' => 'created_at',
                 'order_direction' => 'desc',
-            ]), null, ['polls'])
+            ])
         );
     }
 
@@ -136,7 +134,7 @@ class MediaController extends Controller
             'listenerGallery' => $this->indexListenerGallery(),
             'polls' => $this->indexPolls(),
             'latestPoll' => $this->indexLatestPoll(),
-            'enigmagame' => ($enigmagame = $this->cache->remember(['media', 'active-enigmagame'], fn () => $this->enigmagameFilter->active(), null, ['enigmagames'])) ? EnigmaGameResource::make($enigmagame) : null,
+            'enigmagame' => ($enigmagame = $this->enigmagameFilter->active()) ? EnigmaGameResource::make($enigmagame) : null,
         ]);
     }
 }

@@ -6,7 +6,7 @@ use App\Services\OnairService;
 use App\Http\Resources\Onair\OnairResource;
 use App\Integrations\StreamService;
 
-use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\File;
 use Illuminate\Http\Request;
 
 use Inertia\Middleware;
@@ -45,7 +45,9 @@ class HandleInertiaRequestsMiddleware extends Middleware
             'push' => [
                 'vapid_public_key' => config('services.webpush.public_key'),
             ],
-            'publicSiteVersion' => fn () => Cache::get('akiba:public-site-version', 'provisory'),
+            'publicSiteVersion' => fn () => File::exists(storage_path('app/public-site-version.txt'))
+                ? trim((string) File::get(storage_path('app/public-site-version.txt')))
+                : 'provisory',
         ]);
     }
 }

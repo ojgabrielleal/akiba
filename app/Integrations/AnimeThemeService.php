@@ -5,7 +5,6 @@ namespace App\Integrations;
 use App\Models\Anime;
 use App\Models\Music;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
@@ -36,61 +35,53 @@ class AnimeThemeService
             ];
         }
 
-        $cacheKey = 'animethemes.musics.v2.' . md5($query);
+        $response = Http::timeout(5)->withOptions([
+            'verify' => false,
+        ])->get("{$this->baseUrl}/search", [
+            'q' => $query,
+            'include' => [
+                'animetheme' => 'anime.images,song.artists',
+            ],
+        ]);
 
-        $externalResults = Cache::get($cacheKey);
+        if ($response->failed()) {
+            Log::warning('AnimeTheme API is not service' . $response->status());
 
-        if (! $externalResults) {
-            $response = Http::timeout(5)->withOptions([
-                'verify' => false,
-            ])->get("{$this->baseUrl}/search", [
-                'q' => $query,
-                'include' => [
-                    'animetheme' => 'anime.images,song.artists',
-                ],
-            ]);
+            return [
+                'results' => $localResults->values(),
+                'api_available' => false,
+            ];
+        }
 
-            if ($response->failed()) {
-                Log::warning('AnimeTheme API is not service' . $response->status());
+        $data = $response->json();
+
+        $externalResults = collect($data['search']['animethemes'] ?? [])
+            ->filter(fn ($item) => isset($item['anime']))
+            ->groupBy('anime.id')
+            ->map(function ($themes) {
+                $anime = $themes->first()['anime'];
 
                 return [
-                    'results' => $localResults->values(),
-                    'api_available' => false,
+                    'anime' => $anime['name'],
+                    'banner' => $this->animeImage($anime),
+                    'discography_status' => Anime::DISCOGRAPHY_UNKNOWN,
+                    'musics' => $themes->map(function ($music) {
+                        $type = $music['type'] ?? null;
+
+                        if (! in_array($type, ['OP', 'ED', 'OVA'], true)) {
+                            $type = 'OVA';
+                        }
+
+                        return [
+                            'type' => $type,
+                            'title' => $music['song']['title'] ?? null,
+                            'artists' => collect($music['song']['artists'] ?? [])->pluck('name')->join(', ') ?: 'Não informado',
+                            'is_manual' => false,
+                        ];
+                    })->filter(fn ($music) => filled($music['title']))->values(),
                 ];
-            }
-
-            $data = $response->json();
-
-            $externalResults = collect($data['search']['animethemes'] ?? [])
-                ->filter(fn ($item) => isset($item['anime']))
-                ->groupBy('anime.id')
-                ->map(function ($themes) {
-                    $anime = $themes->first()['anime'];
-
-                    return [
-                        'anime' => $anime['name'],
-                        'banner' => $this->animeImage($anime),
-                        'discography_status' => Anime::DISCOGRAPHY_UNKNOWN,
-                        'musics' => $themes->map(function ($music) {
-                            $type = $music['type'] ?? null;
-
-                            if (! in_array($type, ['OP', 'ED', 'OVA'], true)) {
-                                $type = 'OVA';
-                            }
-
-                            return [
-                                'type' => $type,
-                                'title' => $music['song']['title'] ?? null,
-                                'artists' => collect($music['song']['artists'] ?? [])->pluck('name')->join(', ') ?: 'Não informado',
-                                'is_manual' => false,
-                            ];
-                        })->filter(fn ($music) => filled($music['title']))->values(),
-                    ];
-                })
-                ->values();
-
-            Cache::put($cacheKey, $externalResults, now()->addHours(12));
-        }
+            })
+            ->values();
 
         $this->syncDiscographyStatus($externalResults);
 
@@ -102,21 +93,19 @@ class AnimeThemeService
 
     private function isAvailable(): bool
     {
-        return Cache::remember('animethemes.available', now()->addMinutes(2), function () {
-            try {
-                return Http::timeout(2)->withOptions([
-                    'verify' => false,
-                ])->get("{$this->baseUrl}/search", [
-                    'q' => 'naruto',
-                ])->successful();
-            } catch (\Throwable $exception) {
-                Log::warning('AnimeTheme API availability check failed', [
-                    'message' => $exception->getMessage(),
-                ]);
+        try {
+            return Http::timeout(2)->withOptions([
+                'verify' => false,
+            ])->get("{$this->baseUrl}/search", [
+                'q' => 'naruto',
+            ])->successful();
+        } catch (\Throwable $exception) {
+            Log::warning('AnimeTheme API availability check failed', [
+                'message' => $exception->getMessage(),
+            ]);
 
-                return false;
-            }
-        });
+            return false;
+        }
     }
 
     private function searchLocalMusics(string $query)
@@ -181,30 +170,32 @@ class AnimeThemeService
 
     private function syncDiscographyStatus($externalResults): void
     {
-        collect($externalResults)->each(function ($item) {
-            $animeName = $item['anime'] ?? null;
+        $results = collect($externalResults)
+            ->filter(fn ($item) => filled($item['anime'] ?? null))
+            ->mapWithKeys(fn ($item) => [Str::slug($item['anime']) => $item]);
 
-            if (! $animeName) {
-                return;
-            }
+        if ($results->isEmpty()) {
+            return;
+        }
 
-            $anime = Anime::where('slug', Str::slug($animeName))->first();
+        Anime::query()
+            ->whereIn('slug', $results->keys())
+            ->withCount(['musics as local_music_count' => fn ($query) => $query->where('is_manual', false)])
+            ->get()
+            ->each(function (Anime $anime) use ($results) {
+                $item = $results->get($anime->slug);
 
-            if (! $anime) {
-                return;
-            }
+                $externalTotal = collect($item['musics'] ?? [])->count();
+                $localTotal = $anime->local_music_count;
 
-            $externalTotal = collect($item['musics'] ?? [])->count();
-            $localTotal = $anime->musics()->where('is_manual', false)->count();
-
-            $anime->update([
-                'discography_status' => $externalTotal > 0 && $localTotal >= $externalTotal
-                    ? Anime::DISCOGRAPHY_COMPLETE
-                    : Anime::DISCOGRAPHY_PARTIAL,
-                'discography_checked_at' => now(),
-                'image' => $anime->image ?: ($item['banner'] ?? null),
-            ]);
-        });
+                $anime->update([
+                    'discography_status' => $externalTotal > 0 && $localTotal >= $externalTotal
+                        ? Anime::DISCOGRAPHY_COMPLETE
+                        : Anime::DISCOGRAPHY_PARTIAL,
+                    'discography_checked_at' => now(),
+                    'image' => $anime->image ?: ($item['banner'] ?? null),
+                ]);
+            });
     }
 
     private function animeImage(array $anime): ?string
@@ -224,10 +215,6 @@ class AnimeThemeService
 
         if ($query === '') return collect();
 
-        $cacheKey = 'animethemes.animes.v2.' . md5($query);
-
-        if (Cache::has($cacheKey)) return Cache::get($cacheKey);
-
         $response = Http::timeout(5)->withOptions([
             'verify' => false,
         ])->get("{$this->baseUrl}/search", [
@@ -244,7 +231,7 @@ class AnimeThemeService
 
         $data = $response->json();
 
-        $formatted = collect($data['search']['animethemes'] ?? [])
+        return collect($data['search']['animethemes'] ?? [])
             ->filter(fn ($item) => isset($item['anime']))
             ->map(fn ($item) => $item['anime'])
             ->unique(fn ($anime) => $anime['id'] ?? $anime['anime_id'] ?? $anime['slug'] ?? $anime['name'])
@@ -269,9 +256,5 @@ class AnimeThemeService
             })
             ->filter(fn ($anime) => filled($anime['anime_theme_list_id']) && filled($anime['name']))
             ->values();
-
-        Cache::put($cacheKey, $formatted, now()->addHours(12));
-
-        return $formatted;
     }
 }

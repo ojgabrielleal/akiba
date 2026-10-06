@@ -5,7 +5,6 @@ namespace App\Integrations;
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -107,24 +106,20 @@ class AnimeNewsFeedService
 
     private function latestFromSource(array $source, int $limit): Collection
     {
-        $cacheKey = 'anime.news.feed.' . $source['slug'] . '.' . $limit;
-
-        return Cache::remember($cacheKey, now()->addMinutes(20), function () use ($source, $limit) {
-            try {
-                if (($source['type'] ?? 'wordpress') === 'rss') {
-                    return $this->latestFromRssSource($source, $limit);
-                }
-
-                return $this->latestFromWordpressSource($source, $limit);
-            } catch (\Throwable $exception) {
-                Log::warning('Anime news feed request failed', [
-                    'source' => $source['slug'],
-                    'message' => $exception->getMessage(),
-                ]);
-
-                return collect();
+        try {
+            if (($source['type'] ?? 'wordpress') === 'rss') {
+                return $this->latestFromRssSource($source, $limit);
             }
-        });
+
+            return $this->latestFromWordpressSource($source, $limit);
+        } catch (\Throwable $exception) {
+            Log::warning('Anime news feed request failed', [
+                'source' => $source['slug'],
+                'message' => $exception->getMessage(),
+            ]);
+
+            return collect();
+        }
     }
 
     private function sourceLimit(array $source, int $limit): int

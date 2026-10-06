@@ -8,14 +8,11 @@ use Illuminate\Support\Facades\DB;
 class TrashService
 {
     public function __construct(
-        private CacheService $cache,
     ) {}
 
     public function destroy(Model $item): void
     {
         DB::transaction(fn () => $item->delete());
-
-        $this->cache->invalidateTrash();
     }
 
     public function reactivate(Model $item): Model
@@ -25,8 +22,6 @@ class TrashService
 
             return $item->refresh();
         });
-
-        $this->cache->invalidateTrash();
 
         return $item;
     }

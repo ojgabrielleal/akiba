@@ -15,13 +15,12 @@ class RoleService
 {
     public function __construct(
         private ImageProcess $image,
-        private CacheService $cache,
     ) {}
 
     public function destroy(Role $role): void
     {
         DB::transaction(function () use ($role) {
-            if ($role->members()->count() > 0) {
+            if ($role->members()->exists()) {
                 throw new RoleHasMembersException;
             }
 
@@ -30,8 +29,6 @@ class RoleService
             $role->delete();
             $this->image->delete($icon);
         });
-
-        $this->cache->invalidateRoles();
     }
 
     public function store(array $data): Role
@@ -42,8 +39,6 @@ class RoleService
 
             return $role;
         });
-
-        $this->cache->invalidateRoles();
 
         return $role;
     }
@@ -81,8 +76,6 @@ class RoleService
 
             return $role;
         });
-
-        $this->cache->invalidateRoles();
 
         return $role;
     }

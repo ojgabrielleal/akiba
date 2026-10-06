@@ -10,7 +10,6 @@ use App\Services\PermissionService;
 use App\Services\RoleService;
 use App\Services\TaskService;
 use App\Services\UserService;
-use App\Services\CacheService;
 
 use App\Http\Controllers\Concerns\ResolvesAuthorizedProps;
 use App\Http\Controllers\Controller;
@@ -72,17 +71,16 @@ class AdministrationController extends Controller
         private RepositoryService $repositoryFilter,
         private TaskService $taskFilter,
         private UserService $userFilter,
-        private CacheService $cache,
     ) {}
 
     private function indexRoles()
     {
         return $this->whenCanViewAny(Role::class,
             fn () => RoleResource::collection(
-                $this->cache->remember($this->adminCacheKey('roles'), fn () => $this->roleFilter->filter([
+                $this->roleFilter->filter([
                     'with_count' => 'members',
                     'with' => 'permissions',
-                ]), null, ['roles', 'users'])
+                ])
             ),
         );
     }
@@ -91,7 +89,7 @@ class AdministrationController extends Controller
     {
         return $this->whenCanViewAny(Role::class,
             fn () => PermissionResource::collection(
-                $this->cache->remember($this->adminCacheKey('permissions'), fn () => $this->permissionFilter->filter(), null, ['roles'])
+                $this->permissionFilter->filter()
             ),
         );
     }
@@ -100,11 +98,11 @@ class AdministrationController extends Controller
     {
         return $this->whenCanViewAny(Badge::class,
             fn () => BadgeResource::collection(
-                $this->cache->remember($this->adminCacheKey('badges'), fn () => $this->badgeFilter->filter([
+                $this->badgeFilter->filter([
                     'with_count' => ['assignments', 'activeAssignments'],
                     'order_by' => 'name',
                     'order_direction' => 'asc',
-                ]), null, ['badges'])
+                ])
             ),
         );
     }
@@ -152,10 +150,10 @@ class AdministrationController extends Controller
     {
         return $this->whenCanViewAny(Activity::class,
             fn () => ActivityResource::collection(
-                $this->cache->remember($this->adminCacheKey('activities'), fn () => $this->activityFilter->filter([
+                $this->activityFilter->filter([
                     'not_expired' => true,
                     'with' => ['author', 'confirmations'],
-                ]), null, ['activities'])
+                ])
             ),
         );
     }
@@ -164,10 +162,10 @@ class AdministrationController extends Controller
     {
         return $this->whenCanViewAny(Calendar::class,
             fn () => CalendarWeekResource::make(
-                $this->cache->remember($this->adminCacheKey('calendar'), fn () => $this->calendarFilter->filter([
+                $this->calendarFilter->filter([
                     'upcoming' => true,
                     'with' => ['activity', 'responsible'],
-                ]), null, ['calendar'])
+                ])
             ),
         );
     }
@@ -176,11 +174,11 @@ class AdministrationController extends Controller
     {
         return $this->whenCanViewAny(User::class,
             fn () => UserResource::collection(
-                $this->cache->remember($this->adminCacheKey('users'), fn () => $this->userFilter->filter([
+                $this->userFilter->filter([
                     'active' => true,
                     'virtual_last' => true,
                     'with' => ['roles'],
-                ]), null, ['users', 'roles'])
+                ])
             )->format('summary'),
         );
     }
@@ -189,7 +187,7 @@ class AdministrationController extends Controller
     {
         return $this->whenCanViewAny(Task::class,
             fn () => TaskResource::collection(
-                $this->cache->remember($this->adminCacheKey('tasks', ['page' => request()->query('page', 1)]), fn () => $this->taskFilter->filter([
+                $this->taskFilter->filter([
                     'active' => true,
                     'incomplete' => true,
                     'with' => ['responsible'],
@@ -198,7 +196,7 @@ class AdministrationController extends Controller
                     'then_order_by' => 'created_at',
                     'then_order_direction' => 'desc',
                     'paginate' => 5,
-                ]), null, ['tasks'])
+                ])
             ),
         );
     }
@@ -210,25 +208,14 @@ class AdministrationController extends Controller
         }
 
         return FormSubmissionResource::collection(
-            $this->cache->remember($this->adminCacheKey('form-submissions', ['page' => request()->query('page', 1)]), fn () => $this->formSubmissionFilter->filter([
+            $this->formSubmissionFilter->filter([
                 'with' => ['reviewer', 'comments.user'],
                 'status_order' => true,
                 'order_by' => 'created_at',
                 'order_direction' => 'desc',
                 'paginate' => 10,
-            ]), null, ['form-submissions'])
+            ])
         );
-    }
-
-    private function adminCacheKey(string $scope, array $filters = []): array
-    {
-        return [
-            'panel',
-            'administration',
-            $scope,
-            auth()->user()->uuid,
-            $filters,
-        ];
     }
 
     public function showUser(User $user)

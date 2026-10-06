@@ -11,7 +11,6 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class FormSubmissionService
 {
     public function __construct(
-        private CacheService $cache,
     ) {}
 
     public function review(FormSubmission $formSubmission, User $reviewer, string $status): FormSubmission
@@ -21,8 +20,6 @@ class FormSubmissionService
             'reviewed_by' => $reviewer->id,
             'reviewed_at' => now(),
         ]);
-
-        $this->cache->invalidateFormSubmissions();
 
         return $formSubmission;
     }
@@ -34,16 +31,12 @@ class FormSubmissionService
             'comment' => $comment,
         ]);
 
-        $this->cache->invalidateFormSubmissions();
-
         return $formSubmission;
     }
 
     public function destroy(FormSubmission $formSubmission): void
     {
         $formSubmission->delete();
-
-        $this->cache->invalidateFormSubmissions();
     }
 
     public function store(array $data): FormSubmission
@@ -59,8 +52,6 @@ class FormSubmissionService
             'subject' => $data['subject'] ?? null,
             'payload' => $data['payload'],
         ]);
-
-        $this->cache->invalidateFormSubmissions();
 
         return $formSubmission;
     }

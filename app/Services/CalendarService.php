@@ -13,7 +13,6 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class CalendarService
 {
     public function __construct(
-        private CacheService $cache,
     ) {}
 
     public function store(User $user, array $data): Calendar
@@ -26,8 +25,6 @@ class CalendarService
             'date' => $data['date'],
             'day_of_week' => Carbon::parse($data['date'])->dayOfWeek,
         ]));
-
-        $this->cache->invalidateCalendar();
 
         return $calendar;
     }
@@ -50,8 +47,6 @@ class CalendarService
 
             return $calendar;
         });
-
-        $this->cache->invalidateCalendar();
 
         return $calendar;
     }

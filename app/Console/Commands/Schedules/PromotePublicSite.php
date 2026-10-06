@@ -4,7 +4,6 @@ namespace App\Console\Commands\Schedules;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 
 class PromotePublicSite extends Command
@@ -23,7 +22,7 @@ class PromotePublicSite extends Command
         $this->promotePublicRoutes();
         $this->replaceSiteLinks();
         $this->deleteProvisoryFiles();
-        $this->clearLaravelCaches();
+        $this->clearCompiledLaravelFiles();
         $this->publishSiteVersion();
 
         $this->info($this->dryRun
@@ -123,17 +122,16 @@ class PromotePublicSite extends Command
         }
     }
 
-    private function clearLaravelCaches(): void
+    private function clearCompiledLaravelFiles(): void
     {
         if ($this->dryRun) {
-            $this->line('Would clear Laravel route, view, config and application caches.');
+            $this->line('Would clear Laravel route, view and config compiled files.');
             return;
         }
 
         Artisan::call('route:clear');
         Artisan::call('view:clear');
         Artisan::call('config:clear');
-        Artisan::call('cache:clear');
     }
 
     private function publishSiteVersion(): void
@@ -145,8 +143,14 @@ class PromotePublicSite extends Command
             return;
         }
 
-        Cache::forever('akiba:public-site-version', $version);
+        File::ensureDirectoryExists(storage_path('app'));
+        File::put($this->publicSiteVersionPath(), $version);
         $this->line("Published public site version: {$version}");
+    }
+
+    private function publicSiteVersionPath(): string
+    {
+        return storage_path('app/public-site-version.txt');
     }
 
     private function writeWhenChanged(string $path, string $contents, string $updated): void

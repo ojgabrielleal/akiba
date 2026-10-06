@@ -22,7 +22,6 @@ class BadgeService
 {
     public function __construct(
         private ImageProcess $image,
-        private CacheService $cache,
     ) {}
 
     public function store(array $data, ?UploadedFile $image = null): Badge
@@ -39,7 +38,6 @@ class BadgeService
         ]));
 
         $this->awardConfiguredFixedBadge($badge);
-        $this->cache->invalidateBadges();
 
         return $badge;
     }
@@ -66,7 +64,6 @@ class BadgeService
         });
 
         $this->awardConfiguredFixedBadge($badge);
-        $this->cache->invalidateBadges();
 
         return $badge;
     }
@@ -127,8 +124,6 @@ class BadgeService
                 $this->image->delete($image);
             }
         });
-
-        $this->cache->invalidateBadges();
     }
 
     public function awardFixed(string $code, Model $owner, ?string $reason = null, array $metadata = [], ?Model $awardedBy = null): BadgeAssignment

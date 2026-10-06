@@ -17,7 +17,6 @@ class ProgramService
 {
     public function __construct(
         private ImageProcess $image,
-        private CacheService $cache,
     ) {}
 
     public function deactivate(Program $program): Program
@@ -27,8 +26,6 @@ class ProgramService
 
             return $program;
         });
-
-        $this->cache->invalidateTrash();
 
         return $program;
     }
@@ -47,8 +44,6 @@ class ProgramService
 
             return $program;
         });
-
-        $this->cache->invalidateTrash();
 
         return $program;
     }
@@ -146,8 +141,6 @@ class ProgramService
 
             return $program;
         });
-
-        $this->cache->invalidateTrash();
 
         return $program;
     }

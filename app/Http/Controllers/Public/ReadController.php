@@ -16,14 +16,12 @@ use App\Http\Requests\Post\StorePostReactionRequest;
 use App\Http\Requests\Post\TogglePostLikeRequest;
 use App\Support\AuthenticatedMember;
 use Illuminate\Http\RedirectResponse;
-use App\Services\CacheService;
 
 class ReadController extends Controller
 {
     public function __construct(
         private PostService $postFilter,
         private CommentService $commentFilter,
-        private CacheService $cache,
     ) {}
 
     private function componentFor(Post $post): string
@@ -37,11 +35,11 @@ class ReadController extends Controller
 
     private function getPost(string $slug): Post
     {
-        return $this->cache->remember(['post', 'read', $slug], fn () => Post::query()
+        return Post::query()
             ->where('slug', $slug)
             ->with(['author', 'references', 'tags', 'reactions', 'likes', 'reviews.author'])
             ->withCount('likes')
-            ->firstOrFail(), null, ['posts']);
+            ->firstOrFail();
     }
 
     private function indexPost(Post $post)
@@ -71,7 +69,7 @@ class ReadController extends Controller
     private function indexRelatedPosts(Post $post)
     {
         return PostResource::collection(
-            $this->cache->remember(['post', 'related', $post->slug, $post->module, $post->tags->first()?->name], fn () => $this->postFilter->filter([
+            $this->postFilter->filter([
                 'user' => request()->user(),
                 'active' => true,
                 'status' => 'published',
@@ -82,7 +80,7 @@ class ReadController extends Controller
                 'limit' => 3,
                 'except' => $post,
                 'ignore_authorization' => true,
-            ]), 15, [$post->module === 'review' ? 'reviews' : ($post->module === 'event' ? 'events' : 'posts')])
+            ])
         )->format('home-list');
     }
 

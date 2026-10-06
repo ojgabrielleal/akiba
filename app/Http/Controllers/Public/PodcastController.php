@@ -17,14 +17,12 @@ use App\Http\Resources\CommentResource;
 use App\Http\Resources\PodcastResource;
 use App\Http\Requests\Comment\StoreCommentRequest;
 use App\Support\AuthenticatedMember;
-use App\Services\CacheService;
 
 class PodcastController extends Controller
 {
     public function __construct(
         private PodcastService $podcastFilter,
         private CommentService $commentFilter,
-        private CacheService $cache,
     ) {}
 
     public function render(Request $request): Response
@@ -34,14 +32,14 @@ class PodcastController extends Controller
 
         return Inertia::render('public/Podcasts', [
             'podcasts' => PodcastResource::collection(
-                $this->cache->remember(['podcasts', 'list', $sort, $request->query('page', 1)], fn () => $this->podcastFilter->filter([
+                $this->podcastFilter->filter([
                     'active' => true,
                     'with' => ['author'],
                     'with_count' => ['views'],
                     'order_by' => $sort === 'melhor-avaliados' ? 'views_count' : 'season',
                     'then_order_by' => 'episode',
                     'paginate' => 5,
-                ]), null, ['podcasts'])
+                ])
             ),
             'activeSort' => $sort,
         ]);
@@ -56,15 +54,15 @@ class PodcastController extends Controller
 
         return Inertia::render('public/ReadPodcast', [
             'podcast' => new PodcastResource(
-                $this->cache->remember(['podcasts', 'read', $podcast->slug], fn () => $podcast->load('author'), null, ['podcasts'])
+                $podcast->load('author')
             ),
             'comments' => CommentResource::collection($this->commentFilter->filter($podcast, $canModerate)),
             'relatedPodcasts' => PodcastResource::collection(
-                $this->cache->remember(['podcasts', 'related', $podcast->slug], fn () => $this->podcastFilter->filter([
+                $this->podcastFilter->filter([
                     'active' => true,
                     'except' => $podcast,
                     'limit' => 2,
-                ]), 15, ['podcasts'])
+                ])
             ),
         ]);
     }

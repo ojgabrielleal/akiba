@@ -18,7 +18,6 @@ class EnigmaGameService
 {
     public function __construct(
         private PushNotificationService $pushNotification,
-        private CacheService $cache,
         private ImageProcess $image,
         private BadgeService $badges,
     ) {}
@@ -41,8 +40,6 @@ class EnigmaGameService
 
             return $enigmagame;
         });
-
-        $this->cache->invalidateMysteries();
 
         return $enigmagame;
     }
@@ -67,8 +64,6 @@ class EnigmaGameService
             return $enigmagame;
         });
 
-        $this->cache->invalidateMysteries();
-
         return $enigmagame;
     }
 
@@ -84,16 +79,12 @@ class EnigmaGameService
             return $enigmagame;
         });
 
-        $this->cache->invalidateMysteries();
-
         return $enigmagame;
     }
 
     public function delete(EnigmaGame $enigmagame): void
     {
         DB::transaction(fn () => $enigmagame->delete());
-
-        $this->cache->invalidateMysteries();
     }
 
     public function deactivate(EnigmaGame $enigmagame): EnigmaGame
@@ -103,8 +94,6 @@ class EnigmaGameService
 
             return $enigmagame;
         });
-
-        $this->cache->invalidateMysteries();
 
         return $enigmagame;
     }
@@ -149,8 +138,6 @@ class EnigmaGameService
                 'content' => $data['content'],
             ]);
         });
-
-        $this->cache->invalidateMysteries();
 
         return $interaction;
     }
@@ -211,8 +198,6 @@ class EnigmaGameService
 
             return $interaction;
         });
-
-        $this->cache->invalidateMysteries();
 
         return $interaction;
     }

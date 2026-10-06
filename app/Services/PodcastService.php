@@ -15,7 +15,6 @@ class PodcastService
 {
     public function __construct(
         private ImageProcess $image,
-        private CacheService $cache,
     ) {}
 
     public function deactivate(Podcast $podcast): Podcast
@@ -25,9 +24,6 @@ class PodcastService
 
             return $podcast;
         });
-
-        $this->cache->invalidatePodcasts($podcast);
-        $this->cache->invalidateTrash();
 
         return $podcast;
     }
@@ -44,8 +40,6 @@ class PodcastService
             'description' => $data['description'],
             'audio' => $data['audio'],
         ]));
-
-        $this->cache->invalidatePodcasts($podcast);
 
         return $podcast;
     }
@@ -69,8 +63,6 @@ class PodcastService
 
             return $podcast;
         });
-
-        $this->cache->invalidatePodcasts($podcast);
 
         return $podcast;
     }

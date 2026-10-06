@@ -14,7 +14,6 @@ class RepositoryService
 {
     public function __construct(
         private ImageProcess $image,
-        private CacheService $cache,
     ) {}
 
     public function deactivate(Repository $repository): Repository
@@ -24,9 +23,6 @@ class RepositoryService
 
             return $repository;
         });
-
-        $this->cache->invalidateRepositories();
-        $this->cache->invalidateTrash();
 
         return $repository;
     }
@@ -39,8 +35,6 @@ class RepositoryService
             'image' => $this->image->store('repository', $image),
             'type' => $data['type'],
         ]));
-
-        $this->cache->invalidateRepositories();
 
         return $repository;
     }
@@ -61,8 +55,6 @@ class RepositoryService
 
             return $repository;
         });
-
-        $this->cache->invalidateRepositories();
 
         return $repository;
     }

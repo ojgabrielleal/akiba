@@ -3,8 +3,6 @@
 namespace App\Services;
 
 use App\Models\Comment;
-use App\Models\Podcast;
-use App\Models\Post;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -13,10 +11,6 @@ use Illuminate\Support\Facades\DB;
 
 class CommentService
 {
-    public function __construct(
-        private CacheService $cache,
-    ) {}
-
     public function filter(Model $commentable, bool $canModerate = false, int $perPage = 10): LengthAwarePaginator
     {
         return $commentable->comments()
@@ -46,8 +40,6 @@ class CommentService
             return $comment;
         });
 
-        $this->invalidateCommentable($commentable);
-
         return $comment;
     }
 
@@ -61,8 +53,6 @@ class CommentService
             return $comment;
         });
 
-        $this->invalidateCommentable($comment->commentable);
-
         return $comment;
     }
 
@@ -72,7 +62,6 @@ class CommentService
 
         DB::transaction(fn () => $comment->delete());
 
-        $this->invalidateCommentable($commentable);
     }
 
     public function approve(Comment $comment, User $moderator, ?string $reason = null): Comment
@@ -103,19 +92,6 @@ class CommentService
             return $comment;
         });
 
-        $this->invalidateCommentable($comment->commentable);
-
         return $comment;
-    }
-
-    private function invalidateCommentable(?Model $commentable): void
-    {
-        if ($commentable instanceof Post) {
-            $this->cache->invalidatePosts($commentable);
-        }
-
-        if ($commentable instanceof Podcast) {
-            $this->cache->invalidatePodcasts($commentable);
-        }
     }
 }

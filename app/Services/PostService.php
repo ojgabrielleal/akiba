@@ -20,7 +20,6 @@ class PostService
     public function __construct(
         private ImageProcess $image,
         private PushNotificationService $pushNotification,
-        private CacheService $cache,
     ) {}
 
     public function deactivate(Post $post): Post
@@ -29,9 +28,6 @@ class PostService
             $post->update(['is_active' => false]);
             return $post;
         });
-
-        $this->cache->invalidatePosts($post);
-        $this->cache->invalidateTrash();
 
         return $post;
     }
@@ -60,8 +56,6 @@ class PostService
             );
         });
 
-        $this->cache->invalidatePosts($post);
-
         return $reaction;
     }
 
@@ -79,7 +73,6 @@ class PostService
         });
 
         if ($post->status === 'published') {
-            $this->cache->invalidatePosts($post);
             $this->sendPublishedNotification($post);
         }
 
@@ -181,8 +174,6 @@ class PostService
             return true;
         });
 
-        $this->cache->invalidatePosts($post);
-
         return $liked;
     }
 
@@ -204,8 +195,6 @@ class PostService
         if (! $wasPublished && $post->status === 'published') {
             $this->sendPublishedNotification($post);
         }
-
-        $this->cache->invalidatePosts($post);
 
         return $post;
     }

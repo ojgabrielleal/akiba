@@ -19,7 +19,6 @@ use App\Services\RepositoryService;
 use App\Services\TaskService;
 use App\Services\TrashService;
 use App\Services\UserService;
-use App\Services\CacheService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Gate;
@@ -49,16 +48,11 @@ class TrashController extends Controller
         private RepositoryService $repositoryFilter,
         private TaskService $taskFilter,
         private UserService $userFilter,
-        private CacheService $cache,
     ) {}
 
     private function trashItems(): array
     {
-        return $this->cache->remember([
-            'panel',
-            'trash',
-            request()->user()->uuid,
-        ], fn () => collect()
+        return collect()
             ->concat($this->indexUsers())
             ->concat($this->indexPrograms())
             ->concat($this->indexPosts())
@@ -68,7 +62,7 @@ class TrashController extends Controller
             ->concat($this->indexRepositories())
             ->sortBy('title', SORT_NATURAL | SORT_FLAG_CASE)
             ->values()
-            ->all(), null, ['trash', 'users', 'posts', 'reviews', 'events', 'podcasts', 'polls', 'tasks', 'repositories']);
+            ->all();
     }
 
     private function indexUsers(): Collection

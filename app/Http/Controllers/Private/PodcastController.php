@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Private;
 
 use App\Services\PodcastService;
-use App\Services\CacheService;
 
 use App\Http\Controllers\Concerns\ResolvesAuthorizedProps;
 use App\Http\Controllers\Controller;
@@ -27,23 +26,17 @@ class PodcastController extends Controller
 
     public function __construct(
         private PodcastService $podcastFilter,
-        private CacheService $cache,
     ) {}
 
     private function indexPodcasts()
     {
         return $this->whenCanViewAny(Podcast::class,
             fn () => PodcastResource::collection(
-                $this->cache->remember([
-                    'panel',
-                    'podcasts',
-                    request()->user()->uuid,
-                    request()->query('page', 1),
-                ], fn () => $this->podcastFilter->filter([
+                $this->podcastFilter->filter([
                     'active' => true,
                     'with' => 'author',
                     'paginate' => 10,
-                ]), null, ['podcasts'])
+                ])
             ),
         );
     }

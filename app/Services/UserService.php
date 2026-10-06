@@ -12,7 +12,6 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class UserService
 {
     public function __construct(
-        private CacheService $cache,
     ) {}
 
     public function deactivate(User $user): User
@@ -22,9 +21,6 @@ class UserService
 
             return $user;
         });
-
-        $this->cache->invalidateUsers();
-        $this->cache->invalidateTrash();
 
         return $user;
     }
@@ -38,9 +34,6 @@ class UserService
 
             return $user;
         });
-
-        $this->cache->invalidateUsers();
-        $this->cache->invalidateRoles();
 
         return $user;
     }
@@ -114,9 +107,6 @@ class UserService
 
             return $user;
         });
-
-        $this->cache->invalidateUsers();
-        $this->cache->invalidateRoles();
 
         return $user;
     }

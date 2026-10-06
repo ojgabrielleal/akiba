@@ -15,7 +15,6 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class PollService
 {
     public function __construct(
-        private CacheService $cache,
     ) {}
 
     public function deactivate(Poll $poll): Poll
@@ -25,9 +24,6 @@ class PollService
 
             return $poll;
         });
-
-        $this->cache->invalidatePolls();
-        $this->cache->invalidateTrash();
 
         return $poll;
     }
@@ -51,8 +47,6 @@ class PollService
             return $poll;
         });
 
-        $this->cache->invalidatePolls();
-
         return $poll;
     }
 
@@ -71,8 +65,6 @@ class PollService
 
             return $vote;
         });
-
-        $this->cache->invalidatePolls();
 
         return $vote;
     }
@@ -96,8 +88,6 @@ class PollService
 
             return $poll;
         });
-
-        $this->cache->invalidatePolls();
 
         return $poll;
     }
