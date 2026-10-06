@@ -18,6 +18,13 @@
     const hasImage = (item) => item.image && item.image !== defaultPlaceholder;
     const resolveCharacterName = (item) => item.character_name || item.caption || "Personagem Akiba";
     const resolveArtistName = (item) => item.listener_name || "Ouvinte Akiba";
+    const resolveCaption = (item) => {
+        const caption = item.caption?.trim();
+
+        if (!caption || caption === resolveCharacterName(item)) return null;
+
+        return caption;
+    };
 
     const openLightbox = (item) => {
         if (!hasImage(item)) return;
@@ -64,7 +71,7 @@
                 <img
                     src={selectedItem.image}
                     alt={itemAlt(selectedItem)}
-                    class="max-h-[calc(94dvh-6rem)] max-w-full object-contain"
+                    class="max-h-[calc(94dvh-8rem)] max-w-full object-contain"
                 />
 
                 <figcaption class="w-full bg-[#0091FF] px-3 py-2 font-noto-sans text-white sm:px-4">
@@ -75,6 +82,11 @@
                         <p class="break-words text-[0.65rem] font-extrabold leading-tight sm:text-xs">
                             Por: {resolveArtistName(selectedItem)}
                         </p>
+                        {#if resolveCaption(selectedItem)}
+                            <p class="break-words text-[0.68rem] font-bold leading-snug normal-case not-italic sm:text-xs">
+                                {resolveCaption(selectedItem)}
+                            </p>
+                        {/if}
                     </div>
                 </figcaption>
             </figure>
