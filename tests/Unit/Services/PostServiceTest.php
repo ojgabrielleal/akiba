@@ -51,4 +51,53 @@ class PostServiceTest extends TestCase
             'name' => 'angry',
         ]);
     }
+
+    public function test_update_syncs_tags_without_creating_duplicates(): void
+    {
+        $post = Post::factory()->create([
+            'status' => 'draft',
+            'title' => 'Original title',
+        ]);
+        $post->tags()->createMany([
+            ['name' => 'news'],
+            ['name' => 'news'],
+            ['name' => 'anime'],
+        ]);
+
+        $service = app(PostService::class);
+
+        $service->update($post, $post->author, [
+            'module' => 'post',
+            'status' => 'draft',
+            'title' => 'Updated title',
+            'content' => 'Updated content',
+            'tags' => [
+                ['uuid' => null, 'name' => 'news'],
+                ['uuid' => null, 'name' => 'manga'],
+            ],
+        ]);
+
+        $this->assertSame(
+            ['manga', 'news'],
+            $post->refresh()->tags()->orderBy('name')->pluck('name')->all()
+        );
+        $this->assertDatabaseCount('post_tags', 2);
+
+        $service->update($post, $post->author, [
+            'module' => 'post',
+            'status' => 'draft',
+            'title' => 'Updated title again',
+            'content' => 'Updated content again',
+            'tags' => [
+                ['uuid' => null, 'name' => 'news'],
+                ['uuid' => null, 'name' => 'manga'],
+            ],
+        ]);
+
+        $this->assertSame(
+            ['manga', 'news'],
+            $post->refresh()->tags()->orderBy('name')->pluck('name')->all()
+        );
+        $this->assertDatabaseCount('post_tags', 2);
+    }
 }

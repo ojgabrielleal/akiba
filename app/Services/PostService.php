@@ -107,8 +107,8 @@ class PostService
 
     private function storeStoreTags(Post $post, array $tags): void
     {
-        $tags = collect($tags)
-            ->filter(fn (array $tag) => filled($tag['name'] ?? null))
+        $tags = $this->normalizeTags($tags)
+            ->map(fn (array $tag) => ['name' => $tag['name']])
             ->all();
 
         if (! empty($tags)) {
@@ -281,16 +281,33 @@ class PostService
 
     private function updateSyncTags(Post $post, array $tags): void
     {
-        foreach ($tags as $tag) {
-            if (! filled($tag['name'] ?? null)) {
-                continue;
-            }
+        $syncedUuids = [];
 
-            $post->tags()->updateOrCreate(
-                ['uuid' => $tag['uuid'] ?? null],
-                ['name' => $tag['name']]
-            );
+        foreach ($this->normalizeTags($tags) as $tag) {
+            $syncedTag = filled($tag['uuid'] ?? null)
+                ? $post->tags()->updateOrCreate(
+                    ['uuid' => $tag['uuid']],
+                    ['name' => $tag['name']]
+                )
+                : $post->tags()->firstOrCreate(['name' => $tag['name']]);
+
+            $syncedUuids[] = $syncedTag->uuid;
         }
+
+        $post->tags()
+            ->when(
+                ! empty($syncedUuids),
+                fn (Builder $query) => $query->whereNotIn('uuid', $syncedUuids)
+            )
+            ->delete();
+    }
+
+    private function normalizeTags(array $tags): \Illuminate\Support\Collection
+    {
+        return collect($tags)
+            ->filter(fn (array $tag) => filled($tag['name'] ?? null))
+            ->unique(fn (array $tag) => $tag['name'])
+            ->values();
     }
 
     private function updateSyncReferences(Post $post, array $references): void
