@@ -57,7 +57,7 @@
             error={$form.errors.listener_name}
         />
     </FormField>
-    <FormField for="character_name" label="Apelido do ouvinte" error={$form.errors.character_name}>
+    <FormField for="character_name" label="Nome do personagem" error={$form.errors.character_name}>
         <TextInput
             variant="offcanvas"
             id="character_name"

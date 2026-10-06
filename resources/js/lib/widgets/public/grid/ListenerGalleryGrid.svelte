@@ -104,10 +104,13 @@
                                 />
                             {/if}
                         </div>
-                        <div class="flex min-h-12 items-center bg-orange-amber px-3 py-1.5 text-blue-night transition duration-300 ease-out group-hover:brightness-110 group-focus-visible:brightness-110 motion-reduce:transition-none">
-                            <h3 class="line-clamp-1 font-noto-sans text-base font-black uppercase italic">
-                                Por: {resolveArtistName(item)}
+                        <div class="grid min-h-14 content-center gap-0.5 bg-orange-amber px-3 py-1.5 font-noto-sans uppercase italic text-blue-night transition duration-300 ease-out group-hover:brightness-110 group-focus-visible:brightness-110 motion-reduce:transition-none">
+                            <h3 class="line-clamp-1 text-sm font-black leading-tight">
+                                {resolveCharacterName(item)}
                             </h3>
+                            <p class="line-clamp-1 text-[0.68rem] font-extrabold leading-tight">
+                                Por: {resolveArtistName(item)}
+                            </p>
                         </div>
                     </button>
                 </article>
