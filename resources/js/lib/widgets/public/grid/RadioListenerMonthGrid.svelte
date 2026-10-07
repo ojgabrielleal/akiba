@@ -5,6 +5,11 @@
     export let listenerMonth = null;
 
     $: listener = listenerMonth?.current?.data ?? null;
+    $: topAnime = listener?.top_anime?.name ? listener.top_anime : null;
+    $: displayedAnime = topAnime ?? {
+        name: listener?.favorite_music?.production,
+        image: listener?.favorite_music?.image,
+    };
 </script>
 
 <section class="bg-blue-night">
@@ -53,14 +58,14 @@
                         <div class="relative flex h-55 flex-col items-center justify-center rounded-md bg-blue-marinho text-center font-noto-sans font-medium uppercase text-orange-citric">
                             <Tooltip position="top">
                                 <img
-                                    src={resolvePlaceholderImage(listener.favorite_music.image, "placeholder")}
+                                    src={resolvePlaceholderImage(displayedAnime.image, "placeholder")}
                                     class="size-30 rounded-md object-cover"
-                                    alt={listener.favorite_music.production}
+                                    alt={displayedAnime.name}
                                 />
-                                <span slot="content">{listener.favorite_music.production}</span>
+                                <span slot="content">{displayedAnime.name}</span>
                             </Tooltip>
                             <div class="absolute bottom-1 left-1/2 w-full -translate-x-1/2">
-                                Anime favorito
+                                Top 1 anime
                             </div>
                         </div>
                     </div>

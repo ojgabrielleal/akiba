@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\Public;
 
 use App\Services\MusicService;
+use App\Services\ListenerMonthService;
 use App\Services\ProgramService;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ListenerMonth\UpdateListenerMonthTopAnimeRequest;
 use App\Http\Resources\ListenerMonthResource;
 use App\Http\Resources\MusicResource;
 use App\Http\Resources\Program\ProgramResource;
 use App\Models\ListenerMonth;
+use App\Models\OAuthAccount;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -53,6 +56,17 @@ class RadioController extends Controller
         return [
             'current' => $listenerMonth ? new ListenerMonthResource($listenerMonth) : null,
         ];
+    }
+
+    public function updateListenerMonthTopAnime(UpdateListenerMonthTopAnimeRequest $request, ListenerMonthService $service, ListenerMonth $listenerMonth)
+    {
+        $oauthAccount = $request->attributes->get('oauth_account');
+
+        abort_unless($oauthAccount instanceof OAuthAccount, 403);
+
+        $service->updateTopAnime($listenerMonth, $oauthAccount, $request->validated('top_anime'));
+
+        return $this->flashMessage('update');
     }
 
     public function render(Request $request)

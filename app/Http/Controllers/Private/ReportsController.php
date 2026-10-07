@@ -10,6 +10,8 @@ use App\Services\SongRequestService;
 
 use App\Http\Controllers\Controller;
 
+use App\Http\Requests\RadioStation\StoreRadioStationRequest;
+use App\Http\Requests\RadioStation\UpdateRadioStationRequest;
 use App\Http\Resources\AudienceResource;
 use App\Http\Resources\Onair\OnairResource;
 use App\Http\Resources\User\UserResource;
@@ -17,6 +19,7 @@ use App\Http\Resources\User\UserResource;
 use App\Models\Onair;
 use App\Models\Poll;
 use App\Models\Post;
+use App\Models\RadioStation;
 use App\Models\SongRequest;
 
 use Inertia\Inertia;
@@ -233,6 +236,29 @@ class ReportsController extends Controller
             'pergunta' => $poll->question,
             'total' => $poll->votes_count,
         ];
+    }
+
+    public function storeRadioStation(StoreRadioStationRequest $request, AudienceService $service)
+    {
+        $service->store($request->validated());
+
+        return $this->flashMessage('create');
+    }
+
+    public function updateRadioStation(UpdateRadioStationRequest $request, AudienceService $service, RadioStation $radioStation)
+    {
+        $service->update($radioStation, $request->validated());
+
+        return $this->flashMessage('update');
+    }
+
+    public function destroyRadioStation(AudienceService $service, RadioStation $radioStation)
+    {
+        $this->authorize('delete', $radioStation);
+
+        $service->destroy($radioStation);
+
+        return $this->flashMessage('delete');
     }
 
     public function render()

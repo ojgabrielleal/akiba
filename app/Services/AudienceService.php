@@ -4,12 +4,34 @@ namespace App\Services;
 
 use App\Models\RadioStation;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class AudienceService
 {
+    public function store(array $data): RadioStation
+    {
+        return RadioStation::create($data + ['is_active' => true]);
+    }
+
+    public function update(RadioStation $radioStation, array $data): RadioStation
+    {
+        $radioStation->update($data + ['is_active' => true]);
+
+        return $radioStation;
+    }
+
+    public function destroy(RadioStation $radioStation): bool
+    {
+        return DB::transaction(function () use ($radioStation): bool {
+            $radioStation->audienceSnapshots()->delete();
+
+            return (bool) $radioStation->delete();
+        });
+    }
+
     public function filter(array $filters = []): Collection|LengthAwarePaginator
     {
         $query = RadioStation::query()
@@ -61,4 +83,5 @@ class AudienceService
             ])
             ->orderBy('name')
             ->get();
-    }}
+    }
+}

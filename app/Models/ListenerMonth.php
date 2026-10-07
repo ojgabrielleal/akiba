@@ -19,6 +19,7 @@ class ListenerMonth extends Model
         'oauth_account_id',
         'favorite_program',
         'favorite_music',
+        'top_anime',
         'requests_total',
     ];
 
@@ -26,6 +27,7 @@ class ListenerMonth extends Model
         'requests_total' => 'integer',
         'favorite_program' => 'array',
         'favorite_music' => 'array',
+        'top_anime' => 'array',
     ];
 
     /**

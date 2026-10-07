@@ -165,6 +165,11 @@ Route::prefix('panel')->middleware(['inertia'])->group(function () {
             Route::get('', 'render')->name('panel.administration');
         });
         Route::prefix('reports')->middleware('can:report.module.view')->controller(ReportsController::class)->group(function () {
+            Route::prefix('radio-station')->group(function () {
+                Route::post('', 'storeRadioStation');
+                Route::patch('{radioStation:uuid}', 'updateRadioStation');
+                Route::delete('{radioStation:uuid}', 'destroyRadioStation');
+            });
             Route::get('', 'render')->name('panel.reports');
         });
         Route::prefix('trash')->middleware('can:trash.module.view')->group(function () {

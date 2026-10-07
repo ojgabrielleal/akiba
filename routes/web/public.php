@@ -85,6 +85,10 @@ Route::middleware(['oauth.resolve', 'inertia'])->group(function () {
     Route::get('/radio', [RadioController::class, 'render'])
         ->name('radio');
 
+    Route::patch('/radio/listener-month/{listenerMonth:uuid}/top-anime', [RadioController::class, 'updateListenerMonthTopAnime'])
+        ->middleware('oauth')
+        ->name('radio.listener-month.top-anime.update');
+
     Route::get('/midias', [MediaController::class, 'render'])
         ->name('media');
 

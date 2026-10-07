@@ -7,15 +7,18 @@
         TextInput,
         Tooltip,
     } from "@/lib/components/public";
+    import { publicAnimations } from "@/lib/constants/public/animation";
     import {
         consumePendingOAuthAction,
         dispatchOAuthAction,
         OAuthAction,
         rememberOAuthAction,
+        resolvePlaceholderImage,
         themeClass,
     } from "@/lib/utils";
 
     export let profile;
+    export let listenerMonth = null;
     export let close = () => {};
     export let internal = false;
 
@@ -56,8 +59,87 @@
         bio: internal ? profile?.bio ?? "" : "",
     });
 
+    const emptyTopAnime = {
+        anime_theme_list_id: null,
+        slug: null,
+        name: "",
+        image: null,
+        metadata: null,
+    };
+
+    const topAnimeForm = useForm({
+        top_anime: emptyTopAnime,
+    });
+
+    $: currentListener = listenerMonth?.current?.data ?? null;
+    $: currentTopAnime = currentListener?.top_anime?.name ? currentListener.top_anime : null;
+    $: canChooseListenerTopAnime = Boolean(
+        !internal
+        && currentListener?.uuid
+        && profile?.uuid
+        && profile.uuid === currentListener.oauth_account_id
+    );
+    $: if (canChooseListenerTopAnime && currentTopAnime?.name && $topAnimeForm.top_anime?.name !== currentTopAnime.name) {
+        $topAnimeForm.top_anime = currentTopAnime;
+    }
+
     let avatarPreview = avatar;
     $: if (!$form.avatar) avatarPreview = avatar;
+
+    let topAnimeQuery = "";
+    let topAnimeResults = [];
+    let topAnimeSearching = false;
+    let topAnimeSearchError = null;
+
+    const searchTopAnime = async () => {
+        const query = topAnimeQuery.trim();
+
+        topAnimeSearchError = null;
+        topAnimeResults = [];
+
+        if (query.length < 2) {
+            topAnimeSearchError = "Digite pelo menos 2 caracteres.";
+            return;
+        }
+
+        topAnimeSearching = true;
+
+        try {
+            const response = await fetch(`/api/anime-themes/anime/search?query=${encodeURIComponent(query)}`);
+
+            if (!response.ok) {
+                throw new Error("Não foi possível buscar animes agora.");
+            }
+
+            topAnimeResults = await response.json();
+        } catch (error) {
+            topAnimeSearchError = error.message;
+        } finally {
+            topAnimeSearching = false;
+        }
+    };
+
+    const selectTopAnime = (anime) => {
+        $topAnimeForm.top_anime = {
+            anime_theme_list_id: anime.anime_theme_list_id,
+            slug: anime.slug,
+            name: anime.name,
+            image: anime.image,
+            metadata: anime.metadata,
+        };
+    };
+
+    const submitTopAnime = () => {
+        if (!currentListener?.uuid || !$topAnimeForm.top_anime?.name) return;
+
+        $topAnimeForm.patch(`/radio/listener-month/${currentListener.uuid}/top-anime`, {
+            preserveScroll: true,
+            onSuccess: () => {
+                topAnimeResults = [];
+                topAnimeQuery = "";
+            },
+        });
+    };
 
     const submit = () => {
         if (internal) {
@@ -295,6 +377,93 @@
                     required
                 />
             </FormField>
+        {/if}
+
+        {#if canChooseListenerTopAnime}
+            <div class="rounded-md border border-blue-night/15 bg-blue-night/[0.04] p-4 [[data-public-theme=akiba]_&]:border-suspense-aurora/20 [[data-public-theme=akiba]_&]:bg-blue-night/20 [[data-public-theme=night]_&]:border-suspense-aurora/20 [[data-public-theme=night]_&]:bg-blue-night/20">
+                <div class="mb-3 flex items-start justify-between gap-3">
+                    <div>
+                        <h3 class={[
+                            "font-noto-sans text-sm font-black uppercase italic",
+                            themeClass("text", "blue-night", { fixed: true }),
+                            "[[data-public-theme=akiba]_&]:text-suspense-aurora [[data-public-theme=night]_&]:text-suspense-aurora",
+                        ]}>
+                            Meu Top 1 anime
+                        </h3>
+                        <p class="mt-1 font-noto-sans text-xs font-semibold text-[color-mix(in_srgb,#000014_55%,transparent)] [[data-public-theme=akiba]_&]:text-suspense-aurora/60 [[data-public-theme=night]_&]:text-suspense-aurora/60">
+                            Sua escolha aparece na seção Ouvinte do mês.
+                        </p>
+                    </div>
+                    {#if $topAnimeForm.top_anime?.image}
+                        <img
+                            src={resolvePlaceholderImage($topAnimeForm.top_anime.image, "placeholder")}
+                            alt={$topAnimeForm.top_anime.name}
+                            class="size-14 shrink-0 rounded-md object-cover object-top"
+                        />
+                    {/if}
+                </div>
+
+                <div class="grid gap-2 sm:grid-cols-[minmax(0,1fr)_auto]">
+                    <label for="profile-top-anime" class="sr-only">Buscar anime top 1</label>
+                    <input
+                        id="profile-top-anime"
+                        type="search"
+                        bind:value={topAnimeQuery}
+                        placeholder={$topAnimeForm.top_anime?.name || "Busque seu anime top 1"}
+                        class="h-11 rounded-md bg-neutral-gray px-3 font-noto-sans text-sm font-bold text-suspense-aurora outline-none placeholder:text-suspense-aurora/45 focus:ring-2 focus:ring-orange-citric [[data-public-theme=akiba]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_76%,var(--color-blue-night))] [[data-public-theme=night]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_76%,var(--color-blue-night))]"
+                    />
+                    <Button
+                        type="button"
+                        size="sm"
+                        loading={topAnimeSearching}
+                        on:click={searchTopAnime}
+                    >
+                        Buscar
+                    </Button>
+                </div>
+
+                {#if topAnimeSearchError}
+                    <p class="mt-2 font-noto-sans text-xs font-bold text-red-crimson">{topAnimeSearchError}</p>
+                {/if}
+
+                {#if topAnimeResults.length}
+                    <div class="mt-3 grid max-h-56 gap-2 overflow-y-auto pr-1 sm:grid-cols-2">
+                        {#each topAnimeResults as anime}
+                            <button
+                                type="button"
+                                class={["grid min-h-20 cursor-pointer grid-cols-[3.5rem_minmax(0,1fr)] items-center gap-2 rounded-md bg-blue-marinho p-2 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric", publicAnimations.cardInteractive]}
+                                on:click={() => selectTopAnime(anime)}
+                            >
+                                <img
+                                    src={resolvePlaceholderImage(anime.image, "placeholder")}
+                                    alt={anime.name}
+                                    class="size-14 rounded-md object-cover object-top"
+                                />
+                                <span class="line-clamp-3 font-noto-sans text-xs font-black uppercase italic leading-tight text-suspense-aurora">
+                                    {anime.name}
+                                </span>
+                            </button>
+                        {/each}
+                    </div>
+                {/if}
+
+                {#if $topAnimeForm.top_anime?.name}
+                    <div class="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-md bg-blue-marinho px-3 py-2">
+                        <span class="min-w-0 truncate font-noto-sans text-xs font-black uppercase italic text-suspense-aurora">
+                            {$topAnimeForm.top_anime.name}
+                        </span>
+                        <Button
+                            type="button"
+                            size="sm"
+                            loading={$topAnimeForm.processing}
+                            disabled={$topAnimeForm.processing}
+                            on:click={submitTopAnime}
+                        >
+                            Salvar top 1
+                        </Button>
+                    </div>
+                {/if}
+            </div>
         {/if}
 
         {#if internal}
