@@ -180,34 +180,47 @@
 {/if}
 <Modal
     bind:this={badgeModalRef}
-    title="Você recebeu um novo emblema!"
+    title="Novo emblema desbloqueado!"
     size="sm"
     closeOnBackdrop={false}
 >
     {#if activeBadgeAssignment}
-        <div class="flex flex-col items-center gap-4 text-center">
-            <div class="flex size-28 items-center justify-center overflow-hidden rounded-md bg-blue-marinho/10 p-3">
-                {#if activeBadgeAssignment.badge?.image}
-                    <img
-                        src={activeBadgeAssignment.badge.image}
-                        alt={activeBadgeAssignment.badge.name}
-                        class="h-full w-full object-contain"
-                    />
-                {:else}
-                    <span class="font-noto-sans text-5xl font-black italic text-orange-amber">+</span>
-                {/if}
+        <div class="relative isolate -m-5 overflow-hidden rounded-b-xl bg-blue-night px-5 py-6 text-center">
+            <div class="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_50%_0%,rgba(255,134,0,0.22),transparent_34%),linear-gradient(180deg,rgba(0,145,255,0.22),rgba(0,25,76,0.78))]" aria-hidden="true"></div>
+            <div class="pointer-events-none absolute inset-x-8 top-7 -z-10 h-24 rounded-full bg-orange-morning/20 blur-2xl" aria-hidden="true"></div>
+
+            <div class="mx-auto flex size-32 items-center justify-center rounded-full border border-orange-morning/45 bg-blue-marinho/80 p-3 shadow-[0_18px_45px_rgba(0,0,0,0.35)]">
+                <div class="flex size-full items-center justify-center rounded-full bg-suspense-aurora p-4 shadow-inner">
+                    {#if activeBadgeAssignment.badge?.image}
+                        <img
+                            src={activeBadgeAssignment.badge.image}
+                            alt={activeBadgeAssignment.badge.name}
+                            class="h-full w-full object-contain drop-shadow-[0_0.35rem_0.35rem_rgba(0,0,20,0.22)]"
+                        />
+                    {:else}
+                        <span class="font-noto-sans text-5xl font-black italic text-orange-amber">+</span>
+                    {/if}
+                </div>
             </div>
-            <div>
-                <h3 class="font-noto-sans text-lg font-black uppercase italic text-blue-night">
+
+            <div class="mt-5">
+                <p class="font-noto-sans text-xs font-black uppercase italic text-orange-morning">
+                    Emblema conquistado
+                </p>
+                <h3 class="mt-1 break-words font-noto-sans text-xl font-black uppercase italic leading-tight text-suspense-aurora">
                     {activeBadgeAssignment.badge?.name}
                 </h3>
-                <p class="mt-1 text-sm text-blue-ocean">Confira todos no seu perfil.</p>
+                <p class="mx-auto mt-2 max-w-64 text-sm font-semibold leading-snug text-suspense-aurora/75">
+                    Ele já está guardado no seu perfil da Akiba.
+                </p>
             </div>
+
             <Button
                 type="button"
                 variant="primary"
                 shape="pill"
                 loading={acknowledgingBadge}
+                class="mt-6 bg-orange-citric px-7 text-blue-night shadow-[0_10px_24px_rgba(255,134,0,0.28)]"
                 on:click={acknowledgeBadge}
             >
                 Confirmar recebimento
