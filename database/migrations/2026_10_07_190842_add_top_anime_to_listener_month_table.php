@@ -11,7 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('listener_month', function (Blueprint $table) {
+        $tableName = $this->listenerMonthTable();
+
+        if (! $tableName || Schema::hasColumn($tableName, 'top_anime')) {
+            return;
+        }
+
+        Schema::table($tableName, function (Blueprint $table) {
             $table->json('top_anime')->nullable()->after('favorite_music');
         });
     }
@@ -21,8 +27,27 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('listener_month', function (Blueprint $table) {
+        $tableName = $this->listenerMonthTable();
+
+        if (! $tableName || ! Schema::hasColumn($tableName, 'top_anime')) {
+            return;
+        }
+
+        Schema::table($tableName, function (Blueprint $table) {
             $table->dropColumn('top_anime');
         });
+    }
+
+    private function listenerMonthTable(): ?string
+    {
+        if (Schema::hasTable('listener_months')) {
+            return 'listener_months';
+        }
+
+        if (Schema::hasTable('listener_month')) {
+            return 'listener_month';
+        }
+
+        return null;
     }
 };

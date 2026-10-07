@@ -14,6 +14,8 @@ class ListenerMonth extends Model
 {
     use HasFactory, HasUuids;
 
+    protected $table = 'listener_months';
+
     protected $fillable = [
         'uuid',
         'oauth_account_id',
