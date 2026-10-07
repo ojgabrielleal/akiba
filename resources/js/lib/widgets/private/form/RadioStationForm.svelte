@@ -83,7 +83,7 @@
         />
     </FormField>
 
-    <FormField for="radio-station-listeners-path" label="Caminho dos ouvintes" error={$form.errors.listeners_path} help="Ex.: listeners.current ou icestats.source.listeners">
+    <FormField for="radio-station-listeners-path" label="Caminho dos ouvintes" error={$form.errors.listeners_path} help="Ex.: listeners.current ou icestats.source.*.listeners para somar múltiplas fontes">
         <TextInput
             id="radio-station-listeners-path"
             name="listeners_path"

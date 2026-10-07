@@ -27,14 +27,14 @@ class AudienceService
                 return $this->unavailable('offline', $responseTime);
             }
 
-            $listeners = data_get($response->json(), $radioStation->listeners_path);
+            $listeners = $this->listeners($response->json(), $radioStation->listeners_path);
 
-            if (!is_numeric($listeners)) {
+            if ($listeners === null) {
                 return $this->unavailable('invalid_response', $responseTime);
             }
 
             return [
-                'listeners' => max(0, (int) $listeners),
+                'listeners' => $listeners,
                 'status' => 'online',
                 'response_time_ms' => $responseTime,
             ];
@@ -56,6 +56,26 @@ class AudienceService
             'status' => $status,
             'response_time_ms' => $responseTime,
         ];
+    }
+
+    private function listeners(array $payload, string $path): ?int
+    {
+        $value = data_get($payload, $path);
+
+        if (is_numeric($value)) {
+            return max(0, (int) $value);
+        }
+
+        if (! is_array($value)) {
+            return null;
+        }
+
+        $listeners = collect($value)
+            ->flatten()
+            ->filter(fn ($item) => is_numeric($item))
+            ->sum(fn ($item) => max(0, (int) $item));
+
+        return is_numeric($listeners) ? (int) $listeners : null;
     }
 
     private function responseTime(float $startedAt): int

@@ -62,13 +62,21 @@
         },
     };
 
+    $: safeLabels = Array.isArray(history?.labels) ? history.labels : [];
+    $: safeSeries = Array.isArray(history?.series) ? history.series : [];
     $: if (chart && history) updateChart();
 
+    const normalizeData = (series) => safeLabels.map((_, index) => {
+        const value = Array.isArray(series.data) ? series.data[index] : null;
+
+        return Number.isFinite(Number(value)) ? Number(value) : null;
+    });
+
     const chartData = () => ({
-        labels: history?.labels ?? [],
-        datasets: (history?.series ?? []).map((series) => ({
+        labels: safeLabels,
+        datasets: safeSeries.map((series) => ({
             label: series.name,
-            data: series.data,
+            data: normalizeData(series),
             borderColor: series.color,
             backgroundColor: series.color,
             borderWidth: 3,
@@ -95,9 +103,8 @@
             window.location.pathname,
             { audience_period: period },
             {
-                only: ["audienceHistory"],
                 preserveScroll: true,
-                preserveState: true,
+                preserveState: false,
                 replace: true,
                 onStart: () => loading = true,
                 onFinish: () => loading = false,
@@ -184,11 +191,11 @@
 </script>
 
 <Section {title}>
-    {#if history?.series?.length}
+    {#if safeSeries.length}
         <div class="flex min-w-0 w-full flex-col gap-3 xl:grid xl:min-h-90 xl:grid-cols-[8rem_minmax(0,1fr)_5rem]">
             <div class="min-w-0 w-full max-w-full xl:w-auto">
                 <div class="grid min-w-0 w-full max-w-full grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 xl:flex xl:w-auto xl:flex-col" aria-label="Legenda das rádios">
-                    {#each history.series as series (series.uuid)}
+                    {#each safeSeries as series (series.uuid)}
                         <div
                             class="flex h-12 min-w-0 items-center justify-end overflow-hidden rounded-sm bg-blue-ocean"
                             title={series.name}
