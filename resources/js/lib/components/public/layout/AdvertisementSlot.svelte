@@ -1,5 +1,5 @@
 <script>
-    import { onMount, tick } from "svelte";
+    import { onDestroy, onMount, tick } from "svelte";
 
     export let image = null;
     export let href = null;
@@ -12,8 +12,17 @@
     export { className as class };
 
     let adElement;
+    let slotElement;
+    let resizeObserver;
+    let slotWidth = 0;
+    let slotHeight = 0;
+    let pushedAdsense = false;
 
     $: shouldRenderAdsense = adsense && !image && !href && adClient && adSlot;
+    $: hasMeasuredSlot = slotWidth > 0 && slotHeight > 0;
+    $: if (shouldRenderAdsense && hasMeasuredSlot && adElement && !pushedAdsense) {
+        pushAdsense();
+    }
 
     const loadAdsenseScript = () => {
         if (typeof window === "undefined" || typeof document === "undefined") return Promise.resolve();
@@ -31,7 +40,7 @@
     };
 
     const pushAdsense = async () => {
-        if (!shouldRenderAdsense || !adElement || typeof window === "undefined") return;
+        if (!shouldRenderAdsense || !hasMeasuredSlot || !adElement || pushedAdsense || typeof window === "undefined") return;
 
         await tick();
 
@@ -39,17 +48,32 @@
             await loadAdsenseScript();
             window.adsbygoogle = window.adsbygoogle || [];
             window.adsbygoogle.push({});
+            pushedAdsense = true;
         } catch (error) {
             console.warn("AdSense: não foi possível carregar o bloco de anúncio.", error);
         }
     };
 
     onMount(() => {
-        pushAdsense();
+        if (slotElement && typeof ResizeObserver !== "undefined") {
+            resizeObserver = new ResizeObserver(([entry]) => {
+                slotWidth = Math.round(entry.contentRect.width);
+                slotHeight = Math.round(entry.contentRect.height);
+            });
+            resizeObserver.observe(slotElement);
+        } else if (slotElement) {
+            slotWidth = Math.round(slotElement.clientWidth);
+            slotHeight = Math.round(slotElement.clientHeight);
+        }
+    });
+
+    onDestroy(() => {
+        resizeObserver?.disconnect();
     });
 </script>
 
 <svelte:element
+    bind:this={slotElement}
     this={href ? "a" : "div"}
     {href}
     target={href ? "_blank" : undefined}
@@ -114,11 +138,11 @@
             </div>
         </div>
 
-        {#if shouldRenderAdsense}
+        {#if shouldRenderAdsense && hasMeasuredSlot}
             <ins
                 bind:this={adElement}
                 class="adsbygoogle absolute inset-0 z-10 block h-full w-full overflow-hidden [clip-path:inherit]"
-                style="display:block;width:100%;height:100%;"
+                style={`display:block;width:${slotWidth}px;height:${slotHeight}px;max-width:100%;max-height:100%;`}
                 data-ad-client={adClient}
                 data-ad-slot={adSlot}
                 data-ad-format="auto"
