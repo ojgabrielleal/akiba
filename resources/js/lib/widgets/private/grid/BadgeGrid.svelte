@@ -43,7 +43,9 @@
         return ({
             enigmagame: "Enigma Otaku",
             song_request: "Pedidos musicais",
+            poll: "Enquete",
             podcast: "Podcasts",
+            easter_egg: "Easter Egg",
         })[source] ?? "Sem origem";
     }
 
@@ -51,24 +53,46 @@
         return ({
             "enigmagame.most_wins": "Pessoa que mais venceu enigmas",
             "song_request.most_requests": "Pessoa que mais fez pedidos",
+            "poll.most_votes": "Quem mais respondeu enquetes",
             "song_request.played_total": "Pedidos atendidos",
+            "song_request.played_ordinal": "Pedido atendido nº",
             "podcast.all_listened": "Todos os podcasts ouvidos",
             "podcast.listened_total": "Quantidade de podcasts ouvidos",
             "site.presence_window": "Presença no site durante a janela",
+            "easter_egg": "Easter Egg",
         })[trigger] ?? trigger;
+    }
+
+    function easterEggLabel(easterEgg) {
+        return ({
+            konami: "Konami Code",
+            doom_iddqd: "DOOM - God Mode",
+            mortal_kombat_abacabb: "Mortal Kombat - Blood Code",
+            sonic_2_level_select: "Sonic 2 - Level Select",
+            super_mario_continue: "Super Mario Bros. - Continue",
+            page_404: "Página 404",
+        })[easterEgg] ?? easterEgg;
     }
 
 
     function audienceLabel(item) {
-        if (item.audience !== "target") {
-            return "Todos os usuários";
+        const targets = item.targets?.length
+            ? item.targets
+            : (item.target_type && item.target_uuid ? [{ type: item.target_type, uuid: item.target_uuid }] : []);
+
+        if (!targets.length) {
+            return "Nenhum usuário selecionado";
         }
 
-        const target = (badgeTargets ?? []).find((candidate) => (
-            candidate.type === item.target_type && candidate.uuid === item.target_uuid
-        ));
+        const labels = targets.map((target) => {
+            const match = (badgeTargets ?? []).find((candidate) => (
+                candidate.type === target.type && candidate.uuid === target.uuid
+            ));
 
-        return target ? `${target.label} (${target.detail})` : "Usuário selecionado";
+            return match ? `${match.label} (${match.detail})` : "Usuário selecionado";
+        });
+
+        return labels.join(", ");
     }
 
     function formatSchedule(value) {
@@ -184,6 +208,12 @@
                                         <dd class="truncate">{item.threshold}</dd>
                                     </div>
                                 {/if}
+                                {#if item.easter_egg}
+                                    <div class="flex min-w-0 items-center gap-1.5 rounded-sm bg-blue-marinho/35 px-2 py-1.5">
+                                        <dt class="shrink-0 font-noto-sans font-black uppercase italic text-orange-amber">Easter Egg:</dt>
+                                        <dd class="truncate" title={easterEggLabel(item.easter_egg)}>{easterEggLabel(item.easter_egg)}</dd>
+                                    </div>
+                                {/if}
                                 {#if item.type === "scheduled"}
                                     <div class="flex min-w-0 items-center gap-1.5 rounded-sm bg-blue-marinho/35 px-2 py-1.5">
                                         <dt class="shrink-0 font-noto-sans font-black uppercase italic text-orange-amber">Janela:</dt>
@@ -191,6 +221,14 @@
                                             {formatSchedule(item.starts_at)} até {formatSchedule(item.ends_at)}
                                         </dd>
                                     </div>
+                                    {#if item.daily_starts_at && item.daily_ends_at}
+                                        <div class="flex min-w-0 items-center gap-1.5 rounded-sm bg-blue-marinho/35 px-2 py-1.5">
+                                            <dt class="shrink-0 font-noto-sans font-black uppercase italic text-orange-amber">Todo dia:</dt>
+                                            <dd class="truncate">{item.daily_starts_at} até {item.daily_ends_at}</dd>
+                                        </div>
+                                    {/if}
+                                {/if}
+                                {#if item.type === "fixed"}
                                     <div class="flex min-w-0 items-center gap-1.5 rounded-sm bg-blue-marinho/35 px-2 py-1.5">
                                         <dt class="shrink-0 font-noto-sans font-black uppercase italic text-orange-amber">Alvo:</dt>
                                         <dd class="truncate" title={audienceLabel(item)}>{audienceLabel(item)}</dd>

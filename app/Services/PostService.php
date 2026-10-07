@@ -402,6 +402,10 @@ class PostService
                 fn (Builder $query, string $status) => $query->withStatus($status)
             )
             ->when(
+                $filters['created_since'] ?? null,
+                fn (Builder $query, $createdSince) => $query->where('created_at', '>=', $createdSince)
+            )
+            ->when(
                 $filters['authored_by'] ?? null,
                 fn (Builder $query, User $author) => $query->authoredBy($author)
             )

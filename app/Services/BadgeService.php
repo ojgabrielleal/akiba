@@ -4,7 +4,9 @@ namespace App\Services;
 
 use App\Models\Badge;
 use App\Models\BadgeAssignment;
+use App\Models\EnigmaGameInteraction;
 use App\Models\OAuthAccount;
+use App\Models\PollVote;
 use App\Models\Podcast;
 use App\Models\PodcastListen;
 use App\Models\SongRequest;
@@ -86,32 +88,35 @@ class BadgeService
 
     private function configuredFixedOwners(Badge $badge): Collection
     {
-        $audience = $badge->rule['audience'] ?? 'all';
-
-        if ($audience === 'all') {
-            return User::query()
-                ->active()
-                ->get()
-                ->concat(OAuthAccount::query()->get())
-                ->values();
-        }
+        $audience = $badge->rule['audience'] ?? 'target';
 
         if ($audience !== 'target') {
             return collect();
         }
 
-        $targetType = $badge->rule['target_type'] ?? null;
-        $targetUuid = $badge->rule['target_uuid'] ?? null;
+        $targets = $badge->rule['targets'] ?? [];
 
-        $owner = match ($targetType) {
+        if ($targets === [] && filled($badge->rule['target_type'] ?? null) && filled($badge->rule['target_uuid'] ?? null)) {
+            $targets = [[
+                'type' => $badge->rule['target_type'],
+                'uuid' => $badge->rule['target_uuid'],
+            ]];
+        }
+
+        return collect($targets)
+            ->map(fn (array $target) => $this->ownerFromTarget($target['type'] ?? null, $target['uuid'] ?? null))
+            ->filter()
+            ->values();
+    }
+
+    private function ownerFromTarget(?string $targetType, ?string $targetUuid): ?Model
+    {
+        return match ($targetType) {
             'user' => User::query()->where('uuid', $targetUuid)->first(),
             'oauth_account' => OAuthAccount::query()->where('uuid', $targetUuid)->first(),
             default => null,
         };
-
-        return $owner ? collect([$owner]) : collect();
     }
-
 
     public function destroy(Badge $badge): void
     {
@@ -236,6 +241,38 @@ class BadgeService
         );
     }
 
+    public function awardSongRequestOrdinalAchievements(SongRequest $songRequest): Collection
+    {
+        if ($songRequest->type !== 'music' || ! $songRequest->was_reproduced || ! $songRequest->requester) {
+            return collect();
+        }
+
+        $playedPosition = SongRequest::query()
+            ->where('type', 'music')
+            ->where('was_reproduced', true)
+            ->where('id', '<=', $songRequest->id)
+            ->count();
+
+        $badges = Badge::query()
+            ->active()
+            ->achievement()
+            ->where('rule->trigger', 'song_request.played_ordinal')
+            ->get()
+            ->filter(fn (Badge $badge) => (int) ($badge->rule['threshold'] ?? 0) === $playedPosition);
+
+        return $badges->map(fn (Badge $badge) => $this->awardAchievement(
+            $badge,
+            $songRequest->requester,
+            'Pedido musical atendido na posição configurada.',
+            [
+                'trigger' => 'song_request.played_ordinal',
+                'threshold' => (int) ($badge->rule['threshold'] ?? 0),
+                'position' => $playedPosition,
+                'song_request_id' => $songRequest->id,
+            ],
+        ));
+    }
+
     public function awardPodcastListenAchievements(Model $owner): Collection
     {
         $activePodcastIds = Podcast::query()
@@ -269,6 +306,23 @@ class BadgeService
         }
 
         return $awards->values();
+    }
+
+    public function awardEasterEggAchievements(string $easterEgg, Model $owner): Collection
+    {
+        $badges = Badge::query()
+            ->active()
+            ->achievement()
+            ->where('rule->trigger', 'easter_egg')
+            ->where('rule->easter_egg', $easterEgg)
+            ->get();
+
+        return $badges->map(fn (Badge $badge) => $this->awardAchievement(
+            $badge,
+            $owner,
+            'Easter Egg descoberto.',
+            ['trigger' => 'easter_egg', 'easter_egg' => $easterEgg],
+        ));
     }
 
     private function awardThresholdAchievements(string $trigger, Model $owner, int $total, string $reason): Collection
@@ -337,24 +391,7 @@ class BadgeService
 
     private function scheduledBadgeTargetsOwner(Badge $badge, Model $owner): bool
     {
-        $audience = $badge->rule['audience'] ?? 'all';
-
-        if ($audience === 'all') {
-            return true;
-        }
-
-        if ($audience !== 'target') {
-            return false;
-        }
-
-        $targetType = $badge->rule['target_type'] ?? null;
-        $targetUuid = $badge->rule['target_uuid'] ?? null;
-
-        return match ($targetType) {
-            'user' => $owner instanceof User && $owner->uuid === $targetUuid,
-            'oauth_account' => $owner instanceof OAuthAccount && $owner->uuid === $targetUuid,
-            default => false,
-        };
+        return true;
     }
 
     private function scheduledBadgeIsOpen(Badge $badge): bool
@@ -366,7 +403,26 @@ class BadgeService
             return false;
         }
 
-        return now()->betweenIncluded($startsAt, $endsAt);
+        $now = now();
+
+        if (! $now->betweenIncluded($startsAt, $endsAt)) {
+            return false;
+        }
+
+        $dailyStartsAt = $badge->rule['daily_starts_at'] ?? null;
+        $dailyEndsAt = $badge->rule['daily_ends_at'] ?? null;
+
+        if (! $dailyStartsAt || ! $dailyEndsAt) {
+            return true;
+        }
+
+        $currentTime = $now->format('H:i');
+
+        if ($dailyStartsAt <= $dailyEndsAt) {
+            return $currentTime >= $dailyStartsAt && $currentTime <= $dailyEndsAt;
+        }
+
+        return $currentTime >= $dailyStartsAt || $currentTime <= $dailyEndsAt;
     }
 
     public function transferStealableByTrigger(string $trigger, Model $owner, ?string $reason = null, array $metadata = [], ?Model $awardedBy = null): Collection
@@ -384,6 +440,89 @@ class BadgeService
             $metadata,
             $awardedBy,
         ));
+    }
+
+    public function transferCompetitiveLeaderByTrigger(string $trigger, ?string $reason = null, array $metadata = [], ?Model $awardedBy = null): Collection
+    {
+        $leader = match ($trigger) {
+            'enigmagame.most_wins' => $this->uniqueLeaderFromQuery(
+                EnigmaGameInteraction::query()
+                    ->select('participant_type as owner_type', 'participant_id as owner_id')
+                    ->selectRaw('count(*) as total')
+                    ->where('type', EnigmaGameInteraction::TYPE_FINAL_ANSWER)
+                    ->where('result', 'correct')
+                    ->whereNotNull('participant_type')
+                    ->whereNotNull('participant_id')
+                    ->groupBy('participant_type', 'participant_id')
+            ),
+            'song_request.most_requests' => $this->uniqueLeaderFromQuery(
+                SongRequest::query()
+                    ->select('requester_type as owner_type', 'requester_id as owner_id')
+                    ->selectRaw('count(*) as total')
+                    ->where('type', 'music')
+                    ->whereNotNull('requester_type')
+                    ->whereNotNull('requester_id')
+                    ->groupBy('requester_type', 'requester_id')
+            ),
+            'poll.most_votes' => $this->uniqueLeaderFromQuery(
+                PollVote::query()
+                    ->select('voter_type as owner_type', 'voter_id as owner_id')
+                    ->selectRaw('count(*) as total')
+                    ->whereNotNull('voter_type')
+                    ->whereNotNull('voter_id')
+                    ->groupBy('voter_type', 'voter_id')
+            ),
+            default => null,
+        };
+
+        if (! $leader) {
+            $this->revokeActiveStealableByTrigger($trigger, 'Nenhum líder único para este emblema competitivo.');
+
+            return collect();
+        }
+
+        return $this->transferStealableByTrigger(
+            $trigger,
+            $leader,
+            $reason,
+            ['trigger' => $trigger, ...$metadata],
+            $awardedBy,
+        );
+    }
+
+    private function revokeActiveStealableByTrigger(string $trigger, ?string $reason = null): void
+    {
+        BadgeAssignment::query()
+            ->whereHas('badge', fn (Builder $query) => $query
+                ->stealable()
+                ->where('rule->trigger', $trigger))
+            ->active()
+            ->get()
+            ->each(fn (BadgeAssignment $assignment) => $this->revoke($assignment, $reason));
+    }
+
+    private function uniqueLeaderFromQuery(Builder $query): ?Model
+    {
+        $leaders = $query
+            ->orderByDesc('total')
+            ->limit(2)
+            ->get();
+
+        if ($leaders->isEmpty()) {
+            return null;
+        }
+
+        if ($leaders->count() > 1 && (int) $leaders[0]->total === (int) $leaders[1]->total) {
+            return null;
+        }
+
+        $model = $leaders[0]->owner_type;
+
+        if (! is_a($model, Model::class, true)) {
+            return null;
+        }
+
+        return $model::query()->find($leaders[0]->owner_id);
     }
 
     public function revoke(BadgeAssignment $assignment, ?string $reason = null): BadgeAssignment
@@ -487,21 +626,33 @@ class BadgeService
             return $data['rule'];
         }
 
-        if (! array_key_exists('trigger', $data)) {
-            return $currentRule;
-        }
-
         if (($data['type'] ?? null) === Badge::TYPE_FIXED) {
+            $targets = collect($data['targets'] ?? [])
+                ->map(fn (string|array|null $target) => is_array($target) ? $target : $this->splitTarget($target))
+                ->filter(fn (?array $target) => filled($target['type'] ?? null) && filled($target['uuid'] ?? null))
+                ->unique(fn (array $target) => "{$target['type']}:{$target['uuid']}")
+                ->values()
+                ->all();
+
+            if ($targets === [] && filled($data['target_type'] ?? null) && filled($data['target_uuid'] ?? null)) {
+                $targets = [[
+                    'type' => $data['target_type'],
+                    'uuid' => $data['target_uuid'],
+                ]];
+            }
+
             return [
-                'audience' => $data['audience'] ?? 'all',
-                'target_type' => ($data['audience'] ?? 'all') === 'target' ? ($data['target_type'] ?? null) : null,
-                'target_uuid' => ($data['audience'] ?? 'all') === 'target' ? ($data['target_uuid'] ?? null) : null,
+                'audience' => 'target',
+                'targets' => $targets,
+                'target_type' => $targets[0]['type'] ?? null,
+                'target_uuid' => $targets[0]['uuid'] ?? null,
             ];
         }
 
         if (($data['type'] ?? null) === Badge::TYPE_ACHIEVEMENT) {
             return [
                 'trigger' => $data['trigger'] ?? null,
+                'easter_egg' => ($data['trigger'] ?? null) === 'easter_egg' ? ($data['easter_egg'] ?? null) : null,
                 'threshold' => filled($data['threshold'] ?? null) ? (int) $data['threshold'] : null,
             ];
         }
@@ -511,13 +662,27 @@ class BadgeService
                 'trigger' => 'site.presence_window',
                 'starts_at' => $data['starts_at'] ?? null,
                 'ends_at' => $data['ends_at'] ?? null,
-                'audience' => $data['audience'] ?? 'all',
-                'target_type' => ($data['audience'] ?? 'all') === 'target' ? ($data['target_type'] ?? null) : null,
-                'target_uuid' => ($data['audience'] ?? 'all') === 'target' ? ($data['target_uuid'] ?? null) : null,
+                'daily_starts_at' => $data['daily_starts_at'] ?? null,
+                'daily_ends_at' => $data['daily_ends_at'] ?? null,
             ];
         }
 
+        if (! array_key_exists('trigger', $data)) {
+            return $currentRule;
+        }
+
         return filled($data['trigger'] ?? null) ? ['trigger' => $data['trigger']] : null;
+    }
+
+    private function splitTarget(string|array|null $target): ?array
+    {
+        if (! is_string($target) || ! str_contains($target, ':')) {
+            return null;
+        }
+
+        [$type, $uuid] = explode(':', $target, 2);
+
+        return compact('type', 'uuid');
     }
 
     private function activeBadge(string $code, string $type): Badge

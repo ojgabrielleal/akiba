@@ -2,9 +2,11 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\BadgeAssignment;
 use App\Services\OnairService;
 use App\Http\Resources\Onair\OnairResource;
 use App\Integrations\StreamService;
+use App\Support\AuthenticatedMember;
 
 use Illuminate\Support\Facades\File;
 use Illuminate\Http\Request;
@@ -45,9 +47,38 @@ class HandleInertiaRequestsMiddleware extends Middleware
             'push' => [
                 'vapid_public_key' => config('services.webpush.public_key'),
             ],
+            'newBadges' => fn () => $this->newBadges($request),
             'publicSiteVersion' => fn () => File::exists(storage_path('app/public-site-version.txt'))
                 ? trim((string) File::get(storage_path('app/public-site-version.txt')))
                 : 'provisory',
         ]);
+    }
+
+    private function newBadges(Request $request): array
+    {
+        $member = AuthenticatedMember::fromRequest($request);
+
+        if (! $member) {
+            return [];
+        }
+
+        return BadgeAssignment::query()
+            ->with('badge')
+            ->where('owner_type', $member->getMorphClass())
+            ->where('owner_id', $member->getKey())
+            ->whereNull('seen_at')
+            ->active()
+            ->latest('acquired_at')
+            ->limit(5)
+            ->get()
+            ->map(fn (BadgeAssignment $assignment) => [
+                'uuid' => $assignment->uuid,
+                'badge' => [
+                    'name' => $assignment->badge?->name,
+                    'image' => $assignment->badge?->image,
+                ],
+            ])
+            ->values()
+            ->all();
     }
 }

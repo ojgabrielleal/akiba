@@ -35,6 +35,7 @@ class HomeController extends Controller
                 'user' => request()->user(),
                 'active' => true,
                 'status' => 'published',
+                'created_since' => now()->subDays(15),
                 'interacted_since' => now()->subDays(15),
                 'order_by' => 'interactions_count',
                 'order_direction' => 'desc',

@@ -6,7 +6,6 @@
         CheckboxInput,
         FormField,
         Preview,
-        RadioInput,
         SelectInput,
         TextInput,
     } from "@/lib/components/private";
@@ -30,7 +29,18 @@
     const sourceOptions = [
         { value: "enigmagame", label: "Enigma Otaku", types: ["stealable"] },
         { value: "song_request", label: "Pedidos musicais", types: ["stealable", "achievement"] },
+        { value: "poll", label: "Enquete", types: ["stealable"] },
         { value: "podcast", label: "Podcasts", types: ["achievement"] },
+        { value: "easter_egg", label: "Easter Egg", types: ["achievement"] },
+    ];
+
+    const easterEggOptions = [
+        { value: "konami", label: "Konami Code" },
+        { value: "doom_iddqd", label: "DOOM - God Mode" },
+        { value: "mortal_kombat_abacabb", label: "Mortal Kombat - Blood Code" },
+        { value: "sonic_2_level_select", label: "Sonic 2 - Level Select" },
+        { value: "super_mario_continue", label: "Super Mario Bros. - Continue" },
+        { value: "page_404", label: "Página 404" },
     ];
 
     const triggerOptions = {
@@ -41,14 +51,21 @@
             song_request: [
                 { value: "song_request.most_requests", label: "Pessoa que mais fez pedidos", needsThreshold: false },
             ],
+            poll: [
+                { value: "poll.most_votes", label: "Quem mais respondeu enquetes", needsThreshold: false },
+            ],
         },
         achievement: {
             song_request: [
                 { value: "song_request.played_total", label: "Pedidos atendidos", needsThreshold: true },
+                { value: "song_request.played_ordinal", label: "Pedido atendido nº", needsThreshold: true },
             ],
             podcast: [
                 { value: "podcast.all_listened", label: "Todos os podcasts ouvidos", needsThreshold: false },
                 { value: "podcast.listened_total", label: "Quantidade de podcasts ouvidos", needsThreshold: true },
+            ],
+            easter_egg: [
+                { value: "easter_egg", label: "Easter Egg", needsThreshold: false },
             ],
         },
     };
@@ -62,13 +79,16 @@
         type: badgeSelected?.type ?? "fixed",
         source: badgeSelected?.source ?? "enigmagame",
         trigger: badgeSelected?.trigger ?? null,
+        easter_egg: badgeSelected?.easter_egg ?? null,
         threshold: badgeSelected?.threshold ?? null,
         starts_at: badgeSelected?.starts_at ?? null,
         ends_at: badgeSelected?.ends_at ?? null,
-        audience: badgeSelected?.audience ?? "all",
-        target: badgeSelected?.target_type && badgeSelected?.target_uuid ? `${badgeSelected.target_type}:${badgeSelected.target_uuid}` : null,
-        target_type: badgeSelected?.target_type ?? null,
-        target_uuid: badgeSelected?.target_uuid ?? null,
+        daily_starts_at: badgeSelected?.daily_starts_at ?? null,
+        daily_ends_at: badgeSelected?.daily_ends_at ?? null,
+        audience: "target",
+        targets: badgeSelected?.targets?.length
+            ? badgeSelected.targets.map((target) => `${target.type}:${target.uuid}`)
+            : (badgeSelected?.target_type && badgeSelected?.target_uuid ? [`${badgeSelected.target_type}:${badgeSelected.target_uuid}`] : []),
         is_active: badgeSelected?.is_active ?? true,
     });
 
@@ -92,29 +112,28 @@
     $: if ($form.type !== "scheduled") {
         $form.starts_at = null;
         $form.ends_at = null;
+        $form.daily_starts_at = null;
+        $form.daily_ends_at = null;
     }
 
     $: if (!needsThreshold) {
         $form.threshold = null;
     }
 
+    $: if ($form.trigger !== "easter_egg") {
+        $form.easter_egg = null;
+    }
+
+    $: if ($form.trigger === "easter_egg" && !easterEggOptions.some((item) => item.value === $form.easter_egg)) {
+        $form.easter_egg = easterEggOptions[0].value;
+    }
+
     $: if (!hasAudience) {
-        $form.audience = "all";
-        $form.target = null;
-        $form.target_type = null;
-        $form.target_uuid = null;
+        $form.targets = [];
     }
 
-    $: if (hasAudience && $form.audience === "all") {
-        $form.target = null;
-        $form.target_type = null;
-        $form.target_uuid = null;
-    }
-
-    $: if (hasAudience && $form.audience === "target" && $form.target) {
-        const [targetType, targetUuid] = $form.target.split(":");
-        $form.target_type = targetType;
-        $form.target_uuid = targetUuid;
+    $: if ($form.type === "scheduled") {
+        $form.targets = [];
     }
 
     $: if (hasSource && availableSources.length > 0 && !availableSources.some((item) => item.value === $form.source)) {
@@ -186,48 +205,22 @@
     </FormField>
 
 
-    {#if hasAudience}
-        <FormField for="audience" label="Alvo" error={$form.errors.audience} spacing="compact">
-            <div class="space-y-2">
-                <RadioInput
-                    id="audience-all"
-                    name="audience"
-                    value="all"
-                    label="Todos os usuários"
-                    bind:group={$form.audience}
-                    error={$form.errors.audience}
-                    required
-                />
-                <RadioInput
-                    id="audience-target"
-                    name="audience"
-                    value="target"
-                    label="Usuário selecionado"
-                    bind:group={$form.audience}
-                    error={$form.errors.audience}
-                    required
-                />
-            </div>
+    {#if $form.type === "fixed"}
+        <FormField for="targets" label="Usuários selecionados" help="Opcional. Sem seleção, ninguém recebe este emblema agora." error={$form.errors.targets} spacing="compact">
+            <SelectInput
+                variant="offcanvas"
+                name="targets"
+                id="targets"
+                class="min-h-56 py-2"
+                bind:value={$form.targets}
+                error={$form.errors.targets}
+                multiple
+            >
+                {#each badgeTargets ?? [] as target (`${target.type}:${target.uuid}`)}
+                    <option value={`${target.type}:${target.uuid}`}>{target.label} - {target.detail}</option>
+                {/each}
+            </SelectInput>
         </FormField>
-
-        {#if $form.audience === "target"}
-            <FormField for="target" label="Usuário" error={$form.errors.target_uuid ?? $form.errors.target_type} spacing="compact">
-                <SelectInput
-                    variant="offcanvas"
-                    name="target"
-                    id="target"
-                    bind:value={$form.target}
-                    error={$form.errors.target_uuid ?? $form.errors.target_type}
-                    required
-                >
-                    <option value={null}>Selecione um usuário</option>
-                    {#each badgeTargets ?? [] as target (`${target.type}:${target.uuid}`)}
-                        <option value={`${target.type}:${target.uuid}`}>{target.label} - {target.detail}</option>
-                    {/each}
-                </SelectInput>
-            </FormField>
-        {/if}
-
     {/if}
 
     {#if $form.type === "scheduled"}
@@ -246,6 +239,39 @@
                 bind:value={$form.starts_at}
                 error={$form.errors.starts_at}
                 required
+            />
+        </FormField>
+
+        <FormField
+            for="daily_starts_at"
+            label="Todo dia de"
+            help="Opcional. Restringe a elegibilidade a uma janela diária dentro do período do evento."
+            error={$form.errors.daily_starts_at}
+            spacing="compact"
+        >
+            <TextInput
+                variant="offcanvas"
+                type="time"
+                name="daily_starts_at"
+                id="daily_starts_at"
+                bind:value={$form.daily_starts_at}
+                error={$form.errors.daily_starts_at}
+            />
+        </FormField>
+
+        <FormField
+            for="daily_ends_at"
+            label="Todo dia até"
+            error={$form.errors.daily_ends_at}
+            spacing="compact"
+        >
+            <TextInput
+                variant="offcanvas"
+                type="time"
+                name="daily_ends_at"
+                id="daily_ends_at"
+                bind:value={$form.daily_ends_at}
+                error={$form.errors.daily_ends_at}
             />
         </FormField>
 
@@ -335,6 +361,28 @@
                     error={$form.errors.threshold}
                     required
                 />
+            </FormField>
+        {/if}
+
+        {#if $form.trigger === "easter_egg"}
+            <FormField
+                for="easter_egg"
+                label="Easter Egg"
+                error={$form.errors.easter_egg}
+                spacing="compact"
+            >
+                <SelectInput
+                    variant="offcanvas"
+                    name="easter_egg"
+                    id="easter_egg"
+                    bind:value={$form.easter_egg}
+                    error={$form.errors.easter_egg}
+                    required
+                >
+                    {#each easterEggOptions as option}
+                        <option value={option.value}>{option.label}</option>
+                    {/each}
+                </SelectInput>
             </FormField>
         {/if}
     {/if}

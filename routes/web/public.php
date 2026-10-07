@@ -8,8 +8,10 @@ use App\Http\Controllers\Api\External\OAuthAccount\OAuthAccountLogoutController;
 use App\Http\Controllers\Api\External\OAuthAccount\OAuthAccountRedirectController;
 use App\Http\Controllers\Public\EditorialController;
 use App\Http\Controllers\Public\AuthController;
+use App\Http\Controllers\Public\BadgeAssignmentController;
 use App\Http\Controllers\Public\PresenceController;
 use App\Http\Controllers\Public\ContactController;
+use App\Http\Controllers\Public\EasterEggController;
 use App\Http\Controllers\Public\HomeController;
 use App\Http\Controllers\Public\MediaController;
 use App\Http\Controllers\Public\PlayerController;
@@ -43,6 +45,17 @@ Route::post('/push-notification', [PushNotificationController::class, 'storePush
 Route::post('/presence', [PresenceController::class, 'store'])
     ->middleware('oauth.resolve')
     ->name('presence.store');
+
+Route::patch('/badge-assignment/{assignment:uuid}/seen', [BadgeAssignmentController::class, 'markAsSeen'])
+    ->middleware('oauth.resolve')
+    ->name('badge-assignment.seen');
+
+Route::get('/easter-eggs/catalog', [EasterEggController::class, 'catalog'])
+    ->name('easter-eggs.catalog');
+
+Route::post('/easter-eggs/{easterEgg}/unlock', [EasterEggController::class, 'unlock'])
+    ->middleware('oauth.resolve')
+    ->name('easter-eggs.unlock');
 
 Route::middleware(['oauth.resolve', 'inertia', 'auth'])->group(function () {
     Route::post('/song-request', [PlayerController::class, 'storeSongRequest'])

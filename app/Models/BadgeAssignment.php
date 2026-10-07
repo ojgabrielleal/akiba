@@ -23,6 +23,7 @@ class BadgeAssignment extends Model
         'reason',
         'metadata',
         'acquired_at',
+        'seen_at',
         'revoked_at',
         'revoked_reason',
     ];
@@ -30,6 +31,7 @@ class BadgeAssignment extends Model
     protected $casts = [
         'metadata' => 'array',
         'acquired_at' => 'datetime',
+        'seen_at' => 'datetime',
         'revoked_at' => 'datetime',
     ];
 

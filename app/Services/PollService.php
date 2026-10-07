@@ -15,6 +15,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class PollService
 {
     public function __construct(
+        private BadgeService $badges,
     ) {}
 
     public function deactivate(Poll $poll): Poll
@@ -65,6 +66,11 @@ class PollService
 
             return $vote;
         });
+
+        $this->badges->transferCompetitiveLeaderByTrigger(
+            'poll.most_votes',
+            'Pessoa que mais respondeu enquetes.',
+        );
 
         return $vote;
     }

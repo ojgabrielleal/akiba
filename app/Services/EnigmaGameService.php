@@ -204,17 +204,9 @@ class EnigmaGameService
 
     private function transferMostWinsBadge(): void
     {
-        $leader = $this->uniqueMostWinsLeader();
-
-        if (! $leader) {
-            return;
-        }
-
-        $this->badges->transferStealableByTrigger(
+        $this->badges->transferCompetitiveLeaderByTrigger(
             'enigmagame.most_wins',
-            $leader,
             'Pessoa que mais venceu enigmas.',
-            ['trigger' => 'enigmagame.most_wins'],
         );
     }
 

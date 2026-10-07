@@ -120,6 +120,11 @@ class LocutionService
 
         if ($songRequest->type === 'music' && $songRequest->was_reproduced && $songRequest->requester) {
             $this->badges->awardSongRequestPlayedAchievements($songRequest->requester);
+            $this->badges->awardSongRequestOrdinalAchievements($songRequest);
+            $this->badges->transferCompetitiveLeaderByTrigger(
+                'song_request.most_requests',
+                'Pessoa que mais fez pedidos musicais.',
+            );
         }
 
         return $songRequest;
