@@ -2,6 +2,9 @@ import "./bootstrap";
 import { createInertiaApp } from "@inertiajs/svelte";
 import { mount } from "svelte";
 import PageTransitionLoader from "@/lib/components/public/feedback/PageTransitionLoader.svelte";
+import { loadGoogleAdsense } from "@/lib/utils/adsense";
+
+loadGoogleAdsense().catch(() => {});
 
 if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {

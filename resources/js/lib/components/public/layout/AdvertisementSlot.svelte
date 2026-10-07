@@ -1,5 +1,6 @@
 <script>
     import { onDestroy, onMount, tick } from "svelte";
+    import { pushGoogleAdSlot } from "@/lib/utils/adsense";
 
     export let image = null;
     export let href = null;
@@ -24,30 +25,13 @@
         pushAdsense();
     }
 
-    const loadAdsenseScript = () => {
-        if (typeof window === "undefined" || typeof document === "undefined") return Promise.resolve();
-        if (window.adsbygoogle?.loaded || document.querySelector(`script[src*="pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adClient}"]`)) return Promise.resolve();
-
-        return new Promise((resolve, reject) => {
-            const script = document.createElement("script");
-            script.async = true;
-            script.crossOrigin = "anonymous";
-            script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adClient}`;
-            script.onload = resolve;
-            script.onerror = reject;
-            document.head.appendChild(script);
-        });
-    };
-
     const pushAdsense = async () => {
         if (!shouldRenderAdsense || !hasMeasuredSlot || !adElement || pushedAdsense || typeof window === "undefined") return;
 
         await tick();
 
         try {
-            await loadAdsenseScript();
-            window.adsbygoogle = window.adsbygoogle || [];
-            window.adsbygoogle.push({});
+            await pushGoogleAdSlot(adClient);
             pushedAdsense = true;
         } catch (error) {
             console.warn("AdSense: não foi possível carregar o bloco de anúncio.", error);
