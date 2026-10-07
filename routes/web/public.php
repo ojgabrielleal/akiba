@@ -46,7 +46,7 @@ Route::post('/presence', [PresenceController::class, 'store'])
     ->middleware('oauth.resolve')
     ->name('presence.store');
 
-Route::patch('/badge-assignment/{assignment:uuid}/seen', [BadgeAssignmentController::class, 'markAsSeen'])
+Route::match(['post', 'patch'], '/badge-assignment/{assignment:uuid}/seen', [BadgeAssignmentController::class, 'markAsSeen'])
     ->middleware('oauth.resolve')
     ->name('badge-assignment.seen');
 

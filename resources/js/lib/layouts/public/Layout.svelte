@@ -72,7 +72,7 @@
 
         acknowledgingBadge = true;
 
-        router.patch(`/badge-assignment/${activeBadgeAssignment.uuid}/seen`, {}, {
+        router.post(`/badge-assignment/${activeBadgeAssignment.uuid}/seen`, {}, {
             preserveScroll: true,
             preserveState: true,
             only: ["newBadges"],
