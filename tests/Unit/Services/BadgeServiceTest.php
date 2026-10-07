@@ -236,6 +236,33 @@ class BadgeServiceTest extends TestCase
         $this->assertDatabaseCount('badge_assignments', 1);
     }
 
+    public function test_update_fixed_badge_revokes_unselected_targets(): void
+    {
+        $firstOwner = User::factory()->create();
+        $secondOwner = OAuthAccount::factory()->create();
+        $service = app(BadgeService::class);
+
+        $badge = $service->store([
+            'code' => 'equipe_especial',
+            'name' => 'Equipe Especial',
+            'type' => Badge::TYPE_FIXED,
+            'targets' => [
+                "user:{$firstOwner->uuid}",
+                "oauth_account:{$secondOwner->uuid}",
+            ],
+        ]);
+
+        $service->update($badge, [
+            'type' => Badge::TYPE_FIXED,
+            'targets' => [],
+        ]);
+
+        $this->assertCount(0, $service->ownedBy($firstOwner));
+        $this->assertCount(0, $service->ownedBy($secondOwner));
+        $this->assertDatabaseCount('badge_assignments', 2);
+        $this->assertSame(2, BadgeAssignment::query()->revoked()->count());
+    }
+
 
     public function test_destroy_deletes_badge(): void
     {

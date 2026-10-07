@@ -39,7 +39,7 @@ class BadgeService
             'is_active' => $data['is_active'] ?? true,
         ]));
 
-        $this->awardConfiguredFixedBadge($badge);
+        $this->syncConfiguredFixedBadge($badge);
 
         return $badge;
     }
@@ -65,18 +65,35 @@ class BadgeService
             return $badge;
         });
 
-        $this->awardConfiguredFixedBadge($badge);
+        $this->syncConfiguredFixedBadge($badge);
 
         return $badge;
     }
 
-    private function awardConfiguredFixedBadge(Badge $badge): void
+    private function syncConfiguredFixedBadge(Badge $badge): void
     {
         if ($badge->type !== Badge::TYPE_FIXED || ! $badge->is_active) {
             return;
         }
 
-        foreach ($this->configuredFixedOwners($badge) as $owner) {
+        $owners = $this->configuredFixedOwners($badge);
+        $ownerKeys = $owners
+            ->mapWithKeys(fn (Model $owner) => [$this->ownerKey($owner) => true])
+            ->all();
+
+        BadgeAssignment::query()
+            ->where('badge_id', $badge->id)
+            ->active()
+            ->get()
+            ->each(function (BadgeAssignment $assignment) use ($ownerKeys): void {
+                $key = "{$assignment->owner_type}:{$assignment->owner_id}";
+
+                if (! isset($ownerKeys[$key])) {
+                    $this->revoke($assignment, 'Emblema fixo removido pela administração.');
+                }
+            });
+
+        foreach ($owners as $owner) {
             $this->awardFixed(
                 $badge->code,
                 $owner,
@@ -84,6 +101,11 @@ class BadgeService
                 ['trigger' => 'admin.fixed_award'],
             );
         }
+    }
+
+    private function ownerKey(Model $owner): string
+    {
+        return "{$owner->getMorphClass()}:{$owner->getKey()}";
     }
 
     private function configuredFixedOwners(Badge $badge): Collection
