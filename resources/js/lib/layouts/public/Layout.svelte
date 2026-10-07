@@ -182,6 +182,7 @@
     bind:this={badgeModalRef}
     title="Novo emblema desbloqueado!"
     size="sm"
+    bordered={false}
     closeOnBackdrop={false}
 >
     {#if activeBadgeAssignment}

@@ -8,6 +8,7 @@
     export let label = title || "Janela de diálogo";
     export let closeOnBackdrop = true;
     export let size = "md";
+    export let bordered = true;
 
     let visible = false;
     let panel;
@@ -83,7 +84,7 @@
             class={[
                 "relative w-full rounded-t-xl rounded-b-xl bg-blue-ocean shadow-[0_24px_80px_rgba(0,0,0,0.55)] [[data-public-theme=akiba]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_90%,var(--color-blue-night))] [[data-public-theme=night]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_90%,var(--color-blue-night))]",
                 themeClass("bg", "suspense-aurora", { fixed: true, theme: "light" }),
-                "[[data-public-theme=light]_&]:border [[data-public-theme=light]_&]:border-blue-night/10 [[data-public-theme=light]_&]:shadow-2xl",
+                bordered && "[[data-public-theme=light]_&]:border [[data-public-theme=light]_&]:border-blue-night/10 [[data-public-theme=light]_&]:shadow-2xl",
                 sizes[size] ?? sizes.md,
             ]}
             role="dialog"
