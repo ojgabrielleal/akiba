@@ -46,6 +46,7 @@ Scope: `resources/js`.
 * Mobile-first; prefer responsive components over separate viewport versions unless interaction/markup genuinely differs.
 * Use existing tokens and components; add new colors, gradients or filters to `css/app.css` before use.
 * Public themes may change colors, gradients and filters only, never layout, spacing, typography, proportions, markup or elements.
+* Public modals in the light theme use `suspense-sandstone` for the modal title bar and poll option cards, with text in `blue-night`. Poll progress tracks inside those options use `suspense-honeycream`, while the filled progress remains orange. Poll option cards must not show an orange border on hover or selection; selection is indicated by the radio control.
 * `orange-amber`: clickable/actions and their hover/focus/active states.
 * `orange-citric` or `orange-morning`: non-clickable elements; displayed like metrics may use `orange-amber`.
 * Clickable text cards/lists use accessible focus, `transition duration-300 ease-out`, slight `hover:-translate-y-0.5` and `motion-reduce`; image-only visuals use slight scale only.

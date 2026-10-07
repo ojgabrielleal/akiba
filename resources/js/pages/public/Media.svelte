@@ -395,7 +395,7 @@
         </Section>
 
         <Modal bind:this={enigmaRulesModalRef} title="Como jogar" size="md">
-            <div class="font-noto-sans text-blue-night [[data-public-theme=akiba]_&]:text-suspense-aurora/80 [[data-public-theme=night]_&]:text-suspense-aurora/80">
+            <div class="font-noto-sans text-blue-night [[data-public-theme=light]_&]:!text-[#000014] [[data-public-theme=akiba]_&]:text-suspense-aurora/80 [[data-public-theme=night]_&]:text-suspense-aurora/80">
                 <p class="text-sm leading-relaxed">
                     Um título, uma imagem e uma frase estranha serão apresentados. Sua missão é descobrir, usando essas informações e as respostas da comunidade, qual é o anime.
                 </p>
@@ -409,9 +409,9 @@
                         <ul class="mt-3 grid gap-2 text-sm leading-relaxed">
                             <li><span class="font-black uppercase italic text-green-mint">Sim</span> — a resposta é positiva e ajuda a descobrir o anime.</li>
                             <li><span class="font-black uppercase italic text-red-crimson">Não</span> — a resposta é negativa, mas ajuda a descobrir o anime.</li>
-                            <li><span class="font-black uppercase italic text-neutral-gray [[data-public-theme=akiba]_&]:text-suspense-aurora/60 [[data-public-theme=night]_&]:text-suspense-aurora/60">Banal</span> — a resposta não ajuda a descobrir o anime.</li>
+                            <li><span class="font-black uppercase italic text-neutral-gray [[data-public-theme=light]_&]:!text-[#5d6575] [[data-public-theme=akiba]_&]:text-suspense-aurora/60 [[data-public-theme=night]_&]:text-suspense-aurora/60">Banal</span> — a resposta não ajuda a descobrir o anime.</li>
                         </ul>
-                        <p class="mt-3 rounded-md bg-orange-morning px-3 py-2 text-sm font-bold text-blue-night">
+                        <p class="mt-3 rounded-md bg-orange-morning px-3 py-2 text-sm font-bold text-blue-night [[data-public-theme=light]_&]:!text-[#000014]">
                             Atenção: Você pode fazer apenas uma pergunta por dia.
                         </p>
                     </section>
@@ -426,7 +426,7 @@
                         </p>
                     </section>
 
-                    <section class="rounded-md bg-blue-ocean px-4 py-3 text-suspense-aurora [[data-public-theme=akiba]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_76%,var(--color-blue-night))] [[data-public-theme=night]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_76%,var(--color-blue-night))]">
+                    <section class="rounded-md bg-blue-ocean px-4 py-3 text-suspense-aurora [[data-public-theme=light]_&]:!text-[#fffaf3] [[data-public-theme=akiba]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_76%,var(--color-blue-night))] [[data-public-theme=night]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_76%,var(--color-blue-night))]">
                         <h3 class="font-black uppercase italic text-orange-citric">Dica</h3>
                         <p class="mt-2 text-sm leading-relaxed">
                             Não tente descobrir uma sinopse inteira de uma vez. Faça perguntas específicas, como:
@@ -453,7 +453,7 @@
                         <p class="mt-2 text-sm leading-relaxed">
                             O Enigma Otaku fica disponível durante uma semana, mesmo que alguém descubra a resposta antes. Quando a semana terminar, a solução será revelada.
                         </p>
-                        <p class="mt-3 rounded-md bg-orange-morning px-3 py-2 text-sm font-bold text-blue-night">
+                        <p class="mt-3 rounded-md bg-orange-morning px-3 py-2 text-sm font-bold text-blue-night [[data-public-theme=light]_&]:!text-[#000014]">
                             Mas existe uma recompensa especial: a primeira pessoa a acertar o anime poderá dizer que é o Maior Otaku do Brasil. Além de ganhar uma Badge no seu Perfil da Rede Akiba.
                         </p>
                     </section>
@@ -464,16 +464,16 @@
         <Modal bind:this={pollModalRef} title="Enquete" size="sm">
             {#if selectedPoll}
                 <form on:submit|preventDefault={submitVote}>
-                    <h2 class="font-noto-sans text-xl font-extrabold uppercase italic leading-tight text-blue-night">
+                    <h2 class="font-noto-sans text-xl font-extrabold uppercase italic leading-tight text-blue-night [[data-public-theme=light]_&]:!text-[#000014] [[data-public-theme=akiba]_&]:text-suspense-aurora [[data-public-theme=night]_&]:text-suspense-aurora">
                         {selectedPoll.question}
                     </h2>
                     <div class="mt-5 grid gap-2.5">
                         {#each selectedPoll.options as option (option.uuid)}
                             <label
                                 class={[
-                                    "grid cursor-pointer grid-cols-[1.35rem_1fr] gap-2.5 rounded-md border-2 bg-suspense-aurora px-3 py-2.5 text-blue-night hover:border-orange-amber hover:bg-orange-amber/5",
+                                    "grid cursor-pointer grid-cols-[1.35rem_1fr] gap-2.5 rounded-md border-2 bg-suspense-aurora px-3 py-2.5 text-blue-night hover:bg-orange-amber/5 [[data-public-theme=light]_&]:!bg-suspense-sandstone [[data-public-theme=light]_&]:!text-[#000014] [[data-public-theme=akiba]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_76%,var(--color-blue-night))] [[data-public-theme=akiba]_&]:text-suspense-aurora [[data-public-theme=akiba]_&]:hover:bg-orange-amber/10 [[data-public-theme=night]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_76%,var(--color-blue-night))] [[data-public-theme=night]_&]:text-suspense-aurora [[data-public-theme=night]_&]:hover:bg-orange-amber/10",
                                     publicAnimations.buttonInteractive,
-                                    selectedOption === option.uuid ? "border-orange-amber shadow-[inset_0_0_0_1px_theme(colors.orange-amber)]" : "border-blue-ocean/25",
+                                    "border-blue-ocean/25 [[data-public-theme=akiba]_&]:border-blue-skywave/20 [[data-public-theme=night]_&]:border-blue-skywave/20",
                                 ]}
                             >
                                 <input
@@ -485,7 +485,7 @@
                                 />
                                 <span class="min-w-0 text-center">
                                     <span class="block break-words font-noto-sans text-base font-extrabold uppercase italic leading-tight">{option.option}</span>
-                                    <span class="mt-2 flex h-2 min-w-30 overflow-hidden rounded-full bg-blue-night/15">
+                                    <span class="mt-2 flex h-2 min-w-30 overflow-hidden rounded-full bg-blue-night/15 [[data-public-theme=light]_&]:!bg-suspense-honeycream [[data-public-theme=akiba]_&]:bg-suspense-aurora/20 [[data-public-theme=night]_&]:bg-suspense-aurora/20">
                                         <span
                                             class={[
                                                 "rounded-full bg-orange-amber",
@@ -494,18 +494,18 @@
                                             style={`width: ${optionPercent(selectedPoll, option)}%`}
                                         ></span>
                                     </span>
-                                    <span class="mt-1 block text-right font-noto-sans text-[0.65rem] font-extrabold uppercase italic text-blue-ocean">
+                                    <span class="mt-1 block text-right font-noto-sans text-[0.65rem] font-extrabold uppercase italic text-blue-ocean [[data-public-theme=akiba]_&]:text-orange-morning [[data-public-theme=night]_&]:text-orange-morning">
                                         {option.votes} votos
                                     </span>
                                 </span>
                             </label>
                         {/each}
                     </div>
-                    <div class="mt-6 border-t border-blue-night/10 pt-5">
+                    <div class="mt-6 border-t border-blue-night/10 pt-5 [[data-public-theme=akiba]_&]:border-suspense-aurora/15 [[data-public-theme=night]_&]:border-suspense-aurora/15">
                         <div class="flex flex-wrap items-center justify-between gap-3">
                             <div class="font-noto-sans font-bold uppercase italic">
-                                <span class="text-3xl font-extrabold text-blue-night">{selectedPoll.total_votes}</span>
-                                <span class="text-xs text-blue-ocean">Votos</span>
+                                <span class="text-3xl font-extrabold text-blue-night [[data-public-theme=light]_&]:!text-[#000014] [[data-public-theme=akiba]_&]:text-suspense-aurora [[data-public-theme=night]_&]:text-suspense-aurora">{selectedPoll.total_votes}</span>
+                                <span class="text-xs text-blue-ocean [[data-public-theme=light]_&]:!text-[#000014] [[data-public-theme=akiba]_&]:text-orange-morning [[data-public-theme=night]_&]:text-orange-morning">Votos</span>
                             </div>
                             <AuthGuard {oauth} compact buttonLabel="Entre para votar" filters="filter-blue-night" buttonClass="text-blue-night">
                                 <Button type="submit" variant="primary" shape="pill" loading={voting} disabled={!selectedOption || selectedPoll.has_voted}>
@@ -513,7 +513,7 @@
                                 </Button>
                             </AuthGuard>
                         </div>
-                        <p class="mt-4 font-noto-sans text-[0.7rem] font-bold uppercase italic leading-relaxed text-blue-ocean">
+                        <p class="mt-4 font-noto-sans text-[0.7rem] font-bold uppercase italic leading-relaxed text-blue-ocean [[data-public-theme=akiba]_&]:text-suspense-aurora/70 [[data-public-theme=night]_&]:text-suspense-aurora/70">
                             Vote com sabedoria. Apos confirmar, o voto nao pode ser mudado e voce nao podera votar novamente.
                         </p>
                     </div>

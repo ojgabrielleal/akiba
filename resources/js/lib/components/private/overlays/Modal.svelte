@@ -65,7 +65,7 @@
     >
         <div
             class={[
-                "my-auto w-full min-w-0 border-0 bg-suspense-aurora shadow-none outline-none ring-0 focus:outline-none focus:ring-0",
+                "relative my-auto w-full min-w-0 border-0 bg-suspense-aurora shadow-none outline-none ring-0 focus:outline-none focus:ring-0",
                 title ? "rounded-t-2xl rounded-b-md" : "rounded-md",
                 sizes[size] ?? sizes.sm,
             ]}
@@ -77,14 +77,13 @@
             on:click={block}
         >
             {#if title}
-                <div class="grid grid-cols-[1.5rem_1fr_1.5rem] items-center rounded-t-md bg-blue-marinho p-4">
-                    <span aria-hidden="true"></span>
+                <div class="flex items-center justify-center rounded-t-md bg-blue-marinho p-4">
                     <h2 id={titleId} class="text-center text-suspense-aurora font-bold italic uppercase">
                         {title}
                     </h2>
                     <button
                         type="button"
-                        class="flex cursor-pointer justify-end transition-opacity hover:opacity-80"
+                        class="absolute right-3 top-3 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-suspense-aurora shadow-md transition duration-300 ease-out hover:-translate-y-0.5 hover:bg-neutral-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric sm:-right-5 sm:-top-8 sm:h-6 sm:w-6 sm:shadow-lg motion-reduce:transform-none motion-reduce:transition-none"
                         aria-label="Fechar"
                         on:click={close}
                     >
@@ -92,7 +91,7 @@
                             src="/svg/close.svg"
                             alt=""
                             aria-hidden="true"
-                            class="w-4 invert brightness-0"
+                            class="w-3 brightness-0"
                             loading="lazy"
                         />
                     </button>

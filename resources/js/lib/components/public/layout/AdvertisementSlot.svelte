@@ -1,10 +1,52 @@
 <script>
+    import { onMount, tick } from "svelte";
+
     export let image = null;
     export let href = null;
     export let alt = "Anúncio";
     export let mirrored = false;
+    export let adsense = true;
+    export let adClient = "ca-pub-8675050263618388";
+    export let adSlot = "8597417495";
     let className = "";
     export { className as class };
+
+    let adElement;
+
+    $: shouldRenderAdsense = adsense && !image && !href && adClient && adSlot;
+
+    const loadAdsenseScript = () => {
+        if (typeof window === "undefined" || typeof document === "undefined") return Promise.resolve();
+        if (window.adsbygoogle?.loaded || document.querySelector(`script[src*="pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adClient}"]`)) return Promise.resolve();
+
+        return new Promise((resolve, reject) => {
+            const script = document.createElement("script");
+            script.async = true;
+            script.crossOrigin = "anonymous";
+            script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adClient}`;
+            script.onload = resolve;
+            script.onerror = reject;
+            document.head.appendChild(script);
+        });
+    };
+
+    const pushAdsense = async () => {
+        if (!shouldRenderAdsense || !adElement || typeof window === "undefined") return;
+
+        await tick();
+
+        try {
+            await loadAdsenseScript();
+            window.adsbygoogle = window.adsbygoogle || [];
+            window.adsbygoogle.push({});
+        } catch (error) {
+            console.warn("AdSense: não foi possível carregar o bloco de anúncio.", error);
+        }
+    };
+
+    onMount(() => {
+        pushAdsense();
+    });
 </script>
 
 <svelte:element
@@ -71,5 +113,17 @@
                 </p>
             </div>
         </div>
+
+        {#if shouldRenderAdsense}
+            <ins
+                bind:this={adElement}
+                class="adsbygoogle absolute inset-0 z-10 block h-full w-full overflow-hidden [clip-path:inherit]"
+                style="display:block;width:100%;height:100%;"
+                data-ad-client={adClient}
+                data-ad-slot={adSlot}
+                data-ad-format="auto"
+                data-full-width-responsive="true"
+            ></ins>
+        {/if}
     {/if}
 </svelte:element>
