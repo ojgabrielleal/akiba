@@ -224,6 +224,23 @@ class BadgeService
         });
     }
 
+    public function awardEnigmaGameCorrectAchievements(Model $owner): Collection
+    {
+        $correctTotal = EnigmaGameInteraction::query()
+            ->where('type', EnigmaGameInteraction::TYPE_FINAL_ANSWER)
+            ->where('result', 'correct')
+            ->where('participant_type', $owner->getMorphClass())
+            ->where('participant_id', $owner->getKey())
+            ->count();
+
+        return $this->awardThresholdAchievements(
+            'enigmagame.correct_total',
+            $owner,
+            $correctTotal,
+            'Meta de enigmas vencidos alcançada.',
+        );
+    }
+
     public function awardSongRequestPlayedAchievements(Model $owner): Collection
     {
         $playedTotal = SongRequest::query()

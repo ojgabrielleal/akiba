@@ -27,7 +27,7 @@
     }
 
     const sourceOptions = [
-        { value: "enigmagame", label: "Enigma Otaku", types: ["stealable"] },
+        { value: "enigmagame", label: "Enigma Otaku", types: ["stealable", "achievement"] },
         { value: "song_request", label: "Pedidos musicais", types: ["stealable", "achievement"] },
         { value: "poll", label: "Enquete", types: ["stealable"] },
         { value: "podcast", label: "Podcasts", types: ["achievement"] },
@@ -56,6 +56,9 @@
             ],
         },
         achievement: {
+            enigmagame: [
+                { value: "enigmagame.correct_total", label: "Enigmas vencidos", needsThreshold: true },
+            ],
             song_request: [
                 { value: "song_request.played_total", label: "Pedidos atendidos", needsThreshold: true },
                 { value: "song_request.played_ordinal", label: "Pedido atendido nº", needsThreshold: true },

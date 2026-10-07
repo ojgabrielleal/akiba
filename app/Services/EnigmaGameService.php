@@ -183,6 +183,10 @@ class EnigmaGameService
             if ($interaction->type === EnigmaGameInteraction::TYPE_FINAL_ANSWER
                 && $interaction->result === 'correct') {
                 $this->transferMostWinsBadge();
+
+                if ($interaction->participant) {
+                    $this->badges->awardEnigmaGameCorrectAchievements($interaction->participant);
+                }
             }
 
             if ($shouldNotify) {
