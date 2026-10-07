@@ -9,6 +9,7 @@ use App\Services\PostService;
 use App\Services\SongRequestService;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Concerns\HasFlashMessages;
 
 use App\Http\Requests\RadioStation\StoreRadioStationRequest;
 use App\Http\Requests\RadioStation\UpdateRadioStationRequest;
@@ -26,6 +27,8 @@ use Inertia\Inertia;
 
 class ReportsController extends Controller
 {
+    use HasFlashMessages;
+
     private $render = 'private/Reports';
 
     public function __construct(
