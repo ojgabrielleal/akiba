@@ -82,7 +82,7 @@
         <div
             bind:this={panel}
             class={[
-                "relative w-full rounded-t-xl rounded-b-xl bg-blue-ocean shadow-[0_24px_80px_rgba(0,0,0,0.55)] [[data-public-theme=akiba]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_90%,var(--color-blue-night))] [[data-public-theme=night]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_90%,var(--color-blue-night))]",
+                "relative w-full rounded-t-xl rounded-b-xl bg-blue-ocean shadow-[0_24px_80px_rgba(0,0,0,0.55)] outline-none focus:outline-none focus-visible:outline-none [[data-public-theme=akiba]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_90%,var(--color-blue-night))] [[data-public-theme=night]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_90%,var(--color-blue-night))]",
                 themeClass("bg", "suspense-aurora", { fixed: true, theme: "light" }),
                 bordered && "[[data-public-theme=light]_&]:border [[data-public-theme=light]_&]:border-blue-night/10 [[data-public-theme=light]_&]:shadow-2xl",
                 sizes[size] ?? sizes.md,
