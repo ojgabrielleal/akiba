@@ -28,6 +28,11 @@
         "label": "Light-Novels",
         "icon": "/svg/light-novel.svg"
     },
+    "tokusatsu": {
+        "value": "tokusatsu",
+        "label": "Tokusatsu",
+        "icon": "/svg/tokusatsu.svg"
+    },
     "lists": {
         "value": "lists",
         "label": "Listas",

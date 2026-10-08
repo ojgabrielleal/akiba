@@ -17,7 +17,7 @@ class PostTagFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->randomElement(['news', 'updates', 'anime', 'events', 'manga', 'light-novel', 'lists', 'curiosities', 'tops', 'first-impression']),
+            'name' => fake()->randomElement(['news', 'updates', 'anime', 'events', 'manga', 'light-novel', 'tokusatsu', 'lists', 'curiosities', 'tops', 'first-impression']),
         ];
     }
 }

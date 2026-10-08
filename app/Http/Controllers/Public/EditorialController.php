@@ -15,7 +15,7 @@ class EditorialController extends Controller
 
     public function news()
     {
-        $categories = ['news', 'anime', 'manga', 'light-novel', 'events'];
+        $categories = ['news', 'anime', 'manga', 'light-novel', 'tokusatsu', 'events'];
         $tag = request('tag', $categories[0]);
 
         return Inertia::render('public/Editorial', [

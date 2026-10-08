@@ -66,8 +66,8 @@
     <h1 class="sr-only">Rádio</h1>
     <div class="public-page-background bg-blue-night">
         <RadioProgramGrid {programs} />
-        <RadioRankingGrid {ranking} />
         <RadioListenerMonthGrid {listenerMonth} />
+        <RadioRankingGrid {ranking} />
 
         <section class="bg-blue-marinho pb-8">
             <EditorialTitle title="Sobre nós" compact topSpacing="" />

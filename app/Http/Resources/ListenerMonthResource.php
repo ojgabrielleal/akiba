@@ -43,6 +43,32 @@ class ListenerMonthResource extends JsonResource
                 'metadata' => $topAnime['metadata'] ?? null,
             ],
             'requests_total' => $this->requests_total,
+            'badges' => $this->badges(),
         ];
+    }
+
+    private function badges(): array
+    {
+        if (! $this->oauthAccount) {
+            return [];
+        }
+
+        return $this->oauthAccount
+            ->badgeAssignments()
+            ->active()
+            ->with('badge')
+            ->latest('acquired_at')
+            ->get()
+            ->map(fn ($assignment) => [
+                'uuid' => $assignment->badge?->uuid,
+                'name' => $assignment->badge?->name,
+                'code' => $assignment->badge?->code,
+                'image' => $assignment->badge?->image,
+                'type' => $assignment->badge?->type,
+                'acquired_at' => $assignment->acquired_at?->setTimezone('America/Sao_Paulo')->format('d/m/Y H:i'),
+            ])
+            ->filter(fn (array $badge) => filled($badge['uuid']))
+            ->values()
+            ->all();
     }
 }

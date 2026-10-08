@@ -5,6 +5,7 @@
     export let listenerMonth = null;
 
     $: listener = listenerMonth?.current?.data ?? null;
+    $: badges = listener?.badges ?? [];
     $: topAnime = listener?.top_anime?.name ? listener.top_anime : null;
     $: displayedAnime = topAnime ?? {
         name: listener?.favorite_music?.production,
@@ -68,6 +69,48 @@
                                 Top 1 anime
                             </div>
                         </div>
+                    </div>
+                    <div class="mt-5 rounded-md bg-blue-marinho p-4">
+                        <div class="mb-3 flex items-center justify-between gap-3">
+                            <h2 class="font-noto-sans text-sm font-black uppercase italic text-orange-citric">
+                                Emblemas
+                            </h2>
+                            <span class="font-noto-sans text-xs font-extrabold uppercase italic text-suspense-aurora/65">
+                                {badges.length}
+                            </span>
+                        </div>
+
+                        {#if badges.length > 0}
+                            <ul class="grid grid-cols-3 gap-x-3 gap-y-5 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6">
+                                {#each badges as badge (badge.uuid)}
+                                    <li class="min-w-0 text-center">
+                                        <div class="mx-auto flex size-16 items-center justify-center overflow-hidden rounded-md bg-blue-night/55">
+                                            {#if badge.image}
+                                                <img
+                                                    src={badge.image}
+                                                    alt={badge.name}
+                                                    class="h-full w-full object-contain"
+                                                    loading="lazy"
+                                                />
+                                            {:else}
+                                                <div class="flex h-full w-full items-center justify-center rounded-md bg-orange-amber font-noto-sans text-xl font-black italic text-blue-night">
+                                                    ★
+                                                </div>
+                                            {/if}
+                                        </div>
+                                        <p class="mt-1 line-clamp-2 font-noto-sans text-[0.65rem] font-black leading-tight text-suspense-aurora" title={badge.name}>
+                                            {badge.name}
+                                        </p>
+                                    </li>
+                                {/each}
+                            </ul>
+                        {:else}
+                            <div class="flex min-h-24 items-center justify-center rounded-md border border-dashed border-suspense-aurora/25 px-4 text-center">
+                                <p class="font-noto-sans text-sm font-semibold text-suspense-aurora/60">
+                                    Nenhum emblema conquistado ainda.
+                                </p>
+                            </div>
+                        {/if}
                     </div>
                 </div>
             </div>

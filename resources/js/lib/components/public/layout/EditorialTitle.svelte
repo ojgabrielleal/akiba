@@ -17,11 +17,11 @@
     <header
         class={[
             "public-editorial-title-hero relative isolate overflow-hidden bg-cover bg-right bg-no-repeat lg:bg-contain",
-            compact ? "py-3" : "flex h-[90px] items-center",
+            compact ? "flex min-h-14 items-center py-3" : "flex h-[90px] items-center",
         ]}
         style="--public-editorial-title-texture: url('/img/textures/tecnologia_texture.svg'); background-image: var(--gradient-blue-ocean-cerulean);"
     >
-        <span class="pointer-events-none absolute inset-0 z-0 bg-right bg-no-repeat [background-size:cover] lg:[background-size:contain]" style="background-image: var(--public-editorial-title-texture); filter: var(--public-title-texture-filter);" aria-hidden="true"></span>
+        <span class={["editorial-title-texture pointer-events-none absolute inset-0 z-0 bg-no-repeat [background-size:cover] lg:[background-size:contain]", compact ? "editorial-title-texture-compact" : ""]} style="background-image: var(--public-editorial-title-texture);" aria-hidden="true"></span>
         <div class="container-page relative z-10">
             <h1 class={["public-editorial-title-heading break-words text-center font-noto-sans text-4xl font-black italic uppercase leading-none text-[#ffffff] sm:text-5xl lg:text-5xl", headingClass]}>
                 {title}
@@ -47,6 +47,17 @@
 </div>
 
 <style>
+    .editorial-title-texture {
+        background-position: right center;
+        filter: var(--public-title-texture-filter) brightness(0.3);
+    }
+
+    @media (min-width: 1024px) {
+        .editorial-title-texture {
+            filter: var(--public-title-texture-filter);
+        }
+    }
+
     .editorial-title-list :global(a),
     .editorial-title-list :global(button) {
         align-items: center;
