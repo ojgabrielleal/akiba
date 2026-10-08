@@ -231,11 +231,9 @@
                             variant="pill"
                             class="disabled:cursor-not-allowed disabled:opacity-50"
                             disabled
-                            value="reviews"
+                            value={null}
                         >
-                            <option value="reviews">
-                                Reviews
-                            </option>
+                            <option value={null}></option>
                         </SelectInput>
                     </FormField>
                     <FormField for="tag-1" label="Segunda Tag" labelVariant="metadata-indented" spacing="none">
@@ -244,11 +242,9 @@
                             variant="pill"
                             class="disabled:cursor-not-allowed disabled:opacity-50"
                             disabled
-                            value="anime"
+                            value={null}
                         >
-                            <option value="anime">
-                                Anime
-                            </option>
+                            <option value={null}></option>
                         </SelectInput>
                     </FormField>
                     <div class="text-center text-neutral-gray font-light italic text-md uppercase font-noto-sans mt-5">

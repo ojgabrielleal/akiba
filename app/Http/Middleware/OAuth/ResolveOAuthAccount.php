@@ -27,7 +27,7 @@ class ResolveOAuthAccount
         $oauthToken = $request->cookie('akiba_oauth_token');
 
         $authenticatedUser = $request->user();
-        $user = $authenticatedUser;
+        $user = $authenticatedUser?->loadMissing('topAnimes');
         $oauthAccount = null;
 
         if ($oauthToken) {
@@ -66,6 +66,8 @@ class ResolveOAuthAccount
                 'state' => $user->state,
                 'country' => $user->country,
                 'bio' => $user->bibliography,
+                'top_anime' => self::profileTopAnime($user),
+                'top_animes' => self::profileTopAnimes($user),
                 'badges' => self::profileBadges($user),
             ] : ($oauthAccount ? [
                 'uuid' => $oauthAccount->uuid,
@@ -75,8 +77,66 @@ class ResolveOAuthAccount
                 'avatar' => $oauthAccount->avatar,
                 'birth_date' => $oauthAccount->birth_date?->format('Y-m-d'),
                 'address' => $oauthAccount->address,
+                'top_anime' => self::normalizeTopAnime($oauthAccount->top_anime ?? []),
                 'badges' => self::profileBadges($oauthAccount),
             ] : null),
+        ];
+    }
+
+    private static function profileTopAnimes(Model $member): array
+    {
+        if (! method_exists($member, 'topAnimes')) {
+            return [];
+        }
+
+        return $member->topAnimes
+            ->map(fn ($topAnime) => self::normalizeTopAnime([
+                'position' => $topAnime->position,
+                'anime_theme_list_id' => $topAnime->anime_theme_list_id,
+                'slug' => $topAnime->slug,
+                'name' => $topAnime->name,
+                'image' => $topAnime->image,
+                'metadata' => $topAnime->metadata,
+            ]))
+            ->filter()
+            ->values()
+            ->all();
+    }
+
+    private static function profileTopAnime(Model $member): ?array
+    {
+        if (! method_exists($member, 'topAnimes')) {
+            return null;
+        }
+
+        $topAnime = $member->topAnimes->firstWhere('position', 1);
+
+        if (! $topAnime) {
+            return null;
+        }
+
+        return self::normalizeTopAnime([
+            'anime_theme_list_id' => $topAnime->anime_theme_list_id,
+            'slug' => $topAnime->slug,
+            'name' => $topAnime->name,
+            'image' => $topAnime->image,
+            'metadata' => $topAnime->metadata,
+        ]);
+    }
+
+    private static function normalizeTopAnime(?array $topAnime): ?array
+    {
+        if (blank($topAnime['name'] ?? null)) {
+            return null;
+        }
+
+        return [
+            'position' => $topAnime['position'] ?? null,
+            'anime_theme_list_id' => $topAnime['anime_theme_list_id'] ?? null,
+            'slug' => $topAnime['slug'] ?? null,
+            'name' => $topAnime['name'] ?? null,
+            'image' => $topAnime['image'] ?? null,
+            'metadata' => $topAnime['metadata'] ?? null,
         ];
     }
 

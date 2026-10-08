@@ -22,11 +22,13 @@ class OAuthAccount extends Model
         'address',
         'avatar',
         'birth_date',
+        'top_anime',
         'profile_completed_at',
     ];
 
     protected $casts = [
         'birth_date' => 'date:Y-m-d',
+        'top_anime' => 'array',
         'profile_completed_at' => 'datetime',
     ];
 

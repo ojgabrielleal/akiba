@@ -16,7 +16,7 @@ class ListenerMonthResource extends JsonResource
     {
         $favoriteProgram = $this->favorite_program ?? [];
         $favoriteMusic = $this->favorite_music ?? [];
-        $topAnime = $this->top_anime ?? [];
+        $topAnime = $this->oauthAccount?->top_anime ?: ($this->top_anime ?? []);
 
         return [
             'uuid' => $this->uuid,

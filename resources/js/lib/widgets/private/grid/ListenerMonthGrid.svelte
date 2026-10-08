@@ -9,6 +9,12 @@
 
     const can = listenerMonthPermissions();
 
+    $: topAnime = listenerMonth?.current?.data?.top_anime?.name ? listenerMonth.current.data.top_anime : null;
+    $: displayedAnime = topAnime ?? {
+        name: listenerMonth?.current?.data?.favorite_music?.production,
+        image: listenerMonth?.current?.data?.favorite_music?.image,
+    };
+
     let actions = [
         {
             title: "Salvar",
@@ -29,7 +35,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-[18rem_1fr] gap-5">
             <img 
                 src={resolvePlaceholderImage(listenerMonth.current.data.avatar, "avatar", listenerMonth.current.data.gender)}
-                class="h-72 w-full self-center rounded-md border-2 border-suspense-aurora object-cover object-center"
+                class="h-72 w-full self-start rounded-md border-2 border-suspense-aurora object-cover object-top"
                 alt={listenerMonth.current.data.name}
             />
             <div class="rounded-md bg-blue-ocean p-4">
@@ -63,13 +69,13 @@
                             Programa favorito
                         </div>
                     </div>
-                    <div class="relative h-55 flex flex-col justify-center items-center bg-blue-marinho rounded-md font-noto-sans font-medium text-orange-amber text-center uppercase">
-                        <img 
-                            src={resolvePlaceholderImage(listenerMonth.current.data.favorite_music.image, "placeholder")}
-                            class="w-30 h-30 object-cover rounded-md"
-                            alt={listenerMonth.current.data.favorite_music.production}
+                    <div class="relative flex h-55 flex-col items-center justify-center rounded-md bg-blue-marinho text-center font-noto-sans font-medium uppercase text-orange-amber">
+                        <img
+                            src={resolvePlaceholderImage(displayedAnime.image, "placeholder")}
+                            class="size-30 rounded-md object-cover"
+                            alt={displayedAnime.name}
                         />
-                        <div class="absolute w-full bottom-1 left-1/2 -translate-1/2">
+                        <div class="absolute bottom-1 left-1/2 w-full -translate-x-1/2">
                             Anime favorito
                         </div>
                     </div>

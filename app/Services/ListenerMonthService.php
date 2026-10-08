@@ -31,6 +31,10 @@ class ListenerMonthService
     {
         abort_unless($listenerMonth->oauth_account_id === $oauthAccount->id, 403);
 
+        $oauthAccount->update([
+            'top_anime' => $topAnime,
+        ]);
+
         $listenerMonth->update([
             'top_anime' => $topAnime,
         ]);

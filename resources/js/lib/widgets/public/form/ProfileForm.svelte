@@ -47,6 +47,21 @@
         }
     };
 
+    const emptyTopAnime = (position = null) => ({
+        position,
+        anime_theme_list_id: null,
+        slug: null,
+        name: "",
+        image: null,
+        metadata: null,
+    });
+
+    const normalizeTopAnimes = (topAnimes = []) => [1, 2, 3].map((position) => {
+        const anime = topAnimes.find((item) => item.position === position) ?? null;
+
+        return anime?.name ? { ...emptyTopAnime(position), ...anime, position } : emptyTopAnime(position);
+    });
+
     const form = useForm({
         _method: "PATCH",
         avatar: null,
@@ -57,31 +72,9 @@
         state: profile?.state ?? "",
         country: profile?.country ?? "",
         bio: internal ? profile?.bio ?? "" : "",
+        top_anime: profile?.top_anime?.name ? profile.top_anime : emptyTopAnime(),
+        top_animes: normalizeTopAnimes(profile?.top_animes ?? []),
     });
-
-    const emptyTopAnime = {
-        anime_theme_list_id: null,
-        slug: null,
-        name: "",
-        image: null,
-        metadata: null,
-    };
-
-    const topAnimeForm = useForm({
-        top_anime: emptyTopAnime,
-    });
-
-    $: currentListener = listenerMonth?.current?.data ?? null;
-    $: currentTopAnime = currentListener?.top_anime?.name ? currentListener.top_anime : null;
-    $: canChooseListenerTopAnime = Boolean(
-        !internal
-        && currentListener?.uuid
-        && profile?.uuid
-        && profile.uuid === currentListener.oauth_account_id
-    );
-    $: if (canChooseListenerTopAnime && currentTopAnime?.name && $topAnimeForm.top_anime?.name !== currentTopAnime.name) {
-        $topAnimeForm.top_anime = currentTopAnime;
-    }
 
     let avatarPreview = avatar;
     $: if (!$form.avatar) avatarPreview = avatar;
@@ -90,6 +83,7 @@
     let topAnimeResults = [];
     let topAnimeSearching = false;
     let topAnimeSearchError = null;
+    let editingFavoriteAnime = !profile?.top_anime?.name;
 
     const searchTopAnime = async () => {
         const query = topAnimeQuery.trim();
@@ -119,26 +113,25 @@
         }
     };
 
-    const selectTopAnime = (anime) => {
-        $topAnimeForm.top_anime = {
-            anime_theme_list_id: anime.anime_theme_list_id,
-            slug: anime.slug,
-            name: anime.name,
-            image: anime.image,
-            metadata: anime.metadata,
-        };
+    const selectedAnimePayload = (anime, position = null) => ({
+        position,
+        anime_theme_list_id: anime.anime_theme_list_id,
+        slug: anime.slug,
+        name: anime.name,
+        image: anime.image,
+        metadata: anime.metadata,
+    });
+
+    const clearAnimeSearch = () => {
+        topAnimeQuery = "";
+        topAnimeResults = [];
+        topAnimeSearchError = null;
     };
 
-    const submitTopAnime = () => {
-        if (!currentListener?.uuid || !$topAnimeForm.top_anime?.name) return;
-
-        $topAnimeForm.patch(`/radio/listener-month/${currentListener.uuid}/top-anime`, {
-            preserveScroll: true,
-            onSuccess: () => {
-                topAnimeResults = [];
-                topAnimeQuery = "";
-            },
-        });
+    const selectTopAnime = (anime) => {
+        $form.top_anime = selectedAnimePayload(anime);
+        clearAnimeSearch();
+        editingFavoriteAnime = false;
     };
 
     const submit = () => {
@@ -379,93 +372,6 @@
             </FormField>
         {/if}
 
-        {#if canChooseListenerTopAnime}
-            <div class="rounded-md border border-blue-night/15 bg-blue-night/[0.04] p-4 [[data-public-theme=akiba]_&]:border-suspense-aurora/20 [[data-public-theme=akiba]_&]:bg-blue-night/20 [[data-public-theme=night]_&]:border-suspense-aurora/20 [[data-public-theme=night]_&]:bg-blue-night/20">
-                <div class="mb-3 flex items-start justify-between gap-3">
-                    <div>
-                        <h3 class={[
-                            "font-noto-sans text-sm font-black uppercase italic",
-                            themeClass("text", "blue-night", { fixed: true }),
-                            "[[data-public-theme=akiba]_&]:text-suspense-aurora [[data-public-theme=night]_&]:text-suspense-aurora",
-                        ]}>
-                            Meu Top 1 anime
-                        </h3>
-                        <p class="mt-1 font-noto-sans text-xs font-semibold text-[color-mix(in_srgb,#000014_55%,transparent)] [[data-public-theme=akiba]_&]:text-suspense-aurora/60 [[data-public-theme=night]_&]:text-suspense-aurora/60">
-                            Sua escolha aparece na seção Ouvinte do mês.
-                        </p>
-                    </div>
-                    {#if $topAnimeForm.top_anime?.image}
-                        <img
-                            src={resolvePlaceholderImage($topAnimeForm.top_anime.image, "placeholder")}
-                            alt={$topAnimeForm.top_anime.name}
-                            class="size-14 shrink-0 rounded-md object-cover object-top"
-                        />
-                    {/if}
-                </div>
-
-                <div class="grid gap-2 sm:grid-cols-[minmax(0,1fr)_auto]">
-                    <label for="profile-top-anime" class="sr-only">Buscar anime top 1</label>
-                    <input
-                        id="profile-top-anime"
-                        type="search"
-                        bind:value={topAnimeQuery}
-                        placeholder={$topAnimeForm.top_anime?.name || "Busque seu anime top 1"}
-                        class="h-11 rounded-md bg-neutral-gray px-3 font-noto-sans text-sm font-bold text-suspense-aurora outline-none placeholder:text-suspense-aurora/45 focus:ring-2 focus:ring-orange-citric [[data-public-theme=akiba]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_76%,var(--color-blue-night))] [[data-public-theme=night]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_76%,var(--color-blue-night))]"
-                    />
-                    <Button
-                        type="button"
-                        size="sm"
-                        loading={topAnimeSearching}
-                        on:click={searchTopAnime}
-                    >
-                        Buscar
-                    </Button>
-                </div>
-
-                {#if topAnimeSearchError}
-                    <p class="mt-2 font-noto-sans text-xs font-bold text-red-crimson">{topAnimeSearchError}</p>
-                {/if}
-
-                {#if topAnimeResults.length}
-                    <div class="mt-3 grid max-h-56 gap-2 overflow-y-auto pr-1 sm:grid-cols-2">
-                        {#each topAnimeResults as anime}
-                            <button
-                                type="button"
-                                class={["grid min-h-20 cursor-pointer grid-cols-[3.5rem_minmax(0,1fr)] items-center gap-2 rounded-md bg-blue-marinho p-2 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric", publicAnimations.cardInteractive]}
-                                on:click={() => selectTopAnime(anime)}
-                            >
-                                <img
-                                    src={resolvePlaceholderImage(anime.image, "placeholder")}
-                                    alt={anime.name}
-                                    class="size-14 rounded-md object-cover object-top"
-                                />
-                                <span class="line-clamp-3 font-noto-sans text-xs font-black uppercase italic leading-tight text-suspense-aurora">
-                                    {anime.name}
-                                </span>
-                            </button>
-                        {/each}
-                    </div>
-                {/if}
-
-                {#if $topAnimeForm.top_anime?.name}
-                    <div class="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-md bg-blue-marinho px-3 py-2">
-                        <span class="min-w-0 truncate font-noto-sans text-xs font-black uppercase italic text-suspense-aurora">
-                            {$topAnimeForm.top_anime.name}
-                        </span>
-                        <Button
-                            type="button"
-                            size="sm"
-                            loading={$topAnimeForm.processing}
-                            disabled={$topAnimeForm.processing}
-                            on:click={submitTopAnime}
-                        >
-                            Salvar top 1
-                        </Button>
-                    </div>
-                {/if}
-            </div>
-        {/if}
-
         {#if internal}
             <FormField
                 for="member-bio"
@@ -502,7 +408,7 @@
 
     <aside class="min-h-64 lg:pl-1">
         <h3 class={[
-            "mb-4 text-center font-noto-sans text-2xl font-black uppercase italic",
+            "mb-4 text-center font-noto-sans text-xl font-black uppercase italic",
             themeClass("text", "blue-night", { fixed: true }),
             "[[data-public-theme=akiba]_&]:text-suspense-aurora [[data-public-theme=night]_&]:text-suspense-aurora",
         ]}>
@@ -544,5 +450,131 @@
                 </p>
             </div>
         {/if}
+
+        <section class="mt-8">
+            <h3 class={[
+                "mb-4 text-center font-noto-sans text-xl font-black uppercase italic",
+                themeClass("text", "blue-night", { fixed: true }),
+                "[[data-public-theme=akiba]_&]:text-suspense-aurora [[data-public-theme=night]_&]:text-suspense-aurora",
+            ]}>
+                {internal ? "Meu top 3 de animes" : "Meu anime favorito"}
+            </h3>
+
+            <div class="rounded-md border border-blue-night/15 bg-blue-night/[0.04] p-4 [[data-public-theme=akiba]_&]:border-suspense-aurora/20 [[data-public-theme=akiba]_&]:bg-blue-night/20 [[data-public-theme=night]_&]:border-suspense-aurora/20 [[data-public-theme=night]_&]:bg-blue-night/20">
+                <div class="mb-3 flex items-start justify-between gap-3">
+                    <p class="font-noto-sans text-xs font-semibold text-[color-mix(in_srgb,#000014_55%,transparent)] [[data-public-theme=akiba]_&]:text-suspense-aurora/60 [[data-public-theme=night]_&]:text-suspense-aurora/60">
+                        {internal ? "Animes favoritos cadastrados no seu perfil dentro do painel." : "Sua escolha fica no seu perfil e aparece quando você for Ouvinte do mês."}
+                    </p>
+                    {#if $form.top_anime?.image && editingFavoriteAnime}
+                        <img
+                            src={resolvePlaceholderImage($form.top_anime.image, "placeholder")}
+                            alt={$form.top_anime.name}
+                            class="size-14 shrink-0 rounded-md object-cover object-top"
+                        />
+                    {/if}
+                </div>
+
+                {#if internal}
+                    {@const selectedTopAnimes = $form.top_animes.filter((anime) => anime.name)}
+                    {#if selectedTopAnimes.length > 0}
+                        <div class="grid gap-3">
+                            {#each selectedTopAnimes as anime (anime.position)}
+                                <div class="grid grid-cols-[4rem_minmax(0,1fr)] items-center gap-3 rounded-md bg-blue-marinho/85 p-2 shadow-inner shadow-blue-night/25">
+                                    <div class="relative">
+                                        <img
+                                            src={resolvePlaceholderImage(anime.image, "placeholder")}
+                                            alt={anime.name}
+                                            class="h-16 w-14 rounded-md object-cover object-top shadow-md shadow-blue-night/35"
+                                        />
+                                        <span class="absolute -left-1 -top-1 flex size-6 items-center justify-center rounded-sm bg-orange-amber font-noto-sans text-[0.65rem] font-black italic text-blue-night shadow-sm">
+                                            {anime.position}
+                                        </span>
+                                    </div>
+                                    <p class="line-clamp-2 min-w-0 font-noto-sans text-xs font-black uppercase italic leading-tight text-suspense-aurora">
+                                        {anime.name}
+                                    </p>
+                                </div>
+                            {/each}
+                        </div>
+                    {:else}
+                        <a
+                            href={`/panel/profile/${profile.uuid}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class={["flex min-h-28 cursor-pointer items-center justify-center rounded-md border border-dashed border-suspense-aurora/25 px-4 text-center font-noto-sans text-sm font-semibold text-suspense-aurora/60 transition hover:border-orange-citric/70 hover:text-orange-citric focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric", publicAnimations.cardInteractive]}
+                        >
+                            Nenhum anime encontrado, clique pra cadastrar.
+                        </a>
+                    {/if}
+                {:else if $form.top_anime?.name && !editingFavoriteAnime}
+                    <div class="grid grid-cols-[6rem_minmax(0,1fr)] items-center gap-4 rounded-md bg-blue-marinho/85 p-3 shadow-inner shadow-blue-night/25">
+                        <img
+                            src={resolvePlaceholderImage($form.top_anime.image, "placeholder")}
+                            alt={$form.top_anime.name}
+                            class="h-28 w-24 rounded-md object-cover object-top shadow-md shadow-blue-night/35"
+                        />
+                        <div class="min-w-0">
+                            <p class="line-clamp-3 font-noto-sans text-base font-black uppercase italic leading-tight text-suspense-aurora">
+                                {$form.top_anime.name}
+                            </p>
+                            <button
+                                type="button"
+                                class="mt-3 cursor-pointer rounded-sm border border-orange-citric/35 px-3 py-1 font-noto-sans text-xs font-black uppercase italic text-orange-citric transition hover:border-orange-citric hover:bg-orange-citric hover:text-blue-night focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric"
+                                on:click={() => editingFavoriteAnime = true}
+                            >
+                                Trocar
+                            </button>
+                        </div>
+                    </div>
+                {/if}
+
+                {#if !internal && (!$form.top_anime?.name || editingFavoriteAnime)}
+                    <div class="mt-3 grid gap-2">
+                        <label for="profile-top-anime" class="sr-only">Buscar anime favorito</label>
+                        <input
+                            id="profile-top-anime"
+                            type="search"
+                            bind:value={topAnimeQuery}
+                            placeholder="Busque seu anime favorito"
+                            class="h-11 rounded-md border border-suspense-aurora/20 bg-suspense-aurora/12 px-3 font-noto-sans text-sm font-bold text-suspense-aurora outline-none placeholder:text-suspense-aurora/55 focus:border-suspense-aurora/45 focus:ring-2 focus:ring-suspense-aurora/25 [[data-public-theme=light]_&]:bg-suspense-aurora [[data-public-theme=light]_&]:text-blue-night [[data-public-theme=light]_&]:placeholder:text-blue-night/55"
+                        />
+                        <Button
+                            type="button"
+                            size="sm"
+                            loading={topAnimeSearching}
+                            on:click={searchTopAnime}
+                        >
+                            Buscar anime
+                        </Button>
+                    </div>
+
+                    {#if topAnimeSearchError}
+                        <p class="mt-2 font-noto-sans text-xs font-bold text-red-crimson">{topAnimeSearchError}</p>
+                    {/if}
+
+                    {#if topAnimeResults.length}
+                        <div class="mt-3 grid max-h-60 gap-2 overflow-y-auto pr-1">
+                            {#each topAnimeResults as anime}
+                                <button
+                                    type="button"
+                                    class={["grid min-h-18 cursor-pointer grid-cols-[3.75rem_minmax(0,1fr)] items-center gap-3 rounded-md bg-blue-marinho/80 p-2 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric", publicAnimations.cardInteractive]}
+                                    on:click={() => selectTopAnime(anime)}
+                                >
+                                    <img
+                                        src={resolvePlaceholderImage(anime.image, "placeholder")}
+                                        alt={anime.name}
+                                        class="size-14 rounded-md object-cover object-top"
+                                    />
+                                    <span class="line-clamp-2 font-noto-sans text-sm font-black uppercase italic leading-tight text-suspense-aurora">
+                                        {anime.name}
+                                    </span>
+                                </button>
+                            {/each}
+                        </div>
+                    {/if}
+                {/if}
+            </div>
+        </section>
+
     </aside>
 </form>

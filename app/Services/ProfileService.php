@@ -196,4 +196,31 @@ class ProfileService
 
         return $anime;
     }
+
+    private function updateTopAnime(User $user, ?array $anime): void
+    {
+        if (! $anime) {
+            return;
+        }
+
+        if (blank($anime['name'] ?? null)) {
+            $user->topAnimes()->where('position', 1)->delete();
+
+            return;
+        }
+
+        $storedAnime = $this->storeAnime($anime);
+
+        $user->topAnimes()->updateOrCreate(
+            ['position' => 1],
+            [
+                'anime_id' => $storedAnime->id,
+                'anime_theme_list_id' => $anime['anime_theme_list_id'] ?? null,
+                'slug' => $anime['slug'] ?? null,
+                'name' => $anime['name'],
+                'image' => $anime['image'] ?? null,
+                'metadata' => $anime['metadata'] ?? null,
+            ],
+        );
+    }
 }

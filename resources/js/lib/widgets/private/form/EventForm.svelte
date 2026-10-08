@@ -195,17 +195,15 @@
                         Tags
                     </div>
                     <FormField for="tag-0" label="Primeira Tag" labelVariant="metadata-indented" spacing="section">
+                        <input type="hidden" name="tags[0][name]" value="event" />
                         <SelectInput
                             id="tag-0"
-                            name="tags[0][name]"
                             variant="pill"
                             class="disabled:cursor-not-allowed disabled:opacity-50"
                             disabled
-                            bind:value={$form.tags[0].name}
+                            value={null}
                         >
-                            <option value="event">
-                                Evento
-                            </option>
+                            <option value={null}></option>
                         </SelectInput>
                     </FormField>
                     <FormField for="tag-1" label="Segunda Tag" labelVariant="metadata-indented" spacing="none" error={secondTagError}>

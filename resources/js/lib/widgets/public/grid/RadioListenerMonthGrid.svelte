@@ -19,10 +19,10 @@
     <div class="container-page pt-12 pb-20">
         {#if listener}
             <div class="grid grid-cols-1 gap-5 lg:grid-cols-[18rem_1fr]">
-                <div class="h-72 w-full self-center overflow-hidden rounded-md bg-neutral-gray">
+                <div class="h-72 w-full self-start overflow-hidden rounded-md bg-neutral-gray">
                     <img
                         src={resolvePlaceholderImage(listener.avatar, "avatar", listener.gender)}
-                        class="h-full w-full border-0 object-cover object-center outline-none"
+                        class="h-full w-full border-0 object-cover object-top outline-none"
                         alt={listener.name}
                         on:error={(event) => event.currentTarget.remove()}
                     />
@@ -66,7 +66,7 @@
                                 <span slot="content">{displayedAnime.name}</span>
                             </Tooltip>
                             <div class="absolute bottom-1 left-1/2 w-full -translate-x-1/2">
-                                Top 1 anime
+                                Anime favorito
                             </div>
                         </div>
                     </div>

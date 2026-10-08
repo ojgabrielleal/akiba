@@ -27,6 +27,12 @@ class CompleteOAuthAccountProfileRequest extends FormRequest
             'nickname' => ['required', 'string', 'max:255'],
             'birth_date' => ['required', 'date', 'before:today'],
             'address' => ['required', 'string', 'max:255'],
+            'top_anime' => ['nullable', 'array'],
+            'top_anime.anime_theme_list_id' => ['nullable', 'string', 'max:255'],
+            'top_anime.slug' => ['nullable', 'string', 'max:255'],
+            'top_anime.name' => ['nullable', 'string', 'max:255'],
+            'top_anime.image' => ['nullable', 'url', 'max:2048'],
+            'top_anime.metadata' => ['nullable', 'array'],
         ];
     }
 }

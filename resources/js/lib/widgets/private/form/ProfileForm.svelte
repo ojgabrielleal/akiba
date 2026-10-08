@@ -398,7 +398,7 @@
         </div>
     </Section>
 
-    <Section title="Meu Top 3">
+    <Section title="Meu Top 3 de Animes">
         <div class="rounded-xl border border-suspense-aurora/10 bg-blue-ocean/25 p-5 sm:p-6">
             <div class="grid grid-cols-1 gap-6 xl:grid-cols-[22rem_1fr]">
                 <div class="min-w-0">

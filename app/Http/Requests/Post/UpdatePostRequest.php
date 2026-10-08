@@ -63,6 +63,9 @@ class UpdatePostRequest extends LoggedWebRequest
                 ...$this->input('review', []),
                 'content' => $this->emptyHtmlToNull($this->stringInput($this->input('review.content'))),
             ],
+            'tags' => $this->input('module', $post?->module ?? 'post') === 'event'
+                ? [['name' => 'event']]
+                : $this->input('tags', []),
         ]);
     }
 

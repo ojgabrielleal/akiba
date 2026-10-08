@@ -17,6 +17,7 @@ class OAuthAccountService
                 'nickname' => $data['nickname'],
                 'birth_date' => $data['birth_date'],
                 'address' => $data['address'],
+                'top_anime' => $data['top_anime'] ?? $oauthAccount->top_anime,
                 'profile_completed_at' => now(),
             ]);
 

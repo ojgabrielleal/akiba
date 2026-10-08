@@ -63,7 +63,7 @@ class PostService
     {
         $post = DB::transaction(function () use ($user, $data, $image, $cover) {
             $post = $this->storeStorePost($user, $data, $image, $cover);
-            $this->storeStoreTags($post, $data['tags'] ?? []);
+            $this->storeStoreTags($post, $data['tags'] ?? [], $post->module);
             if (($data['module'] ?? 'post') !== 'review') {
                 $this->storeStoreReferences($post, $data['references'] ?? []);
             }
@@ -105,9 +105,9 @@ class PostService
         return $data['status'] ?? 'published';
     }
 
-    private function storeStoreTags(Post $post, array $tags): void
+    private function storeStoreTags(Post $post, array $tags, string $module): void
     {
-        $tags = $this->normalizeTags($tags)
+        $tags = $this->normalizeTags($tags, $module)
             ->map(fn (array $tag) => ['name' => $tag['name']])
             ->all();
 
@@ -183,7 +183,7 @@ class PostService
 
         $post = DB::transaction(function () use ($post, $user, $data, $image, $cover) {
             $this->updateUpdatePost($post, $user, $data, $image, $cover);
-            $this->updateSyncTags($post, $data['tags'] ?? []);
+            $this->updateSyncTags($post, $data['tags'] ?? [], $post->module);
             if ($post->module !== 'review' && array_key_exists('references', $data)) {
                 $this->updateSyncReferences($post, $data['references'] ?? []);
             }
@@ -279,11 +279,11 @@ class PostService
             ->exists();
     }
 
-    private function updateSyncTags(Post $post, array $tags): void
+    private function updateSyncTags(Post $post, array $tags, string $module): void
     {
         $syncedUuids = [];
 
-        foreach ($this->normalizeTags($tags) as $tag) {
+        foreach ($this->normalizeTags($tags, $module) as $tag) {
             $syncedTag = filled($tag['uuid'] ?? null)
                 ? $post->tags()->updateOrCreate(
                     ['uuid' => $tag['uuid']],
@@ -302,8 +302,12 @@ class PostService
             ->delete();
     }
 
-    private function normalizeTags(array $tags): \Illuminate\Support\Collection
+    private function normalizeTags(array $tags, string $module): \Illuminate\Support\Collection
     {
+        if ($module === 'event') {
+            return collect([['name' => 'event']]);
+        }
+
         return collect($tags)
             ->filter(fn (array $tag) => filled($tag['name'] ?? null))
             ->unique(fn (array $tag) => $tag['name'])
