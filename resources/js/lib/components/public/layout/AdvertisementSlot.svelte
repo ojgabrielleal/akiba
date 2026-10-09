@@ -1,5 +1,5 @@
 <script>
-    import { onDestroy, onMount, tick } from "svelte";
+    import { tick } from "svelte";
     import { pushGoogleAdSlot } from "@/lib/utils/adsense";
 
     export let image = null;
@@ -13,20 +13,15 @@
     export { className as class };
 
     let adElement;
-    let slotElement;
-    let resizeObserver;
-    let slotWidth = 0;
-    let slotHeight = 0;
     let pushedAdsense = false;
 
     $: shouldRenderAdsense = adsense && !image && !href && adClient && adSlot;
-    $: hasMeasuredSlot = slotWidth > 0 && slotHeight > 0;
-    $: if (shouldRenderAdsense && hasMeasuredSlot && adElement && !pushedAdsense) {
+    $: if (shouldRenderAdsense && adElement && !pushedAdsense) {
         pushAdsense();
     }
 
     const pushAdsense = async () => {
-        if (!shouldRenderAdsense || !hasMeasuredSlot || !adElement || pushedAdsense || typeof window === "undefined") return;
+        if (!shouldRenderAdsense || !adElement || pushedAdsense || typeof window === "undefined") return;
 
         await tick();
 
@@ -38,26 +33,9 @@
         }
     };
 
-    onMount(() => {
-        if (slotElement && typeof ResizeObserver !== "undefined") {
-            resizeObserver = new ResizeObserver(([entry]) => {
-                slotWidth = Math.round(entry.contentRect.width);
-                slotHeight = Math.round(entry.contentRect.height);
-            });
-            resizeObserver.observe(slotElement);
-        } else if (slotElement) {
-            slotWidth = Math.round(slotElement.clientWidth);
-            slotHeight = Math.round(slotElement.clientHeight);
-        }
-    });
-
-    onDestroy(() => {
-        resizeObserver?.disconnect();
-    });
 </script>
 
 <svelte:element
-    bind:this={slotElement}
     this={href ? "a" : "div"}
     {href}
     target={href ? "_blank" : undefined}
@@ -122,11 +100,11 @@
             </div>
         </div>
 
-        {#if shouldRenderAdsense && hasMeasuredSlot}
+        {#if shouldRenderAdsense}
             <ins
                 bind:this={adElement}
                 class="adsbygoogle absolute inset-0 z-10 block h-full w-full overflow-hidden [clip-path:inherit]"
-                style={`display:block;width:${slotWidth}px;height:${slotHeight}px;max-width:100%;max-height:100%;`}
+                style="display:block;"
                 data-ad-client={adClient}
                 data-ad-slot={adSlot}
                 data-ad-format="auto"
