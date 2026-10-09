@@ -8,7 +8,7 @@
     import { publicAnimations } from "@/lib/constants";
     import { resolvePlaceholderImage, themeClass } from "@/lib/utils";
 
-    $: ({ flash, oauth, onair, stream, events, listenerGallery, polls, latestPoll, enigmagame } = $page.props);
+    $: ({ flash, oauth, onair, stream, events, listenerGallery, polls, latestPoll, enigmagame, previousEnigmagame } = $page.props);
     $: pageUrl = $page.url;
     $: eventList = Array.isArray(events) ? events : events?.data ?? [];
     $: poll = latestPoll?.data ?? null;
@@ -21,6 +21,7 @@
 
     let pollModalRef;
     let enigmaRulesModalRef;
+    let previousEnigmaModalRef;
     let mainSelectedOption = null;
     let selectedPollUuid = null;
     let selectedOption = null;
@@ -76,6 +77,11 @@
         });
     }
 
+    $: previousEnigma = previousEnigmagame?.data ?? null;
+    $: previousEnigmaQuestions = (previousEnigma?.interactions ?? [])
+        .filter((interaction) => interaction.type === "question" && (interaction.admin_response || interaction.result))
+        .slice(0, 12);
+
     $: answeredEnigmaInteractions = (enigmagame?.data?.interactions ?? [])
         .filter((interaction) => interaction.type === "question" && (interaction.admin_response || interaction.result))
         .slice(0, 12);
@@ -98,7 +104,6 @@
 
     function enigmaStatusMessage(game) {
         if (game.participation?.has_submitted_final_answer) return "Sua resposta definitiva ja foi enviada.";
-        if (game.solved) return "Este enigma ja foi resolvido.";
         if (!game.participation?.can_interact && game.participation?.next_interaction_at) {
             return `Aguarde ate ${game.participation.next_interaction_at} para interagir novamente.`;
         }
@@ -128,7 +133,7 @@
                                     loading="lazy"
                                 />
                             </div>
-                            <div class="min-h-12 px-3 py-2 text-center font-noto-sans uppercase italic">
+                            <div class="min-h-12 px-3 py-2.5 text-center font-noto-sans uppercase italic">
                                 <h3 class="line-clamp-1 text-base font-black">{item.title}</h3>
                                 <p class="line-clamp-1 text-sm font-bold">
                                     {resolveEventPlace(item)} {resolveEventDate(item)}
@@ -156,132 +161,128 @@
         <Section title="Enigma da Akiba" styles="container-page order-2 mt-10 mb-12">
             {#if enigmagame?.data}
                 <div
-                    class="grid overflow-hidden rounded-md bg-blue-night px-5 py-6 text-suspense-aurora [[data-public-theme=light]_&]:bg-[#d7dce3] lg:grid-cols-[minmax(0,1.25fr)_1px_minmax(24rem,0.9fr)] lg:px-7 lg:py-6"
+                    class="grid gap-3 text-suspense-aurora"
                     style="--color-neutral-white:#ffffff; --color-neutral-gray:#808080; --color-suspense-aurora:#fffaf3; --color-suspense-honeycream:#ffe8bf; --color-red-crimson:#ed3237; --color-orange-amber:#ff8000; --color-orange-citric:#ffaa35; --color-blue-ocean:#002080; --color-blue-night:#000014; --color-green-mint:#00a859;"
                 >
-                    <section class="flex min-h-[21rem] flex-col items-center justify-center px-2 py-8 text-center font-noto-sans uppercase italic lg:min-h-[24rem] lg:px-4">
-                        <h3 class="mb-5 max-w-2xl text-[1.65rem] font-extrabold leading-tight text-neutral-white sm:text-[2rem] [[data-public-theme=light]_&]:text-blue-night">
-                            {enigmagame.data.title}
-                        </h3>
+                    <div class="grid overflow-hidden rounded-md bg-blue-night px-4 py-5 [[data-public-theme=light]_&]:bg-[#d7dce3] lg:min-h-[25rem] lg:grid-cols-[minmax(0,1.25fr)_1px_minmax(22rem,0.82fr)] lg:px-6 lg:py-5">
+                        <section class="flex min-h-[24rem] flex-col items-center justify-center px-1 py-4 text-center font-noto-sans uppercase italic lg:h-full lg:min-h-0 lg:px-3">
+                            <h3 class="mb-5 max-w-2xl text-[1.65rem] font-extrabold leading-tight text-suspense-honeycream sm:text-[2rem] [[data-public-theme=light]_&]:text-blue-night">
+                                {enigmagame.data.title}
+                            </h3>
 
-                        <div class="flex w-full items-center justify-center">
-                            <img
-                                src={enigmagame.data.image}
-                                alt={`Imagem do enigma ${enigmagame.data.title}`}
-                                class="h-auto max-w-full object-contain [[data-public-theme=light]_&]:drop-shadow-[0_2px_5px_rgba(0,0,0,0.85)]"
-                                loading="lazy"
-                            />
-                        </div>
-
-                        {#if enigmagame.data.content}
-                            <p class="mt-6 max-w-2xl whitespace-pre-line text-[1.0625rem] font-normal normal-case not-italic leading-snug text-suspense-honeycream sm:text-[1.3125rem] lg:text-[1.4125rem] [[data-public-theme=light]_&]:text-blue-night">
-                                {enigmagame.data.content}
-                            </p>
-                        {/if}
-
-                        {#if enigmagame.data.solved && enigmagame.data.solution}
-                            <p class="mt-6 max-w-2xl text-[1.3125rem] font-normal normal-case not-italic leading-tight text-suspense-honeycream sm:text-[1.4125rem] [[data-public-theme=light]_&]:text-blue-night">
-                                {enigmagame.data.solution}
-                            </p>
-                        {/if}
-
-                    </section>
-
-                    <div class="hidden bg-orange-amber [[data-public-theme=light]_&]:bg-[#000036] lg:block"></div>
-
-                    <aside class="border-t border-orange-amber pt-5 [[data-public-theme=light]_&]:border-[#000036] lg:border-t-0 lg:pl-7 lg:pt-0">
-                        <AuthGuard
-                            {oauth}
-                            compact
-                            buttonLabel="Entre para participar"
-                            filters="filter-blue-night"
-                            buttonClass="text-blue-night"
-                            reason="enigmagame"
-                        >
-                            <form class="grid gap-2" on:submit|preventDefault>
-                                <div class="flex flex-wrap items-end justify-between gap-2 font-noto-sans text-base font-black uppercase italic">
-                                    <label for="enigmagame-interaction" class="text-orange-amber [[data-public-theme=light]_&]:text-[#000036]">
-                                        Faça uma pergunta ou responda o enigma
-                                    </label>
-                                    <Button
-                                        type="button"
-                                        variant="accent"
-                                        size="sm"
-                                        class="min-h-8 rounded-full px-3 py-1 text-sm"
-                                        on:click={() => enigmaRulesModalRef.open()}
-                                    >
-                                        Como jogar?
-                                    </Button>
-                                </div>
-
-                                <input
-                                    id="enigmagame-interaction"
-                                    class="h-11 w-full rounded-md border border-transparent bg-suspense-aurora px-4 font-noto-sans text-base font-normal not-italic text-blue-night outline-none ring-0 placeholder:text-blue-night/45 focus:border-transparent focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0"
-                                    bind:value={enigmagameContent}
-                                    placeholder=""
-                                    disabled={!enigmagame.data.participation?.can_interact || enigmagameSubmitting}
-                                    required
+                            <div class="flex w-full items-center justify-center">
+                                <img
+                                    src={enigmagame.data.image}
+                                    alt={`Imagem do enigma ${enigmagame.data.title}`}
+                                    class="h-auto max-h-36 max-w-full object-contain sm:max-h-44 [[data-public-theme=light]_&]:drop-shadow-[0_2px_5px_rgba(0,0,0,0.85)]"
+                                    loading="lazy"
                                 />
-
-                                <div class="flex flex-wrap items-center justify-center gap-2">
-                                    <Button
-                                        type="button"
-                                        variant="accent"
-                                        size="sm"
-                                        class="min-h-8 rounded-sm px-3 py-1 text-sm"
-                                        loading={enigmagameSubmitting === "final_answer"}
-                                        disabled={!enigmagameContent.trim() || enigmagameSubmitting || !enigmagame.data.participation?.can_interact}
-                                        on:click={() => submitEnigmaGameInteraction("final_answer")}
-                                    >
-                                        Enviar resposta
-                                    </Button>
-                                    <Button
-                                        type="button"
-                                        variant="accent"
-                                        size="sm"
-                                        class="min-h-8 rounded-sm px-3 py-1 text-sm"
-                                        loading={enigmagameSubmitting === "question"}
-                                        disabled={!enigmagameContent.trim() || enigmagameSubmitting || !enigmagame.data.participation?.can_interact}
-                                        on:click={() => submitEnigmaGameInteraction("question")}
-                                    >
-                                        Enviar pergunta
-                                    </Button>
-                                </div>
-
-                                {#if enigmaStatusMessage(enigmagame.data)}
-                                    <p class="font-noto-sans text-sm font-bold text-suspense-aurora">
-                                        {enigmaStatusMessage(enigmagame.data)}
-                                    </p>
-                                {/if}
-                            </form>
-                        </AuthGuard>
-
-                        <div class="mt-7">
-                            <div class="mb-3 grid grid-cols-[auto_1fr] items-center gap-3 font-noto-sans text-sm font-bold uppercase italic text-orange-amber [[data-public-theme=light]_&]:text-[#000036]">
-                                <h4>Quadro de Evidências</h4>
-                                <span class="h-px bg-orange-amber [[data-public-theme=light]_&]:bg-[#000036]"></span>
                             </div>
 
-                            {#if answeredEnigmaInteractions.length}
-                                <div class="public-themed-scrollbar grid max-h-60 gap-2 overflow-y-auto pr-1">
-                                    {#each answeredEnigmaInteractions as interaction (interaction.uuid)}
-                                        <article class="grid grid-cols-[minmax(0,1fr)_4.5rem] overflow-hidden rounded-md font-noto-sans text-base font-normal">
-                                            <p class="break-words bg-suspense-honeycream px-3 py-2 text-blue-night">
-                                                {interaction.content}
-                                            </p>
-                                            <span class={["grid place-items-center px-2 py-2 text-center font-bold uppercase italic", enigmaResultClass(interaction)]}>
-                                                {enigmaResultLabel(interaction)}
-                                            </span>
-                                        </article>
-                                    {/each}
-                                </div>
-                            {:else}
-                                <p class="font-noto-sans text-base font-normal text-suspense-aurora/60">
-                                    Nenhuma pergunta respondida ainda.
+                            {#if enigmagame.data.content}
+                                <p class="mt-6 max-w-2xl whitespace-pre-line text-sm font-normal normal-case not-italic leading-snug text-suspense-honeycream sm:text-base [[data-public-theme=light]_&]:text-blue-night">
+                                    {enigmagame.data.content}
                                 </p>
                             {/if}
+                        </section>
+
+                        <div class="hidden bg-orange-amber [[data-public-theme=light]_&]:bg-[#000036] lg:block"></div>
+
+                        <aside class="border-t border-orange-amber pt-5 [[data-public-theme=light]_&]:border-[#000036] lg:flex lg:min-h-[25rem] lg:flex-col lg:border-t-0 lg:pl-6 lg:pt-0">
+                            <AuthGuard
+                                {oauth}
+                                compact
+                                buttonLabel="Entre para participar"
+                                filters="filter-blue-night"
+                                buttonClass="text-blue-night"
+                                reason="enigmagame"
+                            >
+                                <form class="grid gap-2" on:submit|preventDefault>
+                                    <label for="enigmagame-interaction" class="sr-only">
+                                        Faça uma pergunta ou responda o enigma
+                                    </label>
+
+                                    <input
+                                        id="enigmagame-interaction"
+                                        class="h-10 w-full rounded-md border border-transparent bg-suspense-honeycream px-4 font-noto-sans text-base not-italic text-blue-night outline-none ring-0 placeholder:text-blue-night/45 focus:border-transparent focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0"
+                                        bind:value={enigmagameContent}
+                                        placeholder=""
+                                        disabled={!enigmagame.data.participation?.can_interact || enigmagameSubmitting}
+                                        required
+                                    />
+
+                                    <div class="flex flex-wrap items-center justify-center gap-2 font-noto-sans uppercase italic">
+                                        <Button
+                                            type="button"
+                                            variant="accent"
+                                            size="sm"
+                                            class="min-h-7 rounded-sm px-3 py-1 text-xs"
+                                            loading={enigmagameSubmitting === "final_answer"}
+                                            disabled={!enigmagameContent.trim() || enigmagameSubmitting || !enigmagame.data.participation?.can_interact}
+                                            on:click={() => submitEnigmaGameInteraction("final_answer")}
+                                        >
+                                            Enviar resposta
+                                        </Button>
+                                        <Button
+                                            type="button"
+                                            variant="accent"
+                                            size="sm"
+                                            class="min-h-7 rounded-sm px-3 py-1 text-xs"
+                                            loading={enigmagameSubmitting === "question"}
+                                            disabled={!enigmagameContent.trim() || enigmagameSubmitting || !enigmagame.data.participation?.can_interact}
+                                            on:click={() => submitEnigmaGameInteraction("question")}
+                                        >
+                                            Enviar pergunta
+                                        </Button>
+                                    </div>
+
+                                    <p class="min-h-4 text-center font-noto-sans text-sm font-normal text-suspense-aurora">
+                                        {enigmaStatusMessage(enigmagame.data) ?? "Aguarde ate seu tempo de interacao para participar novamente."}
+                                    </p>
+                                </form>
+                            </AuthGuard>
+
+                            <div class="mt-5">
+                                <div class="mb-2 grid grid-cols-[auto_1fr] items-center gap-3 font-noto-sans text-sm font-bold uppercase italic text-orange-amber [[data-public-theme=light]_&]:text-[#000036]">
+                                    <h4>Perguntas respondidas</h4>
+                                    <span class="h-px bg-orange-amber [[data-public-theme=light]_&]:bg-[#000036]"></span>
+                                </div>
+
+                                {#if answeredEnigmaInteractions.length}
+                                    <div class="public-themed-scrollbar grid max-h-[15rem] gap-2 overflow-y-auto pr-1">
+                                        {#each answeredEnigmaInteractions as interaction (interaction.uuid)}
+                                            <article class="grid grid-cols-[minmax(0,1fr)_5.5rem] overflow-hidden rounded-md font-noto-sans text-sm font-normal">
+                                                <p class="break-words bg-suspense-honeycream px-4 py-2.5 leading-snug text-blue-night">
+                                                    {interaction.content}
+                                                </p>
+                                                <span class={["grid place-items-center px-3 py-2.5 text-center font-bold uppercase italic", enigmaResultClass(interaction)]}>
+                                                    {enigmaResultLabel(interaction)}
+                                                </span>
+                                            </article>
+                                        {/each}
+                                    </div>
+                                {:else}
+                                    <p class="font-noto-sans text-sm font-normal text-suspense-aurora/60">
+                                        Nenhuma pergunta respondida ainda.
+                                    </p>
+                                {/if}
+                            </div>
+                        </aside>
+                    </div>
+
+                    <div class="flex flex-col gap-3 font-noto-sans uppercase italic sm:flex-row sm:items-center sm:justify-between">
+                        {#if previousEnigma}
+                            <Button type="button" variant="accent" size="sm" class="justify-self-start rounded-md px-4 py-2 text-sm" on:click={() => previousEnigmaModalRef.open()}>
+                                Ver resposta do ultimo enigma: {previousEnigma.title}
+                            </Button>
+                        {/if}
+                        <div class="ml-auto rounded-md bg-blue-night px-5 py-2.5 text-center font-black text-orange-amber">
+                            <span class="align-baseline text-xl leading-none">{enigmagame.data.correct_answers_count ?? 0}</span>
+                            <span class="align-baseline text-base leading-none">
+                                {(enigmagame.data.correct_answers_count ?? 0) === 1 ? "pessoa ja acertou" : "pessoas ja acertaram"} esse enigma
+                            </span>
                         </div>
-                    </aside>
+                    </div>
                 </div>
             {:else}
                 <MinimalEmptyState
@@ -393,6 +394,93 @@
                 />
             {/if}
         </Section>
+
+        {#if previousEnigma}
+            <Modal bind:this={previousEnigmaModalRef} title={`Resposta do enigma: ${previousEnigma.title}`} size="lg">
+                <div class="grid gap-5 font-noto-sans text-blue-night [[data-public-theme=light]_&]:!text-[#000014] [[data-public-theme=akiba]_&]:text-suspense-aurora/80 [[data-public-theme=night]_&]:text-suspense-aurora/80">
+                    <div class="grid gap-5 lg:grid-cols-[minmax(0,0.82fr)_1px_minmax(0,1fr)]">
+                        <section class="text-center font-noto-sans uppercase italic">
+                            <h3 class="text-2xl font-black text-orange-amber">{previousEnigma.title}</h3>
+
+                            <img
+                                src={previousEnigma.image}
+                                alt={`Imagem do enigma ${previousEnigma.title}`}
+                                class="mx-auto mt-4 max-h-56 max-w-full object-contain"
+                                loading="lazy"
+                            />
+
+                            {#if previousEnigma.content}
+                                <p class="mt-4 whitespace-pre-line text-base font-bold normal-case not-italic leading-snug text-suspense-honeycream [[data-public-theme=light]_&]:text-blue-night">
+                                    {previousEnigma.content}
+                                </p>
+                            {/if}
+                        </section>
+
+                        <div class="hidden bg-orange-amber lg:block"></div>
+
+                        <section>
+                            <div class="mb-3 grid grid-cols-[auto_1fr] items-center gap-3 font-noto-sans text-sm font-bold uppercase italic text-orange-amber">
+                                <h3>Quadro de evidencias</h3>
+                                <span class="h-px bg-orange-amber"></span>
+                            </div>
+
+                            {#if previousEnigmaQuestions.length}
+                                <div class="public-themed-scrollbar grid max-h-72 gap-2 overflow-y-auto pr-1">
+                                    {#each previousEnigmaQuestions as interaction (interaction.uuid)}
+                                        <article class="grid grid-cols-[minmax(0,1fr)_4.5rem] overflow-hidden rounded-md font-noto-sans text-sm font-normal">
+                                            <p class="break-words bg-suspense-honeycream px-3 py-2 text-blue-night">
+                                                {interaction.content}
+                                            </p>
+                                            <span class={["grid place-items-center px-2 py-2 text-center font-bold uppercase italic", enigmaResultClass(interaction)]}>
+                                                {enigmaResultLabel(interaction)}
+                                            </span>
+                                        </article>
+                                    {/each}
+                                </div>
+                            {:else}
+                                <p class="font-noto-sans text-sm font-normal text-suspense-aurora/60">
+                                    Nenhuma pista respondida ficou registrada.
+                                </p>
+                            {/if}
+                        </section>
+                    </div>
+
+                    <section class="grid gap-4 border-t border-orange-amber pt-5 lg:grid-cols-[12rem_minmax(0,1fr)]">
+                        {#if previousEnigma.solution_image}
+                            <img
+                                src={previousEnigma.solution_image}
+                                alt={previousEnigma.solution_title || previousEnigma.solution || "Resposta do enigma"}
+                                class="mx-auto max-h-64 w-full max-w-[12rem] rounded-md object-cover"
+                                loading="lazy"
+                            />
+                        {/if}
+
+                        <div>
+                            <div class="mb-3 grid grid-cols-[auto_1fr] items-center gap-3 font-noto-sans text-sm font-bold uppercase italic text-orange-amber">
+                                <h3>Resposta</h3>
+                                <span class="h-px bg-orange-amber"></span>
+                            </div>
+
+                            <h4 class="font-noto-sans text-2xl font-black uppercase italic text-suspense-honeycream [[data-public-theme=light]_&]:text-blue-night">
+                                {previousEnigma.solution_title || previousEnigma.solution || "Resposta revelada"}
+                            </h4>
+
+                            {#if previousEnigma.solution && previousEnigma.solution !== previousEnigma.solution_title}
+                                <p class="mt-2 font-noto-sans text-sm font-bold uppercase italic text-orange-amber">
+                                    {previousEnigma.solution}
+                                </p>
+                            {/if}
+
+                            {#if previousEnigma.solution_synopsis}
+                                <p class="mt-3 whitespace-pre-line font-noto-sans text-sm leading-relaxed">
+                                    {previousEnigma.solution_synopsis}
+                                </p>
+                            {/if}
+                        </div>
+                    </section>
+                </div>
+            </Modal>
+        {/if}
 
         <Modal bind:this={enigmaRulesModalRef} title="Como jogar" size="md">
             <div class="font-noto-sans text-blue-night [[data-public-theme=light]_&]:!text-[#000014] [[data-public-theme=akiba]_&]:text-suspense-aurora/80 [[data-public-theme=night]_&]:text-suspense-aurora/80">

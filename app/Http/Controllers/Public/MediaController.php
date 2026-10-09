@@ -135,6 +135,7 @@ class MediaController extends Controller
             'polls' => $this->indexPolls(),
             'latestPoll' => $this->indexLatestPoll(),
             'enigmagame' => ($enigmagame = $this->enigmagameFilter->active()) ? EnigmaGameResource::make($enigmagame) : null,
+            'previousEnigmagame' => ($previousEnigmagame = $this->enigmagameFilter->latestSolved()) ? EnigmaGameResource::make($previousEnigmagame) : null,
         ]);
     }
 }

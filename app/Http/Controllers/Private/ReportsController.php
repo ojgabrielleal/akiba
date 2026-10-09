@@ -15,6 +15,7 @@ use App\Http\Requests\RadioStation\StoreRadioStationRequest;
 use App\Http\Requests\RadioStation\UpdateRadioStationRequest;
 use App\Http\Resources\AudienceResource;
 use App\Http\Resources\Onair\OnairResource;
+use App\Http\Resources\SongRequestResource;
 use App\Http\Resources\User\UserResource;
 
 use App\Models\Onair;
@@ -262,6 +263,17 @@ class ReportsController extends Controller
         $service->destroy($radioStation);
 
         return $this->flashMessage('delete');
+    }
+
+    public function showOnairSongRequests(Onair $onair)
+    {
+        return SongRequestResource::collection(
+            $this->songRequestFilter->filter([
+                'onair_id' => $onair->id,
+                'order_by' => 'created_at',
+                'order_direction' => 'desc',
+            ])
+        );
     }
 
     public function render()

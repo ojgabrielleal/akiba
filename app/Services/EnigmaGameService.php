@@ -32,6 +32,9 @@ class EnigmaGameService
                 'image' => $this->image->store('enigmagames', $image),
                 'status' => $data['status'] ?? EnigmaGame::STATUS_DRAFT,
                 'solution' => $data['solution'] ?? null,
+                'solution_title' => $data['solution_title'] ?? null,
+                'solution_image' => $data['solution_image'] ?? null,
+                'solution_synopsis' => $data['solution_synopsis'] ?? null,
             ]);
 
             if ($enigmagame->status === EnigmaGame::STATUS_ACTIVE) {
@@ -55,6 +58,9 @@ class EnigmaGameService
                     : $enigmagame->image,
                 'status' => $data['status'] ?? $enigmagame->status,
                 'solution' => $data['solution'] ?? null,
+                'solution_title' => $data['solution_title'] ?? null,
+                'solution_image' => $data['solution_image'] ?? null,
+                'solution_synopsis' => $data['solution_synopsis'] ?? null,
             ]);
 
             if ($enigmagame->status === EnigmaGame::STATUS_ACTIVE) {
@@ -102,15 +108,6 @@ class EnigmaGameService
     {
         $interaction = DB::transaction(function () use ($enigmagame, $participant, $data): EnigmaGameInteraction {
             $enigmagame = EnigmaGame::query()->lockForUpdate()->active()->whereKey($enigmagame->id)->firstOrFail();
-
-            if ($enigmagame->interactions()
-                ->where('type', EnigmaGameInteraction::TYPE_FINAL_ANSWER)
-                ->where('result', 'correct')
-                ->exists()) {
-                throw ValidationException::withMessages([
-                    'content' => 'Este enigma ja foi resolvido.',
-                ]);
-            }
 
             $query = $enigmagame->interactions()
                 ->lockForUpdate()
@@ -250,6 +247,18 @@ class EnigmaGameService
             ->active()
             ->with(['author', ...$this->publicRelations()])
             ->latest()
+            ->first();
+    }
+
+    public function latestSolved(): ?EnigmaGame
+    {
+        return EnigmaGame::query()
+            ->where('status', EnigmaGame::STATUS_ENDED)
+            ->whereHas('interactions', fn (Builder $query) => $query
+                ->where('type', EnigmaGameInteraction::TYPE_FINAL_ANSWER)
+                ->where('result', 'correct'))
+            ->with(['author', ...$this->publicRelations()])
+            ->latest('updated_at')
             ->first();
     }
 

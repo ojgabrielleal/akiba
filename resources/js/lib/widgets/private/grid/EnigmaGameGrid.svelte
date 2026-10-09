@@ -14,35 +14,14 @@
     let interactionsModalRef;
     let enigmagameSelected = null;
     let interactionsEnigmaGameUuid = null;
-    let enigmaView = "all";
-
-    $: allList = (enigmagames?.data ?? []).filter((item) => !["ended", "inactive"].includes(item.status));
-    $: solvedList = allList.filter((item) => isSolved(item));
-    $: list = enigmaView === "solved" ? solvedList : allList;
+    $: allList = enigmagames?.data ?? [];
+    $: list = allList;
     $: interactionsEnigmaGame = list.find((item) => item.uuid === interactionsEnigmaGameUuid);
     $: offcanvasTitle = enigmagameSelected ? "Atualizar enigma" : "Cadastrar enigma";
     $: interactionsModalTitle = interactionsEnigmaGame?.title ?? "Interações";
-    $: hasUnsolvedEnigmaGame = allList.some((item) => !["ended", "inactive"].includes(item.status) && !isSolved(item));
+    $: hasUnsolvedEnigmaGame = allList.some((item) => item.status === "active" && !isSolved(item));
 
     $: actions = [
-        {
-            title: "Todos os enigmas",
-            icon: "/svg/interactions.svg",
-            permission: true,
-            background: enigmaView === "all" ? "bg-blue-skywave" : "bg-neutral-gray/50",
-            textColor: "text-suspense-aurora",
-            filter: "filter-suspense-aurora",
-            onClick: () => enigmaView = "all",
-        },
-        {
-            title: "Enigmas resolvidos",
-            icon: "/svg/verify.svg",
-            permission: true,
-            background: enigmaView === "solved" ? "bg-blue-skywave" : "bg-neutral-gray/50",
-            textColor: "text-suspense-aurora",
-            filter: "filter-suspense-aurora",
-            onClick: () => enigmaView = "solved",
-        },
         {
             title: "Criar enigma",
             icon: "/svg/plus.svg",
@@ -101,16 +80,16 @@
     }
 
     function cardStatusBackground(item) {
+        if (item.status === "active") {
+            return "bg-[#bd2ff3]";
+        }
+
         if (isSolved(item)) {
             return "bg-blue-skywave";
         }
 
         if (item.status === "draft") {
             return "bg-green-mint";
-        }
-
-        if (item.status === "active") {
-            return "bg-purple-mystic";
         }
 
         return resolveStatusBackground({ ...item, status: "published" }, { useValidity: false });
@@ -330,7 +309,7 @@
                                 {#if can.update}
                                     <IconButton variant="edit" label="Atualizar" size="sm" surface="dark" on:click={() => edit(item)} />
                                 {/if}
-                                {#if can.delete && item.status !== "inactive" && item.status !== "active"}
+                                {#if can.delete && item.status !== "inactive"}
                                     <IconButton variant="trash" label="Inativar" size="sm" surface="dark" on:click={() => deactivate(item)} />
                                 {/if}
                             </div>

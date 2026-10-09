@@ -170,6 +170,7 @@ Route::prefix('panel')->middleware(['inertia'])->group(function () {
                 Route::patch('{radioStation:uuid}', 'updateRadioStation');
                 Route::delete('{radioStation:uuid}', 'destroyRadioStation');
             });
+            Route::get('onair/{onair:uuid}/song-requests', 'showOnairSongRequests');
             Route::get('', 'render')->name('panel.reports');
         });
         Route::prefix('trash')->middleware('can:trash.module.view')->group(function () {

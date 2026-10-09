@@ -24,8 +24,10 @@ class EnigmaGameResource extends JsonResource
         $nextInteractionAt = $lastInteraction && ! $hasFinalAnswer
             ? $lastInteraction->created_at->copy()->addDay()
             : null;
-        $solvedInteraction = $this->interactions
-            ->first(fn ($interaction) => $interaction->isCorrectFinalAnswer());
+        $correctAnswerInteractions = $this->interactions
+            ->filter(fn ($interaction) => $interaction->isCorrectFinalAnswer())
+            ->values();
+        $solvedInteraction = $correctAnswerInteractions->first();
 
         $canViewPrivate = $request->user()?->can('view', $this->resource) ?? false;
         $interactions = $canViewPrivate
@@ -42,9 +44,13 @@ class EnigmaGameResource extends JsonResource
             'image' => $this->image,
             'status' => $this->status,
             'solution' => $canViewPrivate || $solvedInteraction ? $this->solution : null,
+            'solution_title' => $canViewPrivate || $solvedInteraction ? $this->solution_title : null,
+            'solution_image' => $canViewPrivate || $solvedInteraction ? $this->solution_image : null,
+            'solution_synopsis' => $canViewPrivate || $solvedInteraction ? $this->solution_synopsis : null,
             'created_at' => $this->created_at?->setTimezone('America/Sao_Paulo')->format('d/m/Y H:i'),
             'author' => $this->author ? UserResource::make($this->author)->format('summary') : null,
             'solved' => $solvedInteraction !== null,
+            'correct_answers_count' => $correctAnswerInteractions->count(),
             'solved_by' => $solvedInteraction ? [
                 'uuid' => $solvedInteraction->participant?->uuid,
                 'name' => $solvedInteraction->participant?->nickname
@@ -64,7 +70,6 @@ class EnigmaGameResource extends JsonResource
             ],
             'participation' => [
                 'can_interact' => $member !== null
-                    && ! $solvedInteraction
                     && ! $hasFinalAnswer
                     && ($nextInteractionAt === null || $nextInteractionAt->isPast()),
                 'next_interaction_at' => $nextInteractionAt?->setTimezone('America/Sao_Paulo')->format('d/m/Y H:i'),

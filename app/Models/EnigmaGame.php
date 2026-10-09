@@ -27,6 +27,9 @@ class EnigmaGame extends Model
         'image',
         'status',
         'solution',
+        'solution_title',
+        'solution_image',
+        'solution_synopsis',
     ];
 
     public function uniqueIds(): array

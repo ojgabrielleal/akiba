@@ -1,9 +1,15 @@
 <script>
-    import { Badge, EmptyState, Pagination, Section } from "@/lib/components/private/";
+    import { Badge, EmptyState, IconButton, Modal, Pagination, Section } from "@/lib/components/private/";
     import { resolvePlaceholderImage } from "@/lib/utils";
 
     export let title;
     export let onair = null;
+
+    let songRequestsModalRef;
+    let songRequestsLoading = false;
+    let songRequests = [];
+    let selectedOnair = null;
+    let songRequestsError = null;
 
     function category(executionMode) {
         const categories = {
@@ -29,7 +35,168 @@
     function formatNumber(value) {
         return Number(value ?? 0).toLocaleString("pt-BR");
     }
+
+    function requestStatus(item) {
+        if (item.type === "message") {
+            if (item.was_read) return { label: "Lido", class: "bg-green-mint text-blue-night" };
+            if (item.was_dismissed) return { label: "Dispensado", class: "bg-red-crimson text-suspense-aurora" };
+
+            return { label: "Pendente", class: "bg-orange-amber text-blue-night" };
+        }
+
+        if (item.was_reproduced) return { label: "Atendido", class: "bg-green-mint text-blue-night" };
+        if (item.was_canceled) return { label: "Cancelado", class: "bg-red-crimson text-suspense-aurora" };
+
+        return { label: "Pendente", class: "bg-orange-amber text-blue-night" };
+    }
+
+    function requestTitle(item) {
+        if (item.music) {
+            return item.music.name ?? "Musica sem titulo";
+        }
+
+        return "Recado do ouvinte";
+    }
+
+    function requestSubtitle(item) {
+        if (item.music) {
+            return [item.music.artist, item.music.production].filter(Boolean).join(" • ") || "Pedido musical";
+        }
+
+        return item.message;
+    }
+
+    async function openSongRequests(item) {
+        selectedOnair = item;
+        songRequests = [];
+        songRequestsError = null;
+        songRequestsLoading = true;
+        songRequestsModalRef.open();
+
+        try {
+            const response = await fetch(`/panel/reports/onair/${item.uuid}/song-requests`, {
+                headers: {
+                    Accept: "application/json",
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error("Nao foi possivel carregar os pedidos.");
+            }
+
+            const payload = await response.json();
+            songRequests = payload.data ?? [];
+        } catch (error) {
+            songRequestsError = error.message || "Nao foi possivel carregar os pedidos.";
+        } finally {
+            songRequestsLoading = false;
+        }
+    }
 </script>
+
+
+<Modal bind:this={songRequestsModalRef} title={selectedOnair ? `Pedidos de ${selectedOnair.program.name}` : "Pedidos do programa"} size="xl">
+    <div slot="content">
+        {#if songRequestsLoading}
+            <div class="py-10 text-center font-noto-sans text-sm font-bold uppercase italic text-blue-night">
+                Carregando pedidos...
+            </div>
+        {:else if songRequestsError}
+            <EmptyState title="Não foi possível carregar" description={songRequestsError} />
+        {:else if songRequests.length}
+            <div class="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+                {#each songRequests as item (item.uuid)}
+                    {@const status = requestStatus(item)}
+                    <article class="relative flex min-h-64 flex-col rounded-md bg-blue-ocean p-3 font-noto-sans text-suspense-aurora">
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="min-w-0">
+                                <h3 class="truncate text-[1.2rem] font-extrabold uppercase italic leading-tight">
+                                    {item.name ?? "Ouvinte"}
+                                </h3>
+                                {#if item.address}
+                                    <p class="mt-1 truncate text-xs font-normal leading-tight text-suspense-aurora/80">
+                                        {item.address}
+                                    </p>
+                                {/if}
+                            </div>
+                            <span class={["shrink-0 rounded-sm px-2.5 py-1 text-[0.65rem] font-black uppercase italic", status.class]}>
+                                {status.label}
+                            </span>
+                        </div>
+
+                        {#if item.music}
+                            <div class="my-5 flex items-center justify-center w-full">
+                                <div class="relative w-full">
+                                    <div class="absolute left-0 w-2/5 h-[0.1rem] bg-orange-amber rounded-full top-1/2 -translate-y-1/2"></div>
+                                    <div class="absolute inset-0 flex items-center justify-center">
+                                        <img
+                                            src="/svg/music.svg"
+                                            alt=""
+                                            aria-hidden="true"
+                                            class="w-6 rotate-180 filter-orange-amber"
+                                            loading="lazy"
+                                        />
+                                    </div>
+                                    <div class="absolute right-0 w-2/5 h-[0.1rem] bg-orange-amber rounded-full top-1/2 -translate-y-1/2"></div>
+                                </div>
+                            </div>
+                            <div class="flex min-w-0 items-center gap-3">
+                                <img
+                                    src={resolvePlaceholderImage(item.music.anime?.image ?? item.music.image, "placeholder")}
+                                    alt={`Capa de ${item.music.anime?.name ?? item.music.production ?? item.music.name}`}
+                                    class="h-15 w-15 shrink-0 rounded-md object-cover object-top"
+                                    loading="lazy"
+                                />
+                                <div class="min-w-0 flex-1 text-sm">
+                                    <div class="block w-full truncate">
+                                        <span class="font-light">Anime:</span>
+                                        {item.music.anime?.name ?? item.music.production ?? "Sem anime"}
+                                    </div>
+                                    <div class="block w-full truncate">
+                                        <span class="font-light">Artista:</span>
+                                        {item.music.artist ?? "Sem artista"}
+                                    </div>
+                                    <div class="block w-full truncate">
+                                        <span class="font-light">Música:</span>
+                                        {item.music.name ?? "Sem titulo"}
+                                    </div>
+                                </div>
+                            </div>
+                        {:else}
+                            <div class="my-5 flex items-center justify-center w-full">
+                                <div class="relative w-full">
+                                    <div class="absolute left-0 w-2/5 h-[0.1rem] bg-orange-amber rounded-full top-1/2 -translate-y-1/2"></div>
+                                    <div class="absolute inset-0 flex items-center justify-center">
+                                        <img
+                                            src="/svg/telegram.svg"
+                                            alt=""
+                                            aria-hidden="true"
+                                            class="w-7 filter-orange-amber"
+                                            loading="lazy"
+                                        />
+                                    </div>
+                                    <div class="absolute right-0 w-2/5 h-[0.1rem] bg-orange-amber rounded-full top-1/2 -translate-y-1/2"></div>
+                                </div>
+                            </div>
+                        {/if}
+
+                        {#if item.message}
+                            <p class="mt-4 line-clamp-3 text-sm font-normal leading-relaxed text-suspense-aurora">
+                                {item.message}
+                            </p>
+                        {/if}
+
+                        <div class="absolute bottom-2 right-3 text-sm font-extrabold italic text-orange-amber">
+                            {item.created_at}
+                        </div>
+                    </article>
+                {/each}
+            </div>
+        {:else}
+            <EmptyState title="Nenhum pedido" description="Esse programa não recebeu pedidos." />
+        {/if}
+    </div>
+</Modal>
 
 <Section {title}>
     {#if onair?.data?.length}
@@ -102,7 +269,16 @@
                                 {formatNumber(item.peak_listeners)}
                             </td>
                             <td class="px-3 py-3 align-middle">
-                                {formatNumber(item.song_requests_total)} atendidos
+                                <div class="flex items-center gap-2">
+                                    <IconButton
+                                        variant="eye"
+                                        label="Ver pedidos"
+                                        size="sm"
+                                        surface="dark"
+                                        on:click={() => openSongRequests(item)}
+                                    />
+                                    <span class="min-w-0 truncate">{formatNumber(item.song_requests_total)} atendidos</span>
+                                </div>
                             </td>
                         </tr>
                     {/each}

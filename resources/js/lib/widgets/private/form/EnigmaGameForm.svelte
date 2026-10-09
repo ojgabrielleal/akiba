@@ -19,6 +19,9 @@
         content: enigmagameSelected?.content ?? "",
         image: null,
         solution: enigmagameSelected?.solution ?? "",
+        solution_title: enigmagameSelected?.solution_title ?? "",
+        solution_image: enigmagameSelected?.solution_image ?? "",
+        solution_synopsis: enigmagameSelected?.solution_synopsis ?? "",
     });
     $: if (!$form.processing) activeAction = null;
 
@@ -89,6 +92,38 @@
             rows="4"
             bind:value={$form.solution}
             error={$form.errors.solution}
+        />
+    </FormField>
+
+    <FormField for="enigmagame-solution-title" label="Anime da resposta" error={$form.errors.solution_title} spacing="section">
+        <TextInput
+            id="enigmagame-solution-title"
+            name="solution_title"
+            variant="offcanvas"
+            bind:value={$form.solution_title}
+            error={$form.errors.solution_title}
+        />
+    </FormField>
+
+    <FormField for="enigmagame-solution-image" label="Imagem do anime" error={$form.errors.solution_image}>
+        <TextInput
+            id="enigmagame-solution-image"
+            name="solution_image"
+            type="url"
+            variant="offcanvas"
+            bind:value={$form.solution_image}
+            error={$form.errors.solution_image}
+        />
+    </FormField>
+
+    <FormField for="enigmagame-solution-synopsis" label="Sinopse da resposta" error={$form.errors.solution_synopsis} spacing="section">
+        <TextArea
+            id="enigmagame-solution-synopsis"
+            name="solution_synopsis"
+            rows="5"
+            variant="offcanvas"
+            bind:value={$form.solution_synopsis}
+            error={$form.errors.solution_synopsis}
         />
     </FormField>
 
