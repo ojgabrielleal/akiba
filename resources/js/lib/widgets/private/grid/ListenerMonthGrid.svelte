@@ -17,7 +17,7 @@
 
     let actions = [
         {
-            title: "Salvar",
+            title: "Atualizar",
             icon: "/svg/save.svg",
             permission: can.set,
             onClick: () => {

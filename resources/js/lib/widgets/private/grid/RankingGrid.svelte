@@ -81,7 +81,7 @@
                             <h2 class="mb-2 h-10 max-w-full sm:w-[18rem] font-noto-sans text-base font-extrabold uppercase italic leading-5 text-blue-marinho sm:text-xl sm:leading-[1.3rem]">
                                 {ranking.data[index].name}
                             </h2>
-                            <div class="max-w-full font-noto-sans text-sm text-blue-marinho">
+                            <div class="max-w-full truncate pr-2 font-noto-sans text-sm text-blue-marinho sm:w-[18rem]">
                                 <span class="font-medium">
                                     Cantor/Banda:
                                 </span>

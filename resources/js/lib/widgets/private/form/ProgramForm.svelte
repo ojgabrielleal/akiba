@@ -25,7 +25,7 @@
 
     $: form = useForm({
         _method: programSelected ? "PATCH" : "POST",
-        user: programSelected?.host.uuid ?? null,
+        user: programSelected?.host?.uuid ?? null,
         name: programSelected?.name ?? null,
         image: programSelected?.image ?? null,
         access_type: programSelected?.access_type ?? null,
