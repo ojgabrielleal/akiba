@@ -14,12 +14,7 @@
     let offcanvasRef;
     let programSelected = null;
     $: offcanvasTitle = programSelected?.name ?? "Cadastrar Programa";
-    $: currentPrograms = programs?.data?.[selectedExecutionMode] ?? [];
-    $: selectedPrograms = selectedExecutionMode === "live"
-        ? currentPrograms.filter((program) => program.host)
-        : selectedExecutionMode === "free_live"
-            ? (programs?.data?.live ?? []).filter((program) => !program.host)
-            : currentPrograms;
+    $: selectedPrograms = programs?.data?.[selectedExecutionMode] ?? [];
 
     let actions = [
         {
@@ -38,11 +33,6 @@
             title: "Ao vivo",
             execution_mode: "live",
             icon: "/svg/onair.svg",
-        },
-        {
-            title: "Livres",
-            execution_mode: "free_live",
-            icon: "/svg/radio.svg",
         },
         {
             title: "Agendados",
@@ -105,6 +95,7 @@
         {#if selectedPrograms.length > 0}
         <GridList preset="wide" class="mt-10">
             {#each selectedPrograms as item}
+                {@const displayHost = item.display_host ?? item.host}
                 <li>
                     <article class="w-full">
                     <div>
@@ -120,14 +111,14 @@
                                     Com:
                                 </span>
                                 <span class="block min-w-0 flex-1 truncate">
-                                    {item.host?.nickname ?? "Livre"}
+                                    {displayHost?.nickname ?? "Livre"}
                                 </span>
                             </div>
                             <div class={["z-10 absolute bottom-2 right-22 px-2 rounded-xl float-end text-center text-[0.6rem] text-suspense-aurora font-noto-sans font-extrabold italic uppercase",
-                                {'bg-neutral-gray': item.host?.is_virtual ?? true},
-                                {'bg-green-mint': item.host && !item.host.is_virtual}
+                                {'bg-neutral-gray': displayHost?.is_virtual ?? true},
+                                {'bg-green-mint': displayHost && !displayHost.is_virtual}
                             ]}>
-                                {item.host?.is_virtual ? "Robô" : item.host ? 'Humano' : 'Aberto'}
+                                {displayHost?.is_virtual ? "Robô" : displayHost ? 'Humano' : 'Aberto'}
                             </div>
                             <div class="flex gap-1 absolute bottom-3 right-4 z-10">
                                 {#if can.deactivate}
@@ -152,8 +143,8 @@
                             </div>
                             <img
                                 class="w-36 aspect-square absolute right-0 bottom-0 object-cover object-top"
-                                src={resolvePlaceholderImage(item.host?.avatar, "avatar", item.host?.gender)}
-                                alt={item.host?.nickname ?? "Livre"}
+                                src={resolvePlaceholderImage(displayHost?.avatar, "avatar", displayHost?.gender)}
+                                alt={displayHost?.nickname ?? "Livre"}
                                 loading="lazy"
                             />
                         </div>

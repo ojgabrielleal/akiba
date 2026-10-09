@@ -94,6 +94,7 @@ class RadioController extends Controller
     {
         return [
             'host',
+            'latestOnair.host',
             'programAirtimes',
             'schedules' => fn ($query) => $query->pendingExecution()->orderBy('scheduled_at'),
         ];

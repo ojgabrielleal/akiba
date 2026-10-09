@@ -30,6 +30,11 @@ class ProgramResource extends JsonResource
             'is_default_auto_dj' => $this->is_default_auto_dj,
             'phrases' => $this->phrases ?? [],
             'host' => $this->host ? UserResource::make($this->host)->format('summary') : null,
+            'display_host' => $this->host
+                ? UserResource::make($this->host)->format('summary')
+                : ($this->relationLoaded('latestOnair') && $this->latestOnair?->host
+                    ? UserResource::make($this->latestOnair->host)->format('summary')
+                    : null),
             'airtimes' => ProgramAirtimeResource::collection($this->programAirtimes),
             'schedules' => ProgramScheduleResource::collection($this->schedules),
         ];

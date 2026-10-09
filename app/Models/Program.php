@@ -83,6 +83,11 @@ class Program extends Model
         return $this->hasMany(Onair::class, 'program_id');
     }
 
+    public function latestOnair()
+    {
+        return $this->hasOne(Onair::class, 'program_id')->latestOfMany();
+    }
+
     public function host()
     {
         return $this->belongsTo(User::class, 'user_id');
