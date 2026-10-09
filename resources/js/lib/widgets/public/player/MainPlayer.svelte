@@ -277,11 +277,11 @@
                     loading="lazy"
                 />
             </button>
-            <div class="flex min-h-18 min-w-0 flex-1 flex-col justify-end">
+            <div class="flex min-h-10 min-w-0 flex-1 flex-col justify-end">
                 <div class="text-orange-amber font-noto-sans uppercase italic">
                     Tocando agora:
                 </div>
-                <div class="min-w-0 max-w-[34rem] overflow-hidden">
+                <div class="min-w-0 max-w-[15rem] overflow-hidden pr-4">
                     <span class="block truncate text-suspense-aurora text-lg font-song-title font-extrabold uppercase italic leading-6">
                         {playerData.current_song.music || "Estamos offline"}
                     </span>
