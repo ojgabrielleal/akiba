@@ -1,9 +1,9 @@
 <script>
     import { router } from "@inertiajs/svelte";
 
-    import { Button, EmptyState, GridList, IconButton, Offcanvas, Section } from "@/lib/components/private";
+    import { Button, EmptyState, GridList, IconButton, Modal, Offcanvas, Section } from "@/lib/components/private";
     import { PollForm } from "@/lib/widgets/private";
-    import { pollPermissions, resolveStatusBackground } from "@/lib/utils";
+    import { pollPermissions, resolvePlaceholderImage, resolveStatusBackground } from "@/lib/utils";
 
     export let title;
     export let polls = null;
@@ -12,6 +12,8 @@
     const can = pollPermissions();
     let offcanvasRef;
     let pollSelected;
+    let votesModalRef;
+    let votesPollSelected = null;
     let voting = false;
 
     $: offcanvasTitle = pollSelected ? 'Atualizar enquete' : 'Cadastrar enquete'
@@ -51,7 +53,56 @@
 
         return (option.votes / latestPoll.data.total_votes) * 100;
     }
+
+    function openVotesModal(item) {
+        votesPollSelected = item;
+        votesModalRef.open();
+    }
+
+    function voterName(vote) {
+        return vote.user?.nickname ?? vote.user?.name ?? "Ouvinte";
+    }
+
+    function modalTitle(value) {
+        if (!value) return "Votos da enquete";
+
+        return value.length > 34 ? `${value.slice(0, 31)}...` : value;
+    }
 </script>
+
+
+<Modal bind:this={votesModalRef} title={modalTitle(votesPollSelected?.question)} size="sm">
+    <div slot="content">
+        {#if votesPollSelected?.votes?.length}
+            <ul class="grid gap-2 font-noto-sans">
+                {#each votesPollSelected.votes as vote (vote.uuid)}
+                    <li class="grid grid-cols-[2.5rem_minmax(0,1fr)] gap-2 border-b border-blue-night/10 pb-2 last:border-b-0 last:pb-0">
+                        <img
+                            src={resolvePlaceholderImage(vote.user?.avatar, "avatar")}
+                            alt=""
+                            aria-hidden="true"
+                            class="size-10 rounded-full border-2 border-blue-night/15 object-cover object-top"
+                            loading="lazy"
+                        />
+                        <div class="min-w-0">
+                            <p class="truncate text-sm font-black uppercase italic leading-tight text-blue-night">
+                                {voterName(vote)}
+                            </p>
+                            <p class="mt-1 text-xs font-bold uppercase italic text-blue-night">
+                                Votou em: <span class="text-orange-amber">{vote.option?.option ?? "opção removida"}</span>
+                            </p>
+                            <p class="mt-1 text-xs font-bold uppercase italic text-neutral-gray">
+                                {vote.created_at}
+                            </p>
+                        </div>
+                    </li>
+                {/each}
+            </ul>
+        {:else}
+            <EmptyState title="Nenhum voto" description="Essa enquete ainda não recebeu votos." />
+        {/if}
+    </div>
+</Modal>
 
 <Offcanvas bind:this={offcanvasRef} title={offcanvasTitle}>
     <div slot="content" let:close>
@@ -144,6 +195,13 @@
                             </div>
                             <div></div>
                             <div class="flex gap-1 justify-end">
+                                <IconButton
+                                    variant="eye"
+                                    label="Ver votos"
+                                    size="sm"
+                                    surface="dark"
+                                    on:click={() => openVotesModal(item)}
+                                />
                                 {#if can.deactivate}
                                     <IconButton
                                         variant="trash"

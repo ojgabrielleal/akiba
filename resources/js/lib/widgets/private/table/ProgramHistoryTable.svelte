@@ -107,14 +107,14 @@
             <div class="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
                 {#each songRequests as item (item.uuid)}
                     {@const status = requestStatus(item)}
-                    <article class="relative flex min-h-64 flex-col rounded-md bg-blue-ocean p-3 font-noto-sans text-suspense-aurora">
+                    <article class="relative flex min-h-64 flex-col rounded-md border border-blue-night/10 bg-suspense-aurora p-3 font-noto-sans text-blue-night shadow-sm">
                         <div class="flex items-start justify-between gap-3">
-                            <div class="min-w-0">
+                            <div class="min-w-0 flex-1">
                                 <h3 class="truncate text-[1.2rem] font-extrabold uppercase italic leading-tight">
                                     {item.name ?? "Ouvinte"}
                                 </h3>
                                 {#if item.address}
-                                    <p class="mt-1 truncate text-xs font-normal leading-tight text-suspense-aurora/80">
+                                    <p class="mt-1 truncate text-xs font-normal leading-tight text-blue-night/70">
                                         {item.address}
                                     </p>
                                 {/if}
@@ -124,27 +124,28 @@
                             </span>
                         </div>
 
-                        {#if item.music}
-                            <div class="my-5 flex items-center justify-center w-full">
-                                <div class="relative w-full">
-                                    <div class="absolute left-0 w-2/5 h-[0.1rem] bg-orange-amber rounded-full top-1/2 -translate-y-1/2"></div>
-                                    <div class="absolute inset-0 flex items-center justify-center">
-                                        <img
-                                            src="/svg/music.svg"
-                                            alt=""
-                                            aria-hidden="true"
-                                            class="w-6 rotate-180 filter-orange-amber"
-                                            loading="lazy"
-                                        />
-                                    </div>
-                                    <div class="absolute right-0 w-2/5 h-[0.1rem] bg-orange-amber rounded-full top-1/2 -translate-y-1/2"></div>
+                        <div class="my-5 flex items-center justify-center w-full">
+                            <div class="relative w-full">
+                                <div class="absolute left-0 w-2/5 h-[0.1rem] bg-orange-amber rounded-full top-1/2 -translate-y-1/2"></div>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <img
+                                        src={item.music ? "/svg/music.svg" : "/svg/telegram.svg"}
+                                        alt=""
+                                        aria-hidden="true"
+                                        class={[item.music ? "w-6 rotate-180" : "w-7", "filter-orange-amber"]}
+                                        loading="lazy"
+                                    />
                                 </div>
+                                <div class="absolute right-0 w-2/5 h-[0.1rem] bg-orange-amber rounded-full top-1/2 -translate-y-1/2"></div>
                             </div>
+                        </div>
+
+                        {#if item.music}
                             <div class="flex min-w-0 items-center gap-3">
                                 <img
                                     src={resolvePlaceholderImage(item.music.anime?.image ?? item.music.image, "placeholder")}
                                     alt={`Capa de ${item.music.anime?.name ?? item.music.production ?? item.music.name}`}
-                                    class="h-15 w-15 shrink-0 rounded-md object-cover object-top"
+                                    class="h-15 w-15 shrink-0 rounded-md border border-blue-night/10 object-cover object-top"
                                     loading="lazy"
                                 />
                                 <div class="min-w-0 flex-1 text-sm">
@@ -162,26 +163,10 @@
                                     </div>
                                 </div>
                             </div>
-                        {:else}
-                            <div class="my-5 flex items-center justify-center w-full">
-                                <div class="relative w-full">
-                                    <div class="absolute left-0 w-2/5 h-[0.1rem] bg-orange-amber rounded-full top-1/2 -translate-y-1/2"></div>
-                                    <div class="absolute inset-0 flex items-center justify-center">
-                                        <img
-                                            src="/svg/telegram.svg"
-                                            alt=""
-                                            aria-hidden="true"
-                                            class="w-7 filter-orange-amber"
-                                            loading="lazy"
-                                        />
-                                    </div>
-                                    <div class="absolute right-0 w-2/5 h-[0.1rem] bg-orange-amber rounded-full top-1/2 -translate-y-1/2"></div>
-                                </div>
-                            </div>
                         {/if}
 
                         {#if item.message}
-                            <p class="mt-4 line-clamp-3 text-sm font-normal leading-relaxed text-suspense-aurora">
+                            <p class="mt-4 line-clamp-3 text-sm font-normal leading-relaxed text-blue-night">
                                 {item.message}
                             </p>
                         {/if}

@@ -22,6 +22,7 @@ class PollResource extends JsonResource
             'question' => $this->question,
             'expires_at' => $this->expires_at?->setTimezone('America/Sao_Paulo')->format('Y-m-d\TH:i'),
             'options' => PollOptionResource::collection($this->options),
+            'votes' => PollVoteResource::collection($this->whenLoaded('votes')),
             'total_votes' => $this->votes_count,
             'has_voted' => $this->hasVoteFrom($request),
             'is_valid' => $this->isValid(),

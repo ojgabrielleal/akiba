@@ -180,7 +180,7 @@
                             </div>
 
                             {#if enigmagame.data.content}
-                                <p class="mt-6 max-w-2xl whitespace-pre-line text-sm font-normal normal-case not-italic leading-snug text-suspense-honeycream sm:text-base [[data-public-theme=light]_&]:text-blue-night">
+                                <p class="mt-6 max-w-2xl whitespace-pre-line text-base font-normal normal-case not-italic leading-snug text-suspense-honeycream sm:text-lg [[data-public-theme=light]_&]:text-blue-night">
                                     {enigmagame.data.content}
                                 </p>
                             {/if}

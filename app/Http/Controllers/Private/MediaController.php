@@ -99,6 +99,7 @@ class MediaController extends Controller
                 ->withCount('votes')
                 ->with('votes'),
             'votes.voter',
+            'votes.option',
         ];
     }
 

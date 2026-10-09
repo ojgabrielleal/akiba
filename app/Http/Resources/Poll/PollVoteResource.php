@@ -26,7 +26,11 @@ class PollVoteResource extends JsonResource
                     'nickname' => $this->voter?->nickname,
                     'avatar' => $this->voter?->avatar,
                 ],
-            'created_at' => $this->created_at,
+            'option' => $this->whenLoaded('option', fn () => [
+                'uuid' => $this->option?->uuid,
+                'option' => $this->option?->option,
+            ]),
+            'created_at' => $this->created_at?->setTimezone('America/Sao_Paulo')->format('d/m/Y H:i'),
         ];
     }
 }
