@@ -44,7 +44,7 @@
                 </div>
             </div>
             <div class="flex min-w-0 flex-1 items-center justify-end gap-3">
-                <div class="min-w-0 max-w-[25rem] text-right font-noto-sans uppercase italic">
+                <div class="min-w-0 max-w-[30rem] text-right font-noto-sans uppercase italic">
                     <p class="text-[0.65rem] font-black tracking-[0.12em] text-suspense-aurora/45">
                         Tocando agora
                     </p>
