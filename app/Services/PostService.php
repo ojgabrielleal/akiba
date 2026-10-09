@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Integrations\DiscordWebhookService;
 use App\Models\Post;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
@@ -20,6 +21,7 @@ class PostService
     public function __construct(
         private ImageProcess $image,
         private PushNotificationService $pushNotification,
+        private DiscordWebhookService $discord,
     ) {}
 
     public function deactivate(Post $post): Post
@@ -72,7 +74,7 @@ class PostService
             return $post;
         });
 
-        if ($post->status === 'published') {
+        if ($this->shouldSendPublishedNotification($post)) {
             $this->sendPublishedNotification($post);
         }
 
@@ -192,22 +194,31 @@ class PostService
             return $post;
         });
 
-        if (! $wasPublished && $post->status === 'published') {
+        if (! $wasPublished && $this->shouldSendPublishedNotification($post)) {
             $this->sendPublishedNotification($post);
         }
 
         return $post;
     }
 
+    private function shouldSendPublishedNotification(Post $post): bool
+    {
+        return $post->status === 'published';
+    }
+
     private function sendPublishedNotification(Post $post): void
     {
+        $url = $this->publishedNotificationUrl($post);
+
         $this->pushNotification->sendToUserOrAll(null, [
             'title' => $this->publishedNotificationTitle($post),
             'body' => $post->title,
-            'url' => $this->publishedNotificationUrl($post),
+            'url' => $url,
             'icon' => '/favicon.ico',
             'banner' => $post->cover,
         ]);
+
+        $this->discord->sendPostPublishedHook($post, $url);
     }
 
     private function publishedNotificationTitle(Post $post): string
