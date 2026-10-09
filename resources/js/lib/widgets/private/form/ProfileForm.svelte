@@ -32,21 +32,31 @@
 
     const can = profilePermissions();
 
-    const form = useForm({
-        _method: "PATCH",
-        name: profile?.data.name ?? null,
-        nickname: profile?.data.nickname ?? null,
-        gender: profile?.data.gender ?? null,
-        avatar: profile?.data.avatar ?? null,
-        birth_date: profile?.data.birth_date ?? null,
-        city: profile?.data.city ?? null,
-        state: profile?.data.state ?? null,
-        country: profile?.data.country ?? null,
-        bibliography: profile?.data.bibliography ?? null,
-        socials: normalizeSocials(profile?.data.socials),
-        preferences: normalizePreferences(profile?.data.preferences),
-        top_animes: normalizeTopAnimes(profile?.data.top_animes),
-    });
+    let loadedProfileUuid = null;
+    let form;
+
+    function createProfileForm(currentProfile) {
+        return useForm({
+            _method: "PATCH",
+            name: currentProfile?.data.name ?? null,
+            nickname: currentProfile?.data.nickname ?? null,
+            gender: currentProfile?.data.gender ?? null,
+            avatar: currentProfile?.data.avatar ?? null,
+            birth_date: currentProfile?.data.birth_date ?? null,
+            city: currentProfile?.data.city ?? null,
+            state: currentProfile?.data.state ?? null,
+            country: currentProfile?.data.country ?? null,
+            bibliography: currentProfile?.data.bibliography ?? null,
+            socials: normalizeSocials(currentProfile?.data.socials),
+            preferences: normalizePreferences(currentProfile?.data.preferences),
+            top_animes: normalizeTopAnimes(currentProfile?.data.top_animes),
+        });
+    }
+
+    $: if (profile?.data.uuid !== loadedProfileUuid) {
+        loadedProfileUuid = profile?.data.uuid ?? null;
+        form = createProfileForm(profile);
+    }
 
     let topAnimeQuery = "";
     let topAnimeResults = [];

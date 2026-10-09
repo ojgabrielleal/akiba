@@ -17,19 +17,28 @@
     let userFilter = "humans";
 
     $: accessOffcanvasTitle = userSelected ? userSelected.nickname : "Editar acessos";
-    $: filteredUsers = users?.data?.filter((user) => userFilter === "bots" ? user.is_virtual : !user.is_virtual) ?? [];
-    $: emptyStateTitle = userFilter === "bots" ? "Nenhum bot encontrado" : "Nenhum membro encontrado";
-    $: emptyStateDescription = userFilter === "bots" ? "Os bots ativos aparecerão aqui." : "Os membros ativos aparecerão aqui.";
+    $: filteredUsers = users?.data?.filter((user) => userFilter === "virtual" ? user.is_virtual : !user.is_virtual) ?? [];
+    $: emptyStateTitle = userFilter === "virtual" ? "Nenhum virtual encontrado" : "Nenhum membro encontrado";
+    $: emptyStateDescription = userFilter === "virtual" ? "Os virtuais ativos aparecerão aqui." : "Os membros ativos aparecerão aqui.";
 
     $: actions = [
         {
-            title: userFilter === "bots" ? "Humanos" : "Bots",
-            icon: userFilter === "bots" ? "/svg/team.svg" : "/svg/robot.svg",
+            title: "Humanos",
+            icon: "/svg/team.svg",
             permission: variant === "administration",
-            background: userFilter === "bots" ? "bg-blue-skywave" : "bg-purple-mystic",
+            background: userFilter === "humans" ? "bg-blue-skywave" : "bg-neutral-gray/50",
             textColor: "text-suspense-aurora",
             filter: "filter-suspense-aurora",
-            onClick: () => userFilter = userFilter === "bots" ? "humans" : "bots",
+            onClick: () => userFilter = "humans",
+        },
+        {
+            title: "Virtuais",
+            icon: "/svg/robot.svg",
+            permission: variant === "administration",
+            background: userFilter === "virtual" ? "bg-blue-skywave" : "bg-neutral-gray/50",
+            textColor: "text-suspense-aurora",
+            filter: "filter-suspense-aurora",
+            onClick: () => userFilter = "virtual",
         },
         {
             title: "Adicionar membro",
@@ -77,7 +86,7 @@
             <footer class="absolute inset-x-0 bottom-2 z-10 flex w-full items-end justify-between gap-2 px-2">
                 <div class="flex min-w-0 max-w-[65%] items-center gap-1">
                     {#if item.is_virtual}
-                        <Badge variant="review" size="sm" class="min-w-0" title="Bot">
+                        <Badge variant="review" size="sm" class="min-w-0" title="Virtual">
                             <img
                                 src="/svg/robot.svg"
                                 alt=""
@@ -85,7 +94,7 @@
                                 class="h-3.5 w-3.5 filter-suspense-aurora"
                                 loading="lazy"
                             />
-                            Bot
+                            Virtual
                         </Badge>
                     {:else if item.highest_role}
                         <Badge variant="light" size="sm" class="min-w-0" title={item.highest_role.label}>
@@ -115,7 +124,7 @@
                     {#if can.deactivate && variant === "administration"}
                         <IconButton
                             variant="trash"
-                            label={item.is_virtual ? "Desativar bot" : "Desativar membro"}
+                            label={item.is_virtual ? "Desativar virtual" : "Desativar membro"}
                             size="sm"
                             surface="dark"
                             on:click={() => requestDeactivateUser(item.uuid)}

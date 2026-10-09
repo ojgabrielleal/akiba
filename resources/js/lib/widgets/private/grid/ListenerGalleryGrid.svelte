@@ -16,7 +16,7 @@
 
     let actions = [
         {
-            title: "Criar",
+            title: "Adicionar imagem",
             icon: "/svg/plus.svg",
             permission: can.create,
             onClick: () => {

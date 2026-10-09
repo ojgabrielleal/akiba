@@ -18,8 +18,7 @@
 
     $: allList = (enigmagames?.data ?? []).filter((item) => !["ended", "inactive"].includes(item.status));
     $: solvedList = allList.filter((item) => isSolved(item));
-    $: unresolvedList = allList.filter((item) => !isSolved(item));
-    $: list = enigmaView === "solved" ? solvedList : unresolvedList;
+    $: list = enigmaView === "solved" ? solvedList : allList;
     $: interactionsEnigmaGame = list.find((item) => item.uuid === interactionsEnigmaGameUuid);
     $: offcanvasTitle = enigmagameSelected ? "Atualizar enigma" : "Cadastrar enigma";
     $: interactionsModalTitle = interactionsEnigmaGame?.title ?? "Interações";
@@ -27,16 +26,25 @@
 
     $: actions = [
         {
-            title: enigmaView === "solved" ? "Todos os enigmas" : "Enigmas resolvidos",
+            title: "Todos os enigmas",
             icon: "/svg/interactions.svg",
             permission: true,
-            background: enigmaView === "solved" ? "bg-blue-ocean" : "bg-blue-skywave",
+            background: enigmaView === "all" ? "bg-blue-skywave" : "bg-neutral-gray/50",
             textColor: "text-suspense-aurora",
             filter: "filter-suspense-aurora",
-            onClick: () => enigmaView = enigmaView === "solved" ? "all" : "solved",
+            onClick: () => enigmaView = "all",
         },
         {
-            title: "Criar",
+            title: "Enigmas resolvidos",
+            icon: "/svg/verify.svg",
+            permission: true,
+            background: enigmaView === "solved" ? "bg-blue-skywave" : "bg-neutral-gray/50",
+            textColor: "text-suspense-aurora",
+            filter: "filter-suspense-aurora",
+            onClick: () => enigmaView = "solved",
+        },
+        {
+            title: "Criar enigma",
             icon: "/svg/plus.svg",
             permission: can.create,
             onClick: () => {

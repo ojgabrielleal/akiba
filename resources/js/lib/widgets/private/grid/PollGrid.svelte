@@ -18,7 +18,7 @@
     
     let actions = [
         {
-            title: "Criar",
+            title: "Criar enquete",
             icon: "/svg/plus.svg",
             permission: can.create,
             onClick: () => {
