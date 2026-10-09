@@ -49,7 +49,7 @@
                 />
 
                 <figcaption class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-blue-night via-blue-night/90 to-blue-night/0 px-4 pb-4 pt-16 font-noto-sans text-suspense-aurora sm:px-6 sm:pb-6">
-                    <div class="mx-auto max-w-[5rem]">
+                    <div class="mx-auto max-w-xl">
                         <p class="text-xs font-black uppercase italic tracking-[0.18em] text-orange-morning">
                             Tocando agora:
                         </p>
