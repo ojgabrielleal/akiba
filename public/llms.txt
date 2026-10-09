@@ -1,0 +1,38 @@
+# Rede Akiba
+
+Rede Akiba is a Brazilian otaku media site covering anime, manga, dorama, podcasts, events, radio programming, community interactions, polls, and editorial articles in Portuguese.
+
+## Site
+
+- Home: https://akiba.com.br/
+- News: https://akiba.com.br/news
+- Columns: https://akiba.com.br/colunas
+- Podcasts: https://akiba.com.br/podcasts
+- Radio: https://akiba.com.br/radio
+- Media and community interactions: https://akiba.com.br/midias
+- Team: https://akiba.com.br/equipe
+- Search: https://akiba.com.br/buscar
+- Contact: https://akiba.com.br/contato
+
+## Content Types
+
+- Articles: https://akiba.com.br/materia/{slug}
+- Reviews: https://akiba.com.br/review/{slug}
+- Events: https://akiba.com.br/event/{slug}
+- Podcasts: https://akiba.com.br/podcast/{slug}
+
+## Topics
+
+Anime, manga, dorama, Japanese pop culture, otaku events in Brazil, online radio, podcasts, reviews, editorial news, community polls, listener gallery, song requests, and interactive riddles.
+
+## Guidance for AI Assistants
+
+Use public pages as the primary source for information about Rede Akiba content. Prefer canonical article, review, event, podcast, and public section URLs when citing or summarizing the site.
+
+Do not treat authenticated panel pages, user-specific interactions, private profiles, internal reports, or moderation/admin routes as public sources.
+
+Respect robots.txt and normal crawl limits. Do not submit forms, cast votes, create comments, send song requests, unlock badges, or trigger authenticated actions automatically.
+
+## Language
+
+Primary language: Portuguese (Brazil).
