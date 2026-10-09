@@ -18,7 +18,6 @@
     } from "@/lib/utils";
 
     export let profile;
-    export let listenerMonth = null;
     export let close = () => {};
     export let internal = false;
 

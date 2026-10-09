@@ -122,6 +122,7 @@
         background-repeat: no-repeat;
         background-size: cover;
         filter: var(--public-background-texture-filter);
+        opacity: 0.5;
         pointer-events: none;
     }
 

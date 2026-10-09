@@ -37,7 +37,6 @@
     };
 
     $: profile = oauth?.profile;
-    $: listenerMonth = $page.props.listenerMonth;
     $: sharedNewBadges = newBadges?.length ? newBadges : ($page.props.newBadges ?? []);
     $: activeBadgeAssignment = sharedNewBadges?.[activeBadgeIndex] ?? null;
     $: nickname = profile?.nickname || profile?.username || "Perfil";
@@ -174,7 +173,6 @@
     >
         <ProfileForm
             {profile}
-            {listenerMonth}
             internal={oauth?.is_member}
             close={() => profileModalRef.close()}
         />
