@@ -32,7 +32,6 @@
             console.warn("AdSense: não foi possível carregar o bloco de anúncio.", error);
         }
     };
-
 </script>
 
 <svelte:element
