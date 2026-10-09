@@ -158,7 +158,7 @@
             emptyMessage="As fotos da comunidade aparecem aqui quando forem publicadas."
         />
 
-        <Section title="Enigma da Akiba" styles="container-page order-2 mt-10 mb-12">
+        <Section title="Enigma da Akiba" styles="container-page order-2 mt-10 mb-6">
             {#if enigmagame?.data}
                 <div
                     class="grid gap-3 text-suspense-aurora"
