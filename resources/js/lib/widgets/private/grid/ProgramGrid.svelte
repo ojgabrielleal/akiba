@@ -13,8 +13,13 @@
     let selectedExecutionMode = "live";
     let offcanvasRef;
     let programSelected = null;
-
     $: offcanvasTitle = programSelected?.name ?? "Cadastrar Programa";
+    $: currentPrograms = programs?.data?.[selectedExecutionMode] ?? [];
+    $: selectedPrograms = selectedExecutionMode === "live"
+        ? currentPrograms.filter((program) => program.host)
+        : selectedExecutionMode === "free_live"
+            ? (programs?.data?.live ?? []).filter((program) => !program.host)
+            : currentPrograms;
 
     let actions = [
         {
@@ -33,6 +38,11 @@
             title: "Ao vivo",
             execution_mode: "live",
             icon: "/svg/onair.svg",
+        },
+        {
+            title: "Livres",
+            execution_mode: "free_live",
+            icon: "/svg/radio.svg",
         },
         {
             title: "Agendados",
@@ -92,9 +102,9 @@
                 </button>
             {/each}
         </div>
-        {#if programs.data[selectedExecutionMode].length > 0}
+        {#if selectedPrograms.length > 0}
         <GridList preset="wide" class="mt-10">
-            {#each programs.data[selectedExecutionMode] as item}
+            {#each selectedPrograms as item}
                 <li>
                     <article class="w-full">
                     <div>

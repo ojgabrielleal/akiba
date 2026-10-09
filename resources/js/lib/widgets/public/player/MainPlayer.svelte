@@ -281,8 +281,8 @@
                 <div class="text-orange-amber font-noto-sans uppercase italic">
                     Tocando agora:
                 </div>
-                <div class="max-h-12 min-w-0 max-w-[34rem] overflow-hidden">
-                    <span class="line-clamp-2 break-all text-suspense-aurora text-lg font-song-title font-extrabold uppercase italic leading-6">
+                <div class="min-w-0 max-w-[34rem] overflow-hidden">
+                    <span class="block truncate text-suspense-aurora text-lg font-song-title font-extrabold uppercase italic leading-6">
                         {playerData.current_song.music || "Estamos offline"}
                     </span>
                 </div>
