@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Private;
 
+use App\Http\Resources\EnigmaGameResource;
 use App\Models\EnigmaGame;
 use App\Models\EnigmaGameInteraction;
 use App\Models\Permission;
@@ -10,6 +11,7 @@ use App\Models\PollOption;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
@@ -188,6 +190,26 @@ class MediaPageTest extends TestCase
         $this->assertNull($interaction->admin_response);
         $this->assertSame($user->id, $interaction->responded_by);
         $this->assertNotNull($interaction->responded_at);
+    }
+
+    public function test_enigmagame_question_yes_does_not_solve_enigma(): void
+    {
+        $game = EnigmaGame::factory()->active()->create([
+            'solution' => 'Naruto',
+        ]);
+
+        EnigmaGameInteraction::factory()
+            ->yes()
+            ->for($game, 'enigmagame')
+            ->create();
+
+        $payload = EnigmaGameResource::make($game->load('interactions.participant'))
+            ->resolve(Request::create('/midias'));
+
+        $this->assertFalse($payload['solved']);
+        $this->assertNull($payload['solution']);
+        $this->assertNull($payload['solved_by']);
+        $this->assertNull($payload['solved_at']);
     }
 
     public function test_enigmagame_question_rejects_final_answer_result(): void

@@ -39,6 +39,12 @@ class EnigmaGameInteraction extends Model
         return ['uuid'];
     }
 
+    public function isCorrectFinalAnswer(): bool
+    {
+        return $this->type === self::TYPE_FINAL_ANSWER
+            && $this->result === 'correct';
+    }
+
     public function enigmagame()
     {
         return $this->belongsTo(EnigmaGame::class, 'enigmagame_id');

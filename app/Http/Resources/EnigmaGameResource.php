@@ -25,8 +25,7 @@ class EnigmaGameResource extends JsonResource
             ? $lastInteraction->created_at->copy()->addDay()
             : null;
         $solvedInteraction = $this->interactions
-            ->first(fn ($interaction) => $interaction->type === EnigmaGameInteraction::TYPE_FINAL_ANSWER
-                && $interaction->result === 'correct');
+            ->first(fn ($interaction) => $interaction->isCorrectFinalAnswer());
 
         $canViewPrivate = $request->user()?->can('view', $this->resource) ?? false;
         $interactions = $canViewPrivate

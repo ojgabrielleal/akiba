@@ -364,10 +364,10 @@
         <div class="mb-3 rounded-md border border-orange-citric/45 bg-orange-citric/10 px-4 py-3 font-noto-sans">
             <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                    <p class="text-sm font-extrabold text-blue-marinho">
+                    <p class="text-sm font-extrabold text-blue-marinho [[data-public-theme=akiba]_&]:text-white [[data-public-theme=night]_&]:text-white">
                         Não achei essa música no catálogo
                     </p>
-                    <p class="mt-0.5 text-xs text-blue-marinho/70">
+                    <p class="mt-0.5 text-xs text-blue-marinho/70 [[data-public-theme=akiba]_&]:text-white/80 [[data-public-theme=night]_&]:text-white/80">
                         Me diz o anime e o nome da música que eu mando do seu jeito.
                     </p>
                 </div>

@@ -180,8 +180,7 @@ class EnigmaGameService
                 'responded_at' => now(),
             ]);
 
-            if ($interaction->type === EnigmaGameInteraction::TYPE_FINAL_ANSWER
-                && $interaction->result === 'correct') {
+            if ($interaction->isCorrectFinalAnswer()) {
                 $this->transferMostWinsBadge();
 
                 if ($interaction->participant) {

@@ -84,6 +84,10 @@
                     ? { ...item, admin_response: null, result }
                     : item
                 );
+
+                if (result === "correct") {
+                    interactionsModalRef.close();
+                }
             },
         });
     }

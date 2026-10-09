@@ -15,11 +15,6 @@ class EnigmaGameSeeder extends Seeder
     public function run(): void
     {
         $author = User::query()->firstOrFail();
-        $responder = User::query()
-            ->where('id', $author->id)
-            ->firstOrFail();
-
-        $questionResults = ['yes', 'no', 'banal'];
 
         $active = EnigmaGame::factory()
             ->active()
@@ -31,11 +26,6 @@ class EnigmaGameSeeder extends Seeder
                 'solution' => 'A chave esta no segundo verso.',
             ]);
 
-        EnigmaGameInteraction::factory(8)
-            ->question()
-            ->for($active)
-            ->create();
-
         foreach ([
             'A pista envolve uma joia?',
             'O enigma acontece durante a noite?',
@@ -43,58 +33,31 @@ class EnigmaGameSeeder extends Seeder
             'A resposta tem relação com música?',
             'O baú é apenas decoração?',
             'A cor azul é importante?',
-        ] as $index => $content) {
+            'O símbolo repetido aponta para uma ordem?',
+            'Tem algum número escondido no cenário?',
+        ] as $content) {
             EnigmaGameInteraction::factory()
                 ->question()
-                ->answered($responder)
                 ->for($active)
                 ->create([
                     'content' => $content,
-                    'result' => $questionResults[$index % count($questionResults)],
                 ]);
         }
 
-        EnigmaGameInteraction::factory(5)
-            ->incorrect($responder)
-            ->for($active)
-            ->create();
-
-        EnigmaGameInteraction::factory(3)
-            ->finalAnswer()
-            ->for($active)
-            ->create();
-
-        $solved = EnigmaGame::factory()
-            ->draft()
-            ->for($author, 'author')
-            ->create([
-                'title' => 'Enigma resolvido',
-                'content' => 'Sou o ponto de encontro de quem canta junto, pede musica e segue a transmissao ate o fim. Meu nome tambem abre as portas desta comunidade.',
-                'image' => '/img/placeholders/default.webp',
-                'solution' => 'Akiba',
-            ]);
-
-        EnigmaGameInteraction::factory()
-            ->yes($responder)
-            ->for($solved)
-            ->create(['content' => 'A resposta envolve a rádio?']);
-
-        EnigmaGameInteraction::factory()
-            ->no($responder)
-            ->for($solved)
-            ->create(['content' => 'É um personagem de cabelo vermelho?']);
-
-        EnigmaGameInteraction::factory()
-            ->banal($responder)
-            ->for($solved)
-            ->create(['content' => 'Tem anime no site?']);
-
-        EnigmaGameInteraction::factory()
-            ->correct($responder)
-            ->for($solved)
-            ->create([
-                'content' => 'Akiba',
-            ]);
+        foreach ([
+            'A chave esta atras da segunda porta azul.',
+            'A resposta é o símbolo diferente na parede.',
+            'A ordem correta é porta, verso e chave.',
+            'É a música que toca no início da transmissão.',
+            'O número escondido é 02.',
+        ] as $content) {
+            EnigmaGameInteraction::factory()
+                ->finalAnswer()
+                ->for($active)
+                ->create([
+                    'content' => $content,
+                ]);
+        }
 
         EnigmaGame::factory()
             ->draft()
