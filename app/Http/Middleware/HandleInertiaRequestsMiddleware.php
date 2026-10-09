@@ -50,7 +50,7 @@ class HandleInertiaRequestsMiddleware extends Middleware
             'newBadges' => fn () => $this->newBadges($request),
             'publicSiteVersion' => fn () => File::exists(storage_path('app/public-site-version.txt'))
                 ? trim((string) File::get(storage_path('app/public-site-version.txt')))
-                : 'provisory',
+                : 'public',
         ]);
     }
 

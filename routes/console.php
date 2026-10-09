@@ -19,8 +19,3 @@ Schedule::command('audience:collect')
 Schedule::command('audience:prune')
     ->cron('0 3 1 1,7 *')
     ->withoutOverlapping();
-
-Schedule::command('site:promote-public')
-    ->monthlyOn(9, '20:00')
-    ->timezone('America/Sao_Paulo')
-    ->withoutOverlapping();

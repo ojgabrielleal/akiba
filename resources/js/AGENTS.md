@@ -6,7 +6,7 @@ Scope: `resources/js`.
 
 * Use Svelte + Inertia + Vite inside Laravel, Tailwind CSS v4 tokens from `css/app.css`, `font-noto-sans`, and `@/` for internal imports.
 * Frontend is UI/client-only; server logic, database access, secrets, private SDKs and sensitive integrations belong to Laravel.
-* Preserve `private`, `public`, `provisory` and `shared`; use `shared` only for genuinely cross-context code.
+* Preserve `private`, `public` and `shared`; use `shared` only for genuinely cross-context code.
 
 ## Structure
 
