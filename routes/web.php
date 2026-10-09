@@ -16,7 +16,6 @@ use Inertia\Inertia;
 
 require __DIR__.'/web/public.php';
 require __DIR__.'/web/private.php';
-require __DIR__.'/web/provisory.php';
 
 Route::fallback(function () {
     if (request()->is('panel') || request()->is('panel/*')) {
