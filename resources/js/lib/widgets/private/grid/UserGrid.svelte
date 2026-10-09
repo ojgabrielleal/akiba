@@ -140,7 +140,7 @@
     <Section {title} {actions}>
         {#if filteredUsers.length > 0}
             <GridList preset="members" class="mt-16">
-                {#each filteredUsers as item}
+                {#each filteredUsers as item (item.uuid)}
                     {@render userCard(item)}
                 {/each}
             </GridList>
