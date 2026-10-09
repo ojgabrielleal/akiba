@@ -81,12 +81,10 @@ class DiscordWebhookService
 
     private function postImage(Post $post): ?array
     {
-        $image = $post->cover ?: $post->image;
-
-        if (! $image) {
+        if (! ($post->cover ?: $post->image)) {
             return null;
         }
 
-        return ['url' => Str::startsWith($image, ['http://', 'https://']) ? $image : url($image)];
+        return ['url' => route('post.social-image', $post->uuid)];
     }
 }

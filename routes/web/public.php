@@ -15,6 +15,7 @@ use App\Http\Controllers\Public\EasterEggController;
 use App\Http\Controllers\Public\HomeController;
 use App\Http\Controllers\Public\MediaController;
 use App\Http\Controllers\Public\PlayerController;
+use App\Http\Controllers\Public\PostSocialImageController;
 use App\Http\Controllers\Public\PodcastController;
 use App\Http\Controllers\Public\PushNotificationController;
 use App\Http\Controllers\Public\RadioController;
@@ -52,6 +53,9 @@ Route::match(['post', 'patch'], '/badge-assignment/{assignment:uuid}/seen', [Bad
 
 Route::get('/easter-eggs/catalog', [EasterEggController::class, 'catalog'])
     ->name('easter-eggs.catalog');
+
+Route::get('/social/post/{post:uuid}.jpg', PostSocialImageController::class)
+    ->name('post.social-image');
 
 Route::post('/easter-eggs/{easterEgg}/unlock', [EasterEggController::class, 'unlock'])
     ->middleware('oauth.resolve')
