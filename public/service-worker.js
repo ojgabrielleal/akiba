@@ -82,7 +82,8 @@ self.addEventListener("fetch", (event) => {
                     .catch(() => {});
 
                 return response;
-            })),
+            }))
+            .catch(() => new Response("", { status: 504, statusText: "Gateway Timeout" })),
     );
 });
 

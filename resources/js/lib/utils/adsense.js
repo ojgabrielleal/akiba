@@ -2,8 +2,14 @@ const defaultAdClient = "ca-pub-8675050263618388";
 
 let adsenseScriptPromise = null;
 
+const canLoadGoogleAdsense = () => {
+    if (typeof window === "undefined" || typeof document === "undefined") return false;
+
+    return ["akiba.com.br", "www.akiba.com.br"].includes(window.location.hostname);
+};
+
 export const loadGoogleAdsense = (adClient = defaultAdClient) => {
-    if (typeof window === "undefined" || typeof document === "undefined") return Promise.resolve(false);
+    if (!canLoadGoogleAdsense()) return Promise.resolve(false);
 
     window.adsbygoogle = window.adsbygoogle || [];
 
