@@ -91,7 +91,7 @@
         role="presentation"
         on:click|self={dismiss}
     >
-        <section
+        <div
             class="relative w-full max-w-sm overflow-hidden rounded-md border border-orange-amber/35 bg-blue-ocean text-suspense-aurora shadow-2xl shadow-blue-night/60"
             role="dialog"
             aria-modal="true"
@@ -135,6 +135,6 @@
                     </Button>
                 </div>
             </div>
-        </section>
+        </div>
     </div>
 {/if}
