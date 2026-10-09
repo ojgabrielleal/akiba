@@ -68,6 +68,9 @@ Route::middleware(['oauth.resolve', 'inertia', 'auth'])->group(function () {
 });
 
 Route::middleware(['oauth.resolve', 'inertia'])->group(function () {
+    Route::get('/', [HomeController::class, 'render'])
+        ->name('home');
+
     Route::get('/entrar', [AuthController::class, 'render'])
         ->name('auth.continue');
 
@@ -193,10 +196,6 @@ Route::middleware(['oauth.resolve', 'inertia'])->group(function () {
 });
 
 Route::prefix("site")->middleware(['oauth.resolve', 'inertia', 'auth'])->group(function () {
-    Route::controller(HomeController::class)->group(function () {
-        Route::get('', 'render');
-    });
-
     Route::patch('profile', [HomeController::class, 'updateOAuthAccountProfile'])
         ->middleware('oauth')
         ->name('oauth.profile.update');

@@ -4,6 +4,7 @@ namespace App\Integrations;
 
 use App\Models\Post;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Throwable;
 
@@ -51,6 +52,15 @@ class DiscordWebhookService
             ->limit(180)
             ->toString();
 
+        $image = $this->postImage($post);
+
+        Log::info('Discord post notification payload prepared', [
+            'post_uuid' => $post->uuid,
+            'post_title' => $post->title,
+            'post_url' => $url,
+            'image_url' => $image['url'] ?? null,
+        ]);
+
         $payload = [
             'content' => "📰 **{$post->title}**\n\n{$url}\n\n@everyone, SE LIGA: TEM NOTÍCIA NOVA EM NOSSO SITE!",
             'allowed_mentions' => [
@@ -66,7 +76,7 @@ class DiscordWebhookService
                         'name' => 'Rede Akiba',
                         'url' => config('app.url'),
                     ],
-                    'image' => $this->postImage($post),
+                    'image' => $image,
                     'timestamp' => now()->toIso8601String(),
                 ]),
             ],

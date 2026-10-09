@@ -151,7 +151,7 @@ class HomeController extends Controller
             $request->session()->regenerateToken();
         }
 
-        return redirect('/site');
+        return redirect('/');
     }
 
     public function render()

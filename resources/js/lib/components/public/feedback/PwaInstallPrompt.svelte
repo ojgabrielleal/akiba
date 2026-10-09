@@ -21,8 +21,10 @@
         return dismissedUntil > Date.now();
     };
 
+    const canShowPrompt = () => isMobileViewport() && !isStandalone() && !isDismissed();
+
     const showIfAllowed = () => {
-        visible = Boolean(installEvent) && isMobileViewport() && !isStandalone() && !isDismissed();
+        visible = Boolean(installEvent) && canShowPrompt();
     };
 
     const dismiss = () => {
@@ -52,9 +54,13 @@
     };
 
     const handleBeforeInstallPrompt = (event) => {
+        if (!canShowPrompt()) {
+            return;
+        }
+
         event.preventDefault();
         installEvent = event;
-        showIfAllowed();
+        visible = true;
     };
 
     const handleAppInstalled = () => {
