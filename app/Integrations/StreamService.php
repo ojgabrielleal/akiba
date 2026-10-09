@@ -64,7 +64,7 @@ class StreamService
                 'bitrate' => $data['plano_bitrate'] ?? 'N/A',
                 'current_song' => [
                     'music' => $this->normalizeRadioMetadata($data['musica_atual'] ?? $data['musica_tocando'] ?? 'Desconhecido'),
-                    'cover' => $data['capa_musica'] ?? null,
+                    'cover' => $this->normalizeRadioImage($data['capa_musica'] ?? $data['musica_atual'] ?? $data['musica_tocando'] ?? null),
                 ],
                 'next_song' => [
                     'music' => isset($data['proxima_musica']) ? $this->normalizeRadioMetadata($data['proxima_musica']) : null,
@@ -85,9 +85,11 @@ class StreamService
         }
     }
 
-    public function normalizeRadioMetadata(string $value): string
+    public function normalizeRadioMetadata(mixed $value): ?string
     {
-        if (!preg_match('/\\\\x[0-9A-Fa-f]{2}/', $value)) {
+        $value = $this->stringifyRadioMetadata($value);
+
+        if ($value === null || !preg_match('/\\\\x[0-9A-Fa-f]{2}/', $value)) {
             return $value;
         }
 
@@ -102,6 +104,55 @@ class StreamService
 
             return $bytes;
         }, $value) ?? $value;
+    }
+
+    private function stringifyRadioMetadata(mixed $value): ?string
+    {
+        if (is_string($value)) {
+            return $value;
+        }
+
+        if (is_numeric($value)) {
+            return (string) $value;
+        }
+
+        if (! is_array($value)) {
+            return null;
+        }
+
+        $artist = $value['artista'] ?? $value['artist'] ?? null;
+        $title = $value['musica'] ?? $value['music'] ?? $value['titulo'] ?? $value['title'] ?? null;
+
+        if (is_scalar($artist) && is_scalar($title)) {
+            return trim($artist . ' - ' . $title);
+        }
+
+        foreach (['artist_title', 'musica', 'music', 'titulo', 'title', 'nome', 'name'] as $key) {
+            if (isset($value[$key]) && is_scalar($value[$key])) {
+                return (string) $value[$key];
+            }
+        }
+
+        return null;
+    }
+
+    private function normalizeRadioImage(mixed $value): ?string
+    {
+        if (is_string($value) && $value !== '') {
+            return $value;
+        }
+
+        if (! is_array($value)) {
+            return null;
+        }
+
+        foreach (['capa_musica', 'cover', 'capa', 'image', 'imagem', 'artwork'] as $key) {
+            if (isset($value[$key]) && is_string($value[$key]) && $value[$key] !== '') {
+                return $value[$key];
+            }
+        }
+
+        return null;
     }
 
     protected function cachedFallback(): array
