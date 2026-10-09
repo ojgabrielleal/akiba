@@ -22,9 +22,9 @@ class EnigmaGameService
         private BadgeService $badges,
     ) {}
 
-    public function store(User $user, array $data, UploadedFile $image): EnigmaGame
+    public function store(User $user, array $data, UploadedFile $image, ?UploadedFile $solutionImage = null): EnigmaGame
     {
-        $enigmagame = DB::transaction(function () use ($user, $data, $image): EnigmaGame {
+        $enigmagame = DB::transaction(function () use ($user, $data, $image, $solutionImage): EnigmaGame {
             $enigmagame = EnigmaGame::create([
                 'user_id' => $user->id,
                 'title' => $data['title'],
@@ -32,8 +32,8 @@ class EnigmaGameService
                 'image' => $this->image->store('enigmagames', $image),
                 'status' => $data['status'] ?? EnigmaGame::STATUS_DRAFT,
                 'solution' => $data['solution'] ?? null,
-                'solution_title' => $data['solution_title'] ?? null,
-                'solution_image' => $data['solution_image'] ?? null,
+                'solution_title' => $data['solution'] ?? null,
+                'solution_image' => $this->image->store('enigmagames/solutions', $solutionImage),
                 'solution_synopsis' => $data['solution_synopsis'] ?? null,
             ]);
 
@@ -47,9 +47,9 @@ class EnigmaGameService
         return $enigmagame;
     }
 
-    public function update(EnigmaGame $enigmagame, array $data, ?UploadedFile $image = null): EnigmaGame
+    public function update(EnigmaGame $enigmagame, array $data, ?UploadedFile $image = null, ?UploadedFile $solutionImage = null): EnigmaGame
     {
-        $enigmagame = DB::transaction(function () use ($enigmagame, $data, $image): EnigmaGame {
+        $enigmagame = DB::transaction(function () use ($enigmagame, $data, $image, $solutionImage): EnigmaGame {
             $enigmagame->update([
                 'title' => $data['title'],
                 'content' => $data['content'],
@@ -58,8 +58,10 @@ class EnigmaGameService
                     : $enigmagame->image,
                 'status' => $data['status'] ?? $enigmagame->status,
                 'solution' => $data['solution'] ?? null,
-                'solution_title' => $data['solution_title'] ?? null,
-                'solution_image' => $data['solution_image'] ?? null,
+                'solution_title' => $data['solution'] ?? null,
+                'solution_image' => $solutionImage
+                    ? $this->image->store('enigmagames/solutions', $solutionImage, $enigmagame->solution_image)
+                    : $enigmagame->solution_image,
                 'solution_synopsis' => $data['solution_synopsis'] ?? null,
             ]);
 
@@ -265,6 +267,11 @@ class EnigmaGameService
     public function filter(array $filters = []): Collection
     {
         return EnigmaGame::query()
+            ->when(array_key_exists('active', $filters), function (Builder $query) use ($filters) {
+                $filters['active']
+                    ? $query->where('status', '!=', EnigmaGame::STATUS_INACTIVE)
+                    : $query->where('status', EnigmaGame::STATUS_INACTIVE);
+            })
             ->when($filters['with'] ?? null, fn (Builder $query, array $with) => $query->with($with))
             ->latest()
             ->get();

@@ -24,6 +24,7 @@
         { value: "poll", label: "Enquetes" },
         { value: "task", label: "Tarefas" },
         { value: "repository", label: "Marketing" },
+        { value: "enigmagame", label: "Enigmas" },
     ];
 
     const canRestore = hasPermission("trash.restore");

@@ -87,7 +87,7 @@ class MediaController extends Controller
     {
         return $this->whenCanViewAny(EnigmaGame::class,
             fn () => EnigmaGameResource::collection(
-                $this->enigmagameFilter->filter(['with' => ['author', 'interactions.participant', 'interactions.responder']])
+                $this->enigmagameFilter->filter(['active' => true, 'with' => ['author', 'interactions.participant', 'interactions.responder']])
             ),
         );
     }
@@ -186,14 +186,14 @@ class MediaController extends Controller
 
     public function storeEnigmaGame(StoreEnigmaGameRequest $request, EnigmaGameService $service)
     {
-        $service->store($request->user(), $request->validated(), $request->file('image'));
+        $service->store($request->user(), $request->validated(), $request->file('image'), $request->file('solution_image'));
 
         return $this->flashMessage('save');
     }
 
     public function updateEnigmaGame(UpdateEnigmaGameRequest $request, EnigmaGameService $service, EnigmaGame $enigmagame)
     {
-        $service->update($enigmagame, $request->validated(), $request->file('image'));
+        $service->update($enigmagame, $request->validated(), $request->file('image'), $request->file('solution_image'));
 
         return $this->flashMessage('update');
     }

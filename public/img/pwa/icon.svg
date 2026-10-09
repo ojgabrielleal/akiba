@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Rede Akiba">
+  <rect width="512" height="512" rx="96" fill="#0091ff"/>
+  <circle cx="256" cy="256" r="184" fill="#071a33" opacity="0.18"/>
+  <path fill="#fff8e8" d="M139 370 232 126h49l92 244h-56l-17-49h-91l-17 49h-53Zm87-96h58l-29-84-29 84Z"/>
+  <path fill="#ffb703" d="M146 399h220c19 0 34 15 34 34v9H112v-9c0-19 15-34 34-34Z"/>
+</svg>

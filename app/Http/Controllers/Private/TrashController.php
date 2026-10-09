@@ -11,6 +11,7 @@ use App\Models\Program;
 use App\Models\Repository;
 use App\Models\Task;
 use App\Models\User;
+use App\Models\EnigmaGame;
 use App\Services\PodcastService;
 use App\Services\PollService;
 use App\Services\PostService;
@@ -19,6 +20,7 @@ use App\Services\RepositoryService;
 use App\Services\TaskService;
 use App\Services\TrashService;
 use App\Services\UserService;
+use App\Services\EnigmaGameService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Gate;
@@ -38,6 +40,7 @@ class TrashController extends Controller
         'poll' => Poll::class,
         'task' => Task::class,
         'repository' => Repository::class,
+        'enigmagame' => EnigmaGame::class,
     ];
 
     public function __construct(
@@ -48,6 +51,7 @@ class TrashController extends Controller
         private RepositoryService $repositoryFilter,
         private TaskService $taskFilter,
         private UserService $userFilter,
+        private EnigmaGameService $enigmagameFilter,
     ) {}
 
     private function trashItems(): array
@@ -60,6 +64,7 @@ class TrashController extends Controller
             ->concat($this->indexPolls())
             ->concat($this->indexTasks())
             ->concat($this->indexRepositories())
+            ->concat($this->indexEnigmaGames())
             ->sortBy('title', SORT_NATURAL | SORT_FLAG_CASE)
             ->values()
             ->all();
@@ -129,6 +134,15 @@ class TrashController extends Controller
             ));
     }
 
+    private function indexEnigmaGames(): Collection
+    {
+        return $this->enigmagameFilter->filter(['active' => false])
+            ->map(fn (EnigmaGame $enigmagame) => $this->item(
+                $enigmagame, 'enigmagame', 'Enigma', $enigmagame->title,
+                $enigmagame->status, $enigmagame->image,
+            ));
+    }
+
     private function item(
         $model,
         string $type,
@@ -182,8 +196,14 @@ class TrashController extends Controller
     {
         abort_unless(array_key_exists($type, self::MODELS), 404);
 
-        return self::MODELS[$type]::query()
-            ->where('is_active', false)
+        $model = self::MODELS[$type];
+
+        return $model::query()
+            ->when(
+                $type === 'enigmagame',
+                fn ($query) => $query->where('status', EnigmaGame::STATUS_INACTIVE),
+                fn ($query) => $query->where('is_active', false),
+            )
             ->where('uuid', $uuid)
             ->firstOrFail();
     }

@@ -1,0 +1,61 @@
+{
+  "name": "Akiba",
+  "short_name": "Akiba",
+  "description": "Rede Akiba: animes, mangás, doramas, rádio e cultura otaku no Brasil.",
+  "lang": "pt-BR",
+  "dir": "ltr",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f8fbff",
+  "theme_color": "#0091ff",
+  "id": "/",
+  "categories": [
+    "entertainment",
+    "music",
+    "news"
+  ],
+  "icons": [
+    {
+      "src": "/img/pwa/icon-256.png",
+      "sizes": "256x256",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/img/pwa/icon-256.png",
+      "sizes": "256x256",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Rádio",
+      "short_name": "Rádio",
+      "description": "Abrir a página de mídias da Rede Akiba.",
+      "url": "/midias?source=pwa-shortcut",
+      "icons": [
+        {
+          "src": "/img/pwa/icon-256.png",
+          "sizes": "256x256",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Matérias",
+      "short_name": "Matérias",
+      "description": "Ver as matérias mais recentes.",
+      "url": "/materias?source=pwa-shortcut",
+      "icons": [
+        {
+          "src": "/img/pwa/icon-256.png",
+          "sizes": "256x256",
+          "type": "image/png"
+        }
+      ]
+    }
+  ]
+}

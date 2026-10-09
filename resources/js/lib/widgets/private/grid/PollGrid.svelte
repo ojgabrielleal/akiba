@@ -68,6 +68,14 @@
 
         return value.length > 34 ? `${value.slice(0, 31)}...` : value;
     }
+
+    function pollCardStatusBackground(item) {
+        if (latestPoll?.data?.uuid === item.uuid) {
+            return resolveStatusBackground(item);
+        }
+
+        return "bg-blue-cerulean";
+    }
 </script>
 
 
@@ -182,7 +190,7 @@
                                 {item.question}
                             </h3>
                         </div>
-                        <div class={`grid grid-cols-[0.4fr_1fr_0.6fr] items-center absolute bottom-0 w-full py-1 px-2 ${resolveStatusBackground(item)}`}>
+                        <div class={`grid grid-cols-[0.4fr_1fr_0.6fr] items-center absolute bottom-0 w-full py-1 px-2 ${pollCardStatusBackground(item)}`}>
                             <div class="flex items-center gap-1 font-noto-sans font-extrabold italic uppercase text-md text-suspense-aurora truncate">
                                 <img
                                     src="/svg/votes.svg"

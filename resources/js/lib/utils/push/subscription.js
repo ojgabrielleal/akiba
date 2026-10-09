@@ -139,7 +139,7 @@ const subscribeToPushNotifications = async (publicKey, endpoint) => {
         return null;
     }
 
-    const registration = await navigator.serviceWorker.register("/push-worker.js");
+    const registration = await navigator.serviceWorker.register("/service-worker.js");
     const currentSubscription = await registration.pushManager.getSubscription();
     const subscription = currentSubscription ?? await registration.pushManager.subscribe({
         userVisibleOnly: true,

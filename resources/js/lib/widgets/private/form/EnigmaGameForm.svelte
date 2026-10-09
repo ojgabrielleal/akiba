@@ -19,8 +19,7 @@
         content: enigmagameSelected?.content ?? "",
         image: null,
         solution: enigmagameSelected?.solution ?? "",
-        solution_title: enigmagameSelected?.solution_title ?? "",
-        solution_image: enigmagameSelected?.solution_image ?? "",
+        solution_image: null,
         solution_synopsis: enigmagameSelected?.solution_synopsis ?? "",
     });
     $: if (!$form.processing) activeAction = null;
@@ -48,7 +47,7 @@
 </script>
 
 <form on:submit|preventDefault={submit}>
-    <FormField for="image" label="" error={$form.errors.image}>
+    <FormField for="image" label="Imagem do enigma" error={$form.errors.image} help="Imagem principal exibida junto do desafio no site.">
         <Preview
             size="default"
             tone="muted"
@@ -62,7 +61,7 @@
         />
     </FormField>
 
-    <FormField for="enigmagame-title" label="Título" error={$form.errors.title}>
+    <FormField for="enigmagame-title" label="Título" error={$form.errors.title} help="Nome curto do enigma no painel e na área pública.">
         <TextInput
             id="enigmagame-title"
             name="title"
@@ -73,7 +72,7 @@
         />
     </FormField>
 
-    <FormField for="enigmagame-content" label="Texto do enigma" error={$form.errors.content} spacing="section">
+    <FormField for="enigmagame-content" label="Texto do enigma" error={$form.errors.content} spacing="section" help="A pista ou descrição que os ouvintes verão para tentar descobrir a resposta.">
         <TextArea
             id="enigmagame-content"
             name="content"
@@ -85,7 +84,7 @@
         />
     </FormField>
 
-    <FormField for="enigmagame-solution" label="Resposta do enigma" error={$form.errors.solution} spacing="section">
+    <FormField for="enigmagame-solution" label="Resposta correta" error={$form.errors.solution} spacing="section" help="Resposta oficial usada na revelação do enigma.">
         <TextArea
             id="enigmagame-solution"
             name="solution"
@@ -95,28 +94,20 @@
         />
     </FormField>
 
-    <FormField for="enigmagame-solution-title" label="Anime da resposta" error={$form.errors.solution_title} spacing="section">
-        <TextInput
-            id="enigmagame-solution-title"
-            name="solution_title"
-            variant="offcanvas"
-            bind:value={$form.solution_title}
-            error={$form.errors.solution_title}
-        />
-    </FormField>
-
-    <FormField for="enigmagame-solution-image" label="Imagem do anime" error={$form.errors.solution_image}>
-        <TextInput
-            id="enigmagame-solution-image"
+    <FormField for="solution_image" label="Imagem da obra" error={$form.errors.solution_image} help="Imagem exibida quando a resposta for revelada. Pode ser capa, poster ou arte relacionada.">
+        <Preview
+            size="compact"
+            tone="muted"
+            color="muted"
+            fit="cover"
             name="solution_image"
-            type="url"
-            variant="offcanvas"
-            bind:value={$form.solution_image}
+            src={$form.solution_image ?? enigmagameSelected?.solution_image}
+            oninput={(event) => ($form.solution_image = event.target.files[0])}
             error={$form.errors.solution_image}
         />
     </FormField>
 
-    <FormField for="enigmagame-solution-synopsis" label="Sinopse da resposta" error={$form.errors.solution_synopsis} spacing="section">
+    <FormField for="enigmagame-solution-synopsis" label="Texto da revelação" error={$form.errors.solution_synopsis} spacing="section" help="Texto opcional mostrado junto da resposta, explicando a obra ou a ligação com a pista.">
         <TextArea
             id="enigmagame-solution-synopsis"
             name="solution_synopsis"

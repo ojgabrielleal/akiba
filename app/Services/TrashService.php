@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use App\Models\EnigmaGame;
 
 class TrashService
 {
@@ -18,7 +19,9 @@ class TrashService
     public function reactivate(Model $item): Model
     {
         $item = DB::transaction(function () use ($item) {
-            $item->update(['is_active' => true]);
+            $item instanceof EnigmaGame
+                ? $item->update(['status' => EnigmaGame::STATUS_DRAFT])
+                : $item->update(['is_active' => true]);
 
             return $item->refresh();
         });

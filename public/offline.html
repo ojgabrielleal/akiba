@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0091ff">
+  <title>Rede Akiba offline</title>
+  <style>
+    :root { color-scheme: light; font-family: Arial, Helvetica, sans-serif; }
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #f8fbff; color: #071a33; }
+    main { width: min(32rem, calc(100% - 2rem)); text-align: center; }
+    img { width: 5rem; height: 5rem; border-radius: 1rem; object-fit: cover; }
+    h1 { margin: 1.5rem 0 .75rem; font-size: clamp(1.6rem, 7vw, 2.5rem); line-height: 1; text-transform: uppercase; font-style: italic; }
+    p { margin: 0 auto 1.5rem; max-width: 24rem; color: #475569; line-height: 1.5; }
+    button { border: 0; border-radius: .5rem; background: #ffb703; color: #071a33; cursor: pointer; font-weight: 800; padding: .85rem 1.1rem; text-transform: uppercase; }
+  </style>
+</head>
+<body>
+  <main>
+    <img src="/img/pwa/icon.jpg" alt="Rede Akiba">
+    <h1>Sem conexão</h1>
+    <p>A Rede Akiba não conseguiu carregar agora. Verifique sua internet e tente novamente.</p>
+    <button type="button" onclick="window.location.reload()">Tentar novamente</button>
+  </main>
+</body>
+</html>

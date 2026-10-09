@@ -29,7 +29,7 @@ Scope: `resources/js`.
 ## Browser & Web Push
 
 * Put reusable browser behavior such as Push, permissions, service workers, storage and global events in `utils`; components should call high-level helpers.
-* Web Push uses `public/push-worker.js` and `lib/utils/push`.
+* Web Push uses `public/service-worker.js` and `lib/utils/push`.
 * Read technical global props at their point of use and pass them to helpers rather than spreading browser API calls through components.
 * Never expose private keys; only `VAPID_PUBLIC_KEY` may reach the browser.
 

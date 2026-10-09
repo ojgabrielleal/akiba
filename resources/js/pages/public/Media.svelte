@@ -449,7 +449,7 @@
                         {#if previousEnigma.solution_image}
                             <img
                                 src={previousEnigma.solution_image}
-                                alt={previousEnigma.solution_title || previousEnigma.solution || "Resposta do enigma"}
+                                alt={previousEnigma.solution || "Resposta do enigma"}
                                 class="mx-auto max-h-64 w-full max-w-[12rem] rounded-md object-cover"
                                 loading="lazy"
                             />
@@ -462,14 +462,8 @@
                             </div>
 
                             <h4 class="font-noto-sans text-2xl font-black uppercase italic text-suspense-honeycream [[data-public-theme=light]_&]:text-blue-night">
-                                {previousEnigma.solution_title || previousEnigma.solution || "Resposta revelada"}
+                                {previousEnigma.solution || "Resposta revelada"}
                             </h4>
-
-                            {#if previousEnigma.solution && previousEnigma.solution !== previousEnigma.solution_title}
-                                <p class="mt-2 font-noto-sans text-sm font-bold uppercase italic text-orange-amber">
-                                    {previousEnigma.solution}
-                                </p>
-                            {/if}
 
                             {#if previousEnigma.solution_synopsis}
                                 <p class="mt-3 whitespace-pre-line font-noto-sans text-sm leading-relaxed">

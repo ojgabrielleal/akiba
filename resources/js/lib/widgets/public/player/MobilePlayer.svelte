@@ -134,7 +134,7 @@
                         src={status.icon}
                         alt=""
                         aria-hidden="true"
-                        class="size-4 shrink-0 object-contain brightness-0"
+                        class="size-4 shrink-0 object-contain filter-suspense-aurora"
                     />
                     <span class="truncate text-suspense-aurora text-[10px] font-noto-sans font-extrabold uppercase italic">
                         {status.label}
@@ -285,7 +285,7 @@
                             src={status.icon}
                             alt=""
                             aria-hidden="true"
-                            class="size-4 shrink-0 object-contain brightness-0"
+                            class="size-4 shrink-0 object-contain filter-suspense-aurora"
                         />
                         <span class={["truncate text-[10px] font-noto-sans font-extrabold uppercase italic", themeClass("text", "suspense-aurora", { fixed: true })]}>
                             {status.label}

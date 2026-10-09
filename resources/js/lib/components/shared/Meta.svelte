@@ -9,7 +9,7 @@
   const defaultKeywords = 'animes, mangás, otaku, cultura japonesa, doramas, rede akiba';
   const defaultRobots = 'index, follow';
   const defaultThemeColor = '#0091ff';
-  const defaultAppleIcon = '/img/pwa/icon.jpg';
+  const defaultAppleIcon = '/img/pwa/icon-256.png';
   const defaultFavicon = '/favicon.ico';
   const defaultOgType = 'website';
   const defaultTwitterCreator = '@RedeAkiba';
@@ -37,6 +37,7 @@
   <meta name="keywords" content={metaKeywords} />
   <meta name="author" content={meta.author || 'Rede Akiba'} />
   <meta name="theme-color" content={themeColor} />
+  <meta name="application-name" content="Rede Akiba" />
   <meta name="language" content="pt-BR" />
   <meta http-equiv="content-language" content="pt-br, en-us" />
   <meta name="robots" content={metaRobots} />
@@ -44,7 +45,11 @@
 
   <!-- PWA -->
   <link rel="apple-touch-icon" href={appleIcon} />
-  <!--<link rel="manifest" href="/manifest.json" />-->
+  <link rel="manifest" href="/manifest.json?v=8" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Rede Akiba" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <!-- Fim PWA -->
 
   <!-- Canonical -->

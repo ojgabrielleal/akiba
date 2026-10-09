@@ -27,8 +27,7 @@ class StoreEnigmaGameRequest extends FormRequest
             'image' => ['required', 'image'],
             'status' => ['required', 'string', 'in:draft,active,inactive'],
             'solution' => ['nullable', 'string'],
-            'solution_title' => ['nullable', 'string', 'max:255'],
-            'solution_image' => ['nullable', 'url', 'max:2048'],
+            'solution_image' => ['nullable', 'image'],
             'solution_synopsis' => ['nullable', 'string'],
         ];
     }
