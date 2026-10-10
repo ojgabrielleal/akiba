@@ -282,7 +282,7 @@
                     Tocando agora:
                 </div>
                 <div class="min-w-0 max-w-[25rem] overflow-hidden pr-4">
-                    <span class="block truncate text-suspense-aurora text-lg font-song-title font-extrabold uppercase italic leading-6">
+                    <span class="line-clamp-2 text-suspense-aurora text-lg font-song-title font-extrabold uppercase italic leading-6">
                         {playerData.current_song.music || "Estamos offline"}
                     </span>
                 </div>
