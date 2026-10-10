@@ -420,10 +420,10 @@
 
         <div class="rounded-md border border-blue-night/15 bg-blue-night/[0.04] p-3.5 [[data-public-theme=akiba]_&]:border-suspense-aurora/20 [[data-public-theme=akiba]_&]:bg-blue-night/20 [[data-public-theme=night]_&]:border-suspense-aurora/20 [[data-public-theme=night]_&]:bg-blue-night/20">
             {#if badges.length > 0}
-            <div class="public-themed-scrollbar overflow-y-auto pb-2">
-                <ul class="flex min-w-max gap-3">
+            <div class="public-themed-scrollbar max-h-36 overflow-y-auto overflow-x-hidden pr-1">
+                <ul class="grid grid-cols-3 gap-x-3 gap-y-4">
                 {#each badges as badge (badge.uuid)}
-                    <li class="w-18 shrink-0 text-center">
+                    <li class="min-w-0 text-center">
                         <div class="mx-auto flex size-14 items-center justify-center overflow-hidden rounded-md sm:size-15">
                             {#if badge.image}
                                 <img
