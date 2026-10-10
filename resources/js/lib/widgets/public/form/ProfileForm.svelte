@@ -482,9 +482,9 @@
                 {#if internal}
                     {@const selectedTopAnimes = $form.top_animes.filter((anime) => anime.name)}
                     {#if selectedTopAnimes.length > 0}
-                        <div class="grid gap-3">
+                        <div class="grid gap-3 sm:grid-cols-3">
                             {#each selectedTopAnimes as anime (anime.position)}
-                                <div class="grid grid-cols-[3.5rem_minmax(0,1fr)] items-center gap-3 rounded-md bg-blue-marinho/85 p-2 shadow-inner shadow-blue-night/25">
+                                <div class="grid min-h-28 grid-rows-[auto_1fr] justify-items-center gap-2 rounded-md bg-blue-marinho/85 p-2 text-center shadow-inner shadow-blue-night/25">
                                     <div class="relative">
                                         <img
                                             src={resolvePlaceholderImage(anime.image, "placeholder")}
@@ -495,7 +495,7 @@
                                             {anime.position}
                                         </span>
                                     </div>
-                                    <p class="line-clamp-2 min-w-0 font-noto-sans text-xs font-black uppercase italic leading-tight text-suspense-aurora">
+                                    <p class="line-clamp-2 min-w-0 self-center font-noto-sans text-[0.68rem] font-black uppercase italic leading-tight text-suspense-aurora">
                                         {anime.name}
                                     </p>
                                 </div>
