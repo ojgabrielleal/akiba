@@ -4,6 +4,9 @@
     export let title = "Nenhum registro encontrado";
     export let description = null;
     export let icon = null;
+    export let titleClass = "text-suspense-aurora";
+    export let descriptionClass = "text-suspense-aurora/70";
+    export let iconClass = "filter-suspense-aurora";
     
     $: classes = [
         "flex min-h-40 w-full flex-col items-center justify-center rounded-md border border-dashed border-suspense-aurora/20 px-6 py-10 text-center",
@@ -18,17 +21,17 @@
                 <img
                     src={icon}
                     alt=""
-                    class="max-h-full max-w-full filter-suspense-aurora"
+                    class={["max-h-full max-w-full", iconClass]}
                     loading="lazy"
                 />
             </slot>
         </div>
     {/if}
-    <p class="font-noto-sans text-lg font-extrabold uppercase italic text-suspense-aurora">
+    <p class={["font-noto-sans text-lg font-extrabold uppercase italic", titleClass]}>
         {title}
     </p>
     {#if description}
-        <p class="mt-1 max-w-xl font-noto-sans text-sm text-suspense-aurora/70">
+        <p class={["mt-1 max-w-xl font-noto-sans text-sm", descriptionClass]}>
             {description}
         </p>
     {/if}

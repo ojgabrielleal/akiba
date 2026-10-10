@@ -270,9 +270,16 @@ class ReportsController extends Controller
 
     public function showOnairSongRequests(Onair $onair)
     {
+        $targetOnair = $onair->in_air
+            ? Onair::acceptingSongRequests()
+                ->where('program_id', $onair->program_id)
+                ->latest('id')
+                ->first() ?? $onair
+            : $onair;
+
         return SongRequestResource::collection(
             $this->songRequestFilter->filter([
-                'onair_id' => $onair->id,
+                'onair_id' => $targetOnair->id,
                 'order_by' => 'created_at',
                 'order_direction' => 'desc',
             ])

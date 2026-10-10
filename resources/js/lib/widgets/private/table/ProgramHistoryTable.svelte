@@ -102,7 +102,7 @@
                 Carregando pedidos...
             </div>
         {:else if songRequestsError}
-            <EmptyState title="Não foi possível carregar" description={songRequestsError} />
+            <EmptyState title="Não foi possível carregar" description={songRequestsError} titleClass="text-blue-night" descriptionClass="text-blue-night/60" />
         {:else if songRequests.length}
             <div class="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
                 {#each songRequests as item (item.uuid)}
@@ -178,7 +178,7 @@
                 {/each}
             </div>
         {:else}
-            <EmptyState title="Nenhum pedido" description="Esse programa não recebeu pedidos." />
+            <EmptyState title="Nenhum pedido" description="Esse programa não recebeu pedidos." titleClass="text-blue-night" descriptionClass="text-blue-night/60" />
         {/if}
     </div>
 </Modal>
