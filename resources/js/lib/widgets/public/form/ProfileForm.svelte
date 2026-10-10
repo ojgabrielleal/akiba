@@ -419,7 +419,8 @@
         </h3>
 
         {#if badges.length > 0}
-            <ul class="grid grid-cols-3 gap-x-3 gap-y-5 sm:grid-cols-4 lg:grid-cols-3">
+            <div class="public-themed-scrollbar max-h-58 overflow-y-auto pr-1">
+                <ul class="grid grid-cols-3 gap-x-3 gap-y-5 sm:grid-cols-4 lg:grid-cols-3">
                 {#each badges as badge (badge.uuid)}
                     <li class="min-w-0 text-center">
                         <div class="mx-auto flex size-16 items-center justify-center overflow-hidden rounded-md">
@@ -445,7 +446,8 @@
                         </p>
                     </li>
                 {/each}
-            </ul>
+                </ul>
+            </div>
         {:else}
             <div class="flex min-h-40 items-center justify-center rounded-md border border-dashed border-blue-night/20 px-4 text-center [[data-public-theme=akiba]_&]:border-suspense-aurora/25 [[data-public-theme=night]_&]:border-suspense-aurora/25">
                 <p class="font-noto-sans text-sm font-semibold text-[color-mix(in_srgb,#000014_55%,transparent)] [[data-public-theme=akiba]_&]:text-suspense-aurora/60 [[data-public-theme=night]_&]:text-suspense-aurora/60">
