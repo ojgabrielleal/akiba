@@ -439,7 +439,7 @@
                             {/if}
                         </div>
                         <p class={[
-                            "mt-1.5 line-clamp-2 font-noto-sans text-[0.62rem] font-black leading-tight",
+                            "mt-1.5 font-noto-sans text-[0.62rem] font-black leading-tight break-words",
                             themeClass("text", "blue-night", { fixed: true }),
                             "[[data-public-theme=akiba]_&]:text-suspense-aurora [[data-public-theme=night]_&]:text-suspense-aurora",
                         ]} title={badge.name}>
