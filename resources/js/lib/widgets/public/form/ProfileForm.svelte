@@ -484,18 +484,18 @@
                     {#if selectedTopAnimes.length > 0}
                         <div class="grid gap-3 sm:grid-cols-3">
                             {#each selectedTopAnimes as anime (anime.position)}
-                                <div class="grid min-h-28 grid-rows-[auto_1fr] justify-items-center gap-2 rounded-md bg-blue-marinho/85 p-2 text-center shadow-inner shadow-blue-night/25">
+                                <div class="grid min-h-32 grid-rows-[auto_1fr] justify-items-center gap-2 rounded-md bg-blue-marinho/85 p-2 text-center shadow-inner shadow-blue-night/25">
                                     <div class="relative">
                                         <img
                                             src={resolvePlaceholderImage(anime.image, "placeholder")}
                                             alt={anime.name}
-                                            class="h-14 w-12 rounded-md object-cover object-top shadow-md shadow-blue-night/35"
+                                            class="h-18 w-15 rounded-md object-cover object-top shadow-md shadow-blue-night/35"
                                         />
                                         <span class="absolute -left-1 -top-1 flex size-6 items-center justify-center rounded-sm bg-orange-amber font-noto-sans text-[0.65rem] font-black italic text-blue-night shadow-sm">
                                             {anime.position}
                                         </span>
                                     </div>
-                                    <p class="line-clamp-2 min-w-0 self-center font-noto-sans text-[0.68rem] font-black uppercase italic leading-tight text-suspense-aurora">
+                                    <p class="line-clamp-2 min-w-0 self-center font-noto-sans text-[0.72rem] font-black uppercase italic leading-tight text-suspense-aurora">
                                         {anime.name}
                                     </p>
                                 </div>

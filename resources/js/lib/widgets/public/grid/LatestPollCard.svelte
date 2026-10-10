@@ -69,7 +69,6 @@
                 {oauth}
                 compact
                 buttonLabel="Entre para votar"
-                filters="filter-blue-night"
                 containerClass="order-1 md:order-3"
                 buttonClass="text-blue-night"
             >

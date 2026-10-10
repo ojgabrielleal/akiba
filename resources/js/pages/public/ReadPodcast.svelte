@@ -108,7 +108,6 @@
                         {oauth}
                         compact
                         buttonLabel="Entre para lembrar que já ouvi"
-                        filters="filter-blue-night"
                         buttonClass="text-blue-night"
                         reason="podcast-listen"
                     >

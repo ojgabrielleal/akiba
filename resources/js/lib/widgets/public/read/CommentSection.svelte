@@ -42,7 +42,6 @@
         title="Entre para comentar"
         description="Use sua conta para participar da conversa."
         buttonLabel="Entrar"
-        filters="filter-suspense-aurora"
         titleClass="text-suspense-aurora"
         descriptionClass="text-suspense-aurora/70"
         buttonClass="text-suspense-aurora"

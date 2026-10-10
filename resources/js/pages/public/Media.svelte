@@ -193,7 +193,6 @@
                                 {oauth}
                                 compact
                                 buttonLabel="Entre para participar"
-                                filters="filter-blue-night"
                                 buttonClass="text-blue-night"
                                 reason="enigmagame"
                             >
@@ -338,7 +337,6 @@
                                 {oauth}
                                 compact
                                 buttonLabel="Entre para votar"
-                                filters="filter-blue-night"
                                 containerClass="order-1 md:order-3"
                                 buttonClass="text-blue-night"
                             >

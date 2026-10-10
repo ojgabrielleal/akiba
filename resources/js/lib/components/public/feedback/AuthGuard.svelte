@@ -7,7 +7,6 @@
     export let title = "Entre para continuar";
     export let description = "Você precisa estar autenticado para acessar este conteúdo.";
     export let buttonLabel = null;
-    export let filters = "filter-blue-night";
     export let providers = [
         {
             name: "google",
