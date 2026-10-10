@@ -58,7 +58,7 @@
                             </span>
                         </div>
                         <article class="flex min-w-0 flex-col justify-between gap-4 p-3 sm:p-0">
-                            <h3 class={["public-post-list-title line-clamp-3 font-noto-sans text-[1.0625rem] leading-snug font-bold text-suspense-aurora uppercase italic sm:text-[1.1875rem]", themeClass("text", "blue-marinho", { theme: "light" })]}>
+                            <h3 class={["public-post-list-title line-clamp-4 font-noto-sans text-[1.0625rem] leading-snug font-bold text-suspense-aurora uppercase italic sm:text-[1.1875rem]", themeClass("text", "blue-marinho", { theme: "light" })]}>
                                 {post.title}
                             </h3>
                             <div class="flex items-end gap-2">
