@@ -167,7 +167,7 @@
     };
 </script>
 
-<form class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,1fr)]" on:submit|preventDefault={submit}>
+<form class="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(13rem,0.9fr)]" on:submit|preventDefault={submit}>
     <div class="space-y-4 lg:border-r lg:border-blue-night/25 lg:pr-6">
     <div class="mb-5 flex items-center gap-3 sm:gap-4">
         {#if internal}
@@ -484,20 +484,20 @@
                 {#if internal}
                     {@const selectedTopAnimes = $form.top_animes.filter((anime) => anime.name)}
                     {#if selectedTopAnimes.length > 0}
-                        <div class="grid gap-3 sm:grid-cols-3">
+                        <div class="grid gap-2.5">
                             {#each selectedTopAnimes as anime (anime.position)}
-                                <div class="grid min-h-36 grid-rows-[auto_1fr] justify-items-center gap-2 rounded-md bg-blue-marinho/85 p-2 text-center shadow-inner shadow-blue-night/25">
+                                <div class="grid grid-cols-[3.25rem_minmax(0,1fr)] items-center gap-2.5 rounded-md bg-blue-marinho/85 p-2 shadow-inner shadow-blue-night/25">
                                     <div class="relative">
                                         <img
                                             src={resolvePlaceholderImage(anime.image, "placeholder")}
                                             alt={anime.name}
-                                            class="h-20 w-16 rounded-md object-cover object-top shadow-md shadow-blue-night/35"
+                                            class="h-13 w-11 rounded-md object-cover object-top shadow-md shadow-blue-night/35"
                                         />
                                         <span class="absolute -left-1 -top-1 flex size-6 items-center justify-center rounded-sm bg-orange-amber font-noto-sans text-[0.65rem] font-black italic text-blue-night shadow-sm">
                                             {anime.position}
                                         </span>
                                     </div>
-                                    <p class="line-clamp-2 min-w-0 self-center font-noto-sans text-[0.75rem] font-black uppercase italic leading-tight text-suspense-aurora">
+                                    <p class="line-clamp-2 min-w-0 font-noto-sans text-[0.72rem] font-black uppercase italic leading-tight text-suspense-aurora">
                                         {anime.name}
                                     </p>
                                 </div>
