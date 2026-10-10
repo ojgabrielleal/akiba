@@ -1,5 +1,5 @@
 <script>
-    import { router, Link } from "@inertiajs/svelte";
+    import { router } from "@inertiajs/svelte";
 
     import { EmptyState, IconButton, Offcanvas, Section } from "@/lib/components/private";
     import { MarketingForm } from "@/lib/widgets/private";
@@ -52,10 +52,11 @@
             <ul class="mb-20 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-x-4 gap-y-15">
                 {#each items as item}
                 <li class="relative w-full bg-blue-ocean rounded-t-lg rounded-b-md">
-                    <Link
-                        aria-label={`Visitar ${item.name}`}
+                    <a
+                        aria-label={`Abrir ${item.name} em nova aba`}
                         href={item.url}
                         target="_blank"
+                        rel="noopener noreferrer"
                     >
                         <img
                             src={resolvePlaceholderImage(item.image, "placeholder")}
@@ -66,7 +67,7 @@
                         <div class="p-2 text-suspense-aurora text-center font-noto-sans font-light">
                             {item.name}
                         </div>
-                    </Link>
+                    </a>
                     <div class="absolute -bottom-8 right-0 flex flex-row gap-3">
                         {#if can.update}
                             <IconButton
