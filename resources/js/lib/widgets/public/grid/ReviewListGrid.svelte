@@ -29,7 +29,7 @@
                                 class={["aspect-[3/2] w-full bg-neutral-gray object-cover", publicAnimations.imageZoom]}
                             />
                             <div class="px-2 py-2">
-                                <h3 class="truncate text-center font-noto-sans text-base leading-tight font-black text-blue-night uppercase italic sm:text-lg">
+                                <h3 class="line-clamp-3 min-h-[3.75em] text-left font-noto-sans text-base leading-tight font-black text-blue-night uppercase italic sm:text-lg">
                                     {review.title}
                                 </h3>
                             </div>

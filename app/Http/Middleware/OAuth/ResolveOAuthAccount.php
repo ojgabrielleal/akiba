@@ -3,6 +3,8 @@
 namespace App\Http\Middleware\OAuth;
 
 use App\Models\OAuthAccount;
+use App\Models\User;
+use App\Services\InternalBrowserRecognitionService;
 use Illuminate\Database\Eloquent\Model;
 
 use Closure;
@@ -27,7 +29,16 @@ class ResolveOAuthAccount
         $oauthToken = $request->cookie('akiba_oauth_token');
 
         $authenticatedUser = $request->user();
-        $user = $authenticatedUser?->loadMissing('topAnimes');
+        $recognizedUser = null;
+
+        if (! $authenticatedUser) {
+            $recognizedUser = app(InternalBrowserRecognitionService::class)->resolveUser($request);
+            if ($recognizedUser instanceof User) {
+                $request->attributes->set('member_user', $recognizedUser);
+            }
+        }
+
+        $user = ($authenticatedUser ?? $recognizedUser)?->loadMissing('topAnimes');
         $oauthAccount = null;
 
         if ($oauthToken) {
@@ -50,6 +61,7 @@ class ResolveOAuthAccount
             'authenticated' => $user !== null || $oauthAccount instanceof OAuthAccount,
             'is_member' => $user !== null,
             'member_session_authenticated' => $authenticatedUser !== null,
+            'internal_browser_recognized' => $recognizedUser instanceof User,
             'is_oauth' => $user === null && $oauthAccount instanceof OAuthAccount,
             'profile_completed' => $user !== null || $oauthAccount?->profile_completed_at !== null,
             'can_view_profile' => $user?->hasPermission('user.view.own') ?? true,

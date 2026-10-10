@@ -9,23 +9,23 @@ use App\Http\Requests\Login\AuthLoginRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
+use App\Services\InternalBrowserRecognitionService;
 
 class LoginController extends Controller
 {
     private $render = 'private/Login';
 
-    public function loginUser(AuthLoginRequest $request)
+    public function loginUser(AuthLoginRequest $request, InternalBrowserRecognitionService $browserRecognition)
     {
         $request->ensureIsNotRateLimited();
 
         $data = $request->validated();
         $credentials = Arr::only($data, ['username', 'password']);
         $credentials['is_active'] = true;
-        $remember = (bool) ($data['remember'] ?? false);
-
-        if (Auth::attempt($credentials, $remember)) {
+        if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
             $request->clearRateLimiter();
+            $browserRecognition->remember($request->user());
 
             return redirect()->intended(route('panel.dashboard'));
         }
@@ -39,14 +39,36 @@ class LoginController extends Controller
         ]);
     }
 
-    public function logoutUser(Request $request)
+    public function logoutUser(Request $request, InternalBrowserRecognitionService $browserRecognition)
     {
+        $browserRecognition->forget($request);
+
         Auth::logout();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
         return redirect()->route('login');
+    }
+
+    public function authenticateRecognizedBrowser(Request $request, InternalBrowserRecognitionService $browserRecognition)
+    {
+        $user = $browserRecognition->resolveUser($request);
+
+        if (! $user) {
+            return redirect()->route('login');
+        }
+
+        Auth::login($user);
+        $request->session()->regenerate();
+        $browserRecognition->remember($user);
+
+        $redirect = (string) $request->query('redirect', route('panel.dashboard', absolute: false));
+        if (! str_starts_with($redirect, '/') || str_starts_with($redirect, '//')) {
+            $redirect = route('panel.dashboard', absolute: false);
+        }
+
+        return redirect()->to($redirect);
     }
 
     public function render()

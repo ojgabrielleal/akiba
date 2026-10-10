@@ -97,7 +97,7 @@
                     </button>
                 </div>
             {/if}
-            <div class="max-h-[calc(100dvh-5rem)] overflow-x-hidden overflow-y-auto p-4 sm:p-6">
+            <div class="max-h-[80vh] overflow-x-hidden overflow-y-auto p-4 sm:p-6">
                 <slot name="content" {close} />
             </div>
         </div>

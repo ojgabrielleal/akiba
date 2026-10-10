@@ -107,7 +107,7 @@
             <div class="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
                 {#each songRequests as item (item.uuid)}
                     {@const status = requestStatus(item)}
-                    <article class="relative flex min-h-64 flex-col rounded-md border border-blue-night/10 bg-suspense-aurora p-3 font-noto-sans text-blue-night shadow-sm">
+                    <article class="flex min-h-64 flex-col rounded-md border border-blue-night/10 bg-suspense-aurora p-3 font-noto-sans text-blue-night shadow-sm">
                         <div class="flex items-start justify-between gap-3">
                             <div class="min-w-0 flex-1">
                                 <h3 class="truncate text-[1.2rem] font-extrabold uppercase italic leading-tight">
@@ -166,12 +166,12 @@
                         {/if}
 
                         {#if item.message}
-                            <p class="mt-4 line-clamp-3 text-sm font-normal leading-relaxed text-blue-night">
+                            <p class="mt-4 whitespace-pre-line break-words text-sm font-normal leading-relaxed text-blue-night">
                                 {item.message}
                             </p>
                         {/if}
 
-                        <div class="absolute bottom-2 right-3 text-sm font-extrabold italic text-orange-amber">
+                        <div class="mt-auto pt-4 text-right text-sm font-extrabold italic text-orange-amber">
                             {item.created_at}
                         </div>
                     </article>

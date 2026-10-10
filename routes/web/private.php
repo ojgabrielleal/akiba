@@ -24,6 +24,7 @@ Route::prefix('panel')->middleware(['inertia'])->group(function () {
     Route::controller(LoginController::class)->group(function () {
         Route::get('', 'render')->name('login');
         Route::post('auth', 'loginUser');
+        Route::get('recognized-auth', 'authenticateRecognizedBrowser')->name('panel.recognized-auth');
     });
 
     Route::middleware(['auth', 'authenticated.user'])->group(function () {

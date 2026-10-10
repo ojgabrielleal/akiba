@@ -1,5 +1,6 @@
 <script>
     import { Link, page, router } from "@inertiajs/svelte";
+    import { fade } from "svelte/transition";
     import { Meta } from "@/lib/components/shared";
     import { postReactions } from "@/lib/constants";
     import { AdvertisementSlot, AuthGuard, Tooltip } from "@/lib/components/public";
@@ -28,6 +29,17 @@
             preserveScroll: true,
         });
     };
+
+
+    const reviewerName = (item) => item.author?.nickname ?? item.author?.name ?? "Review";
+
+    const reviewerInitials = (item) => reviewerName(item)
+        .split(/\s+/)
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((part) => part[0])
+        .join("")
+        .toUpperCase();
 </script>
 
 <Meta meta={{ title: review.title }} />
@@ -61,14 +73,16 @@
                         <dl class="mb-6 grid gap-3 font-noto-sans uppercase md:grid-cols-2">
                             {#if review.metadata?.date_of_release || review.metadata?.year_of_release}
                                 <div class="public-review-date-band rounded-md bg-blue-ocean px-4 py-3">
-                                    <dt class="mb-1 text-xs font-black text-blue-skywave">Data de lançamento</dt>
-                                    <dd class="text-lg font-black text-suspense-aurora italic">{resolveDate(review.metadata.date_of_release ?? review.metadata.year_of_release)}</dd>
+                                    <dt class={["mb-1 text-xs font-black text-blue-skywave", themeClass("text", "neutral-white/80", { theme: "light" })]}>Data de lançamento</dt>
+                                    <dd class={["text-lg font-black text-suspense-aurora italic", themeClass("text", "neutral-white", { theme: "light" })]}>
+                                        {resolveDate(review.metadata.date_of_release ?? review.metadata.year_of_release)}
+                                    </dd>
                                 </div>
                             {/if}
                             {#if review.metadata?.studio}
                                 <div class="min-w-0 rounded-md bg-blue-ocean px-4 py-3">
-                                    <dt class="mb-1 text-xs font-black text-blue-skywave">Estúdio</dt>
-                                    <dd class="truncate text-lg font-black text-suspense-aurora italic">{review.metadata.studio}</dd>
+                                    <dt class={["mb-1 text-xs font-black text-blue-skywave", themeClass("text", "neutral-white/80", { theme: "light" })]}>Estúdio</dt>
+                                    <dd class={["truncate text-lg font-black text-suspense-aurora italic", themeClass("text", "neutral-white", { theme: "light" })]}>{review.metadata.studio}</dd>
                                 </div>
                             {/if}
                         </dl>
@@ -96,33 +110,78 @@
 
                         {#if reviews.length}
                             <div>
-                                <nav class="flex flex-wrap gap-2" aria-label="Reviews">
+                                <nav class="flex flex-wrap gap-2.5" aria-label="Reviews">
                                     {#each reviews as item}
+                                        {@const reviewKey = item.uuid ?? item.author?.uuid}
+                                        {@const active = reviewKey === activeReview}
                                         <button
                                             type="button"
                                             class={[
-                                                "cursor-pointer rounded-md px-4 py-2 font-noto-sans text-sm font-black uppercase italic transition duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber",
-                                                (item.uuid ?? item.author?.uuid) === activeReview
-                                                    ? `bg-orange-amber ${themeClass("text", "blue-night", { fixed: true })}`
-                                                    : "bg-blue-ocean text-suspense-aurora hover:bg-blue-cerulean",
+                                                "group/review-tab flex min-h-10 cursor-pointer items-center gap-2 rounded-full border px-3.5 py-2 font-noto-sans text-xs font-black uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none",
+                                                active
+                                                    ? `border-orange-citric bg-orange-citric shadow-[0_0.75rem_1.5rem_rgba(255,128,0,0.18)] ${themeClass("text", "blue-night", { fixed: true })}`
+                                                    : "border-blue-skywave/25 bg-blue-ocean/60 text-suspense-aurora hover:text-orange-citric",
+                                                themeClass("border", "blue-night", { theme: "light" }),
+                                                themeClass("text", "neutral-white", { theme: "light" }),
                                             ]}
-                                            on:click={() => activeReview = item.uuid ?? item.author?.uuid}
+                                            on:click={() => activeReview = reviewKey}
                                         >
-                                            {item.author?.nickname ?? item.author?.name ?? "Review"}
+                                            <span
+                                                class={[
+                                                    "flex size-6 shrink-0 items-center justify-center rounded-full text-[0.62rem] font-black not-italic transition duration-300",
+                                                    active
+                                                        ? ["bg-blue-night text-orange-citric", themeClass("text", "blue-night", { theme: "light" })]
+                                                        : ["bg-blue-night/45 text-orange-morning", themeClass("text", "neutral-white", { theme: "light" })],
+                                                ]}
+                                            >
+                                                {reviewerInitials(item)}
+                                            </span>
+                                            <span class="min-w-0 max-w-40 truncate">{reviewerName(item)}</span>
                                         </button>
                                     {/each}
                                 </nav>
                             </div>
 
-                            <article class="pt-5 text-suspense-aurora">
-                                {#if selectedReview.content}
-                                    <div class="public-read-body text-[1.1875rem]">{@html selectedReview.content}</div>
-                                {:else}
-                                    <p class="rounded-md border border-blue-skywave/30 px-4 py-5 text-center text-sm font-bold text-suspense-aurora">
-                                        Review ainda não publicada.
-                                    </p>
-                                {/if}
-                            </article>
+                            <div class="grid">
+                                {#key activeReview}
+                                    <div class="col-start-1 row-start-1" in:fade={{ duration: 160 }} out:fade={{ duration: 90 }}>
+                                        {#if selectedReview}
+                                        <aside class="mt-4 flex items-center gap-3.5 rounded-md border border-blue-skywave/25 bg-blue-ocean/45 px-4 py-3 font-noto-sans [[data-public-theme=light]_&]:border-blue-night/10 [[data-public-theme=light]_&]:bg-neutral-light">
+                                            <div class="size-14 shrink-0 overflow-hidden rounded-full bg-blue-night">
+                                                <img
+                                                    src={resolvePlaceholderImage(selectedReview.author?.avatar, "avatar", selectedReview.author?.gender)}
+                                                    alt=""
+                                                    aria-hidden="true"
+                                                    class="h-full w-full scale-125 object-cover object-top"
+                                                    loading="lazy"
+                                                />
+                                            </div>
+                                            <div class="min-w-0 text-left">
+                                                <p class={["text-[0.68rem] font-black leading-tight uppercase italic tracking-[0.14em] text-orange-citric", themeClass("text", "neutral-white/80", { theme: "light" })]}>
+                                                    Review por
+                                                </p>
+                                                <p class={[
+                                                    "mt-[0.2rem] truncate text-[0.95rem] font-black leading-tight uppercase italic text-suspense-aurora",
+                                                    themeClass("text", "neutral-white", { theme: "light" }),
+                                                ]}>
+                                                    {reviewerName(selectedReview)}
+                                                </p>
+                                            </div>
+                                        </aside>
+                                    {/if}
+
+                                    <article class="pt-5 text-suspense-aurora">
+                                        {#if selectedReview.content}
+                                            <div class="public-read-body text-[1.1875rem]">{@html selectedReview.content}</div>
+                                        {:else}
+                                            <p class="rounded-md border border-blue-skywave/30 px-4 py-5 text-center text-sm font-bold text-suspense-aurora">
+                                                Review ainda não publicada.
+                                            </p>
+                                        {/if}
+                                        </article>
+                                    </div>
+                                {/key}
+                            </div>
                         {:else}
                             <p class="rounded-md border border-blue-skywave/30 px-4 py-5 text-center text-sm font-bold text-suspense-aurora/70">
                                 Ainda não há reviews por aqui.

@@ -41,6 +41,21 @@
         };
     }
 
+
+    function reviewerName(opinion = {}) {
+        return opinion.author?.nickname ?? opinion.author?.name ?? "Review";
+    }
+
+    function reviewerInitials(opinion = {}) {
+        return reviewerName(opinion)
+            .split(/\s+/)
+            .filter(Boolean)
+            .slice(0, 2)
+            .map((part) => part[0])
+            .join("")
+            .toUpperCase();
+    }
+
     const form = useForm({
         _method: post ? "PATCH" : "POST",
         module: "review",
@@ -165,25 +180,37 @@
             </FormField>
             <FormField for="content" label="Escreva" labelVariant="editorial" spacing="none" error={reviewContentError}>
                 {#if post?.data.reviews?.length}
-                    <div class="mb-3 flex flex-wrap gap-2">
+                    <div class="mb-3 flex flex-wrap gap-2.5">
                         {#each post.data.reviews as opinion (opinion.uuid ?? opinion.author.uuid)}
+                            {@const active = $form.review.uuid === opinion.uuid}
                             <Tooltip>
                                 <button
                                     type="button"
-                                    aria-label={`Review de ${opinion.author.nickname}`}
-                                    class={["py-1 px-4 rounded-md font-noto-sans font-extrabold italic uppercase cursor-pointer",
-                                        {"bg-neutral-gray text-blue-marinho": opinion.status === 'not_created'},
-                                        {"bg-blue-ocean text-suspense-aurora": opinion.status === 'published'},
-                                        {"bg-green-forest text-blue-marinho": opinion.status === 'draft'},
-                                        {"bg-orange-amber text-blue-marinho": opinion.status === 'revision'},
-                                        {"text-suspense-aurora": $form.review.uuid === opinion.uuid},
+                                    aria-label={`Review de ${reviewerName(opinion)}`}
+                                    class={[
+                                        "group/review-tab flex min-h-8 cursor-pointer items-center gap-2 rounded-full border px-3.5 py-1 font-noto-sans text-xs font-black uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none",
+                                        {"border-neutral-gray bg-neutral-gray text-blue-marinho": opinion.status === 'not_created'},
+                                        {"border-blue-ocean bg-blue-ocean text-suspense-aurora": opinion.status === 'published'},
+                                        {"border-green-forest bg-green-forest text-blue-marinho": opinion.status === 'draft'},
+                                        {"border-orange-amber bg-orange-amber text-blue-marinho": opinion.status === 'revision'},
                                     ]}
                                     on:click={() => $form.review = normalizeReview(opinion)}
                                 >
-                                    {opinion.author.nickname}
+                                    <span
+                                        class={[
+                                            "flex size-5 shrink-0 items-center justify-center rounded-full text-[0.62rem] font-black not-italic transition duration-300",
+                                            active ? "bg-blue-night text-orange-citric" : "bg-blue-night/45 text-suspense-aurora",
+                                        ]}
+                                    >
+                                        {reviewerInitials(opinion)}
+                                    </span>
+                                    <span class={["min-w-0 max-w-40 truncate", active && "text-suspense-aurora"]}>{reviewerName(opinion)}</span>
+                                    {#if active}
+                                        <span class="ml-0.5 size-1.5 shrink-0 rounded-full bg-suspense-aurora" aria-hidden="true"></span>
+                                    {/if}
                                 </button>
                                 <div slot="content">
-                                    Review de {opinion.author.nickname}
+                                    Review de {reviewerName(opinion)}
                                 </div>
                             </Tooltip>
                         {/each}

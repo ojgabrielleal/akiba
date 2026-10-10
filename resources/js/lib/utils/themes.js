@@ -125,6 +125,8 @@ const themedThemeClasses = {
             "suspense-aurora": "[[data-public-theme=light]_&]:text-[#fffaf3]",
             "suspense-aurora/45": "[[data-public-theme=light]_&]:text-[color-mix(in_srgb,#fffaf3_45%,transparent)]",
             "suspense-aurora/75": "[[data-public-theme=light]_&]:text-[color-mix(in_srgb,#fffaf3_75%,transparent)]",
+            "neutral-white": "[[data-public-theme=light]_&]:text-[#ffffff]",
+            "neutral-white/80": "[[data-public-theme=light]_&]:text-[color-mix(in_srgb,#ffffff_80%,transparent)]",
             "orange-citric": "[[data-public-theme=light]_&]:text-orange-citric",
             "blue-cerulean": "[[data-public-theme=light]_&]:text-blue-cerulean",
             "blue-night/70": "[[data-public-theme=light]_&]:text-[color-mix(in_srgb,#000014_70%,transparent)]",
@@ -132,6 +134,7 @@ const themedThemeClasses = {
         bg: {
             "suspense-aurora": "[[data-public-theme=light]_&]:bg-[#fffaf3]",
             "neutral-light": "[[data-public-theme=light]_&]:bg-[#e8e8e8]",
+            "neutral-white": "[[data-public-theme=light]_&]:bg-[#ffffff]",
             "orange-morning": "[[data-public-theme=light]_&]:bg-orange-morning",
             "orange-amber": "[[data-public-theme=light]_&]:bg-orange-amber",
             "blue-cerulean": "[[data-public-theme=light]_&]:bg-blue-cerulean",

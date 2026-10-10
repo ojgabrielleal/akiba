@@ -17,6 +17,7 @@
         getStoredPublicTheme,
         publicThemes,
         setStoredPublicTheme,
+        themeClass,
     } from "@/lib/utils";
     import { Button, IconButton, MaskIcon, Modal, Tooltip } from "@/lib/components/public";
     import NotificationPanel from "./NotificationPanel.svelte";
@@ -76,13 +77,13 @@
             name: "google",
             label: "Entrar com Google",
             icon: "/svg/google.svg",
-            class: "border border-blue-night/10 bg-neutral-white text-blue-night shadow-sm hover:bg-neutral-white",
+            class: "bg-neutral-white text-blue-night shadow-[0_0.75rem_1.5rem_rgba(0,0,20,0.22)] hover:bg-orange-citric",
         },
         {
             name: "discord",
             label: "Entrar com Discord",
             icon: "/svg/discord.svg",
-            class: "bg-[#5865f2] text-neutral-white shadow-[0_0.75rem_1.5rem_rgba(88,101,242,0.28)] hover:brightness-110",
+            class: "bg-[#5865f2] text-neutral-white shadow-[0_0.75rem_1.5rem_rgba(0,0,20,0.24)] hover:bg-orange-citric hover:text-blue-night",
         },
     ];
 
@@ -154,8 +155,6 @@
     };
 
     const themes = publicThemes;
-
-    const providerIconStyle = (provider) => `mask-image: url('${provider.icon}'); -webkit-mask-image: url('${provider.icon}');`;
 
     const syncSelectedThemeFromStorage = (event = null) => {
         selectedTheme = event?.detail?.theme ?? getStoredPublicTheme();
@@ -327,10 +326,10 @@
                 <Button
                     size="sm"
                     shape="pill"
-                    class="ml-1 transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 motion-reduce:transform-none motion-reduce:transition-none"
+                    class="ml-1 !text-white transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 motion-reduce:transform-none motion-reduce:transition-none"
                     on:click={openOAuthLogin}
                 >
-                    <MaskIcon icon="/svg/profile.svg" class="size-4 text-blue-marinho" />
+                    <MaskIcon icon="/svg/profile.svg" class="size-4 !text-white" />
                     Entrar
                 </Button>
             {/if}
@@ -479,10 +478,10 @@
                                 <Button
                                     size="sm"
                                     shape="pill"
-                                    class="transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 motion-reduce:transform-none motion-reduce:transition-none"
+                                    class="!text-white transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 motion-reduce:transform-none motion-reduce:transition-none"
                                     on:click={openOAuthLogin}
                                 >
-                                    <MaskIcon icon="/svg/profile.svg" class="size-4 text-blue-marinho" />
+                                    <MaskIcon icon="/svg/profile.svg" class="size-4 !text-white" />
                                     Entrar
                                 </Button>
                             {/if}
@@ -517,34 +516,42 @@
     >
         <div class="px-1 py-2 text-center">
             <div class="mb-5 flex flex-col items-center font-noto-sans">
-                <span class="mb-3 flex size-8 items-center justify-center text-blue-night [[data-public-theme=akiba]_&]:text-suspense-aurora [[data-public-theme=night]_&]:text-suspense-aurora">
-                    <span
-                        class="block size-7 bg-current [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain] [-webkit-mask-repeat:no-repeat] [-webkit-mask-position:center] [-webkit-mask-size:contain]"
-                        style="mask-image: url('/svg/profile.svg'); -webkit-mask-image: url('/svg/profile.svg');"
-                    ></span>
+                <span class="mb-3 flex items-center justify-center gap-2 text-orange-citric">
+                    <span class="h-px w-9 bg-orange-citric/70" aria-hidden="true"></span>
+                    <img
+                        src="/svg/akiba.svg"
+                        alt=""
+                        aria-hidden="true"
+                        class="size-9 filter-orange-citric"
+                        loading="lazy"
+                    />
+                    <span class="h-px w-9 bg-orange-citric/70" aria-hidden="true"></span>
                 </span>
-                <p class="text-base font-extrabold uppercase italic text-blue-night [[data-public-theme=akiba]_&]:text-suspense-aurora [[data-public-theme=night]_&]:text-suspense-aurora">
+                <p class="text-[0.68rem] font-extrabold uppercase italic tracking-[0.18em] text-orange-citric">
+                    Rede Akiba
+                </p>
+                <p class={["mt-3 text-xl font-black leading-none text-suspense-aurora uppercase italic", themeClass("text", "blue-night", { theme: "light" })]}>
                     Entre para continuar
                 </p>
-                <p class="mx-auto mt-1 max-w-64 text-sm font-normal leading-snug text-blue-night/70 [[data-public-theme=akiba]_&]:text-suspense-aurora/75 [[data-public-theme=night]_&]:text-suspense-aurora/75">
-                    Use sua conta para comentar, reagir, pedir músicas e participar da Akiba.
+                <p class={["mx-auto mt-2 max-w-72 text-sm font-medium leading-snug text-suspense-aurora/75", themeClass("text", "blue-night/70", { theme: "light" })]}>
+                    Comente, reaja, peça músicas e entre na comunidade Akiba.
                 </p>
             </div>
-            <div class="grid gap-3">
+            <div class="mt-1 flex items-center justify-center gap-4">
                 {#each loginProviders as provider}
                     <a
                         href={`/oauth/${provider.name}/redirect`}
                         class={[
-                            "group/provider relative flex min-h-[3.25rem] items-center justify-center gap-3 overflow-hidden rounded-md px-5 py-3 text-center font-noto-sans text-sm font-extrabold uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none",
+                            "group/provider relative flex size-12 items-center justify-center rounded-full transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none",
                             provider.class,
                         ]}
+                        aria-label={provider.label}
+                        title={provider.label}
                     >
-                        <span
-                            aria-hidden="true"
-                            class="block size-4 shrink-0 bg-current transition group-hover/provider:scale-110 [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain] [-webkit-mask-repeat:no-repeat] [-webkit-mask-position:center] [-webkit-mask-size:contain]"
-                            style={providerIconStyle(provider)}
-                        ></span>
-                        <span class="relative">{provider.label}</span>
+                        <MaskIcon
+                            icon={provider.icon}
+                            class={["size-5 bg-current transition group-hover/provider:scale-110", themeClass("bg", "neutral-white", { theme: "light" })]}
+                        />
                     </a>
                 {/each}
             </div>

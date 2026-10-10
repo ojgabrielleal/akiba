@@ -29,7 +29,6 @@ class AuthLoginRequest extends LoggedWebRequest
         return [
             'username' => 'required',
             'password' => 'required',
-            'remember' => 'sometimes|boolean',
         ];
     }
 

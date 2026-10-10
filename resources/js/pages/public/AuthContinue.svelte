@@ -62,6 +62,9 @@
     $: iconInverted = authContext?.reason === "song_request";
     const providerHref = (provider) =>
         `/oauth/${provider.name}/redirect?redirect=${encodeURIComponent(redirect)}`;
+    $: internalPanelHref = oauth?.internal_browser_recognized
+        ? `/panel/recognized-auth?redirect=${encodeURIComponent(redirect)}`
+        : "/panel";
 
     const authenticate = () => {
         rememberOAuthAction(context.action);
@@ -114,7 +117,7 @@
                 <div class="mt-8 w-full max-w-xs">
                     {#if isInternalLogin}
                         <a
-                            href="/panel"
+                            href={internalPanelHref}
                             class={[
                                 "flex min-h-11 items-center justify-center gap-3 rounded-md bg-orange-amber px-6 py-2 font-noto-sans text-sm font-extrabold uppercase shadow-[0_0.75rem_1.5rem_rgba(255,163,26,0.22)] hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber",
                                 themeClass("text", "blue-night", { fixed: true }),

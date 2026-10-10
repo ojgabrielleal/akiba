@@ -190,13 +190,13 @@
                                 {item.question}
                             </h3>
                         </div>
-                        <div class={`grid grid-cols-[0.4fr_1fr_0.6fr] items-center absolute bottom-0 w-full py-1 px-2 ${pollCardStatusBackground(item)}`}>
-                            <div class="flex items-center gap-1 font-noto-sans font-extrabold italic uppercase text-md text-suspense-aurora truncate">
+                        <div class={`absolute bottom-0 grid min-h-10 w-full grid-cols-[minmax(4rem,0.4fr)_1fr_minmax(5.5rem,0.6fr)] items-center gap-2 px-2 py-1.5 ${pollCardStatusBackground(item)}`}>
+                            <div class="flex min-h-7 min-w-0 items-center gap-1 overflow-visible font-noto-sans text-base font-extrabold italic leading-none text-suspense-aurora uppercase">
                                 <img
                                     src="/svg/votes.svg"
                                     alt=""
                                     aria-hidden="true"
-                                    class="w-5 filter-suspense-aurora"
+                                    class="size-5 shrink-0 filter-suspense-aurora"
                                     loading="lazy"
                                 />
                                 {item.total_votes ?? 0}
