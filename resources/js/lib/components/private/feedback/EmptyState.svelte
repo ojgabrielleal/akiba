@@ -18,17 +18,17 @@
                 <img
                     src={icon}
                     alt=""
-                    class="max-h-full max-w-full filter-neutral-gray"
+                    class="max-h-full max-w-full filter-suspense-aurora"
                     loading="lazy"
                 />
             </slot>
         </div>
     {/if}
-    <p class="font-noto-sans text-lg font-extrabold uppercase italic text-blue-night">
+    <p class="font-noto-sans text-lg font-extrabold uppercase italic text-suspense-aurora">
         {title}
     </p>
     {#if description}
-        <p class="mt-1 max-w-xl font-noto-sans text-sm text-blue-night/60">
+        <p class="mt-1 max-w-xl font-noto-sans text-sm text-suspense-aurora/70">
             {description}
         </p>
     {/if}
