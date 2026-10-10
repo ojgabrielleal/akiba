@@ -240,7 +240,7 @@
     </div>
 
     {#if !internal}
-        <div class="-mt-2 mb-1 flex justify-start sm:pl-[5.25rem]">
+        <div class="-mt-2 mb-1 flex justify-start">
             <Button
                 type="button"
                 variant="secondary"
