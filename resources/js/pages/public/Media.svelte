@@ -587,7 +587,7 @@
                                 <span class="text-3xl font-extrabold text-blue-night [[data-public-theme=light]_&]:!text-[#000014] [[data-public-theme=akiba]_&]:text-suspense-aurora [[data-public-theme=night]_&]:text-suspense-aurora">{selectedPoll.total_votes}</span>
                                 <span class="text-xs text-blue-ocean [[data-public-theme=light]_&]:!text-[#000014] [[data-public-theme=akiba]_&]:text-orange-morning [[data-public-theme=night]_&]:text-orange-morning">Votos</span>
                             </div>
-                            <AuthGuard {oauth} compact buttonLabel="Entre para votar" filters="filter-blue-night" buttonClass="text-blue-night">
+                            <AuthGuard {oauth} compact buttonLabel="Entre para votar" buttonClass="text-blue-night">
                                 <Button type="submit" variant="primary" shape="pill" loading={voting} disabled={!selectedOption || selectedPoll.has_voted}>
                                     {selectedOption ? "Confirmar seu voto" : "Votar"}
                                 </Button>

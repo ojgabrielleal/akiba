@@ -167,7 +167,7 @@
     };
 </script>
 
-<form class="grid gap-6 lg:grid-cols-[minmax(0,0.95fr)_minmax(17rem,1.15fr)]" on:submit|preventDefault={submit}>
+<form class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,1fr)]" on:submit|preventDefault={submit}>
     <div class="space-y-4 lg:border-r lg:border-blue-night/25 lg:pr-6">
     <div class="mb-5 flex items-center gap-3 sm:gap-4">
         {#if internal}
@@ -418,7 +418,8 @@
             Meus Emblemas
         </h3>
 
-        {#if badges.length > 0}
+        <div class="rounded-md border border-blue-night/15 bg-blue-night/[0.04] p-3.5 [[data-public-theme=akiba]_&]:border-suspense-aurora/20 [[data-public-theme=akiba]_&]:bg-blue-night/20 [[data-public-theme=night]_&]:border-suspense-aurora/20 [[data-public-theme=night]_&]:bg-blue-night/20">
+            {#if badges.length > 0}
             <div class="public-themed-scrollbar max-h-52 overflow-y-auto pr-1">
                 <ul class="grid grid-cols-3 gap-x-3 gap-y-4 sm:grid-cols-4 lg:grid-cols-4">
                 {#each badges as badge (badge.uuid)}
@@ -454,9 +455,10 @@
                     Nenhum emblema conquistado ainda.
                 </p>
             </div>
-        {/if}
+            {/if}
+        </div>
 
-        <section class="mt-7">
+        <section class="mt-5">
             <h3 class={[
                 "mb-4 text-center font-noto-sans text-[1.1875rem] font-black uppercase italic",
                 themeClass("text", "blue-night", { fixed: true }),
@@ -484,18 +486,18 @@
                     {#if selectedTopAnimes.length > 0}
                         <div class="grid gap-3 sm:grid-cols-3">
                             {#each selectedTopAnimes as anime (anime.position)}
-                                <div class="grid min-h-32 grid-rows-[auto_1fr] justify-items-center gap-2 rounded-md bg-blue-marinho/85 p-2 text-center shadow-inner shadow-blue-night/25">
+                                <div class="grid min-h-36 grid-rows-[auto_1fr] justify-items-center gap-2 rounded-md bg-blue-marinho/85 p-2 text-center shadow-inner shadow-blue-night/25">
                                     <div class="relative">
                                         <img
                                             src={resolvePlaceholderImage(anime.image, "placeholder")}
                                             alt={anime.name}
-                                            class="h-18 w-15 rounded-md object-cover object-top shadow-md shadow-blue-night/35"
+                                            class="h-20 w-16 rounded-md object-cover object-top shadow-md shadow-blue-night/35"
                                         />
                                         <span class="absolute -left-1 -top-1 flex size-6 items-center justify-center rounded-sm bg-orange-amber font-noto-sans text-[0.65rem] font-black italic text-blue-night shadow-sm">
                                             {anime.position}
                                         </span>
                                     </div>
-                                    <p class="line-clamp-2 min-w-0 self-center font-noto-sans text-[0.72rem] font-black uppercase italic leading-tight text-suspense-aurora">
+                                    <p class="line-clamp-2 min-w-0 self-center font-noto-sans text-[0.75rem] font-black uppercase italic leading-tight text-suspense-aurora">
                                         {anime.name}
                                     </p>
                                 </div>
