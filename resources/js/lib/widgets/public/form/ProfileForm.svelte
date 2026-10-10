@@ -240,7 +240,7 @@
     </div>
 
     {#if !internal}
-        <div class="-mt-2 mb-1">
+        <div class="-mt-2 mb-4">
             <Button
                 type="button"
                 variant="secondary"
