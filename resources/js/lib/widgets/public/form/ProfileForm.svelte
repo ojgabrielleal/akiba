@@ -420,7 +420,7 @@
 
         {#if badges.length > 0}
             <div class="public-themed-scrollbar max-h-50 overflow-y-auto pr-1">
-                <ul class="grid grid-cols-3 gap-3 sm:grid-cols-4 lg:grid-cols-3">
+                <ul class="grid grid-cols-3 gap-1 sm:grid-cols-4 lg:grid-cols-3">
                 {#each badges as badge (badge.uuid)}
                     <li class="min-w-0 text-center">
                         <div class="mx-auto flex size-16 items-center justify-center overflow-hidden rounded-md">
