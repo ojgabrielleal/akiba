@@ -44,7 +44,7 @@
                         aria-label={`Ler matéria: ${post.title}`}
                         class={["public-post-list-card group block overflow-hidden rounded-md bg-blue-ocean focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber sm:grid sm:grid-cols-[15rem_1fr] sm:gap-3 sm:bg-transparent", publicAnimations.cardInteractive]}
                     >
-                        <div class="relative aspect-[16/9] overflow-hidden border-0 bg-neutral-gray outline-none sm:h-38 sm:aspect-auto sm:rounded-md">
+                        <div class="relative aspect-[16/9] overflow-hidden border-0 bg-neutral-gray outline-none sm:h-35 sm:aspect-auto sm:rounded-md">
                             <img
                                 src={resolvePlaceholderImage(post.cover, "placeholder")}
                                 alt=""
@@ -58,7 +58,7 @@
                             </span>
                         </div>
                         <article class="flex min-w-0 flex-col justify-between gap-4 p-3 sm:p-0">
-                            <h3 class={["public-post-list-title line-clamp-4 font-noto-sans text-[1.0625rem] leading-snug font-bold text-suspense-aurora uppercase italic sm:text-[1.1875rem]", themeClass("text", "blue-marinho", { theme: "light" })]}>
+                            <h3 class={["public-post-list-title line-clamp-3 font-noto-sans text-[1.0625rem] leading-snug font-bold text-suspense-aurora uppercase italic sm:text-[1.1875rem]", themeClass("text", "blue-marinho", { theme: "light" })]}>
                                 {post.title}
                             </h3>
                             <div class="flex items-end gap-2">
