@@ -420,7 +420,7 @@
 
         <div class="rounded-md border border-blue-night/15 bg-blue-night/[0.04] p-3.5 [[data-public-theme=akiba]_&]:border-suspense-aurora/20 [[data-public-theme=akiba]_&]:bg-blue-night/20 [[data-public-theme=night]_&]:border-suspense-aurora/20 [[data-public-theme=night]_&]:bg-blue-night/20">
             {#if badges.length > 0}
-            <div class="public-themed-scrollbar overflow-x-auto overflow-y-hidden pb-2">
+            <div class="public-themed-scrollbar overflow-y-auto pb-2">
                 <ul class="flex min-w-max gap-3">
                 {#each badges as badge (badge.uuid)}
                     <li class="w-18 shrink-0 text-center">
