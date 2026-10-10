@@ -22,10 +22,11 @@
     export let internal = false;
 
     $: avatar = profile?.avatar || "/img/placeholders/avatar.webp";
-    $: nickname = profile?.nickname || profile?.username || "Perfil";
+    $: nickname = profile?.nickname || profile?.name || profile?.username || "Perfil";
+    $: provider = profile?.provider || "google";
+    $: providerLabel = provider === "discord" ? "Discord" : provider === "google" ? "Google" : provider;
 
     $: badges = profile?.badges ?? [];
-    $: provider = profile?.provider || "google";
     $: providerIcon = provider === "discord" ? "/svg/discord.svg" : "/svg/google.svg";
     $: providerIconClass = "filter-suspense-aurora";
     $: endpoint = internal ? "/member-profile" : "/profile";
@@ -64,7 +65,7 @@
     const form = useForm({
         _method: "PATCH",
         avatar: null,
-        nickname: profile?.nickname ?? "",
+        nickname: profile?.nickname || profile?.name || profile?.username || "",
         birth_date: profile?.birth_date ?? "",
         address: profile?.address ?? "",
         city: profile?.city ?? "",
@@ -217,27 +218,9 @@
                 {nickname}
             </p>
             <p class="truncate font-noto-sans text-xs text-[color-mix(in_srgb,#000014_50%,transparent)] [[data-public-theme=akiba]_&]:text-suspense-aurora/60 [[data-public-theme=night]_&]:text-suspense-aurora/60">
-                {internal ? "Membro interno" : `@${profile?.username}`}
+                {internal ? "Membro interno" : providerLabel}
             </p>
         </div>
-        {#if !internal}
-            <Button
-                type="button"
-                variant="secondary"
-                size="sm"
-                shape="pill"
-                class="shrink-0"
-                on:click={syncProvider}
-            >
-                <img
-                    src={providerIcon}
-                    alt=""
-                    aria-hidden="true"
-                    class={["size-4", providerIconClass]}
-                />
-                Ressincronizar
-            </Button>
-        {/if}
         <Tooltip position="left">
             <button
                 type="button"
@@ -255,6 +238,27 @@
             <span slot="content">Sair da conta</span>
         </Tooltip>
     </div>
+
+    {#if !internal}
+        <div class="-mt-2 mb-1 flex justify-start sm:pl-[5.25rem]">
+            <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                shape="pill"
+                class="shrink-0"
+                on:click={syncProvider}
+            >
+                <img
+                    src={providerIcon}
+                    alt=""
+                    aria-hidden="true"
+                    class={["size-4", providerIconClass]}
+                />
+                Ressincronizar
+            </Button>
+        </div>
+    {/if}
 
     <div class="grid gap-4">
         <FormField
