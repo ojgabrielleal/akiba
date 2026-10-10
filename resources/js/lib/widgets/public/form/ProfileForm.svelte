@@ -240,13 +240,13 @@
     </div>
 
     {#if !internal}
-        <div class="-mt-2 mb-1 flex justify-start">
+        <div class="-mt-2 mb-1">
             <Button
                 type="button"
                 variant="secondary"
                 size="sm"
                 shape="pill"
-                class="shrink-0"
+                class="w-full justify-center"
                 on:click={syncProvider}
             >
                 <img
@@ -255,7 +255,7 @@
                     aria-hidden="true"
                     class={["size-4", providerIconClass]}
                 />
-                Ressincronizar
+                Ressincronizar...
             </Button>
         </div>
     {/if}
