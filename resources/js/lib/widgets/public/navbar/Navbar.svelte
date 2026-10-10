@@ -517,16 +517,16 @@
     >
         <div class="px-1 py-2 text-center">
             <div class="mb-5 flex flex-col items-center font-noto-sans">
-                <span class="mb-3 flex size-8 items-center justify-center text-blue-night">
+                <span class="mb-3 flex size-8 items-center justify-center text-blue-night [[data-public-theme=akiba]_&]:text-suspense-aurora [[data-public-theme=night]_&]:text-suspense-aurora">
                     <span
                         class="block size-7 bg-current [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain] [-webkit-mask-repeat:no-repeat] [-webkit-mask-position:center] [-webkit-mask-size:contain]"
                         style="mask-image: url('/svg/profile.svg'); -webkit-mask-image: url('/svg/profile.svg');"
                     ></span>
                 </span>
-                <p class="text-base font-extrabold uppercase italic text-blue-night">
+                <p class="text-base font-extrabold uppercase italic text-blue-night [[data-public-theme=akiba]_&]:text-suspense-aurora [[data-public-theme=night]_&]:text-suspense-aurora">
                     Entre para continuar
                 </p>
-                <p class="mx-auto mt-1 max-w-64 text-sm font-normal leading-snug text-blue-night/70">
+                <p class="mx-auto mt-1 max-w-64 text-sm font-normal leading-snug text-blue-night/70 [[data-public-theme=akiba]_&]:text-suspense-aurora/75 [[data-public-theme=night]_&]:text-suspense-aurora/75">
                     Use sua conta para comentar, reagir, pedir músicas e participar da Akiba.
                 </p>
             </div>

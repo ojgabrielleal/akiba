@@ -61,7 +61,7 @@ Route::post('/easter-eggs/{easterEgg}/unlock', [EasterEggController::class, 'unl
     ->middleware('oauth.resolve')
     ->name('easter-eggs.unlock');
 
-Route::middleware(['oauth.resolve', 'inertia', 'auth'])->group(function () {
+Route::middleware(['oauth.resolve', 'inertia'])->group(function () {
     Route::post('/song-request', [PlayerController::class, 'storeSongRequest'])
         ->middleware('oauth')
         ->name('player.song-request.store');

@@ -13,10 +13,18 @@
         anime: null,
         music: null,
         message: null,
+        request_mode: "music",
     });
 
     const submit = () => {
         if ($form.processing) return;
+
+        if (requestMode === "music" && !$form.music) {
+            musicSelectionError = "Escolha uma música antes de enviar o pedido.";
+            activeSearchDropdown = true;
+            toast.error("Escolha uma música antes de enviar.");
+            return;
+        }
 
         $form.post("/song-request", {
             preserveScroll: true,
@@ -43,6 +51,7 @@
     let latestSearchId = 0;
     let isSearching = false;
     let requestMode = "music";
+    let musicSelectionError = null;
     const labelClass = "text-md text-gray-700 font-noto-sans block mb-1 [[data-public-theme=akiba]_&]:text-suspense-aurora/75 [[data-public-theme=night]_&]:text-suspense-aurora/75";
     const inputClass = "w-full h-10 bg-white font-noto-sans text-md text-black rounded-md outline-none border border-gray-400 [[data-public-theme=akiba]_&]:border-0 [[data-public-theme=akiba]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_76%,var(--color-blue-night))] [[data-public-theme=akiba]_&]:text-suspense-aurora [[data-public-theme=akiba]_&]:placeholder:text-suspense-aurora/35 [[data-public-theme=night]_&]:border-0 [[data-public-theme=night]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_76%,var(--color-blue-night))] [[data-public-theme=night]_&]:text-suspense-aurora [[data-public-theme=night]_&]:placeholder:text-suspense-aurora/35";
     const helpClass = "text-[0.8rem] text-gray-500 font-noto-sans mt-1 block [[data-public-theme=akiba]_&]:text-suspense-aurora/60 [[data-public-theme=night]_&]:text-suspense-aurora/60";
@@ -59,6 +68,8 @@
 
     const selectRequestMode = (mode) => {
         requestMode = mode;
+        $form.request_mode = mode;
+        musicSelectionError = null;
 
         if (mode === "message") {
             searchQuery = "";
@@ -77,6 +88,8 @@
         const name = manualMusicName.trim();
 
         $form.anime = anime || null;
+        musicSelectionError = null;
+
         $form.music = anime && name
             ? {
                 production: anime,
@@ -94,6 +107,7 @@
         searchResults = [];
         searchMusicResults = [];
         searchError = false;
+        musicSelectionError = null;
         hasSearched = false;
         apiAvailable = true;
         manualAnime = "";
@@ -187,6 +201,7 @@
         if (searchMusicResults.length === 1) {
             searchQuery = item.title + "[" + searchMusicResults[0].type + "]" + " - " + searchMusicResults[0].name;
             $form.music = searchMusicResults[0];
+            musicSelectionError = null;
             return;
         }
         
@@ -286,6 +301,11 @@
             <span class={helpClass}>
                 Diga o nome do anime ou da música e faremos o resto!
             </span>
+            {#if musicSelectionError && searchMusicResults.length <= 1}
+                <span class="mt-1 block font-noto-sans text-xs text-red-600">
+                    {musicSelectionError}
+                </span>
+            {/if}
             {#if activeSearchDropdown}
                 <div class={dropdownClass}>
                     {#if !searchQuery.trim()}
@@ -299,7 +319,7 @@
                         </div>
                     {:else if isSearching}
                         <div class="p-3 font-noto-sans text-center flex flex-col items-center gap-2">
-                            <svg class="w-5 h-5 text-gray-300 animate-spin fill-blue-ocean [[data-public-theme=akiba]_&]:text-suspense-aurora/35 [[data-public-theme=night]_&]:text-suspense-aurora/35" viewBox="0 0 24 24" aria-hidden="true">
+                            <svg class="w-5 h-5 text-blue-night/35 animate-spin fill-blue-night [[data-public-theme=akiba]_&]:text-white/35 [[data-public-theme=akiba]_&]:fill-white [[data-public-theme=night]_&]:text-white/35 [[data-public-theme=night]_&]:fill-white" viewBox="0 0 24 24" aria-hidden="true">
                                 <path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2v3a7 7 0 1 0 7 7h3c0 5.523-4.477 10-10 10Z"/>
                             </svg>
                             <div class={dropdownTitleClass}>
@@ -431,6 +451,7 @@
                                     value={item}
                                     bind:group={$form.music}
                                     class="peer sr-only"
+                                    on:change={() => (musicSelectionError = null)}
                                 />
                                 <span class={["flex size-4 shrink-0 items-center justify-center rounded-full border-2",
                                     $form.music === item ? "border-blue-marinho" : "border-blue-ocean/40",
@@ -452,9 +473,9 @@
                     {/if}
                 {/each}
             </div>
-            {#if $form.errors.music}
+            {#if musicSelectionError || $form.errors.music}
                 <span class="mt-1 block font-noto-sans text-xs text-red-600">
-                    {$form.errors.music}
+                    {musicSelectionError ?? $form.errors.music}
                 </span>
             {/if}
         </div>

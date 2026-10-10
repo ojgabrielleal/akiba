@@ -12,7 +12,11 @@ class PlayerController extends Controller
 {
     public function storeSongRequest(StoreSongRequestRequest $request, SongRequestService $service): RedirectResponse
     {
-        $service->store($request->validated(), AuthenticatedMember::fromRequest($request));
+        $requester = AuthenticatedMember::fromRequest($request);
+
+        abort_unless($requester, 403);
+
+        $service->store($request->validated(), $requester);
 
         return back(303);
     }
