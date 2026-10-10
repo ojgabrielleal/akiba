@@ -59,7 +59,7 @@
                         Voltar
                     </button>
                     <Link
-                        href="/site"
+                        href="/"
                         class={[
                             "inline-flex min-h-11 min-w-40 items-center justify-center rounded-md bg-orange-amber px-6 py-2 font-noto-sans text-sm font-extrabold uppercase shadow-[0_0.75rem_1.5rem_rgba(255,163,26,0.22)] hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber",
                             themeClass("text", "blue-night", { fixed: true }),

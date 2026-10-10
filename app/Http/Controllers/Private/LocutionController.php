@@ -42,6 +42,7 @@ class LocutionController extends Controller
         return $this->onairFilter->filter([
             'live' => true,
             'with' => ['host', 'program.host'],
+            'prefer_accepting_song_requests' => true,
             'first' => true,
         ]);
     }

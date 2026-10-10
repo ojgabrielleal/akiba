@@ -23,7 +23,7 @@
     <div class="container-page border-t border-orange-citric pt-8">
         <div class="grid gap-8 lg:grid-cols-[1.2fr_1fr_0.8fr]">
             <div class="min-w-0">
-                <Link href="/site" class="group/logo block w-48 focus-visible:outline-none" aria-label="Página inicial">
+                <Link href="/" class="group/logo block w-48 focus-visible:outline-none" aria-label="Página inicial">
                     <img
                         src={brandLogo.src}
                         alt={brandLogo.alt}

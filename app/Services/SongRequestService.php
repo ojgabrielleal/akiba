@@ -97,6 +97,7 @@ class SongRequestService
     {
         return Onair::acceptingSongRequests()
             ->with(['host', 'program.host'])
+            ->latest('id')
             ->firstOrFail();
     }
 
@@ -183,6 +184,14 @@ class SongRequestService
             ->when(
                 $filters['onair_id'] ?? null,
                 fn (Builder $query, int $onairId) => $query->where('onair_id', $onairId)
+            )
+            ->when(
+                $filters['type'] ?? null,
+                fn (Builder $query, string $type) => $query->where('type', $type)
+            )
+            ->when(
+                array_key_exists('was_reproduced', $filters),
+                fn (Builder $query) => $query->where('was_reproduced', (bool) $filters['was_reproduced'])
             )
             ->orderBy(
                 $filters['order_by'] ?? 'id',

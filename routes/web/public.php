@@ -195,13 +195,13 @@ Route::middleware(['oauth.resolve', 'inertia'])->group(function () {
         ->name('event.read.legacy');
 });
 
-Route::prefix("site")->middleware(['oauth.resolve', 'inertia', 'auth'])->group(function () {
+Route::middleware(['oauth.resolve', 'inertia', 'auth'])->group(function () {
     Route::patch('profile', [HomeController::class, 'updateOAuthAccountProfile'])
         ->middleware('oauth')
         ->name('oauth.profile.update');
 });
 
-Route::prefix("site")->middleware(['oauth.resolve', 'inertia'])->group(function () {
+Route::middleware(['oauth.resolve', 'inertia'])->group(function () {
     Route::patch('member-profile', [HomeController::class, 'updateMemberProfile'])
         ->name('member.profile.update');
 

@@ -65,7 +65,7 @@
     {
       "name": "Inicio",
       "icon": "/svg/home.svg",
-      "address": "/site"
+      "address": "/"
     },
     {
       "name": "News",

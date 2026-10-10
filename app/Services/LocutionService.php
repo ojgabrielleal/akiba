@@ -171,7 +171,7 @@ class LocutionService
         app(PushNotificationService::class)->sendToUserOrAll(null, [
             'title' => "{$program->name} entrou no ar",
             'body' => "{$user->name} está ao vivo na Akiba. Vem sintonizar com a gente.",
-            'url' => url('/site'),
+            'url' => url('/'),
             'icon' => url('/favicon.ico'),
         ]);
     }

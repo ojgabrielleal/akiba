@@ -151,7 +151,10 @@ class ReportsController extends Controller
 
     private function pedidosAtendidos(): ?array
     {
-        $pedidos = $this->songRequestFilter->filter();
+        $pedidos = $this->songRequestFilter->filter([
+            'type' => 'music',
+            'was_reproduced' => true,
+        ]);
 
         $ranking = $pedidos
             ->groupBy(fn (SongRequest $songRequest) => $songRequest->created_at

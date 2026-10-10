@@ -17,6 +17,14 @@ class OnairService
                 fn (Builder $query) => $query->live()
             )
             ->when(
+                $filters['accepting_song_requests'] ?? false,
+                fn (Builder $query) => $query->acceptingSongRequests()
+            )
+            ->when(
+                $filters['prefer_accepting_song_requests'] ?? false,
+                fn (Builder $query) => $query->orderByDesc('allows_song_requests')
+            )
+            ->when(
                 $filters['execution_modes'] ?? null,
                 fn (Builder $query, array $modes) => $query->whereIn('execution_mode', $modes)
             )

@@ -96,7 +96,7 @@
     const isActiveNavItem = (item) => {
         const currentPath = new URL($page.url, "http://akiba.local").pathname;
 
-        if (item.address === "/site") {
+        if (item.address === "/") {
             return currentPath === item.address;
         }
 
@@ -197,7 +197,7 @@
 
 <nav aria-label="Navegação principal">
     <div class="container-page flex items-center justify-between gap-4 pt-10 pb-6 md:pb-8 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:pb-8">
-        <Link href="/site" class="group/logo w-52 shrink-0 focus-visible:outline-none" aria-label="Página inicial">
+        <Link href="/" class="group/logo w-52 shrink-0 focus-visible:outline-none" aria-label="Página inicial">
             <img
                 src={brandLogo.src}
                 alt={brandLogo.alt}

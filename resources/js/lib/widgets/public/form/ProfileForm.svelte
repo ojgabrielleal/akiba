@@ -28,7 +28,7 @@
     $: provider = profile?.provider || "google";
     $: providerIcon = provider === "discord" ? "/svg/discord.svg" : "/svg/google.svg";
     $: providerIconClass = "filter-suspense-aurora";
-    $: endpoint = internal ? "/site/member-profile" : "/site/profile";
+    $: endpoint = internal ? "/member-profile" : "/profile";
     const avatarSizeClass = "size-18";
 
     const syncProvider = () => {
@@ -160,7 +160,7 @@
     };
 
     const logout = () => {
-        router.post(internal ? "/site/member-logout" : "/oauth/logout", {}, {
+        router.post(internal ? "/member-logout" : "/oauth/logout", {}, {
             preserveScroll: false,
         });
     };

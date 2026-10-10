@@ -24,11 +24,11 @@
             </slot>
         </div>
     {/if}
-    <p class="font-noto-sans text-lg font-extrabold uppercase italic text-suspense-aurora">
+    <p class="font-noto-sans text-lg font-extrabold uppercase italic text-blue-night">
         {title}
     </p>
     {#if description}
-        <p class="mt-1 max-w-xl font-noto-sans text-sm text-suspense-aurora/60">
+        <p class="mt-1 max-w-xl font-noto-sans text-sm text-blue-night/60">
             {description}
         </p>
     {/if}
