@@ -167,8 +167,8 @@
     };
 </script>
 
-<form class="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(13rem,0.9fr)]" on:submit|preventDefault={submit}>
-    <div class="space-y-4 lg:border-r lg:border-blue-night/25 lg:pr-5">
+<form class="grid gap-6 lg:grid-cols-[minmax(0,0.95fr)_minmax(17rem,1.15fr)]" on:submit|preventDefault={submit}>
+    <div class="space-y-4 lg:border-r lg:border-blue-night/25 lg:pr-6">
     <div class="mb-5 flex items-center gap-3 sm:gap-4">
         {#if internal}
             <label
@@ -409,9 +409,9 @@
     </div>
     </div>
 
-    <aside class="min-h-64 lg:pl-1">
+    <aside class="min-h-64 lg:pl-2">
         <h3 class={[
-            "mb-4 text-center font-noto-sans text-xl font-black uppercase italic",
+            "mb-4 text-center font-noto-sans text-[1.1875rem] font-black uppercase italic",
             themeClass("text", "blue-night", { fixed: true }),
             "[[data-public-theme=akiba]_&]:text-suspense-aurora [[data-public-theme=night]_&]:text-suspense-aurora",
         ]}>
@@ -419,11 +419,11 @@
         </h3>
 
         {#if badges.length > 0}
-            <div class="public-themed-scrollbar max-h-50 overflow-y-auto pr-1">
-                <ul class="grid grid-cols-3 gap-1 sm:grid-cols-4 lg:grid-cols-3">
+            <div class="public-themed-scrollbar max-h-52 overflow-y-auto pr-1">
+                <ul class="grid grid-cols-3 gap-x-3 gap-y-4 sm:grid-cols-4 lg:grid-cols-4">
                 {#each badges as badge (badge.uuid)}
                     <li class="min-w-0 text-center">
-                        <div class="mx-auto flex size-16 items-center justify-center overflow-hidden rounded-md">
+                        <div class="mx-auto flex size-14 items-center justify-center overflow-hidden rounded-md sm:size-15">
                             {#if badge.image}
                                 <img
                                     src={badge.image}
@@ -438,7 +438,7 @@
                             {/if}
                         </div>
                         <p class={[
-                            "mt-1 line-clamp-2 font-noto-sans text-[0.65rem] font-black leading-tight",
+                            "mt-1.5 line-clamp-2 font-noto-sans text-[0.62rem] font-black leading-tight",
                             themeClass("text", "blue-night", { fixed: true }),
                             "[[data-public-theme=akiba]_&]:text-suspense-aurora [[data-public-theme=night]_&]:text-suspense-aurora",
                         ]} title={badge.name}>
@@ -456,16 +456,16 @@
             </div>
         {/if}
 
-        <section class="mt-8">
+        <section class="mt-7">
             <h3 class={[
-                "mb-4 text-center font-noto-sans text-xl font-black uppercase italic",
+                "mb-4 text-center font-noto-sans text-[1.1875rem] font-black uppercase italic",
                 themeClass("text", "blue-night", { fixed: true }),
                 "[[data-public-theme=akiba]_&]:text-suspense-aurora [[data-public-theme=night]_&]:text-suspense-aurora",
             ]}>
                 {internal ? "Meu top 3 de animes" : "Meu anime favorito"}
             </h3>
 
-            <div class="rounded-md border border-blue-night/15 bg-blue-night/[0.04] p-4 [[data-public-theme=akiba]_&]:border-suspense-aurora/20 [[data-public-theme=akiba]_&]:bg-blue-night/20 [[data-public-theme=night]_&]:border-suspense-aurora/20 [[data-public-theme=night]_&]:bg-blue-night/20">
+            <div class="rounded-md border border-blue-night/15 bg-blue-night/[0.04] p-3.5 [[data-public-theme=akiba]_&]:border-suspense-aurora/20 [[data-public-theme=akiba]_&]:bg-blue-night/20 [[data-public-theme=night]_&]:border-suspense-aurora/20 [[data-public-theme=night]_&]:bg-blue-night/20">
                 <div class="mb-3 flex items-start justify-between gap-3">
                     <p class="font-noto-sans text-xs font-semibold text-[color-mix(in_srgb,#000014_55%,transparent)] [[data-public-theme=akiba]_&]:text-suspense-aurora/60 [[data-public-theme=night]_&]:text-suspense-aurora/60">
                         {internal ? "Animes favoritos cadastrados no seu perfil dentro do painel." : "Sua escolha fica no seu perfil e aparece quando você for Ouvinte do mês."}
@@ -484,12 +484,12 @@
                     {#if selectedTopAnimes.length > 0}
                         <div class="grid gap-3">
                             {#each selectedTopAnimes as anime (anime.position)}
-                                <div class="grid grid-cols-[4rem_minmax(0,1fr)] items-center gap-3 rounded-md bg-blue-marinho/85 p-2 shadow-inner shadow-blue-night/25">
+                                <div class="grid grid-cols-[3.5rem_minmax(0,1fr)] items-center gap-3 rounded-md bg-blue-marinho/85 p-2 shadow-inner shadow-blue-night/25">
                                     <div class="relative">
                                         <img
                                             src={resolvePlaceholderImage(anime.image, "placeholder")}
                                             alt={anime.name}
-                                            class="h-16 w-14 rounded-md object-cover object-top shadow-md shadow-blue-night/35"
+                                            class="h-14 w-12 rounded-md object-cover object-top shadow-md shadow-blue-night/35"
                                         />
                                         <span class="absolute -left-1 -top-1 flex size-6 items-center justify-center rounded-sm bg-orange-amber font-noto-sans text-[0.65rem] font-black italic text-blue-night shadow-sm">
                                             {anime.position}

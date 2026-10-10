@@ -21,6 +21,7 @@
         sm: "max-w-sm",
         md: "lg:w-120",
         lg: "lg:w-160",
+        xl: "lg:w-[52rem] xl:w-[58rem]",
     };
 
     export const open = async () => {

@@ -169,7 +169,7 @@
     <Modal
         bind:this={profileModalRef}
         label={`Perfil de ${nickname}`}
-        size="lg"
+        size="xl"
     >
         <ProfileForm
             {profile}
