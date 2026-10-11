@@ -35,6 +35,10 @@
 
         return item;
     }
+
+    function canOpenOnSite(item) {
+        return item.status === "published";
+    }
 </script>
 
 {#if posts}
@@ -46,10 +50,11 @@
                     class="relative h-53 w-full overflow-hidden rounded-md bg-blue-ocean transition hover:-translate-y-0.5"
                 >
                     <article class="h-full">
-                        <a
-                            href={item.href}
-                            class="block h-full focus:outline-none"
-                            aria-label={`Abrir ${item.title} no site`}
+                        <svelte:element
+                            this={canOpenOnSite(item) ? "a" : "div"}
+                            href={canOpenOnSite(item) ? item.href : undefined}
+                            class={["block h-full focus:outline-none", canOpenOnSite(item) ? "cursor-pointer" : "cursor-default"]}
+                            aria-label={canOpenOnSite(item) ? `Abrir ${item.title} no site` : undefined}
                         >
                             <div class="p-4">
                                 <h3 class="font-noto-sans text-lg text-suspense-aurora line-clamp-4 uppercase">
@@ -83,7 +88,7 @@
                                     </Tooltip>
                                 </div>
                             {/if}
-                        </a>
+                        </svelte:element>
                         <div class={`grid grid-cols-[0.4fr_1fr_0.6fr] items-center absolute bottom-0 w-full py-1 px-4 ${resolveStatusBackground(statusItem(item), { useValidity: false })}`}>
                             <div class="flex items-center gap-2 font-noto-sans font-extrabold italic uppercase text-md text-suspense-aurora truncate">
                                 <img
