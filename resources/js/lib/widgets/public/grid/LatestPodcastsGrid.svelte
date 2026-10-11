@@ -49,7 +49,8 @@
                     alt=""
                     aria-hidden="true"
                     class="podcast-host-character absolute right-0 -bottom-5 h-[126%] w-[126%] object-contain object-right-bottom"
-                    loading="lazy"
+                    width="454"
+                    height="454"
                 />
             </div>
         </div>

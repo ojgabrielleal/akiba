@@ -115,7 +115,8 @@
                             alt=""
                             aria-hidden="true"
                             class="size-11 rounded-sm object-cover"
-                            loading="lazy"
+                            width="44"
+                            height="44"
                         />
                     </div>
                     <div class="min-w-0 flex-1">

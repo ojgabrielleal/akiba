@@ -153,7 +153,8 @@
                                                     alt=""
                                                     aria-hidden="true"
                                                     class="h-full w-full scale-125 object-cover object-top"
-                                                    loading="lazy"
+                                                    width="56"
+                                                    height="56"
                                                 />
                                             </div>
                                             <div class="min-w-0 text-left">

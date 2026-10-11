@@ -80,7 +80,7 @@ class RadioController extends Controller
     {
         return $this->whenCanViewAny(ListenerMonth::class,
             function () {
-                $listenerMonth = ListenerMonth::first();
+                $listenerMonth = ListenerMonth::with('oauthAccount')->first();
 
                 return [
                     'current' => $listenerMonth ? new ListenerMonthResource($listenerMonth) : null,
@@ -172,10 +172,10 @@ class RadioController extends Controller
     public function render()
     {
         return Inertia::render($this->render, [
-            'users' => $this->indexUsers(),
-            'programs' => $this->indexPrograms(),
-            'ranking' => $this->indexRanking(),
-            'listenerMonth' => $this->indexListenerMonth(),
+            'users' => Inertia::defer(fn () => $this->indexUsers(), 'radio-programs'),
+            'programs' => Inertia::defer(fn () => $this->indexPrograms(), 'radio-programs'),
+            'ranking' => Inertia::defer(fn () => $this->indexRanking(), 'radio-secondary'),
+            'listenerMonth' => Inertia::defer(fn () => $this->indexListenerMonth(), 'radio-secondary'),
         ]);
     }
 }

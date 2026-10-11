@@ -20,6 +20,7 @@
     let refreshQueued = false;
     
     $: vapidPublicKey = $page.props.push?.vapid_public_key;
+    $: visibleSongRequests = [...(songRequests?.data ?? [])].reverse();
 
     $: actions = [
         {
@@ -139,9 +140,9 @@
 
 {#if can.list}
     <Section {title} {actions}>
-        {#if songRequests?.data?.length}
+        {#if visibleSongRequests.length}
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-                {#each songRequests.data as item}
+                {#each visibleSongRequests as item}
                 <article class={["relative w-full rounded-md p-3",
                     { "bg-gradient-green-pine-mint": isSuccess(item) },
                     { "bg-gradient-red-blood-crimson": isRejected(item) },

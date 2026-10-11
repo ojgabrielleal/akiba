@@ -523,7 +523,8 @@
                         alt=""
                         aria-hidden="true"
                         class="size-9 filter-orange-citric"
-                        loading="lazy"
+                        width="36"
+                        height="36"
                     />
                     <span class="h-px w-9 bg-orange-citric/70" aria-hidden="true"></span>
                 </span>

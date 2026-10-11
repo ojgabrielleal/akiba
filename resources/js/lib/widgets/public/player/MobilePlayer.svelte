@@ -155,7 +155,8 @@
                         src={resolvePlaceholderImage(playerData.program.image, "program")}
                         alt={playerData.program.name || "Programa no ar"}
                         class="mb-4 max-w-full max-h-24 object-contain object-left"
-                        loading="lazy"
+                        width="224"
+                        height="96"
                     />
 
                     <p class="text-suspense-aurora/55 text-[10px] font-noto-sans uppercase tracking-wider">
@@ -172,7 +173,8 @@
                         src={resolvePlaceholderImage(playerData.host.avatar, "avatar", playerData.host.gender)}
                         alt={playerData.host.nickname || "Locutor atual"}
                         class="relative z-10 w-40 max-h-56 object-contain object-bottom"
-                        loading="lazy"
+                        width="160"
+                        height="224"
                     />
                 </div>
             </div>
@@ -188,7 +190,8 @@
                         src={resolvePlaceholderImage(playerData.currentSong.cover, "placeholder")}
                         alt={playerData.currentSong.music ? `Capa da música ${playerData.currentSong.music}` : "Capa da música atual"}
                         class="h-full w-full object-cover opacity-80 transition duration-300 ease-out group-hover/cover:scale-[1.03] group-focus-visible/cover:scale-[1.03] motion-reduce:transform-none motion-reduce:transition-none"
-                        loading="lazy"
+                        width="44"
+                        height="44"
                     />
                 </button>
                 <div class="min-w-0">
@@ -305,7 +308,8 @@
                             src={resolvePlaceholderImage(playerData.program.image, "program")}
                             alt={playerData.program.name || "Programa no ar"}
                             class="mb-5 max-w-72 max-h-28 object-contain object-left"
-                            loading="lazy"
+                            width="288"
+                            height="112"
                         />
 
                         <p class="text-suspense-aurora/55 text-[10px] font-noto-sans uppercase tracking-wider">
@@ -322,7 +326,8 @@
                             src={resolvePlaceholderImage(playerData.host.avatar, "avatar", playerData.host.gender)}
                             alt={playerData.host.nickname || "Locutor atual"}
                             class="relative z-10 w-52 max-h-64 object-contain object-bottom"
-                            loading="lazy"
+                            width="208"
+                            height="256"
                         />
                     </div>
                 </div>
@@ -340,7 +345,8 @@
                             src={resolvePlaceholderImage(playerData.currentSong.cover, "placeholder")}
                             alt={playerData.currentSong.music ? `Capa da música ${playerData.currentSong.music}` : "Capa da música atual"}
                             class="h-full w-full object-cover opacity-80 transition duration-300 ease-out group-hover/cover:scale-[1.03] group-focus-visible/cover:scale-[1.03] motion-reduce:transform-none motion-reduce:transition-none"
-                            loading="lazy"
+                            width="56"
+                            height="56"
                         />
                     </button>
                     <div class="min-w-0">

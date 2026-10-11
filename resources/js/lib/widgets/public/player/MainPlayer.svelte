@@ -176,7 +176,8 @@
                 alt=""
                 aria-hidden="true"
                 class="w-24 filter-player-decoration"
-                loading="lazy"
+                width="96"
+                height="96"
             />
         </div>
         <div class="main-player-phrase-text w-full min-w-0 h-[90px] pr-30 xl:pr-36 pl-18 xl:pl-0 flex items-center text-[#ffffff] text-[1.65rem] font-noto-sans font-extrabold uppercase italic">
@@ -194,7 +195,8 @@
                 alt=""
                 aria-hidden="true"
                 class="w-32"
-                loading="lazy"
+                width="128"
+                height="128"
             />
         </div>
         <div class="absolute -top-6 right-0 z-10 xl:-right-24">
@@ -203,7 +205,8 @@
                 alt=""
                 aria-hidden="true"
                 class="w-24 filter-player-decoration"
-                loading="lazy"
+                width="96"
+                height="96"
             />
         </div>
     </div>
@@ -219,7 +222,9 @@
                 <img
                     src={resolvePlaceholderImage(playerData.program.image, "program")}
                     alt="Programa no ar"
-                    loading="lazy"
+                    class="w-full"
+                    width="220"
+                    height="124"
                 />
             </div>
             <div class="text-gray-500">
@@ -228,7 +233,8 @@
                     alt=""
                     aria-hidden="true"
                     class="w-8 filter-neutral-gray"
-                    loading="lazy"
+                    width="32"
+                    height="32"
                 />
             </div>
             <div>
@@ -258,7 +264,8 @@
                     alt=""
                     aria-hidden="true"
                     class="w-8 filter-neutral-gray"
-                    loading="lazy"
+                    width="32"
+                    height="32"
                 />
             </div>
         </div>
@@ -274,7 +281,8 @@
                     src={resolvePlaceholderImage(playerData.current_song.cover, "placeholder")}
                     alt={playerData.current_song.music || "Capa da música atual"}
                     class="h-full w-full rounded-md object-cover transition duration-300 ease-out group-hover/cover:scale-[1.03] group-focus-visible/cover:scale-[1.03] motion-reduce:transform-none motion-reduce:transition-none"
-                    loading="lazy"
+                    width="72"
+                    height="72"
                 />
             </button>
             <div class="flex min-h-10 min-w-0 flex-1 flex-col justify-end">
@@ -297,7 +305,8 @@
                 src={resolvePlaceholderImage(playerData.host.avatar, "avatar", playerData.host.gender)}
                 alt={playerData.host.nickname || "Locutor atual"}
                 class="w-full h-full"
-                loading="lazy"
+                width="240"
+                height="320"
             />
         </div>
     </div>
@@ -316,7 +325,8 @@
                         alt=""
                         aria-hidden="true"
                         class="size-6 object-contain brightness-0 -mt-[0.1rem]"
-                        loading="lazy"
+                        width="24"
+                        height="24"
                     />
                 {:else if playerData.execution_mode === "playlist"}
                     <img
@@ -324,7 +334,8 @@
                         alt=""
                         aria-hidden="true"
                         class="size-6 object-contain brightness-0"
-                        loading="lazy"
+                        width="24"
+                        height="24"
                     />
                 {:else if playerData.execution_mode === "live"}
                     <img
@@ -332,7 +343,8 @@
                         alt=""
                         aria-hidden="true"
                         class="size-6 object-contain brightness-0"
-                        loading="lazy"
+                        width="24"
+                        height="24"
                     />
                 {:else}
                     <img
@@ -340,7 +352,8 @@
                         alt=""
                         aria-hidden="true"
                         class="size-6 object-contain brightness-0"
-                        loading="lazy"
+                        width="24"
+                        height="24"
                     />
                 {/if}
             </div>
@@ -391,7 +404,8 @@
                         alt=""
                         aria-hidden="true"
                         class="w-5"
-                        loading="lazy"
+                        width="20"
+                        height="20"
                     />
                 {/if}
             </button>

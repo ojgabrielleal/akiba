@@ -104,8 +104,9 @@
             { audience_period: period },
             {
                 preserveScroll: true,
-                preserveState: false,
+                preserveState: true,
                 replace: true,
+                only: ["audienceHistory"],
                 onStart: () => loading = true,
                 onFinish: () => loading = false,
             },

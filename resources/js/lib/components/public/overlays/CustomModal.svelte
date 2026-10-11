@@ -72,7 +72,8 @@
                     <img
                         src={brandLogo.src}
                         alt={brandLogo.alt}
-                        loading="lazy"
+                        width="240"
+                        height="80"
                         on:error={() => brandLogo = defaultBrandLogo}
                     />
                 </div>
@@ -91,7 +92,8 @@
                         alt=""
                         aria-hidden="true"
                         class="w-3 brightness-0 [[data-public-theme=akiba]_&]:filter-suspense-aurora [[data-public-theme=night]_&]:filter-suspense-aurora"
-                        loading="lazy"
+                        width="12"
+                        height="12"
                     />
                 </button>
             </header>

@@ -49,6 +49,7 @@ let playLoadingStartedAt = 0;
 let autoplayRetryInterval;
 let autoplayEnabled = false;
 let autoplayAttempting = false;
+let pageInteractionDetected = false;
 let smoothedWaveLevels = [...DEFAULT_WAVE_LEVELS];
 let previousEnergy = 0;
 let boomPulse = 0;
@@ -94,8 +95,15 @@ const finishPlayLoading = () => {
     }, remainingTime);
 };
 
+const hasPageInteraction = () => {
+    if (pageInteractionDetected) return true;
+    if (typeof navigator === "undefined" || !("userActivation" in navigator)) return false;
+
+    return navigator.userActivation.hasBeenActive;
+};
+
 const resolveAudioContext = () => {
-    if (typeof window === "undefined") return null;
+    if (typeof window === "undefined" || !hasPageInteraction()) return null;
 
     const AudioContextConstructor = window.AudioContext || window.webkitAudioContext;
 
@@ -325,14 +333,17 @@ export const playAudio = async ({ silent = false } = {}) => {
     }
 
     try {
-        ensureAudioAnalyser();
-        try {
-            await audioContext?.resume();
-        } catch {
-            audioContext = undefined;
-        }
-
         await element.play();
+
+        if (hasPageInteraction()) {
+            ensureAudioAnalyser();
+
+            try {
+                await audioContext?.resume();
+            } catch {
+                audioContext = undefined;
+            }
+        }
         setupMediaSession();
     } catch {
         if (!silent) {
@@ -397,6 +408,7 @@ const retryAutoplay = async () => {
 };
 
 function handleAutoplayInteraction() {
+    pageInteractionDetected = true;
     retryAutoplay();
 }
 

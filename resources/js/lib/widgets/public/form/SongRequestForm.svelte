@@ -355,7 +355,8 @@
                                     src={resolvePlaceholderImage(item.image, "placeholder")}
                                     alt={item.title}
                                     class="w-14 h-14 object-cover rounded-md border border-gray-100 shadow-sm shrink-0 [[data-public-theme=akiba]_&]:border-blue-skywave/20 [[data-public-theme=night]_&]:border-blue-skywave/20"
-                                    loading="lazy"
+                                    width="56"
+                                    height="56"
                                 />
                                 <div class="flex flex-col items-start text-left">
                                     <div class="font-noto-sans font-semibold text-gray-900 text-sm line-clamp-1 [[data-public-theme=akiba]_&]:text-suspense-aurora [[data-public-theme=night]_&]:text-suspense-aurora">

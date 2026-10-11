@@ -130,7 +130,8 @@
                                     src={resolvePlaceholderImage(item.cover || item.image, "placeholder")}
                                     alt={item.title}
                                     class={["h-full w-full object-cover", publicAnimations.imageZoom]}
-                                    loading="lazy"
+                                    width="640"
+                                    height="360"
                                 />
                             </div>
                             <div class="min-h-12 px-3 py-2.5 text-center font-noto-sans uppercase italic">
@@ -175,7 +176,8 @@
                                     src={enigmagame.data.image}
                                     alt={`Imagem do enigma ${enigmagame.data.title}`}
                                     class="h-auto max-h-36 max-w-full object-contain sm:max-h-44 [[data-public-theme=light]_&]:drop-shadow-[0_2px_5px_rgba(0,0,0,0.85)]"
-                                    loading="lazy"
+                                    width="352"
+                                    height="198"
                                 />
                             </div>
 
@@ -404,7 +406,8 @@
                                 src={previousEnigma.image}
                                 alt={`Imagem do enigma ${previousEnigma.title}`}
                                 class="mx-auto mt-4 max-h-56 max-w-full object-contain"
-                                loading="lazy"
+                                width="352"
+                                height="198"
                             />
 
                             {#if previousEnigma.content}
@@ -449,7 +452,8 @@
                                 src={previousEnigma.solution_image}
                                 alt={previousEnigma.solution || "Resposta do enigma"}
                                 class="mx-auto max-h-64 w-full max-w-[12rem] rounded-md object-cover"
-                                loading="lazy"
+                                width="192"
+                                height="256"
                             />
                         {/if}
 

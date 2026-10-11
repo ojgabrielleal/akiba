@@ -1,5 +1,5 @@
 <script>
-    import { page } from "@inertiajs/svelte";
+    import { Deferred, page } from "@inertiajs/svelte";
     import { Meta } from "@/lib/components/shared";
     import { Section } from "@/lib/components/public";
     import { Layout } from "@/lib/layouts/public";
@@ -30,6 +30,8 @@
     $: featuredPostList = Array.isArray(featuredPosts) ? featuredPosts : featuredPosts?.data ?? [];
     $: poll = latestPoll?.data ?? null;
     $: hasFeaturedPosts = featuredPostList.length > 0;
+
+    const skeletonItems = (count) => Array.from({ length: count }, (_, index) => index);
 </script>
 
 <Meta />
@@ -46,27 +48,78 @@
         </div>
     </div>
     <div class="home-content-background bg-blue-marinho pt-10">
-        {#if poll}
-            <Section title="A Akiba pergunta" styles="container-page mb-10">
-                <LatestPollCard {poll} {oauth} />
-            </Section>
-        {/if}
+        <Deferred data="latestPoll">
+            {#if poll}
+                <Section title="A Akiba pergunta" styles="container-page mb-10">
+                    <LatestPollCard {poll} {oauth} />
+                </Section>
+            {/if}
+            <svelte:fragment slot="fallback">
+                <Section title="A Akiba pergunta" styles="container-page mb-10">
+                    <div class="h-40 animate-pulse rounded-md bg-blue-ocean/45" aria-hidden="true"></div>
+                </Section>
+            </svelte:fragment>
+        </Deferred>
         <div
             class={["home-featured-reviews-background pt-px", hasFeaturedPosts && "has-featured-posts"]}
             style="--featured-background: url('/img/pages/home/backgrounds/featured.svg'); --featured-mobile-background: url('/img/pages/home/backgrounds/featured_mobile.svg'); --reviews-background: url('/img/pages/home/backgrounds/reviews.svg');"
         >
             <FeaturedGrid {featuredPosts} />
-            <div class="home-reviews-mobile-background">
-                <ReviewListGrid title="Últimas reviews" reviews={latestReviews} />
-            </div>
+            <Deferred data="latestReviews">
+                <div class="home-reviews-mobile-background">
+                    <ReviewListGrid title="Últimas reviews" reviews={latestReviews} />
+                </div>
+                <svelte:fragment slot="fallback">
+                    <Section title="Últimas reviews" styles="container-page mb-8 pt-2 pb-4 lg:mb-10 lg:pt-4 lg:pb-10">
+                        <div class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
+                            {#each skeletonItems(5) as item}
+                                <div class="h-48 animate-pulse rounded-md bg-blue-ocean/45" aria-hidden="true"></div>
+                            {/each}
+                        </div>
+                    </Section>
+                </svelte:fragment>
+            </Deferred>
         </div>
-        <PostListGrid title="Últimas matérias" {posts} />
-        <EventCalendarGrid {events} />
+        <Deferred data="posts">
+            <PostListGrid title="Últimas matérias" {posts} />
+            <svelte:fragment slot="fallback">
+                <Section title="Últimas matérias" styles="container-page mb-10">
+                    <div class="grid grid-cols-1 gap-x-10 gap-y-8 lg:grid-cols-2">
+                        {#each skeletonItems(6) as item}
+                            <div class="h-40 animate-pulse rounded-md bg-blue-ocean/45" aria-hidden="true"></div>
+                        {/each}
+                    </div>
+                </Section>
+            </svelte:fragment>
+        </Deferred>
+        <Deferred data="events">
+            <EventCalendarGrid {events} />
+            <svelte:fragment slot="fallback">
+                <Section title="Agenda" styles="container-page mb-10">
+                    <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+                        {#each skeletonItems(5) as item}
+                            <div class="h-36 animate-pulse rounded-md bg-blue-ocean/45" aria-hidden="true"></div>
+                        {/each}
+                    </div>
+                </Section>
+            </svelte:fragment>
+        </Deferred>
         <div
             class="home-podcasts-background pt-5"
             style="--podcasts-background: url('/img/pages/home/backgrounds/podcasts.svg');"
         >
-            <LatestPodcastsGrid {podcasts} />
+            <Deferred data="podcasts">
+                <LatestPodcastsGrid {podcasts} />
+                <svelte:fragment slot="fallback">
+                    <Section title="Últimos podcasts" styles="container-page pb-12">
+                        <div class="grid gap-5 md:grid-cols-3">
+                            {#each skeletonItems(3) as item}
+                                <div class="h-56 animate-pulse rounded-md bg-blue-ocean/45" aria-hidden="true"></div>
+                            {/each}
+                        </div>
+                    </Section>
+                </svelte:fragment>
+            </Deferred>
         </div>
     </div>
 </Layout>

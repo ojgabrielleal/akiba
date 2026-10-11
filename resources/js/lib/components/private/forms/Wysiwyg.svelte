@@ -1,10 +1,17 @@
-<script>
-    import { onMount } from "svelte";
+<script context="module">
     import Quill from "quill";
     import BlotFormatter from "@enzedonline/quill-blot-formatter2";
     import "quill/dist/quill.snow.css";
     import "@enzedonline/quill-blot-formatter2/dist/css/quill-blot-formatter2.css";
     import { createSafeEmbed, registerQuillExtensions } from "@/lib/utils/quillEmbeds";
+
+    registerQuillExtensions(Quill);
+    BlotFormatter.registerFormats(Quill);
+    Quill.register("modules/blotFormatter2", BlotFormatter);
+</script>
+
+<script>
+    import { onDestroy, onMount } from "svelte";
 
     export let height = "50rem";
     export let name = "content";
@@ -17,10 +24,7 @@
     let quill;
     let editor;
     let textarea;
-
-    registerQuillExtensions(Quill);
-    BlotFormatter.registerFormats(Quill);
-    Quill.register("modules/blotFormatter2", BlotFormatter);
+    let handlePaste;
 
     function syncValue() {
         value = quill.root.innerHTML;
@@ -90,7 +94,7 @@
             ],
         });
 
-        quill.root.addEventListener("paste", (event) => {
+        handlePaste = (event) => {
             const text = event.clipboardData?.getData("text/plain");
             if (!text) return;
 
@@ -101,7 +105,9 @@
             if (range.length) quill.deleteText(range.index, range.length, "user");
             quill.insertText(range.index, text, "user");
             quill.setSelection(range.index + text.length, 0, "silent");
-        }, true);
+        };
+
+        quill.root.addEventListener("paste", handlePaste, true);
 
         quill.root.classList.add("font-noto-sans");
         quill.root.style.fontFamily = '"Noto Sans", sans-serif';
@@ -110,6 +116,18 @@
         syncValue();
 
         quill.on("text-change", syncValue);
+    });
+
+    onDestroy(() => {
+        if (!quill) return;
+
+        quill.off("text-change", syncValue);
+        if (handlePaste) {
+            quill.root.removeEventListener("paste", handlePaste, true);
+        }
+
+        quill = null;
+        handlePaste = null;
     });
 
     $: isDisabled = disabled;

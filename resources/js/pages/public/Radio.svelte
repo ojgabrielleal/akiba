@@ -1,5 +1,5 @@
 <script>
-    import { page } from "@inertiajs/svelte";
+    import { Deferred, page } from "@inertiajs/svelte";
 
     import { Meta } from "@/lib/components/shared";
     import { EditorialTitle } from "@/lib/components/public";
@@ -59,15 +59,63 @@
         },
     ];
     $: customAboutParagraphs = Array.isArray(about) ? about : null;
+
+    const skeletonItems = (count) => Array.from({ length: count }, (_, index) => index);
 </script>
 
 <Meta meta={{ title: "Rádio" }} />
 <Layout {flash} {oauth} {onair} {stream} {pageUrl} publicThemeEnabled>
     <h1 class="sr-only">Rádio</h1>
     <div class="public-page-background bg-blue-night">
-        <RadioProgramGrid {programs} />
-        <RadioListenerMonthGrid {listenerMonth} />
-        <RadioRankingGrid {ranking} />
+        <Deferred data="programs">
+            <RadioProgramGrid {programs} />
+            <svelte:fragment slot="fallback">
+                <section class="bg-blue-marinho">
+                    <EditorialTitle title="Programação" listLabel="Filtrar programação por dia" />
+                    <div class="container-page py-12">
+                        <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                            {#each skeletonItems(8) as item}
+                                <div class="h-64 animate-pulse rounded-md bg-blue-ocean/45" aria-hidden="true"></div>
+                            {/each}
+                        </div>
+                    </div>
+                </section>
+            </svelte:fragment>
+        </Deferred>
+        <Deferred data="listenerMonth">
+            <RadioListenerMonthGrid {listenerMonth} />
+            <svelte:fragment slot="fallback">
+                <section class="bg-blue-night">
+                    <EditorialTitle title="Ouvinte do mês" compact topSpacing="" />
+                    <div class="container-page pt-12 pb-20">
+                        <div class="grid grid-cols-1 gap-5 lg:grid-cols-[18rem_1fr]">
+                            <div class="h-72 animate-pulse rounded-md bg-blue-ocean/45" aria-hidden="true"></div>
+                            <div class="h-96 animate-pulse rounded-md bg-blue-ocean/45" aria-hidden="true"></div>
+                        </div>
+                    </div>
+                </section>
+            </svelte:fragment>
+        </Deferred>
+        <Deferred data="ranking">
+            <RadioRankingGrid {ranking} />
+            <svelte:fragment slot="fallback">
+                <section class="bg-blue-marinho">
+                    <EditorialTitle title="Akiba Ranking" compact topSpacing="" />
+                    <div class="container-page pt-12 pb-20 lg:pt-24">
+                        <div class="grid grid-cols-1 gap-5 lg:grid-cols-2 lg:gap-15">
+                            {#each skeletonItems(4) as item}
+                                <div class="h-36 animate-pulse rounded-md bg-blue-ocean/45" aria-hidden="true"></div>
+                            {/each}
+                        </div>
+                        <div class="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                            {#each skeletonItems(6) as item}
+                                <div class="h-24 animate-pulse rounded-md bg-blue-ocean/45" aria-hidden="true"></div>
+                            {/each}
+                        </div>
+                    </div>
+                </section>
+            </svelte:fragment>
+        </Deferred>
 
         <section class="bg-blue-marinho pb-8">
             <EditorialTitle title="Sobre nós" compact topSpacing="" />

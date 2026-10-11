@@ -45,7 +45,8 @@ class DashboardController extends Controller
             fn () => ActivityResource::collection(
                 $this->activityFilter->filter([
                     'not_expired' => true,
-                    'with' => ['author', 'confirmations'],
+                    'with' => ['author', 'calendar', 'confirmations'],
+                    'limit' => 8,
                 ])
             ),
         );
@@ -93,6 +94,7 @@ class DashboardController extends Controller
                 $this->calendarFilter->filter([
                     'upcoming' => true,
                     'with' => ['activity', 'responsible'],
+                    'limit' => 14,
                 ])
             ),
         );
@@ -119,10 +121,10 @@ class DashboardController extends Controller
     public function render()
     {
         return Inertia::render($this->render, [
-            'activities' => $this->indexActivities(),
-            'tasks' => $this->indexTasks(),
-            'posts' => $this->indexPosts(),
-            'calendar' => $this->indexCalendar(),
+            'activities' => Inertia::defer(fn () => $this->indexActivities(), 'dashboard'),
+            'tasks' => Inertia::defer(fn () => $this->indexTasks(), 'dashboard'),
+            'posts' => Inertia::defer(fn () => $this->indexPosts(), 'dashboard'),
+            'calendar' => Inertia::defer(fn () => $this->indexCalendar(), 'dashboard'),
         ]);
     }
 }

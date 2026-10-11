@@ -430,7 +430,8 @@
                                     src={badge.image}
                                     alt={badge.name}
                                     class="h-full w-full object-contain"
-                                    loading="lazy"
+                                    width="60"
+                                    height="60"
                                 />
                             {:else}
                                 <div class="flex h-full w-full items-center justify-center rounded-md bg-orange-amber font-noto-sans text-xl font-black italic text-blue-night">

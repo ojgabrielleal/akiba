@@ -231,10 +231,10 @@ class MediaController extends Controller
     public function render()
     {
         return Inertia::render($this->render, [
-            'polls' => $this->indexPolls(),
-            'latestPoll' => $this->indexLatestPoll(),
-            'listenerGalleries' => $this->indexListenerGalleries(),
-            'enigmagames' => $this->indexEnigmaGames(),
+            'polls' => Inertia::defer(fn () => $this->indexPolls(), 'media-polls'),
+            'latestPoll' => Inertia::defer(fn () => $this->indexLatestPoll(), 'media-polls'),
+            'enigmagames' => Inertia::defer(fn () => $this->indexEnigmaGames(), 'media-enigmas'),
+            'listenerGalleries' => Inertia::defer(fn () => $this->indexListenerGalleries(), 'media-gallery'),
         ]);
     }
 }

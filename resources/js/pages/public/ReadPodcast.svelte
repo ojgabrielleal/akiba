@@ -84,7 +84,6 @@
                         frameBorder="0"
                         allowfullscreen=""
                         allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                        loading="lazy"
                     ></iframe>
                 {:else if item.audio}
                     <a
@@ -143,7 +142,8 @@
                                             alt=""
                                             aria-hidden="true"
                                             class={["h-full w-full object-cover", publicAnimations.imageZoom]}
-                                            loading="lazy"
+                                            width="400"
+                                            height="300"
                                         />
                                     </div>
                                     <h2 class="mt-2 line-clamp-4 font-noto-sans text-base font-black leading-tight text-orange-amber uppercase italic [[data-public-theme=light]_&]:text-[#000036]">

@@ -49,10 +49,14 @@
         if (!hasWidth || pushedAdsense) return;
 
         try {
-            await pushGoogleAdSlot(adClient);
+            await pushGoogleAdSlot(adClient, adSlot);
             pushedAdsense = true;
         } catch (error) {
-            console.warn("AdSense: não foi possível carregar o bloco de anúncio.", error);
+            console.error("Google AdSense: não foi possível carregar o bloco de anúncio.", {
+                adClient,
+                adSlot,
+                error,
+            });
         }
     };
 </script>

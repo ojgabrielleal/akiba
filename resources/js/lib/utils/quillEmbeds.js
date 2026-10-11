@@ -70,14 +70,23 @@ export function createSafeEmbed(input) {
 export function registerQuillExtensions(Quill) {
     const BaseImage = Quill.import("formats/image");
     const BlockEmbed = Quill.import("blots/block/embed");
+    const Parchment = Quill.import("parchment");
+    const WidthStyle = new Parchment.StyleAttributor("width", "width", {
+        scope: Parchment.Scope.ANY,
+    });
+    const HeightStyle = new Parchment.StyleAttributor("height", "height", {
+        scope: Parchment.Scope.ANY,
+    });
 
     class ResponsiveImage extends BaseImage {
         static formats(domNode) {
             const formats = super.formats(domNode) || {};
             const width = domNode.getAttribute("width") || domNode.style.width;
+            const height = domNode.getAttribute("height") || domNode.style.height;
             const align = domNode.dataset.align;
 
             if (width) formats.width = width;
+            if (height) formats.height = height;
             if (align) formats.align = align;
 
             return formats;
@@ -91,6 +100,17 @@ export function registerQuillExtensions(Quill) {
                 } else {
                     this.domNode.removeAttribute("width");
                     this.domNode.style.width = "";
+                }
+                return;
+            }
+
+            if (name === "height") {
+                if (value) {
+                    this.domNode.setAttribute("height", value);
+                    this.domNode.style.height = value;
+                } else {
+                    this.domNode.removeAttribute("height");
+                    this.domNode.style.height = "";
                 }
                 return;
             }
@@ -151,6 +171,8 @@ export function registerQuillExtensions(Quill) {
     SafeEmbed.className = "ql-safe-embed";
     SafeEmbed.tagName = "DIV";
 
+    Quill.register(WidthStyle, true);
+    Quill.register(HeightStyle, true);
     Quill.register(ResponsiveImage, true);
     Quill.register(SafeEmbed, true);
 }

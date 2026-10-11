@@ -158,11 +158,11 @@ class HomeController extends Controller
     {
         return Inertia::render('public/Home', [
             'featuredPosts' => $this->indexFeaturedPosts(),
-            'latestReviews' => $this->indexLatestReviews(),
-            'posts' => $this->indexPosts(),
-            'events' => $this->indexEvents(),
-            'podcasts' => $this->indexPodcasts(),
-            'latestPoll' => $this->indexLatestPoll(),
+            'latestReviews' => Inertia::defer(fn () => $this->indexLatestReviews(), 'home-editorial'),
+            'posts' => Inertia::defer(fn () => $this->indexPosts(), 'home-editorial'),
+            'events' => Inertia::defer(fn () => $this->indexEvents(), 'home-secondary'),
+            'podcasts' => Inertia::defer(fn () => $this->indexPodcasts(), 'home-secondary'),
+            'latestPoll' => Inertia::defer(fn () => $this->indexLatestPoll(), 'home-secondary'),
         ]);
     }
 }

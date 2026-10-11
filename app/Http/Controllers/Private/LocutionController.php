@@ -70,7 +70,8 @@ class LocutionController extends Controller
                 $this->songRequestFilter->filter([
                     'onair_id' => $onair?->id,
                     'order_by' => 'created_at',
-                    'order_direction' => 'asc',
+                    'order_direction' => 'desc',
+                    'limit' => 24,
                 ])
             ),
         );
@@ -135,9 +136,9 @@ class LocutionController extends Controller
         $onair = $this->getOnair();
 
         return Inertia::render($this->render, [
-            'programs' => $this->indexPrograms(),
             'onair' => $this->indexOnair($onair),
-            'songRequests' => $this->indexSongRequests($onair),
+            'programs' => Inertia::defer(fn () => $this->indexPrograms(), 'locution-programs'),
+            'songRequests' => Inertia::defer(fn () => $this->indexSongRequests($onair), 'locution-requests'),
         ]);
     }
 }

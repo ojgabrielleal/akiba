@@ -145,7 +145,8 @@
                                     class="w-40 mb-3"
                                     src={resolvePlaceholderImage(item.image, "program")}
                                     alt={item.name}
-                                    loading="lazy"
+                                    width="160"
+                                    height="90"
                                 />
                                 <div class={["w-full h-13 flex items-center rounded-md px-3 bg-suspense-aurora relative mb-2", themeClass("bg", "orange-morning", { theme: "light" })]}>
                                     <div class="w-36 min-w-0 flex items-center gap-1 text-blue-ocean text-sm font-noto-sans font-extrabold italic uppercase">
@@ -160,7 +161,8 @@
                                         class="w-36 aspect-square absolute right-0 bottom-0 object-cover object-top"
                                         src={resolvePlaceholderImage(item.host?.avatar, "avatar", item.host?.gender)}
                                         alt={item.host?.nickname ?? "Programa aberto"}
-                                        loading="lazy"
+                                        width="144"
+                                        height="144"
                                     />
                                 </div>
                                 <div class={["mb-2 w-full rounded-md bg-suspense-aurora px-4 py-3 font-noto-sans italic uppercase text-blue-marinho", themeClass("bg", "orange-morning", { theme: "light" }), themeClass("text", "blue-marinho", { fixed: true, theme: "light" })]}>

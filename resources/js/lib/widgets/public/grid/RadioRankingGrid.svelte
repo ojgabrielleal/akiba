@@ -42,7 +42,8 @@
                                 src={resolvePlaceholderImage(songs[index].ranking.image, "avatar")}
                                 alt={`Imagem do ranking da música ${songs[index].name}`}
                                 class="absolute bottom-0 right-0 h-28 w-28 object-contain sm:h-40 sm:w-40"
-                                loading="lazy"
+                                width="160"
+                                height="160"
                             />
                             <h2 class="mb-5 h-10 max-w-full font-noto-sans text-base font-extrabold uppercase italic leading-5 text-blue-marinho sm:w-[18rem] sm:text-xl sm:leading-[1.3rem]">
                                 {songs[index].name}

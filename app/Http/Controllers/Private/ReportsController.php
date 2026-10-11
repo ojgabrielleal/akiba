@@ -23,8 +23,10 @@ use App\Models\Poll;
 use App\Models\Post;
 use App\Models\RadioStation;
 use App\Models\SongRequest;
+use App\Models\User;
 
 use Inertia\Inertia;
+use Illuminate\Support\Facades\DB;
 
 class ReportsController extends Controller
 {
@@ -94,74 +96,69 @@ class ReportsController extends Controller
 
     private function redatorMaisAtivo(): ?array
     {
-        $posts = $this->postFilter->filter([
-                'user' => request()->user(),
-            'module' => 'post',
-            'with' => 'author',
-            'ignore_authorization' => true,
-        ]);
-
-        $ranking = $posts
-            ->filter(fn (Post $post) => $post->author !== null)
+        $ranking = Post::query()
+            ->select('user_id', DB::raw('COUNT(*) as total'))
+            ->where('module', 'post')
+            ->whereNotNull('user_id')
             ->groupBy('user_id')
-            ->sortByDesc(fn ($posts) => $posts->count())
+            ->orderByDesc('total')
             ->first();
 
         if (! $ranking) {
             return null;
         }
 
+        $author = User::find($ranking->user_id);
+
+        if (! $author) {
+            return null;
+        }
+
         return [
-            'usuario' => UserResource::make($ranking->first()->author)
+            'usuario' => UserResource::make($author)
                 ->format('summary')
                 ->resolve(request()),
-            'total' => $ranking->count(),
+            'total' => (int) $ranking->total,
         ];
     }
 
     private function locutorMaisAtivo(): ?array
     {
-        $transmissoes = $this->onairFilter->filter([
-            'with' => ['host', 'program.host'],
-        ]);
-
-        $ranking = $transmissoes
-            ->filter(function (Onair $onair) {
-                $host = $onair->host ?? $onair->program?->host;
-
-                return $host !== null && ! $host->is_virtual;
-            })
-            ->groupBy(fn (Onair $onair) => $onair->user_id ?? $onair->program?->user_id)
-            ->sortByDesc(fn ($onair) => $onair->count())
+        $ranking = Onair::query()
+            ->leftJoin('programs', 'programs.id', '=', 'onairs.program_id')
+            ->join('users', 'users.id', '=', DB::raw('COALESCE(onairs.user_id, programs.user_id)'))
+            ->selectRaw('users.id as user_id, COUNT(*) as total')
+            ->where('users.is_virtual', false)
+            ->groupBy('users.id')
+            ->orderByDesc('total')
             ->first();
 
         if (! $ranking) {
             return null;
         }
 
-        $host = $ranking->first()->host ?? $ranking->first()->program->host;
+        $host = User::find($ranking->user_id);
+
+        if (! $host) {
+            return null;
+        }
 
         return [
             'usuario' => UserResource::make($host)
                 ->format('summary')
                 ->resolve(request()),
-            'total' => $ranking->count(),
+            'total' => (int) $ranking->total,
         ];
     }
 
     private function pedidosAtendidos(): ?array
     {
-        $pedidos = $this->songRequestFilter->filter([
-            'type' => 'music',
-            'was_reproduced' => true,
-        ]);
-
-        $ranking = $pedidos
-            ->groupBy(fn (SongRequest $songRequest) => $songRequest->created_at
-                ->copy()
-                ->setTimezone('America/Sao_Paulo')
-                ->format('Y-m-d'))
-            ->sortByDesc(fn ($requests) => $requests->count())
+        $ranking = SongRequest::query()
+            ->selectRaw('DATE(DATE_SUB(created_at, INTERVAL 3 HOUR)) as request_date, COUNT(*) as total')
+            ->where('type', 'music')
+            ->where('was_reproduced', true)
+            ->groupBy('request_date')
+            ->orderByDesc('total')
             ->first();
 
         if (! $ranking) {
@@ -169,11 +166,8 @@ class ReportsController extends Controller
         }
 
         return [
-            'data' => $ranking->first()->created_at
-                ->copy()
-                ->setTimezone('America/Sao_Paulo')
-                ->format('d/m/Y'),
-            'total' => $ranking->count(),
+            'data' => date('d/m/Y', strtotime($ranking->request_date)),
+            'total' => (int) $ranking->total,
         ];
     }
 
@@ -289,10 +283,10 @@ class ReportsController extends Controller
     public function render()
     {
         return Inertia::render($this->render, [
-            'audience' => $this->indexAudience(),
-            'audienceHistory' => fn () => $this->indexAudienceHistory(),
-            'onair' => $this->indexOnair(),
-            'ranking_interno' => $this->indexInternalRanking(),
+            'audience' => Inertia::defer(fn () => $this->indexAudience(), 'reports-audience'),
+            'audienceHistory' => Inertia::defer(fn () => $this->indexAudienceHistory(), 'reports-history'),
+            'onair' => Inertia::defer(fn () => $this->indexOnair(), 'reports-history'),
+            'ranking_interno' => Inertia::defer(fn () => $this->indexInternalRanking(), 'reports-ranking'),
         ]);
     }
 }

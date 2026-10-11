@@ -112,7 +112,8 @@
                                     src={item.image}
                                     alt={itemAlt(item)}
                                     class={["h-full w-full object-cover", publicAnimations.imageZoom]}
-                                    loading="lazy"
+                                    width="400"
+                                    height="300"
                                 />
                             {/if}
                         </div>

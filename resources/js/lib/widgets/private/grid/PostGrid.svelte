@@ -18,7 +18,6 @@
     ];
 
     function operation(module) {
-        Cookies.set("akiba_post_show_editor", true)
         Cookies.set("akiba_post_module", module);
     }
 

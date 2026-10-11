@@ -1,8 +1,9 @@
 <script>
-    import { page, router } from "@inertiajs/svelte";
+    import { Deferred, page, router } from "@inertiajs/svelte";
     import { fade } from "svelte/transition";
     import { Meta } from "@/lib/components/shared";
     import { Layout } from "@/lib/layouts/private";
+    import { Section } from "@/lib/components/private";
     import { LocutionForm, SongRequestGrid } from "@/lib/widgets/private";
     import { resolvePlaceholderImage } from "@/lib/utils";
 
@@ -11,6 +12,8 @@
     $: userPermissions = Array.isArray(user?.permissions) ? user.permissions : Object.values(user?.permissions ?? {});
     $: canFinishAnyProgram = userPermissions.includes("locution.finish.any");
     $: isLocutionFormBlocked = ["live", "scheduled"].includes(activeOnair?.execution_mode);
+
+    const skeletonItems = (count) => Array.from({ length: count }, (_, index) => index);
 
     const redirectToDashboard = () => {
         router.get("/panel/dashboard/", {}, { preserveScroll: true });
@@ -24,14 +27,39 @@
 <Meta meta={{ title: "Locução" }} />
 <Layout>
     <h1 class="sr-only">Locucao</h1>
-    <div 
-        class:opacity-50={isLocutionFormBlocked} 
-        class:pointer-events-none={isLocutionFormBlocked} 
+    <div
+        class:opacity-50={isLocutionFormBlocked}
+        class:pointer-events-none={isLocutionFormBlocked}
     >
-        <LocutionForm {programs} />
+        <Deferred data="programs">
+            <LocutionForm {programs} />
+            <svelte:fragment slot="fallback">
+                <Section title="Meus Programas">
+                    <div class="flex flex-wrap justify-center gap-8 sm:gap-15">
+                        {#each skeletonItems(4) as item}
+                            <div class="h-36 w-60 max-w-full animate-pulse rounded-md bg-blue-ocean/55" aria-hidden="true"></div>
+                        {/each}
+                    </div>
+                </Section>
+                <Section title="Personalização do player">
+                    <div class="h-52 animate-pulse rounded-md bg-blue-ocean/55" aria-hidden="true"></div>
+                </Section>
+            </svelte:fragment>
+        </Deferred>
     </div>
     {#if activeOnair?.execution_mode === "live"}
-        <SongRequestGrid title="Pedidos musicais" {onair} {songRequests} />
+        <Deferred data="songRequests">
+            <SongRequestGrid title="Pedidos musicais" {onair} {songRequests} />
+            <svelte:fragment slot="fallback">
+                <Section title="Pedidos musicais">
+                    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                        {#each skeletonItems(8) as item}
+                            <div class="h-72 animate-pulse rounded-md bg-blue-ocean/55" aria-hidden="true"></div>
+                        {/each}
+                    </div>
+                </Section>
+            </svelte:fragment>
+        </Deferred>
     {/if}
 </Layout>
 

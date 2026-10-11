@@ -84,7 +84,8 @@
                     alt=""
                     aria-hidden="true"
                     class="size-8 filter-orange-citric"
-                    loading="lazy"
+                    width="32"
+                    height="32"
                 />
                 <span class="h-px w-8 bg-orange-citric/70" aria-hidden="true"></span>
             </span>

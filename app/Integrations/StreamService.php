@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 class StreamService
 {
     private const CACHE_KEY = 'radio.stream.metadata';
+    private const REFRESHING_CACHE_KEY = 'radio.stream.metadata.refreshing';
     private const CACHE_TTL_SECONDS = 30;
     private const STALE_CACHE_TTL_SECONDS = 3600;
 
@@ -83,6 +84,27 @@ class StreamService
 
             return $this->cachedFallback();
         }
+    }
+
+    public function cachedData(): array
+    {
+        if (Cache::has(self::CACHE_KEY . '.fresh')) {
+            return Cache::get(self::CACHE_KEY . '.fresh');
+        }
+
+        $cached = Cache::get(self::CACHE_KEY);
+
+        if (Cache::add(self::REFRESHING_CACHE_KEY, true, now()->addSeconds(10))) {
+            app()->terminating(function () {
+                try {
+                    $this->data();
+                } finally {
+                    Cache::forget(self::REFRESHING_CACHE_KEY);
+                }
+            });
+        }
+
+        return $cached ?? $this->fallbackData();
     }
 
     public function normalizeRadioMetadata(mixed $value): ?string

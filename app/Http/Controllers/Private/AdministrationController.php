@@ -152,7 +152,8 @@ class AdministrationController extends Controller
             fn () => ActivityResource::collection(
                 $this->activityFilter->filter([
                     'not_expired' => true,
-                    'with' => ['author', 'confirmations'],
+                    'with' => ['author', 'calendar', 'confirmations'],
+                    'limit' => 8,
                 ])
             ),
         );
@@ -165,6 +166,7 @@ class AdministrationController extends Controller
                 $this->calendarFilter->filter([
                     'upcoming' => true,
                     'with' => ['activity', 'responsible'],
+                    'limit' => 14,
                 ])
             ),
         );
@@ -475,13 +477,13 @@ class AdministrationController extends Controller
         return Inertia::render($this->render, [
             'roles' => $this->indexRoles(),
             'permissions' => $this->indexPermissions(),
-            'badges' => $this->indexBadges(),
-            'badgeTargets' => $this->indexBadgeTargets(),
-            'activities' => $this->indexActivities(),
-            'calendar' => $this->indexCalendar(),
             'users' => $this->indexUsers(),
-            'tasks' => $this->indexTasks(),
-            'formSubmissions' => $this->indexFormSubmissions(),
+            'calendar' => Inertia::defer(fn () => $this->indexCalendar(), 'administration-schedule'),
+            'activities' => Inertia::defer(fn () => $this->indexActivities(), 'administration-schedule'),
+            'tasks' => Inertia::defer(fn () => $this->indexTasks(), 'administration-work'),
+            'formSubmissions' => Inertia::defer(fn () => $this->indexFormSubmissions(), 'administration-work'),
+            'badges' => Inertia::defer(fn () => $this->indexBadges(), 'administration-badges'),
+            'badgeTargets' => Inertia::defer(fn () => $this->indexBadgeTargets(), 'administration-badges'),
         ]);
     }
 }

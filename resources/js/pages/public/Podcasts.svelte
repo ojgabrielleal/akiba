@@ -83,7 +83,8 @@
                                             alt=""
                                             aria-hidden="true"
                                             class={["aspect-square w-full object-cover", publicAnimations.imageZoom]}
-                                            loading="lazy"
+                                            width="320"
+                                            height="320"
                                         />
                                     </div>
 

@@ -42,7 +42,7 @@ class HandleInertiaRequestsMiddleware extends Middleware
                     'with' => ['host', 'program.host'],
                 ])
             ),
-            'stream' => fn () => (new StreamService)->data(),
+            'stream' => fn () => app(StreamService::class)->cachedData(),
             'flash' => fn () => session('flash'),
             'push' => [
                 'vapid_public_key' => config('services.webpush.public_key'),
@@ -56,6 +56,10 @@ class HandleInertiaRequestsMiddleware extends Middleware
 
     private function newBadges(Request $request): array
     {
+        if ($request->is('panel') || $request->is('panel/*')) {
+            return [];
+        }
+
         $member = AuthenticatedMember::fromRequest($request);
 
         if (! $member) {

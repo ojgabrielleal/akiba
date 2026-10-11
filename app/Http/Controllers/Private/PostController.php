@@ -43,7 +43,12 @@ class PostController extends Controller
                         'reviews as review_revision_count' => fn ($query) => $query->where('status', 'revision'),
                         'reviews as review_published_count' => fn ($query) => $query->where('status', 'published'),
                     ],
-                    'with' => ['author', 'reviews'],
+                    'with' => [
+                        'author',
+                        'reviews' => fn ($query) => $query
+                            ->where('user_id', request()->user()->id)
+                            ->select(['id', 'post_id', 'user_id', 'status']),
+                    ],
                     'search' => request()->input('search'),
                     'paginate' => 10,
                 ])
@@ -51,9 +56,14 @@ class PostController extends Controller
         );
     }
 
+    private function canViewNewsFeed(): bool
+    {
+        return request()->user()->hasPermission('post.feed.view');
+    }
+
     private function indexNewsFeedSources()
     {
-        if (! request()->user()->hasPermission('post.feed.view')) {
+        if (! $this->canViewNewsFeed()) {
             return null;
         }
 
@@ -62,7 +72,7 @@ class PostController extends Controller
 
     private function indexNewsFeedPosts()
     {
-        if (! request()->user()->hasPermission('post.feed.view')) {
+        if (! $this->canViewNewsFeed()) {
             return null;
         }
 
@@ -137,7 +147,12 @@ class PostController extends Controller
                     'reviews as review_revision_count' => fn ($query) => $query->where('status', 'revision'),
                     'reviews as review_published_count' => fn ($query) => $query->where('status', 'published'),
                 ],
-                'with' => ['author', 'reviews.author'],
+                'with' => [
+                    'author',
+                    'reviews' => fn ($query) => $query
+                        ->where('user_id', request()->user()->id)
+                        ->select(['id', 'post_id', 'user_id', 'status']),
+                ],
                 'search' => request()->input('search'),
                 'paginate' => 10,
             ])
@@ -148,9 +163,10 @@ class PostController extends Controller
     {
         return Inertia::render($this->render, [
             'posts' => $this->indexPosts(),
-            'newsFeedSources' => $this->indexNewsFeedSources(),
+            'canViewNewsFeed' => $this->canViewNewsFeed(),
+            'newsFeedSources' => Inertia::defer(fn () => $this->indexNewsFeedSources(), 'post-news-feed'),
             'selectedNewsFeedSource' => request()->input('source'),
-            'newsFeedPosts' => $this->indexNewsFeedPosts(),
+            'newsFeedPosts' => Inertia::defer(fn () => $this->indexNewsFeedPosts(), 'post-news-feed'),
         ]);
     }
 }

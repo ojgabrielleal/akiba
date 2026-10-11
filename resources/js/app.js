@@ -5,7 +5,9 @@ import PageTransitionLoader from "@/lib/components/public/feedback/PageTransitio
 import PwaInstallPrompt from "@/lib/components/public/feedback/PwaInstallPrompt.svelte";
 import { loadGoogleAdsense } from "@/lib/utils/adsense";
 
-loadGoogleAdsense().catch(() => {});
+loadGoogleAdsense().catch((error) => {
+    console.error("Google AdSense: erro ao carregar o script inicial.", error);
+});
 
 if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
