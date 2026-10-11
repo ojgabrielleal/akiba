@@ -1,5 +1,6 @@
 <script>
-    import { page } from "@inertiajs/svelte";
+    import { onDestroy } from "svelte";
+    import { page, router } from "@inertiajs/svelte";
     import MaskIcon from "@/lib/components/public/media/MaskIcon.svelte";
     import { rememberOAuthAction, themeClass } from "@/lib/utils";
 
@@ -44,6 +45,49 @@
         : `/entrar?reason=${encodeURIComponent(reason)}&redirect=${encodeURIComponent(authRedirect)}`;
     $: isAuthenticated = Boolean(resolvedOAuth?.authenticated);
 
+    let popupCheckInterval = null;
+    let popupMessageCleanup = null;
+
+    const oauthPopupUrl = (provider) => (
+        `/oauth/${provider}/redirect?redirect=${encodeURIComponent("/oauth/popup-complete")}`
+    );
+
+    const reloadOAuth = () => {
+        router.reload({ only: ["oauth"] });
+    };
+
+    const stopOAuthPopupMonitor = () => {
+        if (popupCheckInterval) {
+            clearInterval(popupCheckInterval);
+            popupCheckInterval = null;
+        }
+
+        popupMessageCleanup?.();
+        popupMessageCleanup = null;
+    };
+
+    const monitorOAuthPopup = (popup) => {
+        stopOAuthPopupMonitor();
+
+        const handleMessage = (event) => {
+            if (event.origin !== window.location.origin) return;
+            if (event.data?.type !== "akiba:oauth-complete") return;
+
+            stopOAuthPopupMonitor();
+            reloadOAuth();
+        };
+
+        window.addEventListener("message", handleMessage);
+        popupMessageCleanup = () => window.removeEventListener("message", handleMessage);
+
+        popupCheckInterval = window.setInterval(() => {
+            if (!popup.closed) return;
+
+            stopOAuthPopupMonitor();
+            reloadOAuth();
+        }, 500);
+    };
+
     const authenticate = (event, url = null) => {
         rememberOAuthAction(action);
 
@@ -54,6 +98,7 @@
         if (popup) {
             event.preventDefault();
             popup.focus();
+            monitorOAuthPopup(popup);
         }
     };
 
@@ -69,6 +114,8 @@
             `popup=yes,width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=yes`
         );
     };
+
+    onDestroy(stopOAuthPopupMonitor);
 
 </script>
 
@@ -115,7 +162,7 @@
             </a>
         {:else}
             {#if providersLayout === "inline"}
-                <div class="mt-4 flex items-center justify-center gap-4">
+                <div class="mt-4 flex items-center justify-center gap-2.5">
                     {#each loginProviders as provider}
                         <a
                             href={`/oauth/${provider.name}/redirect`}
@@ -125,7 +172,7 @@
                             ]}
                             aria-label={provider.label}
                             title={provider.label}
-                            on:click={(event) => authenticate(event, `/oauth/${provider.name}/redirect`)}
+                            on:click={(event) => authenticate(event, oauthPopupUrl(provider.name))}
                         >
                             <MaskIcon
                                 icon={provider.icon}
@@ -144,7 +191,7 @@
                                 provider.class,
                                 themeClass("text", "blue-night", { theme: "light" }),
                             ]}
-                            on:click={(event) => authenticate(event, `/oauth/${provider.name}/redirect`)}
+                            on:click={(event) => authenticate(event, oauthPopupUrl(provider.name))}
                         >
                             <MaskIcon
                                 icon={provider.icon}

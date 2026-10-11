@@ -39,6 +39,30 @@ Route::post('/oauth/logout', OAuthAccountLogoutController::class)
     ->middleware('oauth.resolve')
     ->name('oauth.logout');
 
+Route::get('/oauth/popup-complete', function () {
+    return response(<<<'HTML'
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login concluído</title>
+</head>
+<body>
+    <script>
+        if (window.opener) {
+            window.opener.postMessage({ type: 'akiba:oauth-complete' }, window.location.origin);
+            window.close();
+        } else {
+            window.location.replace('/');
+        }
+    </script>
+    <p>Login concluído. Você já pode fechar esta janela.</p>
+</body>
+</html>
+HTML)->header('Content-Type', 'text/html; charset=UTF-8');
+})->name('oauth.popup-complete');
+
 Route::post('/push-notification', [PushNotificationController::class, 'storePushNotification'])
     ->middleware('oauth.resolve')
     ->name('push-notification.store');
