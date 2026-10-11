@@ -2,6 +2,7 @@
 
 use App\Http\Resources\Onair\OnairResource;
 use App\Http\Middleware\OAuth\ResolveOAuthAccount;
+use App\Http\Middleware\Cache\SetBrowserCacheHeaders;
 use App\Integrations\StreamService;
 use App\Services\OnairService;
 use Illuminate\Foundation\Application;
@@ -20,6 +21,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        $middleware->appendToGroup('web', SetBrowserCacheHeaders::class);
+
         $middleware->validateCsrfTokens(except: [
             //
         ]);

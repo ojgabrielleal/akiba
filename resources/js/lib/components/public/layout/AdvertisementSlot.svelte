@@ -20,10 +20,33 @@
         pushAdsense();
     }
 
+    const waitForAdWidth = async () => {
+        await tick();
+
+        if (!adElement || adElement.offsetWidth > 0) return true;
+
+        return new Promise((resolve) => {
+            const observer = new ResizeObserver(([entry]) => {
+                if (entry.contentRect.width <= 0) return;
+
+                observer.disconnect();
+                resolve(true);
+            });
+
+            observer.observe(adElement);
+
+            window.setTimeout(() => {
+                observer.disconnect();
+                resolve(adElement?.offsetWidth > 0);
+            }, 2000);
+        });
+    };
+
     const pushAdsense = async () => {
         if (!shouldRenderAdsense || !adElement || pushedAdsense || typeof window === "undefined") return;
 
-        await tick();
+        const hasWidth = await waitForAdWidth();
+        if (!hasWidth || pushedAdsense) return;
 
         try {
             await pushGoogleAdSlot(adClient);

@@ -16,8 +16,14 @@ const isIgnoredPath = (pathname) => (
     pathname.startsWith("/api/") ||
     pathname.startsWith("/broadcasting/") ||
     pathname.startsWith("/sanctum/") ||
+    pathname.startsWith("/panel") ||
     pathname === "/service-worker.js" ||
     pathname === "/manifest.json"
+);
+
+const isVersionedAsset = (pathname) => (
+    pathname.startsWith("/build/assets/") ||
+    /\.(?:woff2?|png|jpe?g|webp|gif|svg|ico)$/i.test(pathname)
 );
 
 self.addEventListener("install", (event) => {
@@ -68,22 +74,32 @@ self.addEventListener("fetch", (event) => {
         return;
     }
 
-    event.respondWith(
-        caches.match(request)
-            .then((cached) => cached ?? fetch(request).then((response) => {
-                if (!response || response.status !== 200 || response.type !== "basic") {
+    if (isVersionedAsset(url.pathname)) {
+        event.respondWith(
+            caches.match(request)
+                .then((cached) => cached ?? fetch(request).then((response) => {
+                    if (!response || response.status !== 200 || response.type !== "basic") {
+                        return response;
+                    }
+
+                    const copy = response.clone();
+
+                    caches.open(CACHE_VERSION)
+                        .then((cache) => cache.put(request, copy))
+                        .catch(() => {});
+
                     return response;
-                }
+                }))
+                .catch(() => new Response("", { status: 504, statusText: "Gateway Timeout" })),
+        );
 
-                const copy = response.clone();
+        return;
+    }
 
-                caches.open(CACHE_VERSION)
-                    .then((cache) => cache.put(request, copy))
-                    .catch(() => {});
-
-                return response;
-            }))
-            .catch(() => new Response("", { status: 504, statusText: "Gateway Timeout" })),
+    event.respondWith(
+        fetch(request)
+            .catch(() => caches.match(request)
+                .then((cached) => cached ?? new Response("", { status: 504, statusText: "Gateway Timeout" }))),
     );
 });
 
