@@ -10,13 +10,13 @@
             name: "google",
             label: "Entrar com Google",
             icon: "/svg/google.svg",
-            class: "border border-suspense-aurora/15 bg-suspense-aurora text-blue-night hover:bg-neutral-white",
+            class: "border border-blue-night/10 bg-[#fffaf3] text-[#000014] hover:bg-neutral-white",
         },
         {
             name: "discord",
             label: "Entrar com Discord",
             icon: "/svg/discord.svg",
-            class: "bg-[#5865f2] text-neutral-white hover:brightness-110",
+            class: "bg-[#5865f2] text-[#ffffff] hover:brightness-110",
         },
     ];
 
@@ -76,11 +76,12 @@
 <Meta meta={{ title: context.title }} />
 <Layout {flash} {oauth} {onair} {stream} {pageUrl} publicThemeEnabled>
     <section class="public-page-background relative isolate overflow-hidden bg-blue-night text-suspense-aurora">
-        <div class="absolute inset-0 opacity-[0.08]" style="background-image: url('/img/textures/estrelas_texture.svg');" aria-hidden="true"></div>
-        <div class="absolute inset-x-0 top-0 h-32 bg-linear-to-b from-blue-night to-transparent" aria-hidden="true"></div>
-        <div class="absolute inset-x-0 bottom-0 h-32 bg-linear-to-t from-blue-night to-transparent" aria-hidden="true"></div>
+        <div class="absolute inset-0" style="background-image: url('/img/pages/home/backgrounds/featured.svg'); background-repeat: repeat; filter: var(--public-title-texture-filter);" aria-hidden="true"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_18%,rgba(0,128,255,0.2),transparent_34rem),linear-gradient(90deg,rgba(0,0,20,0.55),transparent_28%,transparent_72%,rgba(0,0,20,0.55))] [[data-public-theme=light]_&]:bg-[radial-gradient(circle_at_50%_18%,rgba(0,128,255,0.16),transparent_34rem),linear-gradient(90deg,rgba(251,253,255,0.72),transparent_26%,transparent_74%,rgba(251,253,255,0.72))]" aria-hidden="true"></div>
+        <div class="absolute inset-x-0 top-0 h-32 bg-linear-to-b from-blue-night to-transparent [[data-public-theme=light]_&]:from-[#fbfdff]" aria-hidden="true"></div>
+        <div class="absolute inset-x-0 bottom-0 h-32 bg-linear-to-t from-blue-night to-transparent [[data-public-theme=light]_&]:from-[#fbfdff]" aria-hidden="true"></div>
 
-        <div class="container-page relative flex min-h-[calc(100vh-9rem)] items-center justify-center py-16 text-center">
+        <div class="container-page relative flex min-h-[calc(100vh-9rem)] items-start justify-center pt-28 pb-16 text-center lg:pt-36">
             <article class="mx-auto flex w-full max-w-xl flex-col items-center font-noto-sans">
                 <div class="flex items-center gap-3 text-[0.7rem] font-black uppercase tracking-[0.22em] text-orange-amber/90">
                     <span class="h-px w-9 bg-linear-to-r from-transparent to-orange-amber/70"></span>
@@ -176,7 +177,7 @@
                         <Link
                             href={redirect}
                             class={[
-                                "inline-flex min-h-10 min-w-24 items-center justify-center rounded-md border border-orange-amber/55 bg-blue-night/35 px-5 py-2 font-noto-sans text-xs font-extrabold uppercase text-orange-amber hover:bg-orange-amber/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber",
+                                "inline-flex min-h-10 min-w-24 items-center justify-center rounded-md border border-orange-amber/55 bg-blue-night/35 px-5 py-2 font-noto-sans text-xs font-extrabold uppercase text-orange-amber hover:bg-orange-amber/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber [[data-public-theme=light]_&]:bg-white/70 [[data-public-theme=light]_&]:text-orange-amber",
                                 publicAnimations.buttonInteractive,
                             ]}
                         >

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Post;
 
+use App\Rules\RespectfulContent;
 use App\Http\Requests\LoggedWebRequest;
 
 use App\Models\Post;
@@ -94,7 +95,7 @@ class StorePostRequest extends LoggedWebRequest
         return [
             'module' => 'required|in:post,review,event',
             'status' => 'required_unless:module,review|nullable|string|in:published,revision,draft',
-            'title' => "{$requiredUnlessDraft}|string",
+            'title' => [$requiredUnlessDraft, 'string', new RespectfulContent],
             'image' => $requiredUnlessDraft,
             'cover' => $this->coverRules(),
             'references' => 'exclude_if:module,review|nullable|array',
@@ -102,7 +103,7 @@ class StorePostRequest extends LoggedWebRequest
             'references.*.url' => 'exclude_if:module,review|nullable',
             'tags' => "exclude_if:module,review|{$requiredUnlessDraft}|array",
             'tags.*.name' => "exclude_if:module,review|{$requiredUnlessDraft}|string|max:255",
-            'content' => $this->isDraft() ? 'nullable|string' : 'required_unless:module,review|nullable|string',
+            'content' => [$this->isDraft() ? 'nullable' : 'required_unless:module,review', 'nullable', 'string', new RespectfulContent],
             'studio' => "exclude_unless:module,review|{$requiredUnlessDraft}|string|max:255",
             'metadata' => 'exclude_if:module,post|nullable|array',
             'metadata.dates' => $this->isDraft()
@@ -117,14 +118,10 @@ class StorePostRequest extends LoggedWebRequest
             'metadata.date_of_release' => $this->isDraft()
                 ? 'exclude_unless:module,review|nullable|date'
                 : 'exclude_unless:module,review|required_if:module,review|date',
-            'metadata.sinopse' => $this->isDraft()
-                ? 'exclude_unless:module,review|nullable|string'
-                : 'exclude_unless:module,review|required_if:module,review|string',
+            'metadata.sinopse' => [$this->isDraft() ? 'exclude_unless:module,review' : 'exclude_unless:module,review', $this->isDraft() ? 'nullable' : 'required_if:module,review', 'string', new RespectfulContent],
             'review' => 'exclude_unless:module,review|required_if:module,review|nullable|array',
             'review.status' => 'exclude_unless:module,review|required_if:module,review|string|in:published,revision,draft',
-            'review.content' => $this->isDraft()
-                ? 'exclude_unless:module,review|nullable|string'
-                : 'exclude_unless:module,review|required_if:module,review|string',
+            'review.content' => [$this->isDraft() ? 'exclude_unless:module,review' : 'exclude_unless:module,review', $this->isDraft() ? 'nullable' : 'required_if:module,review', 'string', new RespectfulContent],
         ];
     }
 
@@ -134,6 +131,8 @@ class StorePostRequest extends LoggedWebRequest
             'required' => 'Esse campo é obrigatório.',
             'required_if' => 'Esse campo é obrigatório.',
             'required_unless' => 'Esse campo é obrigatório.',
+            'image.uploaded' => 'A imagem não foi enviada corretamente. Tente uma imagem menor ou em outro formato.',
+            'cover.uploaded' => 'A capa não foi enviada corretamente. Tente uma imagem menor ou em outro formato.',
             'cover.image' => 'A capa precisa ser uma imagem.',
             'cover.dimensions' => 'A capa precisa ter pelo menos 1200x400 pixels para funcionar bem como fundo.',
         ];

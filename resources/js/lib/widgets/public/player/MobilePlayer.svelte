@@ -91,6 +91,10 @@
                 title="Entre para pedir sua música"
                 description="Use sua conta para continuar."
                 action={OAuthAction.OPEN_SONG_REQUEST}
+                variant="song-request"
+                containerClass="my-3 py-8 sm:py-10"
+                titleClass="text-suspense-aurora [[data-public-theme=light]_&]:text-blue-night"
+                descriptionClass="text-suspense-aurora/70 [[data-public-theme=light]_&]:text-blue-night/60"
                 {oauth}
             >
                 <SongRequestForm {close} {oauth} />

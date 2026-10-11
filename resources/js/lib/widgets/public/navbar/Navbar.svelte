@@ -19,20 +19,20 @@
         setStoredPublicTheme,
         themeClass,
     } from "@/lib/utils";
-    import { Button, IconButton, MaskIcon, Modal, Tooltip } from "@/lib/components/public";
+    import { IconButton, MaskIcon, Tooltip } from "@/lib/components/public";
     import NotificationPanel from "./NotificationPanel.svelte";
     import ThemeSwitcher from "./ThemeSwitcher.svelte";
 
     export let oauth = {};
 
     let mobilenavbar = false;
-    let loginModalRef;
     let notifications = [];
     let notificationPanelOpen = false;
     let notificationPermission = "unsupported";
     let searchQuery = "";
     let selectedTheme = "akiba";
     let brandLogo = resolveCommemorativeLogo();
+    let pushPromptDismissed = true;
 
     $: profile = oauth?.profile;
     $: avatar = profile?.avatar || "/img/placeholders/avatar.webp";
@@ -41,7 +41,10 @@
     $: canRequestPushNotifications = Boolean(vapidPublicKey);
     $: hasActiveNotifications = notificationPermission === "granted";
     $: hasUnreadNotifications = notifications.length > 0;
+    $: canShowPushPrompt = canRequestPushNotifications && notificationPermission === "default" && !pushPromptDismissed;
     $: canOpenProfile = oauth?.is_oauth || (oauth?.is_member && oauth?.can_view_profile && oauth?.can_update_profile);
+    $: currentUrl = $page.url ?? "/";
+    $: loginRedirect = `/entrar?reason=default&redirect=${encodeURIComponent(currentUrl)}`;
 
     const closeMobileNavbar = () => {
         mobilenavbar = false;
@@ -55,10 +58,9 @@
         notifications = await listPushNotifications();
     };
 
-    const openOAuthLogin = () => {
+    const prepareLoginNavigation = () => {
         closeMobileNavbar();
         closeNotificationPanel();
-        loginModalRef.open();
     };
 
     const requestProfile = () => {
@@ -71,21 +73,6 @@
 
         dispatchOAuthAction(OAuthAction.OPEN_PROFILE);
     };
-
-    const loginProviders = [
-        {
-            name: "google",
-            label: "Entrar com Google",
-            icon: "/svg/google.svg",
-            class: "bg-neutral-white text-blue-night shadow-[0_0.75rem_1.5rem_rgba(0,0,20,0.22)] hover:bg-orange-citric",
-        },
-        {
-            name: "discord",
-            label: "Entrar com Discord",
-            icon: "/svg/discord.svg",
-            class: "bg-[#5865f2] text-neutral-white shadow-[0_0.75rem_1.5rem_rgba(0,0,20,0.24)] hover:bg-orange-citric hover:text-blue-night",
-        },
-    ];
 
     const submitSearch = () => {
         const normalizedQuery = searchQuery.trim();
@@ -104,7 +91,17 @@
         return currentPath === item.address || currentPath.startsWith(`${item.address}/`);
     };
 
+    const dismissPushPrompt = () => {
+        pushPromptDismissed = true;
+
+        try {
+            localStorage.setItem("akiba_push_prompt_dismissed", "1");
+        } catch {}
+    };
+
     const requestNotifications = async () => {
+        pushPromptDismissed = true;
+
         const permission = await requestPushNotificationSubscription(vapidPublicKey);
 
         notificationPermission = permission;
@@ -120,6 +117,16 @@
         closeMobileNavbar();
 
         notificationPermission = resolvePushNotificationPermission();
+
+        try {
+            pushPromptDismissed = localStorage.getItem("akiba_push_prompt_dismissed") === "1";
+        } catch {
+            pushPromptDismissed = false;
+        }
+
+        if (notificationPermission !== "default") {
+            pushPromptDismissed = true;
+        }
 
         if (notificationPermission === "granted") {
             await loadNotifications();
@@ -323,15 +330,14 @@
                     />
                 </div>
             {:else}
-                <Button
-                    size="sm"
-                    shape="pill"
-                    class="ml-1 !text-white transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 motion-reduce:transform-none motion-reduce:transition-none"
-                    on:click={openOAuthLogin}
+                <Link
+                    href={loginRedirect}
+                    class="ml-1 inline-flex min-h-8 items-center justify-center gap-2 rounded-full bg-orange-amber px-3 py-1 font-noto-sans text-xs font-extrabold uppercase italic !text-white transition duration-300 ease-out hover:-translate-y-0.5 hover:brightness-105 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none"
+                    on:click={prepareLoginNavigation}
                 >
                     <MaskIcon icon="/svg/profile.svg" class="size-4 !text-white" />
                     Entrar
-                </Button>
+                </Link>
             {/if}
             <ThemeSwitcher
                 class="ml-1"
@@ -475,15 +481,14 @@
                                     </span>
                                 </div>
                             {:else}
-                                <Button
-                                    size="sm"
-                                    shape="pill"
-                                    class="!text-white transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 motion-reduce:transform-none motion-reduce:transition-none"
-                                    on:click={openOAuthLogin}
+                                <Link
+                                    href={loginRedirect}
+                                    class="inline-flex min-h-8 items-center justify-center gap-2 rounded-full bg-orange-amber px-3 py-1 font-noto-sans text-xs font-extrabold uppercase italic !text-white transition duration-300 ease-out hover:-translate-y-0.5 hover:brightness-105 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none"
+                                    on:click={prepareLoginNavigation}
                                 >
                                     <MaskIcon icon="/svg/profile.svg" class="size-4 !text-white" />
                                     Entrar
-                                </Button>
+                                </Link>
                             {/if}
                             <ThemeSwitcher
                                 size="md"
@@ -508,54 +513,43 @@
     on:markAllRead={markAllNotificationsAsRead}
 />
 
-{#if !oauth?.authenticated}
-    <Modal
-        bind:this={loginModalRef}
-        label="Escolha uma opção de login"
-        size="sm"
+{#if canShowPushPrompt}
+    <div
+        class="fixed bottom-[calc(5.5rem+env(safe-area-inset-bottom))] left-4 right-4 z-[160] mx-auto max-w-sm rounded-2xl border border-orange-amber/30 bg-blue-ocean/95 p-4 font-noto-sans text-suspense-aurora shadow-2xl shadow-blue-night/45 backdrop-blur-md [[data-public-theme=light]_&]:bg-white/95 [[data-public-theme=light]_&]:text-blue-night [[data-public-theme=light]_&]:shadow-blue-night/15 sm:left-auto sm:right-5 sm:mx-0"
+        transition:fly={{ y: 24, duration: 240 }}
     >
-        <div class="px-1 py-2 text-center">
-            <div class="mb-5 flex flex-col items-center font-noto-sans">
-                <span class="mb-3 flex items-center justify-center gap-2 text-orange-citric">
-                    <span class="h-px w-9 bg-orange-citric/70" aria-hidden="true"></span>
-                    <img
-                        src="/svg/akiba.svg"
-                        alt=""
-                        aria-hidden="true"
-                        class="size-9 filter-orange-citric"
-                        width="36"
-                        height="36"
-                    />
-                    <span class="h-px w-9 bg-orange-citric/70" aria-hidden="true"></span>
-                </span>
-                <p class="text-[0.68rem] font-extrabold uppercase italic tracking-[0.18em] text-orange-citric">
-                    Rede Akiba
+        <div class="flex items-start gap-3">
+            <span class="mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-full bg-orange-citric text-blue-night shadow-lg shadow-orange-citric/20" aria-hidden="true">
+                <MaskIcon icon="/svg/bell.svg" class="size-5 text-blue-night" />
+            </span>
+            <div class="min-w-0 flex-1">
+                <p class="text-[0.7rem] font-black uppercase tracking-[0.18em] text-orange-citric">
+                    Notificações Akiba
                 </p>
-                <p class={["mt-3 text-xl font-black leading-none text-suspense-aurora uppercase italic", themeClass("text", "blue-night", { theme: "light" })]}>
-                    Entre para continuar
+                <p class="mt-1 text-sm font-extrabold uppercase italic leading-tight">
+                    Quer receber avisos da comunidade?
                 </p>
-                <p class={["mx-auto mt-2 max-w-72 text-sm font-medium leading-snug text-suspense-aurora/75", themeClass("text", "blue-night/70", { theme: "light" })]}>
-                    Comente, reaja, peça músicas e entre na comunidade Akiba.
+                <p class="mt-1.5 text-xs font-semibold leading-snug text-suspense-aurora/70 [[data-public-theme=light]_&]:text-blue-night/60">
+                    A gente te avisa sobre novidades, enquetes e momentos importantes da rádio.
                 </p>
-            </div>
-            <div class="mt-1 flex items-center justify-center gap-4">
-                {#each loginProviders as provider}
-                    <a
-                        href={`/oauth/${provider.name}/redirect`}
-                        class={[
-                            "group/provider relative flex size-12 items-center justify-center rounded-full transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none",
-                            provider.class,
-                        ]}
-                        aria-label={provider.label}
-                        title={provider.label}
-                    >
-                        <MaskIcon
-                            icon={provider.icon}
-                            class={["size-5 bg-current transition group-hover/provider:scale-110", themeClass("bg", "neutral-white", { theme: "light" })]}
-                        />
-                    </a>
-                {/each}
             </div>
         </div>
-    </Modal>
+        <div class="mt-4 flex items-center justify-end gap-2">
+            <button
+                type="button"
+                class="min-h-9 rounded-full px-3 py-1.5 text-xs font-black uppercase italic text-suspense-aurora/70 transition hover:text-orange-citric focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric [[data-public-theme=light]_&]:text-blue-night/60 [[data-public-theme=light]_&]:hover:text-orange-amber"
+                on:click={dismissPushPrompt}
+            >
+                Agora não
+            </button>
+            <button
+                type="button"
+                class="inline-flex min-h-9 items-center justify-center gap-2 rounded-full bg-orange-citric px-4 py-1.5 text-xs font-black uppercase italic !text-white shadow-lg shadow-orange-citric/20 transition duration-300 ease-out hover:-translate-y-0.5 hover:brightness-105 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none"
+                on:click={requestNotifications}
+            >
+                <MaskIcon icon="/svg/bell.svg" class="size-4 !text-white" />
+                Ativar
+            </button>
+        </div>
+    </div>
 {/if}

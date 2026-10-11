@@ -19,3 +19,7 @@ Schedule::command('audience:collect')
 Schedule::command('audience:prune')
     ->cron('0 3 1 1,7 *')
     ->withoutOverlapping();
+
+Schedule::command('posts:publish-reviewed --hours=24 --news-hours=2 --limit=25')
+    ->hourly()
+    ->withoutOverlapping();

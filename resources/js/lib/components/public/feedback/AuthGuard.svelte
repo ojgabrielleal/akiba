@@ -1,6 +1,5 @@
 <script>
-    import { onDestroy } from "svelte";
-    import { page, router } from "@inertiajs/svelte";
+    import { page } from "@inertiajs/svelte";
     import MaskIcon from "@/lib/components/public/media/MaskIcon.svelte";
     import { rememberOAuthAction, themeClass } from "@/lib/utils";
 
@@ -29,9 +28,9 @@
     export let buttonClass = themeClass("text", "blue-night", { fixed: true });
     export let action = null;
     export let compact = false;
-    export let providersLayout = "list";
     export let reason = "default";
     export let redirectTo = null;
+    export let variant = "default";
 
     $: loginProviders = providers.length === 1 && buttonLabel
         ? [{ ...providers[0], label: buttonLabel }]
@@ -44,104 +43,87 @@
         ? recognizedPanelHref
         : `/entrar?reason=${encodeURIComponent(reason)}&redirect=${encodeURIComponent(authRedirect)}`;
     $: isAuthenticated = Boolean(resolvedOAuth?.authenticated);
+    $: isSongRequestVariant = variant === "song-request";
 
-    let popupCheckInterval = null;
-    let popupMessageCleanup = null;
-
-    const oauthPopupUrl = (provider) => (
-        `/oauth/${provider}/redirect?redirect=${encodeURIComponent("/oauth/popup-complete")}`
-    );
-
-    const reloadOAuth = () => {
-        router.reload({ only: ["oauth"] });
-    };
-
-    const stopOAuthPopupMonitor = () => {
-        if (popupCheckInterval) {
-            clearInterval(popupCheckInterval);
-            popupCheckInterval = null;
-        }
-
-        popupMessageCleanup?.();
-        popupMessageCleanup = null;
-    };
-
-    const monitorOAuthPopup = (popup) => {
-        stopOAuthPopupMonitor();
-
-        const handleMessage = (event) => {
-            if (event.origin !== window.location.origin) return;
-            if (event.data?.type !== "akiba:oauth-complete") return;
-
-            stopOAuthPopupMonitor();
-            reloadOAuth();
-        };
-
-        window.addEventListener("message", handleMessage);
-        popupMessageCleanup = () => window.removeEventListener("message", handleMessage);
-
-        popupCheckInterval = window.setInterval(() => {
-            if (!popup.closed) return;
-
-            stopOAuthPopupMonitor();
-            reloadOAuth();
-        }, 500);
-    };
-
-    const authenticate = (event, url = null) => {
+    const authenticate = () => {
         rememberOAuthAction(action);
-
-        if (!url || !url.startsWith("/oauth/")) return;
-
-        const popup = openOAuthPopup(url);
-
-        if (popup) {
-            event.preventDefault();
-            popup.focus();
-            monitorOAuthPopup(popup);
-        }
     };
-
-    const openOAuthPopup = (url) => {
-        const width = 520;
-        const height = 720;
-        const left = window.screenX + Math.max(0, (window.outerWidth - width) / 2);
-        const top = window.screenY + Math.max(0, (window.outerHeight - height) / 2);
-
-        return window.open(
-            url,
-            "akiba_oauth",
-            `popup=yes,width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=yes`
-        );
-    };
-
-    onDestroy(stopOAuthPopupMonitor);
 
 </script>
 
 {#if isAuthenticated}
     <slot />
 {:else}
-    <div class={["flex flex-col items-center text-center font-noto-sans", compact ? "" : "px-5 py-6", containerClass]}>
+    <div class={[
+        "flex flex-col items-center text-center font-noto-sans",
+        compact ? "" : isSongRequestVariant ? "px-4 py-5 sm:px-6 sm:py-6" : "px-5 py-6",
+        isSongRequestVariant && "mx-auto w-full max-w-sm",
+        containerClass,
+    ]}>
         {#if !compact}
-            <span class="mb-3 flex items-center justify-center gap-2 text-orange-citric">
-                <span class="h-px w-8 bg-orange-citric/70" aria-hidden="true"></span>
-                <img
-                    src="/svg/akiba.svg"
-                    alt=""
-                    aria-hidden="true"
-                    class="size-8 filter-orange-citric"
-                    width="32"
-                    height="32"
-                />
-                <span class="h-px w-8 bg-orange-citric/70" aria-hidden="true"></span>
+            {#if isSongRequestVariant}
+                <div class="mb-3 flex items-center justify-center gap-2 text-[0.62rem] font-black uppercase tracking-[0.22em] text-blue-skywave">
+                    <span class="h-px w-10 bg-linear-to-r from-transparent to-blue-skywave/80" aria-hidden="true"></span>
+                    Pedido musical
+                    <span class="h-px w-10 bg-linear-to-l from-transparent to-blue-skywave/80" aria-hidden="true"></span>
+                </div>
+            {/if}
+            <span class={[
+                "flex items-center justify-center text-orange-citric",
+                isSongRequestVariant ? "mb-4 gap-2.5" : "mb-3 gap-2",
+            ]}>
+                <span class={[
+                    "h-px bg-orange-citric/70",
+                    isSongRequestVariant ? "w-12" : "w-8",
+                ]} aria-hidden="true"></span>
+                {#if isSongRequestVariant}
+                    <span class="flex items-center gap-1.5" aria-hidden="true">
+                        <span class="h-5 w-1 rounded-full bg-blue-skywave/70"></span>
+                        <img
+                            src="/svg/akiba.svg"
+                            alt=""
+                            class="size-8 filter-orange-citric"
+                            width="32"
+                            height="32"
+                        />
+                        <span class="h-5 w-1 rounded-full bg-blue-skywave/70"></span>
+                    </span>
+                {:else}
+                    <img
+                        src="/svg/akiba.svg"
+                        alt=""
+                        aria-hidden="true"
+                        class="size-8 filter-orange-citric"
+                        width="32"
+                        height="32"
+                    />
+                {/if}
+                <span class={[
+                    "h-px bg-orange-citric/70",
+                    isSongRequestVariant ? "w-12" : "w-8",
+                ]} aria-hidden="true"></span>
             </span>
-            <p class={["text-sm font-black uppercase italic", titleClass, themeClass("text", "blue-night", { theme: "light" })]}>
+            <p class={[
+                isSongRequestVariant ? "text-[0.92rem] tracking-wide" : "text-sm",
+                "font-black uppercase italic",
+                titleClass,
+                themeClass("text", "blue-night", { theme: "light" }),
+            ]}>
                 {title}
             </p>
-            <p class={["mt-1 max-w-72 text-sm leading-snug", descriptionClass, themeClass("text", "blue-night/70", { theme: "light" })]}>
+            <p class={[
+                "mt-1.5 max-w-72 leading-snug",
+                isSongRequestVariant ? "text-[0.84rem] font-semibold" : "text-sm",
+                descriptionClass,
+                themeClass("text", "blue-night/70", { theme: "light" }),
+            ]}>
                 {description}
             </p>
+            {#if isSongRequestVariant}
+                <p class="mt-3 text-[0.65rem] font-black uppercase tracking-[0.16em] text-orange-citric/90">
+                    Volte ao pedido depois de entrar
+                </p>
+            {/if}
         {/if}
 
         {#if compact}
@@ -152,7 +134,7 @@
                     buttonClass,
                     "!text-white",
                 ]}
-                on:click={(event) => authenticate(event, authHref)}
+                on:click={authenticate}
             >
                 <MaskIcon
                     icon="/svg/profile.svg"
@@ -161,47 +143,20 @@
                 {buttonLabel ?? "Entrar"}
             </a>
         {:else}
-            {#if providersLayout === "inline"}
-                <div class="mt-4 flex items-center justify-center gap-2.5">
-                    {#each loginProviders as provider}
-                        <a
-                            href={`/oauth/${provider.name}/redirect`}
-                            class={[
-                                "group/provider flex size-12 items-center justify-center rounded-full transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none",
-                                provider.class,
-                            ]}
-                            aria-label={provider.label}
-                            title={provider.label}
-                            on:click={(event) => authenticate(event, oauthPopupUrl(provider.name))}
-                        >
-                            <MaskIcon
-                                icon={provider.icon}
-                                class={["size-5 bg-current transition group-hover/provider:scale-110", themeClass("bg", "neutral-white", { theme: "light" })]}
-                            />
-                        </a>
-                    {/each}
-                </div>
-            {:else}
-                <div class="mt-5 grid w-full max-w-sm gap-3">
-                    {#each loginProviders as provider}
-                        <a
-                            href={`/oauth/${provider.name}/redirect`}
-                            class={[
-                                "flex min-h-12 items-center justify-center gap-3 rounded-md px-5 py-2.5 text-center font-noto-sans text-sm font-extrabold uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none",
-                                provider.class,
-                                themeClass("text", "blue-night", { theme: "light" }),
-                            ]}
-                            on:click={(event) => authenticate(event, oauthPopupUrl(provider.name))}
-                        >
-                            <MaskIcon
-                                icon={provider.icon}
-                                class={["size-4 shrink-0 bg-current", themeClass("bg", "neutral-white", { theme: "light" })]}
-                            />
-                            {provider.label}
-                        </a>
-                    {/each}
-                </div>
-            {/if}
+            <a
+                href={authHref}
+                class={[
+                    isSongRequestVariant
+                        ? "mt-5 flex min-h-11 w-full max-w-72 items-center justify-center gap-2.5 rounded-full bg-orange-citric px-6 py-2.5 text-center font-noto-sans text-sm font-black uppercase italic shadow-[0_0.9rem_1.6rem_rgba(255,170,53,0.2)] transition duration-300 ease-out hover:-translate-y-0.5 hover:brightness-105 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none"
+                        : "mt-5 flex min-h-11 w-full max-w-xs items-center justify-center gap-3 rounded-full bg-orange-citric px-5 py-2.5 text-center font-noto-sans text-sm font-extrabold uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 hover:brightness-105 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none",
+                    themeClass("text", "blue-night", { fixed: true }),
+                    "!text-white",
+                ]}
+                on:click={authenticate}
+            >
+                <MaskIcon icon="/svg/profile.svg" class="size-5 shrink-0 !bg-white" />
+                Entrar
+            </a>
         {/if}
     </div>
 {/if}

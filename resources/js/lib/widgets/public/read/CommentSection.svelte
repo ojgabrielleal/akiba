@@ -45,7 +45,6 @@
         titleClass="text-suspense-aurora"
         descriptionClass="text-suspense-aurora/70"
         buttonClass="text-suspense-aurora"
-        providersLayout="inline"
     >
         <form class="grid gap-3" on:submit|preventDefault={submitComment}>
             <textarea

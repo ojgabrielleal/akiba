@@ -201,6 +201,31 @@ class PostService
         return $post;
     }
 
+    public function publish(Post $post): Post
+    {
+        $wasPublished = $post->status === 'published';
+
+        $post = DB::transaction(function () use ($post) {
+            $post->update(['status' => 'published']);
+
+            if ($post->module === 'review') {
+                $post->reviews()
+                    ->where('status', 'revision')
+                    ->latest()
+                    ->limit(1)
+                    ->update(['status' => 'published']);
+            }
+
+            return $post->refresh();
+        });
+
+        if (! $wasPublished && $this->shouldSendPublishedNotification($post)) {
+            $this->sendPublishedNotification($post);
+        }
+
+        return $post;
+    }
+
     private function shouldSendPublishedNotification(Post $post): bool
     {
         return $post->status === 'published';
