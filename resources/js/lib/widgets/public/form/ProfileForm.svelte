@@ -163,6 +163,10 @@
     const logout = () => {
         router.post(internal ? "/member-logout" : "/oauth/logout", {}, {
             preserveScroll: false,
+            onSuccess: () => {
+                close();
+                router.reload({ only: ["oauth"] });
+            },
         });
     };
 </script>

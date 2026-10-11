@@ -11,6 +11,7 @@ use App\Http\Resources\Poll\PollResource;
 use App\Http\Resources\Post\PostResource;
 use Inertia\Inertia;
 use App\Services\OAuthAccountService;
+use App\Services\InternalBrowserRecognitionService;
 use App\Services\ProfileService;
 use App\Http\Controllers\Concerns\HasFlashMessages;
 use App\Http\Requests\OAuthAccount\CompleteOAuthAccountProfileRequest;
@@ -143,8 +144,10 @@ class HomeController extends Controller
         return $this->flashMessage('save', 'Perfil salvo com sucesso.');
     }
 
-    public function logoutMemberProfile(Request $request)
+    public function logoutMemberProfile(Request $request, InternalBrowserRecognitionService $browserRecognition)
     {
+        $browserRecognition->forget($request);
+
         if ($request->user()) {
             Auth::logout();
             $request->session()->invalidate();
