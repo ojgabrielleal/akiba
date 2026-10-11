@@ -76,7 +76,7 @@
 <Meta meta={{ title: context.title }} />
 <Layout {flash} {oauth} {onair} {stream} {pageUrl} publicThemeEnabled>
     <section class="public-page-background relative isolate overflow-hidden bg-blue-night text-suspense-aurora">
-        <div class="absolute inset-0" style="background-image: url('/img/pages/home/backgrounds/featured.svg'); background-repeat: repeat; filter: var(--public-title-texture-filter);" aria-hidden="true"></div>
+        <div class="absolute inset-0" style="background-image: url('/img/pages/auth/backgrounds/featured.svg'); background-repeat: repeat; filter: var(--public-title-texture-filter);" aria-hidden="true"></div>
         <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_18%,rgba(0,128,255,0.2),transparent_34rem),linear-gradient(90deg,rgba(0,0,20,0.55),transparent_28%,transparent_72%,rgba(0,0,20,0.55))] [[data-public-theme=light]_&]:bg-[radial-gradient(circle_at_50%_18%,rgba(0,128,255,0.16),transparent_34rem),linear-gradient(90deg,rgba(251,253,255,0.72),transparent_26%,transparent_74%,rgba(251,253,255,0.72))]" aria-hidden="true"></div>
         <div class="absolute inset-x-0 top-0 h-32 bg-linear-to-b from-blue-night to-transparent [[data-public-theme=light]_&]:from-[#fbfdff]" aria-hidden="true"></div>
         <div class="absolute inset-x-0 bottom-0 h-32 bg-linear-to-t from-blue-night to-transparent [[data-public-theme=light]_&]:from-[#fbfdff]" aria-hidden="true"></div>
