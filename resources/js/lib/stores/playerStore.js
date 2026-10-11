@@ -1,6 +1,6 @@
 import { get, writable } from "svelte/store";
 
-const DEFAULT_VOLUME = 0.2;
+const DEFAULT_VOLUME = 0.1;
 const MIN_PLAY_LOADING_MS = 500;
 const AUTOPLAY_RETRY_MS = 2500;
 const AUTOPLAY_INTERACTION_EVENTS = ["pointerdown", "touchstart", "keydown", "click"];
