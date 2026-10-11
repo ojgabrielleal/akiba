@@ -73,7 +73,7 @@
                             { indent: "+1" },
                         ],
                         [{ direction: "rtl" }, { align: [] }],
-                        ["link", "image", "formula"],
+                        ["link", "image", "video", "formula"],
                         ["clean"],
                     ],
                     handlers: {
@@ -85,7 +85,7 @@
                 "size", "bold", "italic", "underline", "strike",
                 "color", "background", "script", "header", "blockquote",
                 "code-block", "list", "indent", "direction", "align",
-                "link", "image", "formula", "width", "height",
+                "link", "image", "video", "formula", "width", "height",
                 "safeEmbed", "imageAlign", "iframeAlign",
             ],
         });
