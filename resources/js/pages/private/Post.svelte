@@ -55,6 +55,9 @@
     let loadedForm = null;
     let formLoadToken = 0;
     $: form = post?.data.module ?? Cookies.get("akiba_post_module") ?? "post";
+    $: if (post && !show) {
+        show = true;
+    }
     $: if (show && form && loadedForm !== form) {
         FormComponent = null;
         loadFormComponent(form);
