@@ -137,7 +137,7 @@
     />
 
     <aside
-        class="public-player-bar fixed inset-x-0 bottom-0 z-60 border-t border-blue-skywave/20 bg-blue-night/95 backdrop-blur-md"
+        class="public-player-bar fixed inset-x-0 bottom-0 z-[180] border-t border-blue-skywave/20 bg-blue-night/95 backdrop-blur-md"
         transition:fly={{ y: 88, duration: 240 }}
     >
         {#if $player.playing && !$player.loading}
@@ -168,7 +168,7 @@
                 />
             </button>
 
-            <div class="relative z-10 min-w-0 font-noto-sans uppercase italic">
+            <div class="relative z-10 min-w-0 max-w-[min(42rem,52vw)] font-noto-sans uppercase italic">
                 <p class="text-[0.65rem] font-black tracking-[0.12em] text-suspense-aurora/45">
                     Tocando agora
                 </p>
