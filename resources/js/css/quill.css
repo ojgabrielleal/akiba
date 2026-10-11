@@ -130,3 +130,13 @@
 .public-read-body .ql-safe-embed[data-provider="spotify"] iframe {
     min-height: 152px;
 }
+
+
+.blot-formatter__overlay,
+.blot-formatter__toolbar,
+.blot-formatter__resize-handle,
+.blot-formatter__proxy-image,
+[class*="blot-formatter"],
+[class*="BlotFormatter"] {
+    z-index: 40 !important;
+}

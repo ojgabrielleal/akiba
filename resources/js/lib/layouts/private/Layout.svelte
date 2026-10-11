@@ -26,7 +26,7 @@
 </main>
 <footer>
     <div class="h-20"></div>
-    <div class="w-full fixed bottom-0 z-50">
+    <div class="w-full fixed bottom-0 z-[190]">
         <StreamMetricsGrid />
     </div>
 </footer>
