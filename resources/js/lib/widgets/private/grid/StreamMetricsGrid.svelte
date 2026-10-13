@@ -47,8 +47,8 @@
                     {streamData.listeners ?? "N/A"} Ouvintes
                 </div>
             </div>
-            <div class="flex min-w-0 flex-1 items-center justify-end gap-3">
-                <div class="min-w-0 max-w-[30rem] text-right font-noto-sans uppercase italic">
+            <div class="flex min-w-0 flex-1 items-center justify-end gap-2 sm:gap-3">
+                <div class="min-w-0 flex-1 text-right font-noto-sans uppercase italic sm:max-w-[30rem]">
                     <p class="text-[0.65rem] font-black tracking-[0.12em] text-suspense-aurora/45">
                         {listenersLabel}
                     </p>
@@ -56,10 +56,10 @@
                         {currentSong.music || "Estamos offline"}
                     </p>
                 </div>
-                <div class="group relative flex h-11 w-11 items-center justify-center">
+                <div class="group relative flex h-11 w-11 shrink-0 items-center justify-center">
                     <button
                         type="button"
-                        class="grid h-11 w-11 cursor-pointer place-items-center rounded-full bg-orange-amber transition hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber"
+                        class="grid h-11 w-11 shrink-0 cursor-pointer place-items-center rounded-full bg-orange-amber transition hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber"
                         aria-label="Ajustar volume"
                     >
                         <img
@@ -93,7 +93,7 @@
                 </div>
                 <button
                     type="button"
-                    class="grid h-11 w-11 cursor-pointer place-items-center rounded-full bg-orange-amber transition hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber"
+                    class="grid h-11 w-11 shrink-0 cursor-pointer place-items-center rounded-full bg-orange-amber transition hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber"
                     aria-label={$player.loading ? "Carregando rádio" : $player.playing ? "Pausar radio" : "Tocar radio"}
                     aria-pressed={$player.playing}
                     aria-busy={$player.loading}
