@@ -2,7 +2,6 @@ import "./bootstrap";
 import { createInertiaApp } from "@inertiajs/svelte";
 import { mount } from "svelte";
 import PageTransitionLoader from "@/lib/components/public/feedback/PageTransitionLoader.svelte";
-import PwaInstallPrompt from "@/lib/components/public/feedback/PwaInstallPrompt.svelte";
 import { loadGoogleAdsense } from "@/lib/utils/adsense";
 
 loadGoogleAdsense().catch((error) => {
@@ -26,6 +25,5 @@ createInertiaApp({
     setup({ el, App, props, plugin }) {
         mount(App, { target: el, props });
         mount(PageTransitionLoader, { target: document.body });
-        mount(PwaInstallPrompt, { target: document.body });
     },
 });
