@@ -48,6 +48,7 @@ Route::prefix('panel')->middleware(['inertia'])->group(function () {
             Route::patch('{post:uuid}', 'updatePost');
             Route::get('{post:uuid}', 'showPost');
             Route::patch('{post:uuid}/deactivate', 'deactivatePost');
+            Route::delete('{post:uuid}', 'destroyPost');
         });
 
         Route::prefix('locution')->controller(LocutionController::class)->group(function () {

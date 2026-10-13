@@ -50,6 +50,17 @@ class PostPolicy
     }
 
     /**
+     * Determine whether the user can remove the model from the active list.
+     */
+    public function delete(User $user, Post $post): bool
+    {
+        return $user->hasPermission('post.deactivate')
+            || ($post->status !== 'published'
+                && $post->user_id === $user->id
+                && $user->hasPermission('post.delete.own'));
+    }
+
+    /**
      * Determine whether the user can approve a post in revision.
      */
     public function approve(User $user, Post $post): bool

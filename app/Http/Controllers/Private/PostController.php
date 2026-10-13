@@ -128,6 +128,15 @@ class PostController extends Controller
         return $this->flashMessage('deactivate');
     }
 
+    public function destroyPost(PostService $service, Post $post)
+    {
+        $this->authorize('delete', $post);
+
+        $service->deactivate($post);
+
+        return $this->flashMessage('delete', 'Rascunho removido da lista. Ele ainda pode ser recuperado pela lixeira.');
+    }
+
     private function indexPost(Post $post): PostResource
     {
         return PostResource::make(

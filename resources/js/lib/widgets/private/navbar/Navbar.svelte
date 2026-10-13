@@ -92,7 +92,7 @@
 
     <!-- Mobile Navbar -->
     {#if mobilenavbar}
-        <div class="fixed inset-0 z-100 overflow-hidden xl:hidden">
+        <div class="fixed inset-0 z-[220] overflow-hidden xl:hidden">
             <button
                 type="button"
                 aria-label="Fechar menu de navegacao"

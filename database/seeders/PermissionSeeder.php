@@ -100,6 +100,7 @@ class PermissionSeeder extends Seeder
             ['name' => 'post.update', 'label' => '[Posts] Atualizar'],
             ['name' => 'post.deactivate', 'label' => '[Posts] Desativar'],
             ['name' => 'post.list.own', 'label' => '[Posts] Listar posts próprios'],
+            ['name' => 'post.delete.own', 'label' => '[Posts] Remover posts próprios não publicados'],
             ['name' => 'post.review.opinion.list', 'label' => '[Posts] Listar opiniões de reviews'],
             ['name' => 'post.publish', 'label' => '[Posts] Publicar post (imediatamente)'],
             ['name' => 'post.approve', 'label' => '[Posts] Aprovar post'],

@@ -27,6 +27,14 @@
         });
     }
 
+    function requestDelete(post) {
+        if (!window.confirm(`Remover "${post.title}" da lista?`)) return;
+
+        router.delete(`/panel/post/${post.uuid}`, {
+            preserveScroll: true,
+        });
+    }
+
     function statusItem(item) {
         if (!canReviewOpinions && item.module === "review" && item.review_status) {
             return { ...item, status: item.review_status };
@@ -103,7 +111,15 @@
                                 {item.module === "review" ? "Review" : item.author.nickname}
                             </div>
                             <div class="relative z-10 flex gap-1 justify-end mt-1">
-                                {#if can.deactivate}
+                                {#if item.can?.delete}
+                                    <IconButton
+                                        variant="trash"
+                                        label="Remover"
+                                        size="sm"
+                                        surface="dark"
+                                        on:click={() => requestDelete(item)}
+                                    />
+                                {:else if can.deactivate}
                                     <IconButton
                                         variant="trash"
                                         label="Desativar"

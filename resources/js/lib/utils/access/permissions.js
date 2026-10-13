@@ -86,6 +86,7 @@ export const postPermissions = () => ({
     publish: hasPermission("post.publish"),
     approve: hasPermission("post.approve"),
     deactivate: hasPermission("post.deactivate"),
+    deleteOwn: hasPermission("post.delete.own"),
 });
 
 export const programPermissions = () => ({

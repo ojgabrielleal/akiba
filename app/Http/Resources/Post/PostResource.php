@@ -66,6 +66,9 @@ class PostResource extends JsonResource
                     ? $this->reviews->first(fn ($review) => $review->user_id === $request->user()?->id)?->status
                     : null,
                 'author' => UserResource::make($this->author)->format('summary'),
+                'can' => [
+                    'delete' => $request->user()?->can('delete', $this->resource) ?? false,
+                ],
             ];
         }
 

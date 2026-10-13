@@ -6,6 +6,10 @@
     $: ({ stream } = $page.props);
     $: streamData = stream ?? {};
     $: currentSong = streamData.current_song ?? {};
+    $: listeners = Number.isFinite(Number(streamData.listeners)) ? Number(streamData.listeners) : null;
+    $: listenersLabel = listeners === null
+        ? "Ouvintes indisponíveis"
+        : `${listeners.toLocaleString("pt-BR")} ${listeners === 1 ? "ouvinte" : "ouvintes"}`;
 </script>
 
 <section class="container-page bg-blue-marinho">
@@ -46,7 +50,7 @@
             <div class="flex min-w-0 flex-1 items-center justify-end gap-3">
                 <div class="min-w-0 max-w-[30rem] text-right font-noto-sans uppercase italic">
                     <p class="text-[0.65rem] font-black tracking-[0.12em] text-suspense-aurora/45">
-                        Tocando agora
+                        {listenersLabel}
                     </p>
                     <p class="truncate text-sm font-black text-suspense-aurora sm:text-base">
                         {currentSong.music || "Estamos offline"}
