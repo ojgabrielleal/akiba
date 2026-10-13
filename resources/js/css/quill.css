@@ -78,7 +78,9 @@
 .ql-editor img.ql-image-align-left,
 .public-read-body img.ql-image-align-left,
 .ql-editor img[data-align="left"],
-.public-read-body img[data-align="left"] {
+.public-read-body img[data-align="left"],
+.ql-editor .ql-align-left img,
+.public-read-body .ql-align-left img {
     margin-left: 0;
     margin-right: auto;
 }
@@ -86,7 +88,9 @@
 .ql-editor img.ql-image-align-center,
 .public-read-body img.ql-image-align-center,
 .ql-editor img[data-align="center"],
-.public-read-body img[data-align="center"] {
+.public-read-body img[data-align="center"],
+.ql-editor .ql-align-center img,
+.public-read-body .ql-align-center img {
     margin-left: auto;
     margin-right: auto;
 }
@@ -94,7 +98,9 @@
 .ql-editor img.ql-image-align-right,
 .public-read-body img.ql-image-align-right,
 .ql-editor img[data-align="right"],
-.public-read-body img[data-align="right"] {
+.public-read-body img[data-align="right"],
+.ql-editor .ql-align-right img,
+.public-read-body .ql-align-right img {
     margin-left: auto;
     margin-right: 0;
 }

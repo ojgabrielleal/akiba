@@ -49,7 +49,7 @@
             </div>
             <div class="flex min-w-0 flex-1 items-center justify-end gap-2 sm:gap-3">
                 <div class="min-w-0 flex-1 text-right font-noto-sans uppercase italic sm:max-w-[30rem]">
-                    <p class="text-[0.65rem] font-black tracking-[0.12em] text-suspense-aurora/45">
+                    <p class="text-[0.65rem] font-black tracking-[0.12em] text-suspense-aurora/45 sm:hidden">
                         {listenersLabel}
                     </p>
                     <p class="truncate text-sm font-black text-suspense-aurora sm:text-base">
