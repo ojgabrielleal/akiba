@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Post;
 
+use App\Http\Resources\CommentResource;
 use App\Http\Resources\Concerns\HasFormats;
 use App\Http\Resources\User\UserResource;
 use App\Models\User;
@@ -55,6 +56,7 @@ class PostResource extends JsonResource
                 'status' => $this->status,
                 'module' => $this->module,
                 'views' => $this->views_count,
+                'comments_count' => (int) ($this->comments_count ?? 0),
                 'review_status_counts' => $this->module === 'review'
                     ? [
                         'draft' => (int) ($this->review_draft_count ?? 0),
@@ -80,6 +82,8 @@ class PostResource extends JsonResource
             'image' => $this->image,
             'cover' => $this->cover,
             'views' => $this->views_count,
+            'comments_count' => (int) ($this->comments_count ?? 0),
+            'comments' => CommentResource::collection($this->whenLoaded('comments')),
             'created_at' => $this->created_at?->format('d/m/Y'),
             'author' => UserResource::make($this->author)->format('summary'),
             'references' => PostReferenceResource::collection($this->references),

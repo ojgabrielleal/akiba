@@ -79,7 +79,7 @@
 </script>
 
 
-<Modal bind:this={votesModalRef} title={modalTitle(votesPollSelected?.question)} size="sm">
+<Modal bind:this={votesModalRef} title="Votos" size="sm">
     <div slot="content">
         {#if votesPollSelected?.votes?.length}
             <ul class="grid gap-2 font-noto-sans">

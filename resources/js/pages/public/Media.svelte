@@ -20,7 +20,6 @@
     const optionPercent = (pollItem, option) => pollItem?.total_votes ? (option.votes / pollItem.total_votes) * 100 : 0;
 
     let pollModalRef;
-    let enigmaRulesModalRef;
     let previousEnigmaModalRef;
     let mainSelectedOption = null;
     let selectedPollUuid = null;
@@ -477,73 +476,6 @@
                 </div>
             </Modal>
         {/if}
-
-        <Modal bind:this={enigmaRulesModalRef} title="Como jogar" size="md">
-            <div class="font-noto-sans text-blue-night [[data-public-theme=light]_&]:!text-[#000014] [[data-public-theme=akiba]_&]:text-suspense-aurora/80 [[data-public-theme=night]_&]:text-suspense-aurora/80">
-                <p class="text-sm leading-relaxed">
-                    Um título, uma imagem e uma frase estranha serão apresentados. Sua missão é descobrir, usando essas informações e as respostas da comunidade, qual é o anime.
-                </p>
-
-                <div class="mt-5 grid gap-4">
-                    <section>
-                        <h3 class="font-black uppercase italic text-orange-amber">1º passo — Faça perguntas</h3>
-                        <p class="mt-2 text-sm leading-relaxed">
-                            Faça perguntas que possam ser respondidas com:
-                        </p>
-                        <ul class="mt-3 grid gap-2 text-sm leading-relaxed">
-                            <li><span class="font-black uppercase italic text-green-mint">Sim</span> — a resposta é positiva e ajuda a descobrir o anime.</li>
-                            <li><span class="font-black uppercase italic text-red-crimson">Não</span> — a resposta é negativa, mas ajuda a descobrir o anime.</li>
-                            <li><span class="font-black uppercase italic text-neutral-gray [[data-public-theme=light]_&]:!text-[#5d6575] [[data-public-theme=akiba]_&]:text-suspense-aurora/60 [[data-public-theme=night]_&]:text-suspense-aurora/60">Banal</span> — a resposta não ajuda a descobrir o anime.</li>
-                        </ul>
-                        <p class="mt-3 rounded-md bg-orange-morning px-3 py-2 text-sm font-bold text-blue-night [[data-public-theme=light]_&]:!text-[#000014]">
-                            Atenção: Você pode fazer apenas uma pergunta por dia.
-                        </p>
-                    </section>
-
-                    <section>
-                        <h3 class="font-black uppercase italic text-orange-amber">2º passo — Junte as pistas</h3>
-                        <p class="mt-2 text-sm leading-relaxed">
-                            Todas as perguntas respondidas ficarão no Quadro de Investigação, então confira ele, sua pergunta pode já ter sido feita por outro jogador.
-                        </p>
-                        <p class="mt-2 text-sm leading-relaxed">
-                            Cada resposta ajuda a eliminar possibilidades e revelar novos detalhes sobre o anime. Nem toda informação precisa ser descoberta diretamente. Use as respostas para formular novas hipóteses.
-                        </p>
-                    </section>
-
-                    <section class="rounded-md bg-blue-ocean px-4 py-3 text-suspense-aurora [[data-public-theme=light]_&]:!text-[#fffaf3] [[data-public-theme=akiba]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_76%,var(--color-blue-night))] [[data-public-theme=night]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_76%,var(--color-blue-night))]">
-                        <h3 class="font-black uppercase italic text-orange-citric">Dica</h3>
-                        <p class="mt-2 text-sm leading-relaxed">
-                            Não tente descobrir uma sinopse inteira de uma vez. Faça perguntas específicas, como:
-                        </p>
-                        <ul class="mt-3 grid gap-1 text-sm font-bold italic">
-                            <li>“O protagonista é humano?”</li>
-                            <li>“O anime tem mais de uma temporada?”</li>
-                            <li>“O poder dele está relacionado a sangue?”</li>
-                        </ul>
-                        <p class="mt-3 text-sm leading-relaxed">
-                            Caso contrário sua pergunta será considerada “Banal”.
-                        </p>
-                    </section>
-
-                    <section>
-                        <h3 class="font-black uppercase italic text-orange-amber">3º passo — Resolva o mistério</h3>
-                        <p class="mt-2 text-sm leading-relaxed">
-                            Use todas as pistas para formular suas hipóteses. Acha que descobriu? Envie o título do anime.
-                        </p>
-                    </section>
-
-                    <section>
-                        <h3 class="font-black uppercase italic text-orange-amber">4º passo — Descubra a resposta</h3>
-                        <p class="mt-2 text-sm leading-relaxed">
-                            O Enigma Otaku fica disponível durante uma semana, mesmo que alguém descubra a resposta antes. Quando a semana terminar, a solução será revelada.
-                        </p>
-                        <p class="mt-3 rounded-md bg-orange-morning px-3 py-2 text-sm font-bold text-blue-night [[data-public-theme=light]_&]:!text-[#000014]">
-                            Mas existe uma recompensa especial: a primeira pessoa a acertar o anime poderá dizer que é o Maior Otaku do Brasil. Além de ganhar uma Badge no seu Perfil da Rede Akiba.
-                        </p>
-                    </section>
-                </div>
-            </div>
-        </Modal>
 
         <Modal bind:this={pollModalRef} title="Enquete" size="sm">
             {#if selectedPoll}

@@ -137,7 +137,7 @@
     </div>
 </Offcanvas>
 
-<Modal bind:this={interactionsModalRef} title={interactionsModalTitle} size="xl">
+<Modal bind:this={interactionsModalRef} title="Interações do enigma" size="xl">
     <div slot="content">
         {#if interactionsEnigmaGame?.interactions?.length}
             <div class="grid gap-3 md:grid-cols-2 xl:grid-cols-3">

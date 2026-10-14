@@ -95,8 +95,8 @@
 </script>
 
 
-<Modal bind:this={songRequestsModalRef} title={selectedOnair ? `Pedidos de ${selectedOnair.program.name}` : "Pedidos do programa"} size="xl">
-    <div slot="content" class="max-h-[70vh] overflow-y-auto pr-1">
+<Modal bind:this={songRequestsModalRef} title="Pedidos musicais" size="xl">
+    <div slot="content">
         {#if songRequestsLoading}
             <div class="py-10 text-center font-noto-sans text-sm font-bold uppercase italic text-blue-night">
                 Carregando pedidos...

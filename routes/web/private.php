@@ -44,6 +44,7 @@ Route::prefix('panel')->middleware(['inertia'])->group(function () {
 
         Route::prefix('post')->controller(PostController::class)->group(function () {
             Route::get('', 'render')->name('panel.post');
+            Route::post('editor-image', 'storeEditorImage');
             Route::post('', 'storePost');
             Route::patch('{post:uuid}', 'updatePost');
             Route::get('{post:uuid}', 'showPost');

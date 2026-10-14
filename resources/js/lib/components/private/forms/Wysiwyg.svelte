@@ -12,6 +12,7 @@
 
 <script>
     import { onDestroy, onMount } from "svelte";
+    import axios from "axios";
 
     export let height = "50rem";
     export let name = "content";
@@ -29,6 +30,51 @@
     function syncValue() {
         value = quill.root.innerHTML;
         textarea.value = value === "<p><br></p>" ? "" : value;
+    }
+
+    async function uploadEditorImage(file) {
+        const data = new FormData();
+        data.append("image", file);
+
+        const response = await axios.post("/panel/post/editor-image", data, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
+
+        return response.data?.url;
+    }
+
+    function insertImage() {
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = "image/*";
+
+        input.addEventListener("change", async () => {
+            const file = input.files?.[0];
+            if (!file) return;
+
+            const range = quill.getSelection(true);
+
+            try {
+                quill.enable(false);
+                const url = await uploadEditorImage(file);
+
+                if (!url) throw new Error("Upload sem URL de retorno.");
+
+                quill.insertEmbed(range.index, "image", url, "user");
+                quill.insertText(range.index + 1, "\n", "user");
+                quill.setSelection(range.index + 2, 0, "silent");
+            } catch (error) {
+                console.error("Erro ao enviar imagem do editor.", error);
+                window.alert("Não foi possível enviar a imagem do editor. Tente uma imagem menor ou em outro formato.");
+            } finally {
+                quill.enable(!isDisabled);
+                syncValue();
+            }
+        }, { once: true });
+
+        input.click();
     }
 
     function insertEmbed() {
@@ -81,6 +127,7 @@
                         ["clean"],
                     ],
                     handlers: {
+                        image: insertImage,
                         safeEmbed: insertEmbed,
                     },
                 },

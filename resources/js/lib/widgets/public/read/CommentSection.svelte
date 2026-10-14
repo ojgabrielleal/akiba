@@ -28,57 +28,64 @@
 </script>
 
 <section class="mt-12 font-noto-sans">
-    <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
-        <h2 class="text-xl leading-none font-normal text-orange-amber uppercase">
-            Comentários
-        </h2>
-        <span class={["rounded-full bg-blue-cerulean px-3 py-1 text-xs font-black uppercase italic", themeClass("bg", "neutral-light", { fixed: true, theme: "light" }), themeClass("text", "suspense-aurora", { fixed: true }), themeClass("text", "blue-night", { fixed: true, theme: "light" })]}>
-            {totalComments}
-        </span>
-    </div>
-
-    <AuthGuard
-        {oauth}
-        title="Entre para comentar"
-        description="Use sua conta para participar da conversa."
-        buttonLabel="Entrar"
-        titleClass="text-suspense-aurora"
-        descriptionClass="text-suspense-aurora/70"
-        buttonClass="text-suspense-aurora"
-    >
-        <form class="grid gap-3" on:submit|preventDefault={submitComment}>
-            <textarea
-                bind:value={comment}
-                name="comment"
-                rows="4"
-                maxlength="1000"
-                placeholder="Escreva seu comentário..."
-                class={["public-comment-input min-h-28 w-full resize-none rounded-md border-2 border-blue-skywave/30 bg-blue-ocean px-4 py-3 text-sm font-bold text-suspense-aurora focus:outline-none", themeClass("bg", "neutral-light", { fixed: true, theme: "light" }), themeClass("text", "blue-night", { fixed: true, theme: "light" }), themeClass("placeholder", "suspense-aurora", { fixed: true }), themeClass("placeholder", "blue-night/45", { theme: "light" }), "[[data-public-theme=light]_&]:border-blue-night/10"]}
-            ></textarea>
-            <div class="flex justify-end">
-                <button
-                    type="submit"
-                    class={["rounded-full bg-orange-amber px-5 py-2.5 text-sm font-black uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50 motion-reduce:transform-none motion-reduce:transition-none", themeClass("text", "blue-night", { fixed: true })]}
-                    disabled={!comment.trim()}
-                >
-                    Comentar
-                </button>
+    <div class={["rounded-md border border-blue-skywave/25 bg-blue-night/35 px-4 py-5 shadow-[0_1rem_2rem_rgba(0,0,0,0.12)] sm:px-5 sm:py-6", themeClass("bg", "neutral-light", { fixed: true, theme: "light" }), "[[data-public-theme=light]_&]:border-blue-night/10"]}>
+        <div class="mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-blue-skywave/25 pb-4 [[data-public-theme=light]_&]:border-blue-night/10">
+            <div>
+                <h2 class="text-xl leading-none font-normal text-orange-amber uppercase">
+                    Comentários
+                </h2>
+                <p class={["mt-1 text-xs font-bold text-suspense-aurora/65", themeClass("text", "blue-night/70", { theme: "light" })]}>
+                    Participe da conversa sobre este post.
+                </p>
             </div>
-        </form>
-    </AuthGuard>
+            <span class={["rounded-full bg-blue-cerulean px-3 py-1 text-xs font-black uppercase italic", themeClass("bg", "neutral-white", { theme: "light" }), themeClass("text", "suspense-aurora", { fixed: true }), themeClass("text", "blue-night", { fixed: true, theme: "light" })]}>
+                {totalComments} {totalComments === 1 ? "comentário" : "comentários"}
+            </span>
+        </div>
 
-    <div class="mt-6">
-        {#if commentList.length}
-            <div class="grid gap-[14px]">
-                {#each commentList as item}
-                    <PostCommentItem post={commentable} {item} {oauth} {commentBasePath} />
-                {/each}
-            </div>
-        {:else}
-            <p class="public-comment-empty rounded-md border border-blue-skywave/30 px-4 py-5 text-center text-sm font-bold text-suspense-aurora/70">
-                Ainda não há comentários por aqui.
-            </p>
-        {/if}
+        <AuthGuard
+            {oauth}
+            title="Entre para comentar"
+            description="Use sua conta para participar da conversa."
+            buttonLabel="Entrar"
+            titleClass="text-suspense-aurora"
+            descriptionClass="text-suspense-aurora/70"
+            buttonClass="text-suspense-aurora"
+        >
+            <form class="grid gap-3" on:submit|preventDefault={submitComment}>
+                <textarea
+                    bind:value={comment}
+                    name="comment"
+                    rows="4"
+                    maxlength="1000"
+                    placeholder="Escreva seu comentário..."
+                    class={["public-comment-input min-h-28 w-full resize-none rounded-md border-2 border-blue-skywave/30 bg-blue-ocean px-4 py-3 text-sm font-bold text-suspense-aurora focus:outline-none focus:ring-2 focus:ring-orange-citric", themeClass("bg", "neutral-white", { theme: "light" }), themeClass("text", "blue-night", { fixed: true, theme: "light" }), themeClass("placeholder", "suspense-aurora", { fixed: true }), themeClass("placeholder", "blue-night/45", { theme: "light" }), "[[data-public-theme=light]_&]:border-blue-night/10"]}
+                ></textarea>
+                <div class="flex justify-end">
+                    <button
+                        type="submit"
+                        class={["rounded-full bg-orange-citric px-5 py-2.5 text-sm font-black uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 hover:bg-orange-morning focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50 motion-reduce:transform-none motion-reduce:transition-none", themeClass("text", "blue-night", { fixed: true })]}
+                        disabled={!comment.trim()}
+                    >
+                        Comentar
+                    </button>
+                </div>
+            </form>
+        </AuthGuard>
+
+        <div class="mt-6">
+            {#if commentList.length}
+                <div class="grid gap-[14px]">
+                    {#each commentList as item}
+                        <PostCommentItem post={commentable} {item} {oauth} {commentBasePath} />
+                    {/each}
+                </div>
+            {:else}
+                <p class="public-comment-empty rounded-md border border-blue-skywave/30 px-4 py-5 text-center text-sm font-bold text-suspense-aurora/70">
+                    Ainda não há comentários por aqui.
+                </p>
+            {/if}
+        </div>
+        <Pagination pages={comments} only={["comments"]} loadingLabel="Carregando comentários..." />
     </div>
-    <Pagination pages={comments} only={["comments"]} loadingLabel="Carregando comentários..." />
 </section>

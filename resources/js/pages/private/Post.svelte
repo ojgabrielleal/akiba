@@ -4,8 +4,8 @@
     import { Deferred, router, page } from "@inertiajs/svelte";
     import { Meta } from "@/lib/components/shared";
     import { Layout } from "@/lib/layouts/private";
-    import { Section } from "@/lib/components/private";
-    import { AnimeNewsFeedGrid, PostGrid } from "@/lib/widgets/private";
+    import { Modal, Section } from "@/lib/components/private";
+    import { AnimeNewsFeedGrid, PostCommentPanel, PostGrid } from "@/lib/widgets/private";
 
     $: ({ post, posts, canViewNewsFeed, newsFeedSources, selectedNewsFeedSource, newsFeedPosts } = $page.props);
     
@@ -54,6 +54,7 @@
     let FormComponent = null;
     let loadedForm = null;
     let formLoadToken = 0;
+    let commentModalRef;
     $: form = post?.data.module ?? Cookies.get("akiba_post_module") ?? "post";
     $: if (post && !show) {
         show = true;
@@ -151,6 +152,11 @@
     };
 
     $: metaTitle = show && pageName[form] ? pageName[form] : "Matérias";
+    $: selectedPost = post?.data ?? null;
+    $: selectedPostComments = selectedPost?.comments_count ?? 0;
+    $: selectedPostCommentsLabel = selectedPostComments === 1 ? "1 comentário" : `${selectedPostComments} comentários`;
+    $: selectedPostCommentList = selectedPost?.comments ?? [];
+    $: commentPanelTitle = selectedPost?.title ?? "Comentários";
 
     onMount(() => router.on("start", (event) => {
         const visitUrl = event.detail.visit?.url;
@@ -179,6 +185,32 @@
         {/if}
     </Section>
 
+    {#if selectedPost}
+        <button
+            type="button"
+            class="fixed bottom-22 right-5 z-[210] flex min-h-11 cursor-pointer items-center gap-2.5 rounded-full border border-orange-citric/45 bg-blue-marinho/95 px-3 py-2 font-noto-sans text-suspense-aurora shadow-[0_0.75rem_1.75rem_rgba(0,0,20,0.32)] backdrop-blur-sm transition duration-300 ease-out hover:-translate-y-0.5 hover:border-orange-citric hover:bg-blue-ocean focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none lg:bottom-8 lg:right-8"
+            aria-label={"Abrir comentários de " + commentPanelTitle}
+            on:click={() => commentModalRef.open()}
+            on:mousedown|preventDefault={() => commentModalRef.open()}
+        >
+            <span class="pointer-events-none relative flex size-7 items-center justify-center rounded-full bg-orange-citric text-sm font-black italic text-blue-marinho" aria-hidden="true">
+                {selectedPostComments}
+            </span>
+            <span class="pointer-events-none relative hidden text-left text-[0.7rem] font-black uppercase italic leading-tight sm:block" aria-hidden="true">
+                Comentários
+            </span>
+        </button>
+
+        <Modal bind:this={commentModalRef} title="Comentários" size="md" flush>
+            <div slot="content" class="overflow-x-hidden font-noto-sans text-blue-marinho">
+                <PostCommentPanel
+                    post={selectedPost}
+                    comments={selectedPostCommentList}
+                    total={selectedPostComments}
+                />
+            </div>
+        </Modal>
+    {/if}
     {#if contentView === "feed" && canViewNewsFeed}
         <Deferred data={["newsFeedSources", "newsFeedPosts"]}>
             <AnimeNewsFeedGrid
