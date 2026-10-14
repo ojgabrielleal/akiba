@@ -246,10 +246,10 @@
         </div>
         <p class="mt-3 text-xs leading-relaxed text-white/60">
             <strong class="text-orange-morning">Como ler:</strong>
-            dia = média por hora nas últimas 24 horas;
-            semana = pico diário nos últimos 7 dias;
-            mês = média diária do último mês;
-            semestre = média semanal dos últimos seis meses.
+            <span class="block">Dia: média por hora nas últimas 24 horas.</span>
+            <span class="block">Semana: pico diário de hoje e dos 6 dias anteriores.</span>
+            <span class="block">Mês: média diária do último mês.</span>
+            <span class="block">Semestre: média semanal dos últimos seis meses.</span>
         </p>
     {:else}
         <EmptyState
