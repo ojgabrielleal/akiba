@@ -79,6 +79,16 @@ export function registerQuillExtensions(Quill) {
     });
 
     class ResponsiveImage extends BaseImage {
+        static sanitize(url) {
+            if (typeof url !== "string") return super.sanitize(url);
+
+            if (url.startsWith("/") || url.startsWith("data:image/") || url.startsWith("blob:")) {
+                return url;
+            }
+
+            return super.sanitize(url);
+        }
+
         static formats(domNode) {
             const formats = super.formats(domNode) || {};
             const width = domNode.getAttribute("width") || domNode.style.width;
