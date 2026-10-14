@@ -247,7 +247,7 @@
         <p class="mt-3 text-xs leading-relaxed text-white/60">
             <strong class="text-orange-morning">Como ler:</strong>
             dia = média por hora nas últimas 24 horas;
-            semana = média por bloco de 6 horas nos últimos 7 dias;
+            semana = pico por período (dia, tarde e noite) nos últimos 7 dias;
             mês = média diária do último mês;
             semestre = média semanal dos últimos seis meses.
         </p>

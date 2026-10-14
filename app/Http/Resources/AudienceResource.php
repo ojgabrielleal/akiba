@@ -97,7 +97,9 @@ class AudienceResource extends JsonResource
                                 $values = $measurements->get($bucket['key']);
 
                                 return $values?->isNotEmpty()
-                                    ? (int) round($values->avg('listeners'))
+                                    ? ($period === 'week'
+                                        ? (int) $values->max('listeners')
+                                        : (int) round($values->avg('listeners')))
                                     : null;
                             })
                             ->all(),
@@ -125,6 +127,7 @@ class AudienceResource extends JsonResource
         };
 
         return collect(CarbonPeriod::create($start, $interval, now()))
+            ->filter(fn (Carbon $date): bool => $period !== 'week' || in_array($date->hour, [0, 12, 18], true))
             ->map(fn (Carbon $date): array => [
                 'key' => self::bucketKey($date, $period),
                 'label' => self::bucketLabel($date, $period),
@@ -134,7 +137,7 @@ class AudienceResource extends JsonResource
     private static function bucketKey(Carbon $date, string $period): string
     {
         return match ($period) {
-            'week' => sprintf('%s %02d:00', $date->format('Y-m-d'), intdiv($date->hour, 6) * 6),
+            'week' => sprintf('%s %02d:00', $date->format('Y-m-d'), self::weekPartHour($date->hour)),
             'month' => $date->format('Y-m-d'),
             'semester' => $date->copy()->startOfWeek()->format('Y-m-d'),
             default => $date->format('Y-m-d H:00'),
@@ -144,10 +147,20 @@ class AudienceResource extends JsonResource
     private static function bucketLabel(Carbon $date, string $period): string
     {
         return match ($period) {
-            'week' => sprintf('%s %02dh', $date->format('d/m'), intdiv($date->hour, 6) * 6),
+            'week' => sprintf('%s %s', $date->format('d/m'), self::weekPartLabel($date->hour)),
             'month' => $date->format('d/m'),
             'semester' => $date->format('d/m'),
             default => $date->format('H\\h'),
         };
+    }
+
+    private static function weekPartHour(int $hour): int
+    {
+        return $hour < 12 ? 0 : ($hour < 18 ? 12 : 18);
+    }
+
+    private static function weekPartLabel(int $hour): string
+    {
+        return $hour < 12 ? 'Dia' : ($hour < 18 ? 'Tarde' : 'Noite');
     }
 }

@@ -74,7 +74,7 @@ class AudienceService
             default => now()->subDay(),
         };
         $bucket = $this->historyBucketExpression($period);
-        $aggregate = 'ROUND(AVG(listeners))';
+        $aggregate = $period === 'week' ? 'MAX(listeners)' : 'ROUND(AVG(listeners))';
 
         return RadioStation::query()
             ->where('is_active', true)
@@ -93,7 +93,7 @@ class AudienceService
     private function historyBucketExpression(string $period): string
     {
         return match ($period) {
-            'week' => "STR_TO_DATE(CONCAT(DATE_FORMAT(created_at, '%Y-%m-%d '), LPAD(FLOOR(HOUR(created_at) / 6) * 6, 2, '0'), ':00:00'), '%Y-%m-%d %H:%i:%s')",
+            'week' => "STR_TO_DATE(CONCAT(DATE_FORMAT(created_at, '%Y-%m-%d '), CASE WHEN HOUR(created_at) < 12 THEN '00' WHEN HOUR(created_at) < 18 THEN '12' ELSE '18' END, ':00:00'), '%Y-%m-%d %H:%i:%s')",
             'month' => 'DATE(created_at)',
             'semester' => 'DATE_SUB(DATE(created_at), INTERVAL WEEKDAY(created_at) DAY)',
             default => "STR_TO_DATE(DATE_FORMAT(created_at, '%Y-%m-%d %H:00:00'), '%Y-%m-%d %H:%i:%s')",
