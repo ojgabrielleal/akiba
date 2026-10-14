@@ -93,11 +93,13 @@ class AudienceResource extends JsonResource
                         'logo' => $station->logo,
                         'color' => self::COLORS[$index % count(self::COLORS)],
                         'data' => $buckets
-                            ->map(function (array $bucket) use ($measurements): ?int {
+                            ->map(function (array $bucket) use ($measurements, $period): ?int {
                                 $values = $measurements->get($bucket['key']);
 
                                 return $values?->isNotEmpty()
-                                    ? (int) round($values->avg('listeners'))
+                                    ? (in_array($period, ['week', 'month'], true)
+                                        ? (int) $values->sum('listeners')
+                                        : (int) round($values->avg('listeners')))
                                     : null;
                             })
                             ->all(),
@@ -118,13 +120,15 @@ class AudienceResource extends JsonResource
     private static function buckets(string $period): Collection
     {
         [$start, $interval] = match ($period) {
-            'week' => [now()->subWeek()->startOfHour(), '6 hours'],
+            'week' => [now()->startOfWeek(Carbon::MONDAY), '1 day'],
             'month' => [now()->subMonth()->startOfDay(), '1 day'],
             'semester' => [now()->subMonths(6)->startOfWeek(), '1 week'],
             default => [now()->subDay()->startOfHour(), '1 hour'],
         };
 
-        return collect(CarbonPeriod::create($start, $interval, now()))
+        $end = $period === 'week' ? $start->copy()->addDays(4) : now();
+
+        return collect(CarbonPeriod::create($start, $interval, $end))
             ->map(fn (Carbon $date): array => [
                 'key' => self::bucketKey($date, $period),
                 'label' => self::bucketLabel($date, $period),
@@ -134,7 +138,7 @@ class AudienceResource extends JsonResource
     private static function bucketKey(Carbon $date, string $period): string
     {
         return match ($period) {
-            'week' => sprintf('%s %02d:00', $date->format('Y-m-d'), intdiv($date->hour, 6) * 6),
+            'week' => $date->format('Y-m-d'),
             'month' => $date->format('Y-m-d'),
             'semester' => $date->copy()->startOfWeek()->format('Y-m-d'),
             default => $date->format('Y-m-d H:00'),
@@ -144,7 +148,7 @@ class AudienceResource extends JsonResource
     private static function bucketLabel(Carbon $date, string $period): string
     {
         return match ($period) {
-            'week' => sprintf('%s %02dh', $date->format('d/m'), intdiv($date->hour, 6) * 6),
+            'week' => $date->locale('pt_BR')->isoFormat('ddd DD/MM'),
             'month' => $date->format('d/m'),
             'semester' => $date->format('d/m'),
             default => $date->format('H\\h'),
