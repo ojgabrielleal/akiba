@@ -74,9 +74,7 @@ class AudienceService
             default => now()->subDay(),
         };
         $bucket = $this->historyBucketExpression($period);
-        $aggregate = in_array($period, ['week', 'month'], true)
-            ? 'SUM(listeners)'
-            : 'ROUND(AVG(listeners))';
+        $aggregate = 'ROUND(AVG(listeners))';
         $endsAt = $period === 'week'
             ? $startsAt->copy()->addDays(4)->endOfDay()->min(now())
             : now();

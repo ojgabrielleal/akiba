@@ -97,9 +97,7 @@ class AudienceResource extends JsonResource
                                 $values = $measurements->get($bucket['key']);
 
                                 return $values?->isNotEmpty()
-                                    ? (in_array($period, ['week', 'month'], true)
-                                        ? (int) $values->sum('listeners')
-                                        : (int) round($values->avg('listeners')))
+                                    ? (int) round($values->avg('listeners'))
                                     : null;
                             })
                             ->all(),

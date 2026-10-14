@@ -31,7 +31,7 @@ class AudienceHistoryTest extends TestCase
             );
 
             $this->assertSame(['seg 12/10', 'ter 13/10', 'qua 14/10', 'qui 15/10', 'sex 16/10'], $result['labels']);
-            $this->assertSame([35, 0, null, null, null], $result['series'][0]['data']);
+            $this->assertSame([18, 0, null, null, null], $result['series'][0]['data']);
 
             $this->travelTo(now()->setDate(2026, 10, 18));
             $weekend = AudienceResource::toCollectionArray(
