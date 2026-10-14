@@ -3,7 +3,7 @@
     import { router } from "@inertiajs/svelte";
 
     import { EmptyState, GridList, IconButton, Pagination, Section, Tooltip } from "@/lib/components/private";
-    import { postPermissions, resolveStatusBackground } from "@/lib/utils";
+    import { formatCompactNumber, postPermissions, resolveStatusBackground } from "@/lib/utils";
 
     export let title;
     export let posts = null;
@@ -96,8 +96,9 @@
                                 </div>
                             {/if}
                         </svelte:element>
-                        <div class={`grid grid-cols-[0.4fr_1fr_0.6fr] items-center absolute bottom-0 w-full py-1 px-4 ${resolveStatusBackground(statusItem(item), { useValidity: false })}`}>
-                            <div class="flex items-center gap-2 font-noto-sans font-extrabold italic uppercase text-md text-suspense-aurora truncate">
+                        <div class={`grid grid-cols-[minmax(3.75rem,auto)_minmax(0,1fr)_auto] items-center gap-2 absolute bottom-0 w-full py-1 px-4 ${resolveStatusBackground(statusItem(item), { useValidity: false })}`}>
+                            <div class="flex min-w-0 items-center gap-2 whitespace-nowrap font-noto-sans font-extrabold italic uppercase text-md text-suspense-aurora"
+                                title={String(item.views ?? 0) + " visualizações"}>
                                 <img
                                     src="/svg/eye.svg"
                                     alt=""
@@ -105,7 +106,7 @@
                                     class="w-4 filter-suspense-aurora"
                                     loading="lazy"
                                 />
-                                {item.views ?? 0}
+                                {formatCompactNumber(item.views)}
                             </div>
                             <div class="mt-[0.1rem] w-full truncate text-center font-noto-sans text-sm font-extrabold italic uppercase text-suspense-aurora">
                                 {item.module === "review" ? "Review" : item.author.nickname}

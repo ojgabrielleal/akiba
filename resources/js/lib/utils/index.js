@@ -12,6 +12,7 @@ export {
     rememberOAuthAction,
 } from "./access/oauthPendingAction.js"
 export { resolveDate, resolveDateTime, resolveDay, resolveHour, resolveAge } from "./formatters/dateTime.js"
+export { formatCompactNumber } from "./formatters/number.js"
 export { placeholderImages, resolvePlaceholderImage } from "./media/placeholders.js"
 export { startPublicSiteRefreshWatcher } from "./navigation/publicSiteRefresh.js"
 export {
