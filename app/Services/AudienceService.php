@@ -68,7 +68,7 @@ class AudienceService
         $period = $filters['period'] ?? 'day';
 
         $startsAt = match ($period) {
-            'week' => now()->subWeek()->startOfDay(),
+            'week' => now()->subDays(6)->startOfDay(),
             'month' => now()->subMonth(),
             'semester' => now()->subMonths(6),
             default => now()->subDay(),
@@ -93,7 +93,7 @@ class AudienceService
     private function historyBucketExpression(string $period): string
     {
         return match ($period) {
-            'week' => "STR_TO_DATE(CONCAT(DATE_FORMAT(created_at, '%Y-%m-%d '), CASE WHEN HOUR(created_at) < 12 THEN '00' WHEN HOUR(created_at) < 18 THEN '12' ELSE '18' END, ':00:00'), '%Y-%m-%d %H:%i:%s')",
+            'week' => 'DATE(created_at)',
             'month' => 'DATE(created_at)',
             'semester' => 'DATE_SUB(DATE(created_at), INTERVAL WEEKDAY(created_at) DAY)',
             default => "STR_TO_DATE(DATE_FORMAT(created_at, '%Y-%m-%d %H:00:00'), '%Y-%m-%d %H:%i:%s')",

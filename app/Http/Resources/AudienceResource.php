@@ -120,14 +120,13 @@ class AudienceResource extends JsonResource
     private static function buckets(string $period): Collection
     {
         [$start, $interval] = match ($period) {
-            'week' => [now()->subWeek()->startOfDay(), '6 hours'],
+            'week' => [now()->subDays(6)->startOfDay(), '1 day'],
             'month' => [now()->subMonth()->startOfDay(), '1 day'],
             'semester' => [now()->subMonths(6)->startOfWeek(), '1 week'],
             default => [now()->subDay()->startOfHour(), '1 hour'],
         };
 
         return collect(CarbonPeriod::create($start, $interval, now()))
-            ->filter(fn (Carbon $date): bool => $period !== 'week' || in_array($date->hour, [0, 12, 18], true))
             ->map(fn (Carbon $date): array => [
                 'key' => self::bucketKey($date, $period),
                 'label' => self::bucketLabel($date, $period),
@@ -137,7 +136,7 @@ class AudienceResource extends JsonResource
     private static function bucketKey(Carbon $date, string $period): string
     {
         return match ($period) {
-            'week' => sprintf('%s %02d:00', $date->format('Y-m-d'), self::weekPartHour($date->hour)),
+            'week' => $date->format('Y-m-d'),
             'month' => $date->format('Y-m-d'),
             'semester' => $date->copy()->startOfWeek()->format('Y-m-d'),
             default => $date->format('Y-m-d H:00'),
@@ -147,20 +146,11 @@ class AudienceResource extends JsonResource
     private static function bucketLabel(Carbon $date, string $period): string
     {
         return match ($period) {
-            'week' => sprintf('%s %s', $date->format('d/m'), self::weekPartLabel($date->hour)),
+            'week' => $date->format('d/m'),
             'month' => $date->format('d/m'),
             'semester' => $date->format('d/m'),
             default => $date->format('H\\h'),
         };
     }
 
-    private static function weekPartHour(int $hour): int
-    {
-        return $hour < 12 ? 0 : ($hour < 18 ? 12 : 18);
-    }
-
-    private static function weekPartLabel(int $hour): string
-    {
-        return $hour < 12 ? 'Dia' : ($hour < 18 ? 'Tarde' : 'Noite');
-    }
 }
