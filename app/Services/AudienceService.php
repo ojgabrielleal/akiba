@@ -68,7 +68,7 @@ class AudienceService
         $period = $filters['period'] ?? 'day';
 
         $startsAt = match ($period) {
-            'week' => now()->subWeek(),
+            'week' => now()->subWeek()->startOfDay(),
             'month' => now()->subMonth(),
             'semester' => now()->subMonths(6),
             default => now()->subDay(),

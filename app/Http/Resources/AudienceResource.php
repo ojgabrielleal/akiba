@@ -120,7 +120,7 @@ class AudienceResource extends JsonResource
     private static function buckets(string $period): Collection
     {
         [$start, $interval] = match ($period) {
-            'week' => [now()->subWeek()->startOfHour(), '6 hours'],
+            'week' => [now()->subWeek()->startOfDay(), '6 hours'],
             'month' => [now()->subMonth()->startOfDay(), '1 day'],
             'semester' => [now()->subMonths(6)->startOfWeek(), '1 week'],
             default => [now()->subDay()->startOfHour(), '1 hour'],
