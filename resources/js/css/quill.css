@@ -74,6 +74,13 @@
     height: auto;
 }
 
+.public-read-body::after,
+.ql-editor::after {
+    display: block;
+    clear: both;
+    content: "";
+}
+
 
 .ql-editor img.ql-image-align-left,
 .public-read-body img.ql-image-align-left,
@@ -87,16 +94,15 @@
 .public-read-body .ql-image-align-left img,
 .ql-editor [data-blot-align="left"] img,
 .public-read-body [data-blot-align="left"] img {
-    margin-left: 0;
-    margin-right: auto;
+    float: left;
+    margin: 0.35rem 1rem 0.75rem 0;
 }
 
 .ql-editor .ql-image-align-left,
 .public-read-body .ql-image-align-left,
 .ql-editor [data-blot-align="left"],
 .public-read-body [data-blot-align="left"] {
-    display: block;
-    text-align: left;
+    display: contents;
 }
 
 .ql-editor img.ql-image-align-center,
@@ -111,6 +117,7 @@
 .public-read-body .ql-image-align-center img,
 .ql-editor [data-blot-align="center"] img,
 .public-read-body [data-blot-align="center"] img {
+    float: none;
     margin-left: auto;
     margin-right: auto;
 }
@@ -135,16 +142,15 @@
 .public-read-body .ql-image-align-right img,
 .ql-editor [data-blot-align="right"] img,
 .public-read-body [data-blot-align="right"] img {
-    margin-left: auto;
-    margin-right: 0;
+    float: right;
+    margin: 0.35rem 0 0.75rem 1rem;
 }
 
 .ql-editor .ql-image-align-right,
 .public-read-body .ql-image-align-right,
 .ql-editor [data-blot-align="right"],
 .public-read-body [data-blot-align="right"] {
-    display: block;
-    text-align: right;
+    display: contents;
 }
 
 .ql-safe-embed,
