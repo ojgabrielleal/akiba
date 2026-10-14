@@ -24,12 +24,6 @@ class PostService
         private DiscordWebhookService $discord,
     ) {}
 
-
-    public function uploadImage(string $folder, UploadedFile $image): string
-    {
-        return $this->image->store($folder, $image);
-    }
-
     public function deactivate(Post $post): Post
     {
         $post = DB::transaction(function () use ($post) {

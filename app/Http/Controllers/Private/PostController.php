@@ -16,8 +16,6 @@ use Inertia\Inertia;
 use App\Http\Controllers\Concerns\HasFlashMessages;
 use App\Http\Requests\Post\StorePostRequest;
 use App\Http\Requests\Post\UpdatePostRequest;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
@@ -84,27 +82,6 @@ class PostController extends Controller
             6,
             (int) request()->input('feed_page', 1),
         );
-    }
-
-
-    public function storeEditorImage(Request $request, PostService $service): JsonResponse
-    {
-        abort_unless(
-            $request->user()?->hasAnyPermission(['post.create', 'post.update', 'post.list.own']),
-            403
-        );
-
-        $data = $request->validate([
-            'image' => ['required', 'image', 'max:5120'],
-        ], [
-            'image.required' => 'Selecione uma imagem.',
-            'image.image' => 'O arquivo precisa ser uma imagem.',
-            'image.max' => 'A imagem precisa ter no máximo 5MB.',
-        ]);
-
-        return response()->json([
-            'url' => $service->uploadImage('posts/content', $data['image']),
-        ]);
     }
 
     public function showPost(Post $post)
