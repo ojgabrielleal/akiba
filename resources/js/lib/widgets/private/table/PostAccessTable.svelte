@@ -87,15 +87,20 @@
                             <td class="px-3 py-3 align-middle">
                                 {#if selectedType === "recognized"}
                                     <div class="flex items-center gap-2 font-bold tabular-nums">
-                                        {number.format(post.recognized_views ?? 0)} com conta
                                         {#if post.recognized_views > 0}
                                             <IconButton variant="eye" label="Ver contas" size="sm" surface="dark" on:click={() => showViewers(post)} />
                                         {/if}
+                                        {number.format(post.recognized_views ?? 0)} com conta
                                     </div>
                                 {:else if selectedType === "anonymous"}
                                     <div class="font-bold tabular-nums">{number.format(post.anonymous_views ?? 0)} anônimos</div>
                                 {:else}
-                                    <div class="font-bold tabular-nums">{number.format(post.views ?? 0)} total</div>
+                                    <div class="flex items-center gap-2 font-bold tabular-nums">
+                                        {#if post.recognized_views > 0}
+                                            <IconButton variant="eye" label="Ver contas" size="sm" surface="dark" on:click={() => showViewers(post)} />
+                                        {/if}
+                                        {number.format(post.views ?? 0)} total
+                                    </div>
                                     <div class="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs font-normal text-suspense-aurora/70">
                                         <span>Com conta: <strong class="text-orange-amber">{number.format(post.recognized_views ?? 0)}</strong></span>
                                         <span>Anônimos: <strong class="text-orange-amber">{number.format(post.anonymous_views ?? 0)}</strong></span>
