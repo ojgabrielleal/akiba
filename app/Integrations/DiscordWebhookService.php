@@ -10,30 +10,41 @@ use Throwable;
 
 class DiscordWebhookService
 {
-    public function sendStreamNotificationHook($user, $program)
+    public function sendStreamNotificationHook($user, $program): bool
     {
-        if (!app()->environment('production')) return false;
+        if (! app()->environment('production')) {
+            return false;
+        }
 
         $webhookUrl = config('services.discord.webhook');
-        if (!$webhookUrl) return false;
+        if (! $webhookUrl) {
+            return false;
+        }
 
         $genderTitle = $user->gender === 'male' ? 'O DJ' : 'A DJ';
         $payload = [
-            'content' => "@everyone Olá otakus queridos!\n\n🔴 **PROGRAMA AO VIVO rolando agora!**",
+            'content' => "Olá otakus queridos!\n\n🔴 **PROGRAMA AO VIVO rolando agora!**",
+            'allowed_mentions' => ['parse' => []],
             'embeds' => [
                 [
                     'title' => "{$program->name} NO AR!",
                     'description' => "🎧 {$genderTitle} **{$user->nickname}** sentou no estúdio e já está no ar!\n\nOuça agora na Akiba.\n👉 **[Clique aqui para sintonizar na Akiba!](https://akiba.com.br)**",
-                    'color' => hexdec("ffaa35"),
+                    'color' => hexdec('ffaa35'),
                     'author' => [
                         'name' => "DJ {$user->nickname}",
                     ],
-                    'timestamp' => now()->toIso8601String()
-                ]
-            ]
+                    'timestamp' => now()->toIso8601String(),
+                ],
+            ],
         ];
 
-        Http::post($webhookUrl, $payload);
+        try {
+            return Http::timeout(15)->connectTimeout(5)->post($webhookUrl, $payload)->successful();
+        } catch (Throwable $exception) {
+            Log::warning('Discord stream notification failed', ['exception' => $exception::class]);
+
+            return false;
+        }
     }
 
     public function sendPostPublishedHook(Post $post, string $url): bool

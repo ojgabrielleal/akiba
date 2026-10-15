@@ -45,8 +45,8 @@ return [
     ],
 
     'discord' => [
-        'webhook' => env('DISCORD_WEBHOOK_STREAM_NOTIFICATION'),
-        'post_webhook' => env('DISCORD_WEBHOOK_POST_NOTIFICATION', env('DISCORD_WEBHOOK_STREAM_NOTIFICATION')),
+        'webhook' => env('DISCORD_LOCUTION_WEBHOOK_URL'),
+        'post_webhook' => env('DISCORD_POST_WEBHOOK_URL'),
         'client_id' => env('DISCORD_CLIENT_ID'),
         'client_secret' => env('DISCORD_CLIENT_SECRET'),
         'redirect' => env('DISCORD_REDIRECT_URI'),

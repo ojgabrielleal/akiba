@@ -89,9 +89,9 @@ docker compose exec node sh
 O projeto inclui variáveis de ambiente extras para integrações com stream e Discord:
 
 ```env
-DISCORD_WEBHOOK_STREAM_NOTIFICATION=null
+DISCORD_WEBHOOK_URL=null
 ```
-- `DISCORD_WEBHOOK_STREAM_NOTIFICATION`: Defina esse valor quando quiser enviar notificações da stream por webhook.
+- `DISCORD_WEBHOOK_URL`: Defina esse valor quando quiser enviar notificações da stream e de notícias pelo mesmo webhook do Discord.
 
 ## Estrutura do Projeto
 
