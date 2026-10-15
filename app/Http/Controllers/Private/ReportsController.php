@@ -298,12 +298,17 @@ class ReportsController extends Controller
             ->with('actor')
             ->latest('created_at')
             ->get()
-            ->unique(fn ($view) => $view->actor_type . ':' . $view->actor_id)
-            ->values()
-            ->map(fn ($view) => [
-                'name' => $view->actor?->nickname ?? $view->actor?->name ?? $view->actor?->username ?? 'Sem nome',
-                'last_view' => $view->created_at->setTimezone('America/Sao_Paulo')->format('d/m/Y H:i'),
-            ]);
+            ->groupBy(fn ($view) => $view->actor_type . ':' . $view->actor_id)
+            ->map(function ($views) {
+                $view = $views->first();
+
+                return [
+                    'name' => $view->actor?->nickname ?? $view->actor?->name ?? $view->actor?->username ?? 'Sem nome',
+                    'views' => $views->count(),
+                    'last_view' => $view->created_at->setTimezone('America/Sao_Paulo')->format('d/m/Y H:i'),
+                ];
+            })
+            ->values();
 
         return response()->json(['viewers' => $viewers]);
     }

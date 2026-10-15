@@ -120,7 +120,7 @@
     {/if}
 </Section>
 
-<Modal bind:this={viewersModal} title={`Contas que visualizaram: ${selectedPost}`} size="md">
+<Modal bind:this={viewersModal} title="Contas que visualizaram" size="md">
     <svelte:fragment slot="content">
         {#if viewersLoading}
             <p class="p-4 text-sm text-blue-night/70">Carregando...</p>
@@ -130,7 +130,10 @@
             <div class="grid gap-2 p-4">
                 {#each viewers as viewer}
                     <div class="flex items-center justify-between gap-3 rounded-md bg-blue-night/5 px-3 py-2 text-sm text-blue-night">
-                        <span class="font-semibold">{viewer.name}</span>
+                        <div>
+                            <div class="font-semibold">{viewer.name}</div>
+                            <div class="mt-1 text-xs text-orange-amber">Visualizou {viewer.views}x</div>
+                        </div>
                         <span class="text-xs text-blue-night/65">{viewer.last_view}</span>
                     </div>
                 {/each}
