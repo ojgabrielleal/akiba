@@ -128,14 +128,14 @@
         {:else if viewersError}
             <p class="p-4 text-sm text-blue-night/70">Não foi possível carregar as contas.</p>
         {:else if viewers.length}
-            <ul class="grid gap-2 p-4 font-noto-sans">
+            <ul class="grid gap-2 p-2 font-noto-sans">
                 {#each viewers as viewer}
                     <li class="grid grid-cols-[2.5rem_minmax(0,1fr)] gap-2 border-b border-blue-night/10 pb-2 last:border-b-0 last:pb-0">
                         <img src={resolvePlaceholderImage(viewer.avatar, "avatar")} alt="" aria-hidden="true" class="size-10 rounded-full border-2 border-blue-night/15 object-cover object-top" loading="lazy" />
                         <div class="min-w-0">
                             <p class="truncate text-sm font-black uppercase italic leading-tight text-blue-night">{viewer.name}</p>
                             <p class="mt-1 text-xs font-bold uppercase italic text-blue-night">Visualizou: <span class="text-orange-amber">{viewer.views}x</span></p>
-                            <p class="mt-1 text-xs font-bold uppercase italic text-neutral-gray">{viewer.last_view}</p>
+                            <p class="mt-1 text-xs font-bold uppercase italic text-neutral-gray">Última visualização em: {viewer.last_view}</p>
                         </div>
                     </li>
                 {/each}
