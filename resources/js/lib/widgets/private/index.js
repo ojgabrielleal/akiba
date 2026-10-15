@@ -63,3 +63,5 @@ export { default as Navbar } from './navbar/Navbar.svelte';
 
 // Tables
 export { default as ProgramHistoryTable } from "./table/ProgramHistoryTable.svelte";
+
+export { default as PostAccessTable } from "./table/PostAccessTable.svelte";

@@ -10,12 +10,21 @@ class PageView extends Model
     use HasFactory;
 
     protected $fillable = [
+        'actor_type',
+        'actor_id',
         'viewable_type',
         'viewable_id',
         'ip_address',
         'page_name',
         'page_url',
     ];
+
+    protected $hidden = ['actor_type', 'actor_id', 'ip_address'];
+
+    public function actor()
+    {
+        return $this->morphTo();
+    }
 
     /**
      * Define the relationships between this model and other models.

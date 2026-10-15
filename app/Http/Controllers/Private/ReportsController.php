@@ -73,6 +73,17 @@ class ReportsController extends Controller
         );
     }
 
+    private function indexPostAccess()
+    {
+        $type = request()->string('post_access_type')->toString();
+        $period = request()->integer('post_access_period');
+
+        return $this->postFilter->accessReport([
+            'type' => in_array($type, ['recognized', 'anonymous'], true) ? $type : 'all',
+            'period' => in_array($period, [15, 30], true) ? $period : null,
+        ]);
+    }
+
     private function indexInternalRanking(): array
     {
         return [
@@ -280,9 +291,25 @@ class ReportsController extends Controller
         );
     }
 
+    public function showPostViewers(Post $post)
+    {
+        return response()->json($post->views()
+            ->whereNotNull('actor_id')
+            ->with('actor')
+            ->latest('created_at')
+            ->get()
+            ->unique(fn ($view) => $view->actor_type . ':' . $view->actor_id)
+            ->values()
+            ->map(fn ($view) => [
+                'name' => $view->actor?->nickname ?? $view->actor?->name ?? $view->actor?->username ?? 'Sem nome',
+                'last_view' => $view->created_at->setTimezone('America/Sao_Paulo')->format('d/m/Y H:i'),
+            ]));
+    }
+
     public function render()
     {
         return Inertia::render($this->render, [
+            'postAccess' => Inertia::defer(fn () => $this->indexPostAccess(), 'reports-posts'),
             'audience' => Inertia::defer(fn () => $this->indexAudience(), 'reports-audience'),
             'audienceHistory' => Inertia::defer(fn () => $this->indexAudienceHistory(), 'reports-history'),
             'onair' => Inertia::defer(fn () => $this->indexOnair(), 'reports-history'),

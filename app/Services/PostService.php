@@ -428,6 +428,81 @@ class PostService
         return $metadata;
     }
 
+    public function accessReport(array $filters = []): LengthAwarePaginator
+    {
+        $now = now();
+        $period = $filters['period'] ?? null;
+        $type = $filters['type'] ?? 'all';
+        $viewFilter = function ($query) use ($period, $type): void {
+            if ($period) {
+                $query->where('created_at', '>=', now()->subDays((int) $period));
+            }
+            if ($type === 'recognized') {
+                $query->whereNotNull('actor_id');
+            } elseif ($type === 'anonymous') {
+                $query->whereNull('actor_id');
+            }
+        };
+
+        return Post::query()
+            ->select(['id', 'uuid', 'title', 'slug', 'status', 'is_active'])
+            ->where('module', 'post')
+            ->where('status', 'published')
+            ->whereHas('views', $viewFilter)
+            ->with(['views' => function ($query) use ($viewFilter): void {
+                $viewFilter($query);
+                $query->with('actor')->latest('created_at')->limit(1);
+            }])
+            ->withCount([
+                'views' => $viewFilter,
+                'views as recognized_views' => fn (Builder $query) => $viewFilter($query->whereNotNull('actor_id')),
+                'views as anonymous_views' => fn (Builder $query) => $viewFilter($query->whereNull('actor_id')),
+                'views as recognized_users' => fn (Builder $query) => $query
+                    ->whereNotNull('actor_id')
+                    ->select(DB::raw('COUNT(DISTINCT actor_type, actor_id)')),
+                'views as distinct_ips' => fn (Builder $query) => $query
+                    ->select(DB::raw('COUNT(DISTINCT ip_address)')),
+                'reactions',
+                'likes',
+                'comments',
+                'views as views_week' => fn (Builder $query) => $query
+                    ->where('created_at', '>=', $now->copy()->subDays(7)),
+                'views as views_month' => fn (Builder $query) => $query
+                    ->where('created_at', '>=', $now->copy()->subDays(30)),
+            ])
+            ->withMax(['views' => $viewFilter], 'created_at')
+            ->orderByDesc('views_count')
+            ->orderByDesc('id')
+            ->paginate(5, ['*'], 'posts_page')
+            ->withQueryString()
+            ->through(function (Post $post) {
+                $lastView = $post->views->first();
+                $actor = $lastView?->actor;
+
+                return [
+                'uuid' => $post->uuid,
+                'title' => $post->title,
+                'url' => $post->is_active && $post->status === 'published'
+                    ? route('post.read', $post->slug) : null,
+                'views' => (int) $post->views_count,
+                'recognized_views' => (int) $post->recognized_views,
+                'anonymous_views' => (int) $post->anonymous_views,
+                'recognized_users' => (int) $post->recognized_users,
+                'distinct_ips' => (int) $post->distinct_ips,
+                'reactions' => (int) $post->reactions_count,
+                'likes' => (int) $post->likes_count,
+                'comments' => (int) $post->comments_count,
+                'views_week' => (int) $post->views_week,
+                'views_month' => (int) $post->views_month,
+                'last_view' => $post->views_max_created_at
+                    ? Carbon::parse($post->views_max_created_at)
+                        ->setTimezone('America/Sao_Paulo')->format('d/m/Y H:i')
+                    : null,
+                'last_viewer' => $actor?->nickname ?? $actor?->name ?? $actor?->username ?? 'Anônimo',
+                ];
+            });
+    }
+
     public function filter(array $filters = []): Collection|LengthAwarePaginator
     {
         $user = $filters['user'] ?? null;

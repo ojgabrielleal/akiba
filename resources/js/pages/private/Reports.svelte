@@ -8,9 +8,10 @@
         AudienceHistoryChart,
         InternalRankingCarousel,
         ProgramHistoryTable,
+        PostAccessTable,
     } from "@/lib/widgets/private";
 
-    $: ({ audience, audienceHistory, onair, ranking_interno: ranking } = $page.props);
+    $: ({ postAccess, audience, audienceHistory, onair, ranking_interno: ranking } = $page.props);
 
     const skeletonItems = (count) => Array.from({ length: count }, (_, index) => index);
 </script>
@@ -47,6 +48,14 @@
                         <div class="h-57 w-42 shrink-0 animate-pulse rounded-md bg-blue-ocean/55" aria-hidden="true"></div>
                     {/each}
                 </div>
+            </Section>
+        </svelte:fragment>
+    </Deferred>
+    <Deferred data="postAccess">
+        <PostAccessTable posts={postAccess} />
+        <svelte:fragment slot="fallback">
+            <Section title="Acessos às postagens">
+                <div class="h-80 animate-pulse rounded-md bg-blue-ocean/55" aria-hidden="true"></div>
             </Section>
         </svelte:fragment>
     </Deferred>
