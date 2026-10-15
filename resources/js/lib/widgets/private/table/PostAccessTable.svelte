@@ -35,7 +35,7 @@
     }
 </script>
 
-<Section title="Histórico de matérias">
+<Section title="Acessos à matéria">
     <div class="mb-4 flex flex-wrap gap-3">
         <label class="font-noto-sans text-sm text-suspense-aurora">
             Visualizações
@@ -113,17 +113,17 @@
 
 <Modal bind:this={viewersModal} title={`Contas que viram: ${selectedPost}`} size="md">
     {#if viewersLoading}
-        <p class="p-4 text-sm text-suspense-aurora/70">Carregando...</p>
+        <p class="p-4 text-sm text-blue-night/70">Carregando...</p>
     {:else if viewers.length}
         <div class="grid gap-2 p-4">
             {#each viewers as viewer}
-                <div class="flex items-center justify-between gap-3 rounded-md bg-suspense-aurora/10 px-3 py-2 text-sm text-suspense-aurora">
+                <div class="flex items-center justify-between gap-3 rounded-md bg-blue-night/5 px-3 py-2 text-sm text-blue-night">
                     <span class="font-semibold">{viewer.name}</span>
-                    <span class="text-xs text-suspense-aurora/65">{viewer.last_view}</span>
+                    <span class="text-xs text-blue-night/65">{viewer.last_view}</span>
                 </div>
             {/each}
         </div>
     {:else}
-        <p class="p-4 text-sm text-suspense-aurora/70">Nenhuma conta encontrada.</p>
+        <p class="p-4 text-sm text-blue-night/70">Nenhuma conta encontrada.</p>
     {/if}
 </Modal>
