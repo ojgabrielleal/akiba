@@ -21,14 +21,13 @@ class DiscordWebhookService
             return false;
         }
 
-        $genderTitle = $user->gender === 'male' ? 'O DJ' : 'A DJ';
         $payload = [
-            'content' => "Olá otakus queridos!\n\n🔴 **PROGRAMA AO VIVO rolando agora!**",
+            'content' => '🎧 **Bora de Akiba?**',
             'allowed_mentions' => ['parse' => []],
             'embeds' => [
                 [
                     'title' => "{$program->name} NO AR!",
-                    'description' => "🎧 {$genderTitle} **{$user->nickname}** sentou no estúdio e já está no ar!\n\nOuça agora na Akiba.\n👉 **[Clique aqui para sintonizar na Akiba!](https://akiba.com.br)**",
+                    'description' => "**{$user->nickname}** tá ao vivo com o **{$program->name}**!\n\nVem pela música, fica pela companhia. E aquele opening que não sai da sua cabeça? Pede aí que a gente quer ouvir também. 🧡\n\n**[Dá o play e manda seu pedido!](https://akiba.com.br)**",
                     'color' => hexdec('ffaa35'),
                     'author' => [
                         'name' => "DJ {$user->nickname}",
