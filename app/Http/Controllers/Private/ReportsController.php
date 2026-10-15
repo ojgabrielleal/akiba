@@ -304,6 +304,7 @@ class ReportsController extends Controller
 
                 return [
                     'name' => $view->actor?->nickname ?? $view->actor?->name ?? $view->actor?->username ?? 'Sem nome',
+                    'avatar' => $view->actor?->avatar,
                     'views' => $views->count(),
                     'last_view' => $view->created_at->setTimezone('America/Sao_Paulo')->format('d/m/Y H:i'),
                 ];
