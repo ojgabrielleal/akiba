@@ -9,6 +9,7 @@
     let viewersModal;
     let viewers = [];
     let viewersLoading = false;
+    let viewersError = false;
     let selectedPost = "";
     $: filters = $page.url ? new URL($page.url, window.location.origin).searchParams : new URLSearchParams();
     $: selectedType = filters.get("post_access_type") ?? "all";
@@ -27,11 +28,18 @@
     async function showViewers(post) {
         selectedPost = post.title;
         viewers = [];
+        viewersError = false;
         viewersLoading = true;
         viewersModal.open();
-        const response = await fetch(`/panel/reports/post/${post.uuid}/viewers`);
-        viewers = response.ok ? await response.json() : [];
-        viewersLoading = false;
+        try {
+            const response = await fetch(`/panel/reports/post/${post.uuid}/viewers`);
+            if (!response.ok) throw new Error("viewer request failed");
+            viewers = await response.json();
+        } catch (error) {
+            viewersError = true;
+        } finally {
+            viewersLoading = false;
+        }
     }
 </script>
 
@@ -114,6 +122,8 @@
 <Modal bind:this={viewersModal} title={`Contas que viram: ${selectedPost}`} size="md">
     {#if viewersLoading}
         <p class="p-4 text-sm text-blue-night/70">Carregando...</p>
+    {:else if viewersError}
+        <p class="p-4 text-sm text-blue-night/70">Não foi possível carregar as contas.</p>
     {:else if viewers.length}
         <div class="grid gap-2 p-4">
             {#each viewers as viewer}
