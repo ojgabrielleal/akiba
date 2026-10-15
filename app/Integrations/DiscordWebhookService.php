@@ -5,6 +5,9 @@ namespace App\Integrations;
 use App\Models\Post;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\ImageManager;
 use Illuminate\Support\Str;
 use Throwable;
 
@@ -62,7 +65,10 @@ class DiscordWebhookService
             ->limit(180)
             ->toString();
 
-        $image = $this->postImage($post);
+        $attachment = $this->postAttachment($post);
+        $image = $attachment
+            ? ['url' => 'attachment://post.jpg']
+            : $this->postImage($post);
 
         Log::info('Discord post notification payload prepared', [
             'post_uuid' => $post->uuid,
@@ -93,9 +99,46 @@ class DiscordWebhookService
         ];
 
         try {
-            return Http::post($webhookUrl, $payload)->successful();
-        } catch (Throwable) {
+            $request = Http::timeout(30)->connectTimeout(5);
+
+            if ($attachment !== null) {
+                $payload['attachments'] = [['id' => 0, 'filename' => 'post.jpg']];
+
+                return $request
+                    ->attach('files[0]', $attachment, 'post.jpg', ['Content-Type' => 'image/jpeg'])
+                    ->post($webhookUrl, ['payload_json' => json_encode($payload, JSON_THROW_ON_ERROR)])
+                    ->successful();
+            }
+
+            return $request->post($webhookUrl, $payload)->successful();
+        } catch (Throwable $exception) {
+            Log::warning('Discord post notification failed', ['exception' => $exception::class]);
             return false;
+        }
+    }
+
+    private function postAttachment(Post $post): ?string
+    {
+        $image = $post->cover ?: $post->image;
+
+        if (! $image || ! str_starts_with($image, '/storage/')) {
+            return null;
+        }
+
+        try {
+            $contents = Storage::disk('public')->get(substr($image, strlen('/storage/')));
+
+            return (string) (new ImageManager(new Driver()))
+                ->read($contents)
+                ->scaleDown(width: 1600, height: 1600)
+                ->toJpeg(85);
+        } catch (Throwable $exception) {
+            Log::warning('Discord post attachment preparation failed', [
+                'post_uuid' => $post->uuid,
+                'exception' => $exception::class,
+            ]);
+
+            return null;
         }
     }
 

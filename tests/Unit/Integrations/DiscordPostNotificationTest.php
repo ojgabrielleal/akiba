@@ -1,0 +1,71 @@
+<?php
+
+namespace Tests\Unit\Integrations;
+
+use App\Integrations\DiscordWebhookService;
+use App\Models\Post;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
+use Tests\TestCase;
+
+class DiscordPostNotificationTest extends TestCase
+{
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->app->instance('env', 'production');
+        config([
+            'services.discord.webhook' => 'https://discord.test/stream',
+            'services.discord.post_webhook' => 'https://discord.test/posts',
+        ]);
+        Http::preventStrayRequests();
+        Http::fake(['discord.test/posts' => Http::response([], 204)]);
+        Storage::fake('public');
+    }
+
+    public function test_it_uploads_the_cover_as_a_jpeg_and_references_it_in_the_embed(): void
+    {
+        $file = UploadedFile::fake()->image('cover.png', 100, 60);
+        Storage::disk('public')->put('images/cover.png', $file->getContent());
+        $post = new Post(['title' => 'Nova matéria', 'cover' => '/storage/images/cover.png']);
+
+        $this->assertTrue(app(DiscordWebhookService::class)->sendPostPublishedHook($post, 'https://akiba.test/materia/teste'));
+
+        Http::assertSent(function ($request) {
+            $field = collect($request->data())->firstWhere('name', 'payload_json');
+            $payload = json_decode($field['contents'], true);
+
+            return $request->url() === 'https://discord.test/posts'
+                && $request->hasFile('files[0]')
+                && $payload['attachments'] === [['id' => 0, 'filename' => 'post.jpg']]
+                && $payload['embeds'][0]['image']['url'] === 'attachment://post.jpg'
+                && $payload['allowed_mentions']['parse'] === ['everyone']
+                && str_contains($request->body(), 'image/jpeg')
+                && str_contains($request->body(), "\xff\xd8\xff");
+        });
+        Http::assertSentCount(1);
+    }
+
+    public function test_it_sends_json_when_the_post_has_no_image(): void
+    {
+        $this->assertTrue(app(DiscordWebhookService::class)->sendPostPublishedHook(
+            new Post(['title' => 'Sem capa']), 'https://akiba.test/materia/teste',
+        ));
+
+        Http::assertSent(fn ($request) => $request->isJson()
+            && ! isset($request['embeds'][0]['image'])
+            && ! isset($request['attachments']));
+        Http::assertSentCount(1);
+    }
+
+    public function test_it_falls_back_to_the_image_url_if_the_local_file_is_missing(): void
+    {
+        $post = new Post(['uuid' => 'test-post', 'title' => 'Capa ausente', 'cover' => '/storage/missing.webp']);
+        $this->assertTrue(app(DiscordWebhookService::class)->sendPostPublishedHook($post, 'https://akiba.test/materia/teste'));
+
+        Http::assertSent(fn ($request) => $request->isJson()
+            && $request['embeds'][0]['image']['url'] === route('post.social-image', 'test-post'));
+        Http::assertSentCount(1);
+    }
+}
