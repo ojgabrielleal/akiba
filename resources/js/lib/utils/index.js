@@ -34,3 +34,5 @@ export {
     resolvePushNotificationPermission,
 } from "./push/subscription.js"
 export { debounce } from "./timing/debounce.js"
+
+export { scheduleAfterPageLoad } from "./timing/afterPageLoad.js"

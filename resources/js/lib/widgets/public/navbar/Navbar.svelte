@@ -2,9 +2,10 @@
     import { Link, page, router } from "@inertiajs/svelte";
     import { onMount } from "svelte";
     import { fade, fly } from "svelte/transition";
-    import { navbar } from "@/lib/constants";
+    import { navbar, publicAnimations } from "@/lib/constants";
     import {
         listPushNotifications,
+        scheduleAfterPageLoad,
         markPushNotificationAsRead,
         markPushNotificationsAsRead,
         OAuthAction,
@@ -33,6 +34,12 @@
     let selectedTheme = "akiba";
     let brandLogo = resolveCommemorativeLogo();
     let pushPromptDismissed = true;
+    let pushPromptReady = false;
+    let cookieConsentVisible = true;
+    let cookieConsentHeight = 0;
+    let playerBarVisible = false;
+    let requestingNotifications = false;
+    let pushError = "";
 
     $: profile = oauth?.profile;
     $: avatar = profile?.avatar || "/img/placeholders/avatar.webp";
@@ -41,7 +48,7 @@
     $: canRequestPushNotifications = Boolean(vapidPublicKey);
     $: hasActiveNotifications = notificationPermission === "granted";
     $: hasUnreadNotifications = notifications.length > 0;
-    $: canShowPushPrompt = canRequestPushNotifications && notificationPermission === "default" && !pushPromptDismissed;
+    $: canShowPushPrompt = pushPromptReady && canRequestPushNotifications && notificationPermission === "default" && !pushPromptDismissed;
     $: canOpenProfile = oauth?.is_oauth || (oauth?.is_member && oauth?.can_view_profile && oauth?.can_update_profile);
     $: currentUrl = $page.url ?? "/";
     $: loginRedirect = `/entrar?reason=default&redirect=${encodeURIComponent(currentUrl)}`;
@@ -100,15 +107,32 @@
     };
 
     const requestNotifications = async () => {
-        pushPromptDismissed = true;
+        if (requestingNotifications) return;
 
-        const permission = await requestPushNotificationSubscription(vapidPublicKey);
+        requestingNotifications = true;
+        pushError = "";
 
-        notificationPermission = permission;
+        try {
+            notificationPermission = await requestPushNotificationSubscription(vapidPublicKey);
+            pushPromptDismissed = true;
 
-        if (permission === "granted") {
-            await loadNotifications();
+            if (notificationPermission === "granted") {
+                await loadNotifications();
+            }
+        } catch {
+            pushError = "Não foi possível ativar. Tente novamente.";
+        } finally {
+            requestingNotifications = false;
         }
+    };
+
+    const handlePlayerBarVisibility = (event) => {
+        playerBarVisible = Boolean(event.detail?.visible);
+    };
+
+    const handleCookieConsentVisibility = (event) => {
+        cookieConsentVisible = Boolean(event.detail?.visible);
+        cookieConsentHeight = Number(event.detail?.height) || 0;
     };
 
     const handleNotificationClick = async (event = null) => {
@@ -173,10 +197,24 @@
     };
 
     onMount(() => {
+        const stopPushPromptTimer = scheduleAfterPageLoad(() => {
+            notificationPermission = resolvePushNotificationPermission();
+            pushPromptReady = true;
+        });
+
         syncSelectedThemeFromStorage();
         applyPublicTheme(selectedTheme);
 
         notificationPermission = resolvePushNotificationPermission();
+
+        try {
+            pushPromptDismissed = localStorage.getItem("akiba_push_prompt_dismissed") === "1";
+        } catch {
+            pushPromptDismissed = false;
+        }
+
+        window.addEventListener("akiba:cookie-consent-visibility", handleCookieConsentVisibility);
+        window.addEventListener("akiba:player-bar-visibility", handlePlayerBarVisibility);
 
         if (notificationPermission === "granted") {
             loadNotifications();
@@ -192,6 +230,9 @@
         }, 5000);
 
         return () => {
+            stopPushPromptTimer();
+            window.removeEventListener("akiba:cookie-consent-visibility", handleCookieConsentVisibility);
+            window.removeEventListener("akiba:player-bar-visibility", handlePlayerBarVisibility);
             navigator.serviceWorker?.removeEventListener("message", handleServiceWorkerMessage);
             window.removeEventListener("focus", loadNotifications);
             document.removeEventListener("visibilitychange", handleVisibilityChange);
@@ -514,42 +555,61 @@
 />
 
 {#if canShowPushPrompt}
-    <div
-        class="fixed bottom-[calc(5.5rem+env(safe-area-inset-bottom))] left-4 right-4 z-[160] mx-auto max-w-sm rounded-2xl border border-orange-amber/30 bg-blue-ocean/95 p-4 font-noto-sans text-suspense-aurora shadow-2xl shadow-blue-night/45 backdrop-blur-md [[data-public-theme=light]_&]:bg-white/95 [[data-public-theme=light]_&]:text-blue-night [[data-public-theme=light]_&]:shadow-blue-night/15 sm:left-auto sm:right-5 sm:mx-0"
-        transition:fly={{ y: 24, duration: 240 }}
+    <aside
+        aria-label="Ativar notificações da Akiba"
+        style:--push-bottom={`calc(${playerBarVisible ? "5.5rem" : "1rem"} + env(safe-area-inset-bottom))`}
+        style:--cookie-offset={`${cookieConsentVisible ? cookieConsentHeight + 12 : 0}px`}
+        class={[
+            "push-prompt fixed bottom-[calc(var(--push-bottom)+var(--cookie-offset))] 2xl:bottom-[var(--push-bottom)] left-4 right-4 z-[130] max-w-sm rounded-2xl border border-suspense-aurora/10 bg-blue-night/95 p-4 font-noto-sans text-suspense-aurora shadow-2xl shadow-blue-night/30 backdrop-blur-md [[data-public-theme=light]_&]:bg-white/95 [[data-public-theme=light]_&]:text-blue-night sm:right-auto sm:w-96 transition-[bottom] duration-300 ease-out motion-reduce:transition-none",
+        ]}
     >
+        <button
+            type="button"
+            aria-label="Fechar aviso de notificações"
+            class={["absolute right-2 top-2 flex size-8 cursor-pointer items-center justify-center rounded-full text-orange-citric hover:bg-orange-citric/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric", publicAnimations.iconButtonInteractive]}
+            on:click={dismissPushPrompt}
+        >
+            <MaskIcon icon="/svg/close.svg" class="size-3" />
+        </button>
         <div class="flex items-start gap-3">
-            <span class="mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-full bg-orange-citric text-blue-night shadow-lg shadow-orange-citric/20" aria-hidden="true">
-                <MaskIcon icon="/svg/bell.svg" class="size-5 text-blue-night" />
+            <span class="flex size-9 shrink-0 items-center justify-center rounded-full bg-orange-morning/10 text-orange-morning" aria-hidden="true">
+                <MaskIcon icon="/svg/bell.svg" class="size-5" />
             </span>
             <div class="min-w-0 flex-1">
-                <p class="text-[0.7rem] font-black uppercase tracking-[0.18em] text-orange-citric">
-                    Notificações Akiba
+                <p class="pr-5 text-sm font-bold leading-snug">
+                    Não perca nenhuma novidade da Akiba
                 </p>
-                <p class="mt-1 text-sm font-extrabold uppercase italic leading-tight">
-                    Quer receber avisos da comunidade?
+                <p class="mt-1.5 text-xs leading-relaxed text-suspense-aurora/65 [[data-public-theme=light]_&]:text-blue-night/65">
+                    Receba avisos sobre novas matérias, programas ao vivo e novidades da Akiba.
                 </p>
-                <p class="mt-1.5 text-xs font-semibold leading-snug text-suspense-aurora/70 [[data-public-theme=light]_&]:text-blue-night/60">
-                    A gente te avisa sobre novidades, enquetes e momentos importantes da rádio.
-                </p>
+                <button
+                    type="button"
+                    disabled={requestingNotifications}
+                    aria-busy={requestingNotifications}
+                    class={["mt-3 inline-flex min-h-9 cursor-pointer items-center justify-center rounded-full bg-orange-citric px-4 py-2 text-xs font-bold text-blue-night hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric focus-visible:ring-offset-2 focus-visible:ring-offset-blue-night disabled:cursor-wait disabled:opacity-60", publicAnimations.buttonInteractive]}
+                    on:click={requestNotifications}
+                >
+                    {requestingNotifications ? "Ativando…" : "Ativar notificações"}
+                </button>
+                {#if pushError}
+                    <p role="alert" class="mt-2 text-xs text-orange-morning">{pushError}</p>
+                {/if}
             </div>
         </div>
-        <div class="mt-4 flex items-center justify-end gap-2">
-            <button
-                type="button"
-                class="min-h-9 rounded-full px-3 py-1.5 text-xs font-black uppercase italic text-suspense-aurora/70 transition hover:text-orange-citric focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric [[data-public-theme=light]_&]:text-blue-night/60 [[data-public-theme=light]_&]:hover:text-orange-amber"
-                on:click={dismissPushPrompt}
-            >
-                Agora não
-            </button>
-            <button
-                type="button"
-                class="inline-flex min-h-9 items-center justify-center gap-2 rounded-full bg-orange-citric px-4 py-1.5 text-xs font-black uppercase italic !text-white shadow-lg shadow-orange-citric/20 transition duration-300 ease-out hover:-translate-y-0.5 hover:brightness-105 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none"
-                on:click={requestNotifications}
-            >
-                <MaskIcon icon="/svg/bell.svg" class="size-4 !text-white" />
-                Ativar
-            </button>
-        </div>
-    </div>
+    </aside>
 {/if}
+
+<style>
+    @keyframes push-prompt-enter {
+        from { opacity: 0; transform: translateY(12px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .push-prompt {
+        animation: push-prompt-enter 300ms ease-out;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .push-prompt { animation: none; }
+    }
+</style>
