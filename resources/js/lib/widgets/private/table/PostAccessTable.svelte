@@ -121,7 +121,7 @@
     {/if}
 </Section>
 
-<Modal bind:this={viewersModal} title="Contas que visualizaram" size="md">
+<Modal bind:this={viewersModal} title="Contas que visualizaram" size="sm">
     <svelte:fragment slot="content">
         {#if viewersLoading}
             <p class="p-4 text-sm text-blue-night/70">Carregando...</p>
