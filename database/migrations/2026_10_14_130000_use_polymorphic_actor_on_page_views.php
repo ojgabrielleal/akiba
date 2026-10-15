@@ -9,12 +9,19 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('page_views', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
-            $table->renameColumn('user_id', 'actor_id');
-            $table->string('actor_type')->nullable()->after('actor_id');
-            $table->index(['actor_type', 'actor_id']);
-        });
+        if (Schema::hasColumn('page_views', 'user_id')) {
+            Schema::table('page_views', function (Blueprint $table) {
+                $table->dropForeign(['user_id']);
+                $table->renameColumn('user_id', 'actor_id');
+            });
+        }
+
+        if (! Schema::hasColumn('page_views', 'actor_type')) {
+            Schema::table('page_views', function (Blueprint $table) {
+                $table->string('actor_type')->nullable()->after('actor_id');
+                $table->index(['actor_type', 'actor_id']);
+            });
+        }
 
         DB::table('page_views')->whereNotNull('actor_id')->update([
             'actor_type' => App\Models\User::class,
