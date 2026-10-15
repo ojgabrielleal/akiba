@@ -45,7 +45,7 @@
     }
 </script>
 
-<Section title="Acessos à matéria">
+<Section title="Histórico de matérias">
     <div class="mb-4 flex flex-wrap gap-3">
         <label class="font-noto-sans text-sm text-suspense-aurora">
             Visualizações
