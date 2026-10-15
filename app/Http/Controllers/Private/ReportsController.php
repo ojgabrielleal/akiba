@@ -293,7 +293,7 @@ class ReportsController extends Controller
 
     public function showPostViewers(Post $post)
     {
-        return response()->json($post->views()
+        $viewers = $post->views()
             ->whereNotNull('actor_id')
             ->with('actor')
             ->latest('created_at')
@@ -303,7 +303,9 @@ class ReportsController extends Controller
             ->map(fn ($view) => [
                 'name' => $view->actor?->nickname ?? $view->actor?->name ?? $view->actor?->username ?? 'Sem nome',
                 'last_view' => $view->created_at->setTimezone('America/Sao_Paulo')->format('d/m/Y H:i'),
-            ]));
+            ]);
+
+        return response()->json(['viewers' => $viewers]);
     }
 
     public function render()

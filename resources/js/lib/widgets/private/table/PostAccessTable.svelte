@@ -34,7 +34,8 @@
         try {
             const response = await fetch(`/panel/reports/post/${post.uuid}/viewers`);
             if (!response.ok) throw new Error("viewer request failed");
-            viewers = await response.json();
+            const payload = await response.json();
+            viewers = payload.viewers ?? payload.data ?? payload;
         } catch (error) {
             viewersError = true;
         } finally {
