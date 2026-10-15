@@ -119,7 +119,7 @@
     {/if}
 </Section>
 
-<Modal bind:this={viewersModal} title={`Contas que viram: ${selectedPost}`} size="md">
+<Modal bind:this={viewersModal} title={`Contas que visualizaram: ${selectedPost}`} size="md">
     {#if viewersLoading}
         <p class="p-4 text-sm text-blue-night/70">Carregando...</p>
     {:else if viewersError}
