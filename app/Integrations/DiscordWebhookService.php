@@ -25,8 +25,8 @@ class DiscordWebhookService
         }
 
         $payload = [
-            'content' => '🎧 **Bora de Akiba?**',
-            'allowed_mentions' => ['parse' => []],
+            'content' => '🎧 @everyone **Bora de Akiba?**',
+            'allowed_mentions' => ['parse' => ['everyone']],
             'embeds' => [
                 [
                     'title' => "{$program->name} NO AR!",
