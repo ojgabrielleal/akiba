@@ -60,7 +60,7 @@
     <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div
         transition:fade={{ duration: 200 }}
-        class="fixed inset-0 z-[240] flex h-dvh w-full items-center justify-center overflow-y-auto bg-black/45 p-3 backdrop-blur-xs sm:p-4"
+        class="fixed inset-0 z-[2147483000] flex h-dvh w-full items-center justify-center overflow-y-auto bg-black/45 p-3 backdrop-blur-xs sm:p-4"
         role="presentation"
         on:click={close}
     >

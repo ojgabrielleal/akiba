@@ -46,7 +46,7 @@
 <svelte:window on:keydown={handleKeydown} />
 
 {#if selectedItem}
-    <div class="fixed inset-0 z-[220] flex items-center justify-center bg-blue-night/72 p-3 backdrop-blur-xs sm:p-5 lg:p-8">
+    <div class="fixed inset-0 z-[2147483000] flex items-center justify-center bg-blue-night/72 p-3 backdrop-blur-xs sm:p-5 lg:p-8">
         <button
             type="button"
             class="absolute inset-0 cursor-zoom-out focus-visible:outline-none"

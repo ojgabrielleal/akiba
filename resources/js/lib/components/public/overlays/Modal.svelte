@@ -75,7 +75,7 @@
         use:portal
         data-public-theme-scope
         data-public-theme={selectedTheme}
-        class="fixed inset-0 z-[200] flex h-[100dvh] w-screen items-center justify-center bg-black/40 p-4 backdrop-blur-xs sm:p-6 lg:p-9"
+        class="fixed inset-0 z-[2147483000] flex h-[100dvh] w-screen items-center justify-center bg-black/40 p-4 backdrop-blur-xs sm:p-6 lg:p-9"
         role="presentation"
         transition:fade={{ duration: 180 }}
         on:click={handleBackdrop}

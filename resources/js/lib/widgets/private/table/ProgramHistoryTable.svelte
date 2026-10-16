@@ -1,5 +1,5 @@
 <script>
-    import { Badge, EmptyState, IconButton, Modal, Pagination, Section } from "@/lib/components/private/";
+    import { Badge, EmptyState, Modal, Pagination, Section } from "@/lib/components/private/";
     import { resolvePlaceholderImage } from "@/lib/utils";
 
     export let title;
@@ -254,15 +254,14 @@
                                 {formatNumber(item.peak_listeners)}
                             </td>
                             <td class="px-3 py-3 align-middle">
-                                <div class="flex items-center gap-2">
-                                    <IconButton
-                                        variant="eye"
-                                        label="Ver pedidos"
-                                        size="sm"
-                                        surface="dark"
-                                        on:click={() => openSongRequests(item)}
-                                    />
+                                <div class="flex flex-col items-start">
                                     <span class="min-w-0 truncate">{formatNumber(item.song_requests_total)} atendidos</span>
+                                    <button
+                                        type="button"
+                                        on:click={() => openSongRequests(item)}
+                                        class="mt-2 inline-flex cursor-pointer items-center rounded-md border border-orange-citric/40 px-2 py-1 text-xs font-extrabold uppercase italic text-orange-citric transition hover:bg-orange-citric/10 motion-reduce:transition-none hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-orange-citric"
+                                        aria-label={`Ver pedidos de ${item.program.name}`}
+                                    >Ver pedidos</button>
                                 </div>
                             </td>
                         </tr>

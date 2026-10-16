@@ -52,7 +52,7 @@
     <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div
         transition:fade={{ x: "100%", duration: 500, easing: quintOut }}
-        class="modal-active fixed inset-0 z-[200] flex h-[100dvh] w-screen items-center justify-center bg-black/40 p-4 backdrop-blur-xs sm:p-6 lg:p-9"
+        class="modal-active fixed inset-0 z-[2147483000] flex h-[100dvh] w-screen items-center justify-center bg-black/40 p-4 backdrop-blur-xs sm:p-6 lg:p-9"
         role="presentation"
         on:click={close}
     >

@@ -64,7 +64,7 @@
 </Layout>
 
 {#if activeOnair?.execution_mode === "live" && (activeOnair.host ?? activeOnair.program.host)?.uuid !== user.uuid}
-    <div transition:fade={{ duration: 300 }} class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-blue-marinho/85 px-3 py-4 font-noto-sans backdrop-blur-md sm:px-5" role="dialog" aria-modal="true" aria-labelledby="live-lock-title" tabindex="-1">
+    <div transition:fade={{ duration: 300 }} class="fixed inset-0 z-[2147483000] flex items-center justify-center overflow-y-auto bg-blue-marinho/85 px-3 py-4 font-noto-sans backdrop-blur-md sm:px-5" role="dialog" aria-modal="true" aria-labelledby="live-lock-title" tabindex="-1">
         <div class="relative w-full max-w-lg overflow-hidden rounded-md border border-blue-skywave/20 bg-blue-ocean shadow-[0_1.25rem_4rem_rgba(0,0,0,0.35)]">
             <div class="absolute inset-x-0 top-0 h-1 bg-orange-citric" aria-hidden="true"></div>
             <div class="absolute right-0 top-0 h-20 w-20 rounded-bl-full bg-blue-skywave/10" aria-hidden="true"></div>
@@ -161,7 +161,7 @@
 {/if}
 
 {#if activeOnair?.execution_mode === "scheduled"}
-    <div transition:fade={{ duration: 300 }} class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-blue-marinho/85 px-3 py-4 font-noto-sans backdrop-blur-md sm:px-5" role="dialog" aria-modal="true" aria-labelledby="scheduled-lock-title" tabindex="-1">
+    <div transition:fade={{ duration: 300 }} class="fixed inset-0 z-[2147483000] flex items-center justify-center overflow-y-auto bg-blue-marinho/85 px-3 py-4 font-noto-sans backdrop-blur-md sm:px-5" role="dialog" aria-modal="true" aria-labelledby="scheduled-lock-title" tabindex="-1">
         <div class="relative w-full max-w-lg overflow-hidden rounded-md border border-blue-skywave/20 bg-blue-ocean shadow-[0_1.25rem_4rem_rgba(0,0,0,0.35)]">
             <div class="absolute inset-x-0 top-0 h-1 bg-orange-citric" aria-hidden="true"></div>
             <div class="absolute right-0 top-0 h-20 w-20 rounded-bl-full bg-blue-skywave/10" aria-hidden="true"></div>
