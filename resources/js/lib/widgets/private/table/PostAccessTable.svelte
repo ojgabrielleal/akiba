@@ -57,7 +57,7 @@
         <form on:submit|preventDefault={(event) => applyFilters({ currentTarget: event.currentTarget.elements.namedItem("post_access_search") })} class="min-w-0">
             <label for="post-access-search" class="mb-2 block text-xs font-extrabold uppercase italic text-suspense-aurora">Buscar</label>
             <div class="flex gap-2">
-                <input id="post-access-search" name="post_access_search" type="search" bind:value={search} maxlength="200" placeholder="Digite o título" class="h-10 min-w-0 flex-1 rounded-md border border-blue-skywave bg-blue-ocean px-3 text-sm text-suspense-aurora placeholder:text-suspense-aurora/60 focus:border-orange-citric focus:outline-none focus:ring-1 focus:ring-orange-citric" />
+                <input id="post-access-search" name="post_access_search" type="search" bind:value={search} maxlength="200" placeholder="Digite o título" class="h-10 min-w-0 flex-1 rounded-md border border-blue-skywave bg-blue-ocean px-3 text-sm text-suspense-aurora placeholder:text-suspense-aurora/60 focus:outline-none focus:ring-1 focus:ring-blue-skywave" />
                 <button type="submit" class="inline-flex h-10 cursor-pointer items-center justify-center rounded-md bg-orange-citric px-4 text-sm font-extrabold uppercase italic text-blue-night transition hover:bg-orange-citric/85 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-citric">Buscar</button>
             </div>
         </form>
