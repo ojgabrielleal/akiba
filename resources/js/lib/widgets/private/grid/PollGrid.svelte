@@ -82,7 +82,7 @@
 <Modal bind:this={votesModalRef} title="Votos" size="sm">
     <div slot="content">
         {#if votesPollSelected?.votes?.length}
-            <ul class="grid gap-2 font-noto-sans">
+            <ul class="grid gap-4 font-noto-sans">
                 {#each votesPollSelected.votes as vote (vote.uuid)}
                     <li class="grid grid-cols-[2.5rem_minmax(0,1fr)] gap-2 border-b border-blue-night/10 pb-2 last:border-b-0 last:pb-0">
                         <img

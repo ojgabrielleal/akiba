@@ -140,14 +140,14 @@
     {/if}
 </Section>
 
-<Modal bind:this={viewersModal} title="Contas que visualizaram" size="sm">
+<Modal bind:this={viewersModal} title="Quem visualizou" size="sm">
     <svelte:fragment slot="content">
         {#if viewersLoading}
             <p class="p-4 text-sm text-blue-night/70">Carregando...</p>
         {:else if viewersError}
             <p class="p-4 text-sm text-blue-night/70">Não foi possível carregar as contas.</p>
         {:else if viewers.length}
-            <ul class="grid gap-2 font-noto-sans">
+            <ul class="grid gap-4 font-noto-sans">
                 {#each viewers as viewer}
                     <li class="grid grid-cols-[2.5rem_minmax(0,1fr)] gap-2 border-b border-blue-night/10 pb-2 last:border-b-0 last:pb-0">
                         <img src={resolvePlaceholderImage(viewer.avatar, "avatar")} alt="" aria-hidden="true" class="size-10 rounded-full border-2 border-blue-night/15 object-cover object-top" loading="lazy" />
