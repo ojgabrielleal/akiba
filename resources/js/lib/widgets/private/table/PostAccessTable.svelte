@@ -11,8 +11,6 @@
     let viewers = [];
     let viewersLoading = false;
     let viewersError = false;
-    let selectedPost = "";
-    let selectedLastViewer = "";
     let search = "";
     $: filters = $page.url ? new URL($page.url, window.location.origin).searchParams : new URLSearchParams();
     $: selectedType = filters.get("post_access_type") ?? "all";
@@ -30,8 +28,6 @@
     }
 
     async function showViewers(post) {
-        selectedPost = post.title;
-        selectedLastViewer = post.last_viewer;
         viewers = [];
         viewersError = false;
         viewersLoading = true;
@@ -146,8 +142,6 @@
 
 <Modal bind:this={viewersModal} title="Contas que visualizaram" size="sm">
     <svelte:fragment slot="content">
-        <p class="mb-2 text-sm font-semibold text-blue-night">{selectedPost}</p>
-        <p class="mb-4 text-xs text-blue-night/70">Último acesso nos filtros selecionados: {selectedLastViewer}. As contas abaixo incluem todo o histórico.</p>
         {#if viewersLoading}
             <p class="p-4 text-sm text-blue-night/70">Carregando...</p>
         {:else if viewersError}
