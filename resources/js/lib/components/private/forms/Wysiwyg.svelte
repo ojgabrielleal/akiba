@@ -76,6 +76,10 @@
             theme: "snow",
             modules: {
                 blotFormatter2: {
+                    video: {
+                        registerCustomVideoBlot: true,
+                        defaultAspectRatio: "16 / 9",
+                    },
                     align: {
                         allowAligning: true,
                         alignments: ["left", "center", "right"],
@@ -138,7 +142,7 @@
         quill.root.classList.add("font-noto-sans");
         quill.root.style.fontFamily = '"Noto Sans", sans-serif';
 
-        if (value) quill.clipboard.dangerouslyPasteHTML(value, "silent");
+        if (value) quill.clipboard.dangerouslyPasteHTML(value, "api");
         syncValue();
 
         quill.on("text-change", syncValue);
@@ -160,7 +164,7 @@
     $: if (quill) quill.enable(!isDisabled);
 
     $: if (quill && value !== quill.root.innerHTML) {
-        quill.clipboard.dangerouslyPasteHTML(value ?? "", "silent");
+        quill.clipboard.dangerouslyPasteHTML(value ?? "", "api");
         textarea.value = value === "<p><br></p>" ? "" : value;
     }
 </script>

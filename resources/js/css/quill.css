@@ -172,6 +172,33 @@
     margin: 0;
 }
 
+.ql-editor iframe.ql-video,
+.public-read-body iframe.ql-video {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    border: 0;
+}
+
+.ql-editor iframe.ql-video.ql-iframe-align-left,
+.public-read-body iframe.ql-video.ql-iframe-align-left {
+    float: left;
+    margin: 0.35rem 1rem 0.75rem 0;
+}
+
+.ql-editor iframe.ql-video.ql-iframe-align-center,
+.public-read-body iframe.ql-video.ql-iframe-align-center {
+    float: none;
+    margin: 1rem auto;
+}
+
+.ql-editor iframe.ql-video.ql-iframe-align-right,
+.public-read-body iframe.ql-video.ql-iframe-align-right {
+    float: right;
+    margin: 0.35rem 0 0.75rem 1rem;
+}
+
 .ql-safe-embed,
 .public-read-body .ql-safe-embed {
     position: relative;
