@@ -448,6 +448,8 @@ class PostService
             ->select(['id', 'uuid', 'title', 'slug', 'status', 'is_active'])
             ->where('module', 'post')
             ->where('status', 'published')
+            ->when($filters['search'] ?? '', fn (Builder $query, string $search) => $query
+                ->where('title', 'like', '%'.addcslashes($search, '\\%_').'%'))
             ->whereHas('views', $viewFilter)
             ->with(['views' => function ($query) use ($viewFilter): void {
                 $viewFilter($query);
@@ -471,7 +473,13 @@ class PostService
                     ->where('created_at', '>=', $now->copy()->subDays(30)),
             ])
             ->withMax(['views' => $viewFilter], 'created_at')
-            ->orderByDesc('views_count')
+            ->when(
+                ($filters['sort'] ?? '') === 'interactions',
+                fn (Builder $query) => $query->orderByRaw('(reactions_count + likes_count + comments_count) DESC'),
+                fn (Builder $query) => $query->orderByDesc(
+                    ($filters['sort'] ?? '') === 'recent' ? 'views_max_created_at' : 'views_count'
+                ),
+            )
             ->orderByDesc('id')
             ->paginate(5, ['*'], 'posts_page')
             ->withQueryString()
@@ -506,6 +514,10 @@ class PostService
     public function filter(array $filters = []): Collection|LengthAwarePaginator
     {
         $user = $filters['user'] ?? null;
+        $createdOn = $filters['created_on'] ?? '';
+        $createdDate = is_string($createdOn) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $createdOn)
+            ? \DateTimeImmutable::createFromFormat('!Y-m-d', $createdOn) : false;
+        $validCreatedOn = $createdDate && $createdDate->format('Y-m-d') === $createdOn;
 
         $query = Post::query()
             ->when(
@@ -515,6 +527,10 @@ class PostService
             ->when(
                 $filters['status'] ?? null,
                 fn (Builder $query, string $status) => $query->withStatus($status)
+            )
+            ->when(
+                $validCreatedOn,
+                fn (Builder $query) => $query->whereDate('created_at', $createdOn)
             )
             ->when(
                 $filters['created_since'] ?? null,

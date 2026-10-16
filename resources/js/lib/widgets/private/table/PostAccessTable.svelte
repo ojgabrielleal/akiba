@@ -1,5 +1,5 @@
 <script>
-    import { EmptyState, IconButton, Modal, Pagination, Section } from "@/lib/components/private";
+    import { EmptyState, Modal, Pagination, Section } from "@/lib/components/private";
     import { router } from "@inertiajs/svelte";
     import { page } from "@inertiajs/svelte";
     import { resolvePlaceholderImage } from "@/lib/utils";
@@ -12,22 +12,26 @@
     let viewersLoading = false;
     let viewersError = false;
     let selectedPost = "";
+    let selectedLastViewer = "";
+    let search = "";
     $: filters = $page.url ? new URL($page.url, window.location.origin).searchParams : new URLSearchParams();
     $: selectedType = filters.get("post_access_type") ?? "all";
     $: selectedPeriod = filters.get("post_access_period") ?? "all";
 
+    $: selectedSort = filters.get("post_access_sort") ?? "views";
+    $: search = filters.get("post_access_search") ?? "";
+
     function applyFilters(event) {
         const params = new URLSearchParams(window.location.search);
-        const [name, value] = event.currentTarget.name === "post_access_type"
-            ? ["post_access_type", event.currentTarget.value]
-            : ["post_access_period", event.currentTarget.value];
-        value === "all" ? params.delete(name) : params.set(name, value);
+        const { name, value } = event.currentTarget;
+        value === "all" || value === "views" || !value.trim() ? params.delete(name) : params.set(name, value.trim());
         params.delete("posts_page");
         router.get(`/panel/reports?${params.toString()}`, {}, { preserveScroll: true, preserveState: true, only: ["postAccess"] });
     }
 
     async function showViewers(post) {
         selectedPost = post.title;
+        selectedLastViewer = post.last_viewer;
         viewers = [];
         viewersError = false;
         viewersLoading = true;
@@ -45,94 +49,105 @@
     }
 </script>
 
-<Section title="Histórico de matérias">
-    <div class="mb-4 flex flex-wrap gap-3">
-        <label class="font-noto-sans text-sm text-suspense-aurora">
-            Visualizações
-            <select name="post_access_type" value={selectedType} on:change={applyFilters} class="ml-2 rounded-md border-0 bg-blue-ocean px-3 py-2 text-sm text-suspense-aurora">
+<Section aria-label="Desempenho das matérias">
+    <header class="mb-4">
+        <div class="flex items-center gap-4">
+            <h2 class="font-noto-sans text-[1.3rem] font-black uppercase italic text-orange-amber">Desempenho das matérias</h2>
+            <div class="h-px flex-1 bg-orange-amber"></div>
+        </div>
+        <p class="mt-2 text-sm text-suspense-aurora/70">Acompanhe visualizações e interações das publicações.</p>
+    </header>
+    <div class="mb-4 grid gap-3 font-noto-sans sm:grid-cols-2 xl:grid-cols-[minmax(16rem,1fr)_auto_auto_auto]">
+        <form on:submit|preventDefault={(event) => applyFilters({ currentTarget: event.currentTarget.elements.namedItem("post_access_search") })} class="min-w-0">
+            <label for="post-access-search" class="mb-2 block text-xs font-extrabold uppercase italic text-suspense-aurora">Buscar</label>
+            <div class="flex gap-2">
+                <input id="post-access-search" name="post_access_search" type="search" bind:value={search} maxlength="200" placeholder="Digite o título" class="h-10 min-w-0 flex-1 rounded-md border border-blue-skywave bg-blue-ocean px-3 text-sm text-suspense-aurora placeholder:text-suspense-aurora/60 focus:border-orange-citric focus:outline-none focus:ring-1 focus:ring-orange-citric" />
+                <button type="submit" class="inline-flex h-10 cursor-pointer items-center justify-center rounded-md bg-orange-citric px-4 text-sm font-extrabold uppercase italic text-blue-night transition hover:bg-orange-citric/85 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-citric">Buscar</button>
+            </div>
+        </form>
+        <label class="text-xs font-extrabold uppercase italic text-suspense-aurora">
+            Tipo
+            <select name="post_access_type" value={selectedType} on:change={applyFilters} class="mt-2 block h-10 w-full cursor-pointer rounded-md border border-blue-skywave bg-blue-ocean px-3 text-sm font-normal normal-case not-italic text-suspense-aurora focus:border-orange-citric focus:outline-none focus:ring-1 focus:ring-orange-citric">
                 <option value="all">Todos</option>
                 <option value="recognized">Com conta</option>
                 <option value="anonymous">Anônimos</option>
             </select>
         </label>
-        <label class="font-noto-sans text-sm text-suspense-aurora">
+        <label class="text-xs font-extrabold uppercase italic text-suspense-aurora">
             Período
-            <select name="post_access_period" value={selectedPeriod} on:change={applyFilters} class="ml-2 rounded-md border-0 bg-blue-ocean px-3 py-2 text-sm text-suspense-aurora">
+            <select name="post_access_period" value={selectedPeriod} on:change={applyFilters} class="mt-2 block h-10 w-full cursor-pointer rounded-md border border-blue-skywave bg-blue-ocean px-3 text-sm font-normal normal-case not-italic text-suspense-aurora focus:border-orange-citric focus:outline-none focus:ring-1 focus:ring-orange-citric">
                 <option value="all">Todo o histórico</option>
                 <option value="15">Últimos 15 dias</option>
-                <option value="30">Último mês</option>
+                <option value="30">Últimos 30 dias</option>
+            </select>
+        </label>
+        <label class="text-xs font-extrabold uppercase italic text-suspense-aurora">
+            Ordenar por
+            <select name="post_access_sort" value={selectedSort} on:change={applyFilters} class="mt-2 block h-10 w-full cursor-pointer rounded-md border border-blue-skywave bg-blue-ocean px-3 text-sm font-normal normal-case not-italic text-suspense-aurora focus:border-orange-citric focus:outline-none focus:ring-1 focus:ring-orange-citric">
+                <option value="views">Mais visualizadas</option>
+                <option value="interactions">Mais interações</option>
+                <option value="recent">Visualização mais recente</option>
             </select>
         </label>
     </div>
+    <p class="mb-3 text-xs leading-relaxed text-suspense-aurora/65">Visualizações são acessos registrados, incluindo repetições. O período e o tipo de visitante filtram os acessos; as interações mostram o total acumulado.</p>
     {#if posts?.data?.length}
-        <div class="w-full overflow-x-auto">
-            <table class="w-full min-w-[760px] border-collapse font-noto-sans">
-                <thead>
-                    <tr class="text-sm font-extrabold uppercase italic text-orange-amber">
-                        {#each ["Matéria", "Visualizações", "Interações", "Última visualização"] as label}
-                            <th scope="col" class="px-3 py-3 text-start whitespace-nowrap">{label}</th>
-                        {/each}
-                    </tr>
-                </thead>
-                <tbody>
-                    {#each posts.data as post (post.uuid)}
-                        <tr class="border-t border-suspense-aurora/35 text-sm text-suspense-aurora">
-                            <td class="min-w-64 max-w-96 px-3 py-3 font-normal">
-                                {#if post.url}
-                                    <a href={post.url} target="_blank" rel="noopener noreferrer" class="text-suspense-aurora  focus-visible:outline focus-visible:outline-2 focus-visible:outline-orange-citric">{post.title}<span class="sr-only"> (abre em nova aba)</span></a>
-                                {:else}
-                                    {post.title}
-                                {/if}
-                            </td>
-                            <td class="px-3 py-3 align-middle">
-                                {#if selectedType === "recognized"}
-                                    <div class="flex items-center gap-2 font-bold tabular-nums">
-                                        {#if post.recognized_views > 0}
-                                            <IconButton variant="eye" label="Ver contas" size="sm" surface="dark" on:click={() => showViewers(post)} />
-                                        {/if}
-                                        {number.format(post.recognized_views ?? 0)} com conta
-                                    </div>
-                                {:else if selectedType === "anonymous"}
-                                    <div class="font-bold tabular-nums">{number.format(post.anonymous_views ?? 0)} anônimos</div>
-                                {:else}
-                                    <div class="flex items-center gap-2 font-bold tabular-nums">
-                                        {#if post.recognized_views > 0}
-                                            <IconButton variant="eye" label="Ver contas" size="sm" surface="dark" on:click={() => showViewers(post)} />
-                                        {/if}
-                                        {number.format(post.views ?? 0)} total
-                                    </div>
-                                    <div class="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs font-normal text-suspense-aurora/70">
-                                        <span>Com conta: <strong class="text-orange-amber">{number.format(post.recognized_views ?? 0)}</strong></span>
-                                        <span>Anônimos: <strong class="text-orange-amber">{number.format(post.anonymous_views ?? 0)}</strong></span>
-                                    </div>
-                                {/if}
-                            </td>
-                            <td class="px-3 py-3 align-middle text-xs tabular-nums text-suspense-aurora/75">
-                                <div>Reações: <strong class="text-orange-amber">{number.format(post.reactions ?? 0)}</strong></div>
-                                <div class="mt-1">Curtidas: <strong class="text-orange-amber">{number.format(post.likes ?? 0)}</strong></div>
-                                <div class="mt-1">Comentários: <strong class="text-orange-amber">{number.format(post.comments ?? 0)}</strong></div>
-                            </td>
-                            <td class="whitespace-nowrap px-3 py-3 align-middle">
-                                {#if post.last_view}
-                                    <div>{post.last_view}</div>
-                                    <div class="mt-1 text-xs font-normal text-suspense-aurora/70">Visualizado por: {post.last_viewer}</div>
-                                {:else}
-                                    Sem acessos
-                                {/if}
-                            </td>
-                        </tr>
+        <table class="block w-full border-collapse font-noto-sans lg:table">
+            <caption class="sr-only">Desempenho das matérias conforme os filtros selecionados</caption>
+            <thead class="hidden lg:table-header-group">
+                <tr class="border-b border-suspense-aurora/35 text-sm font-extrabold uppercase italic text-orange-amber">
+                    {#each ["Matéria", "Visualizações", "Interações", "Última visualização"] as label}
+                        <th scope="col" class="px-3 py-3 text-start">{label}</th>
                     {/each}
-                </tbody>
-            </table>
-        </div>
-        <Pagination pages={posts} only={["postAccess"]} pageName="posts_page" />
+                </tr>
+            </thead>
+            <tbody class="grid gap-3 lg:table-row-group">
+                {#each posts.data as post (post.uuid)}
+                    <tr class="grid min-w-0 gap-4 rounded-md border border-suspense-aurora/35 p-4 text-sm text-suspense-aurora lg:table-row lg:rounded-none lg:border-x-0 lg:border-t-0 lg:p-0">
+                        <td class="block min-w-0 lg:table-cell lg:w-[38%] lg:px-3 lg:py-3 lg:align-middle">
+                            {#if post.url}
+                                <a href={post.url} target="_blank" rel="noopener noreferrer" class="inline-block break-words font-normal leading-snug text-suspense-aurora transition duration-300 ease-out hover:-translate-y-0.5 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-orange-citric motion-reduce:transform-none motion-reduce:transition-none">{post.title}<span class="sr-only"> (abre em nova aba)</span></a>
+                            {:else}
+                                <span class="break-words font-normal leading-snug">{post.title}</span>
+                            {/if}
+                        </td>
+                        <td class="block lg:table-cell lg:px-3 lg:py-3 lg:align-middle">
+                            <span class="mb-1 block text-xs text-suspense-aurora/60 lg:hidden">Visualizações</span>
+                            <div class="text-base font-extrabold tabular-nums">{number.format(post.views ?? 0)} <span class="text-xs font-normal text-suspense-aurora/60">acessos</span></div>
+                            <div class="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs text-suspense-aurora/65">
+                                {#if selectedType !== "anonymous"}<span>Com conta: <strong class="font-semibold text-orange-amber">{number.format(post.recognized_views ?? 0)}</strong></span>{/if}
+                                {#if selectedType !== "recognized"}<span>Anônimos: <strong class="font-semibold text-orange-amber">{number.format(post.anonymous_views ?? 0)}</strong></span>{/if}
+                            </div>
+                            {#if post.recognized_views > 0}
+                                <button type="button" on:click={() => showViewers(post)} class="mt-2 inline-flex cursor-pointer items-center rounded-md border border-orange-citric/40 px-2 py-1 text-xs font-extrabold uppercase italic text-orange-citric transition hover:bg-orange-citric/10 motion-reduce:transition-none hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-orange-citric" aria-label={`Ver contas que visualizaram: ${post.title}`}>Ver contas</button>
+                            {/if}
+                        </td>
+                        <td class="block lg:table-cell lg:px-3 lg:py-3 lg:align-middle">
+                            <span class="mb-2 block text-xs text-suspense-aurora/60 lg:hidden">Interações acumuladas</span>
+                            <div class="flex flex-wrap gap-x-4 gap-y-2">
+                                {#each [["Reações", post.reactions], ["Curtidas", post.likes], ["Comentários", post.comments]] as [label, count]}
+                                    <div class="text-xs text-suspense-aurora/60"><strong class={`block text-base font-extrabold tabular-nums ${count > 0 ? 'text-orange-amber' : 'text-suspense-aurora/40'}`}>{number.format(count ?? 0)}</strong>{label}</div>
+                                {/each}
+                            </div>
+                        </td>
+                        <td class="block text-sm tabular-nums lg:table-cell lg:px-3 lg:py-3 lg:align-middle">
+                            <span class="mb-1 block text-suspense-aurora/60 lg:hidden">Última visualização</span>
+                            <span class="whitespace-nowrap">{post.last_view ?? "Sem acessos"}</span>
+                        </td>
+                    </tr>
+                {/each}
+            </tbody>
+        </table>
+        <Pagination pages={posts} only={["postAccess"]} pageName="posts_page" activeClass="bg-orange-citric text-blue-night opacity-100" />
     {:else}
-        <EmptyState title="Nenhuma postagem encontrada" description="As postagens e seus acessos aparecerão aqui." />
+        <EmptyState title="Nenhuma matéria encontrada" description="Não há matérias com acessos para estes filtros. Tente outro título, período ou tipo de visitante." />
     {/if}
 </Section>
 
 <Modal bind:this={viewersModal} title="Contas que visualizaram" size="sm">
     <svelte:fragment slot="content">
+        <p class="mb-2 text-sm font-semibold text-blue-night">{selectedPost}</p>
+        <p class="mb-4 text-xs text-blue-night/70">Último acesso nos filtros selecionados: {selectedLastViewer}. As contas abaixo incluem todo o histórico.</p>
         {#if viewersLoading}
             <p class="p-4 text-sm text-blue-night/70">Carregando...</p>
         {:else if viewersError}

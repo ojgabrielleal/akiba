@@ -8,6 +8,33 @@
     export let title;
     export let posts = null;
     export let actions = [];
+    export let showFilters = false;
+    export let filters = {};
+
+    const filterOptions = [
+        { name: "post_type", label: "Tipo", options: [["all", "Todos"], ["post", "Matérias"], ["review", "Reviews"], ["event", "Eventos"]] },
+        { name: "post_date", label: "Data", type: "date" },
+        { name: "post_sort", label: "Ordenar por", options: [["all", "Mais recentes"], ["oldest", "Mais antigos"], ["views", "Mais visualizados"]] },
+    ];
+    let search = "";
+    $: search = filters.search ?? "";
+
+    function applyFilters(name, value) {
+        const params = new URLSearchParams(window.location.search);
+        const normalized = value.trim();
+        if (!normalized || (name !== "search" && normalized === "all")) {
+            params.delete(name);
+        } else {
+            params.set(name, normalized);
+        }
+        params.delete("page");
+        params.delete("post_period");
+        router.get(`${window.location.pathname}?${params.toString()}`, {}, {
+            preserveScroll: true,
+            preserveState: true,
+            only: ["posts"],
+        });
+    }
 
     const can = postPermissions();
     $: canReviewOpinions = can.approve || can.publish;
@@ -50,6 +77,31 @@
 
 {#if posts}
     <Section {title} {actions}>
+        {#if showFilters}
+            <div class="mb-5 grid gap-3 font-noto-sans sm:grid-cols-2 xl:grid-cols-[minmax(16rem,1fr)_auto_auto_auto]">
+                <form on:submit|preventDefault={() => applyFilters("search", search)} class="min-w-0">
+                    <label for="post-grid-search" class="mb-2 block text-xs font-extrabold uppercase italic text-suspense-aurora">Buscar</label>
+                    <div class="flex gap-2">
+                        <input id="post-grid-search" type="search" bind:value={search} maxlength="200" placeholder="Digite o título" class="h-10 min-w-0 flex-1 rounded-md border border-blue-skywave bg-blue-ocean px-3 text-sm text-suspense-aurora placeholder:text-suspense-aurora/60 focus:border-orange-citric focus:outline-none focus:ring-1 focus:ring-orange-citric" />
+                        <button type="submit" class="inline-flex h-10 cursor-pointer items-center justify-center rounded-md bg-orange-citric px-4 text-sm font-extrabold uppercase italic text-blue-night transition hover:bg-orange-citric/85 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-citric">Buscar</button>
+                    </div>
+                </form>
+                {#each filterOptions as filter (filter.name)}
+                    <label class="text-xs font-extrabold uppercase italic text-suspense-aurora">
+                        {filter.label}
+                        {#if filter.type === "date"}
+                            <input type="date" name={filter.name} value={filters[filter.name] ?? ""} on:change={(event) => applyFilters(filter.name, event.currentTarget.value)} class="mt-2 block h-10 w-full min-w-0 cursor-pointer rounded-md border border-blue-skywave bg-blue-ocean px-3 text-sm font-normal normal-case not-italic text-suspense-aurora [color-scheme:dark] focus:border-orange-citric focus:outline-none focus:ring-1 focus:ring-orange-citric" />
+                        {:else}
+                        <select name={filter.name} value={filters[filter.name] ?? "all"} on:change={(event) => applyFilters(filter.name, event.currentTarget.value)} class="mt-2 block h-10 w-full cursor-pointer rounded-md border border-blue-skywave bg-blue-ocean px-3 text-sm font-normal normal-case not-italic text-suspense-aurora focus:border-orange-citric focus:outline-none focus:ring-1 focus:ring-orange-citric">
+                            {#each filter.options as [value, label]}
+                                <option {value}>{label}</option>
+                            {/each}
+                        </select>
+                        {/if}
+                    </label>
+                {/each}
+            </div>
+        {/if}
         {#if posts.data.length > 0}
         <GridList preset="content">
             {#each posts.data as item (item.uuid)}

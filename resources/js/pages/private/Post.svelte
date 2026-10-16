@@ -9,6 +9,8 @@
 
     $: ({ post, posts, canViewNewsFeed, newsFeedSources, selectedNewsFeedSource, newsFeedPosts } = $page.props);
     
+    $: gridFilters = Object.fromEntries(new URL($page.url, "http://localhost").searchParams);
+
     const pendingEditorKey = "akiba_post_pending_editor";
 
     function consumePendingEditor() {
@@ -233,6 +235,6 @@
             </svelte:fragment>
         </Deferred>
     {:else}
-        <PostGrid title="Todas as matérias, reviews e eventos" posts={posts} actions={gridActions} />
+        <PostGrid title="Todas as matérias, reviews e eventos" posts={posts} actions={gridActions} showFilters filters={gridFilters} />
     {/if}
 </Layout>

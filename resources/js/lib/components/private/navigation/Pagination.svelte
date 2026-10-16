@@ -3,12 +3,19 @@
     export let loadingLabel = "Carregando...";
     export let only = [];
     export let pageName = "page";
+    export let activeClass = "bg-neutral-gray opacity-50";
 
     import { router } from "@inertiajs/svelte";
     import LoadingSpinner from "../feedback/LoadingSpinner.svelte";
 
+    const number = new Intl.NumberFormat("pt-BR");
+
     let isLoading = false;
     let loadingAction = null;
+
+    $: total = pages?.meta?.total ?? pages?.total ?? null;
+    $: from = pages?.meta?.from ?? pages?.from ?? 0;
+    $: to = pages?.meta?.to ?? pages?.to ?? 0;
 
     $: previousUrl = pages?.links?.prev ?? pages?.prev_page_url ?? null;
     $: nextUrl = pages?.links?.next ?? pages?.next_page_url ?? null;
@@ -69,55 +76,60 @@
     };
 </script>
 
-{#if previousUrl || nextUrl}
-    <div class="mt-2 flex justify-end">
-        <nav class="flex min-h-12 items-center justify-center gap-1" aria-label="Paginação">
-            {#if previousUrl}
-                {#if isLoading && loadingAction === "previous"}
-                    <LoadingSpinner label={loadingLabel} />
-                {:else}
+{#if total !== null || previousUrl || nextUrl}
+    <div class="mt-4 flex flex-wrap items-center justify-between gap-3 font-noto-sans">
+        {#if total !== null}
+            <p class="text-xs tabular-nums text-suspense-aurora/65">{number.format(from)}–{number.format(to)} de {number.format(total)} registros</p>
+        {/if}
+        {#if previousUrl || nextUrl}
+            <nav class="ml-auto flex min-h-12 items-center justify-center gap-1" aria-label="Paginação">
+                {#if previousUrl}
+                    {#if isLoading && loadingAction === "previous"}
+                        <LoadingSpinner label={loadingLabel} />
+                    {:else}
+                        <button
+                            type="button"
+                            aria-label="Página anterior"
+                            class="grid size-8 cursor-pointer place-items-center rounded-md bg-orange-citric disabled:cursor-not-allowed disabled:opacity-50"
+                            disabled={isLoading}
+                            on:click={() => visit(previousUrl, "previous")}
+                        >
+                            <img src="/svg/chevron-left.svg" alt="" aria-hidden="true" class="size-5 filter-blue-marinho" />
+                        </button>
+                    {/if}
+                {/if}
+
+                {#each visiblePageLinks as link}
                     <button
                         type="button"
-                        aria-label="Página anterior"
-                        class="grid size-8 cursor-pointer place-items-center rounded-md bg-orange-amber disabled:cursor-not-allowed disabled:opacity-50"
-                        disabled={isLoading}
-                        on:click={() => visit(previousUrl, "previous")}
+                        aria-current={link.active ? "page" : undefined}
+                        class={[
+                            "grid size-8 cursor-pointer place-items-center rounded-md font-noto-sans text-xs font-extrabold italic text-suspense-aurora disabled:cursor-not-allowed",
+                            link.active ? activeClass : "bg-blue-ocean hover:bg-orange-citric hover:text-blue-marinho disabled:opacity-50",
+                        ]}
+                        disabled={isLoading || link.active || !link.url}
+                        on:click={() => visit(link.url, `page-${link.page}`)}
                     >
-                        <img src="/svg/chevron-left.svg" alt="" aria-hidden="true" class="size-5 filter-blue-marinho" />
+                        {link.page}
                     </button>
-                {/if}
-            {/if}
+                {/each}
 
-            {#each visiblePageLinks as link}
-                <button
-                    type="button"
-                    aria-current={link.active ? "page" : undefined}
-                    class={[
-                        "grid size-8 cursor-pointer place-items-center rounded-md font-noto-sans text-xs font-extrabold italic text-suspense-aurora disabled:cursor-not-allowed disabled:opacity-50",
-                        link.active ? "bg-neutral-gray" : "bg-blue-ocean hover:bg-orange-amber hover:text-blue-marinho",
-                    ]}
-                    disabled={isLoading || link.active || !link.url}
-                    on:click={() => visit(link.url, `page-${link.page}`)}
-                >
-                    {link.page}
-                </button>
-            {/each}
-
-            {#if nextUrl}
-                {#if isLoading && loadingAction === "next"}
-                    <LoadingSpinner label={loadingLabel} />
-                {:else}
-                    <button
-                        type="button"
-                        aria-label="Próxima página"
-                        class="grid size-8 cursor-pointer place-items-center rounded-md bg-orange-amber disabled:cursor-not-allowed disabled:opacity-50"
-                        disabled={isLoading}
-                        on:click={() => visit(nextUrl, "next")}
-                    >
-                        <img src="/svg/chevron-right.svg" alt="" aria-hidden="true" class="size-5 filter-blue-marinho" />
-                    </button>
+                {#if nextUrl}
+                    {#if isLoading && loadingAction === "next"}
+                        <LoadingSpinner label={loadingLabel} />
+                    {:else}
+                        <button
+                            type="button"
+                            aria-label="Próxima página"
+                            class="grid size-8 cursor-pointer place-items-center rounded-md bg-orange-citric disabled:cursor-not-allowed disabled:opacity-50"
+                            disabled={isLoading}
+                            on:click={() => visit(nextUrl, "next")}
+                        >
+                            <img src="/svg/chevron-right.svg" alt="" aria-hidden="true" class="size-5 filter-blue-marinho" />
+                        </button>
+                    {/if}
                 {/if}
-            {/if}
-        </nav>
+            </nav>
+        {/if}
     </div>
 {/if}

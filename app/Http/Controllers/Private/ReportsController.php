@@ -81,6 +81,8 @@ class ReportsController extends Controller
         return $this->postFilter->accessReport([
             'type' => in_array($type, ['recognized', 'anonymous'], true) ? $type : 'all',
             'period' => in_array($period, [15, 30], true) ? $period : null,
+            'search' => mb_substr(trim(request()->string('post_access_search')->toString()), 0, 200),
+            'sort' => request()->string('post_access_sort')->toString(),
         ]);
     }
 

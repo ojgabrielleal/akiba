@@ -50,7 +50,12 @@ class PostController extends Controller
                             ->where('user_id', request()->user()->id)
                             ->select(['id', 'post_id', 'user_id', 'status']),
                     ],
-                    'search' => request()->input('search'),
+                    'search' => mb_substr(trim(request()->string('search')->toString()), 0, 200),
+                    'module' => in_array(request()->input('post_type'), ['post', 'review', 'event'], true)
+                        ? request()->input('post_type') : null,
+                    'created_on' => request()->string('post_date')->toString(),
+                    'order_by' => request()->input('post_sort') === 'views' ? 'views_count' : 'id',
+                    'order_direction' => request()->input('post_sort') === 'oldest' ? 'asc' : 'desc',
                     'paginate' => 10,
                 ])
             )->format('grid'),
@@ -170,7 +175,12 @@ class PostController extends Controller
                         ->where('user_id', request()->user()->id)
                         ->select(['id', 'post_id', 'user_id', 'status']),
                 ],
-                'search' => request()->input('search'),
+                'search' => mb_substr(trim(request()->string('search')->toString()), 0, 200),
+                    'module' => in_array(request()->input('post_type'), ['post', 'review', 'event'], true)
+                        ? request()->input('post_type') : null,
+                    'created_on' => request()->string('post_date')->toString(),
+                    'order_by' => request()->input('post_sort') === 'views' ? 'views_count' : 'id',
+                    'order_direction' => request()->input('post_sort') === 'oldest' ? 'asc' : 'desc',
                 'paginate' => 10,
             ])
         )->format('grid');
