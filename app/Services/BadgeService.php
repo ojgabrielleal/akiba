@@ -648,7 +648,9 @@ class BadgeService
             )
             ->when(
                 $filters['source'] ?? null,
-                fn (Builder $query, string $source) => $query->where('source', $source)
+                fn (Builder $query, string $source) => $source === 'none'
+                    ? $query->whereNull('source')
+                    : $query->where('source', $source)
             )
             ->when(
                 $filters['with'] ?? null,
