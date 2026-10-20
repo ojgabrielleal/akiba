@@ -102,6 +102,7 @@
     }
 
     function enigmaStatusMessage(game) {
+        if (game.participation?.is_blocked) return "Você está bloqueado de participar do enigma.";
         if (game.participation?.has_submitted_final_answer) return "Sua resposta definitiva ja foi enviada.";
         if (!game.participation?.can_interact && game.participation?.next_interaction_at) {
             return `Aguarde ate ${game.participation.next_interaction_at} para interagir novamente.`;

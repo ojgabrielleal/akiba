@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use App\Http\Resources\User\UserResource;
 use App\Models\EnigmaGameInteraction;
+use App\Services\SongRequestBlockService;
 use App\Support\AuthenticatedMember;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -13,6 +14,7 @@ class EnigmaGameResource extends JsonResource
     public function toArray(Request $request): array
     {
         $member = AuthenticatedMember::fromRequest($request);
+        $isBlocked = app(SongRequestBlockService::class)->isBlocked($member, SongRequestBlockService::MODULE_ENIGMAGAME);
         $memberInteractions = $member
             ? $this->interactions
                 ->where('participant_type', $member->getMorphClass())
@@ -69,7 +71,9 @@ class EnigmaGameResource extends JsonResource
                 'respond' => $request->user()?->can('respond', \App\Models\EnigmaGame::class) ?? false,
             ],
             'participation' => [
+                'is_blocked' => $isBlocked,
                 'can_interact' => $member !== null
+                    && ! $isBlocked
                     && ! $hasFinalAnswer
                     && ($nextInteractionAt === null || $nextInteractionAt->isPast()),
                 'next_interaction_at' => $nextInteractionAt?->setTimezone('America/Sao_Paulo')->format('d/m/Y H:i'),

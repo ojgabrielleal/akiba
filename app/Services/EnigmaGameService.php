@@ -111,6 +111,14 @@ class EnigmaGameService
         $interaction = DB::transaction(function () use ($enigmagame, $participant, $data): EnigmaGameInteraction {
             $enigmagame = EnigmaGame::query()->lockForUpdate()->active()->whereKey($enigmagame->id)->firstOrFail();
 
+            $participant->newQuery()->whereKey($participant->getKey())->lockForUpdate()->firstOrFail();
+
+            if (app(SongRequestBlockService::class)->isBlocked($participant, SongRequestBlockService::MODULE_ENIGMAGAME)) {
+                throw ValidationException::withMessages([
+                    'content' => 'Você está bloqueado de participar do enigma.',
+                ]);
+            }
+
             $query = $enigmagame->interactions()
                 ->lockForUpdate()
                 ->where('participant_type', $participant->getMorphClass())

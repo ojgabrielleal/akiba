@@ -210,11 +210,12 @@ class SongRequestBlockingTest extends TestCase
 
         $this->actingAs($host)->post('/panel/administration/audience-block', [
             'oauth_account' => $account->uuid,
-            'modules' => ['song_requests', 'polls', 'comments'],
+            'modules' => ['song_requests', 'polls', 'comments', 'enigmagame'],
             'reason' => 'Novo motivo',
         ])->assertRedirect()->assertSessionHasNoErrors();
 
-        $this->assertDatabaseCount('song_request_blocks', 3);
+        $this->assertDatabaseCount('song_request_blocks', 4);
+        $this->assertDatabaseHas('song_request_blocks', ['module' => 'enigmagame', 'reason' => 'Novo motivo']);
         $this->assertDatabaseHas('song_request_blocks', ['module' => 'polls', 'reason' => 'Motivo original']);
         $this->assertDatabaseHas('song_request_blocks', ['module' => 'comments', 'reason' => 'Novo motivo']);
     }
@@ -268,6 +269,32 @@ class SongRequestBlockingTest extends TestCase
         }
 
         $this->assertDatabaseCount('comments', 0);
+    }
+
+    public function test_enigma_block_rejects_questions_and_answers_and_unblock_restores_participation(): void
+    {
+        $account = OAuthAccount::factory()->create();
+        $game = \App\Models\EnigmaGame::factory()->active()->create();
+        $blocks = app(SongRequestBlockService::class);
+        $service = app(\App\Services\EnigmaGameService::class);
+        $blocks->block($account, module: SongRequestBlockService::MODULE_ENIGMAGAME);
+
+        $this->assertFalse($blocks->isBlocked($account));
+        $this->assertSame('Enigma', $blocks->filter()->sole()['module_label']);
+
+        foreach (['question', 'final_answer'] as $type) {
+            try {
+                $service->interact($game, $account, ['type' => $type, 'content' => 'Teste']);
+                $this->fail('A interação deveria ter sido rejeitada.');
+            } catch (ValidationException $exception) {
+                $this->assertArrayHasKey('content', $exception->errors());
+            }
+        }
+
+        $this->assertDatabaseCount('enigmagame_interactions', 0);
+        $blocks->unblock(SongRequestBlock::sole());
+        $service->interact($game, $account, ['type' => 'question', 'content' => 'Teste']);
+        $this->assertDatabaseCount('enigmagame_interactions', 1);
     }
 
     public function test_guest_cannot_block_requester(): void

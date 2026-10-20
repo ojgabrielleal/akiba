@@ -13,6 +13,7 @@
         { value: "song_requests", label: "Pedidos musicais", icon: "M9 18V5l12-2v13M9 8l12-2M9 18a3 3 0 1 1-3-3c1.66 0 3 1.34 3 3Zm12-2a3 3 0 1 1-3-3c1.66 0 3 1.34 3 3Z" },
         { value: "polls", label: "Enquetes", icon: "M5 20V10m7 10V4m7 16v-7" },
         { value: "comments", label: "Comentários", icon: "M21 11.5a8.5 8.5 0 0 1-8.5 8.5H4l-1 1V11.5a9 9 0 0 1 18 0ZM7 10h10M7 14h6" },
+        { value: "enigmagame", label: "Enigma", icon: "M9 9a3 3 0 1 1 5 2c-1 1-2 1-2 3m0 3h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" },
     ];
     let blockModal;
     let search = "";
@@ -82,11 +83,11 @@
 
 {#if can.list && blockedRequesters !== null}
     <Modal bind:this={blockModal} title="Bloquear ouvinte" size="md">
-        <div slot="content" class="flex max-h-[calc(80vh-5.75rem)] flex-col font-noto-sans text-blue-marinho sm:max-h-[calc(80vh-6.75rem)] [&>:not(ul)]:shrink-0">
+        <div slot="content" class="flex max-h-[calc(90vh-5.75rem)] flex-col font-noto-sans text-blue-marinho sm:max-h-[calc(90vh-6.75rem)] [&>:not(ul)]:shrink-0">
             <fieldset>
                 <legend class="mb-3 text-xs font-black uppercase italic">Bloquear nos módulos</legend>
                 <p class="mb-3 text-xs text-blue-marinho/55">Selecione um ou mais módulos.</p>
-                <div class="grid gap-2 sm:grid-cols-3">
+                <div class="grid grid-cols-2 gap-2">
                     {#each modules as module (module.value)}
                         {@const selected = $blockForm.modules.includes(module.value)}
                         <label class={`relative grid min-w-0 cursor-pointer grid-cols-[1fr_auto] items-center gap-x-3 gap-y-2 rounded-lg border p-3 ${selected ? "border-orange-citric/60 bg-orange-citric/10" : "border-blue-marinho/10 bg-neutral-white"} ${$blockForm.processing ? "pointer-events-none opacity-50" : ""}`}>
@@ -129,7 +130,7 @@
 
 
             {#if filteredAccounts.length}
-                <ul class="grid min-h-16 max-h-[25vh] shrink gap-2 overflow-y-auto pr-1 sm:grid-cols-2">
+                <ul class="grid min-h-16 max-h-[40vh] shrink gap-2 overflow-y-auto pr-1 sm:grid-cols-2">
                     {#each filteredAccounts as account (account.uuid)}
                         {@const blocked = isBlocked(account, $blockForm.modules)}
                         <li>

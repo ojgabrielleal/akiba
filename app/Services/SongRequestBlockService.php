@@ -14,6 +14,7 @@ class SongRequestBlockService
     public const MODULE_SONG_REQUESTS = 'song_requests';
     public const MODULE_POLLS = 'polls';
     public const MODULE_COMMENTS = 'comments';
+    public const MODULE_ENIGMAGAME = 'enigmagame';
 
     public function isBlocked(?Model $requester, string $module = self::MODULE_SONG_REQUESTS): bool
     {
@@ -90,6 +91,7 @@ class SongRequestBlockService
             'module_label' => match ($block->module) {
                 self::MODULE_POLLS => 'Enquetes',
                 self::MODULE_COMMENTS => 'Comentários',
+                self::MODULE_ENIGMAGAME => 'Enigma',
                 default => 'Pedidos musicais',
             },
             'blocked_at' => $block->created_at ? $block->created_at->format('d/m/Y').' às '.$block->created_at->format('H:i') : null,

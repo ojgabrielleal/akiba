@@ -2,6 +2,8 @@
     export let title = "";
     export let size = "sm";
     export let flush = false;
+    export let maxHeight = "90vh";
+    export let minHeight = "min(24rem, 80vh)";
 
     import { fade } from "svelte/transition";
     import { onDestroy } from "svelte";
@@ -82,8 +84,10 @@
 
             <div
                 class={[
-                "relative flex max-h-[80vh] w-full min-w-0 flex-col overflow-hidden rounded-md bg-suspense-aurora shadow-[0_1.25rem_3rem_rgba(0,0,20,0.24)] outline-none ring-0 focus:outline-none focus:ring-0",
+                "relative flex w-full min-w-0 flex-col overflow-hidden rounded-md bg-suspense-aurora shadow-[0_1.25rem_3rem_rgba(0,0,20,0.24)] outline-none ring-0 focus:outline-none focus:ring-0",
             ]}
+            style:max-height={maxHeight}
+            style:min-height={minHeight}
             role="dialog"
             aria-modal="true"
             aria-labelledby={title ? titleId : undefined}

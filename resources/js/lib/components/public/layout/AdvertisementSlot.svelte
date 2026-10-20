@@ -1,66 +1,34 @@
 <script>
-    import { tick } from "svelte";
-    import { pushGoogleAdSlot } from "@/lib/utils/adsense";
+    import { defaultAdClient, initializeGoogleAdSlot } from "@/lib/utils/adsense";
 
     export let image = null;
     export let href = null;
     export let alt = "Anúncio";
     export let mirrored = false;
     export let adsense = true;
-    export let adClient = "ca-pub-8675050263618388";
+    export let adClient = defaultAdClient;
     export let adSlot = "8597417495";
     let className = "";
     export { className as class };
 
-    let adElement;
-    let pushedAdsense = false;
-
     $: shouldRenderAdsense = adsense && !image && !href && adClient && adSlot;
-    $: if (shouldRenderAdsense && adElement && !pushedAdsense) {
-        pushAdsense();
-    }
-
-    const waitForAdWidth = async () => {
-        await tick();
-
-        if (!adElement || adElement.offsetWidth > 0) return true;
-
-        return new Promise((resolve) => {
-            const observer = new ResizeObserver(([entry]) => {
-                if (entry.contentRect.width <= 0) return;
-
-                observer.disconnect();
-                resolve(true);
-            });
-
-            observer.observe(adElement);
-
-            window.setTimeout(() => {
-                observer.disconnect();
-                resolve(adElement?.offsetWidth > 0);
-            }, 2000);
-        });
-    };
-
-    const pushAdsense = async () => {
-        if (!shouldRenderAdsense || !adElement || pushedAdsense || typeof window === "undefined") return;
-
-        const hasWidth = await waitForAdWidth();
-        if (!hasWidth || pushedAdsense) return;
-
-        try {
-            await pushGoogleAdSlot(adClient, adSlot);
-            pushedAdsense = true;
-        } catch (error) {
-            console.error("Google AdSense: não foi possível carregar o bloco de anúncio.", {
-                adClient,
-                adSlot,
-                error,
-            });
-        }
-    };
 </script>
 
+{#if shouldRenderAdsense}
+    <div class={["public-advertisement-slot block w-full min-w-0", className]} style="height:auto;max-height:none;">
+        {#key `${adClient}:${adSlot}`}
+            <ins
+                use:initializeGoogleAdSlot
+                class="adsbygoogle"
+                style="display:block;width:100%;"
+                data-ad-client={adClient}
+                data-ad-slot={adSlot}
+                data-ad-format="auto"
+                data-full-width-responsive="true"
+            ></ins>
+        {/key}
+    </div>
+{:else}
 <svelte:element
     this={href ? "a" : "div"}
     {href}
@@ -126,16 +94,8 @@
             </div>
         </div>
 
-        {#if shouldRenderAdsense}
-            <ins
-                bind:this={adElement}
-                class="adsbygoogle absolute inset-0 z-10 block h-full w-full overflow-hidden [clip-path:inherit]"
-                style="display:block;"
-                data-ad-client={adClient}
-                data-ad-slot={adSlot}
-                data-ad-format="auto"
-                data-full-width-responsive="true"
-            ></ins>
-        {/if}
+
     {/if}
 </svelte:element>
+
+{/if}

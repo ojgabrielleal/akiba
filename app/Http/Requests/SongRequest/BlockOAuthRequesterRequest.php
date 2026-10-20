@@ -18,11 +18,12 @@ class BlockOAuthRequesterRequest extends LoggedWebRequest
     {
         return [
             'oauth_account' => ['required', 'uuid'],
-            'modules' => ['required', 'array', 'min:1', 'max:3'],
+            'modules' => ['required', 'array', 'min:1', 'max:4'],
             'modules.*' => ['required', 'string', 'distinct', Rule::in([
                 SongRequestBlockService::MODULE_SONG_REQUESTS,
                 SongRequestBlockService::MODULE_POLLS,
                 SongRequestBlockService::MODULE_COMMENTS,
+                SongRequestBlockService::MODULE_ENIGMAGAME,
             ])],
             'reason' => ['required', 'string', 'max:1000'],
         ];
