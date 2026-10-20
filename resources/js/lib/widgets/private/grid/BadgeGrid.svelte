@@ -147,7 +147,7 @@
                 <label for="badge-search" class="mb-1 block text-sm text-suspense-aurora">Buscar emblemas</label>
                 <input id="badge-search" type="search" bind:value={search} placeholder="Nome, código ou descrição" class="h-10 w-full rounded-md border border-suspense-aurora/20 bg-blue-ocean px-3 text-suspense-aurora outline-none focus:outline-none focus:ring-0" />
             </div>
-            <button type="submit" disabled={searching} class="h-10 shrink-0 rounded-md bg-orange-citric px-5 font-bold text-blue-night outline-none focus:outline-none focus-visible:brightness-110 disabled:opacity-50">
+            <button type="submit" disabled={searching} class="h-10 shrink-0 cursor-pointer rounded-md bg-orange-citric px-5 font-bold text-blue-night outline-none focus:outline-none focus-visible:brightness-110 disabled:opacity-50">
                 {searching ? "Buscando…" : "Buscar"}
             </button>
         </form>
