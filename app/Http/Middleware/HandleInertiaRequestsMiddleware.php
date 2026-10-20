@@ -39,6 +39,7 @@ class HandleInertiaRequestsMiddleware extends Middleware
             'onair' => fn () => OnairResource::collection(
                 app(OnairService::class)->filter([
                     'live' => true,
+                    'requester' => AuthenticatedMember::fromRequest($request),
                     'with' => ['host', 'program.host'],
                 ])
             ),

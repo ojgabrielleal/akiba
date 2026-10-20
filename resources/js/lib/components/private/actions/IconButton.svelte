@@ -65,6 +65,7 @@
     };
 
     const tones = {
+        citric: "filter-orange-citric",
         accent: "filter-orange-amber",
         danger: "filter-red-crimson",
         light: "filter-suspense-aurora",

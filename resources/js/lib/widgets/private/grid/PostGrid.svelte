@@ -13,6 +13,7 @@
 
     const filterOptions = [
         { name: "post_type", label: "Tipo", options: [["all", "Todos"], ["post", "Matérias"], ["review", "Reviews"], ["event", "Eventos"]] },
+        { name: "post_status", label: "Status", options: [["all", "Todos"], ["draft", "Rascunho"], ["revision", "Avaliação"], ["published", "Publicada"]] },
         { name: "post_date", label: "Data", type: "date" },
         { name: "post_sort", label: "Ordenar por", options: [["all", "Mais recentes"], ["oldest", "Mais antigos"], ["views", "Mais visualizados"]] },
     ];
@@ -78,7 +79,7 @@
 {#if posts}
     <Section {title} {actions}>
         {#if showFilters}
-            <div class="mb-5 grid gap-3 font-noto-sans sm:grid-cols-2 xl:grid-cols-[minmax(16rem,1fr)_auto_auto_auto]">
+            <div class="mb-5 grid gap-3 font-noto-sans sm:grid-cols-2 xl:grid-cols-[minmax(12rem,1fr)_auto_auto_auto_auto]">
                 <form on:submit|preventDefault={() => applyFilters("search", search)} class="min-w-0">
                     <label for="post-grid-search" class="mb-2 block text-xs font-extrabold uppercase italic text-suspense-aurora">Buscar</label>
                     <div class="flex gap-2">

@@ -11,61 +11,10 @@ use Illuminate\Support\Str;
 
 class AnimeNewsFeedService
 {
-    private array $sources = [
-        [
-            'name' => 'Anime United',
-            'slug' => 'anime-united',
-            'base_url' => 'https://www.animeunited.com.br',
-            'type' => 'wordpress',
-            'posts_url' => 'https://www.animeunited.com.br/wp-json/wp/v2/posts',
-            'feed_url' => 'https://www.animeunited.com.br/feed/',
-            'language' => 'pt-BR',
-            'priority' => 1,
-        ],
-        [
-            'name' => 'IntoxiAnime',
-            'slug' => 'intoxianime',
-            'base_url' => 'https://www.intoxianime.com',
-            'type' => 'wordpress',
-            'posts_url' => 'https://www.intoxianime.com/wp-json/wp/v2/posts',
-            'feed_url' => 'https://www.intoxianime.com/feed/',
-            'language' => 'pt-BR',
-            'priority' => 1,
-        ],
-        [
-            'name' => 'AnimeNew',
-            'slug' => 'animenew',
-            'base_url' => 'https://animenew.com.br',
-            'type' => 'wordpress',
-            'posts_url' => 'https://wp.animenew.com.br/wp-json/wp/v2/posts',
-            'feed_url' => 'https://wp.animenew.com.br/feed/',
-            'language' => 'pt-BR',
-            'priority' => 1,
-        ],
-        [
-            'name' => 'OtakuPT',
-            'slug' => 'otakupt',
-            'base_url' => 'https://www.otakupt.com',
-            'type' => 'wordpress',
-            'posts_url' => 'https://www.otakupt.com/wp-json/wp/v2/posts',
-            'feed_url' => 'https://www.otakupt.com/feed/',
-            'language' => 'pt-PT',
-            'priority' => 2,
-        ],
-        [
-            'name' => 'Crunchyroll',
-            'slug' => 'crunchyroll',
-            'base_url' => 'https://www.crunchyroll.com',
-            'type' => 'rss',
-            'feed_url' => 'https://cr-news-api-service.prd.crunchyrollsvc.com/v1/pt-BR/rss',
-            'language' => 'pt-BR',
-            'priority' => 1,
-        ],
-    ];
 
     public function sources(): Collection
     {
-        return collect($this->sources)
+        return collect(config('services.anime_news_sources', []))
             ->sortBy([
                 ['priority', 'asc'],
                 ['name', 'asc'],
@@ -81,6 +30,8 @@ class AnimeNewsFeedService
 
         return $sources
             ->flatMap(fn (array $source) => $this->latestFromSource($source, $this->sourceLimit($source, $limit)))
+            ->unique('id')
+            ->unique('url')
             ->sortByDesc(fn (array $post) => $this->publishedTimestamp($post['published_at'] ?? null))
             ->take($limit)
             ->values();
@@ -92,7 +43,14 @@ class AnimeNewsFeedService
         $page = max(1, $page);
 
         return new LengthAwarePaginator(
-            $items->forPage($page, $perPage)->values(),
+            $items->forPage($page, $perPage)->map(function (array $post) {
+                if (blank($post['image'])) {
+                    $images = app(NewsArticleImageService::class);
+                    $remoteImage = $images->resolve($post['source']['slug'], $post['url']);
+                    $post['image'] = $remoteImage ? $images->preview($post['source']['slug'], $remoteImage) : null;
+                }
+                return $post;
+            })->values(),
             $items->count(),
             $perPage,
             $page,
@@ -157,9 +115,7 @@ class AnimeNewsFeedService
 
     private function latestFromRssSource(array $source, int $limit): Collection
     {
-        $response = Http::timeout(8)->withOptions([
-            'verify' => false,
-        ])->get($source['feed_url']);
+        $response = Http::timeout(8)->get($source['feed_url']);
 
         if ($response->failed()) {
             Log::warning('Anime RSS feed unavailable', [
@@ -170,7 +126,13 @@ class AnimeNewsFeedService
             return collect();
         }
 
-        $rss = simplexml_load_string($response->body(), 'SimpleXMLElement', LIBXML_NOCDATA);
+        $previous = libxml_use_internal_errors(true);
+        try {
+            $rss = simplexml_load_string($response->body(), 'SimpleXMLElement', LIBXML_NOCDATA | LIBXML_NONET);
+        } finally {
+            libxml_clear_errors();
+            libxml_use_internal_errors($previous);
+        }
 
         if ($rss === false) {
             Log::warning('Anime RSS feed invalid', [
@@ -178,6 +140,14 @@ class AnimeNewsFeedService
             ]);
 
             return collect();
+        }
+
+        if ($rss->getName() === 'feed') {
+            return collect(iterator_to_array($rss->children('http://www.w3.org/2005/Atom')->entry, false))
+                ->take($limit)
+                ->map(fn ($item) => $this->formatAtomPost($source, $item))
+                ->filter()
+                ->values();
         }
 
         $items = isset($rss->channel->item)
@@ -228,7 +198,7 @@ class AnimeNewsFeedService
 
         $content = (string) ($contentNamespace->encoded ?? $item->description ?? '');
         $excerpt = $this->clean((string) ($item->description ?? $content));
-        $guid = trim((string) ($item->guid ?? md5($url)));
+        $guid = trim((string) $item->guid) ?: md5($url);
         $image = $this->rssImage($item, $mediaNamespace);
 
         return $this->formatPost($source, [
@@ -239,6 +209,38 @@ class AnimeNewsFeedService
             'content' => $content,
             'published_at' => trim((string) ($item->pubDate ?? null)) ?: null,
             'image' => $image,
+        ]);
+    }
+
+    private function formatAtomPost(array $source, \SimpleXMLElement $item): ?array
+    {
+        $title = $this->clean((string) $item->title);
+        $url = null;
+        $image = null;
+        foreach ($item->link as $link) {
+            $attributes = $link->attributes();
+            $rel = (string) $attributes->rel;
+            if ($rel === '' || $rel === 'alternate') {
+                $url ??= trim((string) $attributes->href);
+            }
+            if ($rel === 'enclosure' && str_starts_with((string) $attributes->type, 'image/')) {
+                $image = (string) $attributes->href;
+            }
+        }
+
+        if (blank($title) || blank($url)) {
+            return null;
+        }
+
+        return $this->formatPost($source, [
+            'id' => trim((string) $item->id) ?: md5($url),
+            'title' => $title,
+            'url' => $url,
+            'excerpt' => Str::limit($this->clean((string) ($item->summary ?? $item->content)), 240),
+            'content' => (string) ($item->content ?? $item->summary),
+            // Comic Natalie supplies updated, but no published timestamp.
+            'published_at' => trim((string) ($item->published ?? $item->updated)) ?: null,
+            'image' => $image ?? $this->rssImage($item, $item->children('http://search.yahoo.com/mrss/')),
         ]);
     }
 

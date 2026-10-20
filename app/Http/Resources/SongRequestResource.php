@@ -20,6 +20,7 @@ class SongRequestResource extends JsonResource
 
         return [
             'uuid' => $this->uuid,
+            'requester_block_id' => $this->resource->getAttribute('requester_block_id'),
             'type' => $this->type ?? ($this->music_id ? 'music' : 'message'),
             'was_reproduced' => $this->was_reproduced,
             'was_canceled' => $this->was_canceled,

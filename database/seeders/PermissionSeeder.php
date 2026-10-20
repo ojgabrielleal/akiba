@@ -125,6 +125,17 @@ class PermissionSeeder extends Seeder
             ['name' => 'song.request.reproduce', 'label' => '[Pedidos Música] Atender'],
             ['name' => 'song.request.cancel', 'label' => '[Pedidos Música] Cancelar'],
             ['name' => 'song.request.toggle', 'label' => '[Pedidos Música] Ativar/Desativar'],
+            ['name' => 'song.request.block', 'label' => '[Pedidos Música] Pode bloquear ouvinte'],
+            ['name' => 'song.request.unblock', 'label' => '[Pedidos Música] Pode desbloquear ouvinte'],
+
+            /*
+            |--------------------------------------------------------------------------
+            | Moderação de ouvintes
+            |--------------------------------------------------------------------------
+            */
+            ['name' => 'audience.moderation.list', 'label' => '[Moderação de ouvintes] Listar'],
+            ['name' => 'audience.moderation.block', 'label' => '[Moderação de ouvintes] Bloquear'],
+            ['name' => 'audience.moderation.unblock', 'label' => '[Moderação de ouvintes] Desbloquear'],
 
             /*
             |--------------------------------------------------------------------------

@@ -55,6 +55,8 @@ Route::prefix('panel')->middleware(['inertia'])->group(function () {
             Route::post('start/{program:uuid}', 'startLocution');
             Route::patch('finish', 'finishLocution');
             Route::prefix('song-request')->group(function () {
+                Route::put('{songRequest:uuid}/requester/block', 'blockRequester');
+                Route::delete('requester/block/{songRequestBlock}', 'unblockRequester');
                 Route::patch('{songRequest:uuid}/played', 'markSongRequestAsPlayed');
                 Route::patch('{songRequest:uuid}/canceled', 'markSongRequestAsCanceled');
                 Route::patch('box/toggle', 'toggleSongRequestBoxStatus');
@@ -164,6 +166,8 @@ Route::prefix('panel')->middleware(['inertia'])->group(function () {
                 Route::delete('{formSubmission:uuid}', 'destroyFormSubmission')
                     ->middleware('can:form.submission.review');
             });
+            Route::post('audience-block', 'blockOAuthRequester');
+            Route::delete('song-request/requester/block/{songRequestBlock}', 'unblockSongRequestRequester');
             Route::get('', 'render')->name('panel.administration');
         });
         Route::prefix('reports')->middleware('can:report.module.view')->controller(ReportsController::class)->group(function () {

@@ -2,12 +2,13 @@
     import { useForm } from "@inertiajs/svelte";
     import toast from "svelte-hot-french-toast";
 
+
     export let event = {};
     export let close = () => {};
 
     const fieldClass = "mb-3";
-    const inputClass = "w-full bg-white font-noto-sans text-md text-black rounded-md outline-none border border-gray-400";
-    const labelClass = "text-md text-gray-700 font-noto-sans block mb-1";
+    const inputClass = "w-full bg-white font-noto-sans text-md text-black rounded-md outline-none border border-gray-400 [[data-public-theme=akiba]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_76%,var(--color-blue-night))] [[data-public-theme=night]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_76%,var(--color-blue-night))] [[data-public-theme=akiba]_&]:text-suspense-aurora [[data-public-theme=night]_&]:text-suspense-aurora [[data-public-theme=akiba]_&]:placeholder:text-suspense-aurora/45 [[data-public-theme=night]_&]:placeholder:text-suspense-aurora/45 [[data-public-theme=akiba]_&]:border-suspense-aurora/20 [[data-public-theme=night]_&]:border-suspense-aurora/20";
+    const labelClass = "text-md text-gray-700 font-noto-sans block mb-1 [[data-public-theme=akiba]_&]:text-suspense-aurora/75 [[data-public-theme=night]_&]:text-suspense-aurora/75";
 
     $: form = useForm({
         form_type: "event_registration",
@@ -54,7 +55,7 @@
             required
         />
         {#if $form.errors["payload.event_name"]}
-            <span class="mt-1 block font-noto-sans text-xs text-red-600">{$form.errors["payload.event_name"]}</span>
+            <span class="mt-1 block font-noto-sans text-xs text-red-600 [[data-public-theme=akiba]_&]:text-red-300 [[data-public-theme=night]_&]:text-red-300">{$form.errors["payload.event_name"]}</span>
         {/if}
     </div>
 
@@ -71,7 +72,7 @@
                 required
             />
             {#if $form.errors["payload.city"]}
-                <span class="mt-1 block font-noto-sans text-xs text-red-600">{$form.errors["payload.city"]}</span>
+                <span class="mt-1 block font-noto-sans text-xs text-red-600 [[data-public-theme=akiba]_&]:text-red-300 [[data-public-theme=night]_&]:text-red-300">{$form.errors["payload.city"]}</span>
             {/if}
         </div>
 
@@ -89,7 +90,7 @@
                 required
             />
             {#if $form.errors["payload.state"]}
-                <span class="mt-1 block font-noto-sans text-xs text-red-600">{$form.errors["payload.state"]}</span>
+                <span class="mt-1 block font-noto-sans text-xs text-red-600 [[data-public-theme=akiba]_&]:text-red-300 [[data-public-theme=night]_&]:text-red-300">{$form.errors["payload.state"]}</span>
             {/if}
         </div>
     </div>
@@ -106,14 +107,14 @@
             required
         ></textarea>
         {#if $form.errors["payload.social_links"]}
-            <span class="mt-1 block font-noto-sans text-xs text-red-600">{$form.errors["payload.social_links"]}</span>
+            <span class="mt-1 block font-noto-sans text-xs text-red-600 [[data-public-theme=akiba]_&]:text-red-300 [[data-public-theme=night]_&]:text-red-300">{$form.errors["payload.social_links"]}</span>
         {/if}
     </div>
 
     <div class="flex justify-end pt-1">
         <button
             type="submit"
-            class="inline-flex cursor-pointer items-center justify-center gap-2 rounded-full bg-blue-ocean px-7 py-2 font-noto-sans font-extrabold uppercase italic text-suspense-aurora transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50"
+            class="inline-flex cursor-pointer items-center justify-center gap-2 rounded-full bg-blue-ocean px-7 py-2 font-noto-sans font-extrabold uppercase italic text-suspense-aurora outline-none disabled:cursor-not-allowed disabled:opacity-50 [[data-public-theme=akiba]_&]:bg-blue-marinho [[data-public-theme=night]_&]:bg-blue-marinho"
             disabled={$form.processing}
             aria-busy={$form.processing}
         >

@@ -38,4 +38,14 @@ class SongRequestPolicy
     {
         return $user->hasPermission('song.request.toggle');
     }
+    public function blockRequester(User $user): bool
+    {
+        return $user->hasPermission('song.request.block');
+    }
+
+    public function unblockRequester(User $user): bool
+    {
+        return $user->hasPermission('song.request.unblock');
+    }
+
 }

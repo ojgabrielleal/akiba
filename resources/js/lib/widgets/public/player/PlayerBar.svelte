@@ -20,6 +20,15 @@
     let visible = true;
     let observer;
     let mounted = false;
+    function openRequestModal() {
+        if (air?.song_requests_blocked) {
+            toast.error("Você está bloqueado de fazer pedidos", { id: "song-request-blocked" });
+            return;
+        }
+
+        modalRef?.open();
+    }
+
     let modalRef;
     let coverLightboxOpen = false;
     let stopListeningForOAuthAction = () => {};
@@ -35,7 +44,7 @@
 
     const handleSongRequestAction = () => {
         if (canRequestSong) {
-            modalRef.open();
+            openRequestModal();
             return;
         }
 
@@ -82,7 +91,7 @@
         observeMainPlayer();
         stopListeningForOAuthAction = listenForOAuthAction(
             OAuthAction.OPEN_SONG_REQUEST,
-            () => modalRef.open(),
+            () => openRequestModal(),
         );
     });
 
@@ -118,7 +127,7 @@
                     descriptionClass="text-suspense-aurora/70 [[data-public-theme=light]_&]:text-blue-night/60"
                     {oauth}
                 >
-                    <SongRequestForm {close} {oauth} />
+                    <SongRequestForm {close} {oauth} blocked={Boolean(air?.song_requests_blocked)} />
                 </AuthGuard>
             {:else}
                 <div class="px-2 py-4 text-center font-noto-sans">

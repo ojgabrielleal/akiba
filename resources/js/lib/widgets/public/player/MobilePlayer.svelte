@@ -1,5 +1,6 @@
 <script>
     import { onMount } from "svelte";
+    import toast from "svelte-hot-french-toast";
     import { AuthGuard, CustomModal, LoadingSpinner } from "@/lib/components/public";
     import { SongRequestForm } from "@/lib/widgets/public";
     import SongCoverLightbox from "./SongCoverLightbox.svelte";
@@ -21,13 +22,22 @@
     $: hasActiveHost = air?.execution_mode === "live";
     $: canRequestSong = hasActiveHost && air?.allows_song_requests;
 
+    function openRequestModal() {
+        if (air?.song_requests_blocked) {
+            toast.error("Você está bloqueado de fazer pedidos", { id: "song-request-blocked" });
+            return;
+        }
+
+        modalRef?.open();
+    }
+
     let modalRef;
     let coverLightboxOpen = false;
 
     onMount(() =>
         listenForOAuthAction(
             OAuthAction.OPEN_SONG_REQUEST,
-            () => modalRef.open(),
+            () => openRequestModal(),
         ),
     );
 
@@ -52,7 +62,7 @@
 
     const openSongRequest = () => {
         if (canRequestSong) {
-            modalRef.open();
+            openRequestModal();
         }
     };
 
@@ -97,7 +107,7 @@
                 descriptionClass="text-suspense-aurora/70 [[data-public-theme=light]_&]:text-blue-night/60"
                 {oauth}
             >
-                <SongRequestForm {close} {oauth} />
+                <SongRequestForm {close} {oauth} blocked={Boolean(air?.song_requests_blocked)} />
             </AuthGuard>
         {:else}
             <div class="px-2 py-4 text-center font-noto-sans">

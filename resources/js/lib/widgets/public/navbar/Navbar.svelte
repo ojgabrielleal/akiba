@@ -1,4 +1,5 @@
 <script>
+    import { overlay } from "@/lib/utils/overlay";
     import { Link, page, router } from "@inertiajs/svelte";
     import { onMount } from "svelte";
     import { fade, fly } from "svelte/transition";
@@ -55,6 +56,15 @@
 
     const closeMobileNavbar = () => {
         mobilenavbar = false;
+    };
+
+    const mobileOverlay = (node) => {
+        const action = overlay(node, {
+            desktopQuery: "(min-width: 1024px)",
+            close: closeMobileNavbar,
+        });
+        applyPublicTheme(selectedTheme);
+        return action;
     };
 
     const closeNotificationPanel = () => {
@@ -431,7 +441,7 @@
     </div>
 
     {#if mobilenavbar}
-        <div class="fixed inset-0 z-100 overflow-hidden lg:hidden">
+        <div use:mobileOverlay data-public-theme-scope data-public-theme={selectedTheme} class="fixed inset-0 z-[2147483000] overflow-hidden lg:hidden">
             <button
                 type="button"
                 aria-label="Fechar menu de navegação"
@@ -445,7 +455,7 @@
                 aria-label="Navegação mobile"
             >
                 <div class="flex h-full min-h-0 flex-col">
-                    <ul class="public-themed-scrollbar flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto px-4 pt-6 pb-3">
+                    <ul class="public-themed-scrollbar flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto overscroll-contain px-4 pt-6 pb-3">
                         {#each navbar.public as item}
                             {@const active = isActiveNavItem(item)}
                             <li>
@@ -560,7 +570,7 @@
         style:--push-bottom={`calc(${playerBarVisible ? "5.5rem" : "1rem"} + env(safe-area-inset-bottom))`}
         style:--cookie-offset={`${cookieConsentVisible ? cookieConsentHeight + 12 : 0}px`}
         class={[
-            "push-prompt fixed bottom-[calc(var(--push-bottom)+var(--cookie-offset))] 2xl:bottom-[var(--push-bottom)] left-4 right-4 z-[130] max-w-sm rounded-2xl border border-suspense-aurora/10 bg-blue-night/95 p-4 font-noto-sans text-suspense-aurora shadow-2xl shadow-blue-night/30 backdrop-blur-md [[data-public-theme=light]_&]:bg-white/95 [[data-public-theme=light]_&]:text-blue-night sm:right-auto sm:w-96 transition-[bottom] duration-300 ease-out motion-reduce:transition-none",
+            "push-prompt fixed bottom-[calc(var(--push-bottom)+var(--cookie-offset))] 2xl:bottom-[var(--push-bottom)] left-4 right-4 z-[130] max-w-sm rounded-2xl border border-suspense-aurora/10 bg-blue-night/95 p-4 font-noto-sans text-suspense-aurora shadow-2xl shadow-blue-night/30 backdrop-blur-md [[data-public-theme=light]_&]:bg-white/95 [[data-public-theme=light]_&]:!text-[#000014] sm:right-auto sm:w-96 transition-[bottom] duration-300 ease-out motion-reduce:transition-none",
         ]}
     >
         <button
@@ -576,23 +586,23 @@
                 <MaskIcon icon="/svg/bell.svg" class="size-5" />
             </span>
             <div class="min-w-0 flex-1">
-                <p class="pr-5 text-sm font-bold leading-snug">
+                <p class="pr-5 text-sm font-bold leading-snug [[data-public-theme=light]_&]:!text-[#000014]">
                     Não perca nenhuma novidade da Akiba
                 </p>
-                <p class="mt-1.5 text-xs leading-relaxed text-suspense-aurora/65 [[data-public-theme=light]_&]:text-blue-night/65">
+                <p class="mt-1.5 text-xs leading-relaxed text-suspense-aurora/65 [[data-public-theme=light]_&]:!text-[#000014]/65">
                     Receba avisos sobre novas matérias, programas ao vivo e novidades da Akiba.
                 </p>
                 <button
                     type="button"
                     disabled={requestingNotifications}
                     aria-busy={requestingNotifications}
-                    class={["mt-3 inline-flex min-h-9 cursor-pointer items-center justify-center rounded-full bg-orange-citric px-4 py-2 text-xs font-bold text-blue-night hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric focus-visible:ring-offset-2 focus-visible:ring-offset-blue-night disabled:cursor-wait disabled:opacity-60", publicAnimations.buttonInteractive]}
+                    class={["mt-3 inline-flex min-h-9 cursor-pointer items-center justify-center rounded-full bg-orange-citric px-4 py-2 text-xs font-bold text-blue-night [[data-public-theme=light]_&]:!text-[#000014] hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric focus-visible:ring-offset-2 focus-visible:ring-offset-blue-night disabled:cursor-wait disabled:opacity-60", publicAnimations.buttonInteractive]}
                     on:click={requestNotifications}
                 >
                     {requestingNotifications ? "Ativando…" : "Ativar notificações"}
                 </button>
                 {#if pushError}
-                    <p role="alert" class="mt-2 text-xs text-orange-morning">{pushError}</p>
+                    <p role="alert" class="mt-2 text-xs text-orange-morning [[data-public-theme=light]_&]:!text-[#000014]/75">{pushError}</p>
                 {/if}
             </div>
         </div>

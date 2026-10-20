@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Models\FormSubmission;
 use App\Models\User;
+use App\Processing\ImageProcess;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -11,6 +13,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class FormSubmissionService
 {
     public function __construct(
+        private ImageProcess $image,
     ) {}
 
     public function review(FormSubmission $formSubmission, User $reviewer, string $status): FormSubmission
@@ -39,19 +42,31 @@ class FormSubmissionService
         $formSubmission->delete();
     }
 
-    public function store(array $data): FormSubmission
+    public function store(array $data, ?UploadedFile $image = null): FormSubmission
     {
         if (($data['form_type'] ?? null) === 'event_registration' && empty($data['payload']['event_name'])) {
             $data['payload']['event_name'] = $data['payload']['event_title'] ?? null;
         }
 
-        $formSubmission = FormSubmission::create([
+        $imagePath = $image ? $this->image->store('listener-art-submissions', $image) : null;
+        if ($imagePath) {
+            $data['payload']['image'] = $imagePath;
+        }
+
+        try {
+            $formSubmission = FormSubmission::create([
             'form_type' => $data['form_type'],
             'name' => $data['name'] ?? null,
             'contact' => $data['contact'] ?? null,
             'subject' => $data['subject'] ?? null,
             'payload' => $data['payload'],
-        ]);
+            ]);
+        } catch (\Throwable $exception) {
+            if ($imagePath) {
+                $this->image->delete($imagePath);
+            }
+            throw $exception;
+        }
 
         return $formSubmission;
     }

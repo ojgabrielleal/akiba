@@ -37,10 +37,13 @@
     </FormField>
     <SectionDivider tone="ocean">Cargos</SectionDivider>
     <div class="pb-6">
-        <div class="flex flex-col gap-2">
+        <div class="grid grid-cols-2 gap-2">
             {#if roles}
                 {#each roles.data as item}
                     <CheckboxInput
+                        variant="card"
+                        icon={item.icon}
+                        disabled={$form.processing}
                         label={item.label}
                         description={item.description}
                         name={item.name}

@@ -1,5 +1,7 @@
 <script>
-    import { Deferred, page } from "@inertiajs/svelte";
+    import { onMount } from "svelte";
+    import { Deferred, page, router } from "@inertiajs/svelte";
+    import { publicAnimations } from "@/lib/constants/public/animation";
     import { Meta } from "@/lib/components/shared";
     import { Section } from "@/lib/components/public";
     import { Layout } from "@/lib/layouts/public";
@@ -14,7 +16,13 @@
         LatestPollCard,
     } from "@/lib/widgets/public";
 
+    let availableVersion = null;
+    let refreshing = false;
+    let refreshError = false;
+    let refreshGeneration = 0;
+
     $: ({
+        contentVersion,
         onair,
         stream,
         featuredPosts,
@@ -30,13 +38,84 @@
     $: featuredPostList = Array.isArray(featuredPosts) ? featuredPosts : featuredPosts?.data ?? [];
     $: poll = latestPoll?.data ?? null;
     $: hasFeaturedPosts = featuredPostList.length > 0;
+    $: hasUpdates = availableVersion !== null && availableVersion !== contentVersion;
 
     const skeletonItems = (count) => Array.from({ length: count }, (_, index) => index);
+
+    function refreshContent() {
+        if (refreshing) return;
+        refreshing = true;
+        refreshGeneration += 1;
+        refreshError = false;
+        router.reload({
+            only: ["contentVersion", "featuredPosts", "posts", "latestReviews", "events"],
+            preserveScroll: true,
+            preserveState: true,
+            onSuccess: () => { availableVersion = null; },
+            onError: () => { refreshError = true; },
+            onFinish: () => { refreshing = false; },
+        });
+    }
+
+    onMount(() => {
+        let controller = null;
+        let disposed = false;
+
+        async function checkForUpdates() {
+            if (document.hidden || controller || refreshing || disposed) return;
+            controller = new AbortController();
+            const generation = refreshGeneration;
+            const timeout = setTimeout(() => controller?.abort(), 10000);
+            try {
+                const response = await fetch("/home/content-version", {
+                    signal: controller.signal,
+                    cache: "no-store",
+                    headers: { Accept: "application/json" },
+                });
+                if (!response.ok) return;
+                const data = await response.json();
+                if (!disposed && !refreshing && generation === refreshGeneration && typeof data.version === "string") {
+                    availableVersion = data.version;
+                }
+            } catch {
+                // A temporary connection failure is retried on the next interval.
+            } finally {
+                clearTimeout(timeout);
+                controller = null;
+            }
+        }
+
+        function handleVisibility() {
+            if (document.hidden) controller?.abort();
+            else checkForUpdates();
+        }
+
+        const interval = setInterval(checkForUpdates, 30000);
+        document.addEventListener("visibilitychange", handleVisibility);
+        return () => {
+            disposed = true;
+            clearInterval(interval);
+            controller?.abort();
+            document.removeEventListener("visibilitychange", handleVisibility);
+        };
+    });
 </script>
 
 <Meta />
 <Layout {flash} {oauth} {onair} {stream} {pageUrl} publicThemeEnabled>
     <h1 class="sr-only">Akiba Station</h1>
+    {#if hasUpdates}
+        <div class="fixed inset-x-4 top-24 z-40 flex justify-center pointer-events-none" role="status" aria-live="polite">
+            <button
+                type="button"
+                class={`pointer-events-auto rounded-lg bg-orange-citric px-5 py-3 font-semibold text-blue-night shadow-lg hover:bg-orange-citric/90 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orange-citric disabled:opacity-70 ${publicAnimations.buttonInteractive}`}
+                disabled={refreshing}
+                on:click={refreshContent}
+            >
+                {refreshing ? "Atualizando…" : refreshError ? "Não foi possível atualizar — tentar novamente" : "Há novidades na home — atualizar"}
+            </button>
+        </div>
+    {/if}
     <div class="home-player-background bg-blue-night pt-px pb-5">
         <div class="mt-0 lg:mt-10" data-main-player>
             <div class="hidden w-full lg:block">

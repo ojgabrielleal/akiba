@@ -13,7 +13,7 @@ class ContactController extends Controller
 
     public function storeFormSubmission(StoreFormSubmissionRequest $request, FormSubmissionService $service): RedirectResponse
     {
-        $service->store($request->validated());
+        $service->store($request->safe()->except('image'), $request->file('image'));
 
         return back(303)->with('success', 'Formulário enviado com sucesso.');
     }

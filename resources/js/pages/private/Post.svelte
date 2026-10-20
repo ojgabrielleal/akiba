@@ -4,7 +4,7 @@
     import { Deferred, router, page } from "@inertiajs/svelte";
     import { Meta } from "@/lib/components/shared";
     import { Layout } from "@/lib/layouts/private";
-    import { Modal, Section } from "@/lib/components/private";
+    import { Modal, Section, Tooltip } from "@/lib/components/private";
     import { AnimeNewsFeedGrid, PostCommentPanel, PostGrid } from "@/lib/widgets/private";
 
     $: ({ post, posts, canViewNewsFeed, newsFeedSources, selectedNewsFeedSource, newsFeedPosts } = $page.props);
@@ -188,20 +188,35 @@
     </Section>
 
     {#if selectedPost}
-        <button
-            type="button"
-            class="fixed bottom-22 right-5 z-[210] flex min-h-11 cursor-pointer items-center gap-2.5 rounded-full border border-orange-citric/45 bg-blue-marinho/95 px-3 py-2 font-noto-sans text-suspense-aurora shadow-[0_0.75rem_1.75rem_rgba(0,0,20,0.32)] backdrop-blur-sm transition duration-300 ease-out hover:-translate-y-0.5 hover:border-orange-citric hover:bg-blue-ocean focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none lg:bottom-8 lg:right-8"
-            aria-label={"Abrir comentários de " + commentPanelTitle}
-            on:click={() => commentModalRef.open()}
-            on:mousedown|preventDefault={() => commentModalRef.open()}
-        >
-            <span class="pointer-events-none relative flex size-7 items-center justify-center rounded-full bg-orange-citric text-sm font-black italic text-blue-marinho" aria-hidden="true">
-                {selectedPostComments}
-            </span>
-            <span class="pointer-events-none relative hidden text-left text-[0.7rem] font-black uppercase italic leading-tight sm:block" aria-hidden="true">
-                Comentários
-            </span>
-        </button>
+        <div class="fixed bottom-22 right-5 z-[210] lg:bottom-8 lg:right-8">
+            <Tooltip position="left">
+                <button
+                    type="button"
+                    class="group relative flex size-12 cursor-pointer items-center justify-center rounded-lg border border-orange-citric/30 bg-blue-ocean shadow-md transition duration-300 ease-out hover:-translate-y-0.5 hover:border-orange-citric/70 hover:bg-blue-ocean/90 hover:shadow-lg focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none"
+                    aria-label={"Abrir comentários de " + commentPanelTitle}
+                    aria-haspopup="dialog"
+                    on:click={() => commentModalRef.open()}
+                    on:mousedown|preventDefault={() => commentModalRef.open()}
+                >
+                    <img
+                        src="/svg/interactions.svg"
+                        alt=""
+                        aria-hidden="true"
+                        class="pointer-events-none absolute inset-0 m-auto size-6 filter-orange-citric opacity-90 transition-opacity group-hover:opacity-100"
+                    />
+                    {#if selectedPostComments > 0}
+                        <span
+                            class="pointer-events-none absolute -right-1.5 -top-1.5 flex min-w-[1.125rem] items-center justify-center rounded-full border-2 border-blue-deep bg-orange-citric px-1 font-noto-sans text-[0.625rem] font-black leading-[0.875rem] text-blue-deep shadow-sm"
+                            aria-hidden="true"
+                        >
+                            {selectedPostComments}
+                        </span>
+                    {/if}
+                </button>
+
+                <span slot="content">Comentários</span>
+            </Tooltip>
+        </div>
 
         <Modal bind:this={commentModalRef} title="Comentários" size="md" flush>
             <div slot="content" class="overflow-x-hidden font-noto-sans text-blue-marinho">

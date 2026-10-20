@@ -1,6 +1,6 @@
 <script>
     import { onDestroy, tick } from "svelte";
-    import { fade, fly } from "svelte/transition";
+    import { fade } from "svelte/transition";
     import { publicAnimations } from "@/lib/constants/public/animation";
     import { applyPublicTheme, getStoredPublicTheme, themeClass } from "@/lib/utils";
 
@@ -19,9 +19,9 @@
 
     const sizes = {
         sm: "max-w-sm",
-        md: "lg:w-120",
-        lg: "lg:w-160",
-        xl: "lg:w-[52rem] xl:w-[58rem]",
+        md: "max-w-xl",
+        lg: "max-w-3xl",
+        xl: "max-w-6xl",
     };
 
     export const open = async () => {
@@ -75,15 +75,15 @@
         use:portal
         data-public-theme-scope
         data-public-theme={selectedTheme}
-        class="fixed inset-0 z-[2147483000] flex h-[100dvh] w-screen items-center justify-center bg-black/40 p-4 backdrop-blur-xs sm:p-6 lg:p-9"
+        class="fixed inset-0 z-[2147483000] flex h-dvh w-full items-center justify-center overflow-y-auto bg-black/40 p-3 backdrop-blur-xs sm:p-4"
         role="presentation"
-        transition:fade={{ duration: 180 }}
+        transition:fade={{ duration: 200 }}
         on:click={handleBackdrop}
     >
         <div
             bind:this={panel}
             class={[
-                "relative flex max-h-[85vh] w-full flex-col rounded-t-xl rounded-b-xl bg-blue-ocean shadow-[0_24px_80px_rgba(0,0,0,0.55)] outline-none focus:outline-none focus-visible:outline-none [[data-public-theme=akiba]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_90%,var(--color-blue-night))] [[data-public-theme=night]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_90%,var(--color-blue-night))]",
+                "relative my-auto flex max-h-[80vh] w-full min-w-0 flex-col rounded-md bg-blue-ocean shadow-[0_1.25rem_3rem_rgba(0,0,0,0.24)] outline-none focus:outline-none focus-visible:outline-none [[data-public-theme=akiba]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_90%,var(--color-blue-night))] [[data-public-theme=night]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_90%,var(--color-blue-night))]",
                 themeClass("bg", "suspense-aurora", { fixed: true, theme: "light" }),
                 bordered && "[[data-public-theme=light]_&]:border [[data-public-theme=light]_&]:border-blue-night/10 [[data-public-theme=light]_&]:shadow-2xl",
                 sizes[size] ?? sizes.md,
@@ -93,17 +93,16 @@
             aria-labelledby={titleId}
             aria-label={title ? undefined : label}
             tabindex="-1"
-            transition:fly={{ y: 12, duration: 220 }}
         >
             {#if title}
-                <div class={["flex items-center justify-center rounded-t-md bg-blue-marinho p-4 [[data-public-theme=light]_&]:!bg-suspense-sandstone", themeClass("bg", "blue-marinho", { theme: "light" })]}>
-                    <h2 id={titleId} class={["text-center font-noto-sans font-bold text-suspense-aurora uppercase italic [[data-public-theme=light]_&]:!text-[#000014]", themeClass("text", "suspense-aurora", { fixed: true })]}>
+                <div class={["flex min-h-15 shrink-0 items-center rounded-t-md bg-blue-marinho px-4 py-3 sm:px-6 [[data-public-theme=light]_&]:!bg-suspense-sandstone", themeClass("bg", "blue-marinho", { theme: "light" })]}>
+                    <h2 id={titleId} class={["font-noto-sans text-base font-black text-suspense-aurora uppercase italic [[data-public-theme=light]_&]:!text-[#000014]", themeClass("text", "suspense-aurora", { fixed: true })]}>
                         {title}
                     </h2>
                     <button
                         type="button"
                         class={[
-                            "absolute right-3 top-3 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-suspense-aurora shadow-md hover:bg-neutral-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric sm:-right-5 sm:-top-8 sm:h-6 sm:w-6 sm:shadow-lg [[data-public-theme=akiba]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_76%,var(--color-blue-night))] [[data-public-theme=akiba]_&]:hover:bg-blue-ocean [[data-public-theme=night]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_76%,var(--color-blue-night))] [[data-public-theme=night]_&]:hover:bg-blue-ocean",
+                            "absolute -right-3 -top-3 z-20 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-suspense-aurora shadow-[0_0.5rem_1.25rem_rgba(0,0,20,0.22)] hover:bg-neutral-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric sm:-right-4 sm:-top-4 sm:h-7 sm:w-7 [[data-public-theme=akiba]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_76%,var(--color-blue-night))] [[data-public-theme=akiba]_&]:hover:bg-blue-ocean [[data-public-theme=night]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_76%,var(--color-blue-night))] [[data-public-theme=night]_&]:hover:bg-blue-ocean",
                             themeClass("bg", "suspense-aurora", { fixed: true, theme: "light" }),
                             publicAnimations.iconButtonInteractive,
                         ]}
@@ -125,7 +124,7 @@
                     type="button"
                     aria-label="Fechar"
                     class={[
-                        "absolute right-3 top-3 z-10 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-suspense-aurora shadow-md hover:bg-neutral-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric sm:-right-5 sm:-top-8 sm:h-6 sm:w-6 sm:shadow-lg [[data-public-theme=akiba]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_76%,var(--color-blue-night))] [[data-public-theme=akiba]_&]:hover:bg-blue-ocean [[data-public-theme=night]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_76%,var(--color-blue-night))] [[data-public-theme=night]_&]:hover:bg-blue-ocean",
+                        "absolute -right-3 -top-3 z-20 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-suspense-aurora shadow-[0_0.5rem_1.25rem_rgba(0,0,20,0.22)] hover:bg-neutral-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric sm:-right-4 sm:-top-4 sm:h-7 sm:w-7 [[data-public-theme=akiba]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_76%,var(--color-blue-night))] [[data-public-theme=akiba]_&]:hover:bg-blue-ocean [[data-public-theme=night]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_76%,var(--color-blue-night))] [[data-public-theme=night]_&]:hover:bg-blue-ocean",
                         themeClass("bg", "suspense-aurora", { fixed: true, theme: "light" }),
                         publicAnimations.iconButtonInteractive,
                     ]}
@@ -140,7 +139,7 @@
                 </button>
             {/if}
 
-            <div class="min-h-0 w-full flex-1 overflow-y-auto p-5">
+            <div class="min-h-0 w-full flex-1 overflow-x-hidden overflow-y-auto rounded-b-md p-4 sm:p-6">
                 <slot {close} />
             </div>
         </div>

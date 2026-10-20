@@ -53,6 +53,8 @@ class PostController extends Controller
                     'search' => mb_substr(trim(request()->string('search')->toString()), 0, 200),
                     'module' => in_array(request()->input('post_type'), ['post', 'review', 'event'], true)
                         ? request()->input('post_type') : null,
+                    'status' => in_array(request()->input('post_status'), ['draft', 'revision', 'published'], true)
+                        ? request()->input('post_status') : null,
                     'created_on' => request()->string('post_date')->toString(),
                     'order_by' => request()->input('post_sort') === 'views' ? 'views_count' : 'id',
                     'order_direction' => request()->input('post_sort') === 'oldest' ? 'asc' : 'desc',
@@ -178,6 +180,8 @@ class PostController extends Controller
                 'search' => mb_substr(trim(request()->string('search')->toString()), 0, 200),
                     'module' => in_array(request()->input('post_type'), ['post', 'review', 'event'], true)
                         ? request()->input('post_type') : null,
+                    'status' => in_array(request()->input('post_status'), ['draft', 'revision', 'published'], true)
+                        ? request()->input('post_status') : null,
                     'created_on' => request()->string('post_date')->toString(),
                     'order_by' => request()->input('post_sort') === 'views' ? 'views_count' : 'id',
                     'order_direction' => request()->input('post_sort') === 'oldest' ? 'asc' : 'desc',

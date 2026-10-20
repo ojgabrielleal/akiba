@@ -1,5 +1,6 @@
 <script>
     import { router } from "@inertiajs/svelte";
+    import { EmptyState } from "@/lib/components/private";
     import { resolvePlaceholderImage } from "@/lib/utils";
 
     export let post = {};
@@ -155,9 +156,16 @@
             {/each}
         </div>
     {:else}
-        <div class="px-4 py-9 text-center">
-            <p class="text-sm font-black uppercase italic text-blue-marinho">Sem comentários ainda</p>
-            <p class="mt-1 text-sm font-semibold text-blue-marinho/55">Quando a conversa começar, ela aparece neste painel.</p>
+        <div class="p-4">
+            <EmptyState
+                title="Nenhum comentário"
+                description="Quando a conversa começar, ela aparecerá neste painel."
+                icon="/svg/interactions.svg"
+                class="border-blue-night/15"
+                titleClass="text-blue-night"
+                descriptionClass="text-blue-night/60"
+                iconClass="filter-blue-marinho opacity-45"
+            />
         </div>
     {/if}
 </div>

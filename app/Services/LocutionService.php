@@ -179,7 +179,7 @@ class LocutionService
     public function toggleSongRequestBoxStatus(): ?Onair
     {
         return DB::transaction(function () {
-            $onair = Onair::live()->first();
+            $onair = Onair::live()->latest('id')->lockForUpdate()->first();
 
             if (!$onair) {
                 return null;

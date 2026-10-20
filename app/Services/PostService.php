@@ -24,6 +24,18 @@ class PostService
         private DiscordWebhookService $discord,
     ) {}
 
+    public function publicContentVersion(): string
+    {
+        $summary = Post::query()
+            ->active()
+            ->withStatus('published')
+            ->selectRaw('COUNT(*) as total, MAX(updated_at) as last_updated, COALESCE(SUM(id), 0) as identifiers')
+            ->toBase()
+            ->first();
+
+        return hash('sha256', json_encode($summary, JSON_THROW_ON_ERROR));
+    }
+
     public function deactivate(Post $post): Post
     {
         $post = DB::transaction(function () use ($post) {

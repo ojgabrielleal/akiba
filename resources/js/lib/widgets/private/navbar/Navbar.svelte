@@ -1,4 +1,5 @@
 <script>
+    import { overlay } from "@/lib/utils/overlay";
     import { page, Link } from "@inertiajs/svelte";
     import { fade, fly } from "svelte/transition";
     import { hasPermission, resolvePlaceholderImage } from "@/lib/utils";
@@ -92,7 +93,7 @@
 
     <!-- Mobile Navbar -->
     {#if mobilenavbar}
-        <div class="fixed inset-0 z-[220] overflow-hidden xl:hidden">
+        <div use:overlay={{ desktopQuery: "(min-width: 1280px)", close: () => mobilenavbar = false }} class="fixed inset-0 z-[2147483000] overflow-hidden xl:hidden">
             <button
                 type="button"
                 aria-label="Fechar menu de navegacao"
@@ -105,7 +106,7 @@
                 transition:fly={{ x: 240, duration: 300 }}
             >
                 <div class="flex h-full flex-col">
-                    <ul class="flex flex-1 flex-col gap-4 overflow-y-auto p-6">
+                    <ul class="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto overscroll-contain p-6">
                     {#each navbar.private as item}
                         {#if hasPermission(item.permission)}
                             <li>

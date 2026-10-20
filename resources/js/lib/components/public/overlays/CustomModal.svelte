@@ -1,6 +1,5 @@
 <script>
     import { fade } from "svelte/transition";
-    import { quintOut } from "svelte/easing";
     import { onDestroy } from "svelte";
     import { publicAnimations } from "@/lib/constants/public/animation";
     import { defaultBrandLogo, resolveCommemorativeLogo, themeClass } from "@/lib/utils";
@@ -51,14 +50,14 @@
     <!-- svelte-ignore a11y_click_events_have_key_events -->
     <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div
-        transition:fade={{ x: "100%", duration: 500, easing: quintOut }}
-        class="modal-active fixed inset-0 z-[2147483000] flex h-[100dvh] w-screen items-center justify-center bg-black/40 p-4 backdrop-blur-xs sm:p-6 lg:p-9"
+        transition:fade={{ duration: 200 }}
+        class="modal-active fixed inset-0 z-[2147483000] flex h-dvh w-full items-center justify-center overflow-y-auto bg-black/40 p-3 backdrop-blur-xs sm:p-4"
         role="presentation"
         on:click={close}
     >
         <div
             class={[
-                "relative flex max-h-[calc(100dvh-2rem)] w-full flex-col rounded-t-xl rounded-b-xl bg-suspense-aurora sm:max-h-[calc(100dvh-3rem)] lg:w-104 [[data-public-theme=akiba]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_90%,var(--color-blue-night))] [[data-public-theme=night]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_90%,var(--color-blue-night))]",
+                "relative my-auto flex max-h-[80vh] w-full min-w-0 max-w-sm flex-col rounded-md bg-suspense-aurora shadow-[0_1.25rem_3rem_rgba(0,0,0,0.24)] [[data-public-theme=akiba]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_90%,var(--color-blue-night))] [[data-public-theme=night]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_90%,var(--color-blue-night))]",
                 themeClass("bg", "suspense-aurora", { fixed: true, theme: "light" }),
             ]}
             role="dialog"
@@ -67,7 +66,7 @@
             tabindex="-1"
             on:click={block}
         >
-            <header class="w-full h-20 pt-8 px-5 lg:mb-2 bg-cover bg-center rounded-t-xl" style="background-image: url('/img/player/song-requests-bg.webp');">
+            <header class="w-full h-20 shrink-0 pt-8 px-4 sm:px-6 lg:mb-2 bg-cover bg-center rounded-t-md" style="background-image: url('/img/player/song-requests-bg.webp');">
                 <div class="w-60 mt-4">
                     <img
                         src={brandLogo.src}
@@ -81,7 +80,7 @@
                     type="button"
                     aria-label="Fechar modal"
                     class={[
-                        "absolute right-3 top-3 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-suspense-aurora shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric sm:-right-5 sm:-top-8 sm:h-6 sm:w-6 sm:shadow-lg [[data-public-theme=akiba]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_76%,var(--color-blue-night))] [[data-public-theme=akiba]_&]:hover:bg-blue-ocean [[data-public-theme=night]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_76%,var(--color-blue-night))] [[data-public-theme=night]_&]:hover:bg-blue-ocean",
+                        "absolute -right-3 -top-3 z-20 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-suspense-aurora shadow-[0_0.5rem_1.25rem_rgba(0,0,20,0.22)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric sm:-right-4 sm:-top-4 sm:h-7 sm:w-7 [[data-public-theme=akiba]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_76%,var(--color-blue-night))] [[data-public-theme=akiba]_&]:hover:bg-blue-ocean [[data-public-theme=night]_&]:bg-[color-mix(in_srgb,var(--color-blue-ocean)_76%,var(--color-blue-night))] [[data-public-theme=night]_&]:hover:bg-blue-ocean",
                         themeClass("bg", "suspense-aurora", { fixed: true, theme: "light" }),
                         publicAnimations.iconButtonInteractive,
                     ]}
@@ -97,7 +96,7 @@
                     />
                 </button>
             </header>
-            <div class="w-full flex-1 overflow-y-auto p-5 pt-8 lg:pt-5">
+            <div class="min-h-0 w-full flex-1 overflow-x-hidden overflow-y-auto rounded-b-md p-4 pt-8 sm:p-6 sm:pt-8">
                 <slot name="content" {close} />
             </div>
         </div>

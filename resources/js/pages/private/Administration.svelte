@@ -6,6 +6,7 @@
     import {
         ActivityCarousel,
         BadgeGrid,
+        BlockedRequesterList,
         CalendarGrid,
         RoleCarousel,
         TaskList,
@@ -13,7 +14,7 @@
         FormSubmissionList,
     } from "@/lib/widgets/private";
 
-    $: ({ user, activities, calendar, roles, permissions, badges, badgeTargets, tasks, users, formSubmissions } = $page.props);
+    $: ({ user, activities, calendar, roles, permissions, badges, badgeTargets, tasks, users, formSubmissions, blockedRequesters, oauthAccounts } = $page.props);
 
     const skeletonItems = (count) => Array.from({ length: count }, (_, index) => index);
 </script>
@@ -57,6 +58,7 @@
         </svelte:fragment>
     </Deferred>
     <UserGrid title="Membros" variant="administration" {users} {roles} />
+    <BlockedRequesterList title="Moderação de ouvintes" {blockedRequesters} {oauthAccounts} />
     <RoleCarousel title="Cargos" variant="administration" {roles} {permissions} />
     <Deferred data={["badges", "badgeTargets"]}>
         <BadgeGrid title="Emblemas" variant="administration" {badges} {badgeTargets} />

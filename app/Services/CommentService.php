@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class CommentService
 {
@@ -29,6 +30,14 @@ class CommentService
     public function store(Model $commentable, Model $author, array $data): Comment
     {
         $comment = DB::transaction(function () use ($commentable, $author, $data) {
+            $author->newQuery()->whereKey($author->getKey())->lockForUpdate()->firstOrFail();
+
+            if (app(SongRequestBlockService::class)->isBlocked($author, SongRequestBlockService::MODULE_COMMENTS)) {
+                throw ValidationException::withMessages([
+                    'comment' => 'Você está bloqueado de publicar comentários.',
+                ]);
+            }
+
             $comment = $commentable->comments()->make([
                 'parent_id' => $data['parent_id'] ?? null,
                 'comment' => $data['comment'],

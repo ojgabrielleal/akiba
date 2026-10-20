@@ -27,6 +27,7 @@
         whatsapp: "WhatsApp",
         age: "Idade",
         portfolio: "Trabalhos",
+        image: "Imagem enviada",
         interview_time: "Horário da pré-entrevista",
         message: "Motivo",
         event_uuid: "Evento UUID",
@@ -156,7 +157,14 @@
                                         {fieldLabels[field] ?? field}
                                     </dt>
                                     <dd class="mt-1 whitespace-pre-wrap break-words text-sm font-semibold leading-6">
-                                        {value}
+                                        {#if field === "image" && typeof value === "string" && value.startsWith("/storage/images/listener-art-submissions/")}
+                                            <a href={value} target="_blank" rel="noopener noreferrer" class="text-orange-citric underline">
+                                                <img src={value} alt="Arte enviada pelo ouvinte" class="mb-2 max-h-64 max-w-full rounded-md object-contain" />
+                                                Abrir imagem
+                                            </a>
+                                        {:else}
+                                            {value}
+                                        {/if}
                                     </dd>
                                 </div>
                             {/each}

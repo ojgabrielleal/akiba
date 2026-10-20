@@ -21,6 +21,7 @@ class StoreFormSubmissionRequest extends LoggedWebRequest
             'name' => [Rule::requiredIf($this->input('form_type') !== 'event_registration'), 'string', 'max:255'],
             'contact' => [Rule::requiredIf($this->input('form_type') !== 'event_registration'), 'string', 'max:255'],
             'subject' => ['nullable', 'string', 'max:255'],
+            'image' => [Rule::requiredIf($this->input('subject') === 'Arte para a galeria do ouvinte'), 'nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120', 'dimensions:max_width=8000,max_height=8000'],
             'payload' => ['required', 'array'],
             'payload.role' => ['nullable', 'string', Rule::in([
                 'Locutor',

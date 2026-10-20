@@ -112,9 +112,17 @@ export const rolePermissions = () => ({
     delete: hasPermission("role.delete"),
 });
 
+export const audienceModerationPermissions = () => ({
+    list: hasPermission("audience.moderation.list"),
+    block: hasPermission("audience.moderation.block"),
+    unblock: hasPermission("audience.moderation.unblock"),
+});
+
 export const songRequestPermissions = () => ({
     list: hasPermission("song.request.list"),
     toggle: hasPermission("song.request.toggle"),
+    block: hasPermission("song.request.block"),
+    unblock: hasPermission("song.request.unblock"),
     reproduce: hasPermission("song.request.reproduce"),
     cancel: hasPermission("song.request.cancel"),
     locution: {

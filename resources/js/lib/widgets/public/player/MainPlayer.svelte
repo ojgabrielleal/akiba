@@ -29,6 +29,15 @@
     $: requestActionVisible = $player.playing && hasActiveHost;
     $: canRequestSong = requestActionVisible && air?.allows_song_requests;
 
+    function openRequestModal() {
+        if (air?.song_requests_blocked) {
+            toast.error("Você está bloqueado de fazer pedidos", { id: "song-request-blocked" });
+            return;
+        }
+
+        modalRef?.open();
+    }
+
     let modalRef;
     let coverLightboxOpen = false;
 
@@ -71,7 +80,7 @@
     onMount(() =>
         listenForOAuthAction(
             OAuthAction.OPEN_SONG_REQUEST,
-            () => modalRef.open(),
+            () => openRequestModal(),
         ),
     );
 
@@ -112,7 +121,7 @@
 
     const handlePlayerAction = () => {
         if (canRequestSong) {
-            modalRef.open();
+            openRequestModal();
             return;
         }
 
@@ -147,7 +156,7 @@
                 descriptionClass="text-suspense-aurora/70 [[data-public-theme=light]_&]:text-blue-night/60"
                 {oauth}
             >
-                <SongRequestForm {close} {oauth} />
+                <SongRequestForm {close} {oauth} blocked={Boolean(air?.song_requests_blocked)} />
             </AuthGuard>
         {:else}
             <div class="px-2 py-4 text-center font-noto-sans">

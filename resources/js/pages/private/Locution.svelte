@@ -9,6 +9,9 @@
 
     $: ({ user, programs, onair, songRequests } = $page.props);
     $: activeOnair = onair?.data ?? null;
+    $: isCurrentHost = activeOnair?.execution_mode === "live"
+        && Boolean(user?.uuid)
+        && (activeOnair?.host ?? activeOnair?.program?.host)?.uuid === user.uuid;
     $: userPermissions = Array.isArray(user?.permissions) ? user.permissions : Object.values(user?.permissions ?? {});
     $: canFinishAnyProgram = userPermissions.includes("locution.finish.any");
     $: isLocutionFormBlocked = ["live", "scheduled"].includes(activeOnair?.execution_mode);
@@ -47,7 +50,7 @@
             </svelte:fragment>
         </Deferred>
     </div>
-    {#if activeOnair?.execution_mode === "live"}
+    {#if isCurrentHost}
         <Deferred data="songRequests">
             <SongRequestGrid title="Pedidos musicais" {onair} {songRequests} />
             <svelte:fragment slot="fallback">
@@ -61,6 +64,7 @@
             </svelte:fragment>
         </Deferred>
     {/if}
+
 </Layout>
 
 {#if activeOnair?.execution_mode === "live" && (activeOnair.host ?? activeOnair.program.host)?.uuid !== user.uuid}

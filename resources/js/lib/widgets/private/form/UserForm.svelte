@@ -78,7 +78,7 @@
                     id="virtual"
                     name="is_virtual"
                     value={true}
-                    label="Bot"
+                    label="Virtual"
                     bind:group={$form.is_virtual}
                 />
             </div>
@@ -133,10 +133,13 @@
     </div>
     <div class="mb-5">
         <SectionDivider tone="ocean" spacing="sm">Cargos</SectionDivider>
-        <div class="flex flex-col gap-2">
+        <div class="grid grid-cols-2 gap-2">
             {#if roles}
                 {#each roles.data as item}
                     <CheckboxInput
+                        variant="card"
+                        icon={item.icon}
+                        disabled={$form.processing}
                         label={item.label}
                         description={item.description}
                         name={item.name}

@@ -54,6 +54,9 @@ Route::match(['post', 'patch'], '/badge-assignment/{assignment:uuid}/seen', [Bad
 Route::get('/easter-eggs/catalog', [EasterEggController::class, 'catalog'])
     ->name('easter-eggs.catalog');
 
+Route::get('/home/content-version', [HomeController::class, 'contentVersion'])
+    ->name('home.content-version');
+
 Route::get('/social/post/{post:uuid}.jpg', PostSocialImageController::class)
     ->name('post.social-image');
 

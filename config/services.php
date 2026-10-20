@@ -64,4 +64,70 @@ return [
         'subject' => env('VAPID_SUBJECT', env('APP_URL')),
     ],
 
+    'news_article_images' => [
+        'anime-news-network' => ['host' => 'www.animenewsnetwork.com', 'path' => '/news/', 'interval' => 2, 'image_hosts' => ['www.animenewsnetwork.com', 'cdn.animenewsnetwork.com']],
+    ],
+
+    // Official RSS/Atom feeds validated on 2026-10-16; no article scraping.
+    'anime_news_sources' => [
+        [
+            'name' => 'Anime News Network',
+            'slug' => 'anime-news-network',
+            'base_url' => 'https://www.animenewsnetwork.com',
+            'type' => 'rss',
+            'feed_url' => 'https://www.animenewsnetwork.com/news/rss.xml',
+            'language' => 'en-US',
+            'priority' => 3,
+        ],
+        [
+            'name' => 'Anime United',
+            'slug' => 'anime-united',
+            'base_url' => 'https://www.animeunited.com.br',
+            'type' => 'wordpress',
+            'posts_url' => 'https://www.animeunited.com.br/wp-json/wp/v2/posts',
+            'feed_url' => 'https://www.animeunited.com.br/feed/',
+            'language' => 'pt-BR',
+            'priority' => 1,
+        ],
+        [
+            'name' => 'IntoxiAnime',
+            'slug' => 'intoxianime',
+            'base_url' => 'https://www.intoxianime.com',
+            'type' => 'wordpress',
+            'posts_url' => 'https://www.intoxianime.com/wp-json/wp/v2/posts',
+            'feed_url' => 'https://www.intoxianime.com/feed/',
+            'language' => 'pt-BR',
+            'priority' => 1,
+        ],
+        [
+            'name' => 'AnimeNew',
+            'slug' => 'animenew',
+            'base_url' => 'https://animenew.com.br',
+            'type' => 'wordpress',
+            'posts_url' => 'https://wp.animenew.com.br/wp-json/wp/v2/posts',
+            'feed_url' => 'https://wp.animenew.com.br/feed/',
+            'language' => 'pt-BR',
+            'priority' => 1,
+        ],
+        [
+            'name' => 'OtakuPT',
+            'slug' => 'otakupt',
+            'base_url' => 'https://www.otakupt.com',
+            'type' => 'wordpress',
+            'posts_url' => 'https://www.otakupt.com/wp-json/wp/v2/posts',
+            'feed_url' => 'https://www.otakupt.com/feed/',
+            'language' => 'pt-PT',
+            'priority' => 2,
+        ],
+        [
+            'name' => 'Crunchyroll',
+            'slug' => 'crunchyroll',
+            'base_url' => 'https://www.crunchyroll.com',
+            'type' => 'rss',
+            'feed_url' => 'https://cr-news-api-service.prd.crunchyrollsvc.com/v1/pt-BR/rss',
+            'language' => 'pt-BR',
+            'priority' => 1,
+        ],
+    ],
+
 ];

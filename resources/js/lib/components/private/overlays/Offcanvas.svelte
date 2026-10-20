@@ -1,32 +1,18 @@
 <script>
+    import { overlay } from "@/lib/utils/overlay";
     export let title;
 
     import { fly } from "svelte/transition";
-    import { onMount, onDestroy } from "svelte";
 
     let visible = false;
     let titleId = title ? `offcanvas-title-${Math.random().toString(36).slice(2)}` : undefined;
 
-    const setPageOverflowY = (overflow) => {
-        if (typeof document !== "undefined") document.body.style.overflowY = overflow;
-    };
-
-    onMount(() => setPageOverflowY("auto"));
-
-    onDestroy(() => {
-        if (typeof document !== "undefined") {
-            setPageOverflowY("auto");
-        }
-    });
-
     export const open = () => {
         visible = true;
-        setPageOverflowY("hidden");
     };
 
     export const close = () => {
         visible = false;
-        setPageOverflowY("auto");
     };
 
     const block = (event) => {
@@ -38,8 +24,9 @@
     <!-- svelte-ignore a11y_click_events_have_key_events -->
     <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div
+        use:overlay
         transition:fly={{ x: 400, duration: 300 }}
-        class="fixed inset-0 z-100 h-dvh max-h-dvh w-screen overflow-hidden bg-black/1 backdrop-blur-xs"
+        class="fixed inset-0 z-[2147483647] h-dvh max-h-dvh w-full overflow-hidden bg-black/1 backdrop-blur-xs"
         role="presentation"
         on:click={close}
     >
@@ -56,7 +43,7 @@
                 {title}
             </h2>
         {/if}
-            <div class="min-h-0 flex-1 overflow-y-auto px-4 pt-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:pl-5 sm:pr-8 sm:pt-8">
+            <div class="min-h-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain px-4 pt-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:pl-5 sm:pr-8 sm:pt-8">
                 <slot name="content" {close} />
             </div>
         </div>

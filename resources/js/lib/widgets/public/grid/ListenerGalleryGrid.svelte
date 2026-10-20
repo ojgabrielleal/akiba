@@ -1,8 +1,8 @@
 <script>
-    import { Link } from "@inertiajs/svelte";
-
-    import { MinimalEmptyState, Section } from "@/lib/components/public";
+    import { MinimalEmptyState, Modal, Section } from "@/lib/components/public";
     import { publicAnimations } from "@/lib/constants/public/animation";
+
+    import ListenerArtForm from "../form/ListenerArtForm.svelte";
 
     export let listenerGallery = [];
     export let styles = "container-page my-5";
@@ -10,6 +10,7 @@
     export let emptyMessage = "As fotos da comunidade aparecem aqui quando forem publicadas.";
 
     let selectedItem = null;
+    let artModal;
 
     $: items = Array.isArray(listenerGallery) ? listenerGallery : listenerGallery?.data ?? [];
     const defaultPlaceholder = "/img/placeholders/placeholder.webp";
@@ -44,6 +45,10 @@
 </script>
 
 <svelte:window on:keydown={handleKeydown} />
+
+<Modal bind:this={artModal} title="Envie a sua arte" size="sm">
+    <ListenerArtForm close={() => artModal.close()} />
+</Modal>
 
 {#if selectedItem}
     <div class="fixed inset-0 z-[2147483000] flex items-center justify-center bg-blue-night/72 p-3 backdrop-blur-xs sm:p-5 lg:p-8">
@@ -134,14 +139,15 @@
     {/if}
 
     <div class="mt-6 flex items-center justify-center gap-2 px-2 py-1 font-noto-sans not-italic uppercase">
-        <p class="text-center text-xs font-normal leading-none tracking-normal text-orange-citric not-italic lg:text-sm">
+        <p class="text-center text-xs font-normal leading-none tracking-normal text-orange-morning not-italic lg:text-sm">
             Sua arte também pode aparecer aqui
         </p>
-        <Link
-            href="/contato"
-            class="inline-flex min-h-7 shrink-0 cursor-pointer items-center justify-center rounded-md bg-orange-amber px-3 py-1 font-noto-sans text-sm font-black leading-none text-blue-night uppercase italic transition duration-300 ease-out hover:-translate-y-0.5 hover:brightness-105 focus-visible:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none"
+        <button
+            type="button"
+            on:click={() => artModal.open()}
+            class={["inline-flex min-h-7 shrink-0 cursor-pointer items-center justify-center rounded-md bg-orange-citric px-3 py-1 font-noto-sans text-sm font-black leading-none text-blue-night uppercase italic hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric", publicAnimations.buttonInteractive]}
         >
             Envie a sua arte
-        </Link>
+        </button>
     </div>
 </Section>

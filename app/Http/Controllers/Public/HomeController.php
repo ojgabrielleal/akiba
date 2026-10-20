@@ -157,10 +157,18 @@ class HomeController extends Controller
         return redirect('/');
     }
 
+    public function contentVersion()
+    {
+        return response()->json([
+            'version' => $this->postFilter->publicContentVersion(),
+        ])->header('Cache-Control', 'no-store');
+    }
+
     public function render()
     {
         return Inertia::render('public/Home', [
-            'featuredPosts' => $this->indexFeaturedPosts(),
+            'contentVersion' => fn () => $this->postFilter->publicContentVersion(),
+            'featuredPosts' => fn () => $this->indexFeaturedPosts(),
             'latestReviews' => Inertia::defer(fn () => $this->indexLatestReviews(), 'home-editorial'),
             'posts' => Inertia::defer(fn () => $this->indexPosts(), 'home-editorial'),
             'events' => Inertia::defer(fn () => $this->indexEvents(), 'home-secondary'),

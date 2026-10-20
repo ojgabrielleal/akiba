@@ -16,6 +16,8 @@ use App\Http\Resources\SongRequestResource;
 use App\Models\Onair;
 use App\Models\Program;
 use App\Models\SongRequest;
+use App\Models\SongRequestBlock;
+use App\Services\SongRequestBlockService;
 
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -65,6 +67,10 @@ class LocutionController extends Controller
 
     private function indexSongRequests(?Onair $onair)
     {
+        if (!$onair || $onair->user_id !== request()->user()->id) {
+            return null;
+        }
+
         return $this->whenCanViewAny(SongRequest::class,
             fn () => SongRequestResource::collection(
                 $this->songRequestFilter->filter([
@@ -127,6 +133,23 @@ class LocutionController extends Controller
         if (!$onair) {
             return $this->flashMessage('error');
         }
+
+        return $this->flashMessage('save');
+    }
+
+    public function blockRequester(SongRequestBlockService $service, SongRequest $songRequest)
+    {
+        $this->authorize('blockRequester', SongRequest::class);
+        abort_unless($songRequest->requester, 404);
+        $service->block($songRequest->requester, request()->user());
+
+        return $this->flashMessage('save');
+    }
+
+    public function unblockRequester(SongRequestBlockService $service, SongRequestBlock $songRequestBlock)
+    {
+        $this->authorize('unblockRequester', SongRequest::class);
+        $service->unblock($songRequestBlock);
 
         return $this->flashMessage('save');
     }

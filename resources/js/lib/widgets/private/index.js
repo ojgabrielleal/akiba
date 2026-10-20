@@ -11,6 +11,7 @@ export { default as AudienceHistoryChart } from "./chart/AudienceHistoryChart.sv
 export { default as TaskList } from "./list/TaskList.svelte"
 export { default as FormSubmissionList } from "./list/FormSubmissionList.svelte"
 export { default as PostCommentPanel } from "./list/PostCommentPanel.svelte"
+export { default as BlockedRequesterList } from "./list/BlockedRequesterList.svelte"
 export { default as AnimeNewsFeedGrid } from "./grid/AnimeNewsFeedGrid.svelte"
 
 // Forms

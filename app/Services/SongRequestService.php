@@ -7,8 +7,10 @@ use App\Models\Music;
 use App\Models\OAuthAccount;
 use App\Models\Onair;
 use App\Models\SongRequest;
+use App\Models\SongRequestBlock;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -23,6 +25,12 @@ class SongRequestService
     public function store(array $data, Model $requester): SongRequest
     {
         $songRequest = DB::transaction(function () use ($data, $requester) {
+            $requester->newQuery()->whereKey($requester->getKey())->lockForUpdate()->firstOrFail();
+            if (app(SongRequestBlockService::class)->isBlocked($requester)) {
+                throw ValidationException::withMessages([
+                    'song_request' => 'Você está bloqueado de fazer pedidos',
+                ]);
+            }
             $onair = $this->storeAcceptingSongRequestsOnair();
             $music = isset($data['music']) ? $this->storeMusic($data['music']) : null;
 
@@ -95,10 +103,17 @@ class SongRequestService
 
     private function storeAcceptingSongRequestsOnair(): Onair
     {
-        return Onair::acceptingSongRequests()
+        $onair = Onair::live()
             ->with(['host', 'program.host'])
-            ->latest('id')
-            ->firstOrFail();
+            ->latest('id')->lockForUpdate()->first();
+
+        if (! $onair?->allows_song_requests) {
+            throw ValidationException::withMessages([
+                'song_request' => 'Pedidos musicais estão temporariamente fechados pelo locutor.',
+            ]);
+        }
+
+        return $onair;
     }
 
     private function storeMusic(array $data): Music
@@ -180,6 +195,11 @@ class SongRequestService
     public function filter(array $filters = []): Collection|LengthAwarePaginator
     {
         $query = SongRequest::query()
+            ->addSelect(['requester_block_id' => SongRequestBlock::query()->select('id')
+                ->whereColumn('song_request_blocks.requester_type', 'song_requests.requester_type')
+                ->whereColumn('song_request_blocks.requester_id', 'song_requests.requester_id')
+                ->where('song_request_blocks.module', SongRequestBlockService::MODULE_SONG_REQUESTS)
+                ->limit(1)])
             ->with(['requester', 'music.anime'])
             ->when(
                 $filters['onair_id'] ?? null,

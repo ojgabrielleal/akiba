@@ -20,11 +20,13 @@
     let refreshQueued = false;
     
     $: vapidPublicKey = $page.props.push?.vapid_public_key;
-    $: visibleSongRequests = [...(songRequests?.data ?? [])].reverse();
+    $: visibleSongRequests = (songRequests?.data ?? [])
+        .filter((item) => !item.requester_block_id)
+        .reverse();
 
     $: actions = [
         {
-            title: "Ativar notificações de pedidos",
+            title: "Ativar notificações",
             icon: "/svg/bell.svg",
             background: "bg-blue-skywave",
             textColor: "text-suspense-aurora",
@@ -268,7 +270,7 @@
                         />
                         {item.created_at}
                     </div>
-                    <div class="absolute bottom-2 right-3">
+                    <div class="absolute bottom-2 right-3 flex gap-1">
                         {#if !isFinished(item)}
                             <div class="flex gap-1">
                                 {#if can.cancel}

@@ -1,10 +1,12 @@
 <script>
     export let close = () => {};
     export let oauth = {};
+    export let blocked = false;
 
     import axios from "axios";
     import { useForm } from "@inertiajs/svelte";
     import toast from "svelte-hot-french-toast";
+    import { publicAnimations } from "@/lib/constants/public/animation";
     import { debounce, resolvePlaceholderImage } from "@/lib/utils";
 
     $: form = useForm({
@@ -17,7 +19,7 @@
     });
 
     const submit = () => {
-        if ($form.processing) return;
+        if ($form.processing || blocked) return;
 
         if (requestMode === "music" && !$form.music) {
             musicSelectionError = "Escolha uma música antes de enviar o pedido.";
@@ -32,7 +34,10 @@
                 toast.success($form.music ? "Pedido enviado!" : "Recado enviado!");
                 close();
             },
-            onError: () => toast.error("Revise o pedido e tente novamente."),
+            onError: (errors) => {
+                if (errors.song_request) close();
+                toast.error(errors.song_request ?? "Revise o pedido e tente novamente.");
+            },
         });
     };
 
@@ -210,6 +215,7 @@
 </script>
 
 <form novalidate on:submit|preventDefault={submit}>
+    <fieldset disabled={blocked} class="min-w-0">
     {#if oauth.is_oauth && !oauth.profile_completed}
         <div class="mb-3 grid grid-cols-1 gap-3">
             <div>
@@ -319,7 +325,7 @@
                         </div>
                     {:else if isSearching}
                         <div class="p-3 font-noto-sans text-center flex flex-col items-center gap-2">
-                            <svg class="w-5 h-5 text-blue-night/35 animate-spin fill-blue-night [[data-public-theme=akiba]_&]:text-white/35 [[data-public-theme=akiba]_&]:fill-white [[data-public-theme=night]_&]:text-white/35 [[data-public-theme=night]_&]:fill-white" viewBox="0 0 24 24" aria-hidden="true">
+                            <svg class="w-5 h-5 text-blue-night/35 animate-spin fill-blue-night [[data-public-theme=light]_&]:!fill-[#000014] [[data-public-theme=akiba]_&]:text-white/35 [[data-public-theme=akiba]_&]:fill-white [[data-public-theme=night]_&]:text-white/35 [[data-public-theme=night]_&]:fill-white" viewBox="0 0 24 24" aria-hidden="true">
                                 <path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2v3a7 7 0 1 0 7 7h3c0 5.523-4.477 10-10 10Z"/>
                             </svg>
                             <div class={dropdownTitleClass}>
@@ -364,7 +370,7 @@
                                     </div>
                                     {#each item.musics.slice(0, 2) as music}
                                         <div class="w-full text-gray-500 text-xs line-clamp-1 [[data-public-theme=akiba]_&]:text-suspense-aurora/60 [[data-public-theme=night]_&]:text-suspense-aurora/60">
-                                            <span class="font-bold text-blue-ocean">{music.type}</span>
+                                            <span class="font-bold text-blue-ocean [[data-public-theme=akiba]_&]:text-suspense-aurora [[data-public-theme=night]_&]:text-suspense-aurora">{music.type}</span>
                                             {music.title}{music.artists ? ` - ${normalizeArtists(music.artists)}` : ""}
                                         </div>
                                     {/each}
@@ -385,10 +391,10 @@
         <div class="mb-3 rounded-md border border-orange-citric/45 bg-orange-citric/10 px-4 py-3 font-noto-sans">
             <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                    <p class="text-sm font-extrabold text-blue-marinho [[data-public-theme=akiba]_&]:text-white [[data-public-theme=night]_&]:text-white">
+                    <p class="text-sm font-extrabold text-blue-marinho [[data-public-theme=light]_&]:!text-[#000014] [[data-public-theme=akiba]_&]:text-white [[data-public-theme=night]_&]:text-white">
                         Não achei essa música no catálogo
                     </p>
-                    <p class="mt-0.5 text-xs text-blue-marinho/70 [[data-public-theme=akiba]_&]:text-white/80 [[data-public-theme=night]_&]:text-white/80">
+                    <p class="mt-0.5 text-xs text-blue-marinho/70 [[data-public-theme=light]_&]:!text-[#000014]/70 [[data-public-theme=akiba]_&]:text-white/80 [[data-public-theme=night]_&]:text-white/80">
                         Me diz o anime e o nome da música que eu mando do seu jeito.
                     </p>
                 </div>
@@ -493,7 +499,7 @@
             name="message"
             rows="3"
             class={[inputClass, "min-h-28 p-4 resize-none"]}
-            placeholder={requestMode === "message" ? "Deixe uma mensagem amigável" : "(Opcional) Deixe uma mensagem amigável"}
+            placeholder="Deixe uma mensagem amigável"
             bind:value={$form.message}
             required={requestMode === "message"}
         ></textarea>
@@ -508,9 +514,15 @@
     </div>
     <button
         type="submit"
-        class="cursor-pointer rounded-full bg-orange-citric px-6 py-2 font-noto-sans font-extrabold uppercase italic text-blue-marinho transition hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric focus-visible:ring-offset-2 disabled:cursor-wait disabled:opacity-70"
-        disabled={$form.processing}
+        class={`cursor-pointer rounded-full bg-orange-citric px-6 py-2 font-noto-sans font-extrabold uppercase italic text-blue-marinho hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-70 ${publicAnimations.buttonInteractive}`}
+        disabled={$form.processing || blocked}
     >
         {$form.processing ? "Enviando..." : "Enviar"}
     </button>
+    </fieldset>
+    {#if blocked || $form.errors.song_request}
+        <p role="alert" class="mt-3 font-noto-sans text-sm text-orange-morning">
+            {$form.errors.song_request ?? "Você está bloqueado de fazer pedidos"}
+        </p>
+    {/if}
 </form>

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Poll;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 use App\Models\User;
 use App\Models\PollOption;
 use App\Models\PollVote;
@@ -53,6 +54,12 @@ class PollService
 
     public function storeVote(PollOption $option, Model $voter): PollVote
     {
+        if (app(SongRequestBlockService::class)->isBlocked($voter, SongRequestBlockService::MODULE_POLLS)) {
+            throw ValidationException::withMessages([
+                'poll' => 'Você está bloqueado de votar em enquetes.',
+            ]);
+        }
+
         $vote = DB::transaction(function () use ($option, $voter) {
             $vote = $option->poll->votes()->firstOrNew([
                 'voter_type' => $voter->getMorphClass(),

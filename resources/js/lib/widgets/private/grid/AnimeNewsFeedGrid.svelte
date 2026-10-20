@@ -12,6 +12,7 @@
     export let onCreatePost = () => {};
 
     let currentSource = "";
+    let failedImages = {};
 
     $: currentSource = selectedSource ?? "";
 
@@ -53,16 +54,22 @@
         <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
             {#each feedPosts.data as item}
                 <article class="flex min-h-82 flex-col overflow-hidden rounded-md bg-blue-ocean">
-                    <button
-                        type="button"
-                        class="h-40 bg-blue-marinho"
-                        on:click={() => createPost(item)}
-                        aria-label={`Ler ${item.title}`}
-                    >
-                        {#if item.image}
-                            <img src={item.image} alt="" class="h-full w-full object-cover" loading="lazy" />
-                        {/if}
-                    </button>
+                    {#if item.image && !failedImages[item.image]}
+                        <button
+                            type="button"
+                            class="h-40 shrink-0 overflow-hidden bg-blue-marinho focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-orange-citric"
+                            on:click={() => createPost(item)}
+                            aria-label={`Ler ${item.title}`}
+                        >
+                            <img
+                                src={item.image}
+                                alt=""
+                                class="h-full w-full object-cover"
+                                loading="lazy"
+                                on:error={() => { failedImages = { ...failedImages, [item.image]: true }; }}
+                            />
+                        </button>
+                    {/if}
                     <div class="flex min-w-0 flex-1 flex-col gap-3 p-4">
                         <div class="flex flex-wrap items-center gap-2 font-noto-sans text-xs font-black uppercase italic text-orange-morning">
                             <span>{item.source.name}</span>

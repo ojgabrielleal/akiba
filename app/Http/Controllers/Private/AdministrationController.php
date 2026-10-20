@@ -8,6 +8,7 @@ use App\Services\CalendarService;
 use App\Services\FormSubmissionService;
 use App\Services\PermissionService;
 use App\Services\RoleService;
+use App\Services\SongRequestBlockService;
 use App\Services\TaskService;
 use App\Services\UserService;
 
@@ -28,10 +29,14 @@ use App\Models\Badge;
 use App\Models\Calendar;
 use App\Models\OAuthAccount;
 use App\Models\Role;
+use App\Models\SongRequest;
+use App\Models\SongRequestBlock;
 use App\Models\Task;
 use App\Models\User;
 
 use Inertia\Inertia;
+use Illuminate\Http\Request;
+use App\Http\Requests\SongRequest\BlockOAuthRequesterRequest;
 use Illuminate\Support\Facades\Gate;
 use App\Services\RepositoryService;
 use App\Http\Controllers\Concerns\HasFlashMessages;
@@ -218,6 +223,35 @@ class AdministrationController extends Controller
                 'paginate' => 10,
             ])
         );
+    }
+
+    private function indexBlockedRequesters()
+    {
+        $user = request()->user();
+
+        if (! $user?->can('viewAny', SongRequestBlock::class)) {
+            return null;
+        }
+
+        return app(SongRequestBlockService::class)->filter();
+    }
+
+    private function indexOAuthAccounts()
+    {
+        if (! request()->user()?->can('viewAny', SongRequestBlock::class)
+            || ! request()->user()?->can('create', SongRequestBlock::class)) {
+            return null;
+        }
+
+        return OAuthAccount::query()
+            ->orderByRaw('COALESCE(nickname, username)')
+            ->get()
+            ->map(fn (OAuthAccount $account) => [
+                'uuid' => $account->uuid,
+                'name' => $account->nickname ?? $account->username ?? 'Ouvinte',
+                'avatar' => $account->avatar,
+                'provider' => $account->provider,
+            ]);
     }
 
     public function showUser(User $user)
@@ -429,6 +463,23 @@ class AdministrationController extends Controller
         return $this->flashMessage('delete');
     }
 
+    public function blockOAuthRequester(BlockOAuthRequesterRequest $request, SongRequestBlockService $service)
+    {
+        $data = $request->validated();
+        $account = OAuthAccount::where('uuid', $data['oauth_account'])->firstOrFail();
+        $service->blockModules($account, $request->user(), $data['modules'], $data['reason']);
+
+        return $this->flashMessage('save');
+    }
+
+    public function unblockSongRequestRequester(SongRequestBlockService $service, SongRequestBlock $songRequestBlock)
+    {
+        $this->authorize('delete', $songRequestBlock);
+        $service->unblock($songRequestBlock);
+
+        return $this->flashMessage('save');
+    }
+
     public function showRepository(Repository $repository)
     {
         $this->authorize('view', $repository);
@@ -478,6 +529,8 @@ class AdministrationController extends Controller
             'roles' => $this->indexRoles(),
             'permissions' => $this->indexPermissions(),
             'users' => $this->indexUsers(),
+            'blockedRequesters' => $this->indexBlockedRequesters(),
+            'oauthAccounts' => $this->indexOAuthAccounts(),
             'calendar' => Inertia::defer(fn () => $this->indexCalendar(), 'administration-schedule'),
             'activities' => Inertia::defer(fn () => $this->indexActivities(), 'administration-schedule'),
             'tasks' => Inertia::defer(fn () => $this->indexTasks(), 'administration-work'),

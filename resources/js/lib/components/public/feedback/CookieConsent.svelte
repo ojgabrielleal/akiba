@@ -67,14 +67,14 @@
         role="status"
         aria-label="Aviso sobre cookies e dados"
     >
-        <div class="public-cookie-consent rounded-xl border border-suspense-aurora/10 bg-blue-night/95 shadow-lg shadow-blue-night/20 backdrop-blur-md [[data-public-theme=light]_&]:border-blue-night/10 [[data-public-theme=light]_&]:bg-white/95">
+        <div class="public-cookie-consent rounded-xl border border-suspense-aurora/10 bg-blue-night/95 shadow-lg shadow-blue-night/20 backdrop-blur-md [[data-public-theme=light]_&]:border-[#000014]/10 [[data-public-theme=light]_&]:bg-white/95">
             <div class="flex items-center justify-between gap-3 px-4 py-3 sm:gap-5 sm:px-5">
-                <p class="public-cookie-consent-text min-w-0 text-xs leading-relaxed text-suspense-aurora/75 [[data-public-theme=light]_&]:text-blue-night/75">
+                <p class="public-cookie-consent-text min-w-0 text-xs leading-relaxed text-suspense-aurora/75 [[data-public-theme=light]_&]:!text-[#000014]/75">
                     Usamos cookies essenciais para manter sua sessão e lembrar suas preferências.
                 </p>
                 <button
                     type="button"
-                    class={["inline-flex min-h-9 shrink-0 cursor-pointer items-center justify-center rounded-full bg-orange-citric px-4 py-2 text-xs font-extrabold uppercase italic text-blue-night hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric focus-visible:ring-offset-2 focus-visible:ring-offset-blue-night", publicAnimations.buttonInteractive]}
+                    class={["inline-flex min-h-9 shrink-0 cursor-pointer items-center justify-center rounded-full bg-orange-citric px-4 py-2 text-xs font-extrabold uppercase italic text-blue-night [[data-public-theme=light]_&]:!text-[#000014] hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric focus-visible:ring-offset-2 focus-visible:ring-offset-blue-night", publicAnimations.buttonInteractive]}
                     on:click={accept}
                 >
                     Entendi

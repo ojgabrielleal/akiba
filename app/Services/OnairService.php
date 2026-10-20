@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Onair;
+use App\Models\SongRequestBlock;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -12,6 +13,13 @@ class OnairService
     public function filter(array $filters = []): Collection|LengthAwarePaginator|Onair|null
     {
         $query = Onair::query()
+            ->when($filters['requester'] ?? null, function (Builder $query, $requester) {
+                $query->addSelect(['song_requests_blocked' => SongRequestBlock::query()
+                    ->selectRaw('1')
+                    ->whereMorphedTo('requester', $requester)
+                    ->where('module', SongRequestBlockService::MODULE_SONG_REQUESTS)
+                    ->limit(1)]);
+            })
             ->when(
                 $filters['live'] ?? false,
                 fn (Builder $query) => $query->live()
