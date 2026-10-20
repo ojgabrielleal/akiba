@@ -57,7 +57,7 @@
 
 {#if visible}
     <div
-        class="fixed inset-0 z-100 grid place-items-center bg-blue-night/75 backdrop-blur-sm"
+        class="fixed inset-0 z-[2147483647] grid place-items-center bg-blue-night/75 backdrop-blur-sm"
         role="status"
         aria-live="polite"
         aria-label="Carregando página"
