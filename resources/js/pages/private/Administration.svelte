@@ -14,7 +14,7 @@
         FormSubmissionList,
     } from "@/lib/widgets/private";
 
-    $: ({ user, activities, calendar, roles, permissions, badges, badgeTargets, tasks, users, formSubmissions, blockedRequesters, oauthAccounts } = $page.props);
+    $: ({ user, activities, calendar, roles, permissions, badgeSearch, badges, badgeTargets, tasks, users, formSubmissions, blockedRequesters, oauthAccounts } = $page.props);
 
     const skeletonItems = (count) => Array.from({ length: count }, (_, index) => index);
 </script>
@@ -61,7 +61,7 @@
     <BlockedRequesterList title="Moderação de ouvintes" {blockedRequesters} {oauthAccounts} />
     <RoleCarousel title="Cargos" variant="administration" {roles} {permissions} />
     <Deferred data={["badges", "badgeTargets"]}>
-        <BadgeGrid title="Emblemas" variant="administration" {badges} {badgeTargets} />
+        <BadgeGrid title="Emblemas" variant="administration" {badges} {badgeTargets} {badgeSearch} />
         <svelte:fragment slot="fallback">
             <Section title="Emblemas">
                 <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">

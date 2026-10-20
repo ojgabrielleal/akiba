@@ -6,6 +6,7 @@
         GridList,
         IconButton,
         Offcanvas,
+        Pagination,
         Section,
     } from "@/lib/components/private";
     import { BadgeForm } from "@/lib/widgets/private";
@@ -15,10 +16,30 @@
     export let variant = null;
     export let badges = null;
     export let badgeTargets = null;
+    export let badgeSearch = "";
 
     const can = badgePermissions();
     let offCanvasRef;
     let badgeSelected = null;
+    let search = badgeSearch;
+    let searching = false;
+
+    $: search = badgeSearch;
+
+    function searchBadges() {
+        if (searching) return;
+        const url = new URL(window.location.href);
+        url.searchParams.delete("badges_page");
+        if (search.trim()) url.searchParams.set("badge_search", search.trim());
+        else url.searchParams.delete("badge_search");
+        searching = true;
+        router.get(`${url.pathname}${url.search}${url.hash}`, {}, {
+            only: ["badges", "badgeSearch"],
+            preserveScroll: true,
+            preserveState: true,
+            onFinish: () => { searching = false; },
+        });
+    }
 
     $: actions = [{
         title: "Criar emblema",
@@ -119,6 +140,15 @@
 
 {#if badges}
     <Section {title} {actions}>
+        <form class="mb-5 flex flex-wrap items-end gap-3" on:submit|preventDefault={searchBadges}>
+            <div class="min-w-0 flex-1">
+                <label for="badge-search" class="mb-1 block text-sm text-suspense-aurora">Buscar emblemas</label>
+                <input id="badge-search" type="search" bind:value={search} placeholder="Nome, código ou descrição" class="h-10 w-full rounded-md border border-suspense-aurora/20 bg-blue-ocean px-3 text-suspense-aurora outline-none focus:border-orange-citric" />
+            </div>
+            <button type="submit" disabled={searching} class="h-10 rounded-md bg-orange-citric px-5 font-bold text-blue-night disabled:opacity-50">
+                {searching ? "Buscando…" : "Buscar"}
+            </button>
+        </form>
         {#if badges.data.length > 0}
             <GridList preset="wide">
                 {#each badges.data as item (item.uuid)}
@@ -241,9 +271,10 @@
             </GridList>
         {:else}
             <EmptyState
-                title="Nenhum emblema cadastrado"
-                description="Crie emblemas concedidos, competitivos, de evento ou conquista para usar nas próximas integrações."
+                title={badgeSearch ? "Nenhum emblema encontrado" : "Nenhum emblema cadastrado"}
+                description={badgeSearch ? "Tente outro nome, código ou descrição." : "Crie emblemas concedidos, competitivos, de evento ou conquista para usar nas próximas integrações."}
             />
         {/if}
+        <Pagination pages={badges} only={["badges", "badgeSearch"]} pageName="badges_page" loadingLabel="Carregando emblemas…" />
     </Section>
 {/if}

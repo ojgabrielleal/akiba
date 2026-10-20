@@ -104,6 +104,9 @@ class AdministrationController extends Controller
         return $this->whenCanViewAny(Badge::class,
             fn () => BadgeResource::collection(
                 $this->badgeFilter->filter([
+                    'paginate' => 8,
+                    'page_name' => 'badges_page',
+                    'search' => trim((string) request()->string('badge_search')),
                     'with_count' => ['assignments', 'activeAssignments'],
                     'order_by' => 'name',
                     'order_direction' => 'asc',
@@ -535,6 +538,7 @@ class AdministrationController extends Controller
             'activities' => Inertia::defer(fn () => $this->indexActivities(), 'administration-schedule'),
             'tasks' => Inertia::defer(fn () => $this->indexTasks(), 'administration-work'),
             'formSubmissions' => Inertia::defer(fn () => $this->indexFormSubmissions(), 'administration-work'),
+            'badgeSearch' => fn () => trim((string) request()->string('badge_search')),
             'badges' => Inertia::defer(fn () => $this->indexBadges(), 'administration-badges'),
             'badgeTargets' => Inertia::defer(fn () => $this->indexBadgeTargets(), 'administration-badges'),
         ]);

@@ -628,6 +628,13 @@ class BadgeService
     {
         $query = Badge::query()
             ->when(
+                $filters['search'] ?? null,
+                fn (Builder $query, string $search) => $query->where(fn (Builder $query) => $query
+                    ->where('name', 'like', '%'.$search.'%')
+                    ->orWhere('code', 'like', '%'.$search.'%')
+                    ->orWhere('description', 'like', '%'.$search.'%'))
+            )
+            ->when(
                 $filters['with_count'] ?? null,
                 fn (Builder $query, array|string $relations) => $query->withCount($relations)
             )
@@ -654,7 +661,7 @@ class BadgeService
 
         return $query->when(
             $filters['paginate'] ?? null,
-            fn (Builder $query, int $perPage) => $query->paginate($perPage),
+            fn (Builder $query, int $perPage) => $query->paginate($perPage, ['*'], $filters['page_name'] ?? 'page')->withQueryString(),
             fn (Builder $query) => $query->get()
         );
     }
