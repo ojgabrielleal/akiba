@@ -139,13 +139,13 @@
     {/if}
 
     <div class="mt-6 flex items-center justify-center gap-2 px-2 py-1 font-noto-sans not-italic uppercase">
-        <p class="text-center text-xs font-normal leading-none tracking-normal text-orange-morning not-italic lg:text-sm">
+        <p class="text-center text-xs font-normal leading-none tracking-normal text-orange-citric not-italic lg:text-sm">
             Sua arte também pode aparecer aqui
         </p>
         <button
             type="button"
             on:click={() => artModal.open()}
-            class={["inline-flex min-h-7 shrink-0 cursor-pointer items-center justify-center rounded-md bg-orange-citric px-3 py-1 font-noto-sans text-sm font-black leading-none text-blue-night uppercase italic hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric", publicAnimations.buttonInteractive]}
+            class={["inline-flex min-h-7 shrink-0 cursor-pointer items-center justify-center rounded-md bg-orange-amber px-3 py-1 font-noto-sans text-sm font-black leading-none text-blue-night uppercase italic hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-amber", publicAnimations.buttonInteractive]}
         >
             Envie a sua arte
         </button>
