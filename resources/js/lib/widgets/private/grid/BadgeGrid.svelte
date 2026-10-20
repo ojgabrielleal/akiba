@@ -17,16 +17,6 @@
     export let badges = null;
     export let badgeTargets = null;
     export let badgeSearch = "";
-    export let badgeFilters = {};
-
-    const filterClass = "h-10 w-full rounded-md border border-suspense-aurora/20 bg-blue-ocean px-3 text-suspense-aurora outline-none focus:border-suspense-aurora/50 focus:ring-0";
-    let type = "";
-    let source = "";
-    let status = "";
-
-    $: ({ type = "", source = "", status = "" } = badgeFilters ?? {});
-    $: hasFilters = Boolean(badgeSearch || badgeFilters?.type || badgeFilters?.source || badgeFilters?.status);
-
     const can = badgePermissions();
     let offCanvasRef;
     let badgeSelected = null;
@@ -41,25 +31,16 @@
         url.searchParams.delete("badges_page");
         if (search.trim()) url.searchParams.set("badge_search", search.trim());
         else url.searchParams.delete("badge_search");
-        for (const [key, value] of Object.entries({ badge_type: type, badge_source: source, badge_status: status })) {
-            if (value) url.searchParams.set(key, value);
-            else url.searchParams.delete(key);
+        for (const key of ["badge_type", "badge_source", "badge_status"]) {
+            url.searchParams.delete(key);
         }
         searching = true;
         router.get(`${url.pathname}${url.search}${url.hash}`, {}, {
-            only: ["badges", "badgeSearch", "badgeFilters"],
+            only: ["badges", "badgeSearch"],
             preserveScroll: true,
             preserveState: true,
             onFinish: () => { searching = false; },
         });
-    }
-
-    function clearFilters() {
-        search = "";
-        type = "";
-        source = "";
-        status = "";
-        searchBadges();
     }
 
     $: actions = [{
@@ -161,45 +142,14 @@
 
 {#if badges}
     <Section {title} {actions}>
-        <form class="mb-5 grid items-end gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(14rem,2fr)_repeat(3,minmax(8rem,1fr))_auto_auto]" on:submit|preventDefault={searchBadges}>
+        <form class="mb-5 flex w-full max-w-lg items-end gap-3" on:submit|preventDefault={searchBadges}>
             <div class="min-w-0 flex-1">
                 <label for="badge-search" class="mb-1 block text-sm text-suspense-aurora">Buscar emblemas</label>
-                <input id="badge-search" type="search" bind:value={search} placeholder="Nome, código ou descrição" class={filterClass} />
+                <input id="badge-search" type="search" bind:value={search} placeholder="Nome, código ou descrição" class="h-10 w-full rounded-md border border-suspense-aurora/20 bg-blue-ocean px-3 text-suspense-aurora outline-none focus:outline-none focus:ring-0" />
             </div>
-            <div>
-                <label for="badge-type" class="mb-1 block text-sm text-suspense-aurora">Tipo</label>
-                <select id="badge-type" bind:value={type} class={filterClass}>
-                    <option value="">Todos os tipos</option>
-                    <option value="fixed">Concedido</option>
-                    <option value="stealable">Competitivo</option>
-                    <option value="scheduled">Evento</option>
-                    <option value="achievement">Conquista</option>
-                </select>
-            </div>
-            <div>
-                <label for="badge-source" class="mb-1 block text-sm text-suspense-aurora">Origem</label>
-                <select id="badge-source" bind:value={source} class={filterClass}>
-                    <option value="">Todas as origens</option>
-                    <option value="none">Sem origem</option>
-                    <option value="enigmagame">Enigma Otaku</option>
-                    <option value="song_request">Pedidos musicais</option>
-                    <option value="poll">Enquete</option>
-                    <option value="podcast">Podcasts</option>
-                    <option value="easter_egg">Easter Egg</option>
-                </select>
-            </div>
-            <div>
-                <label for="badge-status" class="mb-1 block text-sm text-suspense-aurora">Status</label>
-                <select id="badge-status" bind:value={status} class={filterClass}>
-                    <option value="">Todos</option>
-                    <option value="active">Ativos</option>
-                    <option value="inactive">Inativos</option>
-                </select>
-            </div>
-            <button type="submit" disabled={searching} class="h-10 rounded-md bg-orange-citric px-5 font-bold text-blue-night disabled:opacity-50">
+            <button type="submit" disabled={searching} class="h-10 shrink-0 rounded-md bg-orange-citric px-5 font-bold text-blue-night outline-none focus:outline-none focus-visible:brightness-110 disabled:opacity-50">
                 {searching ? "Buscando…" : "Buscar"}
             </button>
-            <button type="button" on:click={clearFilters} disabled={searching} class="h-10 rounded-md bg-orange-citric px-4 font-bold text-blue-night disabled:opacity-50">Limpar</button>
         </form>
         {#if badges.data.length > 0}
             <GridList preset="wide">
@@ -323,10 +273,10 @@
             </GridList>
         {:else}
             <EmptyState
-                title={hasFilters ? "Nenhum emblema encontrado" : "Nenhum emblema cadastrado"}
-                description={hasFilters ? "Tente outra busca ou altere os filtros." : "Crie emblemas concedidos, competitivos, de evento ou conquista para usar nas próximas integrações."}
+                title={badgeSearch ? "Nenhum emblema encontrado" : "Nenhum emblema cadastrado"}
+                description={badgeSearch ? "Tente outro nome, código ou descrição." : "Crie emblemas concedidos, competitivos, de evento ou conquista para usar nas próximas integrações."}
             />
         {/if}
-        <Pagination pages={badges} only={["badges", "badgeSearch", "badgeFilters"]} pageName="badges_page" loadingLabel="Carregando emblemas…" />
+        <Pagination pages={badges} only={["badges", "badgeSearch"]} pageName="badges_page" loadingLabel="Carregando emblemas…" />
     </Section>
 {/if}
