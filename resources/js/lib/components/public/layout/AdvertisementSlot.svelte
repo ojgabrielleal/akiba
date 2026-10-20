@@ -15,11 +15,14 @@
 </script>
 
 {#if shouldRenderAdsense}
-    <div class={["public-advertisement-slot block w-full min-w-0", className]} style="height:auto;max-height:none;">
+    <div class={["adsense-container grid w-full min-w-0", className]} style="height:auto;max-height:none;">
+        <div class="advertisement-fallback col-start-1 row-start-1 min-w-0">
+            <svelte:self adsense={false} {mirrored} class="h-full min-h-32" />
+        </div>
         {#key `${adClient}:${adSlot}`}
             <ins
                 use:initializeGoogleAdSlot
-                class="adsbygoogle"
+                class="adsbygoogle col-start-1 row-start-1"
                 style="display:block;width:100%;"
                 data-ad-client={adClient}
                 data-ad-slot={adSlot}
@@ -99,3 +102,13 @@
 </svelte:element>
 
 {/if}
+
+<style>
+    .adsense-container:has(> :global(ins[data-ad-status="filled"])) > .advertisement-fallback {
+        display: none;
+    }
+
+    .adsense-container > :global(ins[data-ad-status="unfilled"]) {
+        display: none !important;
+    }
+</style>
