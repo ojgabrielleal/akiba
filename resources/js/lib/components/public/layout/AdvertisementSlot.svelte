@@ -15,14 +15,15 @@
 </script>
 
 {#if shouldRenderAdsense}
-    <div class={["adsense-container grid w-full min-w-0", className]} style="height:auto;max-height:none;">
-        <div class="advertisement-fallback col-start-1 row-start-1 min-w-0">
-            <svelte:self adsense={false} {mirrored} class="h-full min-h-32" />
+    <div class={["adsense-container relative block w-full min-w-0 self-start", className]} style="height:auto;max-height:none;">
+        <div class="advertisement-fallback min-w-0">
+            <svelte:self adsense={false} {mirrored} class="h-32" />
         </div>
+        <div class="advertisement-content w-full">
         {#key `${adClient}:${adSlot}`}
             <ins
                 use:initializeGoogleAdSlot
-                class="adsbygoogle col-start-1 row-start-1"
+                class="adsbygoogle"
                 style="display:block;width:100%;"
                 data-ad-client={adClient}
                 data-ad-slot={adSlot}
@@ -30,6 +31,7 @@
                 data-full-width-responsive="true"
             ></ins>
         {/key}
+        </div>
     </div>
 {:else}
 <svelte:element
@@ -104,11 +106,25 @@
 {/if}
 
 <style>
-    .adsense-container:has(> :global(ins[data-ad-status="filled"])) > .advertisement-fallback {
+    .advertisement-content {
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .adsense-container:has(:global(ins[data-ad-status="filled"])) > .advertisement-fallback {
         display: none;
     }
 
-    .adsense-container > :global(ins[data-ad-status="unfilled"]) {
+    .advertisement-content:has(> :global(ins[data-ad-status="filled"])) {
+        position: static;
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .advertisement-content > :global(ins[data-ad-status="unfilled"]) {
         display: none !important;
     }
 </style>
