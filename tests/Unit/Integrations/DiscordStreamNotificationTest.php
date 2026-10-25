@@ -8,6 +8,22 @@ use Tests\TestCase;
 
 class DiscordStreamNotificationTest extends TestCase
 {
+    public function test_discord_switch_disables_discord_notifications(): void
+    {
+        $this->app->instance('env', 'production');
+        config([
+            'services.discord.publication_enabled' => false,
+            'services.discord.webhook' => 'https://discord.test/webhook',
+        ]);
+        Http::fake();
+
+        $this->assertFalse(app(DiscordWebhookService::class)->sendStreamNotificationHook(
+            (object) ['nickname' => 'Yagami'],
+            (object) ['name' => 'Conexão Akiba'],
+        ));
+        Http::assertNothingSent();
+    }
+
     public function test_it_sends_the_current_text_embed_without_an_image_attachment(): void
     {
         $this->app->instance('env', 'production');

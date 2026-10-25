@@ -40,7 +40,7 @@ class LiveSocialPublicationService
                     $onair->uuid,
                     $publicationUuid,
                     $placement,
-                    $social['text'],
+                    $this->caption($social['text']),
                     $social['hashtags'] ?? [],
                     $artwork->url,
                     $artwork->path,
@@ -53,5 +53,15 @@ class LiveSocialPublicationService
                 ]);
             }
         }
+    }
+
+    private function caption(string $text): string
+    {
+        return implode("\n\n", [
+            $text,
+            'Ouça em: https://akiba.com.br',
+            'Venha para a nossa comunidade do Discord, converse com gente que te entende.',
+            'Entre em: https://discord.akiba.com.br',
+        ]);
     }
 }

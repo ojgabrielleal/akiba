@@ -5,6 +5,7 @@ namespace App\Processing;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\Geometry\Factories\PolygonFactory;
 use Intervention\Image\Geometry\Factories\RectangleFactory;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Interfaces\ImageInterface;
@@ -88,9 +89,9 @@ class SocialArtworkProcess
             $cover = $this->readImage($data['cover'] ?? null, public_path('img/placeholders/placeholder.webp'))
                 ->cover($width, $height, 'center');
             $image->place($cover);
-            $this->drawOverlay($image, $width, $height);
+            $this->drawOverlay($image, $width, $height, $template);
             $this->drawFrame($image, $width, $height, $template);
-            $this->drawBrand($image, $template);
+            $this->drawBrand($image, $template, $width, $height);
             $this->drawEditorialContent($image, $data, $template, $width, $height);
         }
 
@@ -314,11 +315,32 @@ class SocialArtworkProcess
         return $this->manager->read($contents);
     }
 
-    private function drawOverlay(ImageInterface $image, int $width, int $height): void
+    private function drawOverlay(ImageInterface $image, int $width, int $height, string $template): void
     {
+        $baseOpacity = $template === 'discord-post' ? .10 : .26;
         $image->drawRectangle(0, 0, fn (RectangleFactory $rectangle) => $rectangle
             ->size($width, $height)
-            ->background('rgba(0, 0, 20, 0.26)'));
+            ->background(sprintf('rgba(0, 0, 20, %.2f)', $baseOpacity)));
+
+        if ($template === 'discord-post') {
+            $gradientTop = (int) ($height * .36);
+            $gradientHeight = (int) ($height * .39);
+
+            for ($offset = 0; $offset < $gradientHeight; $offset += 2) {
+                $progress = $offset / $gradientHeight;
+                $opacity = .76 * ($progress ** 1.7);
+                $image->drawRectangle(0, $gradientTop + $offset, fn (RectangleFactory $rectangle) => $rectangle
+                    ->size($width, 2)
+                    ->background(sprintf('rgba(0, 0, 20, %.3f)', $opacity)));
+            }
+
+            $image->drawRectangle(0, $gradientTop + $gradientHeight, fn (RectangleFactory $rectangle) => $rectangle
+                ->size($width, $height - $gradientTop - $gradientHeight)
+                ->background('rgba(0, 0, 20, 0.88)'));
+
+            return;
+        }
+
         $image->drawRectangle(0, (int) ($height * .43), fn (RectangleFactory $rectangle) => $rectangle
             ->size($width, (int) ($height * .57))
             ->background('rgba(0, 0, 20, 0.78)'));
@@ -326,6 +348,10 @@ class SocialArtworkProcess
 
     private function drawFrame(ImageInterface $image, int $width, int $height, string $template): void
     {
+        if ($template === 'discord-post') {
+            return;
+        }
+
         $safe = str_contains($template, 'story') ? 80 : 48;
 
         $image->drawRectangle(intdiv($safe, 2), intdiv($safe, 2), fn (RectangleFactory $rectangle) => $rectangle
@@ -334,15 +360,20 @@ class SocialArtworkProcess
             ->border('#0091ff', 10));
     }
 
-    private function drawBrand(ImageInterface $image, string $template): void
+    private function drawBrand(ImageInterface $image, string $template, int $width, int $height): void
     {
         $isStory = str_contains($template, 'story');
         $isDiscord = $template === 'discord-post';
         $logo = $this->manager
             ->read($this->requiredAsset($this->brandLogoPath, 'brand logo'))
-            ->scaleDown(width: $isStory ? 260 : ($isDiscord ? 210 : 230), height: 110);
+            ->scaleDown(width: $isStory ? 260 : ($isDiscord ? 210 : 230), height: 90);
 
-        $image->place($logo, 'top-left', $isDiscord ? 48 : 72, $isStory ? 250 : ($isDiscord ? 44 : 72));
+        $image->place(
+            $logo,
+            'top-left',
+            $isDiscord ? $width - 42 - $logo->width() : 72,
+            $isStory ? 250 : ($isDiscord ? $height - 36 - $logo->height() : 72),
+        );
     }
 
     private function drawEditorialContent(
@@ -356,16 +387,17 @@ class SocialArtworkProcess
         $isDiscord = $template === 'discord-post';
         $left = $isStory ? 80 : ($isDiscord ? 48 : 72);
         $bottom = $isStory ? 280 : ($isDiscord ? 48 : 82);
-        $titleSize = $isStory ? 66 : ($isDiscord ? 50 : 64);
+        $titleSize = $isStory ? 66 : ($isDiscord ? 38 : 64);
         $maxTextWidth = $width - ($left * 2);
         $footerY = $height - $bottom;
-        $titleY = $footerY - ($isStory ? 470 : ($isDiscord ? 235 : 390));
+        $titleY = $isDiscord ? 455 : $footerY - ($isStory ? 470 : 390);
         $category = Str::upper($data['category'] ?? 'Notícia');
         $date = Str::upper($data['published_at'] ?? now('America/Sao_Paulo')->format('d M Y'));
 
-        $image->text("{$category}  ·  {$date}", $left, $titleY - 54, fn (FontFactory $font) => $this->font(
+        $metadata = $isDiscord ? $date : "{$category}  ·  {$date}";
+        $image->text($metadata, $left, $titleY - ($isDiscord ? 32 : 54), fn (FontFactory $font) => $this->font(
             $font,
-            24,
+            $isDiscord ? 19 : 24,
             '#ffaa35',
         ));
 
@@ -375,7 +407,7 @@ class SocialArtworkProcess
             $font,
             $titleSize,
             '#fffaf3',
-            1.16,
+            $isDiscord ? 1.75 : 1.16,
         ));
 
         if ($isDiscord) {
@@ -402,12 +434,19 @@ class SocialArtworkProcess
     ): void {
         $isStory = $template === 'instagram-live-story';
         $live = $data['live'] ?? [];
+
+        if (! $isStory) {
+            $this->drawLiveFeedArtwork($image, $live, $width, $height);
+
+            return;
+        }
+
         $image->fill('#002080');
         $image->drawRectangle(0, 0, fn (RectangleFactory $rectangle) => $rectangle
             ->size($width, $height)
             ->background('rgba(0, 0, 20, 0.28)'));
         $this->drawFrame($image, $width, $height, $template);
-        $this->drawBrand($image, $template);
+        $this->drawBrand($image, $template, $width, $height);
 
         $portraitSize = $isStory ? 560 : 430;
         $portraitX = $isStory ? intdiv($width - $portraitSize, 2) : 72;
@@ -448,6 +487,106 @@ class SocialArtworkProcess
             $isStory ? 34 : 28,
             '#fffaf3',
         )->align($isStory ? 'center' : 'left'));
+    }
+
+    private function drawLiveFeedArtwork(
+        ImageInterface $image,
+        array $live,
+        int $width,
+        int $height,
+    ): void {
+        $image->fill('#001456');
+        $image->drawPolygon(fn (PolygonFactory $polygon) => $polygon
+            ->point(610, 0)
+            ->point($width, 0)
+            ->point($width, 910)
+            ->point(850, 1010)
+            ->point(690, 680)
+            ->background('#002b8f'));
+        $image->drawPolygon(fn (PolygonFactory $polygon) => $polygon
+            ->point(0, 1130)
+            ->point(760, 1030)
+            ->point($width, 1190)
+            ->point($width, $height)
+            ->point(0, $height)
+            ->background('#000f42'));
+        $image->drawRectangle(0, 0, fn (RectangleFactory $rectangle) => $rectangle
+            ->size($width, 16)
+            ->background('#ffaa35'));
+        $image->drawRectangle(0, 0, fn (RectangleFactory $rectangle) => $rectangle
+            ->size(26, $height)
+            ->background('#0091ff'));
+
+        $logo = $this->manager
+            ->read($this->requiredAsset($this->brandLogoPath, 'brand logo'))
+            ->scaleDown(width: 240, height: 72);
+        $image->place($logo, 'top-left', 68, 67);
+
+        $portrait = $this->readImage($live['host_avatar'] ?? null, public_path('img/placeholders/avatar.webp'))
+            ->scale(width: 500, height: 720);
+        $portraitX = 75 + intdiv(480 - $portrait->width(), 2);
+        $portraitY = 285 + intdiv(710 - $portrait->height(), 2);
+        $image->place($portrait, 'top-left', $portraitX, $portraitY);
+
+        $textX = 630;
+        $image->text('AGORA', $textX, 375, fn (FontFactory $font) => $this->font(
+            $font,
+            68,
+            '#fffaf3',
+        ));
+
+        $image->drawRectangle($textX, 455, fn (RectangleFactory $rectangle) => $rectangle
+            ->size(360, 108)
+            ->background('#ffaa35'));
+        $image->text('NO AR', $textX + 24, 509, fn (FontFactory $font) => $this->font(
+            $font,
+            68,
+            '#000014',
+        )->valign('middle'));
+
+        $programImagePath = $this->localPath($live['program_image'] ?? null);
+        $placeholderPath = public_path('img/placeholders/program.webp');
+
+        if ($programImagePath !== null
+            && is_file($programImagePath)
+            && realpath($programImagePath) !== realpath($placeholderPath)) {
+            $programLogo = $this->manager
+                ->read($programImagePath)
+                ->scaleDown(width: 360, height: 150);
+            $programLogoY = 650 + intdiv(150 - $programLogo->height(), 2);
+            $image->place($programLogo, 'top-left', $textX, $programLogoY);
+        } else {
+            $program = Str::upper($live['program'] ?? 'Programa ao vivo');
+            $program = implode("\n", $this->wrap($program, 42, 360, 3));
+            $image->text($program, $textX, 650, fn (FontFactory $font) => $this->font(
+                $font,
+                42,
+                '#fffaf3',
+                1.55,
+            ));
+        }
+
+        $image->drawRectangle($textX, 880, fn (RectangleFactory $rectangle) => $rectangle
+            ->size(340, 3)
+            ->background('#0091ff'));
+        $image->text('NO COMANDO', $textX, 912, fn (FontFactory $font) => $this->font(
+            $font,
+            18,
+            '#ffaa35',
+        ));
+        $image->text('DJ '.Str::upper($live['host'] ?? 'Equipe Rede Akiba'), $textX, 940, fn (FontFactory $font) => $this->font(
+            $font,
+            28,
+            '#fffaf3',
+        ));
+
+        $image->text("OUÇA EM\nAKIBA.COM.BR", intdiv($width, 2), 1215, fn (FontFactory $font) => $this->font(
+            $font,
+            30,
+            '#fffaf3',
+            1.50,
+        )->align('center'));
+
     }
 
     private function font(FontFactory $font, int $size, string $color, float $lineHeight = 1): FontFactory

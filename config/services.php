@@ -45,6 +45,7 @@ return [
     ],
 
     'discord' => [
+        'publication_enabled' => env('DISCORD_PUBLICATION_ENABLED', true),
         'webhook' => env('DISCORD_LOCUTION_WEBHOOK_URL'),
         'post_webhook' => env('DISCORD_POST_WEBHOOK_URL'),
         'client_id' => env('DISCORD_CLIENT_ID'),

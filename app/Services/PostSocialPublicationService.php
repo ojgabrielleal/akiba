@@ -83,7 +83,7 @@ class PostSocialPublicationService
                 $primaryArtwork = collect($artworks)->flatten(1)->first();
                 $publication = $post->socialPublications()->create([
                     'uuid' => $publicationUuid,
-                    'caption' => $post->social['text'] ?? $post->title,
+                    'caption' => $this->caption($post),
                     'hashtags' => $post->social['hashtags'] ?? $post->tags()->pluck('name')->all(),
                     'artwork_path' => $primaryArtwork->url,
                     'requested_at' => now(),
@@ -111,6 +111,23 @@ class PostSocialPublicationService
         );
 
         return $publication;
+    }
+
+    private function caption(Post $post): string
+    {
+        $text = $post->social['text'] ?? $post->title;
+        $url = match ($post->module) {
+            'review' => route('review.read', $post->slug),
+            'event' => route('event.read', $post->slug),
+            default => route('post.read', $post->slug),
+        };
+
+        return implode("\n\n", [
+            $text,
+            "Leia em: {$url}",
+            'Venha para a nossa comunidade do Discord, converse com gente que te entende.',
+            'Entre em: https://discord.akiba.com.br',
+        ]);
     }
 
     private function template(

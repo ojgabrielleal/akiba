@@ -38,8 +38,12 @@ class DiscordPostNotificationTest extends TestCase
 
             return $request->url() === 'https://discord.test/posts'
                 && $request->hasFile('files[0]')
+                && $payload['username'] === 'Rede Akiba'
+                && str_starts_with($payload['content'], '📰 | **Nova matéria**')
+                && str_contains($payload['content'], '@everyone  SE LIGA: TEM NOTÍCIA NOVA EM NOSSO SITE!')
                 && $payload['attachments'] === [['id' => 0, 'filename' => 'post.jpg']]
                 && $payload['embeds'][0]['image']['url'] === 'attachment://post.jpg'
+                && $payload['embeds'][0]['author']['name'] === 'Rede Akiba'
                 && $payload['allowed_mentions']['parse'] === ['everyone']
                 && str_contains($request->body(), 'image/jpeg')
                 && str_contains($request->body(), "\xff\xd8\xff");

@@ -85,7 +85,12 @@ class PostSocialPublicationOrchestrationTest extends TestCase
         );
         $manualResult = $manual->socialPublications()->firstOrFail()->results()->firstOrFail();
         $manualPublication = $manual->socialPublications()->firstOrFail();
-        $this->assertSame('Legenda editorial para o Instagram.', $manualPublication->caption);
+        $this->assertSame(implode("\n\n", [
+            'Legenda editorial para o Instagram.',
+            'Leia em: '.route('post.read', $manual->slug),
+            'Venha para a nossa comunidade do Discord, converse com gente que te entende.',
+            'Entre em: https://discord.akiba.com.br',
+        ]), $manualPublication->caption);
         $this->assertSame(['anime', 'redeakiba'], $manualPublication->hashtags);
         $this->assertStringContainsString('/storage/social-artworks/', $manualResult->artwork_path);
         Storage::disk('public')->assertExists(

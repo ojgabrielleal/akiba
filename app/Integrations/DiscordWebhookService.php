@@ -15,12 +15,14 @@ class DiscordWebhookService
 {
     public function postNotificationsEnabled(): bool
     {
-        return app()->environment('production') && filled(config('services.discord.post_webhook'));
+        return $this->discordPublicationEnabled()
+            && app()->environment('production')
+            && filled(config('services.discord.post_webhook'));
     }
 
     public function sendStreamNotificationHook($user, $program): bool
     {
-        if (! app()->environment('production')) {
+        if (! $this->discordPublicationEnabled() || ! app()->environment('production')) {
             return false;
         }
 
@@ -70,6 +72,7 @@ class DiscordWebhookService
         $image = $attachment
             ? ['url' => 'attachment://post.jpg']
             : $this->postImage($post);
+        $brandIconUrl = url('/img/pwa/icon-256.png');
 
         Log::info('Discord post notification payload prepared', [
             'post_uuid' => $post->uuid,
@@ -79,7 +82,9 @@ class DiscordWebhookService
         ]);
 
         $payload = [
-            'content' => "📰 **{$post->title}**\n\n{$url}\n\n@everyone, SE LIGA: TEM NOTÍCIA NOVA EM NOSSO SITE!",
+            'username' => 'Rede Akiba',
+            'avatar_url' => $brandIconUrl,
+            'content' => "📰 | **{$post->title}**\n\n{$url}\n\n@everyone  SE LIGA: TEM NOTÍCIA NOVA EM NOSSO SITE!",
             'allowed_mentions' => [
                 'parse' => ['everyone'],
             ],
@@ -92,9 +97,9 @@ class DiscordWebhookService
                     'author' => [
                         'name' => 'Rede Akiba',
                         'url' => config('app.url'),
+                        'icon_url' => $brandIconUrl,
                     ],
                     'image' => $image,
-                    'timestamp' => now()->toIso8601String(),
                 ]),
             ],
         ];
@@ -117,6 +122,11 @@ class DiscordWebhookService
 
             return false;
         }
+    }
+
+    private function discordPublicationEnabled(): bool
+    {
+        return (bool) config('services.discord.publication_enabled', true);
     }
 
     private function postAttachment(Post $post, ?string $artworkPath): ?string
