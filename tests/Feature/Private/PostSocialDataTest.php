@@ -130,7 +130,11 @@ class PostSocialDataTest extends TestCase
                 ...$this->validPostPayload('revision'),
                 'social' => [
                     'text' => 'Texto social válido.',
-                    'hashtags' => ['um', 'dois', 'tres', 'quatro', 'cinco', 'hashtag inválida', ['indevida']],
+                    'hashtags' => [
+                        ...array_map(fn (int $index): string => "tag{$index}", range(1, 51)),
+                        'hashtag inválida',
+                        ['indevida'],
+                    ],
                     'channels' => ['instagram' => true],
                 ],
             ]);
@@ -138,8 +142,8 @@ class PostSocialDataTest extends TestCase
         $response->assertRedirect('/panel/post');
         $response->assertSessionHasErrors([
             'social.hashtags',
-            'social.hashtags.5',
-            'social.hashtags.6',
+            'social.hashtags.51',
+            'social.hashtags.52',
         ]);
     }
 

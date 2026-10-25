@@ -82,8 +82,6 @@ class DiscordWebhookService
         ]);
 
         $payload = [
-            'username' => 'Rede Akiba',
-            'avatar_url' => $brandIconUrl,
             'content' => "📰 | **{$post->title}**\n\n{$url}\n\n@everyone  SE LIGA: TEM NOTÍCIA NOVA EM NOSSO SITE!",
             'allowed_mentions' => [
                 'parse' => ['everyone'],

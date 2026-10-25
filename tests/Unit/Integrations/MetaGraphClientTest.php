@@ -29,6 +29,8 @@ class MetaGraphClientTest extends TestCase
             'services.meta.access_token' => 'secret-access-token',
             'services.meta.timeout' => 15,
             'services.meta.connect_timeout' => 5,
+            'services.meta.container_poll_attempts' => 5,
+            'services.meta.container_poll_interval_ms' => 0,
             'services.meta.instagram_enabled' => true,
         ]);
 
@@ -79,6 +81,21 @@ class MetaGraphClientTest extends TestCase
             && $request['image_url'] === 'https://akiba.test/social/post.jpg'
             && $request['media_type'] === 'STORIES'
             && ! isset($request['caption']));
+    }
+
+    public function test_it_waits_for_the_same_container_to_finish_before_publishing(): void
+    {
+        Http::fakeSequence()
+            ->push(['id' => 'container-id'])
+            ->push(['status_code' => 'IN_PROGRESS'])
+            ->push(['status_code' => 'IN_PROGRESS'])
+            ->push(['status_code' => 'FINISHED'])
+            ->push(['id' => 'instagram-media-id']);
+
+        $result = $this->client->publish(PublicationChannel::Instagram, $this->publication());
+
+        $this->assertSame('instagram-media-id', $result->externalId);
+        Http::assertSentCount(5);
     }
 
     public function test_it_normalizes_authorization_errors_without_exposing_sensitive_data(): void

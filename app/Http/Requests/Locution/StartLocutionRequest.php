@@ -49,7 +49,7 @@ class StartLocutionRequest extends LoggedWebRequest
             'send_notification' => 'required|accepted',
             'social' => 'required|array',
             'social.text' => ['required', 'string', 'max:1800', new RespectfulContent],
-            'social.hashtags' => 'required|array|min:1|max:5',
+            'social.hashtags' => 'required|array|min:1|max:50',
             'social.hashtags.*' => ['string', 'max:50', 'regex:/^[\pL\pN_]+$/u'],
         ];
     }

@@ -50,6 +50,26 @@ class StartLocutionRequestTest extends TestCase
         $this->assertSame('O Conexão Akiba começou!', $request->input('social.text'));
         $this->assertSame(['rádio', 'anime'], $request->input('social.hashtags'));
     }
+
+    public function test_it_rejects_more_than_fifty_hashtags(): void
+    {
+        $request = new TestableStartLocutionRequest;
+        $request->merge([
+            'phrase' => ['text' => 'Ao vivo'],
+            'program' => 'program-uuid',
+            'send_notification' => true,
+            'social' => [
+                'text' => 'O Conexão Akiba começou!',
+                'hashtags' => array_map(fn (int $index): string => "tag{$index}", range(1, 51)),
+            ],
+        ]);
+        $request->normalizeSocialData();
+
+        $validator = Validator::make($request->all(), $request->rules());
+
+        $this->assertTrue($validator->fails());
+        $this->assertArrayHasKey('social.hashtags', $validator->errors()->toArray());
+    }
 }
 
 class TestableStartLocutionRequest extends StartLocutionRequest

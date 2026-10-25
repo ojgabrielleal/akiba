@@ -65,6 +65,8 @@ return [
         'access_token' => env('META_ACCESS_TOKEN'),
         'timeout' => env('META_TIMEOUT', 15),
         'connect_timeout' => env('META_CONNECT_TIMEOUT', 5),
+        'container_poll_attempts' => env('META_CONTAINER_POLL_ATTEMPTS', 10),
+        'container_poll_interval_ms' => env('META_CONTAINER_POLL_INTERVAL_MS', 2000),
         'instagram_enabled' => env('META_INSTAGRAM_ENABLED', false),
         'instagram_feed_enabled' => env('META_INSTAGRAM_FEED_ENABLED', true),
     ],

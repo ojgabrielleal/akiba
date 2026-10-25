@@ -45,10 +45,7 @@ final class GraphClient implements Publisher
         );
         $containerId = $this->requiredId($containerResponse);
 
-        $statusResponse = $this->get($containerId, [
-            'fields' => 'status_code,status',
-        ]);
-        $this->ensureContainerIsReady($statusResponse);
+        $this->waitForContainer($containerId);
 
         $publicationResponse = $this->post($this->configuredPath('instagram_user_id', 'media_publish'), [
             'creation_id' => $containerId,
@@ -135,14 +132,31 @@ final class GraphClient implements Publisher
         return $id;
     }
 
-    private function ensureContainerIsReady(Response $response): void
+    private function waitForContainer(string $containerId): void
     {
-        $status = $response->json('status_code');
+        $attempts = max(1, (int) config('services.meta.container_poll_attempts', 10));
+        $intervalMilliseconds = max(0, (int) config('services.meta.container_poll_interval_ms', 2000));
 
-        if ($status === 'FINISHED') {
-            return;
+        for ($attempt = 1; $attempt <= $attempts; $attempt++) {
+            $response = $this->get($containerId, [
+                'fields' => 'status_code,status',
+            ]);
+            $status = $response->json('status_code');
+
+            if ($status === 'FINISHED') {
+                return;
+            }
+
+            if ($status !== 'IN_PROGRESS' || $attempt === $attempts) {
+                $this->throwContainerNotReady($response, $status);
+            }
+
+            usleep($intervalMilliseconds * 1000);
         }
+    }
 
+    private function throwContainerNotReady(Response $response, mixed $status): never
+    {
         $failure = in_array($status, ['IN_PROGRESS', 'EXPIRED'], true)
             ? PublicationFailure::Temporary
             : PublicationFailure::Validation;

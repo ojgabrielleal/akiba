@@ -45,11 +45,11 @@
             : null);
     $: hashtagsError = serverHashtagsError
         ?? (!hashtagsAreValid ? "Comece cada hashtag com # e separe por espaço ou vírgula." : null)
-        ?? (confirmationAttempted && hashtagCount > 5 ? "Informe no máximo 5 hashtags." : null);
+        ?? (confirmationAttempted && hashtagCount > 50 ? "Informe no máximo 50 hashtags." : null);
     $: actionVariant = status === "draft" ? "success" : (status === "published" ? "publish" : "accent");
     $: canConfirm = status === "draft"
-        ? hashtagCount <= 5 && hashtagsAreValid
-        : Boolean(social.text?.trim()) && hashtagCount <= 5 && hashtagsAreValid;
+        ? hashtagCount <= 50 && hashtagsAreValid
+        : Boolean(social.text?.trim()) && hashtagCount <= 50 && hashtagsAreValid;
 
     function hashtagInputTokens(input = "") {
         return input.trim() === ""
@@ -144,15 +144,15 @@
             <span
                 slot="labelAside"
                 class="shrink-0 text-xs font-bold"
-                class:text-red-crimson={hashtagCount > 5}
-                class:text-gray-500={hashtagCount <= 5}
+                class:text-red-crimson={hashtagCount > 50}
+                class:text-gray-500={hashtagCount <= 50}
             >
-                {hashtagCount}/5 hashtags
+                {hashtagCount}/50 hashtags
             </span>
             <TextInput
                 id="social-post-hashtags"
                 type="text"
-                maxlength="300"
+                maxlength="2600"
                 variant="offcanvas"
                 bind:value={hashtagsText}
                 error={hashtagsError}

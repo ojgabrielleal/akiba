@@ -63,7 +63,7 @@ trait HandlesSocialInput
         return [
             'social' => [$required, 'array'],
             'social.text' => [$required, 'string', 'max:1800', new RespectfulContent],
-            'social.hashtags' => ['nullable', 'array', 'max:5'],
+            'social.hashtags' => ['nullable', 'array', 'max:50'],
             'social.hashtags.*' => ['string', 'max:51', 'regex:/^#[\pL\pN_]+$/u'],
             'social.channels' => [$required, 'array'],
             'social.channels.instagram' => [$required, $instagramRule],
@@ -82,7 +82,7 @@ trait HandlesSocialInput
             'social.text.string' => 'O texto para as redes sociais é inválido.',
             'social.text.max' => 'O texto para as redes sociais pode ter no máximo 1.800 caracteres.',
             'social.hashtags.array' => 'As hashtags precisam ser enviadas como uma lista.',
-            'social.hashtags.max' => 'Use no máximo 5 hashtags.',
+            'social.hashtags.max' => 'Use no máximo 50 hashtags.',
             'social.hashtags.*.string' => 'A hashtag informada é inválida.',
             'social.hashtags.*.max' => 'Cada hashtag pode ter no máximo 50 caracteres além do #.',
             'social.hashtags.*.regex' => 'Comece cada hashtag com # e use apenas letras, números ou sublinhado.',

@@ -387,7 +387,7 @@ class SocialArtworkProcess
         $isDiscord = $template === 'discord-post';
         $left = $isStory ? 80 : ($isDiscord ? 48 : 72);
         $bottom = $isStory ? 280 : ($isDiscord ? 48 : 82);
-        $titleSize = $isStory ? 66 : ($isDiscord ? 38 : 64);
+        $titleSize = $isStory ? 66 : ($isDiscord ? 44 : 64);
         $maxTextWidth = $width - ($left * 2);
         $footerY = $height - $bottom;
         $titleY = $isDiscord ? 455 : $footerY - ($isStory ? 470 : 390);
@@ -407,7 +407,7 @@ class SocialArtworkProcess
             $font,
             $titleSize,
             '#fffaf3',
-            $isDiscord ? 1.75 : 1.16,
+            $isDiscord ? 1.50 : 1.16,
         ));
 
         if ($isDiscord) {
