@@ -5,16 +5,19 @@
     export let value = null;
     export let error = null;
     export let variant = "default";
+    export let describedBy = null;
 
     const variants = {
         default: "bg-white text-gray-900",
         offcanvas: "bg-white text-gray-900",
+        modal: "bg-blue-marinho/55 text-suspense-aurora placeholder:text-blue-skywave/70",
         profile: "bg-suspense-aurora text-blue-marinho",
     };
 
     const borders = {
         default: "border border-gray-400",
         offcanvas: "border border-gray-400",
+        modal: "border border-blue-skywave/35",
         profile: "border-0",
     };
 
@@ -31,7 +34,7 @@
     {id}
     bind:value
     aria-invalid={error ? "true" : undefined}
-    aria-describedby={error ? `${id}-error` : undefined}
+    aria-describedby={error ? `${id}-error` : describedBy}
     class={classes}
 ></textarea>
 

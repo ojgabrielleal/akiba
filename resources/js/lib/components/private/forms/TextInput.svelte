@@ -6,10 +6,12 @@
     export let value = null;
     export let error = null;
     export let variant = "default";
+    export let describedBy = null;
 
     const variants = {
         default: "h-10 rounded-md bg-white text-gray-900",
         offcanvas: "h-10 rounded-md bg-white text-gray-900",
+        modal: "h-10 rounded-md bg-blue-marinho/55 text-suspense-aurora placeholder:text-blue-skywave/70",
         editorial: "h-12 rounded-md bg-blue-ocean text-suspense-aurora",
         profile: "h-12 rounded-md bg-suspense-aurora text-blue-marinho",
         pillLeft: "h-12 rounded-l-full bg-suspense-aurora text-blue-marinho",
@@ -19,6 +21,7 @@
     const borders = {
         default: "border border-gray-400",
         offcanvas: "border border-gray-400",
+        modal: "border border-blue-skywave/35",
         editorial: "border border-blue-skywave",
         profile: "border-0",
         pillLeft: "border-0 border-r border-blue-marinho",
@@ -39,7 +42,7 @@
     {id}
     {type}
     aria-invalid={error ? "true" : undefined}
-    aria-describedby={error ? `${id}-error` : undefined}
+    aria-describedby={error ? `${id}-error` : describedBy}
     class={classes}
     bind:value
 />

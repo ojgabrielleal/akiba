@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -13,9 +12,13 @@ return new class extends Migration
             return;
         }
 
-        Schema::table('oauth_accounts', function (Blueprint $table) {
-            if ($this->indexExists('oauth_accounts', 'oauth_accounts_account_token_hash_unique')) {
-                $table->dropUnique('oauth_accounts_account_token_hash_unique');
+        $indexes = $this->indexesForColumn('oauth_accounts', 'account_token_hash');
+
+        Schema::table('oauth_accounts', function (Blueprint $table) use ($indexes) {
+            foreach ($indexes as $index) {
+                $index['unique']
+                    ? $table->dropUnique($index['name'])
+                    : $table->dropIndex($index['name']);
             }
 
             $table->dropColumn('account_token_hash');
@@ -33,12 +36,11 @@ return new class extends Migration
         });
     }
 
-    private function indexExists(string $table, string $index): bool
+    private function indexesForColumn(string $table, string $column): array
     {
-        return DB::table('information_schema.statistics')
-            ->where('table_schema', DB::getDatabaseName())
-            ->where('table_name', $table)
-            ->where('index_name', $index)
-            ->exists();
+        return collect(Schema::getIndexes($table))
+            ->filter(fn (array $definition): bool => in_array($column, $definition['columns'], true))
+            ->values()
+            ->all();
     }
 };

@@ -8,7 +8,7 @@ use Tests\TestCase;
 
 class DiscordStreamNotificationTest extends TestCase
 {
-    public function test_it_sends_text_without_images_attachments_or_mentions_even_with_avatar(): void
+    public function test_it_sends_the_current_text_embed_without_an_image_attachment(): void
     {
         $this->app->instance('env', 'production');
         config(['services.discord.webhook' => 'https://discord.test/webhook']);
@@ -25,8 +25,8 @@ class DiscordStreamNotificationTest extends TestCase
             $embed = $payload['embeds'][0];
 
             return $request->isJson()
-                && $payload['allowed_mentions']['parse'] === []
-                && ! str_contains($payload['content'], '@everyone')
+                && $payload['allowed_mentions']['parse'] === ['everyone']
+                && str_contains($payload['content'], '@everyone')
                 && ! isset($payload['attachments'])
                 && ! isset($embed['image'])
                 && ! isset($embed['thumbnail'])

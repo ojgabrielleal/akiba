@@ -10,6 +10,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (DB::connection()->getDriverName() !== 'mysql') {
+            return;
+        }
+
         DB::statement("ALTER TABLE programs MODIFY access_type ENUM('free', 'private') NULL");
     }
 
@@ -18,6 +22,10 @@ return new class extends Migration
      */
     public function down(): void
     {
+        if (DB::connection()->getDriverName() !== 'mysql') {
+            return;
+        }
+
         DB::table('programs')
             ->whereNull('access_type')
             ->update(['access_type' => 'private']);

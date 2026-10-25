@@ -1,0 +1,38 @@
+{
+    "instagram_container_create": {
+        "method": "POST",
+        "endpoint": "/{ig_user_id}/media",
+        "authentication": "bearer",
+        "request": {
+            "image_url": "https://akiba.test/social/instagram.jpg",
+            "caption": "Nova matéria na Rede Akiba #Akiba"
+        },
+        "response": {
+            "id": "17890000000000001"
+        }
+    },
+    "instagram_container_status": {
+        "method": "GET",
+        "endpoint": "/{container_id}",
+        "authentication": "bearer",
+        "request": {
+            "fields": "status_code,status"
+        },
+        "response": {
+            "id": "17890000000000001",
+            "status_code": "FINISHED",
+            "status": "Finished: Media has been uploaded and it is ready to be published."
+        }
+    },
+    "instagram_media_publish": {
+        "method": "POST",
+        "endpoint": "/{ig_user_id}/media_publish",
+        "authentication": "bearer",
+        "request": {
+            "creation_id": "17890000000000001"
+        },
+        "response": {
+            "id": "17890000000000002"
+        }
+    }
+}

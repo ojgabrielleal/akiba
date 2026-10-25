@@ -2,12 +2,11 @@
 
 namespace Tests\Unit\Services\Locution;
 
-use App\Services\LocutionService;
 use App\Models\Onair;
 use App\Models\Program;
 use App\Models\ProgramSchedule;
 use App\Models\User;
-use App\Integrations\DiscordWebhookService;
+use App\Services\LocutionService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -33,7 +32,7 @@ class LocutionProgramScheduleTest extends TestCase
             'status' => 'completed',
         ]);
 
-        $startService = new LocutionService(new DiscordWebhookService);
+        $startService = app(LocutionService::class);
 
         $startService->start($user, $program, [
             'phrase' => [

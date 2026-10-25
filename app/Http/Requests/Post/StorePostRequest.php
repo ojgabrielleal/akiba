@@ -2,15 +2,20 @@
 
 namespace App\Http\Requests\Post;
 
-use App\Rules\RespectfulContent;
 use App\Http\Requests\LoggedWebRequest;
-
+use App\Http\Requests\Post\Concerns\HandlesSocialInput;
 use App\Models\Post;
+use App\Rules\RespectfulContent;
+use Illuminate\Contracts\Validation\ValidationRule;
 
 class StorePostRequest extends LoggedWebRequest
 {
+    use HandlesSocialInput;
+
     protected function prepareForValidation(): void
     {
+        $this->prepareSocialForValidation();
+
         $this->merge([
             'title' => $this->stringInput($this->input('title')),
             'content' => $this->emptyHtmlToNull($this->stringInput($this->input('content'))),
@@ -54,7 +59,7 @@ class StorePostRequest extends LoggedWebRequest
         return trim(strip_tags(html_entity_decode($value))) === '' ? null : $value;
     }
 
-    private function isDraft(): bool
+    protected function isDraft(): bool
     {
         return $this->input('module') === 'review'
             ? $this->input('review.status') === 'draft'
@@ -80,13 +85,21 @@ class StorePostRequest extends LoggedWebRequest
      */
     public function authorize(): bool
     {
-        return $this->user()?->can('create', Post::class) ?? false;
+        $user = $this->user();
+
+        if (! ($user?->can('create', Post::class) ?? false)) {
+            return false;
+        }
+
+        return $this->isDraft()
+            || $this->operationStatus() !== 'published'
+            || $user->hasPermission('post.publish');
     }
 
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -122,7 +135,15 @@ class StorePostRequest extends LoggedWebRequest
             'review' => 'exclude_unless:module,review|required_if:module,review|nullable|array',
             'review.status' => 'exclude_unless:module,review|required_if:module,review|string|in:published,revision,draft',
             'review.content' => [$this->isDraft() ? 'exclude_unless:module,review' : 'exclude_unless:module,review', $this->isDraft() ? 'nullable' : 'required_if:module,review', 'string', new RespectfulContent],
+            ...$this->socialRules(),
         ];
+    }
+
+    private function operationStatus(): string
+    {
+        return $this->input('module') === 'review'
+            ? $this->input('review.status', 'draft')
+            : $this->input('status', 'draft');
     }
 
     public function messages(): array
@@ -135,6 +156,7 @@ class StorePostRequest extends LoggedWebRequest
             'cover.uploaded' => 'A capa não foi enviada corretamente. Tente uma imagem menor ou em outro formato.',
             'cover.image' => 'A capa precisa ser uma imagem.',
             'cover.dimensions' => 'A capa precisa ter pelo menos 1200x400 pixels para funcionar bem como fundo.',
+            ...$this->socialMessages(),
         ];
     }
 }

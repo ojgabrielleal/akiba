@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Integrations\MetaSocial\GraphClient;
+use App\Integrations\MetaSocial\Publisher;
 use App\Models\Comment;
 use App\Models\User;
 use App\Policies\CommentPolicy;
@@ -18,7 +20,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(Publisher::class, GraphClient::class);
     }
 
     /**

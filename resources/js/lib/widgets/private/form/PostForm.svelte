@@ -12,6 +12,8 @@
     import { postPermissions } from "@/lib/utils";
     import { postTags } from "@/lib/constants";
     import { errorFor, normalizeErrors } from "./postFormErrors.js";
+    import { createSocialPostSubmission } from "./socialPostSubmission.js";
+    import SocialPostModal from "./SocialPostModal.svelte";
 
     export let post = null;
     export let draft = null;
@@ -46,7 +48,17 @@
         content: post?.data.content ?? draft?.content ?? null,
         tags: normalizeTags(post?.data.tags),
         references: normalizeReferences(post?.data.references ?? draft?.references),
+        social: post?.data.social ?? null,
     });
+
+    const socialSubmission = createSocialPostSubmission({
+        form,
+        resolveUrl: () => post ? `/panel/post/${post.data.uuid}` : "/panel/post",
+        buildPayload: (data, status) => ({ ...data, status }),
+        shouldReset: () => !post,
+    });
+    const { pending: submissionPending } = socialSubmission;
+    let socialModal;
 
     $: errors = {
         ...normalizeErrors($form.errors),
@@ -61,7 +73,6 @@
     $: firstReferenceUrlError = errorFor(errors, ["references.0.url", "references[0][url]", "references"]);
     $: secondReferenceNameError = errorFor(errors, ["references.1.name", "references[1][name]", "references"]);
     $: secondReferenceUrlError = errorFor(errors, ["references.1.url", "references[1][url]", "references"]);
-
     $: if (!post && draftKey && draftKey !== appliedDraftKey) {
         $form.title = draft?.title ?? null;
         $form.content = draft?.content ?? null;
@@ -69,24 +80,16 @@
         appliedDraftKey = draftKey;
     }
 
-    function submit(event) {
-        let url = post ? `/panel/post/${post.data.uuid}` : "/panel/post";
-        const status = event.submitter.value;
-
-        $form.transform((data) => ({
-            ...data,
-            status,
-        })).post(url, {
-            preserveState: true,
-            forceFormData: true,
-            onSuccess: () => {
-                post ? null : $form.reset();
-            },
-        });
-    }
 </script>
 
-<form novalidate on:submit|preventDefault={submit}>
+<form novalidate on:submit|preventDefault={(event) => socialSubmission.open(event, socialModal)}>
+    <SocialPostModal
+        bind:this={socialModal}
+        value={$form.social}
+        {errors}
+        processing={$submissionPending || $form.processing}
+        on:confirm={(event) => socialSubmission.confirm(event, socialModal)}
+    />
     <div class="lg:px-40">
         <div class="mb-8">
             <FormField for="title" label="Título" error={titleError} labelVariant="editorial" spacing="lg">
@@ -246,7 +249,7 @@
                 post={post}
                 status={post?.data.status ?? $form.status}
                 can={can}
-                processing={$form.processing}
+                processing={$submissionPending || $form.processing}
             />
         </div>
     </div>

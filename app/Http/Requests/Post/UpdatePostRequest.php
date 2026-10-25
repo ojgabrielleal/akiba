@@ -2,12 +2,16 @@
 
 namespace App\Http\Requests\Post;
 
-use App\Rules\RespectfulContent;
 use App\Http\Requests\LoggedWebRequest;
+use App\Http\Requests\Post\Concerns\HandlesSocialInput;
+use App\Rules\RespectfulContent;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Validation\Rule;
 
 class UpdatePostRequest extends LoggedWebRequest
 {
+    use HandlesSocialInput;
+
     private function operationStatus(): ?string
     {
         $post = $this->route('post');
@@ -19,7 +23,7 @@ class UpdatePostRequest extends LoggedWebRequest
         return $this->input('status', $post?->status);
     }
 
-    private function isDraft(): bool
+    protected function isDraft(): bool
     {
         return $this->operationStatus() === 'draft';
     }
@@ -45,6 +49,8 @@ class UpdatePostRequest extends LoggedWebRequest
 
     protected function prepareForValidation(): void
     {
+        $this->prepareSocialForValidation();
+
         $post = $this->route('post');
 
         $this->merge([
@@ -96,13 +102,25 @@ class UpdatePostRequest extends LoggedWebRequest
      */
     public function authorize(): bool
     {
-        return $this->user()?->can('update', $this->route('post')) ?? false;
+        $user = $this->user();
+        $post = $this->route('post');
+
+        if (! ($user?->can('update', $post) ?? false)) {
+            return false;
+        }
+
+        if ($post->status === 'published' || $this->operationStatus() !== 'published') {
+            return true;
+        }
+
+        return $user->hasPermission('post.publish')
+            || ($post->status === 'revision' && $user->can('approve', $post));
     }
 
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -145,6 +163,7 @@ class UpdatePostRequest extends LoggedWebRequest
                 ? 'exclude_unless:module,review|nullable|date'
                 : 'exclude_unless:module,review|required_if:module,review|date',
             'metadata.sinopse' => [$this->isDraft() ? 'exclude_unless:module,review' : 'exclude_unless:module,review', $this->isDraft() ? 'nullable' : 'required_if:module,review', 'string', new RespectfulContent],
+            ...$this->socialRules(),
         ];
     }
 
@@ -158,6 +177,7 @@ class UpdatePostRequest extends LoggedWebRequest
             'cover.uploaded' => 'A capa não foi enviada corretamente. Tente uma imagem menor ou em outro formato.',
             'cover.image' => 'A capa precisa ser uma imagem.',
             'cover.dimensions' => 'A capa precisa ter pelo menos 1200x400 pixels para funcionar bem como fundo.',
+            ...$this->socialMessages(),
         ];
     }
 }

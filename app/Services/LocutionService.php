@@ -2,18 +2,19 @@
 
 namespace App\Services;
 
+use App\Integrations\DiscordWebhookService;
 use App\Models\Onair;
 use App\Models\Program;
 use App\Models\SongRequest;
-use Illuminate\Support\Facades\DB;
 use App\Models\User;
-use App\Integrations\DiscordWebhookService;
+use Illuminate\Support\Facades\DB;
 
 class LocutionService
 {
     public function __construct(
         private DiscordWebhookService $discord,
         private BadgeService $badges,
+        private LiveSocialPublicationService $socialPublication,
     ) {}
 
     public function finish(): void
@@ -132,13 +133,16 @@ class LocutionService
 
     public function start(User $user, Program $program, array $data): void
     {
-        DB::transaction(function () use ($user, $program, $data) {
+        $onair = DB::transaction(function () use ($user, $program, $data) {
             $this->startFinishLiveOnairs();
-            $this->startStartProgram($program, $user, $data);
+
+            return $this->startStartProgram($program, $user, $data);
         });
 
-        if (filter_var($data['send_notification'], FILTER_VALIDATE_BOOLEAN)) {
-            $this->startSendNotifications($user, $program);
+        $this->startSendNotifications($user, $program);
+
+        if (isset($data['social'])) {
+            $this->socialPublication->prepare($onair, $data['social']);
         }
     }
 
@@ -149,9 +153,9 @@ class LocutionService
         ]);
     }
 
-    private function startStartProgram(Program $program, User $user, array $data): void
+    private function startStartProgram(Program $program, User $user, array $data): Onair
     {
-        $program->onair()->create([
+        return $program->onair()->create([
             'user_id' => $user->id,
             'execution_mode' => 'live',
             'phrase' => [
@@ -181,12 +185,12 @@ class LocutionService
         return DB::transaction(function () {
             $onair = Onair::live()->latest('id')->lockForUpdate()->first();
 
-            if (!$onair) {
+            if (! $onair) {
                 return null;
             }
 
             $onair->update([
-                'allows_song_requests' => !$onair->allows_song_requests,
+                'allows_song_requests' => ! $onair->allows_song_requests,
             ]);
 
             return $onair;

@@ -2,25 +2,24 @@
 
 namespace App\Http\Controllers\Private;
 
-use App\Services\PostService;
+use App\Http\Controllers\Concerns\HasFlashMessages;
 
 use App\Http\Controllers\Concerns\ResolvesAuthorizedProps;
 use App\Http\Controllers\Controller;
 
+use App\Http\Requests\Post\StorePostRequest;
+
+use App\Http\Requests\Post\UpdatePostRequest;
 use App\Http\Resources\Post\PostResource;
 
-use App\Models\Post;
 use App\Integrations\AnimeNewsFeedService;
-
+use App\Models\Post;
+use App\Services\PostService;
 use Inertia\Inertia;
-use App\Http\Controllers\Concerns\HasFlashMessages;
-use App\Http\Requests\Post\StorePostRequest;
-use App\Http\Requests\Post\UpdatePostRequest;
 
 class PostController extends Controller
 {
     use HasFlashMessages;
-
     use ResolvesAuthorizedProps;
 
     private $render = 'private/Post';
@@ -99,6 +98,7 @@ class PostController extends Controller
         return Inertia::render($this->render, [
             'post' => $this->indexPost($post),
             'posts' => $this->indexEditablePosts(),
+            'postCapabilities' => $this->postCapabilities($post),
         ]);
     }
 
@@ -178,16 +178,29 @@ class PostController extends Controller
                         ->select(['id', 'post_id', 'user_id', 'status']),
                 ],
                 'search' => mb_substr(trim(request()->string('search')->toString()), 0, 200),
-                    'module' => in_array(request()->input('post_type'), ['post', 'review', 'event'], true)
-                        ? request()->input('post_type') : null,
-                    'status' => in_array(request()->input('post_status'), ['draft', 'revision', 'published'], true)
-                        ? request()->input('post_status') : null,
-                    'created_on' => request()->string('post_date')->toString(),
-                    'order_by' => request()->input('post_sort') === 'views' ? 'views_count' : 'id',
-                    'order_direction' => request()->input('post_sort') === 'oldest' ? 'asc' : 'desc',
+                'module' => in_array(request()->input('post_type'), ['post', 'review', 'event'], true)
+                    ? request()->input('post_type') : null,
+                'status' => in_array(request()->input('post_status'), ['draft', 'revision', 'published'], true)
+                    ? request()->input('post_status') : null,
+                'created_on' => request()->string('post_date')->toString(),
+                'order_by' => request()->input('post_sort') === 'views' ? 'views_count' : 'id',
+                'order_direction' => request()->input('post_sort') === 'oldest' ? 'asc' : 'desc',
                 'paginate' => 10,
             ])
         )->format('grid');
+    }
+
+    private function postCapabilities(?Post $post = null): array
+    {
+        $user = request()->user();
+
+        return [
+            'submitForReview' => $post
+                ? $user->can('update', $post)
+                : $user->can('create', Post::class),
+            'publish' => $user->hasPermission('post.publish'),
+            'approve' => $post?->status === 'revision' && $user->can('approve', $post),
+        ];
     }
 
     public function render()
@@ -198,6 +211,7 @@ class PostController extends Controller
             'newsFeedSources' => Inertia::defer(fn () => $this->indexNewsFeedSources(), 'post-news-feed'),
             'selectedNewsFeedSource' => request()->input('source'),
             'newsFeedPosts' => Inertia::defer(fn () => $this->indexNewsFeedPosts(), 'post-news-feed'),
+            'postCapabilities' => $this->postCapabilities(),
         ]);
     }
 }

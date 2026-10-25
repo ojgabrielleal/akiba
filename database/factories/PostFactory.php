@@ -2,12 +2,13 @@
 
 namespace Database\Factories;
 
+use App\Models\Post;
 use App\Models\User;
 use Database\Factories\Concerns\HasFakeImages;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Post>
+ * @extends Factory<Post>
  */
 class PostFactory extends Factory
 {
@@ -30,6 +31,7 @@ class PostFactory extends Factory
             'status' => fake()->randomElement(['published', 'revision', 'draft']),
             'module' => 'post',
             'metadata' => null,
+            'social' => null,
         ];
     }
 

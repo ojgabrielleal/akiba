@@ -4,11 +4,15 @@
     export let flush = false;
     export let maxHeight = "90vh";
     export let minHeight = "min(24rem, 80vh)";
+    export let ariaLabel = "Janela modal";
 
     import { fade } from "svelte/transition";
-    import { onDestroy } from "svelte";
+    import { onDestroy, tick } from "svelte";
 
     let visible = false;
+    let modalElement;
+    let dialogElement;
+    let previousFocusedElement;
     let titleId = title ? `modal-title-${Math.random().toString(36).slice(2)}` : undefined;
     let previousBodyOverflow = "";
     let previousDocumentOverflow = "";
@@ -37,16 +41,47 @@
         }
     });
 
-    export const open = () => {
+    export const open = async () => {
+        previousFocusedElement = typeof document !== "undefined" ? document.activeElement : null;
         visible = true;
+        await tick();
+        dialogElement?.focus();
     };
 
-    export const close = () => {
+    export const close = async () => {
         visible = false;
+        await tick();
+        previousFocusedElement?.focus?.();
     };
 
     const block = (event) => {
         event.stopPropagation();
+    };
+
+    const handleKeydown = (event) => {
+        if (event.key === "Escape") {
+            event.preventDefault();
+            close();
+            return;
+        }
+
+        if (event.key !== "Tab") return;
+
+        const focusable = [...modalElement.querySelectorAll(
+            'button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), [href], [tabindex]:not([tabindex="-1"])',
+        )];
+        if (focusable.length === 0) return;
+
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+
+        if (event.shiftKey && document.activeElement === first) {
+            event.preventDefault();
+            last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+            event.preventDefault();
+            first.focus();
+        }
     };
 
     const sizes = {
@@ -65,8 +100,9 @@
         class="fixed inset-0 z-[2147483000] flex h-dvh w-full items-center justify-center overflow-y-auto bg-black/45 p-3 backdrop-blur-xs sm:p-4"
         role="presentation"
         on:click={close}
+        on:keydown={handleKeydown}
     >
-        <div class={["relative my-auto w-full min-w-0", sizes[size] ?? sizes.sm]} on:click={block}>
+        <div bind:this={modalElement} class={["relative my-auto w-full min-w-0", sizes[size] ?? sizes.sm]} on:click={block}>
             <button
                 type="button"
                 class="absolute -right-3 -top-3 z-20 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-suspense-aurora shadow-[0_0.5rem_1.25rem_rgba(0,0,20,0.22)] transition duration-300 ease-out hover:-translate-y-0.5 hover:bg-neutral-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric sm:-right-4 sm:-top-4 sm:h-7 sm:w-7 motion-reduce:transform-none motion-reduce:transition-none"
@@ -83,6 +119,7 @@
             </button>
 
             <div
+                bind:this={dialogElement}
                 class={[
                 "relative flex w-full min-w-0 flex-col overflow-hidden rounded-md bg-suspense-aurora shadow-[0_1.25rem_3rem_rgba(0,0,20,0.24)] outline-none ring-0 focus:outline-none focus:ring-0",
             ]}
@@ -91,7 +128,7 @@
             role="dialog"
             aria-modal="true"
             aria-labelledby={title ? titleId : undefined}
-            aria-label={title ? undefined : "Janela modal"}
+            aria-label={title ? undefined : ariaLabel}
             tabindex="-1"
         >
             {#if title}

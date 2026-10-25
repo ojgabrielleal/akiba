@@ -1,7 +1,8 @@
 <script>
     import { useForm } from "@inertiajs/svelte";
+    import { tick } from "svelte";
 
-    import { Button, EmptyState, Modal, Section } from "@/lib/components/private/";
+    import { Button, EmptyState, FormField, Modal, Section, TextArea, TextInput } from "@/lib/components/private/";
     import { locutionPermissions, resolvePlaceholderImage } from "@/lib/utils";
     import { locutionIcons, locutionTextures, locutionDecorations } from "@/lib/constants";
 
@@ -9,9 +10,14 @@
 
     const can = locutionPermissions();
     let notificationModalRef;
+    let socialHashtags = "";
 
     $: form = useForm({
         send_notification: null,
+        social: {
+            text: "",
+            hashtags: [],
+        },
         program: null,
         phrase: {
             text: null,
@@ -22,84 +28,104 @@
             },
             texture: locutionTextures[0].url,
         },
-        
     });
 
-    function submit() {
+    $: socialHashtagTokens = socialHashtags.trim().split(/[\s,]+/u).filter(Boolean);
+    $: socialTextCharacterCount = $form.social.text?.length ?? 0;
+    $: socialHashtagCount = socialHashtagTokens.length;
+    $: socialHashtagsAreValid = socialHashtagTokens.length >= 1
+        && socialHashtagTokens.length <= 5
+        && socialHashtagTokens.every((hashtag) => /^#[\p{L}\p{N}_]+$/u.test(hashtag));
+    $: canStartLocution = Boolean($form.social.text?.trim()) && socialHashtagsAreValid;
+    $: socialHashtagsError = $form.errors["social.hashtags"]
+        ?? (socialHashtags && !socialHashtagsAreValid
+            ? "Informe de 1 a 5 hashtags válidas, todas começando com #."
+            : null);
+
+    async function submit() {
         notificationModalRef.open();
+        await tick();
+        document.getElementById("live-social-text")?.focus();
     }
 
-    function startLocution(sendNotification) {
-        $form.send_notification = sendNotification;
+    function startLocution() {
+        if (!canStartLocution) return;
+
+        $form.send_notification = true;
+        $form.social.hashtags = [...new Set(
+            socialHashtagTokens
+                .map((hashtag) => hashtag.replace(/^#+/, "").toLocaleLowerCase()),
+        )];
 
         $form.post(`/panel/locution/start/${$form.program}`, {
             preserveScroll: true,
             onSuccess: () => {
                 notificationModalRef.close();
+                socialHashtags = "";
                 $form.reset();
             },
         });
     }
 </script>
 
-<Modal bind:this={notificationModalRef}>
-    <div slot="content" class="-m-4 overflow-hidden rounded-md border border-blue-skywave/20 bg-blue-ocean font-noto-sans shadow-[0_1.25rem_4rem_rgba(0,0,0,0.25)] sm:-m-6">
-        <div class="relative">
-            <div class="absolute inset-x-0 top-0 h-1 bg-orange-citric" aria-hidden="true"></div>
-            <div class="absolute right-0 top-0 h-20 w-20 rounded-bl-full bg-blue-skywave/10" aria-hidden="true"></div>
-            <div class="relative z-10 p-4 sm:p-5">
-                <div class="flex flex-wrap items-center gap-2">
-                    <span class="inline-flex h-6 items-center rounded-full bg-blue-marinho/55 px-3 text-[0.62rem] font-extrabold uppercase italic text-orange-citric">
-                        Entrada ao vivo
-                    </span>
-                    <span class="inline-flex h-6 items-center rounded-full border border-blue-skywave/25 px-3 text-[0.62rem] font-extrabold uppercase italic text-blue-skywave">
-                        Notificação
-                    </span>
-                </div>
-
-                <div class="mt-3 grid grid-cols-[auto_minmax(0,1fr)] items-center gap-3">
-                    <span class="flex size-12 items-center justify-center rounded-md border-2 border-orange-citric bg-blue-marinho">
-                        <img src="/svg/alerts.svg" alt="" class="w-7 filter-orange-citric" />
-                    </span>
-                    <div class="min-w-0">
-                        <h2 class="text-xl font-extrabold uppercase italic leading-tight text-suspense-aurora">
-                            Avisar a Rede Akiba?
-                        </h2>
-                        <p class="mt-1 text-sm font-bold text-blue-skywave">
-                            Programa prestes a entrar no ar
-                        </p>
-                    </div>
-                </div>
-
-                <div class="mt-4 rounded-md border border-blue-skywave/15 bg-blue-marinho/35 px-4 py-3">
-                    <p class="text-sm leading-relaxed text-suspense-aurora/82">
-                        Deseja mandar notificações avisando que você entrará
-                        <span class="font-extrabold uppercase italic text-orange-citric">ao vivo</span>
-                        nas plataformas da Rede Akiba?
-                    </p>
-                </div>
-
-                <div class="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
-                    <button
-                        type="button"
-                        class="flex min-h-10 cursor-pointer items-center justify-center gap-2 rounded-full bg-orange-citric px-4 py-2 font-noto-sans text-[0.68rem] font-extrabold uppercase italic whitespace-nowrap text-blue-marinho transition duration-200 ease-out hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-suspense-aurora active:translate-y-0 disabled:cursor-wait disabled:opacity-70 motion-reduce:transform-none motion-reduce:transition-none"
-                        disabled={$form.processing}
-                        on:click={() => startLocution(true)}
-                    >
-                        <img src="/svg/alerts.svg" alt="" class="w-5 filter-blue-marinho" />
-                        Avisar
-                    </button>
-                    <button
-                        type="button"
-                        class="group/no-alert flex min-h-10 cursor-pointer items-center justify-center gap-2 rounded-full border-2 border-orange-citric bg-transparent px-4 py-2 font-noto-sans text-[0.68rem] font-extrabold uppercase italic whitespace-nowrap text-orange-citric transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-orange-citric hover:text-blue-marinho focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-suspense-aurora active:translate-y-0 disabled:cursor-wait disabled:opacity-70 motion-reduce:transform-none motion-reduce:transition-none"
-                        disabled={$form.processing}
-                        on:click={() => startLocution(false)}
-                    >
-                        <img src="/svg/bloqued.svg" alt="" class="w-5 filter-orange-citric group-hover/no-alert:filter-blue-marinho" />
-                        Não avisar
-                    </button>
-                </div>
-            </div>
+<Modal bind:this={notificationModalRef} title="Finalizar entrada ao vivo" size="md" minHeight="auto">
+    <div slot="content" class="font-noto-sans">
+        <FormField for="live-social-text" label="Texto da publicação" error={$form.errors["social.text"]} spacing="compact">
+            <span
+                slot="labelAside"
+                class="shrink-0 text-xs font-bold"
+                class:text-red-crimson={socialTextCharacterCount > 1800}
+                class:text-gray-500={socialTextCharacterCount <= 1800}
+            >
+                {socialTextCharacterCount}/1800
+            </span>
+            <TextArea
+                id="live-social-text"
+                variant="offcanvas"
+                rows="4"
+                maxlength="1800"
+                required
+                bind:value={$form.social.text}
+                error={$form.errors["social.text"]}
+                placeholder="Conte que o programa entrou no ar..."
+            />
+        </FormField>
+        <FormField for="live-social-hashtags" label="Hashtags" help="Obrigatório: use # e separe por espaço ou vírgula." error={socialHashtagsError} spacing="none">
+            <span
+                slot="labelAside"
+                class="shrink-0 text-xs font-bold"
+                class:text-red-crimson={socialHashtagCount > 5}
+                class:text-gray-500={socialHashtagCount <= 5}
+            >
+                {socialHashtagCount}/5 hashtags
+            </span>
+            <TextInput
+                id="live-social-hashtags"
+                variant="offcanvas"
+                bind:value={socialHashtags}
+                error={socialHashtagsError}
+                describedBy="live-social-hashtags-help"
+                placeholder="#radio #anime #redeakiba"
+                required
+            />
+        </FormField>
+        <div class="mt-6 flex justify-end border-t border-blue-marinho/10 pt-4">
+            <Button
+                type="button"
+                variant="accent"
+                size="compact"
+                loading={$form.processing}
+                disabled={$form.processing || !canStartLocution}
+                on:click={startLocution}
+            >
+                Iniciar programa
+                <img
+                    src="/svg/rewindInverted.svg"
+                    alt=""
+                    aria-hidden="true"
+                    class="w-6 filter-blue-marinho"
+                />
+            </Button>
         </div>
     </div>
 </Modal>

@@ -15,7 +15,6 @@ class Post extends Model
 {
     use HasFactory, HasUuids;
 
-
     protected $fillable = [
         'uuid',
         'user_id',
@@ -28,11 +27,13 @@ class Post extends Model
         'cover',
         'module',
         'metadata',
+        'social',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
         'metadata' => 'array',
+        'social' => 'array',
     ];
 
     protected $hidden = [
@@ -42,7 +43,7 @@ class Post extends Model
     protected function title(): Attribute
     {
         return Attribute::make(
-            set: fn(string $value) => [
+            set: fn (string $value) => [
                 'title' => $value,
                 'slug' => Str::slug($value),
             ],
@@ -61,9 +62,8 @@ class Post extends Model
     /**
      * Determine the columns that should receive a unique identifier.
      *
-     * This method specifies that the 'uuid' column should be automatically 
+     * This method specifies that the 'uuid' column should be automatically
      * generated as a sortable, unique identifier when the model is created.
-     *
      */
     public function uniqueIds(): array
     {
@@ -105,7 +105,7 @@ class Post extends Model
     {
         $query->where('module', $module);
     }
-    
+
     /**
      * Define the relationships between this model and other models.
      *
@@ -145,6 +145,11 @@ class Post extends Model
     public function reviews()
     {
         return $this->hasMany(PostReview::class, 'post_id');
+    }
+
+    public function socialPublications()
+    {
+        return $this->hasMany(PostSocialPublication::class, 'post_id');
     }
 
     public function postReviews()

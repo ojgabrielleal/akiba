@@ -9,29 +9,38 @@ return new class extends Migration
 {
     public function up(): void
     {
-        DB::statement(<<<'SQL'
-            DELETE current_subscription
-            FROM push_subscriptions current_subscription
-            INNER JOIN push_subscriptions kept_subscription
-                ON current_subscription.endpoint = kept_subscription.endpoint
-                AND (
-                    (
-                        current_subscription.user_id IS NULL
-                        AND kept_subscription.user_id IS NOT NULL
-                    )
-                    OR (
+        if (DB::connection()->getDriverName() === 'sqlite') {
+            DB::table('push_subscriptions')
+                ->whereNotIn('id', fn ($query) => $query
+                    ->selectRaw('MAX(id)')
+                    ->from('push_subscriptions')
+                    ->groupBy('endpoint'))
+                ->delete();
+        } else {
+            DB::statement(<<<'SQL'
+                DELETE current_subscription
+                FROM push_subscriptions current_subscription
+                INNER JOIN push_subscriptions kept_subscription
+                    ON current_subscription.endpoint = kept_subscription.endpoint
+                    AND (
                         (
                             current_subscription.user_id IS NULL
-                            AND kept_subscription.user_id IS NULL
-                        )
-                        OR (
-                            current_subscription.user_id IS NOT NULL
                             AND kept_subscription.user_id IS NOT NULL
                         )
+                        OR (
+                            (
+                                current_subscription.user_id IS NULL
+                                AND kept_subscription.user_id IS NULL
+                            )
+                            OR (
+                                current_subscription.user_id IS NOT NULL
+                                AND kept_subscription.user_id IS NOT NULL
+                            )
+                        )
+                        AND current_subscription.id < kept_subscription.id
                     )
-                    AND current_subscription.id < kept_subscription.id
-                )
-        SQL);
+            SQL);
+        }
 
         $this->createIndexIfMissing('push_subscriptions', 'push_subscriptions_user_id_index', ['user_id']);
 
@@ -72,10 +81,7 @@ return new class extends Migration
 
     private function indexExists(string $table, string $index): bool
     {
-        return DB::table('information_schema.STATISTICS')
-            ->where('TABLE_SCHEMA', DB::raw('DATABASE()'))
-            ->where('TABLE_NAME', $table)
-            ->where('INDEX_NAME', $index)
-            ->exists();
+        return collect(Schema::getIndexes($table))
+            ->contains(fn (array $definition): bool => $definition['name'] === $index);
     }
 };

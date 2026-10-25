@@ -4,17 +4,20 @@ namespace App\Services;
 
 use App\Integrations\DiscordWebhookService;
 use App\Models\Post;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Database\Eloquent\Model;
 use App\Models\PostReaction;
 use App\Models\User;
 use App\Processing\ImageProcess;
-use Illuminate\Http\UploadedFile;
+use App\Processing\SocialArtworkProcess;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Throwable;
 
 class PostService
 {
@@ -22,6 +25,9 @@ class PostService
         private ImageProcess $image,
         private PushNotificationService $pushNotification,
         private DiscordWebhookService $discord,
+        private PostSocialPublicationService $socialPublication,
+        private SocialArtworkDataService $socialArtworkData,
+        private SocialArtworkProcess $socialArtwork,
     ) {}
 
     public function publicContentVersion(): string
@@ -40,6 +46,7 @@ class PostService
     {
         $post = DB::transaction(function () use ($post) {
             $post->update(['is_active' => false]);
+
             return $post;
         });
 
@@ -87,7 +94,7 @@ class PostService
         });
 
         if ($this->shouldSendPublishedNotification($post)) {
-            $this->sendPublishedNotification($post);
+            $this->handlePublished($post);
         }
 
         return $post;
@@ -107,6 +114,7 @@ class PostService
             'cover' => $this->image->store('posts', $cover),
             'module' => $module,
             'metadata' => $metadata,
+            'social' => $this->normalizeSocial($data['social'] ?? null),
         ]);
     }
 
@@ -207,7 +215,7 @@ class PostService
         });
 
         if (! $wasPublished && $this->shouldSendPublishedNotification($post)) {
-            $this->sendPublishedNotification($post);
+            $this->handlePublished($post);
         }
 
         return $post;
@@ -232,7 +240,7 @@ class PostService
         });
 
         if (! $wasPublished && $this->shouldSendPublishedNotification($post)) {
-            $this->sendPublishedNotification($post);
+            $this->handlePublished($post);
         }
 
         return $post;
@@ -241,6 +249,12 @@ class PostService
     private function shouldSendPublishedNotification(Post $post): bool
     {
         return $post->status === 'published';
+    }
+
+    private function handlePublished(Post $post): void
+    {
+        $this->sendPublishedNotification($post);
+        $this->socialPublication->prepare($post);
     }
 
     private function sendPublishedNotification(Post $post): void
@@ -255,7 +269,30 @@ class PostService
             'banner' => $post->cover,
         ]);
 
-        $this->discord->sendPostPublishedHook($post, $url);
+        $this->discord->sendPostPublishedHook($post, $url, $this->discordArtwork($post));
+    }
+
+    private function discordArtwork(Post $post): ?string
+    {
+        if (! $this->discord->postNotificationsEnabled()) {
+            return null;
+        }
+
+        try {
+            return $this->socialArtwork->generate(
+                'discord-post',
+                $this->socialArtworkData->map($post),
+                $post->uuid,
+                'discord-'.Str::uuid(),
+            )->path;
+        } catch (Throwable $exception) {
+            Log::warning('Discord post artwork generation failed; the cover fallback will be used.', [
+                'post_uuid' => $post->uuid,
+                'exception' => $exception::class,
+            ]);
+
+            return null;
+        }
     }
 
     private function publishedNotificationTitle(Post $post): string
@@ -289,6 +326,9 @@ class PostService
             'cover' => $this->image->store('posts', $cover, $post->cover),
             'module' => $module,
             'metadata' => $metadata,
+            'social' => array_key_exists('social', $data)
+                ? $this->normalizeSocial($data['social'])
+                : $post->social,
         ]);
 
         if ($post->isDirty()) {
@@ -440,6 +480,21 @@ class PostService
         return $metadata;
     }
 
+    private function normalizeSocial(mixed $social): ?array
+    {
+        if (! is_array($social)) {
+            return null;
+        }
+
+        $social['hashtags'] = collect($social['hashtags'] ?? [])
+            ->map(fn (string $hashtag): string => ltrim($hashtag, '#'))
+            ->values()
+            ->all();
+        $social['channels'] = ['instagram' => true];
+
+        return $social;
+    }
+
     public function accessReport(array $filters = []): LengthAwarePaginator
     {
         $now = now();
@@ -500,25 +555,25 @@ class PostService
                 $actor = $lastView?->actor;
 
                 return [
-                'uuid' => $post->uuid,
-                'title' => $post->title,
-                'url' => $post->is_active && $post->status === 'published'
-                    ? route('post.read', $post->slug) : null,
-                'views' => (int) $post->views_count,
-                'recognized_views' => (int) $post->recognized_views,
-                'anonymous_views' => (int) $post->anonymous_views,
-                'recognized_users' => (int) $post->recognized_users,
-                'distinct_ips' => (int) $post->distinct_ips,
-                'reactions' => (int) $post->reactions_count,
-                'likes' => (int) $post->likes_count,
-                'comments' => (int) $post->comments_count,
-                'views_week' => (int) $post->views_week,
-                'views_month' => (int) $post->views_month,
-                'last_view' => $post->views_max_created_at
-                    ? Carbon::parse($post->views_max_created_at)
-                        ->setTimezone('America/Sao_Paulo')->format('d/m/Y H:i')
-                    : null,
-                'last_viewer' => $actor?->nickname ?? $actor?->name ?? $actor?->username ?? 'Anônimo',
+                    'uuid' => $post->uuid,
+                    'title' => $post->title,
+                    'url' => $post->is_active && $post->status === 'published'
+                        ? route('post.read', $post->slug) : null,
+                    'views' => (int) $post->views_count,
+                    'recognized_views' => (int) $post->recognized_views,
+                    'anonymous_views' => (int) $post->anonymous_views,
+                    'recognized_users' => (int) $post->recognized_users,
+                    'distinct_ips' => (int) $post->distinct_ips,
+                    'reactions' => (int) $post->reactions_count,
+                    'likes' => (int) $post->likes_count,
+                    'comments' => (int) $post->comments_count,
+                    'views_week' => (int) $post->views_week,
+                    'views_month' => (int) $post->views_month,
+                    'last_view' => $post->views_max_created_at
+                        ? Carbon::parse($post->views_max_created_at)
+                            ->setTimezone('America/Sao_Paulo')->format('d/m/Y H:i')
+                        : null,
+                    'last_viewer' => $actor?->nickname ?? $actor?->name ?? $actor?->username ?? 'Anônimo',
                 ];
             });
     }
@@ -740,4 +795,5 @@ class PostService
                 $orderDirection
             ),
         };
-    }}
+    }
+}

@@ -2,16 +2,16 @@
 
 namespace Tests\Unit\Models;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
-
-use App\Models\User;
+use App\Models\PageView;
 use App\Models\Post;
-use App\Models\PostReference;
+
 use App\Models\PostReaction;
+use App\Models\PostReference;
 use App\Models\PostReview;
 use App\Models\PostTag;
-use App\Models\PageView;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class PostTest extends TestCase
 {
@@ -20,14 +20,14 @@ class PostTest extends TestCase
     /**
      * Tests from Post model relationships.
      */
-    public function testPostRelationModelsUseRenamedTables(): void
+    public function test_post_relation_models_use_renamed_tables(): void
     {
-        $this->assertSame('post_references', (new PostReference())->getTable());
-        $this->assertSame('post_reactions', (new PostReaction())->getTable());
-        $this->assertSame('post_tags', (new PostTag())->getTable());
+        $this->assertSame('post_references', (new PostReference)->getTable());
+        $this->assertSame('post_reactions', (new PostReaction)->getTable());
+        $this->assertSame('post_tags', (new PostTag)->getTable());
     }
 
-    public function testAuthorRelationship(): void
+    public function test_author_relationship(): void
     {
         $user = User::factory()->create();
 
@@ -38,7 +38,7 @@ class PostTest extends TestCase
         $this->assertTrue($post->author->is($user));
     }
 
-    public function testReferencesRelationship(): void
+    public function test_references_relationship(): void
     {
         $user = User::factory()->create();
         $reference = PostReference::factory(2);
@@ -56,7 +56,7 @@ class PostTest extends TestCase
         $this->assertTrue($firstReference->post->is($post));
     }
 
-    public function testReactionsRelationship(): void
+    public function test_reactions_relationship(): void
     {
         $user = User::factory()->create();
         $reaction = PostReaction::factory(2);
@@ -74,7 +74,7 @@ class PostTest extends TestCase
         $this->assertTrue($firstReaction->post->is($post));
     }
 
-    public function testTagsRelationship(): void
+    public function test_tags_relationship(): void
     {
         $user = User::factory()->create();
         $tag = PostTag::factory(2);
@@ -92,7 +92,7 @@ class PostTest extends TestCase
         $this->assertTrue($firstTag->post->is($post));
     }
 
-    public function testEventFactoryState(): void
+    public function test_event_factory_state(): void
     {
         $post = Post::factory()
             ->forModule('event')
@@ -103,7 +103,7 @@ class PostTest extends TestCase
         $this->assertArrayHasKey('address', $post->metadata);
     }
 
-    public function testReviewFactoryState(): void
+    public function test_review_factory_state(): void
     {
         $post = Post::factory()
             ->forModule('review')
@@ -115,7 +115,23 @@ class PostTest extends TestCase
         $this->assertArrayHasKey('sinopse', $post->metadata);
     }
 
-    public function testPostReviewsRelationship(): void
+    public function test_social_attribute_is_stored_as_json_and_cast_to_array(): void
+    {
+        $social = [
+            'text' => 'Conteúdo novo na Rede Akiba.',
+            'hashtags' => ['anime', 'redeakiba'],
+            'channels' => [
+                'instagram' => true,
+            ],
+        ];
+
+        $post = Post::factory()->create(['social' => $social]);
+
+        $this->assertEquals($social, $post->fresh()->social);
+        $this->assertJson((string) $post->getRawOriginal('social'));
+    }
+
+    public function test_post_reviews_relationship(): void
     {
         $postReviews = PostReview::factory(2);
 
@@ -128,7 +144,7 @@ class PostTest extends TestCase
         $this->assertContainsOnlyInstancesOf(PostReview::class, $post->postReviews);
     }
 
-    public function testViewsRelationship(): void
+    public function test_views_relationship(): void
     {
         $post = Post::factory()->create();
 
@@ -147,7 +163,7 @@ class PostTest extends TestCase
     /**
      * Tests from Post model scopes.
      */
-    public function testActiveScope(): void
+    public function test_active_scope(): void
     {
         $user = User::factory()->create();
 
@@ -167,7 +183,7 @@ class PostTest extends TestCase
         $this->assertFalse($activePosts->contains($inactivePost));
     }
 
-    public function testPublishedScope(): void
+    public function test_published_scope(): void
     {
         $user = User::factory()->create();
 
@@ -187,7 +203,7 @@ class PostTest extends TestCase
         $this->assertFalse($publishedPosts->contains($draftPost));
     }
 
-    public function testAuthoredByScope(): void
+    public function test_authored_by_scope(): void
     {
         /** @var User $user */
         $user = User::factory()->create();
@@ -207,7 +223,7 @@ class PostTest extends TestCase
         $this->assertFalse($myPosts->contains($otherPost));
     }
 
-    public function testFeaturedScope(): void
+    public function test_featured_scope(): void
     {
         $featuredPost = Post::factory()->create();
         $regularPost = Post::factory()->create();
@@ -226,18 +242,17 @@ class PostTest extends TestCase
         $this->assertSame(1, $posts[$regularPost->id]->views_count);
     }
 
-
     /**
      * Tests from Post model attributes.
      */
-    public function testSlugAttribute(): void
+    public function test_slug_attribute(): void
     {
         $user = User::factory()->create();
 
         $post = Post::factory()
             ->for($user, 'author')
             ->create([
-                'title' => 'Sample Post Title'
+                'title' => 'Sample Post Title',
             ]);
 
         $this->assertEquals('sample-post-title', $post->slug);

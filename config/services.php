@@ -58,6 +58,16 @@ return [
         'redirect' => env('GOOGLE_REDIRECT_URI'),
     ],
 
+    'meta' => [
+        'graph_version' => env('META_GRAPH_VERSION'),
+        'instagram_user_id' => env('META_INSTAGRAM_USER_ID'),
+        'access_token' => env('META_ACCESS_TOKEN'),
+        'timeout' => env('META_TIMEOUT', 15),
+        'connect_timeout' => env('META_CONNECT_TIMEOUT', 5),
+        'instagram_enabled' => env('META_INSTAGRAM_ENABLED', false),
+        'instagram_feed_enabled' => env('META_INSTAGRAM_FEED_ENABLED', true),
+    ],
+
     'webpush' => [
         'public_key' => env('VAPID_PUBLIC_KEY'),
         'private_key' => env('VAPID_PRIVATE_KEY'),

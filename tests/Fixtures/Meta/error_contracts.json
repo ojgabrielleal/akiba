@@ -1,0 +1,63 @@
+{
+    "invalid_token": {
+        "response": {
+            "error": {
+                "message": "Invalid OAuth access token.",
+                "type": "OAuthException",
+                "code": 190,
+                "fbtrace_id": "test-trace-authentication"
+            }
+        },
+        "expected_failure": "authentication",
+        "retryable": false
+    },
+    "missing_permission": {
+        "response": {
+            "error": {
+                "message": "Permissions error.",
+                "type": "OAuthException",
+                "code": 200,
+                "fbtrace_id": "test-trace-permission"
+            }
+        },
+        "expected_failure": "permission",
+        "retryable": false
+    },
+    "invalid_parameter": {
+        "response": {
+            "error": {
+                "message": "Invalid parameter.",
+                "type": "OAuthException",
+                "code": 100,
+                "fbtrace_id": "test-trace-validation"
+            }
+        },
+        "expected_failure": "validation",
+        "retryable": false
+    },
+    "rate_limit": {
+        "response": {
+            "error": {
+                "message": "Application request limit reached.",
+                "type": "OAuthException",
+                "code": 4,
+                "fbtrace_id": "test-trace-rate-limit"
+            }
+        },
+        "expected_failure": "rate_limit",
+        "retryable": true
+    },
+    "temporary_failure": {
+        "response": {
+            "error": {
+                "message": "Service temporarily unavailable.",
+                "type": "OAuthException",
+                "code": 2,
+                "is_transient": true,
+                "fbtrace_id": "test-trace-temporary"
+            }
+        },
+        "expected_failure": "temporary",
+        "retryable": true
+    }
+}

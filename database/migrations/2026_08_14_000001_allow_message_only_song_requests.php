@@ -9,6 +9,14 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (DB::connection()->getDriverName() === 'sqlite') {
+            Schema::table('song_requests', function (Blueprint $table) {
+                $table->foreignId('music_id')->nullable()->change();
+            });
+
+            return;
+        }
+
         $this->dropMusicForeignKeyIfExists();
 
         Schema::table('song_requests', function (Blueprint $table) {
@@ -20,6 +28,14 @@ return new class extends Migration
     public function down(): void
     {
         DB::table('song_requests')->whereNull('music_id')->delete();
+
+        if (DB::connection()->getDriverName() === 'sqlite') {
+            Schema::table('song_requests', function (Blueprint $table) {
+                $table->foreignId('music_id')->nullable(false)->change();
+            });
+
+            return;
+        }
 
         $this->dropMusicForeignKeyIfExists();
 

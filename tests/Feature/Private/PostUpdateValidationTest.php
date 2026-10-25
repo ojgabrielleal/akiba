@@ -20,7 +20,7 @@ class PostUpdateValidationTest extends TestCase
     {
         Storage::fake('public');
 
-        $user = $this->userWithPermissions(['post.create']);
+        $user = $this->userWithPermissions(['post.create', 'post.publish']);
 
         $response = $this
             ->actingAs($user)
@@ -39,6 +39,7 @@ class PostUpdateValidationTest extends TestCase
                     'status' => 'published',
                     'content' => ['', '<p>Review final</p>'],
                 ],
+                'social' => $this->social(),
             ]);
 
         $response->assertSessionHasNoErrors();
@@ -59,7 +60,7 @@ class PostUpdateValidationTest extends TestCase
     {
         Storage::fake('public');
 
-        $user = $this->userWithPermissions(['post.create']);
+        $user = $this->userWithPermissions(['post.create', 'post.publish']);
 
         $response = $this
             ->actingAs($user)
@@ -80,6 +81,7 @@ class PostUpdateValidationTest extends TestCase
                     ['name' => 'event'],
                     ['name' => 'anime'],
                 ],
+                'social' => $this->social(),
             ]);
 
         $response->assertSessionHasNoErrors();
@@ -96,7 +98,7 @@ class PostUpdateValidationTest extends TestCase
     {
         Storage::fake('public');
 
-        $user = $this->userWithPermissions(['post.create']);
+        $user = $this->userWithPermissions(['post.create', 'post.publish']);
 
         $response = $this
             ->actingAs($user)
@@ -111,6 +113,7 @@ class PostUpdateValidationTest extends TestCase
                 'tags' => [
                     ['name' => 'anime'],
                 ],
+                'social' => $this->social(),
             ]);
 
         $response->assertRedirect('/panel/post');
@@ -149,6 +152,7 @@ class PostUpdateValidationTest extends TestCase
                     'status' => 'published',
                     'content' => '<p><br></p>',
                 ],
+                'social' => $this->social(),
             ]);
 
         $response->assertRedirect("/panel/post/{$post->uuid}");
@@ -174,5 +178,14 @@ class PostUpdateValidationTest extends TestCase
         return User::factory()
             ->hasAttached($role, [], 'roles')
             ->create();
+    }
+
+    private function social(bool $instagram = true): array
+    {
+        return [
+            'text' => 'Conteúdo novo na Rede Akiba.',
+            'hashtags' => ['#anime', '#redeakiba'],
+            'channels' => ['instagram' => $instagram],
+        ];
     }
 }

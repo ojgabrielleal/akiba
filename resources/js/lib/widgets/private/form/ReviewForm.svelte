@@ -12,6 +12,8 @@
     import { PostActions } from "@/lib/components/private";
     import { postPermissions } from "@/lib/utils";
     import { errorFor, normalizeErrors } from "./postFormErrors.js";
+    import { createSocialPostSubmission } from "./socialPostSubmission.js";
+    import SocialPostModal from "./SocialPostModal.svelte";
 
     export let post = null;
 
@@ -70,7 +72,27 @@
         review: normalizeReview(post?.data.review),
         tags: normalizeTags(post?.data.tags),
         references: normalizeReferences(post?.data.references),
+        social: post?.data.social ?? null,
     });
+
+    const socialSubmission = createSocialPostSubmission({
+        form,
+        resolveUrl: () => post ? `/panel/post/${post.data.uuid}` : "/panel/post",
+        buildPayload: (data, status) => {
+            const { tags, references, ...payload } = data;
+
+            return {
+                ...payload,
+                review: {
+                    ...payload.review,
+                    status,
+                },
+            };
+        },
+        shouldReset: () => !post,
+    });
+    const { pending: submissionPending } = socialSubmission;
+    let socialModal;
 
     $: errors = {
         ...normalizeErrors($form.errors),
@@ -91,31 +113,16 @@
     });
     $: selectedReviewStatus = persistedSelectedReview?.status ?? $form.review?.status;
 
-    function submit(event) {
-        let url = post ? `/panel/post/${post.data.uuid}` : "/panel/post";
-        const status = event.submitter.value;
-
-        $form.transform((data) => {
-            const { tags, references, ...payload } = data;
-
-            return {
-                ...payload,
-                review: {
-                    ...payload.review,
-                    status,
-                },
-            };
-        }).post(url, {
-            preserveState: true,
-            forceFormData: true,
-            onSuccess: () => {
-                post ? null : $form.reset();
-            },
-        });
-    }
 </script>
 
-<form novalidate on:submit|preventDefault={submit}>
+<form novalidate on:submit|preventDefault={(event) => socialSubmission.open(event, socialModal)}>
+    <SocialPostModal
+        bind:this={socialModal}
+        value={$form.social}
+        {errors}
+        processing={$submissionPending || $form.processing}
+        on:confirm={(event) => socialSubmission.confirm(event, socialModal)}
+    />
     <div class="lg:px-40">
         <div class="mb-8">
             <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_12rem_15rem] lg:gap-5">
@@ -331,7 +338,7 @@
             <PostActions
                 status={selectedReviewStatus}
                 can={can}
-                processing={$form.processing}
+                processing={$submissionPending || $form.processing}
             />
         </div>
     </div>

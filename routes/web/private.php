@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\Private\AdministrationController;
 use App\Http\Controllers\Private\DashboardController;
-use App\Http\Controllers\Private\TrashController;
 use App\Http\Controllers\Private\LocutionController;
 use App\Http\Controllers\Private\LoginController;
 use App\Http\Controllers\Private\MediaController;
@@ -13,6 +12,7 @@ use App\Http\Controllers\Private\PushNotificationController;
 use App\Http\Controllers\Private\RadioController;
 use App\Http\Controllers\Private\ReportsController;
 use App\Http\Controllers\Private\RepositoryController;
+use App\Http\Controllers\Private\TrashController;
 use Illuminate\Support\Facades\Route;
 
 /*

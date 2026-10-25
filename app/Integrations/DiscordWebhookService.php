@@ -6,13 +6,18 @@ use App\Models\Post;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\ImageManager;
-use Illuminate\Support\Str;
 use Throwable;
 
 class DiscordWebhookService
 {
+    public function postNotificationsEnabled(): bool
+    {
+        return app()->environment('production') && filled(config('services.discord.post_webhook'));
+    }
+
     public function sendStreamNotificationHook($user, $program): bool
     {
         if (! app()->environment('production')) {
@@ -49,23 +54,19 @@ class DiscordWebhookService
         }
     }
 
-    public function sendPostPublishedHook(Post $post, string $url): bool
+    public function sendPostPublishedHook(Post $post, string $url, ?string $artworkPath = null): bool
     {
-        if (! app()->environment('production')) {
+        if (! $this->postNotificationsEnabled()) {
             return false;
         }
 
         $webhookUrl = config('services.discord.post_webhook');
-        if (! $webhookUrl) {
-            return false;
-        }
-
         $description = Str::of(strip_tags($post->content ?? ''))
             ->squish()
             ->limit(180)
             ->toString();
 
-        $attachment = $this->postAttachment($post);
+        $attachment = $this->postAttachment($post, $artworkPath);
         $image = $attachment
             ? ['url' => 'attachment://post.jpg']
             : $this->postImage($post);
@@ -113,12 +114,25 @@ class DiscordWebhookService
             return $request->post($webhookUrl, $payload)->successful();
         } catch (Throwable $exception) {
             Log::warning('Discord post notification failed', ['exception' => $exception::class]);
+
             return false;
         }
     }
 
-    private function postAttachment(Post $post): ?string
+    private function postAttachment(Post $post, ?string $artworkPath): ?string
     {
+        if ($artworkPath !== null) {
+            try {
+                return Storage::disk('public')->get($artworkPath);
+            } catch (Throwable $exception) {
+                Log::warning('Discord generated post artwork could not be loaded.', [
+                    'post_uuid' => $post->uuid,
+                    'artwork_path' => $artworkPath,
+                    'exception' => $exception::class,
+                ]);
+            }
+        }
+
         $image = $post->cover ?: $post->image;
 
         if (! $image || ! str_starts_with($image, '/storage/')) {
@@ -128,7 +142,7 @@ class DiscordWebhookService
         try {
             $contents = Storage::disk('public')->get(substr($image, strlen('/storage/')));
 
-            return (string) (new ImageManager(new Driver()))
+            return (string) (new ImageManager(new Driver))
                 ->read($contents)
                 ->scaleDown(width: 1600, height: 1600)
                 ->toJpeg(85);

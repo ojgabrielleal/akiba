@@ -68,4 +68,27 @@ class DiscordPostNotificationTest extends TestCase
             && $request['embeds'][0]['image']['url'] === route('post.social-image', 'test-post'));
         Http::assertSentCount(1);
     }
+
+    public function test_it_prefers_the_generated_discord_artwork_attachment(): void
+    {
+        $generated = UploadedFile::fake()->image('discord-post.jpg', 1200, 630)->getContent();
+        Storage::disk('public')->put('social-artworks/post/publication/discord-post.jpg', $generated);
+        $post = new Post(['uuid' => 'test-post', 'title' => 'Arte compartilhada']);
+
+        $this->assertTrue(app(DiscordWebhookService::class)->sendPostPublishedHook(
+            $post,
+            'https://akiba.test/materia/teste',
+            'social-artworks/post/publication/discord-post.jpg',
+        ));
+
+        Http::assertSent(function ($request) {
+            $field = collect($request->data())->firstWhere('name', 'payload_json');
+            $payload = json_decode($field['contents'], true);
+
+            return $request->hasFile('files[0]')
+                && $payload['embeds'][0]['image']['url'] === 'attachment://post.jpg'
+                && str_contains($request->body(), "\xff\xd8\xff");
+        });
+        Http::assertSentCount(1);
+    }
 }

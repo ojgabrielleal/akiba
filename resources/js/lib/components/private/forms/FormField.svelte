@@ -14,6 +14,7 @@
         editorial: "text-lg font-extrabold uppercase italic text-orange-amber",
         metadata: "font-extrabold uppercase italic text-blue-skywave",
         "metadata-indented": "ml-3 font-extrabold uppercase italic text-blue-skywave",
+        modal: "font-bold text-suspense-aurora",
     };
 
     const spacings = {
@@ -35,9 +36,14 @@
 
 <div class={classes}>
     {#if label}
-        <label for={forId} class={labelClasses}>
-            {label}
-        </label>
+        <div class:mb-1={$$slots.labelAside} class:flex={$$slots.labelAside} class:items-center={$$slots.labelAside} class:justify-between={$$slots.labelAside} class:gap-3={$$slots.labelAside}>
+            <label for={forId} class={[labelClasses, $$slots.labelAside && "mb-0"]}>
+                {label}
+            </label>
+            {#if $$slots.labelAside}
+                <slot name="labelAside" />
+            {/if}
+        </div>
     {/if}
     <slot />
     {#if error}
@@ -45,7 +51,7 @@
             {error}
         </div>
     {:else if help}
-        <div class="mt-1 font-noto-sans text-sm text-gray-400">
+        <div id={`${forId}-help`} class="mt-1 font-noto-sans text-sm text-gray-400">
             {help}
         </div>
     {/if}

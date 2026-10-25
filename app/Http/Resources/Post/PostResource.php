@@ -94,6 +94,10 @@ class PostResource extends JsonResource
             'module' => $this->module,
         ];
 
+        if ($request->user()) {
+            $postData['social'] = $this->social;
+        }
+
         return array_merge(
             $postData,
             $this->post(),
@@ -102,9 +106,9 @@ class PostResource extends JsonResource
         );
     }
 
-    public function post(): array 
+    public function post(): array
     {
-        if($this->module === 'post'){
+        if ($this->module === 'post') {
             return [
                 'status' => $this->status,
                 'content' => $this->content,
@@ -138,7 +142,7 @@ class PostResource extends JsonResource
 
     private function likedByCurrentVisitor(Request $request): bool
     {
-        if (!$this->relationLoaded('likes')) {
+        if (! $this->relationLoaded('likes')) {
             return false;
         }
 
@@ -154,9 +158,9 @@ class PostResource extends JsonResource
         return $this->likes->contains('visitor_token', hash('sha256', $request->session()->getId()));
     }
 
-    public function event(): array 
+    public function event(): array
     {
-        if($this->module === 'event'){
+        if ($this->module === 'event') {
             return [
                 'status' => $this->status,
                 'content' => $this->content,
@@ -169,7 +173,7 @@ class PostResource extends JsonResource
 
     public function review(Request $request): array
     {
-        if($this->module === 'review'){
+        if ($this->module === 'review') {
             if ($this->format === 'public-read') {
                 return [
                     'reviews' => PostReviewResource::collection(
@@ -194,7 +198,7 @@ class PostResource extends JsonResource
 
         return [];
     }
-    
+
     private function reviewGhostUser(User $user): array
     {
         return [
@@ -221,7 +225,7 @@ class PostResource extends JsonResource
 
     private function listReviews(Request $request): array
     {
-        if (!$request->user()->hasPermission('post.review.opinion.list')) {
+        if (! $request->user()->hasPermission('post.review.opinion.list')) {
             return [];
         }
 
@@ -234,7 +238,7 @@ class PostResource extends JsonResource
             fn ($opinion) => $opinion['author']['uuid'] === $user->uuid
         );
 
-        if (!$userOpinion) {
+        if (! $userOpinion) {
             return [
                 $this->reviewGhostUser($user),
                 ...$opinions->all(),

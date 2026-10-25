@@ -26,6 +26,9 @@ return new class extends Migration
             if ($this->indexExists('push_subscriptions', 'push_subscriptions_user_id_endpoint_unique')) {
                 $table->dropUnique('push_subscriptions_user_id_endpoint_unique');
             }
+            if ($this->indexExists('push_subscriptions', 'push_subscriptions_user_id_index')) {
+                $table->dropIndex('push_subscriptions_user_id_index');
+            }
             $table->dropConstrainedForeignId('user_id');
         });
     }
@@ -52,10 +55,7 @@ return new class extends Migration
 
     private function indexExists(string $table, string $index): bool
     {
-        return DB::table('information_schema.STATISTICS')
-            ->where('TABLE_SCHEMA', DB::raw('DATABASE()'))
-            ->where('TABLE_NAME', $table)
-            ->where('INDEX_NAME', $index)
-            ->exists();
+        return collect(Schema::getIndexes($table))
+            ->contains(fn (array $definition): bool => $definition['name'] === $index);
     }
 };
