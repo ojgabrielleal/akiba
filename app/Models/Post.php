@@ -22,6 +22,7 @@ class Post extends Model
         'status',
         'image',
         'slug',
+        'short_code',
         'title',
         'content',
         'cover',
@@ -39,6 +40,24 @@ class Post extends Model
     protected $hidden = [
         'user_id',
     ];
+
+    protected static function booted(): void
+    {
+        static::creating(function (Post $post): void {
+            if (blank($post->short_code)) {
+                $post->short_code = static::generateShortCode();
+            }
+        });
+    }
+
+    private static function generateShortCode(): string
+    {
+        do {
+            $shortCode = Str::lower(Str::random(8));
+        } while (static::query()->where('short_code', $shortCode)->exists());
+
+        return $shortCode;
+    }
 
     protected function title(): Attribute
     {

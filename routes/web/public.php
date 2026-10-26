@@ -1,27 +1,28 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\External\OAuthAccount\OAuthAccountCallbackController;
 
 // Public controllers
-use App\Http\Controllers\Api\External\OAuthAccount\OAuthAccountCallbackController;
 use App\Http\Controllers\Api\External\OAuthAccount\OAuthAccountLogoutController;
 use App\Http\Controllers\Api\External\OAuthAccount\OAuthAccountRedirectController;
-use App\Http\Controllers\Public\EditorialController;
 use App\Http\Controllers\Public\AuthController;
 use App\Http\Controllers\Public\BadgeAssignmentController;
-use App\Http\Controllers\Public\PresenceController;
 use App\Http\Controllers\Public\ContactController;
 use App\Http\Controllers\Public\EasterEggController;
+use App\Http\Controllers\Public\EditorialController;
 use App\Http\Controllers\Public\HomeController;
 use App\Http\Controllers\Public\MediaController;
 use App\Http\Controllers\Public\PlayerController;
-use App\Http\Controllers\Public\PostSocialImageController;
 use App\Http\Controllers\Public\PodcastController;
+use App\Http\Controllers\Public\PostShortLinkController;
+use App\Http\Controllers\Public\PostSocialImageController;
+use App\Http\Controllers\Public\PresenceController;
 use App\Http\Controllers\Public\PushNotificationController;
 use App\Http\Controllers\Public\RadioController;
 use App\Http\Controllers\Public\ReadController;
 use App\Http\Controllers\Public\SearchController;
 use App\Http\Controllers\Public\TeamController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -59,6 +60,10 @@ Route::get('/home/content-version', [HomeController::class, 'contentVersion'])
 
 Route::get('/social/post/{post:uuid}.jpg', PostSocialImageController::class)
     ->name('post.social-image');
+
+Route::get('/l/{post:short_code}', PostShortLinkController::class)
+    ->where('post', '[a-z0-9]{8}')
+    ->name('post.short');
 
 Route::post('/easter-eggs/{easterEgg}/unlock', [EasterEggController::class, 'unlock'])
     ->middleware('oauth.resolve')
@@ -211,4 +216,3 @@ Route::middleware(['oauth.resolve', 'inertia'])->group(function () {
     Route::post('member-logout', [HomeController::class, 'logoutMemberProfile'])
         ->name('member.profile.logout');
 });
-        

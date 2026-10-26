@@ -182,9 +182,9 @@ class SocialPublicationScheduleService
     {
         return implode("\n\n", [
             $post->social['text'] ?? $post->title,
-            'Leia em: '.$this->postUrl($post),
-            'Venha para a nossa comunidade do Discord, converse com gente que te entende.',
-            'Entre em: https://discord.akiba.com.br',
+            "Leia a matéria completa em:\n".$this->shortPostUrl($post),
+            '---',
+            'Venha para a nossa comunidade do Discord, converse com gente que te entende. https://discord.akiba.com.br',
         ]);
     }
 
@@ -205,6 +205,13 @@ class SocialPublicationScheduleService
             'event' => route('event.read', $post->slug),
             default => route('post.read', $post->slug),
         };
+    }
+
+    private function shortPostUrl(Post $post): string
+    {
+        return filled($post->short_code)
+            ? route('post.short', $post->short_code)
+            : $this->postUrl($post);
     }
 
     private function deleteArtworks(array $artworks): void
