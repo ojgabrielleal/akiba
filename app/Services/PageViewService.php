@@ -27,6 +27,7 @@ class PageViewService
             'actor_id' => $actor?->getKey(),
             'ip_address' => $request->ip(),
             ...$this->ipLocation->find($request->ip()),
+            ...$this->trafficAttribution($request),
             'page_name' => $pageName,
             'page_url' => $request->url(),
         ]);
@@ -49,6 +50,7 @@ class PageViewService
             'actor_id' => $actor?->getKey(),
             'ip_address' => $request->ip(),
             ...$location,
+            ...$this->trafficAttribution($request),
             'page_name' => $viewable->title ?? null,
             'page_url' => $request->fullUrl(),
         ]));
@@ -112,6 +114,19 @@ class PageViewService
             ])
             ->all();
 
+        $sources = (clone $baseQuery)
+            ->select('traffic_source', DB::raw('COUNT(*) as views'))
+            ->groupBy('traffic_source')
+            ->orderByDesc('views')
+            ->limit(20)
+            ->get()
+            ->map(fn (PageView $view): array => [
+                'source' => $view->traffic_source ?: 'direct',
+                'label' => $this->trafficSourceLabel($view->traffic_source ?: 'direct'),
+                'views' => (int) $view->views,
+            ])
+            ->all();
+
         $viewers = $visitorType !== 'anonymous'
             ? (clone $baseQuery)
                 ->whereNotNull('actor_id')
@@ -153,8 +168,105 @@ class PageViewService
             'unknown_views' => $totalViews - $locatedViews,
             'countries' => $countries,
             'cities' => $cities,
+            'sources' => $sources,
             'viewers' => $viewers,
         ];
+    }
+
+    private function trafficAttribution(Request $request): array
+    {
+        $utmSource = $this->limitedString($request->query('utm_source'));
+        $utmMedium = $this->limitedString($request->query('utm_medium'));
+        $utmCampaign = $this->limitedString($request->query('utm_campaign'));
+        $referrerUrl = $this->limitedString($request->headers->get('referer'), 2048);
+        $referrerHost = $referrerUrl
+            ? strtolower((string) parse_url($referrerUrl, PHP_URL_HOST))
+            : null;
+
+        if ($referrerHost) {
+            $referrerHost = preg_replace('/^(www\.|m\.)/i', '', $referrerHost);
+        }
+
+        $source = $utmSource
+            ? $this->normalizeTrafficSource($utmSource)
+            : $this->sourceFromReferrer($referrerHost, strtolower($request->getHost()));
+
+        return [
+            'traffic_source' => $source,
+            'referrer_host' => $referrerHost ?: null,
+            'referrer_url' => $referrerUrl,
+            'utm_source' => $utmSource,
+            'utm_medium' => $utmMedium,
+            'utm_campaign' => $utmCampaign,
+        ];
+    }
+
+    private function sourceFromReferrer(?string $referrerHost, string $siteHost): string
+    {
+        if (! $referrerHost) {
+            return 'direct';
+        }
+
+        $siteHost = preg_replace('/^(www\.|m\.)/i', '', $siteHost);
+
+        if ($referrerHost === $siteHost) {
+            return 'internal';
+        }
+
+        foreach ([
+            'google' => ['google.'],
+            'bing' => ['bing.com'],
+            'duckduckgo' => ['duckduckgo.com'],
+            'yahoo' => ['search.yahoo.', 'yahoo.com'],
+            'instagram' => ['instagram.com'],
+            'facebook' => ['facebook.com', 'fb.com'],
+            'x' => ['t.co', 'twitter.com', 'x.com'],
+            'youtube' => ['youtube.com', 'youtu.be'],
+        ] as $source => $domains) {
+            if (collect($domains)->contains(fn (string $domain) => str_contains($referrerHost, $domain))) {
+                return $source;
+            }
+        }
+
+        return mb_substr($referrerHost, 0, 120);
+    }
+
+    private function normalizeTrafficSource(string $source): string
+    {
+        $source = strtolower(trim($source));
+
+        return match ($source) {
+            'ig' => 'instagram',
+            'fb', 'meta' => 'facebook',
+            'twitter' => 'x',
+            default => mb_substr($source, 0, 120),
+        };
+    }
+
+    private function trafficSourceLabel(string $source): string
+    {
+        return match ($source) {
+            'direct' => 'Acesso direto',
+            'internal' => 'Navegação interna',
+            'google' => 'Google',
+            'bing' => 'Bing',
+            'duckduckgo' => 'DuckDuckGo',
+            'yahoo' => 'Yahoo',
+            'instagram' => 'Instagram',
+            'facebook' => 'Facebook',
+            'x' => 'X / Twitter',
+            'youtube' => 'YouTube',
+            default => $source,
+        };
+    }
+
+    private function limitedString(mixed $value, int $limit = 255): ?string
+    {
+        if (! is_string($value) || trim($value) === '') {
+            return null;
+        }
+
+        return mb_substr(trim($value), 0, $limit);
     }
 
     public function pageAccessReport(array $filters = []): LengthAwarePaginator

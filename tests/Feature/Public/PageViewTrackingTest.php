@@ -33,6 +33,23 @@ class PageViewTrackingTest extends TestCase
         $this->assertDatabaseCount('page_views', 0);
     }
 
+    public function test_it_stores_the_traffic_source_and_campaign_snapshot(): void
+    {
+        $this
+            ->withHeader('Referer', 'https://www.google.com/search?q=akiba')
+            ->get('/entrar?utm_source=instagram&utm_medium=social&utm_campaign=lancamento')
+            ->assertOk();
+
+        $view = PageView::query()->sole();
+
+        $this->assertSame('instagram', $view->traffic_source);
+        $this->assertSame('google.com', $view->referrer_host);
+        $this->assertSame('https://www.google.com/search?q=akiba', $view->referrer_url);
+        $this->assertSame('instagram', $view->utm_source);
+        $this->assertSame('social', $view->utm_medium);
+        $this->assertSame('lancamento', $view->utm_campaign);
+    }
+
     public function test_it_stores_the_ip_location_snapshot_on_the_view(): void
     {
         Http::fake([

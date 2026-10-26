@@ -30,6 +30,7 @@
     $: countries = Array.isArray(geography?.countries) ? geography.countries : [];
     $: cities = Array.isArray(geography?.cities) ? geography.cities : [];
     $: viewers = Array.isArray(geography?.viewers) ? geography.viewers : [];
+    $: sources = Array.isArray(geography?.sources) ? geography.sources : [];
     $: locatedViews = Number(geography?.located_views ?? 0);
     $: totalViews = Number(geography?.total_views ?? 0);
     $: coverage = totalViews > 0 ? locatedViews / totalViews : 0;
@@ -54,6 +55,7 @@
             views: Number(viewer.views ?? 0),
         }));
     $: rankingMaximum = Math.max(...ranking.map((item) => item.views), 1);
+    $: sourceMaximum = Math.max(...sources.map((item) => Number(item.views ?? 0)), 1);
     $: if (chart && features.length) updateChart(countries);
     $: if (canvas && !chart && !chartInitializing) initializeChart();
     $: if (!canvas && chart) {
@@ -124,7 +126,7 @@
                 import("chart.js"),
                 import("chartjs-chart-geo"),
                 import("topojson-client"),
-                import("world-atlas/countries-50m.json"),
+                import("world-atlas/countries-110m.json"),
             ]);
             const atlas = atlasModule.default ?? atlasModule;
 
@@ -321,4 +323,26 @@
             description="O mapa aparecerá quando novas visualizações com IP público forem registradas."
         />
     {/if}
+
+    <div class="mt-6">
+        <h3 class="mb-3 font-noto-sans text-base font-black uppercase italic text-orange-amber">Origem do tráfego</h3>
+        {#if sources.length}
+            <ol class="grid gap-x-6 md:grid-cols-2">
+                {#each sources as source, index (source.source)}
+                    <li class="grid grid-cols-[1.75rem_minmax(0,1fr)_auto] items-center gap-2 border-b border-suspense-aurora/15 py-3">
+                        <span class="text-xs font-black tabular-nums text-suspense-aurora/45">{index + 1}</span>
+                        <div class="min-w-0">
+                            <span class="block truncate text-sm font-bold text-suspense-aurora" title={source.label}>{source.label}</span>
+                            <div class="mt-1.5 h-1.5 overflow-hidden rounded-full bg-blue-night/65">
+                                <div class="h-full rounded-full bg-orange-amber" style={`width: ${Math.max(4, (Number(source.views ?? 0) / sourceMaximum) * 100)}%`}></div>
+                            </div>
+                        </div>
+                        <strong class="text-sm font-black tabular-nums text-orange-amber">{number.format(source.views ?? 0)}</strong>
+                    </li>
+                {/each}
+            </ol>
+        {:else}
+            <p class="text-sm text-suspense-aurora/60">Nenhuma origem registrada neste período.</p>
+        {/if}
+    </div>
 </Section>

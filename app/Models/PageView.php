@@ -22,6 +22,12 @@ class PageView extends Model
         'longitude',
         'location_accuracy_radius',
         'timezone',
+        'traffic_source',
+        'referrer_host',
+        'referrer_url',
+        'utm_source',
+        'utm_medium',
+        'utm_campaign',
         'page_name',
         'page_url',
     ];

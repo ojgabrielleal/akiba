@@ -46,15 +46,10 @@ export default defineConfig(() => {
             svelte(svelteConfig),
         ],
         build: {
-            rolldownOptions: {
-                checks: {
-                    pluginTimings: false,
-                },
-            },
             rollupOptions: {
                 output: {
                     manualChunks(id) {
-                        if (id.includes('node_modules/chart.js')) {
+                        if (/node_modules\/(?:chart\.js|chartjs-chart-geo|@kurkle\/color|d3-|internmap|topojson-client)/.test(id)) {
                             return 'chart';
                         }
 
