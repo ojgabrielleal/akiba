@@ -3,6 +3,7 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#0091ff">
+    <meta name="google-adsense-account" content="ca-pub-8675050263618388">
     <meta name="application-name" content="Rede Akiba">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">

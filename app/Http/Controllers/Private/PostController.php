@@ -153,7 +153,11 @@ class PostController extends Controller
                 'references',
                 'author',
                 'reviews.author',
-                'comments' => fn ($query) => $query->with('author')->latest()->limit(20),
+                'comments' => fn ($query) => $query
+                    ->whereNull('parent_id')
+                    ->with(['author', 'replies.author'])
+                    ->latest()
+                    ->limit(20),
             ])->loadCount('comments')
         )->format('detail');
     }

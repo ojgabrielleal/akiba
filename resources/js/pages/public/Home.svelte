@@ -108,11 +108,20 @@
         <div class="fixed inset-x-4 top-24 z-40 flex justify-center pointer-events-none" role="status" aria-live="polite">
             <button
                 type="button"
-                class={`pointer-events-auto rounded-lg bg-orange-citric px-5 py-3 font-semibold text-blue-night shadow-lg hover:bg-orange-citric/90 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orange-citric disabled:opacity-70 ${publicAnimations.buttonInteractive}`}
+                class={`pointer-events-auto flex size-11 items-center justify-center rounded-full bg-orange-citric text-blue-night shadow-lg hover:bg-orange-citric/90 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orange-citric disabled:opacity-70 ${publicAnimations.iconButtonInteractive}`}
                 disabled={refreshing}
                 on:click={refreshContent}
+                aria-label={refreshing ? "Atualizando conteúdo da home" : refreshError ? "Não foi possível atualizar. Tentar novamente" : "Atualizar novos conteúdos da home"}
+                title={refreshError ? "Não foi possível atualizar. Tente novamente." : "Novos conteúdos disponíveis"}
             >
-                {refreshing ? "Atualizando…" : refreshError ? "Não foi possível atualizar — tentar novamente" : "Há novidades na home — atualizar"}
+                {#if refreshing}
+                    <span class="size-5 animate-spin rounded-full border-2 border-current border-t-transparent motion-reduce:animate-none" aria-hidden="true"></span>
+                {:else}
+                    <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M20 11a8.1 8.1 0 0 0-15.5-2M4 4v5h5" />
+                        <path d="M4 13a8.1 8.1 0 0 0 15.5 2M20 20v-5h-5" />
+                    </svg>
+                {/if}
             </button>
         </div>
     {/if}

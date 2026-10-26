@@ -15,6 +15,7 @@ use App\Models\PostSocialPublication;
 use App\Models\PostSocialPublicationResult;
 use DateTimeImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class PublishPostSocialChannelTest extends TestCase
@@ -23,6 +24,9 @@ class PublishPostSocialChannelTest extends TestCase
 
     public function test_it_publishes_one_channel_and_preserves_the_audit_result(): void
     {
+        Storage::fake('public');
+        Storage::disk('public')->put('social-artworks/post/publication/feed.jpg', 'image');
+
         $result = $this->pendingResult('instagram');
         $publisher = new SuccessfulPublisherFake;
         $job = new PublishPostSocialChannel($result->id);
@@ -43,10 +47,14 @@ class PublishPostSocialChannelTest extends TestCase
             $publisher->publication?->idempotencyKey,
         );
         $this->assertSame(PublicationPlacement::Feed, $publisher->publication?->placement);
+        Storage::disk('public')->assertMissing('social-artworks/post/publication/feed.jpg');
     }
 
     public function test_a_definitive_failure_marks_only_that_channel_as_failed_without_throwing(): void
     {
+        Storage::fake('public');
+        Storage::disk('public')->put('social-artworks/post/publication/feed.jpg', 'image');
+
         $result = $this->pendingResult('instagram');
         $job = new PublishPostSocialChannel($result->id);
 
@@ -58,6 +66,7 @@ class PublishPostSocialChannelTest extends TestCase
         $this->assertSame(1, $result->attempts);
         $this->assertSame('Meta Graph API request failed (permission).', $result->error);
         $this->assertSame('published', $result->publication->post->status);
+        Storage::disk('public')->assertExists('social-artworks/post/publication/feed.jpg');
     }
 
     public function test_a_recoverable_failure_is_rethrown_for_the_queue_and_fails_after_final_attempt(): void
@@ -93,13 +102,13 @@ class PublishPostSocialChannelTest extends TestCase
         $publication = PostSocialPublication::factory()->for($post)->create([
             'caption' => 'Nova matéria',
             'hashtags' => ['Akiba', 'Anime'],
-            'artwork_path' => 'https://akiba.test/social/test-image.jpg',
+            'artwork_path' => 'https://akiba.test/storage/social-artworks/post/publication/feed.jpg',
         ]);
 
         return PostSocialPublicationResult::factory()->for($publication, 'publication')->create([
             'channel' => $channel,
             'placement' => 'feed',
-            'artwork_path' => 'https://akiba.test/social/test-image.jpg',
+            'artwork_path' => 'https://akiba.test/storage/social-artworks/post/publication/feed.jpg',
             'status' => PostSocialPublicationResult::STATUS_PENDING,
         ]);
     }

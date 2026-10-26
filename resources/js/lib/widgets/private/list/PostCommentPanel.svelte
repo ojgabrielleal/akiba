@@ -62,8 +62,7 @@
 </script>
 
 <div class="overflow-hidden rounded-md bg-suspense-aurora">
-    <div class="flex items-center justify-between gap-3 border-b border-blue-marinho/10 px-3.5 py-3 sm:px-4">
-        <p class="text-xs font-black uppercase italic text-orange-citric">Comentários</p>
+    <div class="flex items-center justify-end border-b border-blue-marinho/10 px-3.5 py-3 sm:px-4">
         <span class="rounded-full bg-blue-marinho/8 px-3 py-1 text-[0.68rem] font-black uppercase italic text-blue-marinho/70">{commentLabel}</span>
     </div>
     {#if comments.length}

@@ -16,6 +16,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Storage;
 use Throwable;
 
 class PublishPostSocialChannel implements ShouldQueue
@@ -99,6 +100,10 @@ class PublishPostSocialChannel implements ShouldQueue
                 'error' => 'Unexpected social publication failure.',
             ]);
         }
+
+        if ($result->status === PostSocialPublicationResult::STATUS_PUBLISHED) {
+            $this->deletePublishedArtwork($result->artwork_path);
+        }
     }
 
     public function failed(?Throwable $exception): void
@@ -121,5 +126,21 @@ class PublishPostSocialChannel implements ShouldQueue
             'event' => route('event.read', $post->slug),
             default => route('post.read', $post->slug),
         };
+    }
+
+    private function deletePublishedArtwork(?string $artworkUrl): void
+    {
+        if (blank($artworkUrl)) {
+            return;
+        }
+
+        $urlPath = parse_url($artworkUrl, PHP_URL_PATH);
+        $storagePrefix = '/storage/social-artworks/';
+
+        if (! is_string($urlPath) || ! str_starts_with($urlPath, $storagePrefix)) {
+            return;
+        }
+
+        Storage::disk('public')->delete(substr($urlPath, strlen('/storage/')));
     }
 }

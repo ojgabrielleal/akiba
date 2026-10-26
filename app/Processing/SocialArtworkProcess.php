@@ -551,13 +551,13 @@ class SocialArtworkProcess
         int $width,
         int $height,
     ): void {
-        $image->fill('#000036');
+        $image->fill('#000014');
         $image->drawPolygon(fn (PolygonFactory $polygon) => $polygon
             ->point(0, 0)
             ->point(720, 0)
             ->point(460, 1350)
             ->point(0, 1350)
-            ->background('#18005b'));
+            ->background('#000036'));
         $image->drawPolygon(fn (PolygonFactory $polygon) => $polygon
             ->point(720, 0)
             ->point($width, 0)
@@ -571,7 +571,7 @@ class SocialArtworkProcess
             ->point($width, 1110)
             ->point(540, 890)
             ->point(0, 1060)
-            ->background('#000014'));
+            ->background('#0059c0'));
         $image->place($this->halftonePattern($width, $height, '#0091ff'));
 
         $logo = $this->manager
@@ -579,11 +579,11 @@ class SocialArtworkProcess
             ->scaleDown(width: 320, height: 120);
         $image->drawRectangle(390, 100, fn (RectangleFactory $rectangle) => $rectangle
             ->size(300, 88)
-            ->background('#ed3237'));
+            ->background('#ffaa35'));
         $image->text('NO AR', intdiv($width, 2), 144, fn (FontFactory $font) => $this->font(
             $font,
             44,
-            '#fffaf3',
+            '#000036',
         )->align('center')->valign('middle'));
 
         $portraitBorder = $this->circularImage(
