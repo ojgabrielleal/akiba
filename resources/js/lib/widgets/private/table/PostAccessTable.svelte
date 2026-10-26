@@ -25,16 +25,6 @@
     $: pageName = activeSection === "podcasts" ? "podcasts_page" : "pages_page";
     $: pageLabel = activeSection === "podcasts" ? "podcast" : "página";
 
-    function shouldShowKind(item) {
-        const normalize = (value) => String(value ?? "")
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")
-            .trim()
-            .toLocaleLowerCase("pt-BR");
-
-        return item.kind && normalize(item.kind) !== normalize(item.title);
-    }
-
     function applyFilters(event) {
         const params = new URLSearchParams(window.location.search);
         const { name, value } = event.currentTarget;
@@ -199,9 +189,6 @@
                                     <a href={item.url} target="_blank" rel="noopener noreferrer" class="inline-block break-words font-normal leading-snug text-suspense-aurora transition duration-300 ease-out hover:-translate-y-0.5 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-orange-citric motion-reduce:transform-none motion-reduce:transition-none">{item.title}<span class="sr-only"> (abre em nova aba)</span></a>
                                 {:else}
                                     <span class="break-words font-normal leading-snug">{item.title}</span>
-                                {/if}
-                                {#if shouldShowKind(item)}
-                                    <span class="mt-1 block text-xs font-extrabold uppercase italic text-orange-amber">{item.kind}</span>
                                 {/if}
                             </div>
                         </td>
