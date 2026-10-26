@@ -126,6 +126,9 @@ class UpdatePostRequest extends LoggedWebRequest
     {
         $post = $this->route('post');
         $requiredUnlessDraft = $this->requiredUnlessDraft();
+        $socialRules = ! $this->has('social') && is_array($post?->social)
+            ? []
+            : $this->socialRules();
 
         return [
             'module' => 'required|in:post,review,event',
@@ -163,7 +166,7 @@ class UpdatePostRequest extends LoggedWebRequest
                 ? 'exclude_unless:module,review|nullable|date'
                 : 'exclude_unless:module,review|required_if:module,review|date',
             'metadata.sinopse' => [$this->isDraft() ? 'exclude_unless:module,review' : 'exclude_unless:module,review', $this->isDraft() ? 'nullable' : 'required_if:module,review', 'string', new RespectfulContent],
-            ...$this->socialRules(),
+            ...$socialRules,
         ];
     }
 

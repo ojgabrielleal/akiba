@@ -12,6 +12,11 @@ Schedule::command('programs:start')
     ->everyMinute()
     ->withoutOverlapping();
 
+Schedule::command('queue:work --queue=default --stop-when-empty --tries=4 --timeout=120')
+    ->everyMinute()
+    ->withoutOverlapping(5)
+    ->runInBackground();
+
 Schedule::command('audience:collect')
     ->everyTenMinutes()
     ->withoutOverlapping();

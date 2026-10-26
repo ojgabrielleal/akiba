@@ -5,6 +5,7 @@ export function createSocialPostSubmission({
     resolveUrl,
     buildPayload,
     shouldReset = () => false,
+    hasPersistedSocial = () => false,
 }) {
     const pending = writable(false);
 
@@ -18,6 +19,11 @@ export function createSocialPostSubmission({
         const status = event.submitter?.value;
         if (!status) return;
 
+        if (hasPersistedSocial()) {
+            send(status, null, true);
+            return;
+        }
+
         if (status === "draft") {
             send(status);
             return;
@@ -26,11 +32,19 @@ export function createSocialPostSubmission({
         modal.open(status);
     }
 
-    function send(status, modal = null) {
+    function send(status, modal = null, preserveSocial = false) {
         pending.set(true);
 
         get(form)
-            .transform((data) => buildPayload(data, status))
+            .transform((data) => {
+                const payload = buildPayload(data, status);
+
+                if (!preserveSocial) return payload;
+
+                const { social, ...payloadWithoutSocial } = payload;
+
+                return payloadWithoutSocial;
+            })
             .post(resolveUrl(), {
                 preserveState: true,
                 forceFormData: true,
@@ -39,6 +53,17 @@ export function createSocialPostSubmission({
 
                     if (shouldReset()) {
                         get(form).reset();
+                    }
+                },
+                onError: (errors) => {
+                    const hasPostFormError = Object.keys(errors ?? {}).some((key) => (
+                        key !== "social"
+                        && !key.startsWith("social.")
+                        && !key.startsWith("social[")
+                    ));
+
+                    if (hasPostFormError) {
+                        modal?.close();
                     }
                 },
                 onFinish: () => pending.set(false),

@@ -31,7 +31,7 @@ class SocialArtworkProcess
         private ?string $brandLogoPath = null,
     ) {
         $this->manager ??= new ImageManager(new Driver);
-        $this->fontPath ??= resource_path('fonts/DejaVuSans-Bold.ttf');
+        $this->fontPath ??= resource_path('fonts/NotoSans-ExtraBold.ttf');
         $this->brandLogoPath ??= public_path('img/brand/logo.webp');
     }
 
@@ -81,9 +81,7 @@ class SocialArtworkProcess
 
         $image = $this->manager->create($width, $height)->fill('#000014');
 
-        if ($template === 'instagram-feed') {
-            $this->drawInstagramEditorialArtwork($image, $data, $width, $height);
-        } elseif (str_starts_with($template, 'instagram-live-')) {
+        if (str_starts_with($template, 'instagram-live-')) {
             $this->drawLiveArtwork($image, $data, $template, $width, $height);
         } else {
             $cover = $this->readImage($data['cover'] ?? null, public_path('img/placeholders/placeholder.webp'))
@@ -238,6 +236,34 @@ class SocialArtworkProcess
         return $this->manager->read($contents);
     }
 
+    private function halftonePattern(int $width, int $height, string $color): ImageInterface
+    {
+        $pattern = imagecreatetruecolor($width, $height);
+        imagealphablending($pattern, false);
+        imagesavealpha($pattern, true);
+        $transparent = imagecolorallocatealpha($pattern, 0, 0, 0, 127);
+        imagefill($pattern, 0, 0, $transparent);
+        [$red, $green, $blue] = sscanf(ltrim($color, '#'), '%02x%02x%02x');
+        $dot = imagecolorallocatealpha($pattern, $red, $green, $blue, 88);
+        $spacing = 30;
+
+        for ($y = 0; $y < $height; $y += $spacing) {
+            for ($x = 0; $x < $width; $x += $spacing) {
+                $step = (($x / $spacing) + ($y / $spacing)) % 3;
+                $diameter = 5 + ((int) $step * 2);
+                $offset = (($y / $spacing) % 2) * intdiv($spacing, 2);
+                imagefilledellipse($pattern, $x + $offset, $y, $diameter, $diameter, $dot);
+            }
+        }
+
+        ob_start();
+        imagepng($pattern);
+        $contents = (string) ob_get_clean();
+        imagedestroy($pattern);
+
+        return $this->manager->read($contents);
+    }
+
     private function italicText(string $text, int $size, string $color): ImageInterface
     {
         $font = $this->requiredAsset($this->fontPath, 'font');
@@ -317,12 +343,13 @@ class SocialArtworkProcess
 
     private function drawOverlay(ImageInterface $image, int $width, int $height, string $template): void
     {
-        $baseOpacity = $template === 'discord-post' ? .10 : .26;
+        $usesDiscordComposition = in_array($template, ['discord-post', 'instagram-feed'], true);
+        $baseOpacity = $usesDiscordComposition ? .10 : .26;
         $image->drawRectangle(0, 0, fn (RectangleFactory $rectangle) => $rectangle
             ->size($width, $height)
             ->background(sprintf('rgba(0, 0, 20, %.2f)', $baseOpacity)));
 
-        if ($template === 'discord-post') {
+        if ($usesDiscordComposition) {
             $gradientTop = (int) ($height * .36);
             $gradientHeight = (int) ($height * .39);
 
@@ -348,7 +375,7 @@ class SocialArtworkProcess
 
     private function drawFrame(ImageInterface $image, int $width, int $height, string $template): void
     {
-        if ($template === 'discord-post') {
+        if (in_array($template, ['discord-post', 'instagram-feed'], true)) {
             return;
         }
 
@@ -364,15 +391,16 @@ class SocialArtworkProcess
     {
         $isStory = str_contains($template, 'story');
         $isDiscord = $template === 'discord-post';
+        $usesDiscordComposition = $isDiscord || $template === 'instagram-feed';
         $logo = $this->manager
             ->read($this->requiredAsset($this->brandLogoPath, 'brand logo'))
-            ->scaleDown(width: $isStory ? 260 : ($isDiscord ? 210 : 230), height: 90);
+            ->scaleDown(width: $isStory ? 260 : 230, height: 90);
 
         $image->place(
             $logo,
             'top-left',
-            $isDiscord ? $width - 42 - $logo->width() : 72,
-            $isStory ? 250 : ($isDiscord ? $height - 36 - $logo->height() : 72),
+            $usesDiscordComposition ? $width - 42 - $logo->width() : 72,
+            $isStory ? 250 : ($usesDiscordComposition ? $height - 36 - $logo->height() : 72),
         );
     }
 
@@ -385,32 +413,60 @@ class SocialArtworkProcess
     ): void {
         $isStory = $template === 'instagram-story';
         $isDiscord = $template === 'discord-post';
-        $left = $isStory ? 80 : ($isDiscord ? 48 : 72);
+        $isInstagramFeed = $template === 'instagram-feed';
+        $usesDiscordComposition = $isDiscord || $isInstagramFeed;
+        $left = $isStory ? 80 : ($isDiscord ? 48 : 54);
         $bottom = $isStory ? 280 : ($isDiscord ? 48 : 82);
         $titleSize = $isStory ? 66 : ($isDiscord ? 44 : 64);
         $maxTextWidth = $width - ($left * 2);
         $footerY = $height - $bottom;
-        $titleY = $isDiscord ? 455 : $footerY - ($isStory ? 470 : 390);
+        $titleY = $isDiscord ? 455 : ($isInstagramFeed ? 900 : $footerY - ($isStory ? 470 : 390));
         $category = Str::upper($data['category'] ?? 'Notícia');
         $date = Str::upper($data['published_at'] ?? now('America/Sao_Paulo')->format('d M Y'));
 
-        $metadata = $isDiscord ? $date : "{$category}  ·  {$date}";
-        $image->text($metadata, $left, $titleY - ($isDiscord ? 32 : 54), fn (FontFactory $font) => $this->font(
+        $metadata = $usesDiscordComposition ? $date : "{$category}  ·  {$date}";
+        $image->text($metadata, $left, $titleY - ($usesDiscordComposition ? 40 : 54), fn (FontFactory $font) => $this->font(
             $font,
-            $isDiscord ? 19 : 24,
+            $isDiscord ? 19 : ($isInstagramFeed ? 23 : 24),
             '#ffaa35',
         ));
 
         $title = $data['titles'][$template] ?? $data['title'] ?? 'Conteúdo novo na Rede Akiba';
-        $title = implode("\n", $this->wrap($title, $titleSize, $maxTextWidth, $isDiscord ? 3 : 4));
+        $maxTitleLines = $isInstagramFeed ? 4 : ($isDiscord ? 3 : 4);
+        $title = implode("\n", $this->wrap($title, $titleSize, $maxTextWidth, $maxTitleLines));
         $image->text($title, $left, $titleY, fn (FontFactory $font) => $this->font(
             $font,
             $titleSize,
             '#fffaf3',
-            $isDiscord ? 1.50 : 1.16,
+            $isDiscord ? 1.50 : ($isInstagramFeed ? 1.55 : 1.16),
         ));
 
         if ($isDiscord) {
+            return;
+        }
+
+        if ($isInstagramFeed) {
+            $avatar = $this->readImage($data['author_avatar'] ?? null, public_path('img/placeholders/avatar.webp'))
+                ->cover(75, 75, 'top')
+                ->crop(60, 60, 7, 0);
+            $avatar = $this->circularImage($avatar, 60);
+            $authorY = $height - 110;
+            $image->place($avatar, 'top-left', $left, $authorY);
+            $author = $data['author'] ?? 'Rede Akiba';
+            $authorX = $left + 78;
+            $image->text(
+                $author,
+                $authorX,
+                $authorY + 20,
+                fn (FontFactory $font) => $this->font($font, 22, '#fffaf3')->valign('middle'),
+            );
+            $image->text(
+                'Redação Akiba',
+                $authorX,
+                $authorY + 45,
+                fn (FontFactory $font) => $this->font($font, 15, '#ffaa35')->valign('middle'),
+            );
+
             return;
         }
 
@@ -495,97 +551,84 @@ class SocialArtworkProcess
         int $width,
         int $height,
     ): void {
-        $image->fill('#001456');
+        $image->fill('#000036');
         $image->drawPolygon(fn (PolygonFactory $polygon) => $polygon
-            ->point(610, 0)
+            ->point(0, 0)
+            ->point(720, 0)
+            ->point(460, 1350)
+            ->point(0, 1350)
+            ->background('#18005b'));
+        $image->drawPolygon(fn (PolygonFactory $polygon) => $polygon
+            ->point(720, 0)
             ->point($width, 0)
-            ->point($width, 910)
-            ->point(850, 1010)
-            ->point(690, 680)
-            ->background('#002b8f'));
-        $image->drawPolygon(fn (PolygonFactory $polygon) => $polygon
-            ->point(0, 1130)
-            ->point(760, 1030)
-            ->point($width, 1190)
             ->point($width, $height)
-            ->point(0, $height)
-            ->background('#000f42'));
-        $image->drawRectangle(0, 0, fn (RectangleFactory $rectangle) => $rectangle
-            ->size($width, 16)
-            ->background('#ffaa35'));
-        $image->drawRectangle(0, 0, fn (RectangleFactory $rectangle) => $rectangle
-            ->size(26, $height)
-            ->background('#0091ff'));
+            ->point(460, $height)
+            ->background('#002080'));
+        $image->drawPolygon(fn (PolygonFactory $polygon) => $polygon
+            ->point(0, 925)
+            ->point(540, 760)
+            ->point($width, 980)
+            ->point($width, 1110)
+            ->point(540, 890)
+            ->point(0, 1060)
+            ->background('#000014'));
+        $image->place($this->halftonePattern($width, $height, '#0091ff'));
 
         $logo = $this->manager
             ->read($this->requiredAsset($this->brandLogoPath, 'brand logo'))
-            ->scaleDown(width: 240, height: 72);
-        $image->place($logo, 'top-left', 68, 67);
-
-        $portrait = $this->readImage($live['host_avatar'] ?? null, public_path('img/placeholders/avatar.webp'))
-            ->scale(width: 500, height: 720);
-        $portraitX = 75 + intdiv(480 - $portrait->width(), 2);
-        $portraitY = 285 + intdiv(710 - $portrait->height(), 2);
-        $image->place($portrait, 'top-left', $portraitX, $portraitY);
-
-        $textX = 630;
-        $image->text('AGORA', $textX, 375, fn (FontFactory $font) => $this->font(
+            ->scaleDown(width: 320, height: 120);
+        $image->drawRectangle(390, 100, fn (RectangleFactory $rectangle) => $rectangle
+            ->size(300, 88)
+            ->background('#ed3237'));
+        $image->text('NO AR', intdiv($width, 2), 144, fn (FontFactory $font) => $this->font(
             $font,
-            68,
+            44,
             '#fffaf3',
-        ));
+        )->align('center')->valign('middle'));
 
-        $image->drawRectangle($textX, 455, fn (RectangleFactory $rectangle) => $rectangle
-            ->size(360, 108)
-            ->background('#ffaa35'));
-        $image->text('NO AR', $textX + 24, 509, fn (FontFactory $font) => $this->font(
-            $font,
-            68,
-            '#000014',
-        )->valign('middle'));
+        $portraitBorder = $this->circularImage(
+            $this->manager->create(520, 520)->fill('#000036'),
+            520,
+        );
+        $portrait = $this->readImage($live['host_avatar'] ?? null, public_path('img/placeholders/avatar.webp'))
+            ->cover(496, 496, 'center');
+        $portrait = $this->circularImage($portrait, 496);
+        $image->place($portraitBorder, 'top-left', 280, 240);
+        $image->place($portrait, 'top-left', 292, 252);
 
         $programImagePath = $this->localPath($live['program_image'] ?? null);
         $placeholderPath = public_path('img/placeholders/program.webp');
+        $hostY = 1005;
 
         if ($programImagePath !== null
             && is_file($programImagePath)
             && realpath($programImagePath) !== realpath($placeholderPath)) {
             $programLogo = $this->manager
                 ->read($programImagePath)
-                ->scaleDown(width: 360, height: 150);
-            $programLogoY = 650 + intdiv(150 - $programLogo->height(), 2);
-            $image->place($programLogo, 'top-left', $textX, $programLogoY);
+                ->scaleDown(width: 650, height: 190);
+            $programLogoX = intdiv($width - $programLogo->width(), 2);
+            $programLogoY = 800 + intdiv(190 - $programLogo->height(), 2);
+            $image->place($programLogo, 'top-left', $programLogoX, $programLogoY);
         } else {
             $program = Str::upper($live['program'] ?? 'Programa ao vivo');
-            $program = implode("\n", $this->wrap($program, 42, 360, 3));
-            $image->text($program, $textX, 650, fn (FontFactory $font) => $this->font(
+            $programLines = $this->wrap($program, 66, 850, 2);
+            $hostY = 900 + ((count($programLines) - 1) * 88);
+
+            $image->text(implode("\n", $programLines), intdiv($width, 2), 815, fn (FontFactory $font) => $this->font(
                 $font,
-                42,
+                66,
                 '#fffaf3',
-                1.55,
-            ));
+                1.34,
+            )->align('center'));
         }
 
-        $image->drawRectangle($textX, 880, fn (RectangleFactory $rectangle) => $rectangle
-            ->size(340, 3)
-            ->background('#0091ff'));
-        $image->text('NO COMANDO', $textX, 912, fn (FontFactory $font) => $this->font(
+        $image->text('DJ '.Str::upper($live['host'] ?? 'Equipe Rede Akiba'), intdiv($width, 2), $hostY, fn (FontFactory $font) => $this->font(
             $font,
-            18,
-            '#ffaa35',
-        ));
-        $image->text('DJ '.Str::upper($live['host'] ?? 'Equipe Rede Akiba'), $textX, 940, fn (FontFactory $font) => $this->font(
-            $font,
-            28,
+            38,
             '#fffaf3',
-        ));
-
-        $image->text("OUÇA EM\nAKIBA.COM.BR", intdiv($width, 2), 1215, fn (FontFactory $font) => $this->font(
-            $font,
-            30,
-            '#fffaf3',
-            1.50,
         )->align('center'));
+
+        $image->place($logo, 'top-left', intdiv($width - $logo->width(), 2), 1165);
 
     }
 

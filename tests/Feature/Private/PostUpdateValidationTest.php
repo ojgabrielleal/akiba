@@ -9,6 +9,7 @@ use App\Models\Role;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
@@ -165,6 +166,34 @@ class PostUpdateValidationTest extends TestCase
         ]);
         $response->assertSessionMissing('_old_input.metadata');
         $response->assertSessionMissing('_old_input.review');
+    }
+
+    public function test_published_post_update_preserves_social_data_without_republishing(): void
+    {
+        Queue::fake();
+        $user = $this->userWithPermissions(['post.update', 'post.list']);
+        $social = $this->social();
+        $post = Post::factory()->for($user, 'author')->create([
+            'status' => 'published',
+            'social' => $social,
+        ]);
+
+        $response = $this
+            ->actingAs($user)
+            ->from("/panel/post/{$post->uuid}")
+            ->patch("/panel/post/{$post->uuid}", [
+                'module' => 'post',
+                'status' => 'published',
+                'title' => 'Título atualizado',
+                'content' => '<p>Conteúdo atualizado</p>',
+                'image' => $post->image,
+                'cover' => $post->cover,
+                'tags' => [['name' => 'anime']],
+            ]);
+
+        $response->assertSessionHasNoErrors();
+        $this->assertSame($social, $post->refresh()->social);
+        Queue::assertNothingPushed();
     }
 
     private function userWithPermissions(array $permissionNames): User

@@ -56,6 +56,7 @@
         resolveUrl: () => post ? `/panel/post/${post.data.uuid}` : "/panel/post",
         buildPayload: (data, status) => ({ ...data, status }),
         shouldReset: () => !post,
+        hasPersistedSocial: () => Boolean(post?.data.social),
     });
     const { pending: submissionPending } = socialSubmission;
     let socialModal;

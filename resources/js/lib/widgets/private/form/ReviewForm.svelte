@@ -90,6 +90,7 @@
             };
         },
         shouldReset: () => !post,
+        hasPersistedSocial: () => Boolean(post?.data.social),
     });
     const { pending: submissionPending } = socialSubmission;
     let socialModal;
