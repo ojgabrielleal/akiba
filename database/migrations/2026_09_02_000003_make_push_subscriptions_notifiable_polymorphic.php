@@ -26,9 +26,6 @@ return new class extends Migration
             if ($this->indexExists('push_subscriptions', 'push_subscriptions_user_id_endpoint_unique')) {
                 $table->dropUnique('push_subscriptions_user_id_endpoint_unique');
             }
-            if ($this->indexExists('push_subscriptions', 'push_subscriptions_user_id_index')) {
-                $table->dropIndex('push_subscriptions_user_id_index');
-            }
             $table->dropConstrainedForeignId('user_id');
         });
     }

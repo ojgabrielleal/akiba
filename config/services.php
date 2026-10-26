@@ -44,6 +44,15 @@ return [
         'slow_response_ms' => env('AUDIENCE_SLOW_RESPONSE_MS', 1500),
     ],
 
+    'geoip' => [
+        'url' => env('GEOIP_URL', 'https://api.country.is'),
+        'connect_timeout' => env('GEOIP_CONNECT_TIMEOUT', 1),
+        'timeout' => env('GEOIP_TIMEOUT', 2),
+        'cache_days' => env('GEOIP_CACHE_DAYS', 30),
+        'failure_cache_minutes' => env('GEOIP_FAILURE_CACHE_MINUTES', 5),
+        'resolve_private_ips' => env('GEOIP_RESOLVE_PRIVATE_IPS', env('APP_ENV') === 'local'),
+    ],
+
     'discord' => [
         'publication_enabled' => env('DISCORD_PUBLICATION_ENABLED', true),
         'webhook' => env('DISCORD_LOCUTION_WEBHOOK_URL'),

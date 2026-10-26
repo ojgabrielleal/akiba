@@ -15,8 +15,21 @@ class PageView extends Model
         'viewable_type',
         'viewable_id',
         'ip_address',
+        'country_code',
+        'region_code',
+        'city',
+        'latitude',
+        'longitude',
+        'location_accuracy_radius',
+        'timezone',
         'page_name',
         'page_url',
+    ];
+
+    protected $casts = [
+        'latitude' => 'float',
+        'longitude' => 'float',
+        'location_accuracy_radius' => 'integer',
     ];
 
     protected $hidden = ['actor_type', 'actor_id', 'ip_address'];

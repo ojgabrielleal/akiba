@@ -32,6 +32,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'oauth.resolve' => \App\Http\Middleware\OAuth\ResolveOAuthAccount::class,
             'oauth' => \App\Http\Middleware\OAuth\EnsureOAuthAccountAuthenticated::class,
             'authenticated.user' => \App\Http\Middleware\Auth\ShareAuthenticatedUserMiddleware::class,
+            'page-view' => \App\Http\Middleware\TrackPublicPageView::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

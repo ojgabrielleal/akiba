@@ -19,9 +19,13 @@
         "@inertiajs/svelte": "^2.0.9",
         "@sveltejs/vite-plugin-svelte": "^7.1.2",
         "chart.js": "^4.5.1",
+        "chartjs-chart-geo": "^4.3.6",
         "dotenv": "^17.2.3",
+        "i18n-iso-countries": "^7.14.0",
         "js-cookie": "^3.0.7",
         "quill": "^2.0.2",
-        "svelte-hot-french-toast": "^2.0.0"
+        "svelte-hot-french-toast": "^2.0.0",
+        "topojson-client": "^3.1.0",
+        "world-atlas": "^2.0.2"
     }
 }

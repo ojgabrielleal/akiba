@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Private;
 
 use App\Services\AudienceService;
 use App\Services\OnairService;
+use App\Services\PageViewService;
 use App\Services\PollService;
 use App\Services\PostService;
 use App\Services\SongRequestService;
@@ -37,6 +38,7 @@ class ReportsController extends Controller
     public function __construct(
         private AudienceService $audienceFilter,
         private OnairService $onairFilter,
+        private PageViewService $pageViewService,
         private PollService $pollFilter,
         private PostService $postFilter,
         private SongRequestService $songRequestFilter,
@@ -80,6 +82,35 @@ class ReportsController extends Controller
 
         return $this->postFilter->accessReport([
             'type' => in_array($type, ['recognized', 'anonymous'], true) ? $type : 'all',
+            'period' => in_array($period, [15, 30], true) ? $period : null,
+            'search' => mb_substr(trim(request()->string('post_access_search')->toString()), 0, 200),
+            'sort' => request()->string('post_access_sort')->toString(),
+        ]);
+    }
+
+    private function indexGeography(): array
+    {
+        $periodInput = request()->input('geography_period', 30);
+        $period = $periodInput === 'today'
+            ? 'today'
+            : (is_numeric($periodInput) ? (int) $periodInput : null);
+        $pageType = request()->string('geography_page')->toString();
+
+        return $this->pageViewService->geographyReport([
+            'period' => in_array($period, ['today', 30, 90, 365], true) ? $period : null,
+            'visitor_type' => 'all',
+            'page_type' => in_array($pageType, ['pages', 'post', 'review', 'event', 'podcasts'], true)
+                ? $pageType : 'all',
+        ]);
+    }
+
+    private function indexPageAccess()
+    {
+        $type = request()->string('post_access_type')->toString();
+        $period = request()->integer('post_access_period');
+
+        return $this->pageViewService->pageAccessReport([
+            'visitor_type' => in_array($type, ['recognized', 'anonymous'], true) ? $type : 'all',
             'period' => in_array($period, [15, 30], true) ? $period : null,
             'search' => mb_substr(trim(request()->string('post_access_search')->toString()), 0, 200),
             'sort' => request()->string('post_access_sort')->toString(),
@@ -320,6 +351,8 @@ class ReportsController extends Controller
     {
         return Inertia::render($this->render, [
             'postAccess' => Inertia::defer(fn () => $this->indexPostAccess(), 'reports-posts'),
+            'pageAccess' => Inertia::defer(fn () => $this->indexPageAccess(), 'reports-posts'),
+            'geography' => Inertia::defer(fn () => $this->indexGeography(), 'reports-geography'),
             'audience' => Inertia::defer(fn () => $this->indexAudience(), 'reports-audience'),
             'audienceHistory' => Inertia::defer(fn () => $this->indexAudienceHistory(), 'reports-history'),
             'onair' => Inertia::defer(fn () => $this->indexOnair(), 'reports-history'),

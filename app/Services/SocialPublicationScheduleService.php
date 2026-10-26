@@ -182,7 +182,7 @@ class SocialPublicationScheduleService
     {
         return implode("\n\n", [
             $post->social['text'] ?? $post->title,
-            "Leia a matéria completa em:\n".$this->shortPostUrl($post),
+            "Saiba mais em:\n".$this->shortPostUrl($post),
             '---',
             'Venha para a nossa comunidade do Discord, converse com gente que te entende. https://discord.akiba.com.br',
         ]);

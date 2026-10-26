@@ -75,7 +75,7 @@ Route::middleware(['oauth.resolve', 'inertia'])->group(function () {
         ->name('player.song-request.store');
 });
 
-Route::middleware(['oauth.resolve', 'inertia'])->group(function () {
+Route::middleware(['oauth.resolve', 'inertia', 'page-view'])->group(function () {
     Route::get('/', [HomeController::class, 'render'])
         ->name('home');
 

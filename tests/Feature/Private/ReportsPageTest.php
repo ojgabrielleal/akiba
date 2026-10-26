@@ -4,6 +4,7 @@ namespace Tests\Feature\Private;
 
 use App\Models\Music;
 use App\Models\Onair;
+use App\Models\PageView;
 use App\Models\Poll;
 use App\Models\PollOption;
 use App\Models\PollVote;
@@ -142,6 +143,52 @@ class ReportsPageTest extends TestCase
                 ->has('audience')
                 ->has('onair')
                 ->has('ranking_interno')
+            );
+    }
+
+    public function test_reports_page_exposes_geographic_page_view_totals(): void
+    {
+        config(['inertia.testing.ensure_pages_exist' => false]);
+
+        PageView::factory(3)->create([
+            'country_code' => 'BR',
+            'region_code' => 'SP',
+            'city' => 'São Paulo',
+        ]);
+        PageView::factory(2)->create([
+            'country_code' => 'US',
+            'region_code' => 'CA',
+            'city' => 'Mountain View',
+        ]);
+        PageView::factory()->create([
+            'country_code' => null,
+            'region_code' => null,
+            'city' => null,
+        ]);
+        PageView::factory()->create([
+            'actor_type' => User::class,
+            'actor_id' => User::factory(),
+            'country_code' => 'JP',
+            'region_code' => '13',
+            'city' => 'Tóquio',
+        ]);
+
+        $this
+            ->actingAs($this->userWithPermissions(['report.module.view']))
+            ->get('/panel/reports?geography_period=30&geography_visitor=anonymous')
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->loadDeferredProps('reports-geography', fn ($reload) => $reload
+                    ->component('private/Reports', false)
+                    ->where('geography.total_views', 7)
+                    ->where('geography.located_views', 6)
+                    ->where('geography.unknown_views', 1)
+                    ->where('geography.visitor_type', 'all')
+                    ->where('geography.countries.0.code', 'BR')
+                    ->where('geography.countries.0.views', 3)
+                    ->where('geography.cities.0.city', 'São Paulo')
+                    ->where('geography.cities.0.views', 3)
+                )
             );
     }
 

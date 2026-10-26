@@ -512,8 +512,8 @@ class PostService
         };
 
         return Post::query()
-            ->select(['id', 'uuid', 'title', 'slug', 'status', 'is_active'])
-            ->where('module', 'post')
+            ->select(['id', 'uuid', 'title', 'slug', 'module', 'status', 'is_active'])
+            ->whereIn('module', ['post', 'review', 'event'])
             ->where('status', 'published')
             ->when($filters['search'] ?? '', fn (Builder $query, string $search) => $query
                 ->where('title', 'like', '%'.addcslashes($search, '\\%_').'%'))
@@ -557,8 +557,13 @@ class PostService
                 return [
                     'uuid' => $post->uuid,
                     'title' => $post->title,
+                    'module' => $post->module,
                     'url' => $post->is_active && $post->status === 'published'
-                        ? route('post.read', $post->slug) : null,
+                        ? route(match ($post->module) {
+                            'review' => 'review.read',
+                            'event' => 'event.read',
+                            default => 'post.read',
+                        }, $post->slug) : null,
                     'views' => (int) $post->views_count,
                     'recognized_views' => (int) $post->recognized_views,
                     'anonymous_views' => (int) $post->anonymous_views,

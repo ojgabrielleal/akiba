@@ -7,11 +7,12 @@
         AudienceCarousel,
         AudienceHistoryChart,
         InternalRankingCarousel,
+        PageViewGeographyChart,
         ProgramHistoryTable,
         PostAccessTable,
     } from "@/lib/widgets/private";
 
-    $: ({ postAccess, audience, audienceHistory, onair, ranking_interno: ranking } = $page.props);
+    $: ({ postAccess, pageAccess, geography, audience, audienceHistory, onair, ranking_interno: ranking } = $page.props);
 
     const skeletonItems = (count) => Array.from({ length: count }, (_, index) => index);
 </script>
@@ -51,14 +52,6 @@
             </Section>
         </svelte:fragment>
     </Deferred>
-    <Deferred data="postAccess">
-        <PostAccessTable posts={postAccess} />
-        <svelte:fragment slot="fallback">
-            <Section title="Acessos às postagens">
-                <div class="h-80 animate-pulse rounded-md bg-blue-ocean/55" aria-hidden="true"></div>
-            </Section>
-        </svelte:fragment>
-    </Deferred>
     <Deferred data="onair">
         <ProgramHistoryTable title="Histórico de programação" {onair} />
         <svelte:fragment slot="fallback">
@@ -68,6 +61,25 @@
                         <div class="h-20 animate-pulse rounded-md bg-blue-ocean/55" aria-hidden="true"></div>
                     {/each}
                 </div>
+            </Section>
+        </svelte:fragment>
+    </Deferred>
+    <Deferred data="geography">
+        <PageViewGeographyChart {geography} />
+        <svelte:fragment slot="fallback">
+            <Section title="Análises gerais do site">
+                <div class="grid gap-4 xl:grid-cols-[minmax(0,1.65fr)_minmax(18rem,0.85fr)]">
+                    <div class="h-80 animate-pulse rounded-md bg-blue-ocean/55 sm:h-[28rem]"></div>
+                    <div class="h-80 animate-pulse rounded-md bg-blue-ocean/55 sm:h-[28rem]"></div>
+                </div>
+            </Section>
+        </svelte:fragment>
+    </Deferred>
+    <Deferred data={["postAccess", "pageAccess"]}>
+        <PostAccessTable posts={postAccess} pages={pageAccess} />
+        <svelte:fragment slot="fallback">
+            <Section>
+                <div class="h-80 animate-pulse rounded-md bg-blue-ocean/55" aria-hidden="true"></div>
             </Section>
         </svelte:fragment>
     </Deferred>

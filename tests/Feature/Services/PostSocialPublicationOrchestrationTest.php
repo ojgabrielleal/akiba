@@ -84,7 +84,7 @@ class PostSocialPublicationOrchestrationTest extends TestCase
         $manualSchedule = $manual->socialPublicationSchedules()->firstOrFail();
         $this->assertSame(implode("\n\n", [
             'Legenda editorial para o Instagram.',
-            "Leia a matéria completa em:\n".route('post.short', $manual->short_code),
+            "Saiba mais em:\n".route('post.short', $manual->short_code),
             '---',
             'Venha para a nossa comunidade do Discord, converse com gente que te entende. https://discord.akiba.com.br',
         ]), $manualSchedule->payload['caption']);

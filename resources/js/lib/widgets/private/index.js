@@ -6,6 +6,7 @@ export { default as RoleCarousel } from "./carousel/RoleCarousel.svelte";
 
 // Charts
 export { default as AudienceHistoryChart } from "./chart/AudienceHistoryChart.svelte";
+export { default as PageViewGeographyChart } from "./chart/PageViewGeographyChart.svelte";
 
 // Lists
 export { default as TaskList } from "./list/TaskList.svelte"
