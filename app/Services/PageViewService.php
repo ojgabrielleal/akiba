@@ -56,7 +56,7 @@ class PageViewService
 
     public function geographyReport(array $filters = []): array
     {
-        $period = $filters['period'] ?? 30;
+        $period = $filters['period'] ?? 'today';
         $visitorType = $filters['visitor_type'] ?? 'all';
         $pageType = $filters['page_type'] ?? 'all';
 

@@ -33,7 +33,7 @@
     $: locatedViews = Number(geography?.located_views ?? 0);
     $: totalViews = Number(geography?.total_views ?? 0);
     $: coverage = totalViews > 0 ? locatedViews / totalViews : 0;
-    $: selectedPeriod = geography?.period ? String(geography.period) : "all";
+    $: selectedPeriod = geography?.period ? String(geography.period) : "today";
     $: ranking = activeRanking === "countries"
         ? countries.slice(0, 12).map((country) => ({
             key: country.code,
@@ -158,7 +158,13 @@
                         titleColor: "#ffb000",
                         bodyColor: "#ffffff",
                         callbacks: {
-                            title: (items) => items[0]?.label ?? "",
+                            title: (items) => {
+                                const feature = items[0]?.raw?.feature;
+
+                                return feature
+                                    ? countryName(countryCodeFromFeature(feature))
+                                    : "País desconhecido";
+                            },
                             label: (context) => `${number.format(context.raw?.value ?? 0)} acessos`,
                         },
                     },

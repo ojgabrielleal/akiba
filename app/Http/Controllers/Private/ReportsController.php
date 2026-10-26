@@ -90,7 +90,7 @@ class ReportsController extends Controller
 
     private function indexGeography(): array
     {
-        $periodInput = request()->input('geography_period', 30);
+        $periodInput = request()->input('geography_period', 'today');
         $period = $periodInput === 'today'
             ? 'today'
             : (is_numeric($periodInput) ? (int) $periodInput : null);
