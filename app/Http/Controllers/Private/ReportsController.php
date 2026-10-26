@@ -104,12 +104,13 @@ class ReportsController extends Controller
         ]);
     }
 
-    private function indexPageAccess()
+    private function indexPageAccess(string $kind = 'pages')
     {
         $type = request()->string('post_access_type')->toString();
         $period = request()->integer('post_access_period');
 
         return $this->pageViewService->pageAccessReport([
+            'kind' => $kind,
             'visitor_type' => in_array($type, ['recognized', 'anonymous'], true) ? $type : 'all',
             'period' => in_array($period, [15, 30], true) ? $period : null,
             'search' => mb_substr(trim(request()->string('post_access_search')->toString()), 0, 200),
@@ -351,7 +352,8 @@ class ReportsController extends Controller
     {
         return Inertia::render($this->render, [
             'postAccess' => Inertia::defer(fn () => $this->indexPostAccess(), 'reports-posts'),
-            'pageAccess' => Inertia::defer(fn () => $this->indexPageAccess(), 'reports-posts'),
+            'pageAccess' => Inertia::defer(fn () => $this->indexPageAccess('pages'), 'reports-posts'),
+            'podcastAccess' => Inertia::defer(fn () => $this->indexPageAccess('podcasts'), 'reports-posts'),
             'geography' => Inertia::defer(fn () => $this->indexGeography(), 'reports-geography'),
             'audience' => Inertia::defer(fn () => $this->indexAudience(), 'reports-audience'),
             'audienceHistory' => Inertia::defer(fn () => $this->indexAudienceHistory(), 'reports-history'),

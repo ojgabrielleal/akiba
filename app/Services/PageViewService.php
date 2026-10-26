@@ -274,12 +274,15 @@ class PageViewService
         $period = $filters['period'] ?? null;
         $visitorType = $filters['visitor_type'] ?? 'all';
         $search = $filters['search'] ?? '';
+        $kind = $filters['kind'] ?? 'pages';
         $podcastType = (new Podcast)->getMorphClass();
 
         return PageView::query()
-            ->where(fn ($query) => $query
-                ->whereNull('viewable_type')
-                ->orWhere('viewable_type', $podcastType))
+            ->when(
+                $kind === 'podcasts',
+                fn ($query) => $query->where('viewable_type', $podcastType),
+                fn ($query) => $query->whereNull('viewable_type'),
+            )
             ->when($period, fn ($query, int $days) => $query
                 ->where('created_at', '>=', now()->subDays($days)))
             ->when($visitorType === 'recognized', fn ($query) => $query->whereNotNull('actor_id'))
@@ -300,7 +303,7 @@ class PageViewService
                 fn ($query) => $query->orderByDesc('last_view_at'),
                 fn ($query) => $query->orderByDesc('views'),
             )
-            ->paginate(5, ['*'], 'pages_page')
+            ->paginate(5, ['*'], $kind === 'podcasts' ? 'podcasts_page' : 'pages_page')
             ->withQueryString()
             ->through(fn (PageView $view): array => [
                 'key' => hash('sha256', $view->item_type.':'.$view->item_key),

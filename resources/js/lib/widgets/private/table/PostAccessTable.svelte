@@ -6,6 +6,7 @@
 
     export let posts = null;
     export let pages = null;
+    export let podcasts = null;
 
     const number = new Intl.NumberFormat("pt-BR");
     let viewersModal;
@@ -20,6 +21,19 @@
 
     $: selectedSort = filters.get("post_access_sort") ?? "views";
     $: search = filters.get("post_access_search") ?? "";
+    $: pageItems = activeSection === "podcasts" ? podcasts : pages;
+    $: pageName = activeSection === "podcasts" ? "podcasts_page" : "pages_page";
+    $: pageLabel = activeSection === "podcasts" ? "podcast" : "página";
+
+    function shouldShowKind(item) {
+        const normalize = (value) => String(value ?? "")
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .trim()
+            .toLocaleLowerCase("pt-BR");
+
+        return item.kind && normalize(item.kind) !== normalize(item.title);
+    }
 
     function applyFilters(event) {
         const params = new URLSearchParams(window.location.search);
@@ -27,7 +41,8 @@
         value === "all" || value === "views" || !value.trim() ? params.delete(name) : params.set(name, value.trim());
         params.delete("posts_page");
         params.delete("pages_page");
-        router.get(`/panel/reports?${params.toString()}`, {}, { preserveScroll: true, preserveState: true, only: ["postAccess", "pageAccess"] });
+        params.delete("podcasts_page");
+        router.get(`/panel/reports?${params.toString()}`, {}, { preserveScroll: true, preserveState: true, only: ["postAccess", "pageAccess", "podcastAccess"] });
     }
 
     async function showViewers(post) {
@@ -49,9 +64,10 @@
 </script>
 
 <Section aria-label="Desempenho dos conteúdos e páginas">
-    <div class="mb-4 grid max-w-xl grid-cols-2 gap-2" role="tablist" aria-label="Tipo de relatório de acessos">
+    <div class="mb-4 grid max-w-3xl grid-cols-1 gap-2 sm:grid-cols-3" role="tablist" aria-label="Tipo de relatório de acessos">
         {#each [
-            { value: "content", label: "Matérias/Reviews/Eventos" },
+            { value: "content", label: "Publicações em geral" },
+            { value: "podcasts", label: "Podcasts" },
             { value: "pages", label: "Páginas" },
         ] as tab}
             <button
@@ -73,13 +89,15 @@
     <p class="mb-4 text-sm text-suspense-aurora/70">
         {activeSection === "content"
             ? "Acompanhe visualizações e interações dos conteúdos publicados."
-            : "Acompanhe as visualizações das páginas públicas e dos podcasts."}
+            : activeSection === "podcasts"
+                ? "Acompanhe as visualizações dos podcasts publicados."
+                : "Acompanhe as visualizações das páginas públicas."}
     </p>
     <div class="mb-4 grid gap-3 font-noto-sans sm:grid-cols-2 xl:grid-cols-[minmax(16rem,1fr)_auto_auto_auto]">
         <form on:submit|preventDefault={(event) => applyFilters({ currentTarget: event.currentTarget.elements.namedItem("post_access_search") })} class="min-w-0">
             <label for="post-access-search" class="mb-2 block text-xs font-extrabold uppercase italic text-suspense-aurora">Buscar</label>
             <div class="flex gap-2">
-                <input id="post-access-search" name="post_access_search" type="search" bind:value={search} maxlength="200" placeholder={activeSection === "content" ? "Digite o título" : "Digite a página"} class="h-10 min-w-0 flex-1 rounded-md border border-blue-skywave bg-blue-ocean px-3 text-sm text-suspense-aurora outline-none placeholder:text-suspense-aurora/60" />
+                <input id="post-access-search" name="post_access_search" type="search" bind:value={search} maxlength="200" placeholder={activeSection === "content" ? "Digite o título" : `Digite o ${pageLabel}`} class="h-10 min-w-0 flex-1 rounded-md border border-blue-skywave bg-blue-ocean px-3 text-sm text-suspense-aurora outline-none placeholder:text-suspense-aurora/60" />
                 <button type="submit" class="inline-flex h-10 cursor-pointer items-center justify-center rounded-md bg-orange-citric px-4 text-sm font-extrabold uppercase italic text-blue-night transition hover:bg-orange-citric/85 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-citric">Buscar</button>
             </div>
         </form>
@@ -101,7 +119,7 @@
         </label>
         <label class="text-xs font-extrabold uppercase italic text-suspense-aurora">
             Ordenar por
-            <select name="post_access_sort" value={activeSection === "pages" && selectedSort === "interactions" ? "views" : selectedSort} on:change={applyFilters} class="mt-2 block h-10 w-full cursor-pointer rounded-md border border-blue-skywave bg-blue-ocean px-3 text-sm font-normal normal-case not-italic text-suspense-aurora outline-none">
+            <select name="post_access_sort" value={activeSection !== "content" && selectedSort === "interactions" ? "views" : selectedSort} on:change={applyFilters} class="mt-2 block h-10 w-full cursor-pointer rounded-md border border-blue-skywave bg-blue-ocean px-3 text-sm font-normal normal-case not-italic text-suspense-aurora outline-none">
                 <option value="views">Mais visualizadas</option>
                 {#if activeSection === "content"}<option value="interactions">Mais interações</option>{/if}
                 <option value="recent">Visualização mais recente</option>
@@ -157,30 +175,35 @@
                 {/each}
             </tbody>
         </table>
-        <Pagination pages={posts} only={["postAccess", "pageAccess"]} pageName="posts_page" activeClass="bg-orange-citric text-blue-night opacity-100" />
+        <Pagination pages={posts} only={["postAccess", "pageAccess", "podcastAccess"]} pageName="posts_page" activeClass="bg-orange-citric text-blue-night opacity-100" />
     {:else}
         <EmptyState title="Nenhum conteúdo encontrado" description="Não há matérias, reviews ou eventos com acessos para estes filtros." />
     {/if}
     {:else}
-    {#if pages?.data?.length}
+    {#if pageItems?.data?.length}
         <table class="block w-full border-collapse font-noto-sans lg:table">
             <caption class="sr-only">Desempenho das páginas conforme os filtros selecionados</caption>
             <thead class="hidden lg:table-header-group">
                 <tr class="border-b border-suspense-aurora/35 text-sm font-extrabold uppercase italic text-orange-amber">
-                    {#each ["Página", "Visualizações", "Última visualização"] as label}
+                    {#each [activeSection === "podcasts" ? "Podcast" : "Página", "Visualizações", "Última visualização"] as label}
                         <th scope="col" class="px-3 py-3 text-start">{label}</th>
                     {/each}
                 </tr>
             </thead>
             <tbody class="grid gap-3 lg:table-row-group">
-                {#each pages.data as item (item.key)}
+                {#each pageItems.data as item (item.key)}
                     <tr class="grid min-w-0 gap-4 rounded-md border border-suspense-aurora/35 p-4 text-sm text-suspense-aurora lg:table-row lg:rounded-none lg:border-x-0 lg:border-t-0 lg:p-0">
                         <td class="block min-w-0 lg:table-cell lg:w-[50%] lg:px-3 lg:py-3 lg:align-middle">
-                            {#if item.url}
-                                <a href={item.url} target="_blank" rel="noopener noreferrer" class="inline-block break-words font-normal leading-snug text-suspense-aurora transition duration-300 ease-out hover:-translate-y-0.5 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-orange-citric motion-reduce:transform-none motion-reduce:transition-none">{item.title}<span class="sr-only"> (abre em nova aba)</span></a>
-                            {:else}
-                                <span class="break-words font-normal leading-snug">{item.title}</span>
-                            {/if}
+                            <div class="min-w-0">
+                                {#if item.url}
+                                    <a href={item.url} target="_blank" rel="noopener noreferrer" class="inline-block break-words font-normal leading-snug text-suspense-aurora transition duration-300 ease-out hover:-translate-y-0.5 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-orange-citric motion-reduce:transform-none motion-reduce:transition-none">{item.title}<span class="sr-only"> (abre em nova aba)</span></a>
+                                {:else}
+                                    <span class="break-words font-normal leading-snug">{item.title}</span>
+                                {/if}
+                                {#if shouldShowKind(item)}
+                                    <span class="mt-1 block text-xs font-extrabold uppercase italic text-orange-amber">{item.kind}</span>
+                                {/if}
+                            </div>
                         </td>
                         <td class="block lg:table-cell lg:px-3 lg:py-3 lg:align-middle">
                             <span class="mb-1 block text-xs text-suspense-aurora/60 lg:hidden">Visualizações</span>
@@ -198,9 +221,12 @@
                 {/each}
             </tbody>
         </table>
-        <Pagination pages={pages} only={["postAccess", "pageAccess"]} pageName="pages_page" activeClass="bg-orange-citric text-blue-night opacity-100" />
+        <Pagination pages={pageItems} only={["postAccess", "pageAccess", "podcastAccess"]} {pageName} activeClass="bg-orange-citric text-blue-night opacity-100" />
     {:else}
-        <EmptyState title="Nenhuma página encontrada" description="Não há páginas ou podcasts com acessos para estes filtros." />
+        <EmptyState
+            title={activeSection === "podcasts" ? "Nenhum podcast encontrado" : "Nenhuma página encontrada"}
+            description={`Não há ${activeSection === "podcasts" ? "podcasts" : "páginas"} com acessos para estes filtros.`}
+        />
     {/if}
     {/if}
 </Section>
