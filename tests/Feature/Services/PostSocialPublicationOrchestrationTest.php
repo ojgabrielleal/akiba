@@ -2,17 +2,16 @@
 
 namespace Tests\Feature\Services;
 
-use App\Jobs\PublishPostSocialChannel;
+use App\Jobs\PublishSocialPublicationSchedule;
 use App\Models\Post;
 use App\Models\User;
 use App\Processing\SocialArtworkProcess;
 use App\Services\PostService;
-use App\Services\PostSocialPublicationService;
+use App\Services\SocialPublicationScheduleService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use Mockery\MockInterface;
 use RuntimeException;
 use Tests\TestCase;
@@ -70,33 +69,29 @@ class PostSocialPublicationOrchestrationTest extends TestCase
         ]);
         Artisan::call('posts:publish-reviewed', ['--hours' => 1, '--news-hours' => 1]);
 
-        $this->assertDatabaseCount('post_social_publications', 3);
-        $this->assertDatabaseCount('post_social_publication_results', 3);
-        $this->assertCount(1, $manual->socialPublications()->firstOrFail()->results);
-        $this->assertCount(1, $approval->socialPublications()->firstOrFail()->results);
-        $this->assertCount(1, $scheduled->socialPublications()->firstOrFail()->results);
+        $this->assertDatabaseCount('social_publication_schedules', 3);
+        $this->assertCount(1, $manual->socialPublicationSchedules);
+        $this->assertCount(1, $approval->socialPublicationSchedules);
+        $this->assertCount(1, $scheduled->socialPublicationSchedules);
         $this->assertSame(
             ['instagram'],
-            $manual->socialPublications()->firstOrFail()->results()->orderBy('channel')->pluck('channel')->all(),
+            $manual->socialPublicationSchedules()->orderBy('channel')->pluck('channel')->all(),
         );
         $this->assertSame(
             ['feed'],
-            $manual->socialPublications()->firstOrFail()->results()->pluck('placement')->all(),
+            $manual->socialPublicationSchedules()->pluck('placement')->all(),
         );
-        $manualResult = $manual->socialPublications()->firstOrFail()->results()->firstOrFail();
-        $manualPublication = $manual->socialPublications()->firstOrFail();
+        $manualSchedule = $manual->socialPublicationSchedules()->firstOrFail();
         $this->assertSame(implode("\n\n", [
             'Legenda editorial para o Instagram.',
             'Leia em: '.route('post.read', $manual->slug),
             'Venha para a nossa comunidade do Discord, converse com gente que te entende.',
             'Entre em: https://discord.akiba.com.br',
-        ]), $manualPublication->caption);
-        $this->assertSame(['anime', 'redeakiba'], $manualPublication->hashtags);
-        $this->assertStringContainsString('/storage/social-artworks/', $manualResult->artwork_path);
-        Storage::disk('public')->assertExists(
-            Str::after(parse_url($manualResult->artwork_path, PHP_URL_PATH), '/storage/'),
-        );
-        Queue::assertPushed(PublishPostSocialChannel::class, 3);
+        ]), $manualSchedule->payload['caption']);
+        $this->assertSame(['anime', 'redeakiba'], $manualSchedule->payload['hashtags']);
+        $this->assertStringContainsString('/storage/social-artworks/', $manualSchedule->media_url);
+        Storage::disk('public')->assertExists($manualSchedule->media_path);
+        Queue::assertPushed(PublishSocialPublicationSchedule::class, 3);
 
         $service->update($manual, $user, [
             'module' => 'post',
@@ -106,8 +101,8 @@ class PostSocialPublicationOrchestrationTest extends TestCase
             'tags' => [],
         ]);
 
-        $this->assertDatabaseCount('post_social_publications', 3);
-        Queue::assertPushed(PublishPostSocialChannel::class, 3);
+        $this->assertDatabaseCount('social_publication_schedules', 3);
+        Queue::assertPushed(PublishSocialPublicationSchedule::class, 3);
     }
 
     public function test_disabled_channels_do_not_create_a_publication_or_job(): void
@@ -124,7 +119,7 @@ class PostSocialPublicationOrchestrationTest extends TestCase
             'tags' => [],
         ]);
 
-        $this->assertDatabaseCount('post_social_publications', 0);
+        $this->assertDatabaseCount('social_publication_schedules', 0);
         Queue::assertNothingPushed();
     }
 
@@ -142,8 +137,7 @@ class PostSocialPublicationOrchestrationTest extends TestCase
             'tags' => [],
         ]);
 
-        $this->assertDatabaseCount('post_social_publications', 0);
-        $this->assertDatabaseCount('post_social_publication_results', 0);
+        $this->assertDatabaseCount('social_publication_schedules', 0);
         Queue::assertNothingPushed();
     }
 
@@ -161,11 +155,12 @@ class PostSocialPublicationOrchestrationTest extends TestCase
             'cover' => 'https://cdn.example.com/cover.webp',
         ]);
 
-        app(PostSocialPublicationService::class)->prepare($post);
+        app(SocialPublicationScheduleService::class)->schedulePost($post);
 
         $this->assertSame('published', $post->fresh()->status);
-        $result = $post->socialPublications()->firstOrFail()->results()->firstOrFail();
-        $this->assertSame(route('post.social-image', $post->uuid), $result->artwork_path);
-        Queue::assertPushed(PublishPostSocialChannel::class, 1);
+        $schedule = $post->socialPublicationSchedules()->firstOrFail();
+        $this->assertSame(route('post.social-image', $post->uuid), $schedule->media_url);
+        $this->assertNull($schedule->media_path);
+        Queue::assertPushed(PublishSocialPublicationSchedule::class, 1);
     }
 }

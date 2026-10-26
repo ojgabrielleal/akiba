@@ -149,7 +149,7 @@ Critério de conclusão: testes com HTTP fake cobrem sucesso, erro de autorizaç
 **Acompanhamento da etapa**
 
 - [x] Executada
-- **Observações:** Criadas as entidades `PostSocialPublication` e `PostSocialPublicationResult`. Cada divulgação preserva legenda, hashtags, caminho ou URL da arte, data da solicitação e um UUID que identifica sua versão. O resultado do Instagram registra status, ID externo, tentativas, erro e data de publicação. A restrição única impede duplicidade da mesma versão.
+- **Observações:** A auditoria inicialmente separada entre `PostSocialPublication` e `PostSocialPublicationResult` foi consolidada em `SocialPublicationSchedule`. A tabela `social_publication_schedules` representa uma publicação concreta por origem, canal e posicionamento, preservando o snapshot enviado, o estado de negócio e o identificador externo sem duplicar uma entidade pai e outra de resultado.
 
 Tarefas:
 
@@ -167,7 +167,7 @@ Critério de conclusão: testes de model e banco demonstram auditoria da publica
 **Acompanhamento da etapa**
 
 - [x] Executada
-- **Observações:** Criado `PostSocialPublicationService` para preparar a versão da divulgação e despachar o job `PublishPostSocialChannel` para o Instagram. A primeira versão usava a imagem fixa de `META_TEST_IMAGE_URL`, posteriormente substituída na Etapa 7 pela arte gerada com Intervention Image. O job usa idempotência por resultado publicado, registra tentativas e aplica backoff de 1, 5 e 15 minutos somente a falhas recuperáveis. Criação já publicada, aprovação por atualização e publicação agendada convergem no mesmo ponto de `PostService`, enquanto a atualização de um post já publicado não reenfileira.
+- **Observações:** `SocialPublicationScheduleService` prepara posts e locuções no mesmo fluxo e despacha `PublishSocialPublicationSchedule`. A tabela registra apenas `pending`, `published` ou `failed`; tentativas, reserva e backoff continuam sob responsabilidade da queue do Laravel. O job aplica backoff de 1, 5 e 15 minutos somente a falhas recuperáveis. Criação já publicada, aprovação por atualização e publicação agendada convergem no mesmo ponto de `PostService`, enquanto a atualização de um post já publicado não reenfileira.
 
 Tarefas:
 
@@ -428,7 +428,7 @@ Critério de conclusão: cada modelo gera seu próprio arquivo e uma nova versã
 **Acompanhamento da etapa**
 
 - [x] Executada
-- **Observações:** O fluxo deixou de depender de `META_TEST_IMAGE_URL`. `PostSocialPublicationService` gera e preserva uma arte por resultado/posicionamento, grava sua URL pública na auditoria e despacha os mesmos jobs idempotentes. Feed e Story possuem chaves independentes (`META_INSTAGRAM_FEED_ENABLED` e `META_INSTAGRAM_STORY_ENABLED`); Story permanece desligado por padrão até a confirmação da conta Business e homologação. O job envia `media_type=STORIES` sem legenda para Story e reutiliza a URL armazenada em todas as tentativas. O Discord gera `discord-post` pelo mesmo processo e o anexa sem reprocessar a capa; se essa arte não puder ser lida, mantém os fallbacks anteriores. A locução do Discord continua como embed textual. Artefatos associados à divulgação não são limpos; somente arquivos gerados antes de uma falha de persistência são removidos.
+- **Observações:** O fluxo deixou de depender de `META_TEST_IMAGE_URL`. `SocialPublicationScheduleService` gera uma arte por canal/posicionamento e armazena separadamente o caminho interno removível e a URL pública enviada ao provedor. Feed e Story possuem chaves independentes; Story permanece desligado até sua homologação. O job envia `media_type=STORIES` sem legenda para Story e reutiliza o snapshot armazenado em todas as tentativas. Posts e locuções compartilham o mesmo agendamento, job e política de limpeza: a arte temporária permanece durante retries e é removida após sucesso ou falha definitiva. O Discord continua com seu fluxo próprio de webhook.
 
 Tarefas:
 

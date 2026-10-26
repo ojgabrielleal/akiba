@@ -147,9 +147,9 @@ class Post extends Model
         return $this->hasMany(PostReview::class, 'post_id');
     }
 
-    public function socialPublications()
+    public function socialPublicationSchedules()
     {
-        return $this->hasMany(PostSocialPublication::class, 'post_id');
+        return $this->morphMany(SocialPublicationSchedule::class, 'publishable');
     }
 
     public function postReviews()

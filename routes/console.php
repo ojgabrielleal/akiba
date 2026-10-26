@@ -12,6 +12,10 @@ Schedule::command('programs:start')
     ->everyMinute()
     ->withoutOverlapping();
 
+Schedule::command('social-publications:dispatch-pending')
+    ->everyMinute()
+    ->withoutOverlapping();
+
 Schedule::command('queue:work --queue=default --stop-when-empty --tries=4 --timeout=120')
     ->everyMinute()
     ->withoutOverlapping(5)

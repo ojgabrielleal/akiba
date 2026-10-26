@@ -2,17 +2,17 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PostSocialPublicationResult extends Model
+class SocialPublicationSchedule extends Model
 {
     use HasFactory, HasUuids;
 
     public const STATUS_PENDING = 'pending';
-
-    public const STATUS_PROCESSING = 'processing';
 
     public const STATUS_PUBLISHED = 'published';
 
@@ -20,24 +20,29 @@ class PostSocialPublicationResult extends Model
 
     protected $fillable = [
         'uuid',
-        'post_social_publication_id',
+        'publishable_type',
+        'publishable_id',
         'channel',
         'placement',
-        'artwork_path',
+        'payload',
+        'media_path',
+        'media_url',
         'status',
+        'idempotency_key',
         'external_id',
-        'attempts',
-        'error',
+        'last_error',
+        'scheduled_at',
         'published_at',
     ];
 
-    protected $hidden = [
-        'post_social_publication_id',
+    protected $casts = [
+        'payload' => 'array',
+        'scheduled_at' => 'datetime',
+        'published_at' => 'datetime',
     ];
 
-    protected $casts = [
-        'attempts' => 'integer',
-        'published_at' => 'datetime',
+    protected $hidden = [
+        'publishable_id',
     ];
 
     public function uniqueIds(): array
@@ -45,8 +50,14 @@ class PostSocialPublicationResult extends Model
         return ['uuid'];
     }
 
-    public function publication()
+    #[Scope]
+    protected function pending(Builder $query): void
     {
-        return $this->belongsTo(PostSocialPublication::class, 'post_social_publication_id');
+        $query->where('status', self::STATUS_PENDING);
+    }
+
+    public function publishable()
+    {
+        return $this->morphTo();
     }
 }

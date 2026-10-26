@@ -14,7 +14,7 @@ class LocutionService
     public function __construct(
         private DiscordWebhookService $discord,
         private BadgeService $badges,
-        private LiveSocialPublicationService $socialPublication,
+        private SocialPublicationScheduleService $socialPublication,
     ) {}
 
     public function finish(): void
@@ -142,7 +142,7 @@ class LocutionService
         $this->startSendNotifications($user, $program);
 
         if (isset($data['social'])) {
-            $this->socialPublication->prepare($onair, $data['social']);
+            $this->socialPublication->scheduleLive($onair, $data['social']);
         }
     }
 

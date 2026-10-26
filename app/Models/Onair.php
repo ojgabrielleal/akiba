@@ -92,4 +92,9 @@ class Onair extends Model
     {
         return $this->hasMany(SongRequest::class, 'onair_id');
     }
+
+    public function socialPublicationSchedules()
+    {
+        return $this->morphMany(SocialPublicationSchedule::class, 'publishable');
+    }
 }

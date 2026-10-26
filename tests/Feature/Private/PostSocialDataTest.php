@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Private;
 
-use App\Jobs\PublishPostSocialChannel;
+use App\Jobs\PublishSocialPublicationSchedule;
 use App\Models\Permission;
 use App\Models\Post;
 use App\Models\Role;
@@ -41,7 +41,7 @@ class PostSocialDataTest extends TestCase
 
         $this->assertSame('draft', $post->status);
         $this->assertNull($post->social);
-        $this->assertDatabaseCount('post_social_publications', 0);
+        $this->assertDatabaseCount('social_publication_schedules', 0);
         Queue::assertNothingPushed();
     }
 
@@ -89,7 +89,7 @@ class PostSocialDataTest extends TestCase
             'channels' => ['instagram' => true],
         ], $post->social);
         $this->assertSame('revision', $post->status);
-        $this->assertDatabaseCount('post_social_publications', 0);
+        $this->assertDatabaseCount('social_publication_schedules', 0);
         Queue::assertNothingPushed();
     }
 
@@ -117,7 +117,7 @@ class PostSocialDataTest extends TestCase
         ]);
 
         $this->assertDatabaseCount('posts', 0);
-        Queue::assertNotPushed(PublishPostSocialChannel::class);
+        Queue::assertNotPushed(PublishSocialPublicationSchedule::class);
     }
 
     public function test_social_validation_rejects_too_many_or_invalid_hashtags(): void

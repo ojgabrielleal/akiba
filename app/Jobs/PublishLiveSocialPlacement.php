@@ -16,6 +16,9 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Throwable;
 
+/**
+ * Compatibility adapter for live jobs serialized before social publications were consolidated.
+ */
 class PublishLiveSocialPlacement implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
@@ -32,6 +35,7 @@ class PublishLiveSocialPlacement implements ShouldQueue
         public readonly string $imagePath,
     ) {}
 
+    /** @return list<int> */
     public function backoff(): array
     {
         return [60, 300, 900];
@@ -55,7 +59,7 @@ class PublishLiveSocialPlacement implements ShouldQueue
                 throw $exception;
             }
 
-            Log::warning('Live social publication failed.', [
+            Log::warning('Legacy live social publication failed.', [
                 'onair_uuid' => $this->onairUuid,
                 'placement' => $this->placement->value,
                 'error' => $exception->getMessage(),

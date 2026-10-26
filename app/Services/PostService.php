@@ -25,7 +25,7 @@ class PostService
         private ImageProcess $image,
         private PushNotificationService $pushNotification,
         private DiscordWebhookService $discord,
-        private PostSocialPublicationService $socialPublication,
+        private SocialPublicationScheduleService $socialPublication,
         private SocialArtworkDataService $socialArtworkData,
         private SocialArtworkProcess $socialArtwork,
     ) {}
@@ -254,7 +254,7 @@ class PostService
     private function handlePublished(Post $post): void
     {
         $this->sendPublishedNotification($post);
-        $this->socialPublication->prepare($post);
+        $this->socialPublication->schedulePost($post);
     }
 
     private function sendPublishedNotification(Post $post): void
