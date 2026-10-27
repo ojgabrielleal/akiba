@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class PageViewService
@@ -25,6 +26,10 @@ class PageViewService
         }
 
         $actor = AuthenticatedMember::fromRequest($request);
+
+        if ($this->isRepeatedAccess($request, 'page:'.$pageName, $actor)) {
+            return null;
+        }
 
         return PageView::query()->create([
             'actor_type' => $actor?->getMorphClass(),
@@ -44,6 +49,14 @@ class PageViewService
         }
 
         $actor = AuthenticatedMember::fromRequest($request);
+
+        if ($this->isRepeatedAccess(
+            $request,
+            'content:'.$viewable->getMorphClass().':'.$viewable->getKey(),
+            $actor,
+        )) {
+            return null;
+        }
 
         if ($viewable instanceof Post
             && $actor instanceof User
@@ -79,6 +92,23 @@ class PageViewService
 
         return ! str_contains($purpose, 'prefetch')
             && ! str_contains($purpose, 'prerender');
+    }
+
+    private function isRepeatedAccess(Request $request, string $target, ?Model $actor): bool
+    {
+        $identity = $actor
+            ? 'actor:'.$actor->getMorphClass().':'.$actor->getKey()
+            : ($request->hasSession()
+                ? 'session:'.$request->session()->getId()
+                : 'ip:'.($request->ip() ?? 'unknown'));
+        $cacheKey = 'page-view-deduplication:'.hash('sha256', $identity.'|'.$target);
+        $isRepeated = Cache::has($cacheKey);
+
+        // Refreshing the TTL on every attempt suppresses uninterrupted polling
+        // instead of allowing one artificial view per minute.
+        Cache::put($cacheKey, true, now()->addSeconds(60));
+
+        return $isRepeated;
     }
 
     public function geographyReport(array $filters = []): array

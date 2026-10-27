@@ -70,6 +70,29 @@ class PageViewTrackingTest extends TestCase
         $this->assertDatabaseCount('page_views', 0);
     }
 
+    public function test_it_deduplicates_repeated_page_accesses_within_sixty_seconds(): void
+    {
+        $firstRequest = Request::create('/entrar', server: ['REMOTE_ADDR' => '8.8.8.8']);
+        $repeatedRequest = Request::create('/entrar', server: ['REMOTE_ADDR' => '8.8.8.8']);
+        $service = app(PageViewService::class);
+
+        $this->assertNotNull($service->storePage('Entrar', $firstRequest));
+        $this->assertNull($service->storePage('Entrar', $repeatedRequest));
+        $this->assertDatabaseCount('page_views', 1);
+    }
+
+    public function test_it_deduplicates_repeated_content_accesses_within_sixty_seconds(): void
+    {
+        $post = Post::factory()->create();
+        $firstRequest = Request::create('/materia/'.$post->slug, server: ['REMOTE_ADDR' => '9.9.9.9']);
+        $repeatedRequest = Request::create('/materia/'.$post->slug, server: ['REMOTE_ADDR' => '9.9.9.9']);
+        $service = app(PageViewService::class);
+
+        $this->assertNotNull($service->store($post, $firstRequest));
+        $this->assertNull($service->store($post, $repeatedRequest));
+        $this->assertDatabaseCount('page_views', 1);
+    }
+
     public function test_it_stores_the_traffic_source_and_campaign_snapshot(): void
     {
         $this
