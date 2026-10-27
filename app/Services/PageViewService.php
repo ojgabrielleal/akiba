@@ -98,9 +98,7 @@ class PageViewService
     {
         $identity = $actor
             ? 'actor:'.$actor->getMorphClass().':'.$actor->getKey()
-            : ($request->hasSession()
-                ? 'session:'.$request->session()->getId()
-                : 'ip:'.($request->ip() ?? 'unknown'));
+            : 'ip:'.($request->ip() ?? 'unknown');
         $cacheKey = 'page-view-deduplication:'.hash('sha256', $identity.'|'.$target);
         $isRepeated = Cache::has($cacheKey);
 
