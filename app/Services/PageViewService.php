@@ -283,8 +283,10 @@ class PageViewService
                 fn ($query) => $query->where('viewable_type', $podcastType),
                 fn ($query) => $query->whereNull('viewable_type'),
             )
-            ->when($period, fn ($query, int $days) => $query
-                ->where('created_at', '>=', now()->subDays($days)))
+            ->when($period === 'today', fn ($query) => $query
+                ->where('created_at', '>=', now()->startOfDay()))
+            ->when(is_int($period), fn ($query) => $query
+                ->where('created_at', '>=', now()->subDays($period)))
             ->when($visitorType === 'recognized', fn ($query) => $query->whereNotNull('actor_id'))
             ->when($visitorType === 'anonymous', fn ($query) => $query->whereNull('actor_id'))
             ->when($search, fn ($query, string $value) => $query

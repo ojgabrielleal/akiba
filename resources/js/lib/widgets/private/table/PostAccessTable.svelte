@@ -7,6 +7,7 @@
     export let posts = null;
     export let pages = null;
     export let podcasts = null;
+    export let can = {};
 
     const number = new Intl.NumberFormat("pt-BR");
     let viewersModal;
@@ -14,13 +15,19 @@
     let viewersLoading = false;
     let viewersError = false;
     let search = "";
-    let activeSection = "content";
+    let activeSection = null;
     $: filters = $page.url ? new URL($page.url, window.location.origin).searchParams : new URLSearchParams();
     $: selectedType = filters.get("post_access_type") ?? "all";
-    $: selectedPeriod = filters.get("post_access_period") ?? "all";
+    $: selectedPeriod = filters.get("post_access_period") ?? "today";
 
     $: selectedSort = filters.get("post_access_sort") ?? "views";
     $: search = filters.get("post_access_search") ?? "";
+    $: tabs = [
+        { value: "content", label: "Publicações em geral", permission: can.publications },
+        { value: "podcasts", label: "Podcasts", permission: can.podcasts },
+        { value: "pages", label: "Páginas", permission: can.pages },
+    ].filter((tab) => tab.permission);
+    $: if (!tabs.some((tab) => tab.value === activeSection)) activeSection = tabs[0]?.value ?? null;
     $: pageItems = activeSection === "podcasts" ? podcasts : pages;
     $: pageName = activeSection === "podcasts" ? "podcasts_page" : "pages_page";
     $: pageLabel = activeSection === "podcasts" ? "podcast" : "página";
@@ -54,12 +61,9 @@
 </script>
 
 <Section aria-label="Desempenho dos conteúdos e páginas">
+    {#if tabs.length}
     <div class="mb-4 grid max-w-3xl grid-cols-1 gap-2 sm:grid-cols-3" role="tablist" aria-label="Tipo de relatório de acessos">
-        {#each [
-            { value: "content", label: "Publicações em geral" },
-            { value: "podcasts", label: "Podcasts" },
-            { value: "pages", label: "Páginas" },
-        ] as tab}
+        {#each tabs as tab}
             <button
                 type="button"
                 role="tab"
@@ -76,13 +80,6 @@
             </button>
         {/each}
     </div>
-    <p class="mb-4 text-sm text-suspense-aurora/70">
-        {activeSection === "content"
-            ? "Acompanhe visualizações e interações dos conteúdos publicados."
-            : activeSection === "podcasts"
-                ? "Acompanhe as visualizações dos podcasts publicados."
-                : "Acompanhe as visualizações das páginas públicas."}
-    </p>
     <div class="mb-4 grid gap-3 font-noto-sans sm:grid-cols-2 xl:grid-cols-[minmax(16rem,1fr)_auto_auto_auto]">
         <form on:submit|preventDefault={(event) => applyFilters({ currentTarget: event.currentTarget.elements.namedItem("post_access_search") })} class="min-w-0">
             <label for="post-access-search" class="mb-2 block text-xs font-extrabold uppercase italic text-suspense-aurora">Buscar</label>
@@ -102,6 +99,7 @@
         <label class="text-xs font-extrabold uppercase italic text-suspense-aurora">
             Período
             <select name="post_access_period" value={selectedPeriod} on:change={applyFilters} class="mt-2 block h-10 w-full cursor-pointer rounded-md border border-blue-skywave bg-blue-ocean px-3 text-sm font-normal normal-case not-italic text-suspense-aurora outline-none">
+                <option value="today">Hoje</option>
                 <option value="all">Todo o histórico</option>
                 <option value="15">Últimos 15 dias</option>
                 <option value="30">Últimos 30 dias</option>
@@ -215,6 +213,9 @@
             description={`Não há ${activeSection === "podcasts" ? "podcasts" : "páginas"} com acessos para estes filtros.`}
         />
     {/if}
+    {/if}
+    {:else}
+        <EmptyState title="Sem acesso aos relatórios" description="Seu cargo não possui permissão para visualizar estes dados." />
     {/if}
 </Section>
 

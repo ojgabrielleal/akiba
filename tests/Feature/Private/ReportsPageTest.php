@@ -146,6 +146,40 @@ class ReportsPageTest extends TestCase
             );
     }
 
+    public function test_reports_page_exposes_access_report_permissions(): void
+    {
+        $this
+            ->actingAs($this->userWithPermissions([
+                'report.module.view',
+                'report.podcast.view',
+            ]))
+            ->get('/panel/reports')
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->where('reportAccessPermissions.publications', false)
+                ->where('reportAccessPermissions.podcasts', true)
+                ->where('reportAccessPermissions.pages', false)
+            );
+    }
+
+    public function test_post_viewers_report_requires_publication_report_permission(): void
+    {
+        $post = Post::factory()->create();
+
+        $this
+            ->actingAs($this->userWithPermissions(['report.module.view']))
+            ->get("/panel/reports/post/{$post->uuid}/viewers")
+            ->assertForbidden();
+
+        $this
+            ->actingAs($this->userWithPermissions([
+                'report.module.view',
+                'report.publication.view',
+            ]))
+            ->get("/panel/reports/post/{$post->uuid}/viewers")
+            ->assertOk();
+    }
+
     public function test_reports_page_exposes_geographic_page_view_totals(): void
     {
         config(['inertia.testing.ensure_pages_exist' => false]);

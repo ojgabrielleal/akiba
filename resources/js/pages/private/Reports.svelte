@@ -12,7 +12,7 @@
         PostAccessTable,
     } from "@/lib/widgets/private";
 
-    $: ({ postAccess, pageAccess, podcastAccess, geography, audience, audienceHistory, onair, ranking_interno: ranking } = $page.props);
+    $: ({ postAccess, pageAccess, podcastAccess, reportAccessPermissions, geography, audience, audienceHistory, onair, ranking_interno: ranking } = $page.props);
 
     const skeletonItems = (count) => Array.from({ length: count }, (_, index) => index);
 </script>
@@ -76,7 +76,7 @@
         </svelte:fragment>
     </Deferred>
     <Deferred data={["postAccess", "pageAccess", "podcastAccess"]}>
-        <PostAccessTable posts={postAccess} pages={pageAccess} podcasts={podcastAccess} />
+        <PostAccessTable posts={postAccess} pages={pageAccess} podcasts={podcastAccess} can={reportAccessPermissions} />
         <svelte:fragment slot="fallback">
             <Section>
                 <div class="h-80 animate-pulse rounded-md bg-blue-ocean/55" aria-hidden="true"></div>

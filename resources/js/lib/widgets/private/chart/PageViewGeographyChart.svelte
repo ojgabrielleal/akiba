@@ -249,12 +249,12 @@
                 </div>
             {/if}
 
-            <div class="min-w-0 rounded-lg border border-blue-skywave/40 bg-blue-ocean/35 p-4">
-                <div class={`mb-4 grid gap-2 ${viewers.length ? "grid-cols-3" : "grid-cols-2"}`} role="tablist" aria-label="Ranking geográfico">
+            <div class="flex h-80 min-w-0 flex-col rounded-lg border border-blue-skywave/40 bg-blue-ocean/35 p-4 sm:h-[28rem]">
+                <div class={`mb-4 grid shrink-0 gap-2 ${viewers.length ? "grid-cols-3" : "grid-cols-2"}`} role="tablist" aria-label="Ranking geográfico">
                     {#each [
                         { value: "countries", label: "Países" },
                         { value: "cities", label: "Cidades" },
-                        ...(viewers.length ? [{ value: "viewers", label: "Contas" }] : []),
+                        ...(viewers.length ? [{ value: "viewers", label: "Com conta" }] : []),
                     ] as tab}
                         <button
                             type="button"
@@ -274,7 +274,7 @@
                 </div>
 
                 {#if ranking.length}
-                    <ol class="grid max-h-[22.5rem] gap-1 overflow-y-auto pr-1 sm:max-h-[24rem]">
+                    <ol class="grid min-h-0 flex-1 content-start gap-1 overflow-y-auto pr-1">
                         {#each ranking as item, index (item.key)}
                             <li class={[
                                 "grid items-center gap-2 border-b border-suspense-aurora/15 py-2.5 last:border-b-0",
@@ -306,14 +306,14 @@
                         {/each}
                     </ol>
                 {:else}
-                    <p class="py-8 text-center text-sm text-suspense-aurora/60">
-                        {activeRanking === "viewers" ? "Nenhuma conta encontrada neste período." : "Nenhuma cidade identificada neste período."}
+                    <p class="flex min-h-0 flex-1 items-center justify-center text-center text-sm text-suspense-aurora/60">
+                        {activeRanking === "viewers" ? "Nenhum acesso com conta neste período." : "Nenhuma cidade identificada neste período."}
                     </p>
                 {/if}
             </div>
         </div>
         {#if geography.unknown_views > 0}
-            <p class="mt-3 text-xs text-suspense-aurora/55">
+            <p class="mt-1 text-xs text-suspense-aurora/55">
                 {number.format(geography.unknown_views)} visualizações sem localização não aparecem no mapa.
             </p>
         {/if}

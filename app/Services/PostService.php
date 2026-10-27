@@ -501,7 +501,9 @@ class PostService
         $period = $filters['period'] ?? null;
         $type = $filters['type'] ?? 'all';
         $viewFilter = function ($query) use ($period, $type): void {
-            if ($period) {
+            if ($period === 'today') {
+                $query->where('created_at', '>=', now()->startOfDay());
+            } elseif ($period) {
                 $query->where('created_at', '>=', now()->subDays((int) $period));
             }
             if ($type === 'recognized') {

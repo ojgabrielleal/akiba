@@ -78,11 +78,10 @@ class ReportsController extends Controller
     private function indexPostAccess()
     {
         $type = request()->string('post_access_type')->toString();
-        $period = request()->integer('post_access_period');
 
         return $this->postFilter->accessReport([
             'type' => in_array($type, ['recognized', 'anonymous'], true) ? $type : 'all',
-            'period' => in_array($period, [15, 30], true) ? $period : null,
+            'period' => $this->accessReportPeriod(),
             'search' => mb_substr(trim(request()->string('post_access_search')->toString()), 0, 200),
             'sort' => request()->string('post_access_sort')->toString(),
         ]);
@@ -107,15 +106,27 @@ class ReportsController extends Controller
     private function indexPageAccess(string $kind = 'pages')
     {
         $type = request()->string('post_access_type')->toString();
-        $period = request()->integer('post_access_period');
 
         return $this->pageViewService->pageAccessReport([
             'kind' => $kind,
             'visitor_type' => in_array($type, ['recognized', 'anonymous'], true) ? $type : 'all',
-            'period' => in_array($period, [15, 30], true) ? $period : null,
+            'period' => $this->accessReportPeriod(),
             'search' => mb_substr(trim(request()->string('post_access_search')->toString()), 0, 200),
             'sort' => request()->string('post_access_sort')->toString(),
         ]);
+    }
+
+    private function accessReportPeriod(): string|int|null
+    {
+        $period = request()->input('post_access_period', 'today');
+
+        if ($period === 'today') {
+            return 'today';
+        }
+
+        $days = is_numeric($period) ? (int) $period : null;
+
+        return in_array($days, [15, 30], true) ? $days : null;
     }
 
     private function indexInternalRanking(): array
@@ -350,10 +361,27 @@ class ReportsController extends Controller
 
     public function render()
     {
+        $user = request()->user();
+        $accessPermissions = [
+            'publications' => $user->can('report.publication.view'),
+            'podcasts' => $user->can('report.podcast.view'),
+            'pages' => $user->can('report.page.view'),
+        ];
+
         return Inertia::render($this->render, [
-            'postAccess' => Inertia::defer(fn () => $this->indexPostAccess(), 'reports-posts'),
-            'pageAccess' => Inertia::defer(fn () => $this->indexPageAccess('pages'), 'reports-posts'),
-            'podcastAccess' => Inertia::defer(fn () => $this->indexPageAccess('podcasts'), 'reports-posts'),
+            'reportAccessPermissions' => $accessPermissions,
+            'postAccess' => Inertia::defer(
+                fn () => $accessPermissions['publications'] ? $this->indexPostAccess() : null,
+                'reports-posts',
+            ),
+            'pageAccess' => Inertia::defer(
+                fn () => $accessPermissions['pages'] ? $this->indexPageAccess('pages') : null,
+                'reports-posts',
+            ),
+            'podcastAccess' => Inertia::defer(
+                fn () => $accessPermissions['podcasts'] ? $this->indexPageAccess('podcasts') : null,
+                'reports-posts',
+            ),
             'geography' => Inertia::defer(fn () => $this->indexGeography(), 'reports-geography'),
             'audience' => Inertia::defer(fn () => $this->indexAudience(), 'reports-audience'),
             'audienceHistory' => Inertia::defer(fn () => $this->indexAudienceHistory(), 'reports-history'),
