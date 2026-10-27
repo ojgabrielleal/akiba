@@ -224,11 +224,11 @@
             <strong class="mt-1 block text-2xl font-black tabular-nums text-orange-amber">{number.format(totalViews)}</strong>
         </div>
         <div class="rounded-md border border-blue-skywave/35 bg-blue-ocean/55 p-4">
-            <span class="text-xs font-extrabold uppercase italic text-suspense-aurora/60">Com localização</span>
+            <span class="text-xs font-extrabold uppercase italic text-suspense-aurora/60">Acessos localizados</span>
             <strong class="mt-1 block text-2xl font-black tabular-nums text-orange-amber">{number.format(locatedViews)}</strong>
         </div>
         <div class="rounded-md border border-blue-skywave/35 bg-blue-ocean/55 p-4">
-            <span class="text-xs font-extrabold uppercase italic text-suspense-aurora/60">Cobertura</span>
+            <span class="text-xs font-extrabold uppercase italic text-suspense-aurora/60">Cobertura geográfica</span>
             <strong class="mt-1 block text-2xl font-black tabular-nums text-orange-amber">{percent.format(coverage)}</strong>
         </div>
     </div>

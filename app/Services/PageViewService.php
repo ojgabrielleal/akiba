@@ -18,8 +18,12 @@ class PageViewService
 {
     public function __construct(private IpLocation $ipLocation) {}
 
-    public function storePage(string $pageName, Request $request): PageView
+    public function storePage(string $pageName, Request $request): ?PageView
     {
+        if (! $this->shouldTrack($request)) {
+            return null;
+        }
+
         $actor = AuthenticatedMember::fromRequest($request);
 
         return PageView::query()->create([
@@ -35,6 +39,10 @@ class PageViewService
 
     public function store(Model $viewable, Request $request): ?PageView
     {
+        if (! $this->shouldTrack($request)) {
+            return null;
+        }
+
         $actor = AuthenticatedMember::fromRequest($request);
 
         if ($viewable instanceof Post
@@ -54,6 +62,23 @@ class PageViewService
             'page_name' => $viewable->title ?? null,
             'page_url' => $request->fullUrl(),
         ]));
+    }
+
+    private function shouldTrack(Request $request): bool
+    {
+        if ($request->headers->has('X-Inertia-Partial-Data')
+            || $request->headers->has('X-Inertia-Partial-Component')
+            || $request->headers->has('X-Inertia-Prefetch')) {
+            return false;
+        }
+
+        $purpose = strtolower(implode(' ', array_filter([
+            $request->header('Purpose'),
+            $request->header('Sec-Purpose'),
+        ], 'is_string')));
+
+        return ! str_contains($purpose, 'prefetch')
+            && ! str_contains($purpose, 'prerender');
     }
 
     public function geographyReport(array $filters = []): array

@@ -33,6 +33,43 @@ class PageViewTrackingTest extends TestCase
         $this->assertDatabaseCount('page_views', 0);
     }
 
+    public function test_it_does_not_track_inertia_partial_reloads(): void
+    {
+        $request = Request::create('/entrar', server: [
+            'HTTP_X_INERTIA' => 'true',
+            'HTTP_X_INERTIA_PARTIAL_COMPONENT' => 'public/AuthContinue',
+            'HTTP_X_INERTIA_PARTIAL_DATA' => 'onair,stream',
+            'REMOTE_ADDR' => '1.1.1.1',
+        ]);
+
+        $this->assertNull(app(PageViewService::class)->storePage('Entrar', $request));
+        $this->assertDatabaseCount('page_views', 0);
+    }
+
+    public function test_it_does_not_track_prefetch_requests(): void
+    {
+        $this
+            ->withHeader('Purpose', 'prefetch')
+            ->get('/entrar')
+            ->assertOk();
+
+        $this->assertDatabaseCount('page_views', 0);
+    }
+
+    public function test_it_does_not_track_partial_reloads_of_content_pages(): void
+    {
+        $post = Post::factory()->create();
+
+        $request = Request::create('/materia/'.$post->slug, server: [
+            'HTTP_X_INERTIA_PARTIAL_COMPONENT' => 'public/ReadPost',
+            'HTTP_X_INERTIA_PARTIAL_DATA' => 'onair,stream',
+            'REMOTE_ADDR' => '1.1.1.1',
+        ]);
+
+        $this->assertNull(app(PageViewService::class)->store($post, $request));
+        $this->assertDatabaseCount('page_views', 0);
+    }
+
     public function test_it_stores_the_traffic_source_and_campaign_snapshot(): void
     {
         $this
