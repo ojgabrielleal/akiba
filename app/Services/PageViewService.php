@@ -61,10 +61,13 @@ class PageViewService
         $period = $filters['period'] ?? 'today';
         $visitorType = $filters['visitor_type'] ?? 'all';
         $pageType = $filters['page_type'] ?? 'all';
+        $todayStartsAt = now()->startOfDay();
+        $tomorrowStartsAt = $todayStartsAt->copy()->addDay();
 
         $baseQuery = PageView::query()
             ->when($period === 'today', fn ($query) => $query
-                ->where('created_at', '>=', now()->startOfDay()))
+                ->where('created_at', '>=', $todayStartsAt)
+                ->where('created_at', '<', $tomorrowStartsAt))
             ->when(is_int($period), fn ($query) => $query
                 ->where('created_at', '>=', now()->subDays($period)))
             ->when($visitorType === 'recognized', fn ($query) => $query->whereNotNull('actor_id'))
@@ -282,6 +285,8 @@ class PageViewService
         $search = $filters['search'] ?? '';
         $kind = $filters['kind'] ?? 'pages';
         $podcastType = (new Podcast)->getMorphClass();
+        $todayStartsAt = now()->startOfDay();
+        $tomorrowStartsAt = $todayStartsAt->copy()->addDay();
 
         return PageView::query()
             ->when(
@@ -290,13 +295,19 @@ class PageViewService
                 fn ($query) => $query->whereNull('viewable_type'),
             )
             ->when($period === 'today', fn ($query) => $query
-                ->where('created_at', '>=', now()->startOfDay()))
+                ->where('created_at', '>=', $todayStartsAt)
+                ->where('created_at', '<', $tomorrowStartsAt))
             ->when(is_int($period), fn ($query) => $query
                 ->where('created_at', '>=', now()->subDays($period)))
             ->when($visitorType === 'recognized', fn ($query) => $query->whereNotNull('actor_id'))
             ->when($visitorType === 'anonymous', fn ($query) => $query->whereNull('actor_id'))
-            ->when($search, fn ($query, string $value) => $query
-                ->where('page_name', 'like', '%'.addcslashes($value, '\\%_').'%'))
+            ->when($search, function ($query, string $value): void {
+                collect(preg_split('/\s+/u', trim($value), -1, PREG_SPLIT_NO_EMPTY))
+                    ->unique()
+                    ->take(10)
+                    ->each(fn (string $term) => $query
+                        ->where('page_name', 'like', '%'.addcslashes($term, '\\%_').'%'));
+            })
             ->selectRaw("COALESCE(viewable_type, 'page') as item_type")
             ->selectRaw("COALESCE(CAST(viewable_id AS CHAR), page_name) as item_key")
             ->selectRaw('MAX(page_name) as title')

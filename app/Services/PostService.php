@@ -498,11 +498,15 @@ class PostService
     public function accessReport(array $filters = []): LengthAwarePaginator
     {
         $now = now();
+        $todayStartsAt = $now->copy()->startOfDay();
+        $tomorrowStartsAt = $todayStartsAt->copy()->addDay();
         $period = $filters['period'] ?? null;
         $type = $filters['type'] ?? 'all';
-        $viewFilter = function ($query) use ($period, $type): void {
+        $viewFilter = function ($query) use ($period, $type, $todayStartsAt, $tomorrowStartsAt): void {
             if ($period === 'today') {
-                $query->where('created_at', '>=', now()->startOfDay());
+                $query
+                    ->where('created_at', '>=', $todayStartsAt)
+                    ->where('created_at', '<', $tomorrowStartsAt);
             } elseif ($period) {
                 $query->where('created_at', '>=', now()->subDays((int) $period));
             }
@@ -517,8 +521,13 @@ class PostService
             ->select(['id', 'uuid', 'title', 'slug', 'module', 'status', 'is_active'])
             ->whereIn('module', ['post', 'review', 'event'])
             ->where('status', 'published')
-            ->when($filters['search'] ?? '', fn (Builder $query, string $search) => $query
-                ->where('title', 'like', '%'.addcslashes($search, '\\%_').'%'))
+            ->when($filters['search'] ?? '', function (Builder $query, string $search): void {
+                collect(preg_split('/\s+/u', trim($search), -1, PREG_SPLIT_NO_EMPTY))
+                    ->unique()
+                    ->take(10)
+                    ->each(fn (string $term) => $query
+                        ->where('title', 'like', '%'.addcslashes($term, '\\%_').'%'));
+            })
             ->whereHas('views', $viewFilter)
             ->with(['views' => function ($query) use ($viewFilter): void {
                 $viewFilter($query);

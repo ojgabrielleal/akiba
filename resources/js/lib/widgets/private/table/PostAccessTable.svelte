@@ -35,7 +35,12 @@
     function applyFilters(event) {
         const params = new URLSearchParams(window.location.search);
         const { name, value } = event.currentTarget;
-        value === "all" || value === "views" || !value.trim() ? params.delete(name) : params.set(name, value.trim());
+        const normalizedValue = value.trim();
+        const usesDefaultValue = !normalizedValue
+            || (name === "post_access_type" && normalizedValue === "all")
+            || (name === "post_access_sort" && normalizedValue === "views");
+
+        usesDefaultValue ? params.delete(name) : params.set(name, normalizedValue);
         params.delete("posts_page");
         params.delete("pages_page");
         params.delete("podcasts_page");
