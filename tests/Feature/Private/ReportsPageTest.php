@@ -159,6 +159,7 @@ class ReportsPageTest extends TestCase
                 ->where('reportAccessPermissions.publications', false)
                 ->where('reportAccessPermissions.podcasts', true)
                 ->where('reportAccessPermissions.pages', false)
+                ->where('reportAccessPermissions.geography', false)
             );
     }
 
@@ -208,7 +209,10 @@ class ReportsPageTest extends TestCase
         ]);
 
         $this
-            ->actingAs($this->userWithPermissions(['report.module.view']))
+            ->actingAs($this->userWithPermissions([
+                'report.module.view',
+                'report.geography.view',
+            ]))
             ->get('/panel/reports?geography_period=30&geography_visitor=anonymous')
             ->assertOk()
             ->assertInertia(fn ($page) => $page
@@ -222,6 +226,9 @@ class ReportsPageTest extends TestCase
                     ->where('geography.countries.0.views', 3)
                     ->where('geography.cities.0.city', 'São Paulo')
                     ->where('geography.cities.0.views', 3)
+                    ->where('geography.viewers.0.city', 'Tóquio')
+                    ->where('geography.viewers.0.region_code', '13')
+                    ->where('geography.viewers.0.country_code', 'JP')
                 )
             );
     }

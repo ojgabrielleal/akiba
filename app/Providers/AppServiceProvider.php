@@ -55,6 +55,7 @@ class AppServiceProvider extends ServiceProvider
             'report.publication.view',
             'report.podcast.view',
             'report.page.view',
+            'report.geography.view',
             'trash.module.view',
             'trash.restore',
             'trash.delete',

@@ -64,17 +64,19 @@
             </Section>
         </svelte:fragment>
     </Deferred>
-    <Deferred data="geography">
-        <PageViewGeographyChart {geography} />
-        <svelte:fragment slot="fallback">
-            <Section title="Análises gerais do site">
-                <div class="grid gap-4 xl:grid-cols-[minmax(0,1.65fr)_minmax(18rem,0.85fr)]">
-                    <div class="h-80 animate-pulse rounded-md bg-blue-ocean/55 sm:h-[28rem]"></div>
-                    <div class="h-80 animate-pulse rounded-md bg-blue-ocean/55 sm:h-[28rem]"></div>
-                </div>
-            </Section>
-        </svelte:fragment>
-    </Deferred>
+    {#if reportAccessPermissions?.geography}
+        <Deferred data="geography">
+            <PageViewGeographyChart {geography} />
+            <svelte:fragment slot="fallback">
+                <Section title="Análises gerais do site">
+                    <div class="grid gap-4 xl:grid-cols-[minmax(0,1.65fr)_minmax(18rem,0.85fr)]">
+                        <div class="h-80 animate-pulse rounded-md bg-blue-ocean/55 sm:h-[28rem]"></div>
+                        <div class="h-80 animate-pulse rounded-md bg-blue-ocean/55 sm:h-[28rem]"></div>
+                    </div>
+                </Section>
+            </svelte:fragment>
+        </Deferred>
+    {/if}
     <Deferred data={["postAccess", "pageAccess", "podcastAccess"]}>
         <PostAccessTable posts={postAccess} pages={pageAccess} podcasts={podcastAccess} can={reportAccessPermissions} />
         <svelte:fragment slot="fallback">

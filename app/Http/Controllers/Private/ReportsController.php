@@ -366,6 +366,7 @@ class ReportsController extends Controller
             'publications' => $user->can('report.publication.view'),
             'podcasts' => $user->can('report.podcast.view'),
             'pages' => $user->can('report.page.view'),
+            'geography' => $user->can('report.geography.view'),
         ];
 
         return Inertia::render($this->render, [
@@ -382,7 +383,10 @@ class ReportsController extends Controller
                 fn () => $accessPermissions['podcasts'] ? $this->indexPageAccess('podcasts') : null,
                 'reports-posts',
             ),
-            'geography' => Inertia::defer(fn () => $this->indexGeography(), 'reports-geography'),
+            'geography' => Inertia::defer(
+                fn () => $accessPermissions['geography'] ? $this->indexGeography() : null,
+                'reports-geography',
+            ),
             'audience' => Inertia::defer(fn () => $this->indexAudience(), 'reports-audience'),
             'audienceHistory' => Inertia::defer(fn () => $this->indexAudienceHistory(), 'reports-history'),
             'onair' => Inertia::defer(fn () => $this->indexOnair(), 'reports-history'),

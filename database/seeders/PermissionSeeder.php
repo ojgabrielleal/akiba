@@ -37,6 +37,7 @@ class PermissionSeeder extends Seeder
             ['name' => 'report.publication.view', 'label' => '[Relatórios] Visualizar acessos de publicações'],
             ['name' => 'report.podcast.view', 'label' => '[Relatórios] Visualizar acessos de podcasts'],
             ['name' => 'report.page.view', 'label' => '[Relatórios] Visualizar acessos de páginas'],
+            ['name' => 'report.geography.view', 'label' => '[Relatórios] Visualizar mapa e origem dos acessos'],
             ['name' => 'trash.module.view', 'label' => '[Lixeira] Acesso ao módulo'],
             ['name' => 'trash.restore', 'label' => '[Lixeira] Reativar'],
             ['name' => 'trash.delete', 'label' => '[Lixeira] Excluir definitivamente'],

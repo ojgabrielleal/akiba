@@ -51,6 +51,7 @@
             key: viewer.key,
             label: viewer.name,
             detail: viewer.last_view ? `Último acesso: ${viewer.last_view}` : "Sem data de acesso",
+            location: [viewer.city, viewer.region_code, countryName(viewer.country_code)].filter(Boolean).join(" · "),
             avatar: viewer.avatar,
             views: Number(viewer.views ?? 0),
         }));
@@ -296,6 +297,9 @@
                                     <div class="flex items-baseline justify-between gap-2">
                                         <span class="truncate text-sm font-bold text-suspense-aurora" title={item.label}>{item.label}</span>
                                     </div>
+                                    {#if item.location}
+                                        <span class="block truncate text-[0.68rem] uppercase text-suspense-aurora/65" title={item.location}>{item.location}</span>
+                                    {/if}
                                     <span class="block truncate text-[0.68rem] uppercase text-suspense-aurora/50">{item.detail}</span>
                                     <div class="mt-1 h-1.5 overflow-hidden rounded-full bg-blue-night/65">
                                         <div class="h-full rounded-full bg-orange-amber" style={`width: ${Math.max(4, (item.views / rankingMaximum) * 100)}%`}></div>

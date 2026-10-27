@@ -135,6 +135,9 @@ class PageViewService
                     'actor_id',
                     DB::raw('COUNT(*) as views'),
                     DB::raw('MAX(created_at) as last_view'),
+                    DB::raw("SUBSTRING_INDEX(GROUP_CONCAT(COALESCE(city, '') ORDER BY created_at DESC, id DESC SEPARATOR '|||'), '|||', 1) as city"),
+                    DB::raw("SUBSTRING_INDEX(GROUP_CONCAT(COALESCE(region_code, '') ORDER BY created_at DESC, id DESC SEPARATOR '|||'), '|||', 1) as region_code"),
+                    DB::raw("SUBSTRING_INDEX(GROUP_CONCAT(COALESCE(country_code, '') ORDER BY created_at DESC, id DESC SEPARATOR '|||'), '|||', 1) as country_code"),
                 ])
                 ->groupBy('actor_type', 'actor_id')
                 ->orderByDesc('views')
@@ -149,6 +152,9 @@ class PageViewService
                         'name' => $actor?->nickname ?? $actor?->name ?? $actor?->username ?? 'Sem nome',
                         'avatar' => $actor?->avatar,
                         'views' => (int) $view->views,
+                        'city' => $view->city ?: null,
+                        'region_code' => $view->region_code ?: null,
+                        'country_code' => $view->country_code ?: null,
                         'last_view' => $view->last_view
                             ? Carbon::parse($view->last_view)
                                 ->setTimezone('America/Sao_Paulo')
