@@ -119,7 +119,10 @@ class MetaGraphClientTest extends TestCase
             $this->assertSame('190', $exception->providerCode);
             $this->assertFalse($exception->isRetryable());
             $this->assertStringNotContainsString('secret-access-token', $exception->getMessage());
-            $this->assertStringNotContainsString('Nova matéria', $exception->getMessage());
+            $this->assertSame(
+                'Meta Graph API request failed (authentication). HTTP 401; code 190; type OAuthException; message: Invalid token [REDACTED] for caption Nova matéria',
+                $exception->getMessage(),
+            );
         }
     }
 
