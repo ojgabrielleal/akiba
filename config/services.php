@@ -54,9 +54,9 @@ return [
     ],
 
     'discord' => [
-        'publication_enabled' => env('DISCORD_PUBLICATION_ENABLED', true),
-        'webhook' => env('DISCORD_LOCUTION_WEBHOOK_URL'),
-        'post_webhook' => env('DISCORD_POST_WEBHOOK_URL'),
+        'publication_enabled' => env('DISCORD_WEBHOOK_ENABLED', true),
+        'webhook' => env('DISCORD_WEBHOOK_LOCUTION_URL'),
+        'post_webhook' => env('DISCORD_WEBHOOK_POST_URL'),
         'client_id' => env('DISCORD_CLIENT_ID'),
         'client_secret' => env('DISCORD_CLIENT_SECRET'),
         'redirect' => env('DISCORD_REDIRECT_URI'),
