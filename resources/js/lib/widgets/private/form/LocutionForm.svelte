@@ -34,12 +34,12 @@
     $: socialTextCharacterCount = $form.social.text?.length ?? 0;
     $: socialHashtagCount = socialHashtagTokens.length;
     $: socialHashtagsAreValid = socialHashtagTokens.length >= 1
-        && socialHashtagTokens.length <= 50
+        && socialHashtagTokens.length <= 30
         && socialHashtagTokens.every((hashtag) => /^#[\p{L}\p{N}_]+$/u.test(hashtag));
     $: canStartLocution = Boolean($form.social.text?.trim()) && socialHashtagsAreValid;
     $: socialHashtagsError = $form.errors["social.hashtags"]
         ?? (socialHashtags && !socialHashtagsAreValid
-            ? "Informe de 1 a 50 hashtags válidas, todas começando com #."
+            ? "Informe de 1 a 30 hashtags válidas, todas começando com #."
             : null);
 
     async function submit() {
@@ -94,10 +94,10 @@
             <span
                 slot="labelAside"
                 class="shrink-0 text-xs font-bold"
-                class:text-red-crimson={socialHashtagCount > 50}
-                class:text-gray-500={socialHashtagCount <= 50}
+                class:text-red-crimson={socialHashtagCount > 30}
+                class:text-gray-500={socialHashtagCount <= 30}
             >
-                {socialHashtagCount}/50 hashtags
+                {socialHashtagCount}/30 hashtags
             </span>
             <TextInput
                 id="live-social-hashtags"

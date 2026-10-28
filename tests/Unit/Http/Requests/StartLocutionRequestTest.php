@@ -51,7 +51,7 @@ class StartLocutionRequestTest extends TestCase
         $this->assertSame(['rádio', 'anime'], $request->input('social.hashtags'));
     }
 
-    public function test_it_rejects_more_than_fifty_hashtags(): void
+    public function test_it_rejects_more_than_thirty_hashtags(): void
     {
         $request = new TestableStartLocutionRequest;
         $request->merge([
@@ -60,7 +60,7 @@ class StartLocutionRequestTest extends TestCase
             'send_notification' => true,
             'social' => [
                 'text' => 'O Conexão Akiba começou!',
-                'hashtags' => array_map(fn (int $index): string => "tag{$index}", range(1, 51)),
+                'hashtags' => array_map(fn (int $index): string => "tag{$index}", range(1, 31)),
             ],
         ]);
         $request->normalizeSocialData();
