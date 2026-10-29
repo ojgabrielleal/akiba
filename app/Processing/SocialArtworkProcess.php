@@ -438,7 +438,7 @@ class SocialArtworkProcess
         ));
 
         $title = $data['titles'][$template] ?? $data['title'] ?? 'Conteúdo novo na Rede Akiba';
-        $maxTitleLines = $isInstagramFeed ? 5 : ($isDiscord ? 3 : 4);
+        $maxTitleLines = $isInstagramFeed ? 6 : ($isDiscord ? 3 : 4);
         $title = implode("\n", $this->wrap($title, $titleSize, $maxTextWidth, $maxTitleLines));
         $image->text($title, $left, $titleY, fn (FontFactory $font) => $this->font(
             $font,

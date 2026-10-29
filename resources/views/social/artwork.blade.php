@@ -385,12 +385,12 @@
             display: -webkit-box;
             font-size: 82px;
             -webkit-box-orient: vertical;
-            -webkit-line-clamp: 5;
+            -webkit-line-clamp: 6;
         }
 
         [data-social-template="instagram-feed"] .social-artwork__title {
             font-size: 80px;
-            -webkit-line-clamp: 4;
+            -webkit-line-clamp: 6;
         }
 
         [data-social-template="instagram-story"],
