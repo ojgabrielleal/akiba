@@ -30,7 +30,7 @@
     };
 </script>
 
-<Meta meta={{ title: article.title }} />
+<Meta meta={{ title: article.title, canonical: article.canonical_url, ogImage: article.social_image_url, ogType: "article" }} />
 <Layout {flash} {oauth} {onair} {stream} {pageUrl} publicThemeEnabled>
     <section class="public-read-content-background bg-blue-marinho pt-5 pb-2">
         <div class="public-read-content-background bg-blue-marinho">

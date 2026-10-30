@@ -37,6 +37,18 @@
             "post_id": "100000000000000_200000000000001"
         }
     },
+    "facebook_link_publish": {
+        "method": "POST",
+        "endpoint": "/{page_id}/feed",
+        "authentication": "bearer",
+        "request": {
+            "message": "Nova matéria na Rede Akiba #Akiba",
+            "link": "https://akiba.test/materia/nova-materia"
+        },
+        "response": {
+            "id": "100000000000000_200000000000001"
+        }
+    },
     "instagram_media_publish": {
         "method": "POST",
         "endpoint": "/{ig_user_id}/media_publish",

@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Http;
 
 final class GraphClient implements Publisher
 {
+    private const MAX_CAPTION_HASHTAGS = 5;
+
     private const INSTAGRAM_BASE_URL = 'https://graph.instagram.com';
 
     private const FACEBOOK_BASE_URL = 'https://graph.facebook.com';
@@ -64,6 +66,10 @@ final class GraphClient implements Publisher
 
     private function publishFacebook(PublicationData $publication): PublicationResult
     {
+        if ($publication->linkPreview) {
+            return $this->publishFacebookLink($publication);
+        }
+
         $response = $this->post(
             PublicationChannel::Facebook,
             $this->configuredPath('facebook_page_id', 'photos'),
@@ -80,6 +86,24 @@ final class GraphClient implements Publisher
             externalId: is_string($externalId) && $externalId !== ''
                 ? $externalId
                 : $this->requiredId($response),
+            publishedAt: new DateTimeImmutable,
+        );
+    }
+
+    private function publishFacebookLink(PublicationData $publication): PublicationResult
+    {
+        $response = $this->post(
+            PublicationChannel::Facebook,
+            $this->configuredPath('facebook_page_id', 'feed'),
+            [
+                'message' => $this->socialCaption($publication),
+                'link' => $publication->postUrl,
+            ],
+        );
+
+        return new PublicationResult(
+            channel: PublicationChannel::Facebook,
+            externalId: $this->requiredId($response),
             publishedAt: new DateTimeImmutable,
         );
     }
@@ -282,7 +306,11 @@ final class GraphClient implements Publisher
     {
         return implode(' ', array_map(
             fn (string $hashtag): string => '#'.ltrim($hashtag, '#'),
-            array_filter($publication->hashtags, fn (string $hashtag): bool => $hashtag !== ''),
+            array_slice(
+                array_values(array_filter($publication->hashtags, fn (string $hashtag): bool => $hashtag !== '')),
+                0,
+                self::MAX_CAPTION_HASHTAGS,
+            ),
         ));
     }
 }

@@ -40,6 +40,7 @@ class SocialPublicationScheduleService
             postUrl: $this->postUrl($post),
             artworkOwner: $post->uuid,
             templatePrefix: 'instagram',
+            facebookLinkPreview: true,
             fallbackUrl: blank($post->cover ?: $post->image)
                 ? null
                 : route('post.social-image', $post->uuid),
@@ -67,6 +68,7 @@ class SocialPublicationScheduleService
         string $postUrl,
         string $artworkOwner,
         string $templatePrefix,
+        bool $facebookLinkPreview = false,
         ?string $fallbackUrl = null,
     ): Collection {
         $targets = collect(PublicationChannel::cases())
@@ -85,6 +87,15 @@ class SocialPublicationScheduleService
 
         try {
             foreach ($targets as [$channel, $placement]) {
+                if ($channel === PublicationChannel::Facebook && $facebookLinkPreview) {
+                    $artworks[$channel->value][$placement->value] = (object) [
+                        'path' => null,
+                        'url' => $postUrl,
+                    ];
+
+                    continue;
+                }
+
                 $artworks[$channel->value][$placement->value] = $this->artwork->generate(
                     $this->template($templatePrefix, $channel, $placement),
                     $data,
@@ -125,6 +136,7 @@ class SocialPublicationScheduleService
                 $caption,
                 $hashtags,
                 $postUrl,
+                $facebookLinkPreview,
             ): Collection {
                 return $targets->map(function (array $target) use (
                     $publishable,
@@ -133,6 +145,7 @@ class SocialPublicationScheduleService
                     $caption,
                     $hashtags,
                     $postUrl,
+                    $facebookLinkPreview,
                 ): SocialPublicationSchedule {
                     [$channel, $placement] = $target;
                     $artwork = $artworks[$channel->value][$placement->value];
@@ -144,6 +157,7 @@ class SocialPublicationScheduleService
                             'caption' => $caption,
                             'hashtags' => array_values($hashtags),
                             'post_url' => $postUrl,
+                            'link_preview' => $channel === PublicationChannel::Facebook && $facebookLinkPreview,
                         ],
                         'media_path' => $artwork->path,
                         'media_url' => $artwork->url,
@@ -189,9 +203,8 @@ class SocialPublicationScheduleService
     {
         return implode("\n\n", [
             $post->social['text'] ?? $post->title,
-            "Saiba mais em:\n".$this->shortPostUrl($post),
-            '---',
-            'Venha para a nossa comunidade do Discord, converse com gente que te entende. https://discord.akiba.com.br',
+            "🔗 Saiba mais:\n".$this->shortPostUrl($post),
+            "💬 Venha para a comunidade da Rede Akiba no Discord e converse com gente que te entende:\nhttps://discord.akiba.com.br",
         ]);
     }
 
@@ -199,9 +212,8 @@ class SocialPublicationScheduleService
     {
         return implode("\n\n", [
             $text,
-            'Ouça em: https://akiba.com.br',
-            'Venha para a nossa comunidade do Discord, converse com gente que te entende.',
-            'Entre em: https://discord.akiba.com.br',
+            "🎧 Ouça agora:\nhttps://akiba.com.br",
+            "💬 Venha para a comunidade da Rede Akiba no Discord e converse com gente que te entende:\nhttps://discord.akiba.com.br",
         ]);
     }
 

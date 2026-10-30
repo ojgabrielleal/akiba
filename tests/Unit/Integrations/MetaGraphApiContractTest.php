@@ -53,6 +53,17 @@ class MetaGraphApiContractTest extends TestCase
         $this->assertNotEmpty($contract['response']['post_id']);
     }
 
+    public function test_facebook_page_link_publication_contract(): void
+    {
+        $contract = $this->publicationContracts()['facebook_link_publish'];
+
+        $this->assertSame('POST', $contract['method']);
+        $this->assertSame('/{page_id}/feed', $contract['endpoint']);
+        $this->assertSame('bearer', $contract['authentication']);
+        $this->assertSame(['message', 'link'], array_keys($contract['request']));
+        $this->assertNotEmpty($contract['response']['id']);
+    }
+
     #[DataProvider('errorContractProvider')]
     public function test_it_classifies_graph_api_errors(
         array $error,

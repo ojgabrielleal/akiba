@@ -30,6 +30,7 @@ class MetaPublicationContractTest extends TestCase
         $this->assertSame('https://akiba.test/materia/nova-materia', $publication->postUrl);
         $this->assertSame('meta:post-uuid:publication-uuid:instagram:feed', $publication->idempotencyKey);
         $this->assertSame(PublicationPlacement::Feed, $publication->placement);
+        $this->assertFalse($publication->linkPreview);
     }
 
     public function test_it_represents_a_normalized_publication_result(): void

@@ -26,7 +26,7 @@
     };
 </script>
 
-<Meta meta={{ title: event.title }} />
+<Meta meta={{ title: event.title, canonical: event.canonical_url, ogImage: event.social_image_url, ogType: "article" }} />
 <Layout {flash} {oauth} {onair} {stream} {pageUrl} publicThemeEnabled>
     <section class="public-read-content-background bg-blue-marinho pt-5 pb-2">
         <div class="public-read-content-background bg-blue-marinho">

@@ -106,6 +106,47 @@ class MetaGraphClientTest extends TestCase
             && $request['message'] === "Nova matéria\n\n#Akiba #Anime");
     }
 
+    public function test_it_publishes_a_facebook_link_post_for_an_article(): void
+    {
+        Http::fake([
+            'https://graph.facebook.com/*' => Http::response([
+                'id' => 'facebook-page-id_facebook-post-id',
+            ]),
+        ]);
+
+        $result = $this->client->publish(
+            PublicationChannel::Facebook,
+            $this->publication(linkPreview: true),
+        );
+
+        $this->assertSame('facebook-page-id_facebook-post-id', $result->externalId);
+        Http::assertSent(fn (Request $request): bool => $request->method() === 'POST'
+            && $request->url() === 'https://graph.facebook.com/v24.0/facebook-page-id/feed'
+            && $request->hasHeader('Authorization', 'Bearer facebook-page-access-token')
+            && $request['link'] === 'https://akiba.test/posts/nova-materia'
+            && $request['message'] === "Nova matéria\n\n#Akiba #Anime"
+            && ! isset($request['url']));
+    }
+
+    public function test_it_limits_feed_captions_to_five_hashtags(): void
+    {
+        Http::fake([
+            'https://graph.facebook.com/*' => Http::response([
+                'id' => 'facebook-photo-id',
+                'post_id' => 'facebook-page-id_facebook-post-id',
+            ]),
+        ]);
+
+        $this->client->publish(PublicationChannel::Facebook, $this->publication(
+            hashtags: ['um', 'dois', 'tres', 'quatro', 'cinco', 'seis'],
+        ));
+
+        Http::assertSent(fn (Request $request): bool => $request['message'] === implode("\n\n", [
+            'Nova matéria',
+            '#um #dois #tres #quatro #cinco',
+        ]));
+    }
+
     public function test_it_waits_for_the_same_container_to_finish_before_publishing(): void
     {
         Http::fakeSequence()
@@ -191,15 +232,23 @@ class MetaGraphClientTest extends TestCase
         }
     }
 
-    private function publication(PublicationPlacement $placement = PublicationPlacement::Feed): PublicationData
+    /**
+     * @param  list<string>  $hashtags
+     */
+    private function publication(
+        PublicationPlacement $placement = PublicationPlacement::Feed,
+        array $hashtags = ['Akiba', '#Anime'],
+        bool $linkPreview = false,
+    ): PublicationData
     {
         return new PublicationData(
             caption: 'Nova matéria',
-            hashtags: ['Akiba', '#Anime'],
+            hashtags: $hashtags,
             imageUrl: 'https://akiba.test/social/post.jpg',
             postUrl: 'https://akiba.test/posts/nova-materia',
             idempotencyKey: "meta:post:publication:instagram:{$placement->value}",
             placement: $placement,
+            linkPreview: $linkPreview,
         );
     }
 }

@@ -38,6 +38,7 @@ class PublishSocialPublicationScheduleTest extends TestCase
         $this->assertSame(1, $publisher->calls);
         $this->assertSame($schedule->idempotency_key, $publisher->publication?->idempotencyKey);
         $this->assertSame(PublicationPlacement::Feed, $publisher->publication?->placement);
+        $this->assertFalse($publisher->publication?->linkPreview);
         Storage::disk('public')->assertMissing('social-artworks/post/feed.jpg');
     }
 

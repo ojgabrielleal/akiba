@@ -42,7 +42,7 @@
         .toUpperCase();
 </script>
 
-<Meta meta={{ title: review.title }} />
+<Meta meta={{ title: review.title, canonical: review.canonical_url, ogImage: review.social_image_url, ogType: "article" }} />
 <Layout {flash} {oauth} {onair} {stream} {pageUrl} publicThemeEnabled>
     <section class="public-read-content-background bg-blue-marinho pt-5 pb-2">
         <div class="public-read-content-background bg-blue-marinho">

@@ -60,6 +60,7 @@ class PublishSocialPublicationSchedule implements ShouldBeUnique, ShouldQueue
                     postUrl: (string) ($payload['post_url'] ?? ''),
                     idempotencyKey: $schedule->idempotency_key,
                     placement: PublicationPlacement::from($schedule->placement),
+                    linkPreview: (bool) ($payload['link_preview'] ?? false),
                 ),
             );
 

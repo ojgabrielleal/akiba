@@ -78,6 +78,8 @@ class PostResource extends JsonResource
             'uuid' => $this->uuid,
             'slug' => $this->slug,
             'href' => $this->href(),
+            'canonical_url' => url($this->href()),
+            'social_image_url' => route('post.social-image', $this->uuid),
             'title' => $this->title,
             'image' => $this->image,
             'cover' => $this->cover,

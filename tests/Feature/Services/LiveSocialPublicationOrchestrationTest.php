@@ -40,7 +40,7 @@ class LiveSocialPublicationOrchestrationTest extends TestCase
                     url: "https://akiba.test/storage/social-artworks/live/{$template}.jpg",
                     mimeType: 'image/jpeg',
                     width: $template === 'facebook-live-feed' ? 1200 : 1080,
-                    height: $template === 'facebook-live-feed' ? 630 : 1350,
+                    height: $template === 'facebook-live-feed' ? 1500 : 1350,
                     size: 100,
                 ));
         });
@@ -57,6 +57,11 @@ class LiveSocialPublicationOrchestrationTest extends TestCase
         $this->assertSame(['facebook', 'instagram'], $schedules->pluck('channel')->all());
         $this->assertSame(['feed', 'feed'], $schedules->pluck('placement')->all());
         $this->assertSame($schedules[0]->payload, $schedules[1]->payload);
+        $this->assertSame(implode("\n\n", [
+            'O Conexão Akiba está no ar!',
+            "🎧 Ouça agora:\nhttps://akiba.com.br",
+            "💬 Venha para a comunidade da Rede Akiba no Discord e converse com gente que te entende:\nhttps://discord.akiba.com.br",
+        ]), $schedules[0]->payload['caption']);
         $this->assertSame(['radio', 'anime'], $schedules[0]->payload['hashtags']);
         $this->assertStringStartsWith('social:Onair:', $schedules[0]->idempotency_key);
         Queue::assertPushed(PublishSocialPublicationSchedule::class, 2);

@@ -54,8 +54,8 @@ class SocialArtworkProcessTest extends TestCase
             'instagram-live-feed' => [1080, 1350],
             'instagram-story' => [1080, 1920],
             'instagram-live-story' => [1080, 1920],
-            'facebook-feed' => [1200, 630],
-            'facebook-live-feed' => [1200, 630],
+            'facebook-feed' => [1200, 1500],
+            'facebook-live-feed' => [1200, 1500],
             'discord-post' => [1200, 630],
         ] as $template => $expectedDimensions) {
             $size = getimagesizefromstring($process->render($template, $this->artwork()));

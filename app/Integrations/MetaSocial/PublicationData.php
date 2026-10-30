@@ -14,5 +14,6 @@ final readonly class PublicationData
         public string $postUrl,
         public string $idempotencyKey,
         public PublicationPlacement $placement = PublicationPlacement::Feed,
+        public bool $linkPreview = false,
     ) {}
 }

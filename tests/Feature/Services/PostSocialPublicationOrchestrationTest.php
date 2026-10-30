@@ -91,16 +91,18 @@ class PostSocialPublicationOrchestrationTest extends TestCase
         $facebookSchedule = $manual->socialPublicationSchedules()->where('channel', 'facebook')->firstOrFail();
         $this->assertSame(implode("\n\n", [
             'Legenda editorial para o Instagram.',
-            "Saiba mais em:\n".route('post.short', $manual->short_code),
-            '---',
-            'Venha para a nossa comunidade do Discord, converse com gente que te entende. https://discord.akiba.com.br',
+            "🔗 Saiba mais:\n".route('post.short', $manual->short_code),
+            "💬 Venha para a comunidade da Rede Akiba no Discord e converse com gente que te entende:\nhttps://discord.akiba.com.br",
         ]), $manualSchedule->payload['caption']);
         $this->assertSame(['anime', 'redeakiba'], $manualSchedule->payload['hashtags']);
-        $this->assertSame($manualSchedule->payload, $facebookSchedule->payload);
-        $this->assertStringContainsString('facebook-feed-', $facebookSchedule->media_path);
+        $this->assertSame($manualSchedule->payload['caption'], $facebookSchedule->payload['caption']);
+        $this->assertSame($manualSchedule->payload['hashtags'], $facebookSchedule->payload['hashtags']);
+        $this->assertFalse($manualSchedule->payload['link_preview']);
+        $this->assertTrue($facebookSchedule->payload['link_preview']);
+        $this->assertSame($manualSchedule->payload['post_url'], $facebookSchedule->media_url);
+        $this->assertNull($facebookSchedule->media_path);
         $this->assertStringContainsString('/storage/social-artworks/', $manualSchedule->media_url);
         Storage::disk('public')->assertExists($manualSchedule->media_path);
-        Storage::disk('public')->assertExists($facebookSchedule->media_path);
         Queue::assertPushed(PublishSocialPublicationSchedule::class, 6);
 
         $service->update($manual, $user, [
