@@ -10,7 +10,9 @@ use Illuminate\Support\Facades\Http;
 
 final class GraphClient implements Publisher
 {
-    private const BASE_URL = 'https://graph.instagram.com';
+    private const INSTAGRAM_BASE_URL = 'https://graph.instagram.com';
+
+    private const FACEBOOK_BASE_URL = 'https://graph.facebook.com';
 
     public function __construct(
         private readonly PublicationConfiguration $configuration,
@@ -24,6 +26,7 @@ final class GraphClient implements Publisher
 
         return match ($channel) {
             PublicationChannel::Instagram => $this->publishInstagram($publication),
+            PublicationChannel::Facebook => $this->publishFacebook($publication),
         };
     }
 
@@ -40,6 +43,7 @@ final class GraphClient implements Publisher
         }
 
         $containerResponse = $this->post(
+            PublicationChannel::Instagram,
             $this->configuredPath('instagram_user_id', 'media'),
             $containerData,
         );
@@ -47,7 +51,7 @@ final class GraphClient implements Publisher
 
         $this->waitForContainer($containerId);
 
-        $publicationResponse = $this->post($this->configuredPath('instagram_user_id', 'media_publish'), [
+        $publicationResponse = $this->post(PublicationChannel::Instagram, $this->configuredPath('instagram_user_id', 'media_publish'), [
             'creation_id' => $containerId,
         ]);
 
@@ -58,13 +62,35 @@ final class GraphClient implements Publisher
         );
     }
 
+    private function publishFacebook(PublicationData $publication): PublicationResult
+    {
+        $response = $this->post(
+            PublicationChannel::Facebook,
+            $this->configuredPath('facebook_page_id', 'photos'),
+            [
+                'url' => $publication->imageUrl,
+                'message' => $this->socialCaption($publication),
+            ],
+        );
+
+        $externalId = $response->json('post_id');
+
+        return new PublicationResult(
+            channel: PublicationChannel::Facebook,
+            externalId: is_string($externalId) && $externalId !== ''
+                ? $externalId
+                : $this->requiredId($response),
+            publishedAt: new DateTimeImmutable,
+        );
+    }
+
     /**
      * @param  array<string, string>  $data
      */
-    private function post(string $path, array $data): Response
+    private function post(PublicationChannel $channel, string $path, array $data): Response
     {
         try {
-            return $this->validateResponse($this->request()->post($path, $data));
+            return $this->validateResponse($this->request($channel)->post($path, $data));
         } catch (ConnectionException $exception) {
             throw $this->connectionException($exception);
         }
@@ -76,16 +102,16 @@ final class GraphClient implements Publisher
     private function get(string $path, array $query): Response
     {
         try {
-            return $this->validateResponse($this->request()->get($path, $query));
+            return $this->validateResponse($this->request(PublicationChannel::Instagram)->get($path, $query));
         } catch (ConnectionException $exception) {
             throw $this->connectionException($exception);
         }
     }
 
-    private function request(): PendingRequest
+    private function request(PublicationChannel $channel): PendingRequest
     {
-        return Http::baseUrl($this->baseUrl())
-            ->withToken((string) config('services.meta.access_token'))
+        return Http::baseUrl($this->baseUrl($channel))
+            ->withToken((string) config("services.meta.{$channel->value}_access_token"))
             ->acceptJson()
             ->asForm()
             ->connectTimeout((float) config('services.meta.connect_timeout', 5))
@@ -178,9 +204,14 @@ final class GraphClient implements Publisher
         );
     }
 
-    private function baseUrl(): string
+    private function baseUrl(PublicationChannel $channel): string
     {
-        return self::BASE_URL.'/'.trim((string) config('services.meta.graph_version'), '/');
+        $baseUrl = match ($channel) {
+            PublicationChannel::Instagram => self::INSTAGRAM_BASE_URL,
+            PublicationChannel::Facebook => self::FACEBOOK_BASE_URL,
+        };
+
+        return $baseUrl.'/'.trim((string) config('services.meta.graph_version'), '/');
     }
 
     private function configuredPath(string $setting, string $endpoint): string
@@ -189,6 +220,11 @@ final class GraphClient implements Publisher
     }
 
     private function instagramCaption(PublicationData $publication): string
+    {
+        return $this->socialCaption($publication);
+    }
+
+    private function socialCaption(PublicationData $publication): string
     {
         return $this->joinCaption([
             $publication->caption,

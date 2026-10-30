@@ -192,7 +192,7 @@ class PostUpdateValidationTest extends TestCase
             ]);
 
         $response->assertSessionHasNoErrors();
-        $this->assertSame($social, $post->refresh()->social);
+        $this->assertEquals($social, $post->refresh()->social);
         Queue::assertNothingPushed();
     }
 
@@ -209,12 +209,15 @@ class PostUpdateValidationTest extends TestCase
             ->create();
     }
 
-    private function social(bool $instagram = true): array
+    private function social(bool $instagram = true, bool $facebook = true): array
     {
         return [
             'text' => 'Conteúdo novo na Rede Akiba.',
             'hashtags' => ['#anime', '#redeakiba'],
-            'channels' => ['instagram' => $instagram],
+            'channels' => [
+                'instagram' => $instagram,
+                'facebook' => $facebook,
+            ],
         ];
     }
 }

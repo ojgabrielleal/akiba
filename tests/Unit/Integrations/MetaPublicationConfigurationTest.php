@@ -5,6 +5,7 @@ namespace Tests\Unit\Integrations;
 use App\Integrations\MetaSocial\PublicationChannel;
 use App\Integrations\MetaSocial\PublicationConfiguration;
 use App\Integrations\MetaSocial\PublicationConfigurationException;
+use App\Integrations\MetaSocial\PublicationPlacement;
 use Tests\TestCase;
 
 class MetaPublicationConfigurationTest extends TestCase
@@ -19,8 +20,11 @@ class MetaPublicationConfigurationTest extends TestCase
         config([
             'services.meta.graph_version' => 'v24.0',
             'services.meta.instagram_user_id' => 'instagram-user-id',
-            'services.meta.access_token' => 'secret-access-token',
+            'services.meta.instagram_access_token' => 'secret-access-token',
+            'services.meta.facebook_page_id' => 'facebook-page-id',
+            'services.meta.facebook_access_token' => 'facebook-page-access-token',
             'services.meta.instagram_enabled' => false,
+            'services.meta.facebook_enabled' => false,
         ]);
     }
 
@@ -49,13 +53,39 @@ class MetaPublicationConfigurationTest extends TestCase
             'services.meta.instagram_enabled' => true,
             'services.meta.graph_version' => null,
             'services.meta.instagram_user_id' => null,
-            'services.meta.access_token' => null,
+            'services.meta.instagram_access_token' => null,
         ]);
 
         $this->assertFalse($this->configuration->isReady(PublicationChannel::Instagram));
         $this->assertSame(
-            ['graph_version', 'access_token', 'instagram_user_id'],
+            ['graph_version', 'instagram_access_token', 'instagram_user_id'],
             $this->configuration->missingSettings(PublicationChannel::Instagram),
+        );
+    }
+
+    public function test_enabled_facebook_is_ready_with_its_page_credentials(): void
+    {
+        config(['services.meta.facebook_enabled' => true]);
+
+        $this->assertTrue($this->configuration->isReady(PublicationChannel::Facebook));
+        $this->assertSame(
+            [PublicationPlacement::Feed],
+            $this->configuration->enabledPlacements(PublicationChannel::Facebook),
+        );
+    }
+
+    public function test_facebook_reports_only_its_missing_settings(): void
+    {
+        config([
+            'services.meta.facebook_enabled' => true,
+            'services.meta.graph_version' => null,
+            'services.meta.facebook_page_id' => null,
+            'services.meta.facebook_access_token' => null,
+        ]);
+
+        $this->assertSame(
+            ['graph_version', 'facebook_access_token', 'facebook_page_id'],
+            $this->configuration->missingSettings(PublicationChannel::Facebook),
         );
     }
 

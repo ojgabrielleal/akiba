@@ -54,6 +54,8 @@ class SocialArtworkProcessTest extends TestCase
             'instagram-live-feed' => [1080, 1350],
             'instagram-story' => [1080, 1920],
             'instagram-live-story' => [1080, 1920],
+            'facebook-feed' => [1200, 630],
+            'facebook-live-feed' => [1200, 630],
             'discord-post' => [1200, 630],
         ] as $template => $expectedDimensions) {
             $size = getimagesizefromstring($process->render($template, $this->artwork()));
@@ -153,6 +155,7 @@ class SocialArtworkProcessTest extends TestCase
             'titles' => [
                 'instagram-feed' => 'Novo projeto de anime ganha janela de estreia e surpreende os fãs',
                 'instagram-story' => 'Novo projeto de anime ganha janela de estreia e surpreende os fãs',
+                'facebook-feed' => 'Novo projeto de anime ganha janela de estreia e surpreende os fãs',
             ],
             'category' => 'Notícia',
             'published_at' => '24 OUT 2026',

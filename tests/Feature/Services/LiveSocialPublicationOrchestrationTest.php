@@ -24,18 +24,23 @@ class LiveSocialPublicationOrchestrationTest extends TestCase
         config([
             'services.meta.instagram_enabled' => true,
             'services.meta.instagram_feed_enabled' => true,
+            'services.meta.facebook_enabled' => true,
+            'services.meta.facebook_feed_enabled' => true,
         ]);
         $this->mock(SocialArtworkProcess::class, function (MockInterface $mock): void {
             $mock->shouldReceive('generate')
-                ->once()
-                ->withArgs(fn (string $template): bool => $template === 'instagram-live-feed')
-                ->andReturn(new SocialArtworkResult(
-                    template: 'instagram-live-feed',
-                    path: 'social-artworks/live/feed.jpg',
-                    url: 'https://akiba.test/storage/social-artworks/live/feed.jpg',
+                ->twice()
+                ->withArgs(fn (string $template): bool => in_array($template, [
+                    'instagram-live-feed',
+                    'facebook-live-feed',
+                ], true))
+                ->andReturnUsing(fn (string $template): SocialArtworkResult => new SocialArtworkResult(
+                    template: $template,
+                    path: "social-artworks/live/{$template}.jpg",
+                    url: "https://akiba.test/storage/social-artworks/live/{$template}.jpg",
                     mimeType: 'image/jpeg',
-                    width: 1080,
-                    height: 1350,
+                    width: $template === 'facebook-live-feed' ? 1200 : 1080,
+                    height: $template === 'facebook-live-feed' ? 630 : 1350,
                     size: 100,
                 ));
         });
@@ -48,11 +53,12 @@ class LiveSocialPublicationOrchestrationTest extends TestCase
             'hashtags' => ['radio', 'anime'],
         ]);
 
-        $schedule = $onair->socialPublicationSchedules()->firstOrFail();
-        $this->assertSame('instagram', $schedule->channel);
-        $this->assertSame('feed', $schedule->placement);
-        $this->assertSame(['radio', 'anime'], $schedule->payload['hashtags']);
-        $this->assertStringStartsWith('social:Onair:', $schedule->idempotency_key);
-        Queue::assertPushed(PublishSocialPublicationSchedule::class, 1);
+        $schedules = $onair->socialPublicationSchedules()->orderBy('channel')->get();
+        $this->assertSame(['facebook', 'instagram'], $schedules->pluck('channel')->all());
+        $this->assertSame(['feed', 'feed'], $schedules->pluck('placement')->all());
+        $this->assertSame($schedules[0]->payload, $schedules[1]->payload);
+        $this->assertSame(['radio', 'anime'], $schedules[0]->payload['hashtags']);
+        $this->assertStringStartsWith('social:Onair:', $schedules[0]->idempotency_key);
+        Queue::assertPushed(PublishSocialPublicationSchedule::class, 2);
     }
 }

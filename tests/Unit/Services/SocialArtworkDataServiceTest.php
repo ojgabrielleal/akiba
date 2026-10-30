@@ -58,6 +58,7 @@ class SocialArtworkDataServiceTest extends TestCase
         $this->assertStringEndsWith('/review/review-akiba', $artwork['url']);
         $this->assertLessThanOrEqual(90, mb_strlen($artwork['titles']['instagram-feed']));
         $this->assertLessThanOrEqual(80, mb_strlen($artwork['titles']['instagram-story']));
+        $this->assertLessThanOrEqual(110, mb_strlen($artwork['titles']['facebook-feed']));
         $this->assertLessThanOrEqual(110, mb_strlen($artwork['titles']['discord-post']));
         $this->assertStringEndsWith('…', $artwork['titles']['instagram-feed']);
     }

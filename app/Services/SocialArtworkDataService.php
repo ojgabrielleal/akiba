@@ -15,6 +15,8 @@ class SocialArtworkDataService
         'instagram-live-feed' => 72,
         'instagram-story' => 80,
         'instagram-live-story' => 72,
+        'facebook-feed' => 110,
+        'facebook-live-feed' => 72,
         'discord-post' => 110,
     ];
 

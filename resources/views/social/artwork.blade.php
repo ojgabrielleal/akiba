@@ -34,6 +34,16 @@
             'width' => 1080,
             'height' => 1350,
         ],
+        'facebook-feed' => [
+            'label' => 'Facebook',
+            'width' => 1200,
+            'height' => 630,
+        ],
+        'facebook-live-feed' => [
+            'label' => 'Locução no Facebook',
+            'width' => 1200,
+            'height' => 630,
+        ],
         'discord-post' => [
             'label' => 'Discord',
             'width' => 1200,
@@ -272,6 +282,12 @@
         [data-social-template="instagram-live-feed"] {
             width: 1080px;
             height: 1350px;
+        }
+
+        [data-social-template="facebook-feed"],
+        [data-social-template="facebook-live-feed"] {
+            width: 1200px;
+            height: 630px;
         }
 
         [data-social-template="instagram-feed"] .social-artwork__content,
@@ -780,7 +796,7 @@
 <body>
     <main class="artwork-sheet" aria-label="Modelos de artes sociais da Rede Akiba">
         @foreach ($templates as $template => $dimensions)
-            @php($isLive = str_starts_with($template, 'instagram-live-'))
+            @php($isLive = str_contains($template, '-live-'))
             <section
                 id="{{ $template }}"
                 class="social-artwork"

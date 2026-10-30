@@ -86,7 +86,7 @@ class SocialPublicationScheduleService
         try {
             foreach ($targets as [$channel, $placement]) {
                 $artworks[$channel->value][$placement->value] = $this->artwork->generate(
-                    $this->template($templatePrefix, $placement),
+                    $this->template($templatePrefix, $channel, $placement),
                     $data,
                     $artworkOwner,
                     $publicationUuid,
@@ -173,9 +173,16 @@ class SocialPublicationScheduleService
         return $schedules;
     }
 
-    private function template(string $prefix, PublicationPlacement $placement): string
-    {
-        return $prefix.'-'.$placement->value;
+    private function template(
+        string $prefix,
+        PublicationChannel $channel,
+        PublicationPlacement $placement,
+    ): string {
+        $suffix = str_starts_with($prefix, 'instagram')
+            ? substr($prefix, strlen('instagram'))
+            : '';
+
+        return $channel->value.$suffix.'-'.$placement->value;
     }
 
     private function postCaption(Post $post): string

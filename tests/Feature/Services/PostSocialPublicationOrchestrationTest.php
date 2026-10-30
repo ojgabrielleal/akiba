@@ -29,11 +29,17 @@ class PostSocialPublicationOrchestrationTest extends TestCase
         config([
             'services.meta.instagram_enabled' => true,
             'services.meta.instagram_feed_enabled' => true,
+            'services.meta.facebook_enabled' => false,
+            'services.meta.facebook_feed_enabled' => true,
         ]);
     }
 
-    public function test_manual_approval_and_scheduled_flows_each_enqueue_instagram_once(): void
+    public function test_manual_approval_and_scheduled_flows_enqueue_instagram_and_facebook_once(): void
     {
+        config([
+            'services.meta.facebook_enabled' => true,
+            'services.meta.facebook_feed_enabled' => true,
+        ]);
         $service = app(PostService::class);
         $user = User::factory()->create();
 
@@ -69,19 +75,20 @@ class PostSocialPublicationOrchestrationTest extends TestCase
         ]);
         Artisan::call('posts:publish-reviewed', ['--hours' => 1, '--news-hours' => 1]);
 
-        $this->assertDatabaseCount('social_publication_schedules', 3);
-        $this->assertCount(1, $manual->socialPublicationSchedules);
-        $this->assertCount(1, $approval->socialPublicationSchedules);
-        $this->assertCount(1, $scheduled->socialPublicationSchedules);
+        $this->assertDatabaseCount('social_publication_schedules', 6);
+        $this->assertCount(2, $manual->socialPublicationSchedules);
+        $this->assertCount(2, $approval->socialPublicationSchedules);
+        $this->assertCount(2, $scheduled->socialPublicationSchedules);
         $this->assertSame(
-            ['instagram'],
+            ['facebook', 'instagram'],
             $manual->socialPublicationSchedules()->orderBy('channel')->pluck('channel')->all(),
         );
         $this->assertSame(
-            ['feed'],
-            $manual->socialPublicationSchedules()->pluck('placement')->all(),
+            ['feed', 'feed'],
+            $manual->socialPublicationSchedules()->orderBy('channel')->pluck('placement')->all(),
         );
-        $manualSchedule = $manual->socialPublicationSchedules()->firstOrFail();
+        $manualSchedule = $manual->socialPublicationSchedules()->where('channel', 'instagram')->firstOrFail();
+        $facebookSchedule = $manual->socialPublicationSchedules()->where('channel', 'facebook')->firstOrFail();
         $this->assertSame(implode("\n\n", [
             'Legenda editorial para o Instagram.',
             "Saiba mais em:\n".route('post.short', $manual->short_code),
@@ -89,9 +96,12 @@ class PostSocialPublicationOrchestrationTest extends TestCase
             'Venha para a nossa comunidade do Discord, converse com gente que te entende. https://discord.akiba.com.br',
         ]), $manualSchedule->payload['caption']);
         $this->assertSame(['anime', 'redeakiba'], $manualSchedule->payload['hashtags']);
+        $this->assertSame($manualSchedule->payload, $facebookSchedule->payload);
+        $this->assertStringContainsString('facebook-feed-', $facebookSchedule->media_path);
         $this->assertStringContainsString('/storage/social-artworks/', $manualSchedule->media_url);
         Storage::disk('public')->assertExists($manualSchedule->media_path);
-        Queue::assertPushed(PublishSocialPublicationSchedule::class, 3);
+        Storage::disk('public')->assertExists($facebookSchedule->media_path);
+        Queue::assertPushed(PublishSocialPublicationSchedule::class, 6);
 
         $service->update($manual, $user, [
             'module' => 'post',
@@ -101,8 +111,8 @@ class PostSocialPublicationOrchestrationTest extends TestCase
             'tags' => [],
         ]);
 
-        $this->assertDatabaseCount('social_publication_schedules', 3);
-        Queue::assertPushed(PublishSocialPublicationSchedule::class, 3);
+        $this->assertDatabaseCount('social_publication_schedules', 6);
+        Queue::assertPushed(PublishSocialPublicationSchedule::class, 6);
     }
 
     public function test_disabled_channels_do_not_create_a_publication_or_job(): void

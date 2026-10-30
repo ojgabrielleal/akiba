@@ -12,6 +12,8 @@ class SocialArtworkViewTest extends TestCase
 
         $this->assertStringContainsString('data-social-template="instagram-feed"', $html);
         $this->assertStringContainsString('data-social-template="instagram-live-feed"', $html);
+        $this->assertStringContainsString('data-social-template="facebook-feed"', $html);
+        $this->assertStringContainsString('data-social-template="facebook-live-feed"', $html);
         $this->assertStringContainsString('data-width="1080"', $html);
         $this->assertStringContainsString('data-height="1350"', $html);
         $this->assertStringContainsString('data-social-template="discord-post"', $html);
@@ -22,11 +24,11 @@ class SocialArtworkViewTest extends TestCase
         $this->assertStringContainsString('class="live-artwork__status">No ar', $html);
         $this->assertStringNotContainsString('class="live-artwork__program-logo"', $html);
         $this->assertStringNotContainsString('Transmissão Ao vivo', $html);
-        $this->assertSame(3, substr_count($html, 'class="social-artwork"'));
+        $this->assertSame(5, substr_count($html, 'class="social-artwork"'));
         $this->assertStringContainsString('class="social-artwork__avatar"', $html);
         $this->assertStringNotContainsString('<span>akiba.com.br</span>', $html);
         $this->assertStringNotContainsString('class="social-artwork__channel"', $html);
-        $this->assertSame(3, substr_count($html, 'class="social-artwork__jp-stamp"'));
+        $this->assertSame(5, substr_count($html, 'class="social-artwork__jp-stamp"'));
         $this->assertStringContainsString('アニメ · マンガ · 音楽 · 日本', $html);
         $this->assertStringNotContainsString('social-artwork__manga-lines', $html);
         $this->assertStringNotContainsString('social-artwork__anime-mark', $html);

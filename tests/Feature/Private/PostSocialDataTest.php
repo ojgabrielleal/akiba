@@ -86,7 +86,7 @@ class PostSocialDataTest extends TestCase
         $this->assertEquals([
             'text' => 'Confira a novidade da Akiba!',
             'hashtags' => ['anime', 'redeakiba', '日本'],
-            'channels' => ['instagram' => true],
+            'channels' => ['instagram' => true, 'facebook' => true],
         ], $post->social);
         $this->assertSame('revision', $post->status);
         $this->assertDatabaseCount('social_publication_schedules', 0);
@@ -114,6 +114,21 @@ class PostSocialDataTest extends TestCase
             'social' => $this->social(false),
         ])->assertSessionHasErrors([
             'social.channels.instagram' => 'A publicação no Instagram é obrigatória.',
+        ]);
+
+        $this->assertDatabaseCount('posts', 0);
+        Queue::assertNotPushed(PublishSocialPublicationSchedule::class);
+    }
+
+    public function test_published_post_requires_the_facebook_channel(): void
+    {
+        $user = $this->userWithPermissions(['post.create', 'post.publish']);
+
+        $this->actingAs($user)->post('/panel/post', [
+            ...$this->validPostPayload('published'),
+            'social' => $this->social(facebook: false),
+        ])->assertSessionHasErrors([
+            'social.channels.facebook' => 'A publicação no Facebook é obrigatória.',
         ]);
 
         $this->assertDatabaseCount('posts', 0);
@@ -214,12 +229,15 @@ class PostSocialDataTest extends TestCase
         ];
     }
 
-    private function social(bool $instagram = true): array
+    private function social(bool $instagram = true, bool $facebook = true): array
     {
         return [
             'text' => 'Texto criado para as redes sociais.',
             'hashtags' => ['#anime', '#redeakiba'],
-            'channels' => ['instagram' => $instagram],
+            'channels' => [
+                'instagram' => $instagram,
+                'facebook' => $facebook,
+            ],
         ];
     }
 

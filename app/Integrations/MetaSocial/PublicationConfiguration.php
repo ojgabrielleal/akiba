@@ -27,6 +27,9 @@ final class PublicationConfiguration
             PublicationChannel::Instagram => config('services.meta.instagram_feed_enabled', true)
                 ? [PublicationPlacement::Feed]
                 : [],
+            PublicationChannel::Facebook => config('services.meta.facebook_feed_enabled', true)
+                ? [PublicationPlacement::Feed]
+                : [],
         };
     }
 
@@ -35,13 +38,18 @@ final class PublicationConfiguration
      */
     public function missingSettings(PublicationChannel $channel): array
     {
-        $required = [
-            'graph_version',
-            'access_token',
-            match ($channel) {
-                PublicationChannel::Instagram => 'instagram_user_id',
-            },
-        ];
+        $required = match ($channel) {
+            PublicationChannel::Instagram => [
+                'graph_version',
+                'instagram_access_token',
+                'instagram_user_id',
+            ],
+            PublicationChannel::Facebook => [
+                'graph_version',
+                'facebook_access_token',
+                'facebook_page_id',
+            ],
+        };
 
         return array_values(array_filter(
             $required,

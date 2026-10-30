@@ -24,6 +24,19 @@
             "status": "Finished: Media has been uploaded and it is ready to be published."
         }
     },
+    "facebook_photo_publish": {
+        "method": "POST",
+        "endpoint": "/{page_id}/photos",
+        "authentication": "bearer",
+        "request": {
+            "url": "https://akiba.test/social/facebook.jpg",
+            "message": "Nova matéria na Rede Akiba #Akiba"
+        },
+        "response": {
+            "id": "100000000000001",
+            "post_id": "100000000000000_200000000000001"
+        }
+    },
     "instagram_media_publish": {
         "method": "POST",
         "endpoint": "/{ig_user_id}/media_publish",

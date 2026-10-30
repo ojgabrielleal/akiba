@@ -26,12 +26,15 @@ class MetaGraphClientTest extends TestCase
         config([
             'services.meta.graph_version' => 'v24.0',
             'services.meta.instagram_user_id' => 'instagram-user-id',
-            'services.meta.access_token' => 'secret-access-token',
+            'services.meta.instagram_access_token' => 'secret-access-token',
+            'services.meta.facebook_page_id' => 'facebook-page-id',
+            'services.meta.facebook_access_token' => 'facebook-page-access-token',
             'services.meta.timeout' => 15,
             'services.meta.connect_timeout' => 5,
             'services.meta.container_poll_attempts' => 5,
             'services.meta.container_poll_interval_ms' => 0,
             'services.meta.instagram_enabled' => true,
+            'services.meta.facebook_enabled' => true,
         ]);
 
         $this->client = new GraphClient(new PublicationConfiguration);
@@ -81,6 +84,26 @@ class MetaGraphClientTest extends TestCase
             && $request['image_url'] === 'https://akiba.test/social/post.jpg'
             && $request['media_type'] === 'STORIES'
             && ! isset($request['caption']));
+    }
+
+    public function test_it_publishes_a_facebook_page_photo_with_the_instagram_caption_structure(): void
+    {
+        Http::fake([
+            'https://graph.facebook.com/*' => Http::response([
+                'id' => 'facebook-photo-id',
+                'post_id' => 'facebook-page-id_facebook-post-id',
+            ]),
+        ]);
+
+        $result = $this->client->publish(PublicationChannel::Facebook, $this->publication());
+
+        $this->assertSame(PublicationChannel::Facebook, $result->channel);
+        $this->assertSame('facebook-page-id_facebook-post-id', $result->externalId);
+        Http::assertSent(fn (Request $request): bool => $request->method() === 'POST'
+            && $request->url() === 'https://graph.facebook.com/v24.0/facebook-page-id/photos'
+            && $request->hasHeader('Authorization', 'Bearer facebook-page-access-token')
+            && $request['url'] === 'https://akiba.test/social/post.jpg'
+            && $request['message'] === "Nova matéria\n\n#Akiba #Anime");
     }
 
     public function test_it_waits_for_the_same_container_to_finish_before_publishing(): void

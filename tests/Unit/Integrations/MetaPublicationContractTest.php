@@ -66,6 +66,14 @@ class MetaPublicationContractTest extends TestCase
         );
 
         $this->assertSame('meta:post-uuid:publication-uuid:instagram:story', $instagramStory);
+
+        $facebook = PublicationIdempotencyKey::make(
+            'post-uuid',
+            'publication-uuid',
+            PublicationChannel::Facebook,
+        );
+
+        $this->assertSame('meta:post-uuid:publication-uuid:facebook:feed', $facebook);
     }
 
     public function test_only_rate_limits_and_temporary_failures_are_retryable(): void

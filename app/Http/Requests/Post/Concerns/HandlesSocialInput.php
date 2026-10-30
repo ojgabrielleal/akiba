@@ -44,9 +44,16 @@ trait HandlesSocialInput
         }
 
         if (! array_key_exists('channels', $social)) {
-            $social['channels'] = ['instagram' => true];
-        } elseif (is_array($social['channels']) && ! array_key_exists('instagram', $social['channels'])) {
-            $social['channels']['instagram'] = true;
+            $social['channels'] = [
+                'instagram' => true,
+                'facebook' => true,
+            ];
+        } elseif (is_array($social['channels'])) {
+            $social['channels'] = [
+                'instagram' => true,
+                'facebook' => true,
+                ...$social['channels'],
+            ];
         }
 
         $this->merge(['social' => $social]);
@@ -58,7 +65,7 @@ trait HandlesSocialInput
     protected function socialRules(): array
     {
         $required = $this->isDraft() ? 'nullable' : 'required';
-        $instagramRule = $this->isDraft() ? 'boolean' : 'accepted';
+        $channelRule = $this->isDraft() ? 'boolean' : 'accepted';
 
         return [
             'social' => [$required, 'array'],
@@ -66,7 +73,8 @@ trait HandlesSocialInput
             'social.hashtags' => ['nullable', 'array', 'max:50'],
             'social.hashtags.*' => ['string', 'max:51', 'regex:/^#[\pL\pN_]+$/u'],
             'social.channels' => [$required, 'array'],
-            'social.channels.instagram' => [$required, $instagramRule],
+            'social.channels.instagram' => [$required, $channelRule],
+            'social.channels.facebook' => [$required, $channelRule],
         ];
     }
 
@@ -90,6 +98,8 @@ trait HandlesSocialInput
             'social.channels.array' => 'Os canais de divulgação são inválidos.',
             'social.channels.instagram.required' => 'Informe se o conteúdo deve ser publicado no Instagram.',
             'social.channels.instagram.accepted' => 'A publicação no Instagram é obrigatória.',
+            'social.channels.facebook.required' => 'Informe se o conteúdo deve ser publicado no Facebook.',
+            'social.channels.facebook.accepted' => 'A publicação no Facebook é obrigatória.',
         ];
     }
 }

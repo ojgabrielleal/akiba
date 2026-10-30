@@ -490,7 +490,10 @@ class PostService
             ->map(fn (string $hashtag): string => ltrim($hashtag, '#'))
             ->values()
             ->all();
-        $social['channels'] = ['instagram' => true];
+        $social['channels'] = [
+            'instagram' => true,
+            'facebook' => true,
+        ];
 
         return $social;
     }

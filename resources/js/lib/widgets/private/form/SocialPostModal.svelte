@@ -18,7 +18,7 @@
     const emptySocial = () => ({
         text: "",
         hashtags: [],
-        channels: { instagram: true },
+        channels: { instagram: true, facebook: true },
     });
 
     let modalRef;
@@ -78,6 +78,7 @@
             ...(value ?? {}),
             channels: {
                 instagram: true,
+                facebook: true,
                 ...(value?.channels ?? {}),
             },
         };
@@ -104,6 +105,7 @@
                 hashtags: parseHashtags(hashtagsText),
                 channels: {
                     instagram: Boolean(social.channels.instagram),
+                    facebook: Boolean(social.channels.facebook),
                 },
             },
         });
