@@ -13,7 +13,7 @@
             'host_avatar' => asset('img/placeholders/avatar.webp'),
             'status' => 'Ao vivo',
             'call_to_action' => 'Sintonize agora',
-            'background' => asset('img/pages/home/backgrounds/featured.svg'),
+            'background' => asset('img/social-artwork/backgrounds/featured.png'),
         ],
         'url' => url('/'),
         'published_at' => '24 OUT 2026',
@@ -330,10 +330,11 @@
 
         [data-social-template="instagram-feed"] .social-artwork__header {
             position: absolute;
-            top: 60px;
-            left: 60px;
+            right: 90px;
+            bottom: 54px;
             width: 260px;
-            height: 110px;
+            height: 76px;
+            justify-content: flex-end;
         }
 
         [data-social-template="instagram-feed"] .social-artwork__logo {
@@ -344,7 +345,7 @@
 
         [data-social-template="instagram-feed"] .social-artwork__body {
             position: absolute;
-            inset: 794px 70px 150px;
+            inset: 700px 90px 150px;
             justify-content: flex-start;
             border-top: 14px solid var(--akiba-citric);
             padding-top: 36px;
@@ -367,29 +368,31 @@
 
         [data-social-template="instagram-feed"] .social-artwork__title {
             color: var(--akiba-ocean);
-            font-size: 64px;
-            line-height: 1.06;
+            font-size: 80px;
+            line-height: 1.35;
             text-shadow: none;
         }
 
         [data-social-template="instagram-feed"] .social-artwork__footer {
             position: absolute;
-            right: 70px;
+            right: 90px;
             bottom: 54px;
-            left: 70px;
+            left: 90px;
             margin: 0;
             border-color: var(--akiba-skywave);
             color: var(--akiba-night);
+            font-size: 28px;
         }
 
         [data-social-template="instagram-feed"] .social-artwork__author {
-            min-height: 64px;
+            min-height: 76px;
             align-items: center;
+            gap: 20px;
         }
 
         [data-social-template="instagram-feed"] .social-artwork__avatar {
-            width: 64px;
-            height: 64px;
+            width: 76px;
+            height: 76px;
             border-radius: 999px;
         }
 
@@ -398,11 +401,12 @@
             display: -webkit-box;
             font-size: 82px;
             -webkit-box-orient: vertical;
-            -webkit-line-clamp: 4;
+            -webkit-line-clamp: 6;
         }
 
         [data-social-template="instagram-feed"] .social-artwork__title {
-            font-size: 64px;
+            font-size: 80px;
+            -webkit-line-clamp: 6;
         }
 
         [data-social-template="instagram-story"],

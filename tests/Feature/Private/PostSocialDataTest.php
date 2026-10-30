@@ -146,7 +146,7 @@ class PostSocialDataTest extends TestCase
                 'social' => [
                     'text' => 'Texto social válido.',
                     'hashtags' => [
-                        ...array_map(fn (int $index): string => "tag{$index}", range(1, 51)),
+                        ...array_map(fn (int $index): string => "tag{$index}", range(1, 31)),
                         'hashtag inválida',
                         ['indevida'],
                     ],
@@ -157,8 +157,8 @@ class PostSocialDataTest extends TestCase
         $response->assertRedirect('/panel/post');
         $response->assertSessionHasErrors([
             'social.hashtags',
-            'social.hashtags.51',
-            'social.hashtags.52',
+            'social.hashtags.31',
+            'social.hashtags.32',
         ]);
     }
 

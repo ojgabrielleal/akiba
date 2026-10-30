@@ -36,7 +36,7 @@ class SocialPublicationScheduleService
             publishable: $post,
             data: $this->artworkData->map($post),
             caption: $this->postCaption($post),
-            hashtags: $post->social['hashtags'] ?? $post->tags()->pluck('name')->all(),
+            hashtags: $post->social['hashtags'] ?? $post->tags()->limit(30)->pluck('name')->all(),
             postUrl: $this->postUrl($post),
             artworkOwner: $post->uuid,
             templatePrefix: 'instagram',

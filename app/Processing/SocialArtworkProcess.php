@@ -83,7 +83,7 @@ class SocialArtworkProcess
 
         $image = $this->manager->create($width, $height)->fill('#000014');
 
-        if (str_starts_with($template, 'instagram-live-')) {
+        if (str_contains($template, '-live-')) {
             $this->drawLiveArtwork($image, $data, $template, $width, $height);
         } else {
             $cover = $this->readImage($data['cover'] ?? null, public_path('img/placeholders/placeholder.webp'))
@@ -402,8 +402,16 @@ class SocialArtworkProcess
         $image->place(
             $logo,
             'top-left',
-            $usesDiscordComposition ? $width - 42 - $logo->width() : 72,
-            $isStory ? 250 : ($isFacebookFeed ? 40 : ($usesDiscordComposition ? $height - 36 - $logo->height() : 72)),
+            $template === 'instagram-feed'
+                ? $width - 90 - $logo->width()
+                : ($usesDiscordComposition ? $width - 42 - $logo->width() : 72),
+            $isStory
+                ? 250
+                : ($template === 'instagram-feed'
+                    ? $height - 54 - $logo->height()
+                    : ($isFacebookFeed
+                        ? 40
+                        : ($usesDiscordComposition ? $height - 36 - $logo->height() : 72))),
         );
     }
 
@@ -419,12 +427,12 @@ class SocialArtworkProcess
         $isInstagramFeed = $template === 'instagram-feed';
         $isFacebookFeed = $template === 'facebook-feed';
         $usesDiscordComposition = $isDiscord || $isInstagramFeed || $isFacebookFeed;
-        $left = $isStory ? 80 : ($isDiscord ? 48 : 54);
+        $left = $isStory ? 80 : ($isDiscord ? 48 : ($isInstagramFeed ? 90 : 54));
         $bottom = $isStory ? 280 : ($isDiscord ? 48 : 82);
-        $titleSize = $isStory ? 66 : ($isDiscord ? 44 : ($isFacebookFeed ? 48 : 64));
+        $titleSize = $isStory ? 66 : ($isDiscord ? 44 : ($isInstagramFeed ? 80 : ($isFacebookFeed ? 48 : 64)));
         $maxTextWidth = $width - ($left * 2);
         $footerY = $height - $bottom;
-        $titleY = $isDiscord ? 455 : ($isFacebookFeed ? 350 : ($isInstagramFeed ? 900 : $footerY - ($isStory ? 470 : 390)));
+        $titleY = $isDiscord ? 455 : ($isInstagramFeed ? 700 : ($isFacebookFeed ? 350 : $footerY - ($isStory ? 470 : 390)));
         $category = Str::upper($data['category'] ?? 'Notícia');
         $date = Str::upper($data['published_at'] ?? now('America/Sao_Paulo')->format('d M Y'));
 
@@ -436,13 +444,13 @@ class SocialArtworkProcess
         ));
 
         $title = $data['titles'][$template] ?? $data['title'] ?? 'Conteúdo novo na Rede Akiba';
-        $maxTitleLines = $isInstagramFeed ? 4 : (($isDiscord || $isFacebookFeed) ? 3 : 4);
+        $maxTitleLines = $isInstagramFeed ? 6 : (($isDiscord || $isFacebookFeed) ? 3 : 4);
         $title = implode("\n", $this->wrap($title, $titleSize, $maxTextWidth, $maxTitleLines));
         $image->text($title, $left, $titleY, fn (FontFactory $font) => $this->font(
             $font,
             $titleSize,
             '#fffaf3',
-            $isDiscord ? 1.50 : ($isInstagramFeed ? 1.55 : ($isFacebookFeed ? 1.25 : 1.16)),
+            $isDiscord ? 1.50 : ($isInstagramFeed ? 1.35 : ($isFacebookFeed ? 1.25 : 1.16)),
         ));
 
         if ($isDiscord || $isFacebookFeed) {
@@ -451,24 +459,24 @@ class SocialArtworkProcess
 
         if ($isInstagramFeed) {
             $avatar = $this->readImage($data['author_avatar'] ?? null, public_path('img/placeholders/avatar.webp'))
-                ->cover(75, 75, 'top')
-                ->crop(60, 60, 7, 0);
-            $avatar = $this->circularImage($avatar, 60);
-            $authorY = $height - 110;
+                ->cover(90, 90, 'top')
+                ->crop(72, 72, 9, 0);
+            $avatar = $this->circularImage($avatar, 72);
+            $authorY = $height - 122;
             $image->place($avatar, 'top-left', $left, $authorY);
             $author = $data['author'] ?? 'Rede Akiba';
-            $authorX = $left + 78;
+            $authorX = $left + 92;
             $image->text(
                 $author,
                 $authorX,
-                $authorY + 20,
-                fn (FontFactory $font) => $this->font($font, 22, '#fffaf3')->valign('middle'),
+                $authorY + 25,
+                fn (FontFactory $font) => $this->font($font, 26, '#fffaf3')->valign('middle'),
             );
             $image->text(
                 'Redação Akiba',
                 $authorX,
-                $authorY + 45,
-                fn (FontFactory $font) => $this->font($font, 15, '#ffaa35')->valign('middle'),
+                $authorY + 55,
+                fn (FontFactory $font) => $this->font($font, 18, '#ffaa35')->valign('middle'),
             );
 
             return;
@@ -561,84 +569,96 @@ class SocialArtworkProcess
         int $width,
         int $height,
     ): void {
-        $image->fill('#000014');
-        $image->drawPolygon(fn (PolygonFactory $polygon) => $polygon
-            ->point(0, 0)
-            ->point(720, 0)
-            ->point(460, 1350)
-            ->point(0, 1350)
-            ->background('#000036'));
-        $image->drawPolygon(fn (PolygonFactory $polygon) => $polygon
-            ->point(720, 0)
-            ->point($width, 0)
-            ->point($width, $height)
-            ->point(460, $height)
-            ->background('#002080'));
-        $image->drawPolygon(fn (PolygonFactory $polygon) => $polygon
-            ->point(0, 925)
-            ->point(540, 760)
-            ->point($width, 980)
-            ->point($width, 1110)
-            ->point(540, 890)
-            ->point(0, 1060)
-            ->background('#0059c0'));
-        $image->place($this->halftonePattern($width, $height, '#0091ff'));
+        $contentOffsetY = 120;
+        $statusOffsetY = 55;
 
-        $logo = $this->manager
-            ->read($this->requiredAsset($this->brandLogoPath, 'brand logo'))
-            ->scaleDown(width: 320, height: 120);
-        $image->drawRectangle(390, 100, fn (RectangleFactory $rectangle) => $rectangle
-            ->size(300, 88)
-            ->background('#ffaa35'));
-        $image->text('NO AR', intdiv($width, 2), 144, fn (FontFactory $font) => $this->font(
-            $font,
-            44,
-            '#000036',
-        )->align('center')->valign('middle'));
+        $image->fill('#002080');
+        $image->drawRectangle(0, 0, fn (RectangleFactory $rectangle) => $rectangle
+            ->size($width, $height)
+            ->background('rgba(0, 0, 20, 0.12)'));
 
-        $portraitBorder = $this->circularImage(
-            $this->manager->create(520, 520)->fill('#000036'),
-            520,
-        );
-        $portrait = $this->readImage($live['host_avatar'] ?? null, public_path('img/placeholders/avatar.webp'))
-            ->cover(496, 496, 'center');
-        $portrait = $this->circularImage($portrait, 496);
-        $image->place($portraitBorder, 'top-left', 280, 240);
-        $image->place($portrait, 'top-left', 292, 252);
+        $texture = $this->manager->read($this->requiredAsset(
+            public_path('img/social-artwork/backgrounds/featured.png'),
+            'live texture',
+        ))->scale(width: $width);
 
-        $programImagePath = $this->localPath($live['program_image'] ?? null);
-        $placeholderPath = public_path('img/placeholders/program.webp');
-        $hostY = 1005;
-
-        if ($programImagePath !== null
-            && is_file($programImagePath)
-            && realpath($programImagePath) !== realpath($placeholderPath)) {
-            $programLogo = $this->manager
-                ->read($programImagePath)
-                ->scaleDown(width: 650, height: 190);
-            $programLogoX = intdiv($width - $programLogo->width(), 2);
-            $programLogoY = 800 + intdiv(190 - $programLogo->height(), 2);
-            $image->place($programLogo, 'top-left', $programLogoX, $programLogoY);
-        } else {
-            $program = Str::upper($live['program'] ?? 'Programa ao vivo');
-            $programLines = $this->wrap($program, 66, 850, 2);
-            $hostY = 900 + ((count($programLines) - 1) * 88);
-
-            $image->text(implode("\n", $programLines), intdiv($width, 2), 815, fn (FontFactory $font) => $this->font(
-                $font,
-                66,
-                '#fffaf3',
-                1.34,
-            )->align('center'));
+        for ($textureY = 0; $textureY < $height; $textureY += $texture->height()) {
+            $image->place($texture, 'top-left', 0, $textureY);
         }
 
-        $image->text('DJ '.Str::upper($live['host'] ?? 'Equipe Rede Akiba'), intdiv($width, 2), $hostY, fn (FontFactory $font) => $this->font(
+        $image->place($this->halftonePattern(260, 180, '#fffaf3'), 'top-left', 0, 35);
+        $image->place($this->halftonePattern(320, 210, '#ffaa35'), 'top-left', 760, 35);
+        $image->place($this->halftonePattern(240, 170, '#ffaa35'), 'top-left', 420, 760);
+        $image->place($this->halftonePattern(300, 240, '#fffaf3'), 'top-left', 780, 780);
+        $image->place($this->halftonePattern(300, 210, '#ffaa35'), 'top-left', 0, 1140);
+
+        $portraitBorder = $this->circularImage(
+            $this->manager->create(500, 500)->fill('#ffaa35'),
+            500,
+        );
+        $portraitBackground = $this->circularImage(
+            $this->manager->create(484, 484)->fill('#000036'),
+            484,
+        );
+        $portrait = $this->readImage($live['host_avatar'] ?? null, public_path('img/placeholders/avatar.webp'))
+            ->cover(484, 484, 'top');
+        $portrait = $this->circularImage($portrait, 484);
+        $image->place($portraitBorder, 'top-left', 55, 95 + $contentOffsetY);
+        $image->place($portraitBackground, 'top-left', 63, 103 + $contentOffsetY);
+        $image->place($portrait, 'top-left', 63, 103 + $contentOffsetY);
+
+        $textX = 605;
+        $image->text('AGORA', $textX, 155 + $contentOffsetY + $statusOffsetY, fn (FontFactory $font) => $this->font(
+            $font,
+            108,
+            '#fffaf3',
+        ));
+        $image->drawRectangle($textX, 255 + $contentOffsetY + $statusOffsetY, fn (RectangleFactory $rectangle) => $rectangle
+            ->size(400, 118)
+            ->background('#ffaa35'));
+        $image->text('NO AR', 805, 314 + $contentOffsetY + $statusOffsetY, fn (FontFactory $font) => $this->font(
+            $font,
+            82,
+            '#fffaf3',
+        )->align('center')->valign('middle'));
+
+        $host = 'DJ '.Str::upper($live['host'] ?? 'Equipe Rede Akiba');
+        $image->text($host, $textX, 405 + $contentOffsetY + $statusOffsetY, fn (FontFactory $font) => $this->font(
             $font,
             38,
             '#fffaf3',
-        )->align('center'));
+        )->filename($this->requiredAsset(
+            resource_path('fonts/DejaVuSans-Regular.ttf'),
+            'regular font',
+        )));
 
-        $image->place($logo, 'top-left', intdiv($width - $logo->width(), 2), 1165);
+        foreach ([[520, 115, 20], [560, 75, 12], [535, 520, 14]] as [$crossX, $crossY, $crossSize]) {
+            $crossY += $contentOffsetY;
+            $image->drawRectangle($crossX, $crossY + intdiv($crossSize, 3), fn (RectangleFactory $rectangle) => $rectangle
+                ->size($crossSize, max(4, intdiv($crossSize, 3)))
+                ->background('#ffaa35'));
+            $image->drawRectangle($crossX + intdiv($crossSize, 3), $crossY, fn (RectangleFactory $rectangle) => $rectangle
+                ->size(max(4, intdiv($crossSize, 3)), $crossSize)
+                ->background('#ffaa35'));
+        }
+
+        $programImagePath = $this->localPath($live['program_image'] ?? null);
+        $placeholderPath = public_path('img/placeholders/program.webp');
+        $programLogo = $this->manager
+            ->read($programImagePath !== null && is_file($programImagePath) ? $programImagePath : $placeholderPath)
+            ->scaleDown(width: 700, height: 280);
+
+        $image->text('PROGRAMA', 90, 685 + $contentOffsetY, fn (FontFactory $font) => $this->font(
+            $font,
+            24,
+            '#ffaa35',
+        ));
+        $image->place($programLogo, 'top-left', 90, 700 + $contentOffsetY);
+
+        $logo = $this->manager
+            ->read($this->requiredAsset($this->brandLogoPath, 'brand logo'))
+            ->scaleDown(width: 300, height: 110);
+        $image->place($logo, 'top-left', $width - 70 - $logo->width(), 1170);
 
     }
 

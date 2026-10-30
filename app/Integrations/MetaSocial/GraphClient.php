@@ -136,7 +136,7 @@ final class GraphClient implements Publisher
         }
 
         throw new PublicationException(
-            message: "Meta Graph API request failed ({$failure->value}).",
+            message: $this->errorMessage($response, $error, $failure),
             failure: $failure,
             httpStatus: $response->status(),
             providerCode: isset($error['code']) ? (string) $error['code'] : null,
@@ -217,6 +217,44 @@ final class GraphClient implements Publisher
     private function configuredPath(string $setting, string $endpoint): string
     {
         return sprintf('%s/%s', trim((string) config("services.meta.{$setting}"), '/'), $endpoint);
+    }
+
+    /**
+     * @param  array<string, mixed>  $error
+     */
+    private function errorMessage(
+        Response $response,
+        array $error,
+        PublicationFailure $failure,
+    ): string {
+        $details = array_filter([
+            'HTTP '.$response->status(),
+            isset($error['code']) ? 'code '.(string) $error['code'] : null,
+            isset($error['error_subcode']) ? 'subcode '.(string) $error['error_subcode'] : null,
+            isset($error['type']) ? 'type '.$this->sanitizeProviderText((string) $error['type']) : null,
+            isset($error['message']) ? 'message: '.$this->sanitizeProviderText((string) $error['message']) : null,
+            isset($error['fbtrace_id']) ? 'fbtrace_id '.$this->sanitizeProviderText((string) $error['fbtrace_id']) : null,
+        ]);
+
+        return sprintf(
+            'Meta Graph API request failed (%s). %s',
+            $failure->value,
+            implode('; ', $details),
+        );
+    }
+
+    private function sanitizeProviderText(string $value): string
+    {
+        $accessTokens = array_values(array_filter([
+            (string) config('services.meta.instagram_access_token'),
+            (string) config('services.meta.facebook_access_token'),
+        ], fn (string $token): bool => $token !== ''));
+
+        $sanitized = $accessTokens === []
+            ? $value
+            : str_replace($accessTokens, '[REDACTED]', $value);
+
+        return mb_substr($sanitized, 0, 1000);
     }
 
     private function instagramCaption(PublicationData $publication): string
