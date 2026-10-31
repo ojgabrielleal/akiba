@@ -89,7 +89,7 @@ class SocialArtworkProcess
             $cover = $this->readImage($data['cover'] ?? null, public_path('img/placeholders/placeholder.webp'))
                 ->cover($width, $height, 'center');
             $image->place($cover);
-            $this->drawOverlay($image, $width, $height, $template);
+            $this->drawOverlay($image, $width, $height, $template, $data);
             $this->drawFrame($image, $width, $height, $template);
             $this->drawBrand($image, $template, $width, $height);
             $this->drawEditorialContent($image, $data, $template, $width, $height);
@@ -343,7 +343,13 @@ class SocialArtworkProcess
         return $this->manager->read($contents);
     }
 
-    private function drawOverlay(ImageInterface $image, int $width, int $height, string $template): void
+    private function drawOverlay(
+        ImageInterface $image,
+        int $width,
+        int $height,
+        string $template,
+        array $data,
+    ): void
     {
         $usesDiscordComposition = in_array($template, ['discord-post', 'instagram-feed', 'facebook-feed'], true);
         $baseOpacity = $usesDiscordComposition ? .10 : .26;
@@ -352,20 +358,39 @@ class SocialArtworkProcess
             ->background(sprintf('rgba(0, 0, 20, %.2f)', $baseOpacity)));
 
         if ($usesDiscordComposition) {
-            $gradientTop = (int) ($height * .36);
-            $gradientHeight = (int) ($height * .39);
+            $isVerticalFeed = in_array($template, ['instagram-feed', 'facebook-feed'], true);
 
-            for ($offset = 0; $offset < $gradientHeight; $offset += 2) {
-                $progress = $offset / $gradientHeight;
-                $opacity = .76 * ($progress ** 1.7);
-                $image->drawRectangle(0, $gradientTop + $offset, fn (RectangleFactory $rectangle) => $rectangle
-                    ->size($width, 2)
-                    ->background(sprintf('rgba(0, 0, 20, %.3f)', $opacity)));
+            if ($isVerticalFeed) {
+                $titleSize = $template === 'facebook-feed' ? 76 : 70;
+                $titleAnchorY = $template === 'facebook-feed' ? $height - 260 : 1090;
+                $title = $data['titles'][$template] ?? $data['title'] ?? 'Conteúdo novo na Rede Akiba';
+                $titleLines = $this->wrap($title, $titleSize, $width - 180, PHP_INT_MAX);
+                $titleTop = $titleAnchorY - (max(0, count($titleLines) - 1) * $titleSize);
+                $gradientTop = max(0, $titleTop - 180);
+                $gradientHeight = $height - $gradientTop;
+
+                for ($offset = 0; $offset < $gradientHeight; $offset++) {
+                    $progress = min(1, ($offset + 1) / $gradientHeight);
+                    $opacity = .58 * ($progress ** .85);
+                    $image->drawRectangle(0, $gradientTop + $offset, fn (RectangleFactory $rectangle) => $rectangle
+                        ->size($width, 1)
+                        ->background(sprintf('rgba(0, 0, 20, %.3f)', $opacity)));
+                }
+
+                return;
             }
 
-            $image->drawRectangle(0, $gradientTop + $gradientHeight, fn (RectangleFactory $rectangle) => $rectangle
-                ->size($width, $height - $gradientTop - $gradientHeight)
-                ->background('rgba(0, 0, 20, 0.88)'));
+            $gradientTop = (int) ($height * .36);
+            $fadeHeight = (int) ($height * .39);
+            $gradientHeight = $height - $gradientTop;
+
+            for ($offset = 0; $offset < $gradientHeight; $offset++) {
+                $progress = min(1, ($offset + 1) / $fadeHeight);
+                $opacity = .88 * ($progress ** 1.7);
+                $image->drawRectangle(0, $gradientTop + $offset, fn (RectangleFactory $rectangle) => $rectangle
+                    ->size($width, 1)
+                    ->background(sprintf('rgba(0, 0, 20, %.3f)', $opacity)));
+            }
 
             return;
         }

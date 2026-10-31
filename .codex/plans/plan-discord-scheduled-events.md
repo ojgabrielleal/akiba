@@ -31,7 +31,7 @@ Documentacao-base:
 - Discord API: Permissions
 - Discord Support: Scheduled Events
 
-Pontos importantes:
+Pontos importantes: 
 
 - o bot precisa existir no Discord Developer Portal;
 - o bot precisa estar instalado no servidor Discord;
