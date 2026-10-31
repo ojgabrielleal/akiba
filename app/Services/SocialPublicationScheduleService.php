@@ -40,7 +40,6 @@ class SocialPublicationScheduleService
             postUrl: $this->postUrl($post),
             artworkOwner: $post->uuid,
             templatePrefix: 'instagram',
-            facebookLinkPreview: true,
             fallbackUrl: blank($post->cover ?: $post->image)
                 ? null
                 : route('post.social-image', $post->uuid),

@@ -56,11 +56,11 @@ class SocialArtworkDataServiceTest extends TestCase
         $this->assertSame('/storage/users/yagami.webp', $artwork['live']['host_avatar']);
         $this->assertSame('24 OUT 2026', $artwork['published_at']);
         $this->assertStringEndsWith('/review/review-akiba', $artwork['url']);
-        $this->assertLessThanOrEqual(90, mb_strlen($artwork['titles']['instagram-feed']));
+        $this->assertSame($artwork['title'], $artwork['titles']['instagram-feed']);
         $this->assertLessThanOrEqual(80, mb_strlen($artwork['titles']['instagram-story']));
-        $this->assertLessThanOrEqual(110, mb_strlen($artwork['titles']['facebook-feed']));
+        $this->assertSame($artwork['title'], $artwork['titles']['facebook-feed']);
         $this->assertLessThanOrEqual(110, mb_strlen($artwork['titles']['discord-post']));
-        $this->assertStringEndsWith('…', $artwork['titles']['instagram-feed']);
+        $this->assertStringEndsWith('…', $artwork['titles']['instagram-story']);
     }
 
     public function test_it_uses_safe_fallbacks_when_optional_data_is_missing(): void

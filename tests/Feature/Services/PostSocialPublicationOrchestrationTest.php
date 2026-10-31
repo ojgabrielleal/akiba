@@ -98,11 +98,13 @@ class PostSocialPublicationOrchestrationTest extends TestCase
         $this->assertSame($manualSchedule->payload['caption'], $facebookSchedule->payload['caption']);
         $this->assertSame($manualSchedule->payload['hashtags'], $facebookSchedule->payload['hashtags']);
         $this->assertFalse($manualSchedule->payload['link_preview']);
-        $this->assertTrue($facebookSchedule->payload['link_preview']);
-        $this->assertSame($manualSchedule->payload['post_url'], $facebookSchedule->media_url);
-        $this->assertNull($facebookSchedule->media_path);
+        $this->assertFalse($facebookSchedule->payload['link_preview']);
         $this->assertStringContainsString('/storage/social-artworks/', $manualSchedule->media_url);
+        $this->assertStringContainsString('/storage/social-artworks/', $facebookSchedule->media_url);
+        $this->assertStringContainsString('instagram-feed-', $manualSchedule->media_path);
+        $this->assertStringContainsString('facebook-feed-', $facebookSchedule->media_path);
         Storage::disk('public')->assertExists($manualSchedule->media_path);
+        Storage::disk('public')->assertExists($facebookSchedule->media_path);
         Queue::assertPushed(PublishSocialPublicationSchedule::class, 6);
 
         $service->update($manual, $user, [

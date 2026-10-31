@@ -11,11 +11,11 @@ use Illuminate\Support\Str;
 class SocialArtworkDataService
 {
     private const TITLE_LIMITS = [
-        'instagram-feed' => 90,
+        'instagram-feed' => null,
         'instagram-live-feed' => 72,
         'instagram-story' => 80,
         'instagram-live-story' => 72,
-        'facebook-feed' => 110,
+        'facebook-feed' => null,
         'facebook-live-feed' => 72,
         'discord-post' => 110,
     ];
@@ -33,7 +33,7 @@ class SocialArtworkDataService
         return [
             'title' => $title,
             'titles' => collect(self::TITLE_LIMITS)
-                ->map(fn (int $limit) => $this->limit($title, $limit))
+                ->map(fn (?int $limit) => $limit === null ? $title : $this->limit($title, $limit))
                 ->all(),
             'module' => in_array($post->module, ['post', 'review', 'event'], true)
                 ? $post->module
