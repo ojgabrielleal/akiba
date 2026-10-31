@@ -36,13 +36,13 @@
         ],
         'facebook-feed' => [
             'label' => 'Facebook',
-            'width' => 1200,
-            'height' => 630,
+            'width' => 1080,
+            'height' => 1080,
         ],
         'facebook-live-feed' => [
             'label' => 'Locução no Facebook',
-            'width' => 1200,
-            'height' => 630,
+            'width' => 1080,
+            'height' => 1080,
         ],
         'discord-post' => [
             'label' => 'Discord',
@@ -286,8 +286,8 @@
 
         [data-social-template="facebook-feed"],
         [data-social-template="facebook-live-feed"] {
-            width: 1200px;
-            height: 630px;
+            width: 1080px;
+            height: 1080px;
         }
 
         [data-social-template="instagram-feed"] .social-artwork__content,

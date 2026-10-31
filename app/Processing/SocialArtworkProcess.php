@@ -19,8 +19,8 @@ class SocialArtworkProcess
         'instagram-live-feed' => [1080, 1350],
         'instagram-story' => [1080, 1920],
         'instagram-live-story' => [1080, 1920],
-        'facebook-feed' => [1200, 1500],
-        'facebook-live-feed' => [1200, 1500],
+        'facebook-feed' => [1080, 1080],
+        'facebook-live-feed' => [1080, 1080],
         'discord-post' => [1200, 630],
     ];
 
@@ -398,20 +398,20 @@ class SocialArtworkProcess
         $logo = $this->manager
             ->read($this->requiredAsset($this->brandLogoPath, 'brand logo'))
             ->scaleDown(
-                width: $isStory ? 260 : ($isFacebookFeed ? 256 : 230),
-                height: $isFacebookFeed ? 100 : 90,
+                width: $isStory ? 260 : 230,
+                height: 90,
             );
 
         $image->place(
             $logo,
             'top-left',
             $isVerticalFeed
-                ? $width - ($isFacebookFeed ? 100 : 90) - $logo->width()
+                ? $width - 90 - $logo->width()
                 : ($usesDiscordComposition ? $width - 42 - $logo->width() : 72),
             $isStory
                 ? 250
                 : ($isVerticalFeed
-                    ? $height - ($isFacebookFeed ? 60 : 54) - $logo->height()
+                    ? $height - 54 - $logo->height()
                     : ($usesDiscordComposition ? $height - 36 - $logo->height() : 72)),
         );
     }
@@ -429,12 +429,12 @@ class SocialArtworkProcess
         $isFacebookFeed = $template === 'facebook-feed';
         $isVerticalFeed = $isInstagramFeed || $isFacebookFeed;
         $usesDiscordComposition = $isDiscord || $isInstagramFeed || $isFacebookFeed;
-        $left = $isStory ? 80 : ($isDiscord ? 48 : ($isFacebookFeed ? 100 : ($isInstagramFeed ? 90 : 54)));
+        $left = $isStory ? 80 : ($isDiscord ? 48 : ($isVerticalFeed ? 90 : 54));
         $bottom = $isStory ? 280 : ($isDiscord ? 48 : 82);
-        $titleSize = $isStory ? 66 : ($isDiscord ? 44 : ($isFacebookFeed ? 79 : ($isInstagramFeed ? 70 : 64)));
+        $titleSize = $isStory ? 66 : ($isDiscord ? 44 : ($isVerticalFeed ? 70 : 64));
         $maxTextWidth = $width - ($left * 2);
         $footerY = $height - $bottom;
-        $titleY = $isDiscord ? 455 : ($isFacebookFeed ? 1178 : ($isInstagramFeed ? 1060 : $footerY - ($isStory ? 470 : 390)));
+        $titleY = $isDiscord ? 455 : ($isFacebookFeed ? $height - 290 : ($isInstagramFeed ? 1060 : $footerY - ($isStory ? 470 : 390)));
         $category = Str::upper($data['category'] ?? 'Notícia');
         $date = Str::upper($data['published_at'] ?? now('America/Sao_Paulo')->format('d M Y'));
 
@@ -449,7 +449,7 @@ class SocialArtworkProcess
         $metadata = $usesDiscordComposition ? $date : "{$category}  ·  {$date}";
         $image->text($metadata, $left, $titleY - ($usesDiscordComposition ? 40 : 54), fn (FontFactory $font) => $this->font(
             $font,
-            $isDiscord ? 19 : ($isFacebookFeed ? 26 : ($isInstagramFeed ? 23 : 24)),
+            $isDiscord ? 19 : ($isVerticalFeed ? 23 : 24),
             '#ffaa35',
         ));
 
@@ -467,24 +467,24 @@ class SocialArtworkProcess
 
         if ($isVerticalFeed) {
             $avatar = $this->readImage($data['author_avatar'] ?? null, public_path('img/placeholders/avatar.webp'))
-                ->cover($isFacebookFeed ? 100 : 90, $isFacebookFeed ? 100 : 90, 'top')
-                ->crop($isFacebookFeed ? 80 : 72, $isFacebookFeed ? 80 : 72, $isFacebookFeed ? 10 : 9, 0);
-            $avatar = $this->circularImage($avatar, $isFacebookFeed ? 80 : 72);
-            $authorY = $height - ($isFacebookFeed ? 136 : 122);
+                ->cover(90, 90, 'top')
+                ->crop(72, 72, 9, 0);
+            $avatar = $this->circularImage($avatar, 72);
+            $authorY = $height - 122;
             $image->place($avatar, 'top-left', $left, $authorY);
             $author = $data['author'] ?? 'Rede Akiba';
-            $authorX = $left + ($isFacebookFeed ? 102 : 92);
+            $authorX = $left + 92;
             $image->text(
                 $author,
                 $authorX,
-                $authorY + ($isFacebookFeed ? 28 : 25),
-                fn (FontFactory $font) => $this->font($font, $isFacebookFeed ? 29 : 26, '#fffaf3')->valign('middle'),
+                $authorY + 25,
+                fn (FontFactory $font) => $this->font($font, 26, '#fffaf3')->valign('middle'),
             );
             $image->text(
                 'Redação Akiba',
                 $authorX,
-                $authorY + ($isFacebookFeed ? 61 : 55),
-                fn (FontFactory $font) => $this->font($font, $isFacebookFeed ? 20 : 18, '#ffaa35')->valign('middle'),
+                $authorY + 55,
+                fn (FontFactory $font) => $this->font($font, 18, '#ffaa35')->valign('middle'),
             );
 
             return;
@@ -578,8 +578,8 @@ class SocialArtworkProcess
         int $height,
         bool $isFacebook = false,
     ): void {
-        $contentOffsetY = $isFacebook ? 80 : 120;
-        $statusOffsetY = $isFacebook ? 85 : 55;
+        $contentOffsetY = $isFacebook ? 5 : 120;
+        $statusOffsetY = 55;
 
         $image->fill('#002080');
         $image->drawRectangle(0, 0, fn (RectangleFactory $rectangle) => $rectangle
@@ -597,14 +597,14 @@ class SocialArtworkProcess
 
         $image->place($this->halftonePattern(260, 180, '#fffaf3'), 'top-left', 0, 35);
         $image->place($this->halftonePattern(320, 210, '#ffaa35'), 'top-left', $width - 320, 35);
-        $image->place($this->halftonePattern(240, 170, '#ffaa35'), 'top-left', $isFacebook ? 480 : 420, $isFacebook ? 820 : 760);
-        $image->place($this->halftonePattern(300, 240, '#fffaf3'), 'top-left', $width - 300, $isFacebook ? 820 : 780);
+        $image->place($this->halftonePattern(240, 170, '#ffaa35'), 'top-left', 420, $isFacebook ? 650 : 760);
+        $image->place($this->halftonePattern(300, 240, '#fffaf3'), 'top-left', $width - 300, $isFacebook ? 650 : 780);
         $image->place($this->halftonePattern(300, 210, '#ffaa35'), 'top-left', 0, $height - 210);
 
-        $portraitSize = $isFacebook ? 600 : 500;
+        $portraitSize = 500;
         $portraitInnerSize = $portraitSize - 16;
-        $portraitX = $isFacebook ? 25 : 55;
-        $portraitY = ($isFacebook ? 90 : 95) + $contentOffsetY;
+        $portraitX = 55;
+        $portraitY = 95 + $contentOffsetY;
         $portraitBorder = $this->circularImage(
             $this->manager->create($portraitSize, $portraitSize)->fill('#ffaa35'),
             $portraitSize,
@@ -620,12 +620,12 @@ class SocialArtworkProcess
         $image->place($portraitBackground, 'top-left', $portraitX + 8, $portraitY + 8);
         $image->place($portrait, 'top-left', $portraitX + 8, $portraitY + 8);
 
-        $textX = $isFacebook ? 665 : 605;
-        $headlineSize = $isFacebook ? 116 : 108;
-        $headlineY = ($isFacebook ? 150 : 155) + $contentOffsetY + $statusOffsetY;
-        $boxY = ($isFacebook ? 260 : 255) + $contentOffsetY + $statusOffsetY;
-        $boxWidth = $isFacebook ? 485 : 400;
-        $boxHeight = $isFacebook ? 132 : 118;
+        $textX = 605;
+        $headlineSize = 108;
+        $headlineY = 155 + $contentOffsetY + $statusOffsetY;
+        $boxY = 255 + $contentOffsetY + $statusOffsetY;
+        $boxWidth = 400;
+        $boxHeight = 118;
         $image->text('AGORA', $textX, $headlineY, fn (FontFactory $font) => $this->font(
             $font,
             $headlineSize,
@@ -636,14 +636,14 @@ class SocialArtworkProcess
             ->background('#ffaa35'));
         $image->text('NO AR', $textX + intdiv($boxWidth, 2), $boxY + intdiv($boxHeight, 2), fn (FontFactory $font) => $this->font(
             $font,
-            $isFacebook ? 90 : 82,
+            82,
             '#fffaf3',
         )->align('center')->valign('middle'));
 
         $host = 'DJ '.Str::upper($live['host'] ?? 'Equipe Rede Akiba');
-        $image->text($host, $textX, ($isFacebook ? 420 : 405) + $contentOffsetY + $statusOffsetY, fn (FontFactory $font) => $this->font(
+        $image->text($host, $textX, 405 + $contentOffsetY + $statusOffsetY, fn (FontFactory $font) => $this->font(
             $font,
-            $isFacebook ? 40 : 38,
+            38,
             '#fffaf3',
         )->filename($this->requiredAsset(
             resource_path('fonts/DejaVuSans-Regular.ttf'),
@@ -664,21 +664,21 @@ class SocialArtworkProcess
         $placeholderPath = public_path('img/placeholders/program.webp');
         $programLogo = $this->manager
             ->read($programImagePath !== null && is_file($programImagePath) ? $programImagePath : $placeholderPath)
-            ->scaleDown(width: $isFacebook ? 850 : 700, height: $isFacebook ? 340 : 280);
+            ->scaleDown(width: 700, height: 280);
 
-        $programX = $isFacebook ? 55 : 90;
-        $programY = ($isFacebook ? 770 : 685) + $contentOffsetY;
+        $programX = 90;
+        $programY = ($isFacebook ? 650 : 685) + $contentOffsetY;
         $image->text('PROGRAMA', $programX, $programY, fn (FontFactory $font) => $this->font(
             $font,
-            $isFacebook ? 28 : 24,
+            24,
             '#ffaa35',
         ));
         $image->place($programLogo, 'top-left', $programX, $programY + 28);
 
         $logo = $this->manager
             ->read($this->requiredAsset($this->brandLogoPath, 'brand logo'))
-            ->scaleDown(width: $isFacebook ? 360 : 300, height: $isFacebook ? 132 : 110);
-        $image->place($logo, 'top-left', $width - ($isFacebook ? 55 : 70) - $logo->width(), $height - ($isFacebook ? 65 : 70) - $logo->height());
+            ->scaleDown(width: 300, height: 110);
+        $image->place($logo, 'top-left', $width - 70 - $logo->width(), $height - 70 - $logo->height());
 
     }
 

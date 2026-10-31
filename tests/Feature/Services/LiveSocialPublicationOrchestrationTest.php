@@ -39,8 +39,8 @@ class LiveSocialPublicationOrchestrationTest extends TestCase
                     path: "social-artworks/live/{$template}.jpg",
                     url: "https://akiba.test/storage/social-artworks/live/{$template}.jpg",
                     mimeType: 'image/jpeg',
-                    width: $template === 'facebook-live-feed' ? 1200 : 1080,
-                    height: $template === 'facebook-live-feed' ? 1500 : 1350,
+                    width: 1080,
+                    height: $template === 'facebook-live-feed' ? 1080 : 1350,
                     size: 100,
                 ));
         });
