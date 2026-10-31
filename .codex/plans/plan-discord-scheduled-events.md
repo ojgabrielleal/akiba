@@ -1,5 +1,9 @@
 # Plano: eventos de locucao do Akiba no Discord
 
+## Branch de trabalho
+
+`feature/discord-scheduled-events`
+
 ## Objetivo
 
 Permitir que eventos de locucao criados ou gerenciados no Akiba sejam publicados automaticamente como eventos agendados em um servidor Discord, usando a API oficial de **Guild Scheduled Events**.
