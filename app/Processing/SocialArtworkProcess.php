@@ -435,7 +435,7 @@ class SocialArtworkProcess
         $titleSize = $isStory ? 66 : ($isDiscord ? 44 : ($isFacebookFeed ? 76 : ($isInstagramFeed ? 70 : 64)));
         $maxTextWidth = $width - ($left * 2);
         $footerY = $height - $bottom;
-        $titleY = $isDiscord ? 455 : ($isFacebookFeed ? $height - 290 : ($isInstagramFeed ? 1060 : $footerY - ($isStory ? 470 : 390)));
+        $titleY = $isDiscord ? 455 : ($isFacebookFeed ? $height - 260 : ($isInstagramFeed ? 1090 : $footerY - ($isStory ? 470 : 390)));
         $category = Str::upper($data['category'] ?? 'Notícia');
         $date = Str::upper($data['published_at'] ?? now('America/Sao_Paulo')->format('d M Y'));
 

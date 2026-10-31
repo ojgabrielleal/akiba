@@ -98,7 +98,7 @@ class DiscordWebhookService
         ]);
 
         $payload = [
-            'content' => "@here\n\n📰 | **{$post->title}**\n\n{$url}\n\nSE LIGA: TEM NOTÍCIA NOVA EM NOSSO SITE!",
+            'content' => "📰 | **{$post->title}**\n\n{$url}\n\n@here SE LIGA: TEM NOTÍCIA NOVA EM NOSSO SITE!",
             'allowed_mentions' => [
                 'parse' => ['everyone'],
             ],

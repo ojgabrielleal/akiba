@@ -40,9 +40,9 @@ class DiscordPostNotificationTest extends TestCase
                 && $request->hasFile('files[0]')
                 && ! isset($payload['username'])
                 && ! isset($payload['avatar_url'])
-                && str_starts_with($payload['content'], '@here')
+                && ! str_starts_with($payload['content'], '@here')
                 && str_contains($payload['content'], '📰 | **Nova matéria**')
-                && str_contains($payload['content'], 'SE LIGA: TEM NOTÍCIA NOVA EM NOSSO SITE!')
+                && str_contains($payload['content'], '@here SE LIGA: TEM NOTÍCIA NOVA EM NOSSO SITE!')
                 && ! str_contains($payload['content'], '@everyone')
                 && $payload['attachments'] === [['id' => 0, 'filename' => 'post.jpg']]
                 && $payload['embeds'][0]['image']['url'] === 'attachment://post.jpg'

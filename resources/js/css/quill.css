@@ -50,6 +50,7 @@
 }
 
 .ql-container.ql-snow .ql-tooltip.ql-editing {
+    top: 0 !important;
     left: 50% !important;
     transform: translateX(-50%);
 }
