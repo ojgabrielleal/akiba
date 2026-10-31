@@ -7,6 +7,7 @@ use App\Models\Permission;
 use App\Models\Post;
 use App\Models\Role;
 use App\Models\User;
+use App\Processing\ImageProcess;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Queue;
@@ -91,6 +92,51 @@ class PostSocialDataTest extends TestCase
         $this->assertSame('revision', $post->status);
         $this->assertDatabaseCount('social_publication_schedules', 0);
         Queue::assertNothingPushed();
+    }
+
+    public function test_social_artwork_cover_is_optional_and_persisted_separately_from_the_post_cover(): void
+    {
+        $user = $this->userWithPermissions(['post.create']);
+        $this->mock(ImageProcess::class, function ($mock): void {
+            $mock->shouldReceive('store')
+                ->times(3)
+                ->andReturnUsing(fn (string $folder): string => match ($folder) {
+                    'temporary/social-artworks' => '/storage/images/temporary/social-artworks/banner.webp',
+                    default => '/storage/images/posts/content.webp',
+                });
+        });
+
+        $payload = $this->validPostPayload('revision');
+        $payload['social'] = [
+            ...$this->social(),
+            'artwork_cover' => UploadedFile::fake()->image('social-cover.jpg', 1200, 630),
+        ];
+
+        $this->actingAs($user)
+            ->post('/panel/post', $payload)
+            ->assertSessionHasNoErrors();
+
+        $post = Post::query()->where('title', 'Matéria social')->firstOrFail();
+        $artworkCover = $post->social['artwork_cover'];
+
+        $this->assertStringStartsWith('/storage/images/temporary/social-artworks/', $artworkCover);
+        $this->assertNotSame($post->cover, $artworkCover);
+    }
+
+    public function test_social_artwork_cover_rejects_images_below_the_minimum_dimensions(): void
+    {
+        $user = $this->userWithPermissions(['post.create']);
+        $payload = $this->validPostPayload('revision');
+        $payload['social'] = [
+            ...$this->social(),
+            'artwork_cover' => UploadedFile::fake()->image('small.jpg', 800, 300),
+        ];
+
+        $this->actingAs($user)
+            ->post('/panel/post', $payload)
+            ->assertSessionHasErrors('social.artwork_cover');
+
+        $this->assertDatabaseCount('posts', 0);
     }
 
     public function test_user_without_publish_permission_cannot_create_a_published_post(): void

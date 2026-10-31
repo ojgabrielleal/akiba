@@ -107,8 +107,6 @@ class PublishSocialPublicationSchedule implements ShouldBeUnique, ShouldQueue
             'status' => SocialPublicationSchedule::STATUS_FAILED,
             'last_error' => $error,
         ]);
-
-        $this->deleteArtwork($schedule);
     }
 
     private function deleteArtwork(SocialPublicationSchedule $schedule): void

@@ -70,7 +70,7 @@
 
 <Modal bind:this={notificationModalRef} title="Finalizar entrada ao vivo" size="md" minHeight="auto">
     <div slot="content" class="font-noto-sans">
-        <FormField for="live-social-text" label="Texto da publicação" error={$form.errors["social.text"]} spacing="compact">
+        <FormField for="live-social-text" label="Texto" error={$form.errors["social.text"]} spacing="compact">
             <span
                 slot="labelAside"
                 class="shrink-0 text-xs font-bold"

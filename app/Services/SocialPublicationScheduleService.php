@@ -32,7 +32,7 @@ class SocialPublicationScheduleService
             return collect();
         }
 
-        return $this->schedule(
+        $schedules = $this->schedule(
             publishable: $post,
             data: $this->artworkData->map($post),
             caption: $this->postCaption($post),
@@ -44,6 +44,10 @@ class SocialPublicationScheduleService
                 ? null
                 : route('post.social-image', $post->uuid),
         );
+
+        $this->discardTemporaryArtworkCover($post);
+
+        return $schedules;
     }
 
     public function scheduleLive(Onair $onair, array $social): Collection
@@ -240,6 +244,24 @@ class SocialPublicationScheduleService
                     Storage::disk('public')->delete($artwork->path);
                 }
             }
+        }
+    }
+
+    private function discardTemporaryArtworkCover(Post $post): void
+    {
+        $artworkCover = $post->social['artwork_cover'] ?? null;
+
+        if (blank($artworkCover)) {
+            return;
+        }
+
+        $social = $post->social;
+        unset($social['artwork_cover']);
+
+        $post->forceFill(['social' => $social])->saveQuietly();
+
+        if (Str::startsWith($artworkCover, '/storage/')) {
+            Storage::disk('public')->delete(Str::after($artworkCover, '/storage/'));
         }
     }
 }

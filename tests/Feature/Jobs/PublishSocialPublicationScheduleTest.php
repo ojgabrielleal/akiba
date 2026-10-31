@@ -42,7 +42,7 @@ class PublishSocialPublicationScheduleTest extends TestCase
         Storage::disk('public')->assertMissing('social-artworks/post/feed.jpg');
     }
 
-    public function test_a_definitive_failure_marks_the_schedule_as_failed_and_removes_the_artwork(): void
+    public function test_a_definitive_failure_marks_the_schedule_as_failed_and_keeps_the_artwork(): void
     {
         Storage::fake('public');
         Storage::disk('public')->put('social-artworks/post/feed.jpg', 'image');
@@ -54,7 +54,7 @@ class PublishSocialPublicationScheduleTest extends TestCase
         $schedule->refresh();
         $this->assertSame(SocialPublicationSchedule::STATUS_FAILED, $schedule->status);
         $this->assertSame('Meta Graph API request failed (permission).', $schedule->last_error);
-        Storage::disk('public')->assertMissing('social-artworks/post/feed.jpg');
+        Storage::disk('public')->assertExists('social-artworks/post/feed.jpg');
     }
 
     public function test_a_recoverable_failure_is_left_pending_until_the_queue_exhausts_retries(): void
@@ -83,7 +83,7 @@ class PublishSocialPublicationScheduleTest extends TestCase
         $this->assertSame(SocialPublicationSchedule::STATUS_FAILED, $schedule->refresh()->status);
         $this->assertSame([60, 300, 900], $job->backoff());
         $this->assertSame(4, $job->tries);
-        Storage::disk('public')->assertMissing('social-artworks/post/feed.jpg');
+        Storage::disk('public')->assertExists('social-artworks/post/feed.jpg');
     }
 
     private function pendingSchedule(): SocialPublicationSchedule

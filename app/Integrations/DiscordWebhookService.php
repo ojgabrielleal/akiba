@@ -20,19 +20,23 @@ class DiscordWebhookService
             && filled(config('services.discord.post_webhook'));
     }
 
-    public function sendStreamNotificationHook($user, $program): bool
+    public function streamNotificationsEnabled(): bool
     {
-        if (! $this->discordPublicationEnabled() || ! app()->environment('production')) {
+        return $this->discordPublicationEnabled()
+            && app()->environment('production')
+            && filled(config('services.discord.webhook'));
+    }
+
+    public function sendStreamNotificationHook($user, $program, ?string $artworkPath = null): bool
+    {
+        if (! $this->streamNotificationsEnabled()) {
             return false;
         }
 
         $webhookUrl = config('services.discord.webhook');
-        if (! $webhookUrl) {
-            return false;
-        }
 
         $payload = [
-            'content' => '🎧 @everyone **Bora de Akiba?**',
+            'content' => '🎧 @here **Bora de Akiba?**',
             'allowed_mentions' => ['parse' => ['everyone']],
             'embeds' => [
                 [
@@ -42,13 +46,25 @@ class DiscordWebhookService
                     'author' => [
                         'name' => "DJ {$user->nickname}",
                     ],
-                    'timestamp' => now()->toIso8601String(),
                 ],
             ],
         ];
 
         try {
-            return Http::timeout(15)->connectTimeout(5)->post($webhookUrl, $payload)->successful();
+            $request = Http::timeout(30)->connectTimeout(5);
+
+            if ($artworkPath !== null) {
+                $artwork = Storage::disk('public')->get($artworkPath);
+                $payload['attachments'] = [['id' => 0, 'filename' => 'agora-no-ar.jpg']];
+                $payload['embeds'][0]['image'] = ['url' => 'attachment://agora-no-ar.jpg'];
+
+                return $request
+                    ->attach('files[0]', $artwork, 'agora-no-ar.jpg', ['Content-Type' => 'image/jpeg'])
+                    ->post($webhookUrl, ['payload_json' => json_encode($payload, JSON_THROW_ON_ERROR)])
+                    ->successful();
+            }
+
+            return $request->post($webhookUrl, $payload)->successful();
         } catch (Throwable $exception) {
             Log::warning('Discord stream notification failed', ['exception' => $exception::class]);
 
@@ -82,9 +98,9 @@ class DiscordWebhookService
         ]);
 
         $payload = [
-            'content' => "📰 | **{$post->title}**\n\n{$url}\n\nSE LIGA: TEM NOTÍCIA NOVA EM NOSSO SITE!",
+            'content' => "@here\n\n📰 | **{$post->title}**\n\n{$url}\n\nSE LIGA: TEM NOTÍCIA NOVA EM NOSSO SITE!",
             'allowed_mentions' => [
-                'parse' => [],
+                'parse' => ['everyone'],
             ],
             'embeds' => [
                 array_filter([

@@ -18,6 +18,7 @@
     const emptySocial = () => ({
         text: "",
         hashtags: [],
+        artwork_cover: null,
         channels: { instagram: true, facebook: true },
     });
 
@@ -35,13 +36,17 @@
         "social[hashtags]",
         ...Object.keys(errors).filter((key) => key.startsWith("social.hashtags.")),
     ]);
+    $: serverArtworkCoverError = errorFor(errors, [
+        "social.artwork_cover",
+        "social[artwork_cover]",
+    ]);
     $: characterCount = social.text?.length ?? 0;
     $: hashtagTokens = hashtagInputTokens(hashtagsText);
     $: hashtagCount = hashtagTokens.length;
     $: hashtagsAreValid = hashtagTokens.every((hashtag) => /^#[\p{L}\p{N}_]+$/u.test(hashtag));
     $: textError = serverTextError
         ?? (confirmationAttempted && status !== "draft" && !social.text?.trim()
-            ? "Informe o texto da publicação."
+            ? "Informe o texto."
             : null);
     $: hashtagsError = serverHashtagsError
         ?? (!hashtagsAreValid ? "Comece cada hashtag com # e separe por espaço ou vírgula." : null)
@@ -103,6 +108,7 @@
             social: {
                 text: social.text?.trim() ?? "",
                 hashtags: parseHashtags(hashtagsText),
+                artwork_cover: social.artwork_cover ?? null,
                 channels: {
                     instagram: Boolean(social.channels.instagram),
                     facebook: Boolean(social.channels.facebook),
@@ -114,7 +120,7 @@
 
 <Modal bind:this={modalRef} title={modalTitle} size="md" minHeight="auto">
     <div slot="content" class="font-noto-sans">
-        <FormField for="social-post-text" label="Texto da publicação" error={textError} spacing="compact">
+        <FormField for="social-post-text" label="Texto" error={textError} spacing="compact">
             <span
                 slot="labelAside"
                 class="shrink-0 text-xs font-bold"
@@ -161,6 +167,31 @@
                 describedBy="social-post-hashtags-help"
                 placeholder="#anime #redeakiba"
             />
+        </FormField>
+
+        <FormField
+            for="social-artwork-cover"
+            label="Substituir imagem do banner"
+            error={serverArtworkCoverError}
+            spacing="compact"
+        >
+            <input
+                id="social-artwork-cover"
+                name="social-artwork-cover"
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                class="w-full min-w-0 cursor-pointer rounded-lg border border-blue-marinho/20 bg-white px-3 py-2 font-noto-sans text-sm text-gray-700 outline-none file:mr-3 file:cursor-pointer file:rounded-md file:border-0 file:bg-orange-citric file:px-4 file:py-2 file:font-bold file:text-blue-night hover:file:brightness-105 focus:border-blue-marinho/40 focus:ring-2 focus:ring-blue-marinho/10"
+                class:border-red-crimson={serverArtworkCoverError}
+                aria-invalid={serverArtworkCoverError ? "true" : undefined}
+                aria-describedby={serverArtworkCoverError ? "social-artwork-cover-error" : "social-artwork-cover-help"}
+                on:change={(event) => (social.artwork_cover = event.currentTarget.files?.[0] ?? null)}
+            />
+            {#if !serverArtworkCoverError}
+                <div id="social-artwork-cover-help" class="mt-1 font-noto-sans text-sm text-gray-400">
+                    <span class="block">Opcional. Caso não queira usar a imagem de capa.</span>
+                    <span class="block">Tamanho mínimo: 1200×400.</span>
+                </div>
+            {/if}
         </FormField>
 
         <div class="mt-6 flex justify-end border-t border-blue-marinho/10 pt-4">

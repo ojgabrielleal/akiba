@@ -35,6 +35,7 @@ class SocialArtworkDataServiceTest extends TestCase
             'title' => str_repeat('Uma notícia muito importante para os fãs de anime ', 4),
             'module' => 'review',
             'cover' => '/storage/posts/capa.webp',
+            'social' => ['artwork_cover' => '/storage/posts/social-artworks/banner.webp'],
         ]);
         $post->slug = 'review-akiba';
         $post->created_at = Carbon::parse('2026-10-24 12:30:00', 'America/Sao_Paulo');
@@ -48,7 +49,7 @@ class SocialArtworkDataServiceTest extends TestCase
         $artwork = app(SocialArtworkDataService::class)->map($post, $onair);
 
         $this->assertSame('Anime', $artwork['category']);
-        $this->assertSame('/storage/posts/capa.webp', $artwork['cover']);
+        $this->assertSame('/storage/posts/social-artworks/banner.webp', $artwork['cover']);
         $this->assertSame('Akemi', $artwork['author']);
         $this->assertSame('/storage/users/akemi.webp', $artwork['author_avatar']);
         $this->assertSame('Conexão Akiba', $artwork['live']['program']);

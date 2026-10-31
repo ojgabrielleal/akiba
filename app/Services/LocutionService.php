@@ -7,7 +7,12 @@ use App\Models\Onair;
 use App\Models\Program;
 use App\Models\SongRequest;
 use App\Models\User;
+use App\Processing\SocialArtworkProcess;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Throwable;
 
 class LocutionService
 {
@@ -15,6 +20,8 @@ class LocutionService
         private DiscordWebhookService $discord,
         private BadgeService $badges,
         private SocialPublicationScheduleService $socialPublication,
+        private SocialArtworkDataService $socialArtworkData,
+        private SocialArtworkProcess $socialArtwork,
     ) {}
 
     public function finish(): void
@@ -139,7 +146,7 @@ class LocutionService
             return $this->startStartProgram($program, $user, $data);
         });
 
-        $this->startSendNotifications($user, $program);
+        $this->startSendNotifications($user, $program, $onair);
 
         if (isset($data['social'])) {
             $this->socialPublication->scheduleLive($onair, $data['social']);
@@ -168,9 +175,33 @@ class LocutionService
         ]);
     }
 
-    private function startSendNotifications(User $user, Program $program): void
+    private function startSendNotifications(User $user, Program $program, Onair $onair): void
     {
-        $this->discord->sendStreamNotificationHook($user, $program);
+        $artworkPath = null;
+
+        if ($this->discord->streamNotificationsEnabled()) {
+            try {
+                $artworkPath = $this->socialArtwork->generate(
+                    'discord-live-feed',
+                    $this->socialArtworkData->mapLive($onair),
+                    'live-'.$onair->uuid,
+                    'discord-'.Str::uuid(),
+                )->path;
+            } catch (Throwable $exception) {
+                Log::warning('Discord live artwork generation failed; the text notification will be used.', [
+                    'onair_uuid' => $onair->uuid,
+                    'exception' => $exception::class,
+                ]);
+            }
+        }
+
+        try {
+            $this->discord->sendStreamNotificationHook($user, $program, $artworkPath);
+        } finally {
+            if ($artworkPath !== null) {
+                Storage::disk('public')->delete($artworkPath);
+            }
+        }
 
         app(PushNotificationService::class)->sendToUserOrAll(null, [
             'title' => "{$program->name} entrou no ar",

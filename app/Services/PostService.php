@@ -327,7 +327,10 @@ class PostService
             'module' => $module,
             'metadata' => $metadata,
             'social' => array_key_exists('social', $data)
-                ? $this->normalizeSocial($data['social'])
+                ? $this->normalizeSocial(
+                    $data['social'],
+                    $post->social['artwork_cover'] ?? null,
+                )
                 : $post->social,
         ]);
 
@@ -480,7 +483,7 @@ class PostService
         return $metadata;
     }
 
-    private function normalizeSocial(mixed $social): ?array
+    private function normalizeSocial(mixed $social, ?string $existingArtworkCover = null): ?array
     {
         if (! is_array($social)) {
             return null;
@@ -490,6 +493,20 @@ class PostService
             ->map(fn (string $hashtag): string => ltrim($hashtag, '#'))
             ->values()
             ->all();
+        $artworkCover = $social['artwork_cover'] ?? null;
+        if ($artworkCover instanceof UploadedFile) {
+            $social['artwork_cover'] = $this->image->store(
+                'temporary/social-artworks',
+                $artworkCover,
+                $existingArtworkCover,
+            );
+        } elseif (is_string($artworkCover) && filled($artworkCover)) {
+            $social['artwork_cover'] = $artworkCover;
+        } elseif (filled($existingArtworkCover)) {
+            $social['artwork_cover'] = $existingArtworkCover;
+        } else {
+            unset($social['artwork_cover']);
+        }
         $social['channels'] = [
             'instagram' => true,
             'facebook' => true,

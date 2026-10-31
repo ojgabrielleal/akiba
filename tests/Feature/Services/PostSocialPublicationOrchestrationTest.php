@@ -177,4 +177,55 @@ class PostSocialPublicationOrchestrationTest extends TestCase
         $this->assertNull($schedule->media_path);
         Queue::assertPushed(PublishSocialPublicationSchedule::class, 1);
     }
+
+    public function test_custom_artwork_cover_is_deleted_after_the_social_banner_is_scheduled(): void
+    {
+        $temporaryCover = 'images/temporary/social-artworks/custom-cover.webp';
+        $generatedArtwork = 'social-artworks/generated-feed.webp';
+        Storage::disk('public')->put($temporaryCover, 'temporary image');
+
+        $post = Post::factory()->create([
+            'status' => 'published',
+            'social' => [
+                'text' => 'Legenda da publicação.',
+                'hashtags' => ['anime'],
+                'artwork_cover' => '/storage/'.$temporaryCover,
+            ],
+        ]);
+
+        $this->mock(SocialArtworkProcess::class, function (MockInterface $mock) use (
+            $temporaryCover,
+            $generatedArtwork,
+        ): void {
+            $mock->shouldReceive('generate')
+                ->once()
+                ->withArgs(function (string $template, array $data) use ($temporaryCover): bool {
+                    $this->assertSame('instagram-feed', $template);
+                    $this->assertSame('/storage/'.$temporaryCover, $data['cover']);
+                    Storage::disk('public')->assertExists($temporaryCover);
+
+                    return true;
+                })
+                ->andReturnUsing(function () use ($generatedArtwork): object {
+                    Storage::disk('public')->put($generatedArtwork, 'generated banner');
+
+                    return (object) [
+                        'path' => $generatedArtwork,
+                        'url' => '/storage/'.$generatedArtwork,
+                    ];
+                });
+        });
+
+        app(SocialPublicationScheduleService::class)->schedulePost($post);
+
+        Storage::disk('public')->assertMissing($temporaryCover);
+        Storage::disk('public')->assertExists($generatedArtwork);
+        $this->assertArrayNotHasKey('artwork_cover', $post->fresh()->social);
+        $this->assertDatabaseHas('social_publication_schedules', [
+            'publishable_id' => $post->id,
+            'channel' => 'instagram',
+            'placement' => 'feed',
+        ]);
+        Queue::assertPushed(PublishSocialPublicationSchedule::class, 1);
+    }
 }

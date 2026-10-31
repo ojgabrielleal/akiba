@@ -39,7 +39,10 @@ class SocialArtworkDataService
                 ? $post->module
                 : 'post',
             'category' => $post->tags->first()?->name ?: $this->category($post->module),
-            'cover' => $this->image($post->cover ?: $post->image, 'img/placeholders/placeholder.webp'),
+            'cover' => $this->image(
+                ($post->social['artwork_cover'] ?? null) ?: $post->cover ?: $post->image,
+                'img/placeholders/placeholder.webp',
+            ),
             'author' => $this->limit($this->userName($author, 'Rede Akiba'), 40),
             'author_avatar' => $this->image($author?->avatar, 'img/placeholders/avatar.webp'),
             'url' => $this->postUrl($post),
