@@ -21,6 +21,7 @@ class TrackPublicPageView
         'home' => 'Início',
         'auth.continue' => 'Entrar',
         'contact' => 'Contato',
+        'instagram' => 'Instagram',
         'news' => 'Notícias',
         'columns' => 'Colunas',
         'team' => 'Equipe',

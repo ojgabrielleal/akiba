@@ -6,6 +6,7 @@ use App\Jobs\PublishSocialPublicationSchedule;
 use App\Models\Post;
 use App\Models\User;
 use App\Processing\SocialArtworkProcess;
+use App\Processing\SocialArtworkResult;
 use App\Services\PostService;
 use App\Services\SocialPublicationScheduleService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -29,6 +30,7 @@ class PostSocialPublicationOrchestrationTest extends TestCase
         config([
             'services.meta.instagram_enabled' => true,
             'services.meta.instagram_feed_enabled' => true,
+            'services.meta.instagram_story_enabled' => false,
             'services.meta.facebook_enabled' => false,
             'services.meta.facebook_feed_enabled' => true,
         ]);
@@ -153,6 +155,41 @@ class PostSocialPublicationOrchestrationTest extends TestCase
 
         $this->assertDatabaseCount('social_publication_schedules', 0);
         Queue::assertNothingPushed();
+    }
+
+    public function test_editorial_publication_schedules_an_instagram_story_when_enabled(): void
+    {
+        config(['services.meta.instagram_story_enabled' => true]);
+        $this->mock(SocialArtworkProcess::class, function (MockInterface $mock): void {
+            $mock->shouldReceive('generate')
+                ->twice()
+                ->withArgs(fn (string $template): bool => in_array($template, [
+                    'instagram-feed',
+                    'instagram-story',
+                ], true))
+                ->andReturnUsing(fn (string $template): SocialArtworkResult => new SocialArtworkResult(
+                    template: $template,
+                    path: "social-artworks/{$template}.jpg",
+                    url: "https://akiba.test/storage/social-artworks/{$template}.jpg",
+                    mimeType: 'image/jpeg',
+                    width: 1080,
+                    height: $template === 'instagram-story' ? 1920 : 1350,
+                    size: 100,
+                ));
+        });
+        $post = Post::factory()->create(['status' => 'published']);
+
+        app(SocialPublicationScheduleService::class)->schedulePost($post);
+
+        $this->assertSame(
+            ['feed', 'story'],
+            $post->socialPublicationSchedules()->orderBy('placement')->pluck('placement')->all(),
+        );
+        $this->assertSame(
+            ['social-artworks/instagram-feed.jpg', 'social-artworks/instagram-story.jpg'],
+            $post->socialPublicationSchedules()->orderBy('placement')->pluck('media_path')->all(),
+        );
+        Queue::assertPushed(PublishSocialPublicationSchedule::class, 2);
     }
 
     public function test_artwork_failure_is_logged_and_does_not_rollback_the_published_post(): void

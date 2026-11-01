@@ -80,6 +80,7 @@ return [
         'container_poll_interval_ms' => env('META_CONTAINER_POLL_INTERVAL_MS', 2000),
         'instagram_enabled' => env('META_INSTAGRAM_ENABLED', false),
         'instagram_feed_enabled' => env('META_INSTAGRAM_FEED_ENABLED', true),
+        'instagram_story_enabled' => env('META_INSTAGRAM_STORY_ENABLED', true),
         'facebook_enabled' => env('META_FACEBOOK_ENABLED', false),
         'facebook_feed_enabled' => env('META_FACEBOOK_FEED_ENABLED', true),
     ],

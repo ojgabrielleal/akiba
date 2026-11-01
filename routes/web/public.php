@@ -11,6 +11,7 @@ use App\Http\Controllers\Public\ContactController;
 use App\Http\Controllers\Public\EasterEggController;
 use App\Http\Controllers\Public\EditorialController;
 use App\Http\Controllers\Public\HomeController;
+use App\Http\Controllers\Public\InstagramController;
 use App\Http\Controllers\Public\MediaController;
 use App\Http\Controllers\Public\PlayerController;
 use App\Http\Controllers\Public\PodcastController;
@@ -65,6 +66,10 @@ Route::get('/l/{post:short_code}', PostShortLinkController::class)
     ->where('post', '[a-z0-9]{8}')
     ->name('post.short');
 
+Route::get('/materia/{post:uuid}', [InstagramController::class, 'redirect'])
+    ->whereUuid('post')
+    ->name('stories.post.redirect');
+
 Route::post('/easter-eggs/{easterEgg}/unlock', [EasterEggController::class, 'unlock'])
     ->middleware('oauth.resolve')
     ->name('easter-eggs.unlock');
@@ -84,6 +89,9 @@ Route::middleware(['oauth.resolve', 'inertia', 'page-view'])->group(function () 
 
     Route::get('/contato', [ContactController::class, 'render'])
         ->name('contact');
+
+    Route::get('/stories', [InstagramController::class, 'render'])
+        ->name('stories');
 
     Route::post('/form-submissions', [ContactController::class, 'storeFormSubmission'])
         ->name('form-submissions.store');

@@ -22,7 +22,6 @@ class SocialArtworkProcess
         'facebook-feed' => [1200, 1080],
         'facebook-live-feed' => [1080, 1350],
         'discord-post' => [1200, 630],
-        'discord-live-feed' => [1200, 630],
     ];
 
     private const MAX_FILE_SIZE = 8_000_000;
@@ -349,20 +348,27 @@ class SocialArtworkProcess
         int $height,
         string $template,
         array $data,
-    ): void
-    {
-        $usesDiscordComposition = in_array($template, ['discord-post', 'instagram-feed', 'facebook-feed'], true);
-        $baseOpacity = $usesDiscordComposition ? .10 : .26;
+    ): void {
+        $usesDiscordComposition = in_array($template, ['discord-post', 'instagram-feed', 'instagram-story', 'facebook-feed'], true);
+        $baseOpacity = $usesDiscordComposition ? 0.10 : 0.26;
         $image->drawRectangle(0, 0, fn (RectangleFactory $rectangle) => $rectangle
             ->size($width, $height)
             ->background(sprintf('rgba(0, 0, 20, %.2f)', $baseOpacity)));
 
         if ($usesDiscordComposition) {
-            $isVerticalFeed = in_array($template, ['instagram-feed', 'facebook-feed'], true);
+            $isVerticalFeed = in_array($template, ['instagram-feed', 'instagram-story', 'facebook-feed'], true);
 
             if ($isVerticalFeed) {
-                $titleSize = $template === 'facebook-feed' ? 76 : 70;
-                $titleAnchorY = $template === 'facebook-feed' ? $height - 260 : 1090;
+                $titleSize = match ($template) {
+                    'facebook-feed' => 76,
+                    'instagram-story' => 84,
+                    default => 70,
+                };
+                $titleAnchorY = match ($template) {
+                    'facebook-feed' => $height - 260,
+                    'instagram-story' => $height - 600,
+                    default => 1090,
+                };
                 $title = $data['titles'][$template] ?? $data['title'] ?? 'Conteúdo novo na Rede Akiba';
                 $titleLines = $this->wrap($title, $titleSize, $width - 180, PHP_INT_MAX);
                 $titleTop = $titleAnchorY - (max(0, count($titleLines) - 1) * $titleSize);
@@ -402,7 +408,7 @@ class SocialArtworkProcess
 
     private function drawFrame(ImageInterface $image, int $width, int $height, string $template): void
     {
-        if (in_array($template, ['discord-post', 'instagram-feed', 'facebook-feed'], true)) {
+        if (in_array($template, ['discord-post', 'instagram-feed', 'instagram-story', 'facebook-feed'], true)) {
             return;
         }
 
@@ -419,8 +425,8 @@ class SocialArtworkProcess
         $isStory = str_contains($template, 'story');
         $isDiscord = $template === 'discord-post';
         $isFacebookFeed = $template === 'facebook-feed';
-        $isVerticalFeed = $template === 'instagram-feed' || $isFacebookFeed;
-        $usesDiscordComposition = $isDiscord || $template === 'instagram-feed' || $isFacebookFeed;
+        $isVerticalFeed = in_array($template, ['instagram-feed', 'instagram-story'], true) || $isFacebookFeed;
+        $usesDiscordComposition = $isDiscord || $isVerticalFeed;
         $logo = $this->manager
             ->read($this->requiredAsset($this->brandLogoPath, 'brand logo'))
             ->scaleDown(
@@ -435,7 +441,7 @@ class SocialArtworkProcess
                 ? $width - 90 - $logo->width()
                 : ($usesDiscordComposition ? $width - 42 - $logo->width() : 72),
             $isStory
-                ? 250
+                ? $height - 355 - intdiv($logo->height(), 2)
                 : ($isVerticalFeed
                     ? $height - 54 - $logo->height()
                     : ($usesDiscordComposition ? $height - 36 - $logo->height() : 72)),
@@ -453,14 +459,18 @@ class SocialArtworkProcess
         $isDiscord = $template === 'discord-post';
         $isInstagramFeed = $template === 'instagram-feed';
         $isFacebookFeed = $template === 'facebook-feed';
-        $isVerticalFeed = $isInstagramFeed || $isFacebookFeed;
-        $usesDiscordComposition = $isDiscord || $isInstagramFeed || $isFacebookFeed;
-        $left = $isStory ? 80 : ($isDiscord ? 48 : ($isVerticalFeed ? 90 : 54));
+        $isVerticalFeed = $isInstagramFeed || $isStory || $isFacebookFeed;
+        $usesDiscordComposition = $isDiscord || $isVerticalFeed;
+        $left = $isDiscord ? 48 : ($isVerticalFeed ? 90 : 54);
         $bottom = $isStory ? 280 : ($isDiscord ? 48 : 82);
-        $titleSize = $isStory ? 66 : ($isDiscord ? 44 : ($isFacebookFeed ? 76 : ($isInstagramFeed ? 70 : 64)));
+        $titleSize = $isStory ? 84 : ($isDiscord ? 44 : ($isFacebookFeed ? 76 : ($isInstagramFeed ? 70 : 64)));
         $maxTextWidth = $width - ($left * 2);
         $footerY = $height - $bottom;
-        $titleY = $isDiscord ? 455 : ($isFacebookFeed ? $height - 260 : ($isInstagramFeed ? 1090 : $footerY - ($isStory ? 470 : 390)));
+        $titleY = $isDiscord
+            ? 455
+            : ($isFacebookFeed
+                ? $height - 260
+                : ($isStory ? $height - 600 : ($isInstagramFeed ? 1090 : $footerY - 390)));
         $category = Str::upper($data['category'] ?? 'Notícia');
         $date = Str::upper($data['published_at'] ?? now('America/Sao_Paulo')->format('d M Y'));
 
@@ -484,33 +494,76 @@ class SocialArtworkProcess
             $font,
             $titleSize,
             '#fffaf3',
-            $isDiscord ? 1.50 : ($isVerticalFeed ? 1.35 : 1.16),
+            $isDiscord ? 1.50 : ($isStory ? 1.45 : ($isVerticalFeed ? 1.35 : 1.16)),
         ));
+
+        if ($isStory) {
+            $labelWidth = 390;
+            $labelHeight = 142;
+            $noteColor = '#ffaa35';
+            $noteWidth = 420;
+            $noteHeight = 176;
+            $note = $this->manager->create($noteWidth, $noteHeight)->fill('rgba(0, 0, 0, 0)');
+            foreach ([
+                [11, 19, 396, 148, 0.04],
+                [12, 20, 394, 146, 0.06],
+                [13, 21, 392, 144, 0.08],
+                [14, 22, 390, 142, 0.10],
+            ] as [$shadowX, $shadowY, $shadowWidth, $shadowHeight, $shadowOpacity]) {
+                $note->drawRectangle($shadowX, $shadowY, fn (RectangleFactory $rectangle) => $rectangle
+                    ->size($shadowWidth, $shadowHeight)
+                    ->background(sprintf('rgba(0, 0, 20, %.2f)', $shadowOpacity)));
+            }
+            $note->drawRectangle(8, 12, fn (RectangleFactory $rectangle) => $rectangle
+                ->size($labelWidth, $labelHeight)
+                ->background($noteColor));
+            $note->drawRectangle(158, 0, fn (RectangleFactory $rectangle) => $rectangle
+                ->size(112, 32)
+                ->background('rgba(255, 250, 243, 0.68)'));
+            $note->text('LEIA A MATÉRIA', 8 + intdiv($labelWidth, 2), 67, fn (FontFactory $font) => $this->font(
+                $font,
+                31,
+                '#fffaf3',
+            )->align('center')->valign('middle'));
+            $note->text('LINK NA BIO', 8 + intdiv($labelWidth, 2), 109, fn (FontFactory $font) => $this->font(
+                $font,
+                31,
+                '#fffaf3',
+            )->align('center')->valign('middle'));
+            $note->rotate(2, 'rgba(0, 0, 0, 0)');
+            $image->place(
+                $note,
+                'top-left',
+                $width - $left - $note->width(),
+                280,
+            );
+        }
 
         if ($isDiscord) {
             return;
         }
 
         if ($isVerticalFeed) {
+            $avatarSize = $isStory ? 90 : 72;
             $avatar = $this->readImage($data['author_avatar'] ?? null, public_path('img/placeholders/avatar.webp'))
-                ->cover(90, 90, 'top')
-                ->crop(72, 72, 9, 0);
-            $avatar = $this->circularImage($avatar, 72);
-            $authorY = $height - 122;
+                ->cover($isStory ? 108 : 90, $isStory ? 108 : 90, 'top')
+                ->crop($avatarSize, $avatarSize, $isStory ? 9 : 9, 0);
+            $avatar = $this->circularImage($avatar, $avatarSize);
+            $authorY = $isStory ? $height - 400 : $height - 122;
             $image->place($avatar, 'top-left', $left, $authorY);
             $author = $data['author'] ?? 'Rede Akiba';
-            $authorX = $left + 92;
+            $authorX = $left + ($isStory ? 116 : 92);
             $image->text(
                 $author,
                 $authorX,
-                $authorY + 25,
-                fn (FontFactory $font) => $this->font($font, 26, '#fffaf3')->valign('middle'),
+                $authorY + ($isStory ? 30 : 25),
+                fn (FontFactory $font) => $this->font($font, $isStory ? 32 : 26, '#fffaf3')->valign('middle'),
             );
             $image->text(
                 'Redação Akiba',
                 $authorX,
-                $authorY + 55,
-                fn (FontFactory $font) => $this->font($font, 18, '#ffaa35')->valign('middle'),
+                $authorY + ($isStory ? 70 : 55),
+                fn (FontFactory $font) => $this->font($font, $isStory ? 22 : 18, '#ffaa35')->valign('middle'),
             );
 
             return;
@@ -536,12 +589,6 @@ class SocialArtworkProcess
     ): void {
         $isStory = $template === 'instagram-live-story';
         $live = $data['live'] ?? [];
-
-        if ($template === 'discord-live-feed') {
-            $this->drawDiscordLiveArtwork($image, $live, $width, $height);
-
-            return;
-        }
 
         if ($template === 'facebook-live-feed') {
             $this->drawLiveFeedArtwork($image, $live, $width, $height);
@@ -603,87 +650,6 @@ class SocialArtworkProcess
         )->align($isStory ? 'center' : 'left'));
     }
 
-    private function drawDiscordLiveArtwork(
-        ImageInterface $image,
-        array $live,
-        int $width,
-        int $height,
-    ): void {
-        $background = $this->manager
-            ->read($this->requiredAsset(
-                public_path('social-artworks/backgrounds/live-feed.png'),
-                'live feed background',
-            ))
-            ->cover($width, $height, 'center');
-        $image->place($background);
-        $image->drawRectangle(0, 0, fn (RectangleFactory $rectangle) => $rectangle
-            ->size($width, $height)
-            ->background('rgba(0, 0, 20, 0.28)'));
-
-        $portraitSize = 430;
-        $portraitInnerSize = $portraitSize - 14;
-        $portraitX = 48;
-        $portraitY = 100;
-        $portraitBorder = $this->circularImage(
-            $this->manager->create($portraitSize, $portraitSize)->fill('#ffaa35'),
-            $portraitSize,
-        );
-        $portraitBackground = $this->circularImage(
-            $this->manager->create($portraitInnerSize, $portraitInnerSize)->fill('#000036'),
-            $portraitInnerSize,
-        );
-        $portrait = $this->readImage($live['host_avatar'] ?? null, public_path('img/placeholders/avatar.webp'))
-            ->cover($portraitInnerSize, $portraitInnerSize, 'top');
-        $portrait = $this->circularImage($portrait, $portraitInnerSize);
-        $image->place($portraitBorder, 'top-left', $portraitX, $portraitY);
-        $image->place($portraitBackground, 'top-left', $portraitX + 7, $portraitY + 7);
-        $image->place($portrait, 'top-left', $portraitX + 7, $portraitY + 7);
-
-        $textX = 525;
-        $headlineSize = 84;
-        $image->text('AGORA', $textX, 196, fn (FontFactory $font) => $this->font(
-            $font,
-            $headlineSize,
-            '#fffaf3',
-        ));
-
-        $boxWidth = 340;
-        $boxHeight = 94;
-        $boxY = 288;
-        $image->drawRectangle($textX, $boxY, fn (RectangleFactory $rectangle) => $rectangle
-            ->size($boxWidth, $boxHeight)
-            ->background('#ffaa35'));
-        $image->text('NO AR', $textX + intdiv($boxWidth, 2), $boxY + intdiv($boxHeight, 2), fn (FontFactory $font) => $this->font(
-            $font,
-            66,
-            '#fffaf3',
-        )->align('center')->valign('middle'));
-
-        $host = 'DJ '.Str::upper($live['host'] ?? 'Equipe Rede Akiba');
-        $image->text($host, $textX, 408, fn (FontFactory $font) => $this->font(
-            $font,
-            30,
-            '#fffaf3',
-        )->filename($this->requiredAsset(
-            resource_path('fonts/NotoSans-Bold.ttf'),
-            'Noto Sans font',
-        )));
-
-        foreach ([[478, 198, 14], [492, 240, 9], [455, 444, 11], [890, 208, 8]] as [$x, $y, $size]) {
-            $image->drawRectangle($x, $y + intdiv($size, 3), fn (RectangleFactory $rectangle) => $rectangle
-                ->size($size, max(4, intdiv($size, 3)))
-                ->background('#ffaa35'));
-            $image->drawRectangle($x + intdiv($size, 3), $y, fn (RectangleFactory $rectangle) => $rectangle
-                ->size(max(4, intdiv($size, 3)), $size)
-                ->background('#ffaa35'));
-        }
-
-        $logo = $this->manager
-            ->read($this->requiredAsset($this->brandLogoPath, 'brand logo'))
-            ->scaleDown(width: 235, height: 82);
-        $image->place($logo, 'top-left', $width - 38 - $logo->width(), $height - 32 - $logo->height());
-    }
-
     private function drawLiveFeedArtwork(
         ImageInterface $image,
         array $live,
@@ -697,7 +663,7 @@ class SocialArtworkProcess
 
         $background = $this->manager
             ->read($this->requiredAsset(
-                public_path('social-artworks/backgrounds/live-announcer.webp'),
+                public_path('img/social-artworks/backgrounds/live-announcer.webp'),
                 'live announcer background',
             ))
             ->cover($width, $height, 'center');
@@ -715,11 +681,10 @@ class SocialArtworkProcess
             $y(325),
         );
 
-        $presenter = $this->manager
-            ->read($this->requiredAsset(
-                public_path('social-artworks/backgrounds/podcast-host.webp'),
-                'live presenter character',
-            ))
+        $presenter = $this->readImage(
+            $live['host_avatar'] ?? null,
+            public_path('img/placeholders/avatar.webp'),
+        )
             ->scaleDown(width: $x(625), height: $y(780));
         $image->place(
             $presenter,
@@ -752,7 +717,7 @@ class SocialArtworkProcess
 
         $arrow = $this->manager
             ->read($this->requiredAsset(
-                public_path('social-artworks/backgrounds/arrow-right-two.png'),
+                public_path('img/social-artworks/backgrounds/arrow-right-two.png'),
                 'right arrow icon',
             ))
             ->colorize(55, 55, 55)

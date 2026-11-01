@@ -27,44 +27,54 @@ class DiscordWebhookService
             && filled(config('services.discord.webhook'));
     }
 
-    public function sendStreamNotificationHook($user, $program, ?string $artworkPath = null): bool
+    public function sendStreamNotificationHook($user, $program): bool
     {
         if (! $this->streamNotificationsEnabled()) {
             return false;
         }
 
         $webhookUrl = config('services.discord.webhook');
+        $siteUrl = rtrim((string) config('app.url'), '/');
+
+        if (in_array(parse_url($siteUrl, PHP_URL_HOST), ['localhost', '127.0.0.1'], true)) {
+            $siteUrl = 'https://akiba.com.br';
+        }
+
+        $hostAvatarUrl = $this->publicImageUrl($user->avatar ?? null, $siteUrl);
 
         $payload = [
-            'content' => '🎧 @here **Bora de Akiba?**',
+            'content' => "🎧 @here **Bora de Akiba? DJ {$user->nickname} está ao vivo**",
             'allowed_mentions' => ['parse' => ['everyone']],
             'embeds' => [
-                [
-                    'title' => "{$program->name} NO AR!",
-                    'description' => "**{$user->nickname}** tá ao vivo com o **{$program->name}**!\n\nVem pela música, fica pela companhia. E aquele opening que não sai da sua cabeça? Pede aí que a gente quer ouvir também. 🧡\n\n**[Dá o play e manda seu pedido!](https://akiba.com.br)**",
+                array_filter([
+                    'title' => "🔴 {$program->name} ESTÁ NO AR!",
+                    'url' => $siteUrl,
+                    'description' => "A programação ao vivo começou. Vem curtir música, companhia e pedir aquele opening que não sai da cabeça. 🧡\n\u{200B}",
                     'color' => hexdec('ffaa35'),
-                    'author' => [
-                        'name' => "DJ {$user->nickname}",
+                    'fields' => [
+                        [
+                            'name' => '🎙️ LOCUTOR',
+                            'value' => "{$user->nickname}\n\u{200B}",
+                            'inline' => true,
+                        ],
+                        [
+                            'name' => '📡 PROGRAMA',
+                            'value' => "{$program->name}\n\u{200B}",
+                            'inline' => true,
+                        ],
+                        [
+                            'name' => '🎧 BORA DE AKIBA?',
+                            'value' => "[OUVIR AO VIVO E PEDIR MÚSICA]({$siteUrl})",
+                            'inline' => false,
+                        ],
                     ],
-                ],
+                    'thumbnail' => $hostAvatarUrl ? ['url' => $hostAvatarUrl] : null,
+                ]),
             ],
         ];
 
         try {
-            $request = Http::timeout(30)->connectTimeout(5);
-
-            if ($artworkPath !== null) {
-                $artwork = Storage::disk('public')->get($artworkPath);
-                $payload['attachments'] = [['id' => 0, 'filename' => 'agora-no-ar.jpg']];
-                $payload['embeds'][0]['image'] = ['url' => 'attachment://agora-no-ar.jpg'];
-
-                return $request
-                    ->attach('files[0]', $artwork, 'agora-no-ar.jpg', ['Content-Type' => 'image/jpeg'])
-                    ->post($webhookUrl, ['payload_json' => json_encode($payload, JSON_THROW_ON_ERROR)])
-                    ->successful();
-            }
-
-            return $request->post($webhookUrl, $payload)->successful();
+            return Http::timeout(30)->connectTimeout(5)->post($webhookUrl, $payload)->successful();
         } catch (Throwable $exception) {
             Log::warning('Discord stream notification failed', ['exception' => $exception::class]);
 
@@ -141,6 +151,19 @@ class DiscordWebhookService
     private function discordPublicationEnabled(): bool
     {
         return (bool) config('services.discord.publication_enabled', true);
+    }
+
+    private function publicImageUrl(?string $image, string $siteUrl): ?string
+    {
+        if (blank($image)) {
+            return null;
+        }
+
+        if (Str::startsWith($image, ['http://', 'https://'])) {
+            return $image;
+        }
+
+        return $siteUrl.'/'.ltrim($image, '/');
     }
 
     private function postAttachment(Post $post, ?string $artworkPath): ?string

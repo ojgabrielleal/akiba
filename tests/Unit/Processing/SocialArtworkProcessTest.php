@@ -57,7 +57,6 @@ class SocialArtworkProcessTest extends TestCase
             'facebook-feed' => [1200, 1080],
             'facebook-live-feed' => [1080, 1350],
             'discord-post' => [1200, 630],
-            'discord-live-feed' => [1200, 630],
         ] as $template => $expectedDimensions) {
             $size = getimagesizefromstring($process->render($template, $this->artwork()));
 

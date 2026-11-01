@@ -3,9 +3,7 @@
 namespace Tests\Unit\Integrations;
 
 use App\Integrations\DiscordWebhookService;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class DiscordStreamNotificationTest extends TestCase
@@ -34,7 +32,7 @@ class DiscordStreamNotificationTest extends TestCase
         Http::fake(['discord.test/*' => Http::response([], 204)]);
 
         $this->assertTrue(app(DiscordWebhookService::class)->sendStreamNotificationHook(
-            (object) ['nickname' => 'Yagami', 'gender' => 'male', 'avatar' => 'https://cdn.example.com/avatar.png'],
+            (object) ['nickname' => 'Yagami', 'avatar' => '/storage/users/yagami.webp'],
             (object) ['name' => 'Conexão Akiba'],
         ));
 
@@ -44,44 +42,23 @@ class DiscordStreamNotificationTest extends TestCase
 
             return $request->isJson()
                 && $payload['allowed_mentions']['parse'] === ['everyone']
+                && ! isset($payload['username'])
+                && ! isset($payload['avatar_url'])
+                && $payload['content'] === '🎧 @here **Bora de Akiba? DJ Yagami está ao vivo**'
                 && str_contains($payload['content'], '@here')
                 && ! str_contains($payload['content'], '@everyone')
                 && ! isset($payload['attachments'])
                 && ! isset($embed['image'])
-                && ! isset($embed['thumbnail'])
-                && ! isset($embed['author']['icon_url'])
-                && $embed['title'] === 'Conexão Akiba NO AR!'
-                && str_contains($embed['description'], 'Yagami')
-                && str_contains($embed['description'], 'https://akiba.com.br');
+                && ! isset($embed['author'])
+                && $embed['title'] === '🔴 Conexão Akiba ESTÁ NO AR!'
+                && $embed['fields'][0] === ['name' => '🎙️ LOCUTOR', 'value' => "Yagami\n\u{200B}", 'inline' => true]
+                && $embed['fields'][1] === ['name' => '📡 PROGRAMA', 'value' => "Conexão Akiba\n\u{200B}", 'inline' => true]
+                && str_contains($embed['fields'][2]['value'], 'https://akiba.com.br')
+                && $embed['thumbnail']['url'] === 'https://akiba.com.br/storage/users/yagami.webp'
+                && ! isset($embed['footer'])
+                && ! isset($embed['timestamp']);
         });
         Http::assertSentCount(1);
     }
 
-    public function test_it_attaches_the_generated_live_artwork(): void
-    {
-        $this->app->instance('env', 'production');
-        config(['services.discord.webhook' => 'https://discord.test/webhook']);
-        Http::preventStrayRequests();
-        Http::fake(['discord.test/*' => Http::response([], 204)]);
-        Storage::fake('public');
-        $artwork = UploadedFile::fake()->image('agora-no-ar.jpg', 1200, 630)->getContent();
-        Storage::disk('public')->put('social-artworks/live/discord-live-feed.jpg', $artwork);
-
-        $this->assertTrue(app(DiscordWebhookService::class)->sendStreamNotificationHook(
-            (object) ['nickname' => 'Yagami'],
-            (object) ['name' => 'Conexão Akiba'],
-            'social-artworks/live/discord-live-feed.jpg',
-        ));
-
-        Http::assertSent(function ($request) {
-            $field = collect($request->data())->firstWhere('name', 'payload_json');
-            $payload = json_decode($field['contents'], true);
-
-            return $request->hasFile('files[0]')
-                && $payload['attachments'] === [['id' => 0, 'filename' => 'agora-no-ar.jpg']]
-                && $payload['embeds'][0]['image']['url'] === 'attachment://agora-no-ar.jpg'
-                && str_contains($request->body(), 'image/jpeg');
-        });
-        Http::assertSentCount(1);
-    }
 }

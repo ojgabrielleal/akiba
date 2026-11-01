@@ -60,6 +60,7 @@ class SocialPublicationScheduleService
             postUrl: url('/'),
             artworkOwner: 'live-'.$onair->uuid,
             templatePrefix: 'instagram-live',
+            allowedPlacements: [PublicationPlacement::Feed],
         );
     }
 
@@ -73,11 +74,15 @@ class SocialPublicationScheduleService
         string $templatePrefix,
         bool $facebookLinkPreview = false,
         ?string $fallbackUrl = null,
+        ?array $allowedPlacements = null,
     ): Collection {
         $targets = collect(PublicationChannel::cases())
             ->flatMap(fn (PublicationChannel $channel) => array_map(
                 fn (PublicationPlacement $placement): array => [$channel, $placement],
                 $this->configuration->enabledPlacements($channel),
+            ))
+            ->when($allowedPlacements !== null, fn (Collection $targets) => $targets->filter(
+                fn (array $target): bool => in_array($target[1], $allowedPlacements, true),
             ))
             ->values();
 

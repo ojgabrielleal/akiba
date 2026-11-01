@@ -24,6 +24,7 @@ class LiveSocialPublicationOrchestrationTest extends TestCase
         config([
             'services.meta.instagram_enabled' => true,
             'services.meta.instagram_feed_enabled' => true,
+            'services.meta.instagram_story_enabled' => true,
             'services.meta.facebook_enabled' => true,
             'services.meta.facebook_feed_enabled' => true,
         ]);

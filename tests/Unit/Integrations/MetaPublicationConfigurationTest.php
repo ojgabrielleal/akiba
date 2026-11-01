@@ -47,6 +47,20 @@ class MetaPublicationConfigurationTest extends TestCase
         $this->assertTrue($this->configuration->isReady(PublicationChannel::Instagram));
     }
 
+    public function test_instagram_exposes_feed_and_story_as_independent_placements(): void
+    {
+        config([
+            'services.meta.instagram_enabled' => true,
+            'services.meta.instagram_feed_enabled' => false,
+            'services.meta.instagram_story_enabled' => true,
+        ]);
+
+        $this->assertSame(
+            [PublicationPlacement::Story],
+            $this->configuration->enabledPlacements(PublicationChannel::Instagram),
+        );
+    }
+
     public function test_instagram_reports_only_its_missing_settings(): void
     {
         config([

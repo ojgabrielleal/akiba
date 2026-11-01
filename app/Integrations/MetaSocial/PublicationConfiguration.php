@@ -24,9 +24,10 @@ final class PublicationConfiguration
         }
 
         return match ($channel) {
-            PublicationChannel::Instagram => config('services.meta.instagram_feed_enabled', true)
-                ? [PublicationPlacement::Feed]
-                : [],
+            PublicationChannel::Instagram => array_values(array_filter([
+                config('services.meta.instagram_feed_enabled', true) ? PublicationPlacement::Feed : null,
+                config('services.meta.instagram_story_enabled', true) ? PublicationPlacement::Story : null,
+            ])),
             PublicationChannel::Facebook => config('services.meta.facebook_feed_enabled', true)
                 ? [PublicationPlacement::Feed]
                 : [],
