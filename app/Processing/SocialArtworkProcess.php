@@ -20,7 +20,7 @@ class SocialArtworkProcess
         'instagram-story' => [1080, 1920],
         'instagram-live-story' => [1080, 1920],
         'facebook-feed' => [1200, 1080],
-        'facebook-live-feed' => [1200, 1080],
+        'facebook-live-feed' => [1080, 1350],
         'discord-post' => [1200, 630],
         'discord-live-feed' => [1200, 630],
     ];
@@ -544,7 +544,7 @@ class SocialArtworkProcess
         }
 
         if ($template === 'facebook-live-feed') {
-            $this->drawLiveFeedArtwork($image, $live, $width, $height, true);
+            $this->drawLiveFeedArtwork($image, $live, $width, $height);
 
             return;
         }
@@ -611,7 +611,7 @@ class SocialArtworkProcess
     ): void {
         $background = $this->manager
             ->read($this->requiredAsset(
-                public_path('img/social-artwork/backgrounds/live-feed.png'),
+                public_path('social-artworks/backgrounds/live-feed.png'),
                 'live feed background',
             ))
             ->cover($width, $height, 'center');
@@ -665,8 +665,8 @@ class SocialArtworkProcess
             30,
             '#fffaf3',
         )->filename($this->requiredAsset(
-            resource_path('fonts/DejaVuSans-Regular.ttf'),
-            'regular font',
+            resource_path('fonts/NotoSans-Bold.ttf'),
+            'Noto Sans font',
         )));
 
         foreach ([[478, 198, 14], [492, 240, 9], [455, 444, 11], [890, 208, 8]] as [$x, $y, $size]) {
@@ -689,138 +689,75 @@ class SocialArtworkProcess
         array $live,
         int $width,
         int $height,
-        bool $isFacebook = false,
     ): void {
-        $contentOffsetY = $isFacebook ? 5 : 120;
-        $statusOffsetY = 55;
-        $contentOffsetX = $isFacebook ? 60 : 0;
-
-        $image->fill('#002080');
+        $scaleX = $width / 1080;
+        $scaleY = $height / 1350;
+        $x = static fn (int $value): int => (int) round($value * $scaleX);
+        $y = static fn (int $value): int => (int) round($value * $scaleY);
 
         $background = $this->manager
             ->read($this->requiredAsset(
-                public_path('img/social-artwork/backgrounds/live-feed.png'),
-                'live feed background',
+                public_path('social-artworks/backgrounds/live-announcer.webp'),
+                'live announcer background',
             ))
             ->cover($width, $height, 'center');
         $image->place($background);
 
-        $image->drawRectangle(0, 0, fn (RectangleFactory $rectangle) => $rectangle
-            ->size($width, $height)
-            ->background('rgba(0, 0, 20, 0.22)'));
-
-        $portraitSize = 500;
-        $portraitInnerSize = $portraitSize - 16;
-        $portraitX = 55 + $contentOffsetX;
-        $portraitY = 95 + $contentOffsetY;
-        $portraitBorder = $this->circularImage(
-            $this->manager->create($portraitSize, $portraitSize)->fill('#ffaa35'),
-            $portraitSize,
+        $programImagePath = $this->localPath($live['program_image'] ?? null);
+        $programFallback = public_path('img/placeholders/program.webp');
+        $programLogo = $this->manager
+            ->read($programImagePath !== null && is_file($programImagePath) ? $programImagePath : $programFallback)
+            ->scaleDown(width: $x(600), height: $y(285));
+        $image->place(
+            $programLogo,
+            'top-left',
+            intdiv($width - $programLogo->width(), 2),
+            $y(325),
         );
-        $portraitBackground = $this->circularImage(
-            $this->manager->create($portraitInnerSize, $portraitInnerSize)->fill('#000036'),
-            $portraitInnerSize,
+
+        $presenter = $this->manager
+            ->read($this->requiredAsset(
+                public_path('social-artworks/backgrounds/podcast-host.webp'),
+                'live presenter character',
+            ))
+            ->scaleDown(width: $x(625), height: $y(780));
+        $image->place(
+            $presenter,
+            'top-left',
+            $width - $presenter->width() + $x(35),
+            $height - $presenter->height() + $y(45),
         );
-        $portrait = $this->readImage($live['host_avatar'] ?? null, public_path('img/placeholders/avatar.webp'))
-            ->cover($portraitInnerSize, $portraitInnerSize, 'top');
-        $portrait = $this->circularImage($portrait, $portraitInnerSize);
-        $image->place($portraitBorder, 'top-left', $portraitX, $portraitY);
-        $image->place($portraitBackground, 'top-left', $portraitX + 8, $portraitY + 8);
-        $image->place($portrait, 'top-left', $portraitX + 8, $portraitY + 8);
 
-        $textX = 605 + $contentOffsetX;
-        $headlineSize = 108;
-        $headlineY = 155 + $contentOffsetY + $statusOffsetY;
-        $boxY = 255 + $contentOffsetY + $statusOffsetY;
-        $boxWidth = 400;
-        $boxHeight = 118;
-        $image->text('AGORA', $textX, $headlineY, fn (FontFactory $font) => $this->font(
+        $left = $x(65);
+        $hostY = $y(830);
+        $image->text('COM DJ', $left + $x(8), $hostY, fn (FontFactory $font) => $this->font(
             $font,
-            $headlineSize,
-            '#fffaf3',
-        ));
-        $image->drawRectangle($textX, $boxY, fn (RectangleFactory $rectangle) => $rectangle
-            ->size($boxWidth, $boxHeight)
-            ->background('#ffaa35'));
-        $image->text('NO AR', $textX + intdiv($boxWidth, 2), $boxY + intdiv($boxHeight, 2), fn (FontFactory $font) => $this->font(
-            $font,
-            82,
-            '#fffaf3',
-        )->align('center')->valign('middle'));
-
-        $host = 'DJ '.Str::upper($live['host'] ?? 'Equipe Rede Akiba');
-        $image->text($host, $textX, 405 + $contentOffsetY + $statusOffsetY, fn (FontFactory $font) => $this->font(
-            $font,
-            38,
+            $y(26),
             '#fffaf3',
         )->filename($this->requiredAsset(
-            resource_path('fonts/DejaVuSans-Regular.ttf'),
-            'regular font',
+            resource_path('fonts/NotoSans-LightItalic.ttf'),
+            'Noto Sans Light Italic font',
+        )));
+        $host = Str::upper($live['host'] ?? 'Equipe Rede Akiba');
+        $hostLines = $this->wrap($host, $y(58), $x(400), 2);
+        $image->text(implode("\n", $hostLines), $left, $hostY + $y(35), fn (FontFactory $font) => $this->font(
+            $font,
+            $y(58),
+            '#fffaf3',
+            1.05,
+        )->filename($this->requiredAsset(
+            resource_path('fonts/NotoSans-ExtraBoldItalic.ttf'),
+            'Noto Sans ExtraBold Italic font',
         )));
 
-        $crosses = [
-            [520, 115, 20],
-            [560, 75, 12],
-            [535, 520, 14],
-            [485, 48, 9],
-            [585, 165, 8],
-            [500, 455, 10],
-            [580, 475, 7],
-        ];
-
-        foreach ($crosses as [$crossX, $crossY, $crossSize]) {
-            $crossX += $contentOffsetX;
-            $crossY += $contentOffsetY;
-            $image->drawRectangle($crossX, $crossY + intdiv($crossSize, 3), fn (RectangleFactory $rectangle) => $rectangle
-                ->size($crossSize, max(4, intdiv($crossSize, 3)))
-                ->background('#ffaa35'));
-            $image->drawRectangle($crossX + intdiv($crossSize, 3), $crossY, fn (RectangleFactory $rectangle) => $rectangle
-                ->size(max(4, intdiv($crossSize, 3)), $crossSize)
-                ->background('#ffaa35'));
-        }
-
-        $programImagePath = $this->localPath($live['program_image'] ?? null);
-        $placeholderPath = public_path('img/placeholders/program.webp');
-        $programLogo = $this->manager
-            ->read($programImagePath !== null && is_file($programImagePath) ? $programImagePath : $placeholderPath)
-            ->scaleDown(width: 665, height: 266);
-
-        $programX = $portraitX;
-        $programY = ($isFacebook ? 650 : 685) + $contentOffsetY;
-        $image->text('PROGRAMA', $programX, $programY, fn (FontFactory $font) => $this->font(
-            $font,
-            24,
-            '#ffaa35',
-        ));
-
-        foreach ([
-            [28, 18, .08],
-            [20, 12, .12],
-            [12, 6, .18],
-        ] as [$paddingX, $paddingY, $opacity]) {
-            $image->drawRectangle(
-                $programX - $paddingX,
-                $programY + 28 - $paddingY,
-                fn (RectangleFactory $rectangle) => $rectangle
-                    ->size(
-                        $programLogo->width() + ($paddingX * 2),
-                        $programLogo->height() + ($paddingY * 2),
-                    )
-                    ->background(sprintf('rgba(0, 0, 20, %.2f)', $opacity)),
-            );
-        }
-
-        $image->place($programLogo, 'top-left', $programX, $programY + 28);
-
-        $logo = $this->manager
-            ->read($this->requiredAsset($this->brandLogoPath, 'brand logo'))
-            ->scaleDown(width: 300, height: 110);
-        $image->place(
-            $logo,
-            'top-left',
-            $textX + $boxWidth - $logo->width(),
-            $height - 70 - $logo->height(),
-        );
+        $arrow = $this->manager
+            ->read($this->requiredAsset(
+                public_path('social-artworks/backgrounds/arrow-right-two.png'),
+                'right arrow icon',
+            ))
+            ->colorize(55, 55, 55)
+            ->scaleDown(width: $x(82), height: $y(82));
+        $image->place($arrow, 'top-left', $x(480), $y(828), 65);
 
     }
 

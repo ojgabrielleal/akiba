@@ -13,7 +13,7 @@
             'host_avatar' => asset('img/placeholders/avatar.webp'),
             'status' => 'Ao vivo',
             'call_to_action' => 'Sintonize agora',
-            'background' => asset('img/social-artwork/backgrounds/featured.png'),
+            'background' => asset('social-artworks/backgrounds/featured.png'),
         ],
         'url' => url('/'),
         'published_at' => '24 OUT 2026',

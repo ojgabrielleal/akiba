@@ -55,7 +55,7 @@ class SocialArtworkProcessTest extends TestCase
             'instagram-story' => [1080, 1920],
             'instagram-live-story' => [1080, 1920],
             'facebook-feed' => [1200, 1080],
-            'facebook-live-feed' => [1200, 1080],
+            'facebook-live-feed' => [1080, 1350],
             'discord-post' => [1200, 630],
             'discord-live-feed' => [1200, 630],
         ] as $template => $expectedDimensions) {
