@@ -20,7 +20,14 @@ class MediaPageTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testMediaPageRendersWhenThereIsNoLatestValidPoll(): void
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        config(['inertia.testing.ensure_pages_exist' => false]);
+    }
+
+    public function test_media_page_renders_when_there_is_no_latest_valid_poll(): void
     {
         $user = $this->userWithPermissions([
             'media.module.view',
@@ -39,8 +46,10 @@ class MediaPageTest extends TestCase
             ->get('/panel/media')
             ->assertOk()
             ->assertInertia(fn ($page) => $page
-                ->component('private/Media', false)
-                ->where('latestPoll', null)
+                ->loadDeferredProps('media-polls', fn ($reload) => $reload
+                    ->component('private/Media', false)
+                    ->where('latestPoll', null)
+                )
             );
     }
 
@@ -73,8 +82,12 @@ class MediaPageTest extends TestCase
             ->assertOk()
             ->assertInertia(fn ($page) => $page
                 ->component('private/Media', false)
-                ->has('polls')
-                ->has('listenerGalleries')
+                ->loadDeferredProps('media-polls', fn ($reload) => $reload
+                    ->has('polls')
+                )
+                ->loadDeferredProps('media-gallery', fn ($reload) => $reload
+                    ->has('listenerGalleries')
+                )
             );
     }
 
@@ -91,6 +104,7 @@ class MediaPageTest extends TestCase
             ->actingAs($user)
             ->post('/panel/media/enigmagame', [
                 'title' => 'Enigma de teste',
+                'content' => 'Pista do enigma de teste',
                 'image' => UploadedFile::fake()->image('enigma.png', 900, 500),
                 'status' => 'draft',
                 'solution' => 'Resposta secreta',
@@ -101,8 +115,9 @@ class MediaPageTest extends TestCase
 
         $this->assertSame('Enigma de teste', $enigmagame->title);
         $this->assertSame(EnigmaGame::STATUS_DRAFT, $enigmagame->status);
-        $this->assertStringStartsWith('/storage/images/enigmagames/', $enigmagame->content);
-        Storage::disk('public')->assertExists(str_replace('/storage/', '', $enigmagame->content));
+        $this->assertSame('Pista do enigma de teste', $enigmagame->content);
+        $this->assertStringStartsWith('/storage/images/enigmagames/', $enigmagame->image);
+        Storage::disk('public')->assertExists(str_replace('/storage/', '', $enigmagame->image));
     }
 
     public function test_enigmagame_image_can_be_updated(): void
@@ -115,7 +130,8 @@ class MediaPageTest extends TestCase
         ]);
         $enigmagame = EnigmaGame::factory()->draft()->create([
             'title' => 'Enigma antigo',
-            'content' => '/storage/images/enigmagames/old.webp',
+            'content' => 'Pista antiga',
+            'image' => '/storage/images/enigmagames/old.webp',
         ]);
 
         $this
@@ -123,6 +139,7 @@ class MediaPageTest extends TestCase
             ->post("/panel/media/enigmagame/{$enigmagame->uuid}", [
                 '_method' => 'PATCH',
                 'title' => 'Enigma atualizado',
+                'content' => 'Pista atualizada',
                 'image' => UploadedFile::fake()->image('novo-enigma.png', 900, 500),
                 'status' => 'draft',
                 'solution' => 'Resposta atualizada',
@@ -132,9 +149,10 @@ class MediaPageTest extends TestCase
         $enigmagame->refresh();
 
         $this->assertSame('Enigma atualizado', $enigmagame->title);
-        $this->assertStringStartsWith('/storage/images/enigmagames/', $enigmagame->content);
-        $this->assertNotSame('/storage/images/enigmagames/old.webp', $enigmagame->content);
-        Storage::disk('public')->assertExists(str_replace('/storage/', '', $enigmagame->content));
+        $this->assertSame('Pista atualizada', $enigmagame->content);
+        $this->assertStringStartsWith('/storage/images/enigmagames/', $enigmagame->image);
+        $this->assertNotSame('/storage/images/enigmagames/old.webp', $enigmagame->image);
+        Storage::disk('public')->assertExists(str_replace('/storage/', '', $enigmagame->image));
     }
 
     public function test_enigmagame_can_be_updated_without_reprocessing_legacy_content(): void
@@ -156,6 +174,7 @@ class MediaPageTest extends TestCase
             ->post("/panel/media/enigmagame/{$enigmagame->uuid}", [
                 '_method' => 'PATCH',
                 'title' => 'Enigma atualizado',
+                'content' => $legacyContent,
                 'status' => 'draft',
                 'solution' => 'Resposta atualizada',
             ])

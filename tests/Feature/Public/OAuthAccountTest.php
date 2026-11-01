@@ -17,6 +17,9 @@ class OAuthAccountTest extends TestCase
     public function test_oauth_redirect_uses_socialite_provider(): void
     {
         $provider = Mockery::mock(Provider::class);
+        $provider->shouldReceive('stateless')
+            ->once()
+            ->andReturnSelf();
         $provider->shouldReceive('redirect')
             ->once()
             ->andReturn(redirect()->away('https://discord.com/oauth2/authorize'));
@@ -50,6 +53,9 @@ class OAuthAccountTest extends TestCase
         $providerUser->shouldReceive('getAvatar')->andReturn('https://cdn.example/avatar.webp');
 
         $provider = Mockery::mock(Provider::class);
+        $provider->shouldReceive('stateless')
+            ->once()
+            ->andReturnSelf();
         $provider->shouldReceive('user')
             ->once()
             ->andReturn($providerUser);
@@ -75,6 +81,12 @@ class OAuthAccountTest extends TestCase
             'avatar' => 'https://cdn.example/avatar.webp',
         ]);
 
-        $this->assertNotNull(OAuthAccount::first()->account_token_hash);
+        $account = OAuthAccount::query()->firstOrFail();
+
+        $this->assertDatabaseHas('personal_access_tokens', [
+            'tokenable_type' => $account->getMorphClass(),
+            'tokenable_id' => $account->getKey(),
+            'name' => 'public-oauth-remember',
+        ]);
     }
 }

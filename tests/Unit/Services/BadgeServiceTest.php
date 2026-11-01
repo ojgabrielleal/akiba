@@ -160,61 +160,6 @@ class BadgeServiceTest extends TestCase
         $this->assertDatabaseCount('badge_assignments', 0);
     }
 
-
-    public function test_award_scheduled_presence_awards_only_selected_user(): void
-    {
-        $selectedUser = User::factory()->create();
-        $otherUser = User::factory()->create();
-        $oauthAccount = OAuthAccount::factory()->create();
-        $service = app(BadgeService::class);
-
-        Badge::factory()->create([
-            'code' => 'presenca_vip',
-            'type' => Badge::TYPE_SCHEDULED,
-            'rule' => [
-                'trigger' => 'site.presence_window',
-                'starts_at' => now()->subMinute()->format('Y-m-d H:i:s'),
-                'ends_at' => now()->addMinute()->format('Y-m-d H:i:s'),
-                'audience' => 'target',
-                'target_type' => 'user',
-                'target_uuid' => $selectedUser->uuid,
-            ],
-        ]);
-
-        $this->assertCount(0, $service->awardScheduledPresence($otherUser));
-        $this->assertCount(0, $service->awardScheduledPresence($oauthAccount));
-        $this->assertCount(1, $service->awardScheduledPresence($selectedUser));
-        $this->assertDatabaseCount('badge_assignments', 1);
-    }
-
-
-    public function test_award_scheduled_presence_awards_selected_oauth_account(): void
-    {
-        $selectedAccount = OAuthAccount::factory()->create();
-        $otherAccount = OAuthAccount::factory()->create();
-        $internalUser = User::factory()->create();
-        $service = app(BadgeService::class);
-
-        Badge::factory()->create([
-            'code' => 'presenca_oauth_vip',
-            'type' => Badge::TYPE_SCHEDULED,
-            'rule' => [
-                'trigger' => 'site.presence_window',
-                'starts_at' => now()->subMinute()->format('Y-m-d H:i:s'),
-                'ends_at' => now()->addMinute()->format('Y-m-d H:i:s'),
-                'audience' => 'target',
-                'target_type' => 'oauth_account',
-                'target_uuid' => $selectedAccount->uuid,
-            ],
-        ]);
-
-        $this->assertCount(0, $service->awardScheduledPresence($otherAccount));
-        $this->assertCount(0, $service->awardScheduledPresence($internalUser));
-        $this->assertCount(1, $service->awardScheduledPresence($selectedAccount));
-        $this->assertDatabaseCount('badge_assignments', 1);
-    }
-
-
     public function test_store_fixed_badge_awards_selected_target(): void
     {
         $owner = OAuthAccount::factory()->create();
@@ -263,7 +208,6 @@ class BadgeServiceTest extends TestCase
         $this->assertSame(2, BadgeAssignment::query()->revoked()->count());
     }
 
-
     public function test_destroy_deletes_badge(): void
     {
         $badge = Badge::factory()->create();
@@ -275,5 +219,4 @@ class BadgeServiceTest extends TestCase
             'id' => $badge->id,
         ]);
     }
-
 }

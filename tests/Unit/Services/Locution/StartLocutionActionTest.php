@@ -2,15 +2,15 @@
 
 namespace Tests\Unit\Services\Locution;
 
-use App\Services\LocutionService;
 use App\Models\Onair;
 use App\Models\Program;
 use App\Models\ProgramSchedule;
 use App\Models\User;
+use App\Services\LocutionService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class LocutionServiceTest extends TestCase
+class StartLocutionActionTest extends TestCase
 {
     use RefreshDatabase;
 

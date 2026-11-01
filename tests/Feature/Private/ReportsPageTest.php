@@ -5,13 +5,13 @@ namespace Tests\Feature\Private;
 use App\Models\Music;
 use App\Models\Onair;
 use App\Models\PageView;
+use App\Models\Permission;
 use App\Models\Poll;
 use App\Models\PollOption;
 use App\Models\PollVote;
 use App\Models\Post;
 use App\Models\PostReaction;
 use App\Models\Program;
-use App\Models\Permission;
 use App\Models\Role;
 use App\Models\SongRequest;
 use App\Models\User;
@@ -26,7 +26,10 @@ class ReportsPageTest extends TestCase
     {
         parent::setUp();
 
-        config(['app.key' => str_repeat('a', 32)]);
+        config([
+            'app.key' => str_repeat('a', 32),
+            'inertia.testing.ensure_pages_exist' => false,
+        ]);
     }
 
     public function test_reports_page_exposes_the_internal_ranking(): void
@@ -54,9 +57,11 @@ class ReportsPageTest extends TestCase
         $music = Music::factory()->create();
         SongRequest::factory(3)->for($onair)->for($music)->create([
             'created_at' => '2026-07-20 15:00:00',
+            'was_reproduced' => true,
         ]);
         SongRequest::factory(2)->for($onair)->for($music)->create([
             'created_at' => '2026-07-21 15:00:00',
+            'was_reproduced' => true,
         ]);
 
         $mostInteractedPost = Post::factory()
@@ -85,19 +90,21 @@ class ReportsPageTest extends TestCase
             ->get('/panel/reports')
             ->assertOk()
             ->assertInertia(fn ($page) => $page
-                ->where('ranking_interno.redator_mais_ativo.usuario.uuid', $writer->uuid)
-                ->where('ranking_interno.redator_mais_ativo.total', 3)
-                ->where('ranking_interno.locutor_mais_ativo.usuario.uuid', $host->uuid)
-                ->where('ranking_interno.locutor_mais_ativo.total', 4)
-                ->where('ranking_interno.pedidos_atendidos.data', '20/07/2026')
-                ->where('ranking_interno.pedidos_atendidos.total', 3)
-                ->where('ranking_interno.pico_audiencia.programa.uuid', $requestsProgram->uuid)
-                ->where('ranking_interno.pico_audiencia.total', 85)
-                ->where('ranking_interno.pico_audiencia.data', '20/07/2026 18:30')
-                ->where('ranking_interno.maior_interacao.uuid', $mostInteractedPost->uuid)
-                ->where('ranking_interno.maior_interacao.total', 4)
-                ->where('ranking_interno.enquete_mais_votada.uuid', $mostVotedPoll->uuid)
-                ->where('ranking_interno.enquete_mais_votada.total', 3)
+                ->loadDeferredProps('reports-ranking', fn ($reload) => $reload
+                    ->where('ranking_interno.redator_mais_ativo.usuario.uuid', $writer->uuid)
+                    ->where('ranking_interno.redator_mais_ativo.total', 3)
+                    ->where('ranking_interno.locutor_mais_ativo.usuario.uuid', $host->uuid)
+                    ->where('ranking_interno.locutor_mais_ativo.total', 4)
+                    ->where('ranking_interno.pedidos_atendidos.data', '20/07/2026')
+                    ->where('ranking_interno.pedidos_atendidos.total', 3)
+                    ->where('ranking_interno.pico_audiencia.programa.uuid', $requestsProgram->uuid)
+                    ->where('ranking_interno.pico_audiencia.total', 85)
+                    ->where('ranking_interno.pico_audiencia.data', '20/07/2026 18:30')
+                    ->where('ranking_interno.maior_interacao.uuid', $mostInteractedPost->uuid)
+                    ->where('ranking_interno.maior_interacao.total', 4)
+                    ->where('ranking_interno.enquete_mais_votada.uuid', $mostVotedPoll->uuid)
+                    ->where('ranking_interno.enquete_mais_votada.total', 3)
+                )
             );
     }
 
@@ -108,12 +115,14 @@ class ReportsPageTest extends TestCase
             ->get('/panel/reports')
             ->assertOk()
             ->assertInertia(fn ($page) => $page
-                ->where('ranking_interno.redator_mais_ativo', null)
-                ->where('ranking_interno.locutor_mais_ativo', null)
-                ->where('ranking_interno.pedidos_atendidos', null)
-                ->where('ranking_interno.pico_audiencia', null)
-                ->where('ranking_interno.maior_interacao', null)
-                ->where('ranking_interno.enquete_mais_votada', null)
+                ->loadDeferredProps('reports-ranking', fn ($reload) => $reload
+                    ->where('ranking_interno.redator_mais_ativo', null)
+                    ->where('ranking_interno.locutor_mais_ativo', null)
+                    ->where('ranking_interno.pedidos_atendidos', null)
+                    ->where('ranking_interno.pico_audiencia', null)
+                    ->where('ranking_interno.maior_interacao', null)
+                    ->where('ranking_interno.enquete_mais_votada', null)
+                )
             );
     }
 
@@ -140,9 +149,9 @@ class ReportsPageTest extends TestCase
             ->assertOk()
             ->assertInertia(fn ($page) => $page
                 ->component('private/Reports', false)
-                ->has('audience')
-                ->has('onair')
-                ->has('ranking_interno')
+                ->loadDeferredProps('reports-audience', fn ($reload) => $reload->has('audience'))
+                ->loadDeferredProps('reports-history', fn ($reload) => $reload->has('onair'))
+                ->loadDeferredProps('reports-ranking', fn ($reload) => $reload->has('ranking_interno'))
             );
     }
 

@@ -2,14 +2,14 @@
 
 namespace Tests\Unit\Filters;
 
-use App\Services\PostService;
 use App\Models\PageView;
 use App\Models\Post;
 use App\Models\User;
+use App\Services\PostService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class PostServiceTest extends TestCase
+class PostFilterTest extends TestCase
 {
     use RefreshDatabase;
 
