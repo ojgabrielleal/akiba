@@ -19,8 +19,8 @@ class SocialArtworkProcess
         'instagram-live-feed' => [1080, 1350],
         'instagram-story' => [1080, 1920],
         'instagram-live-story' => [1080, 1920],
-        'facebook-feed' => [1200, 1080],
-        'facebook-live-feed' => [1080, 1350],
+        'facebook-feed' => [1440, 1800],
+        'facebook-live-feed' => [1440, 1800],
         'discord-post' => [1200, 630],
     ];
 
@@ -350,7 +350,10 @@ class SocialArtworkProcess
         array $data,
     ): void {
         $usesDiscordComposition = in_array($template, ['discord-post', 'instagram-feed', 'instagram-story', 'facebook-feed'], true);
-        $baseOpacity = $usesDiscordComposition ? 0.10 : 0.26;
+        $usesHighContrastOverlay = in_array($template, ['instagram-feed', 'instagram-story'], true);
+        $baseOpacity = $usesHighContrastOverlay
+            ? 0.38
+            : ($usesDiscordComposition ? 0.10 : 0.26);
         $image->drawRectangle(0, 0, fn (RectangleFactory $rectangle) => $rectangle
             ->size($width, $height)
             ->background(sprintf('rgba(0, 0, 20, %.2f)', $baseOpacity)));
@@ -360,24 +363,33 @@ class SocialArtworkProcess
 
             if ($isVerticalFeed) {
                 $titleSize = match ($template) {
-                    'facebook-feed' => 76,
+                    'facebook-feed' => 108,
                     'instagram-story' => 84,
                     default => 70,
                 };
                 $titleAnchorY = match ($template) {
-                    'facebook-feed' => $height - 260,
+                    'facebook-feed' => $height - 400,
                     'instagram-story' => $height - 600,
-                    default => 1090,
+                    default => 1040,
                 };
                 $title = $data['titles'][$template] ?? $data['title'] ?? 'Conteúdo novo na Rede Akiba';
-                $titleLines = $this->wrap($title, $titleSize, $width - 180, PHP_INT_MAX);
-                $titleTop = $titleAnchorY - (max(0, count($titleLines) - 1) * $titleSize);
+                $titleMaxWidth = in_array($template, ['instagram-feed', 'instagram-story'], true)
+                    ? 980
+                    : $width - 180;
+                $titleLines = $this->wrap($title, $titleSize, $titleMaxWidth, PHP_INT_MAX);
+                $titleLineOffset = match ($template) {
+                    'instagram-feed', 'instagram-story' => 1.05,
+                    'facebook-feed' => 1.15,
+                    default => 1,
+                };
+                $titleTop = $titleAnchorY - (int) round(max(0, count($titleLines) - 1) * $titleSize * $titleLineOffset);
                 $gradientTop = max(0, $titleTop - 180);
                 $gradientHeight = $height - $gradientTop;
 
                 for ($offset = 0; $offset < $gradientHeight; $offset++) {
                     $progress = min(1, ($offset + 1) / $gradientHeight);
-                    $opacity = .58 * ($progress ** .85);
+                    $maxOpacity = $usesHighContrastOverlay ? .92 : .58;
+                    $opacity = $maxOpacity * ($progress ** .85);
                     $image->drawRectangle(0, $gradientTop + $offset, fn (RectangleFactory $rectangle) => $rectangle
                         ->size($width, 1)
                         ->background(sprintf('rgba(0, 0, 20, %.3f)', $opacity)));
@@ -430,8 +442,8 @@ class SocialArtworkProcess
         $logo = $this->manager
             ->read($this->requiredAsset($this->brandLogoPath, 'brand logo'))
             ->scaleDown(
-                width: $isStory ? 260 : 230,
-                height: 90,
+                width: $isStory ? 260 : ($isFacebookFeed ? 320 : 230),
+                height: $isFacebookFeed ? 120 : 90,
             );
 
         $image->place(
@@ -441,10 +453,12 @@ class SocialArtworkProcess
                 ? $width - 90 - $logo->width()
                 : ($usesDiscordComposition ? $width - 42 - $logo->width() : 72),
             $isStory
-                ? $height - 355 - intdiv($logo->height(), 2)
-                : ($isVerticalFeed
+                ? $height - 275 - intdiv($logo->height(), 2)
+                : ($isFacebookFeed
+                    ? $height - 115 - intdiv($logo->height(), 2)
+                    : ($isVerticalFeed
                     ? $height - 54 - $logo->height()
-                    : ($usesDiscordComposition ? $height - 36 - $logo->height() : 72)),
+                    : ($usesDiscordComposition ? $height - 36 - $logo->height() : 72))),
         );
     }
 
@@ -463,14 +477,14 @@ class SocialArtworkProcess
         $usesDiscordComposition = $isDiscord || $isVerticalFeed;
         $left = $isDiscord ? 48 : ($isVerticalFeed ? 90 : 54);
         $bottom = $isStory ? 280 : ($isDiscord ? 48 : 82);
-        $titleSize = $isStory ? 84 : ($isDiscord ? 44 : ($isFacebookFeed ? 76 : ($isInstagramFeed ? 70 : 64)));
-        $maxTextWidth = $width - ($left * 2);
+        $titleSize = $isStory ? 84 : ($isDiscord ? 44 : ($isFacebookFeed ? 108 : ($isInstagramFeed ? 70 : 64)));
+        $maxTextWidth = ($isInstagramFeed || $isStory) ? 980 : $width - ($left * 2);
         $footerY = $height - $bottom;
         $titleY = $isDiscord
             ? 455
             : ($isFacebookFeed
-                ? $height - 260
-                : ($isStory ? $height - 600 : ($isInstagramFeed ? 1090 : $footerY - 390)));
+                ? $height - 400
+                : ($isStory ? $height - 520 : ($isInstagramFeed ? 1040 : $footerY - 390)));
         $category = Str::upper($data['category'] ?? 'Notícia');
         $date = Str::upper($data['published_at'] ?? now('America/Sao_Paulo')->format('d M Y'));
 
@@ -480,6 +494,14 @@ class SocialArtworkProcess
 
         if ($isVerticalFeed) {
             $titleY -= max(0, count($titleLines) - 1) * $titleSize;
+
+            if ($isInstagramFeed || $isStory) {
+                $titleY -= (int) round(max(0, count($titleLines) - 1) * $titleSize * .05);
+            }
+
+            if ($isFacebookFeed) {
+                $titleY -= (int) round(max(0, count($titleLines) - 1) * $titleSize * .15);
+            }
         }
 
         $metadata = $usesDiscordComposition ? $date : "{$category}  ·  {$date}";
@@ -494,7 +516,7 @@ class SocialArtworkProcess
             $font,
             $titleSize,
             '#fffaf3',
-            $isDiscord ? 1.50 : ($isStory ? 1.45 : ($isVerticalFeed ? 1.35 : 1.16)),
+            $isDiscord ? 1.50 : (($isInstagramFeed || $isStory || $isFacebookFeed) ? 1.50 : ($isVerticalFeed ? 1.35 : 1.16)),
         ));
 
         if ($isStory) {
@@ -535,7 +557,7 @@ class SocialArtworkProcess
                 $note,
                 'top-left',
                 $width - $left - $note->width(),
-                280,
+                230,
             );
         }
 
@@ -544,26 +566,27 @@ class SocialArtworkProcess
         }
 
         if ($isVerticalFeed) {
-            $avatarSize = $isStory ? 90 : 72;
+            $avatarSize = $isStory ? 90 : ($isFacebookFeed ? 110 : 72);
+            $avatarSourceSize = $isStory ? 108 : ($isFacebookFeed ? 128 : 90);
             $avatar = $this->readImage($data['author_avatar'] ?? null, public_path('img/placeholders/avatar.webp'))
-                ->cover($isStory ? 108 : 90, $isStory ? 108 : 90, 'top')
-                ->crop($avatarSize, $avatarSize, $isStory ? 9 : 9, 0);
+                ->cover($avatarSourceSize, $avatarSourceSize, 'top')
+                ->crop($avatarSize, $avatarSize, 9, 0);
             $avatar = $this->circularImage($avatar, $avatarSize);
-            $authorY = $isStory ? $height - 400 : $height - 122;
+            $authorY = $isStory ? $height - 320 : ($isFacebookFeed ? $height - 170 : $height - 122);
             $image->place($avatar, 'top-left', $left, $authorY);
             $author = $data['author'] ?? 'Rede Akiba';
-            $authorX = $left + ($isStory ? 116 : 92);
+            $authorX = $left + ($isStory ? 116 : ($isFacebookFeed ? 138 : 92));
             $image->text(
                 $author,
                 $authorX,
-                $authorY + ($isStory ? 30 : 25),
-                fn (FontFactory $font) => $this->font($font, $isStory ? 32 : 26, '#fffaf3')->valign('middle'),
+                $authorY + ($isStory ? 30 : ($isFacebookFeed ? 38 : 25)),
+                fn (FontFactory $font) => $this->font($font, $isStory ? 32 : ($isFacebookFeed ? 38 : 26), '#fffaf3')->valign('middle'),
             );
             $image->text(
                 'Redação Akiba',
                 $authorX,
-                $authorY + ($isStory ? 70 : 55),
-                fn (FontFactory $font) => $this->font($font, $isStory ? 22 : 18, '#ffaa35')->valign('middle'),
+                $authorY + ($isStory ? 70 : ($isFacebookFeed ? 83 : 55)),
+                fn (FontFactory $font) => $this->font($font, $isStory ? 22 : ($isFacebookFeed ? 26 : 18), '#ffaa35')->valign('middle'),
             );
 
             return;
@@ -684,8 +707,10 @@ class SocialArtworkProcess
         $presenter = $this->readImage(
             $live['host_avatar'] ?? null,
             public_path('img/placeholders/avatar.webp'),
-        )
-            ->scaleDown(width: $x(625), height: $y(780));
+        );
+        $presenter = $width > 1080
+            ? $presenter->scale(width: $x(590), height: $y(740))
+            : $presenter->scaleDown(width: $x(625), height: $y(780));
         $image->place(
             $presenter,
             'top-left',
@@ -722,7 +747,8 @@ class SocialArtworkProcess
             ))
             ->colorize(55, 55, 55)
             ->scaleDown(width: $x(82), height: $y(82));
-        $image->place($arrow, 'top-left', $x(480), $y(828), 65);
+        $arrowY = $width > 1080 ? 853 : 828;
+        $image->place($arrow, 'top-left', $x(480), $y($arrowY), 65);
 
     }
 
