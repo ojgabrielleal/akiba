@@ -16,7 +16,7 @@
                     <Link href={item.href} aria-label={`Ler destaque: ${item.title}`} class="group block focus-visible:outline-none">
                         <article class="public-featured-card relative mt-4 h-40 rounded-md bg-gradient-featured-akiba-card transition duration-300 ease-out group-hover:-translate-y-1 group-focus-visible:-translate-y-1 group-focus-visible:ring-2 group-focus-visible:ring-orange-amber motion-reduce:transform-none motion-reduce:transition-none sm:mt-8">
                             <div class="relative z-10 w-1/2 py-2 pr-0 pl-2 sm:w-[58%] sm:pr-3">
-                                <h3 class={["public-featured-card-title line-clamp-7 break-words font-noto-sans text-[15px] leading-tight font-extrabold text-suspense-aurora uppercase italic sm:line-clamp-6 sm:text-lg", themeClass("text", "suspense-aurora", { theme: "light" })]}>
+                                <h3 class={["public-featured-card-title line-clamp-7 break-words font-noto-sans text-base leading-tight font-extrabold text-suspense-aurora uppercase italic sm:line-clamp-6 sm:text-lg", themeClass("text", "suspense-aurora", { theme: "light" })]}>
                                     {item.title}
                                 </h3>
                             </div>
