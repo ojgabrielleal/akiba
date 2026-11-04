@@ -73,6 +73,15 @@
     display: block;
     max-width: 100%;
     height: auto;
+    border-radius: 0.375rem;
+}
+
+.ql-editor video,
+.public-read-body video {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.375rem;
 }
 
 .public-read-body::after,
@@ -180,6 +189,7 @@
     height: auto;
     aspect-ratio: 16 / 9;
     border: 0;
+    border-radius: 0.375rem;
 }
 
 .ql-editor iframe.ql-video.ql-iframe-align-left,
@@ -208,7 +218,7 @@
     aspect-ratio: 16 / 9;
     margin: 1.5rem 0;
     overflow: hidden;
-    border-radius: 0.5rem;
+    border-radius: 0.375rem;
     background: var(--color-blue-night);
 }
 

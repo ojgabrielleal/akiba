@@ -9,6 +9,7 @@
     } from "@/lib/components/public";
     import { SongRequestForm } from "@/lib/widgets/public";
     import SongCoverLightbox from "./SongCoverLightbox.svelte";
+    import SongTitleTooltip from "./SongTitleTooltip.svelte";
     import { player, toggleAudio, setVolume } from "@/lib/stores";
     import { locutionIcons, locutionTextures, locutionDecorations } from "@/lib/constants";
     import {
@@ -77,12 +78,16 @@
 
     const resolveDecoration = (decoration, fallback) => legacyDecorationMap[decoration] ?? decoration ?? fallback;
 
-    onMount(() =>
-        listenForOAuthAction(
+    onMount(() => {
+        const stopListeningForOAuth = listenForOAuthAction(
             OAuthAction.OPEN_SONG_REQUEST,
             () => openRequestModal(),
-        ),
-    );
+        );
+
+        return () => {
+            stopListeningForOAuth?.();
+        };
+    });
 
     $: playerData = {
         program: {
@@ -302,10 +307,11 @@
                 <div class="text-orange-amber font-noto-sans uppercase italic">
                     Tocando agora:
                 </div>
-                <div class="min-w-0 max-w-[25rem] overflow-hidden pr-4">
-                    <span class="line-clamp-2 text-suspense-aurora text-lg font-song-title font-extrabold uppercase italic leading-6">
-                        {playerData.current_song.music || "Estamos offline"}
-                    </span>
+                <div class="min-w-0 max-w-[25rem] pr-4">
+                    <SongTitleTooltip
+                        music={playerData.current_song.music}
+                        titleClass="line-clamp-2 text-suspense-aurora text-lg font-song-title font-extrabold uppercase italic leading-6"
+                    />
                 </div>
             </div>
         </div>

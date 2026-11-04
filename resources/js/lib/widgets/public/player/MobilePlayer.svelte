@@ -4,6 +4,7 @@
     import { AuthGuard, CustomModal, LoadingSpinner } from "@/lib/components/public";
     import { SongRequestForm } from "@/lib/widgets/public";
     import SongCoverLightbox from "./SongCoverLightbox.svelte";
+    import SongTitleTooltip from "./SongTitleTooltip.svelte";
     import { player, toggleAudio, setVolume } from "@/lib/stores";
     import {
         listenForOAuthAction,
@@ -196,7 +197,7 @@
             <div class="mb-6 flex items-center gap-3 rounded-2xl bg-blue-night/35 p-3">
                 <button
                     type="button"
-                    class="group/cover size-11 shrink-0 cursor-zoom-in overflow-hidden rounded-lg bg-blue-ocean focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric"
+                    class="group/cover size-14 shrink-0 cursor-zoom-in overflow-hidden rounded-lg bg-blue-ocean focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric"
                     aria-label="Ver capa da música em tela cheia"
                     on:click={openCoverLightbox}
                 >
@@ -204,17 +205,18 @@
                         src={resolvePlaceholderImage(playerData.currentSong.cover, "placeholder")}
                         alt={playerData.currentSong.music ? `Capa da música ${playerData.currentSong.music}` : "Capa da música atual"}
                         class="h-full w-full object-cover opacity-80 transition duration-300 ease-out group-hover/cover:scale-[1.03] group-focus-visible/cover:scale-[1.03] motion-reduce:transform-none motion-reduce:transition-none"
-                        width="44"
-                        height="44"
+                        width="56"
+                        height="56"
                     />
                 </button>
-                <div class="min-w-0">
+                <div class="min-w-0 flex-1">
                     <p class="text-orange-amber text-[9px] font-noto-sans font-extrabold uppercase italic">
                         Tocando agora
                     </p>
-                    <p class="truncate text-suspense-aurora/75 text-xs font-song-title font-bold uppercase italic">
-                        {playerData.currentSong.music || "Estamos offline"}
-                    </p>
+                    <SongTitleTooltip
+                        music={playerData.currentSong.music}
+                        titleClass="line-clamp-2 text-suspense-aurora/75 text-xs leading-4 font-song-title font-bold uppercase italic"
+                    />
                 </div>
             </div>
 
@@ -367,9 +369,10 @@
                         <p class="text-orange-amber text-[9px] font-noto-sans font-extrabold uppercase italic">
                             Tocando agora
                         </p>
-                        <p class="line-clamp-2 text-suspense-aurora/80 text-sm leading-4 font-song-title font-bold uppercase italic">
-                            {playerData.currentSong.music || "Estamos offline"}
-                        </p>
+                        <SongTitleTooltip
+                            music={playerData.currentSong.music}
+                            titleClass="line-clamp-2 text-suspense-aurora/80 text-sm leading-4 font-song-title font-bold uppercase italic"
+                        />
                     </div>
                 </div>
 

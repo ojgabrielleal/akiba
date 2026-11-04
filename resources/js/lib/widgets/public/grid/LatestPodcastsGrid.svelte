@@ -31,10 +31,7 @@
                                     />
                                 </div>
                                 <h3 class="px-3 py-2.5 font-noto-sans text-base leading-tight font-black text-blue-night uppercase italic">
-                                    <span
-                                        class="block overflow-hidden lg:min-h-[4.5rem]"
-                                        style="-webkit-line-clamp: 4; -webkit-box-orient: vertical; display: -webkit-box;"
-                                    >
+                                    <span class="block sm:line-clamp-4 lg:min-h-[4.5rem]">
                                         {podcast.title}
                                     </span>
                                 </h3>

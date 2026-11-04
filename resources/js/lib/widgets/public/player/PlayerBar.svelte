@@ -6,6 +6,7 @@
     import { player, setVolume, toggleAudio } from "@/lib/stores";
     import { SongRequestForm } from "@/lib/widgets/public";
     import SongCoverLightbox from "./SongCoverLightbox.svelte";
+    import SongTitleTooltip from "./SongTitleTooltip.svelte";
     import {
         listenForOAuthAction,
         OAuthAction,
@@ -185,9 +186,10 @@
                 <p class="text-[0.65rem] font-black tracking-[0.12em] text-suspense-aurora/45">
                     Tocando agora
                 </p>
-                <p class="truncate font-song-title text-sm font-black text-suspense-aurora sm:text-base">
-                    {currentSong.music || "Estamos offline"}
-                </p>
+                <SongTitleTooltip
+                    music={currentSong.music}
+                    titleClass="block truncate font-song-title text-sm font-black text-suspense-aurora sm:text-base"
+                />
                 <p class="truncate text-[0.7rem] font-bold text-suspense-aurora/50">
                     {program.name} {host.nickname ? `· ${host.nickname}` : ""}
                 </p>

@@ -41,19 +41,19 @@
             aria-modal="true"
             aria-label={`Capa da música ${title}`}
         >
-            <figure class="relative max-h-[94dvh] max-w-full overflow-hidden rounded-md shadow-2xl shadow-blue-night/50">
+            <figure class="relative aspect-square w-full max-w-[min(37.5rem,94dvh)] overflow-hidden rounded-md bg-blue-ocean shadow-2xl shadow-blue-night/50">
                 <img
                     src={image}
                     alt={music ? `Capa da música ${music}` : "Capa da música atual"}
-                    class="max-h-[94dvh] max-w-full object-contain"
+                    class="h-full w-full object-cover"
                 />
 
                 <figcaption class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-blue-night via-blue-night/90 to-blue-night/0 px-4 pb-4 pt-16 font-noto-sans text-suspense-aurora sm:px-6 sm:pb-6">
                     <div class="mx-auto max-w-xl">
-                        <p class="text-xs font-black uppercase italic tracking-[0.18em] text-orange-morning">
+                        <p class="text-xs font-black uppercase italic tracking-[0.18em] text-suspense-aurora">
                             Tocando agora:
                         </p>
-                        <h3 class="break-words text-xl font-black uppercase italic leading-tight text-orange-citric sm:text-2xl">
+                        <h3 class="break-words text-xl font-black uppercase italic leading-tight text-suspense-aurora sm:text-2xl">
                             {title}
                         </h3>
                     </div>

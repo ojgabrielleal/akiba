@@ -40,7 +40,7 @@
                                             />
                                         </div>
                                         <article class="min-h-[6rem] px-3 py-5">
-                                            <h3 class="line-clamp-3 font-noto-sans text-lg leading-tight font-bold text-suspense-aurora uppercase italic">
+                                            <h3 class="font-noto-sans text-lg leading-tight font-bold text-suspense-aurora uppercase italic">
                                                 {item.title}
                                             </h3>
                                         </article>
