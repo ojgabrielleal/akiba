@@ -132,10 +132,12 @@
 
 {#if canRender}
 <!-- Phone player -->
-<section class="mt-10 container-page md:hidden">
-    <div class="relative w-full max-w-[26rem] mx-auto rounded-3xl border border-suspense-aurora/10 bg-blue-ocean/25 shadow-2xl">
-        <div class="absolute inset-x-0 top-0 h-72 bg-gradient-to-b from-blue-skywave/20 via-blue-ocean/10 to-blue-skywave/20"></div>
-        <div class="absolute -top-16 -right-16 size-52 rounded-full bg-orange-morning/10 blur-3xl"></div>
+<section class="mt-6 container-page md:hidden">
+    <div class="relative w-full max-w-[26rem] mx-auto rounded-md border border-suspense-aurora/10 bg-blue-ocean/25 shadow-2xl">
+        <div class="pointer-events-none absolute inset-0 overflow-hidden rounded-md">
+            <div class="absolute inset-x-0 top-0 h-72 bg-gradient-to-b from-blue-skywave/20 via-blue-ocean/10 to-blue-skywave/20"></div>
+            <div class="absolute -top-16 -right-16 size-52 rounded-full bg-orange-morning/10 blur-3xl"></div>
+        </div>
 
         <div class="relative p-5">
             <div class="flex items-center justify-between gap-3 mb-3">
@@ -194,7 +196,7 @@
                 </div>
             </div>
 
-            <div class="mb-6 flex items-center gap-3 rounded-2xl bg-blue-night/35 p-3">
+            <div class="mb-6 flex items-end gap-3 rounded-2xl bg-blue-night/35 p-3">
                 <button
                     type="button"
                     class="group/cover size-14 shrink-0 cursor-zoom-in overflow-hidden rounded-lg bg-blue-ocean focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-citric"
@@ -288,8 +290,10 @@
 <!-- Tablet player -->
 {#if canRender}
 <section class="container-page hidden md:block">
-    <div class="relative w-full max-w-4xl mx-auto rounded-3xl border border-suspense-aurora/10 bg-blue-ocean/25 shadow-2xl">
-        <div class="absolute inset-0 bg-gradient-to-r from-blue-skywave/15 via-transparent to-blue-skywave/15"></div>
+    <div class="relative w-full max-w-4xl mx-auto rounded-md border border-suspense-aurora/10 bg-blue-ocean/25 shadow-2xl">
+        <div class="pointer-events-none absolute inset-0 overflow-hidden rounded-md">
+            <div class="absolute inset-0 bg-gradient-to-r from-blue-skywave/15 via-transparent to-blue-skywave/15"></div>
+        </div>
 
         <div class="relative grid grid-cols-[minmax(0,1.25fr)_minmax(17rem,0.75fr)] gap-8 p-7">
             <div class="min-w-0">
