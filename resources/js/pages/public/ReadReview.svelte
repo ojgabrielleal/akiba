@@ -249,7 +249,7 @@
                             {/each}
                         </ul>
                     {/if}
-                    <AdvertisementSlot class={related.length ? "mt-8 h-96 lg:h-[34rem]" : "h-96 lg:h-[34rem]"} />
+                    <AdvertisementSlot class={related.length ? "mt-8 min-h-96 lg:min-h-[34rem]" : "min-h-96 lg:min-h-[34rem]"} />
                 </aside>
             </div>
         </div>

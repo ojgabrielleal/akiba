@@ -105,6 +105,36 @@ scenario("detachment or lost width while loading prevents a push", async (env) =
     assert.equal(window.adsbygoogle.length, 0);
 });
 
+scenario("a slot waits until its parent has measurable width", async (env) => {
+    const element = env.element();
+    element.parentElement = { offsetWidth: 0 };
+
+    assert.equal(await env.pushGoogleAdSlot(element), false);
+    assert.equal(env.scripts.length, 0);
+
+    element.parentElement.offsetWidth = 498;
+    const initialized = env.pushGoogleAdSlot(element);
+    env.scripts[0].dispatchEvent(new Event("load"));
+
+    assert.equal(await initialized, true);
+    assert.equal(window.adsbygoogle.length, 1);
+});
+
+scenario("a failed queue push can retry the same element", async (env) => {
+    const element = env.element();
+    const queue = window.adsbygoogle;
+    const originalPush = queue.push.bind(queue);
+    queue.push = () => { throw new Error("slot sem tamanho"); };
+
+    const failed = env.pushGoogleAdSlot(element);
+    env.scripts[0].dispatchEvent(new Event("load"));
+    await assert.rejects(failed, /slot sem tamanho/);
+
+    queue.push = originalPush;
+    assert.equal(await env.pushGoogleAdSlot(element), true);
+    assert.equal(queue.length, 1);
+});
+
 scenario("action waits for mounting and width; destroy disconnects observer", async (env) => {
     const element = env.element();
     element.isConnected = false;

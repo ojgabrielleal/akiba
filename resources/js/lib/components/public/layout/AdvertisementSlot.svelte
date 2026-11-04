@@ -15,11 +15,11 @@
 </script>
 
 {#if shouldRenderAdsense}
-    <div class={["adsense-container relative block w-full min-w-0 self-start", className]} style="height:auto;max-height:none;">
-        <div class="advertisement-fallback min-w-0">
-            <svelte:self adsense={false} {mirrored} class="h-32" />
+    <div class={["adsense-container relative block min-h-32 w-full min-w-0 self-start", className]}>
+        <div class="advertisement-fallback absolute inset-0 z-0 min-w-0">
+            <svelte:self adsense={false} {mirrored} class="h-full min-h-32" />
         </div>
-        <div class="advertisement-content w-full">
+        <div class="advertisement-content relative z-10 w-full min-w-px">
         {#key `${adClient}:${adSlot}`}
             <ins
                 use:initializeGoogleAdSlot
@@ -106,22 +106,8 @@
 {/if}
 
 <style>
-    .advertisement-content {
-        position: absolute;
-        top: 0;
-        left: 0;
-        opacity: 0;
-        pointer-events: none;
-    }
-
     .adsense-container:has(:global(ins[data-ad-status="filled"])) > .advertisement-fallback {
         display: none;
-    }
-
-    .advertisement-content:has(> :global(ins[data-ad-status="filled"])) {
-        position: static;
-        opacity: 1;
-        pointer-events: auto;
     }
 
     .advertisement-content > :global(ins[data-ad-status="unfilled"]) {

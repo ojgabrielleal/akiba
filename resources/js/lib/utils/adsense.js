@@ -61,6 +61,7 @@ const canInitialize = (element, signal) => (
     !signal?.aborted
     && element.isConnected
     && element.offsetWidth > 0
+    && (element.parentElement?.offsetWidth ?? element.offsetWidth) > 0
     && !initializedAdElements.has(element)
     && !element.hasAttribute("data-adsbygoogle-status")
 );
@@ -74,9 +75,9 @@ export const pushGoogleAdSlot = async (element, { signal } = {}) => {
         const loaded = await loadGoogleAdsense(element.dataset.adClient);
         if (!loaded || !canInitialize(element, signal)) return false;
 
+        window.adsbygoogle.push({});
         // The queue is global; never enqueue twice for the same DOM element.
         initializedAdElements.add(element);
-        window.adsbygoogle.push({});
         return true;
     } finally {
         pendingAdElements.delete(element);
@@ -88,20 +89,28 @@ export const initializeGoogleAdSlot = (element) => {
     const controller = new AbortController();
     let observer;
     let started = false;
+    let initializing = false;
 
-    const initialize = () => {
-        if (started || !canLoadGoogleAdsense() || !canInitialize(element, controller.signal)) return;
-        started = true;
-        observer?.disconnect();
+    const initialize = async () => {
+        if (started || initializing || !canLoadGoogleAdsense() || !canInitialize(element, controller.signal)) return;
+        initializing = true;
 
-        pushGoogleAdSlot(element, { signal: controller.signal }).catch((error) => {
+        try {
+            const initialized = await pushGoogleAdSlot(element, { signal: controller.signal });
+            if (!initialized) return;
+
+            started = true;
+            observer?.disconnect();
+        } catch (error) {
             if (controller.signal.aborted) return;
             console.error("Google AdSense: falha ao inicializar bloco de anúncio.", {
                 adClient: element.dataset.adClient,
                 adSlot: element.dataset.adSlot,
                 error,
             });
-        });
+        } finally {
+            initializing = false;
+        }
     };
 
     if (canLoadGoogleAdsense()) {

@@ -34,7 +34,7 @@
             {#each postList as post, index (post.uuid)}
                 {#if advertisementAfter > 0 && index === advertisementAfter}
                     <li class="lg:col-span-2">
-                        <AdvertisementSlot class="mx-auto h-20 max-w-3xl" />
+                        <AdvertisementSlot class="mx-auto min-h-20 max-w-3xl" />
                     </li>
                 {/if}
 

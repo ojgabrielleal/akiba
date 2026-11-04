@@ -96,8 +96,8 @@
                 <EventRegistrationCallout />
             </div>
         </div>
-        <div class="overflow-hidden rounded-md lg:h-full">
-            <AdvertisementSlot class="h-44 lg:h-full lg:min-h-60" />
+        <div class="overflow-hidden rounded-md lg:min-h-full">
+            <AdvertisementSlot class="min-h-44 lg:min-h-60" />
         </div>
     </div>
 </Section>
