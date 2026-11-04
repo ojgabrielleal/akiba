@@ -1,4 +1,5 @@
 <script>
+    import { onMount } from "svelte";
     import { defaultAdClient, initializeGoogleAdSlot } from "@/lib/utils/adsense";
 
     export let image = null;
@@ -9,28 +10,65 @@
     export let adClient = defaultAdClient;
     export let adSlot = "8597417495";
     let className = "";
+    let adsenseContainer;
+    let adReady = false;
     export { className as class };
 
     $: shouldRenderAdsense = adsense && !image && !href && adClient && adSlot;
+
+    onMount(() => {
+        if (!shouldRenderAdsense || !adsenseContainer) return;
+
+        let firstFrame;
+        let secondFrame;
+
+        const prepareAd = () => {
+            if (adReady || adsenseContainer.getBoundingClientRect().width <= 0) return;
+
+            cancelAnimationFrame(firstFrame);
+            cancelAnimationFrame(secondFrame);
+
+            firstFrame = requestAnimationFrame(() => {
+                secondFrame = requestAnimationFrame(() => {
+                    if (adsenseContainer?.isConnected && adsenseContainer.getBoundingClientRect().width > 0) {
+                        adReady = true;
+                        observer.disconnect();
+                    }
+                });
+            });
+        };
+
+        const observer = new ResizeObserver(prepareAd);
+        observer.observe(adsenseContainer);
+        prepareAd();
+
+        return () => {
+            observer.disconnect();
+            cancelAnimationFrame(firstFrame);
+            cancelAnimationFrame(secondFrame);
+        };
+    });
 </script>
 
 {#if shouldRenderAdsense}
-    <div class={["adsense-container relative block min-h-32 w-full min-w-0 self-start", className]}>
+    <div bind:this={adsenseContainer} class={["adsense-container relative block min-h-32 w-full min-w-0 self-start", className]} style="width:100%;">
         <div class="advertisement-fallback absolute inset-0 z-0 min-w-0">
             <svelte:self adsense={false} {mirrored} class="h-full min-h-32" />
         </div>
         <div class="advertisement-content relative z-10 w-full min-w-px">
-        {#key `${adClient}:${adSlot}`}
-            <ins
-                use:initializeGoogleAdSlot
-                class="adsbygoogle"
-                style="display:block;width:100%;"
-                data-ad-client={adClient}
-                data-ad-slot={adSlot}
-                data-ad-format="auto"
-                data-full-width-responsive="true"
-            ></ins>
-        {/key}
+            {#if adReady}
+                {#key `${adClient}:${adSlot}`}
+                    <ins
+                        use:initializeGoogleAdSlot
+                        class="adsbygoogle"
+                        style="display:block;width:100%;min-width:1px;"
+                        data-ad-client={adClient}
+                        data-ad-slot={adSlot}
+                        data-ad-format="auto"
+                        data-full-width-responsive="true"
+                    ></ins>
+                {/key}
+            {/if}
         </div>
     </div>
 {:else}
