@@ -144,6 +144,14 @@
 {/if}
 
 <style>
+    .adsense-container:not(:has(:global(ins[data-ad-status="filled"]))) > .advertisement-content {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        pointer-events: none;
+        overflow: hidden;
+    }
+
     .adsense-container:has(:global(ins[data-ad-status="filled"])) > .advertisement-fallback {
         display: none;
     }
