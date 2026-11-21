@@ -30,8 +30,30 @@
         },
     });
 
+    const formatWhatsapp = (value) => {
+        const digits = value.replace(/\D/g, "").slice(0, 11);
+
+        if (digits.length <= 2) {
+            return digits;
+        }
+
+        if (digits.length <= 6) {
+            return `${digits.slice(0, 2)} ${digits.slice(2)}`;
+        }
+
+        if (digits.length <= 10) {
+            return `${digits.slice(0, 2)} ${digits.slice(2, 6)}-${digits.slice(6)}`;
+        }
+
+        return `${digits.slice(0, 2)} ${digits.slice(2, 7)}-${digits.slice(7)}`;
+    };
+
     $: if ($form.payload.whatsapp) {
-        $form.payload.whatsapp = $form.payload.whatsapp.replace(/\D/g, "").slice(0, 11);
+        const formatted = formatWhatsapp($form.payload.whatsapp);
+
+        if ($form.payload.whatsapp !== formatted) {
+            $form.payload.whatsapp = formatted;
+        }
     }
 
     const submit = () => {
@@ -79,8 +101,8 @@
             inputmode="tel"
             autocomplete="tel"
             placeholder="00 00000-0000"
-            pattern="\d{10,11}"
-            maxlength="11"
+            pattern={"\\d{2} \\d{4,5}-\\d{4}"}
+            maxlength="13"
             bind:value={$form.payload.whatsapp}
             error={$form.errors["payload.whatsapp"] ?? $form.errors.contact}
             required
