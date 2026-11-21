@@ -240,12 +240,14 @@
                                         loading={deletingSubmission === selectedSubmission.uuid}
                                         on:click={() => destroySubmission(selectedSubmission, close)}
                                     >
-                                        <img
-                                            src="/svg/trash.svg"
-                                            alt=""
-                                            aria-hidden="true"
-                                            class="size-5 filter-suspense-aurora"
-                                        />
+                                        {#if deletingSubmission !== selectedSubmission.uuid}
+                                            <img
+                                                src="/svg/trash.svg"
+                                                alt=""
+                                                aria-hidden="true"
+                                                class="size-5 filter-suspense-aurora"
+                                            />
+                                        {/if}
                                     </Button>
                                 {/if}
 
@@ -258,12 +260,14 @@
                                         loading={reviewingSubmission === `${selectedSubmission.uuid}-approve`}
                                         on:click={() => review(selectedSubmission, "approve", close)}
                                     >
-                                        <img
-                                            src="/svg/like.svg"
-                                            alt=""
-                                            aria-hidden="true"
-                                            class="size-5 filter-suspense-aurora"
-                                        />
+                                        {#if reviewingSubmission !== `${selectedSubmission.uuid}-approve`}
+                                            <img
+                                                src="/svg/like.svg"
+                                                alt=""
+                                                aria-hidden="true"
+                                                class="size-5 filter-suspense-aurora"
+                                            />
+                                        {/if}
                                     </Button>
                                     <Button
                                         variant="danger"
@@ -273,12 +277,14 @@
                                         loading={reviewingSubmission === `${selectedSubmission.uuid}-reject`}
                                         on:click={() => review(selectedSubmission, "reject", close)}
                                     >
-                                        <img
-                                            src="/svg/angry.svg"
-                                            alt=""
-                                            aria-hidden="true"
-                                            class="size-5 invert brightness-0"
-                                        />
+                                        {#if reviewingSubmission !== `${selectedSubmission.uuid}-reject`}
+                                            <img
+                                                src="/svg/angry.svg"
+                                                alt=""
+                                                aria-hidden="true"
+                                                class="size-5 invert brightness-0"
+                                            />
+                                        {/if}
                                     </Button>
                                 {/if}
                             </div>
